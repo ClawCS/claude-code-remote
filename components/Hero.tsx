@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Hero() {
+  const { t } = useTranslation();
+
   return (
     <section className="relative overflow-hidden">
       {/* Animated gradient background */}
@@ -27,29 +32,28 @@ export default function Hero() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-28 md:py-40 text-white">
         <div className="max-w-2xl animate-fade-in-up">
           <p className="text-base md:text-lg font-bold tracking-[0.15em] uppercase text-white/80 mb-5 glass inline-block px-4 py-1.5 rounded-full">
-            Trinkgut Jammers Goch
+            {t("hero.badge")}
           </p>
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.05] mb-7 tracking-tight">
-            Dein Getränkemarkt.
+            {t("hero.title1")}
             <br />
-            <span className="text-accent drop-shadow-lg">Online entdecken.</span>
+            <span className="text-accent drop-shadow-lg">{t("hero.title2")}</span>
           </h1>
           <p className="text-lg md:text-xl text-white/60 mb-12 leading-relaxed max-w-xl">
-            Über 7.000 Artikel — von Bier über Wein bis Spirituosen.
-            Partyplanung, Vermietung und persönliche Beratung.
+            {t("hero.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/produkte"
               className="inline-flex items-center justify-center px-8 py-4 bg-accent hover:bg-accent-dark text-secondary font-bold rounded-2xl transition-all btn-hover text-lg shadow-lg shadow-amber-500/25"
             >
-              Sortiment entdecken
+              {t("hero.cta1")}
             </Link>
             <Link
               href="/partyplaner"
               className="inline-flex items-center justify-center px-8 py-4 glass text-white font-semibold rounded-2xl transition-all hover:bg-white/20 text-lg"
             >
-              🎉 Party planen
+              {t("hero.cta2")}
             </Link>
           </div>
         </div>

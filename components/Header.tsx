@@ -5,59 +5,57 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useTranslation, LANG_KEY, LANG_CHANGE_EVENT, type Lang } from "@/lib/i18n";
 
-type DropdownItem = { href: string; label: string; icon: string };
+type DropdownItem = { href: string; labelKey: string; icon: string };
 
 type NavItem = {
-  label: string;
+  labelKey: string;
   href?: string;
   children?: DropdownItem[];
 };
 
 const navItems: NavItem[] = [
   {
-    label: "Sortiment",
+    labelKey: "nav.sortiment",
     children: [
-      { href: "/produkte", label: "Alle Produkte", icon: "\u{1F6D2}" },
-      { href: "/kategorie/bier", label: "Bier", icon: "\u{1F37A}" },
-      { href: "/kategorie/alkoholfrei", label: "Alkoholfreie Getr\u00e4nke", icon: "\u{1F964}" },
-      { href: "/kategorie/wein", label: "Wein", icon: "\u{1F377}" },
-      { href: "/kategorie/sekt", label: "Sekt & Co.", icon: "\u{1F942}" },
-      { href: "/kategorie/spirituosen", label: "Spirituosen", icon: "\u{1F943}" },
-      { href: "/kategorie/lebensmittel", label: "Lebensmittel & Mehr", icon: "\u{1F6D2}" },
+      { href: "/produkte", labelKey: "nav.alleProdukte", icon: "\u{1F6D2}" },
+      { href: "/kategorie/bier", labelKey: "nav.bier", icon: "\u{1F37A}" },
+      { href: "/kategorie/alkoholfrei", labelKey: "nav.alkoholfrei", icon: "\u{1F964}" },
+      { href: "/kategorie/wein", labelKey: "nav.wein", icon: "\u{1F377}" },
+      { href: "/kategorie/sekt", labelKey: "nav.sekt", icon: "\u{1F942}" },
+      { href: "/kategorie/spirituosen", labelKey: "nav.spirituosen", icon: "\u{1F943}" },
+      { href: "/kategorie/lebensmittel", labelKey: "nav.lebensmittel", icon: "\u{1F6D2}" },
     ],
   },
   {
-    label: "Angebote",
+    labelKey: "nav.angebote",
     children: [
-      { href: "/angebote", label: "Aktuelle Angebote", icon: "\u{1F3F7}\uFE0F" },
-      { href: "/handzettel", label: "Handzettel DE/NL", icon: "\u{1F4F0}" },
-      { href: "/follower-rabatt", label: "5\u20ac Follower-Rabatt", icon: "\u{1F4F1}" },
+      { href: "/angebote", labelKey: "nav.aktuelleAngebote", icon: "\u{1F3F7}\uFE0F" },
+      { href: "/handzettel", labelKey: "nav.handzettel", icon: "\u{1F4F0}" },
+      { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
     ],
   },
   {
-    label: "Services",
+    labelKey: "nav.services",
     children: [
-      { href: "/partyplaner", label: "Partyplaner", icon: "\u{1F389}" },
-      { href: "/vermietung", label: "Vermietung & Leih", icon: "\u{1F3AA}" },
-      { href: "/finder", label: "Getr\u00e4nke-Finder", icon: "\u{1F50D}" },
+      { href: "/partyplaner", labelKey: "nav.partyplaner", icon: "\u{1F389}" },
+      { href: "/vermietung", labelKey: "nav.vermietung", icon: "\u{1F3AA}" },
+      { href: "/finder", labelKey: "nav.finder", icon: "\u{1F50D}" },
     ],
   },
   {
-    label: "Erleben",
+    labelKey: "nav.erleben",
     children: [
-      { href: "/cocktails", label: "65 Cocktail-Rezepte", icon: "\u{1F378}" },
-      { href: "/galerie", label: "Fotogalerie", icon: "\u{1F4F8}" },
-      { href: "/gewinnspiel", label: "Gewinnspiel", icon: "\u{1F3C6}" },
+      { href: "/cocktails", labelKey: "nav.cocktails", icon: "\u{1F378}" },
+      { href: "/galerie", labelKey: "nav.galerie", icon: "\u{1F4F8}" },
+      { href: "/gewinnspiel", labelKey: "nav.gewinnspiel", icon: "\u{1F3C6}" },
     ],
   },
-  { label: "Akademie", href: "/akademie" },
-  { label: "\u26BD WM Tipp", href: "/tippkick" },
-  { label: "Jobs", href: "/bewerbung" },
+  { labelKey: "nav.akademie", href: "/akademie" },
+  { labelKey: "nav.wmtipp", href: "/tippkick" },
+  { labelKey: "nav.jobs", href: "/bewerbung" },
 ];
-
-type Lang = "de" | "en" | "nl";
-const LANG_KEY = "trinkgut-lang";
 
 const langLabels: Record<Lang, string> = {
   de: "DE",
@@ -91,7 +89,7 @@ const langFlags: Record<Lang, React.ReactNode> = {
   ),
 };
 
-function DesktopDropdown({ item, open, onToggle }: { item: NavItem; open: boolean; onToggle: () => void }) {
+function DesktopDropdown({ item, open, onToggle, t }: { item: NavItem; open: boolean; onToggle: () => void; t: (key: string) => string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -105,7 +103,7 @@ function DesktopDropdown({ item, open, onToggle }: { item: NavItem; open: boolea
   if (!item.children) {
     return (
       <Link href={item.href!} className="text-sm font-medium text-muted hover:text-primary transition-colors px-3 py-2">
-        {item.label}
+        {t(item.labelKey)}
       </Link>
     );
   }
@@ -116,7 +114,7 @@ function DesktopDropdown({ item, open, onToggle }: { item: NavItem; open: boolea
         onClick={onToggle}
         className={`text-sm font-medium px-3 py-2 transition-colors flex items-center gap-1 ${open ? "text-primary" : "text-muted hover:text-primary"}`}
       >
-        {item.label}
+        {t(item.labelKey)}
         <svg className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
@@ -131,7 +129,7 @@ function DesktopDropdown({ item, open, onToggle }: { item: NavItem; open: boolea
               className="flex items-center gap-3 px-4 py-2.5 text-sm text-secondary hover:bg-light hover:text-primary transition-colors"
             >
               <span className="text-lg">{child.icon}</span>
-              {child.label}
+              {t(child.labelKey)}
             </Link>
           ))}
         </div>
@@ -162,6 +160,8 @@ function LanguageSwitcher({ className }: { className?: string }) {
     setLang(l);
     localStorage.setItem(LANG_KEY, l);
     setOpen(false);
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event(LANG_CHANGE_EVENT));
   };
 
   return (
@@ -200,6 +200,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
 export default function Header() {
   const { totalItems, setIsCartOpen } = useCart();
   const router = useRouter();
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
@@ -260,10 +261,11 @@ export default function Header() {
           <nav className="hidden lg:flex items-center">
             {navItems.map((item) => (
               <DesktopDropdown
-                key={item.label}
+                key={item.labelKey}
                 item={item}
-                open={openDropdown === item.label}
-                onToggle={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
+                open={openDropdown === item.labelKey}
+                onToggle={() => setOpenDropdown(openDropdown === item.labelKey ? null : item.labelKey)}
+                t={t}
               />
             ))}
           </nav>
@@ -345,7 +347,7 @@ export default function Header() {
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="Produkt suchen..."
+                placeholder={t("search.placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-20 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
@@ -355,7 +357,7 @@ export default function Header() {
                   type="submit"
                   className="px-3 py-1 bg-primary text-white text-xs font-medium rounded-md hover:bg-primary-dark transition-colors"
                 >
-                  Suchen
+                  {t("btn.suchen")}
                 </button>
                 <button
                   type="button"
@@ -390,7 +392,7 @@ export default function Header() {
               <input
                 ref={mobileSearchInputRef}
                 type="text"
-                placeholder="Produkt suchen..."
+                placeholder={t("search.placeholder")}
                 value={mobileSearchQuery}
                 onChange={(e) => setMobileSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -400,7 +402,7 @@ export default function Header() {
               onClick={() => { setMobileSearchOpen(false); setMobileSearchQuery(""); }}
               className="p-2 text-muted hover:text-secondary"
             >
-              Abbrechen
+              {t("btn.abbrechen")}
             </button>
           </div>
           {mobileSearchQuery.trim() && (
@@ -413,7 +415,7 @@ export default function Header() {
                 }}
                 className="w-full text-left px-4 py-3 bg-light rounded-lg text-sm text-secondary hover:bg-border transition-colors"
               >
-                Suche nach &ldquo;{mobileSearchQuery.trim()}&rdquo;
+                {t("search.prefix")} &ldquo;{mobileSearchQuery.trim()}&rdquo;
               </button>
             </div>
           )}
@@ -449,19 +451,19 @@ export default function Header() {
             {/* Mobile Nav */}
             <nav className="p-4">
               {navItems.map((item) => (
-                <div key={item.label} className="mb-1">
+                <div key={item.labelKey} className="mb-1">
                   {item.children ? (
                     <>
                       <button
-                        onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
+                        onClick={() => setMobileExpanded(mobileExpanded === item.labelKey ? null : item.labelKey)}
                         className="w-full flex items-center justify-between py-2.5 text-sm font-semibold text-secondary"
                       >
-                        {item.label}
-                        <svg className={`h-4 w-4 text-muted transition-transform ${mobileExpanded === item.label ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        {t(item.labelKey)}
+                        <svg className={`h-4 w-4 text-muted transition-transform ${mobileExpanded === item.labelKey ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                      {mobileExpanded === item.label && (
+                      {mobileExpanded === item.labelKey && (
                         <div className="pl-2 pb-2 space-y-0.5">
                           {item.children.map((child) => (
                             <Link
@@ -471,7 +473,7 @@ export default function Header() {
                               className="flex items-center gap-2.5 py-2 px-3 text-sm text-muted hover:text-primary hover:bg-light rounded-lg transition-colors"
                             >
                               <span>{child.icon}</span>
-                              {child.label}
+                              {t(child.labelKey)}
                             </Link>
                           ))}
                         </div>
@@ -483,7 +485,7 @@ export default function Header() {
                       onClick={() => setMobileOpen(false)}
                       className="block py-2.5 text-sm font-semibold text-secondary hover:text-primary transition-colors"
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </Link>
                   )}
                 </div>
@@ -499,7 +501,7 @@ export default function Header() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
-                  Meine Bestellungen
+                  {t("nav.bestellungen")}
                 </Link>
               </div>
             </nav>
@@ -512,7 +514,7 @@ export default function Header() {
               >
                 {"\u{1F4DE}"} 02823-418707
               </a>
-              <p className="text-xs text-muted">Mo\u2013Sa 08:00\u201320:00 Uhr</p>
+              <p className="text-xs text-muted">{t("mobile.oeffnung")}</p>
             </div>
           </div>
         </>
@@ -532,8 +534,8 @@ function MobileLangButton({ lang }: { lang: Lang }) {
   const handleClick = () => {
     setActiveLang(lang);
     localStorage.setItem(LANG_KEY, lang);
-    // Force re-render of all MobileLangButton instances
     window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event(LANG_CHANGE_EVENT));
   };
 
   useEffect(() => {
@@ -542,7 +544,11 @@ function MobileLangButton({ lang }: { lang: Lang }) {
       if (stored && langLabels[stored]) setActiveLang(stored);
     };
     window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    window.addEventListener(LANG_CHANGE_EVENT, handler);
+    return () => {
+      window.removeEventListener("storage", handler);
+      window.removeEventListener(LANG_CHANGE_EVENT, handler);
+    };
   }, []);
 
   return (

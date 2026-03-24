@@ -1,3 +1,5 @@
+"use client";
+
 import Hero from "@/components/Hero";
 import CategoryCard from "@/components/CategoryCard";
 import ProductGrid from "@/components/ProductGrid";
@@ -6,11 +8,13 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import { categories, type Product } from "@/lib/utils";
 import productsData from "@/data/products.json";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 
 const products = productsData as Product[];
 
 export default function Home() {
   const highlights = products.filter((p) => p.highlight);
+  const { t } = useTranslation();
 
   return (
     <>
@@ -21,11 +25,11 @@ export default function Home() {
         <div className="absolute inset-0 noise-bg opacity-30" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 animate-fade-in-up">
-            <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Erleben</p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white">Trinkgut Jammers — Der Film</h2>
+            <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">{t("home.video.label")}</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("home.video.title")}</h2>
           </div>
           <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 group cursor-pointer">
-            {/* Video placeholder — replace with real video later */}
+            {/* Video placeholder */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-red-900/90 to-black flex items-center justify-center">
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-10 left-10 text-8xl animate-float-slow">🍺</div>
@@ -38,15 +42,14 @@ export default function Home() {
                     <path d="M8 5v14l11-7z"/>
                   </svg>
                 </div>
-                <p className="text-white font-bold text-lg md:text-xl">Dein Moment. Unser Markt.</p>
-                <p className="text-white/50 text-sm mt-1">Video kommt bald — bleib gespannt!</p>
+                <p className="text-white font-bold text-lg md:text-xl">{t("home.video.play")}</p>
+                <p className="text-white/50 text-sm mt-1">{t("home.video.soon")}</p>
               </div>
             </div>
           </div>
           <p className="text-center text-xs text-gray-500 mt-4">
-            Imagefilm in Produktion · Folge uns auf{" "}
+            {t("videoProduction")} ·{" "}
             <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Instagram</a>
-            {" "}für das Making-Of
           </p>
         </div>
       </section>
@@ -54,9 +57,9 @@ export default function Home() {
       {/* Kategorien */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <div className="text-center mb-12 animate-fade-in-up">
-          <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Sortiment</p>
+          <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">{t("home.categories.label")}</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-secondary">
-            Unsere Kategorien
+            {t("home.categories.title")}
           </h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger-children">
@@ -68,15 +71,14 @@ export default function Home() {
 
       {/* Highlights */}
       <section className="relative section-divider-wave py-20 md:py-24">
-        {/* Gradient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-light via-red-50/30 to-white" />
         <div className="absolute inset-0 noise-bg" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 animate-fade-in-up">
-            <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Empfehlungen</p>
+            <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">{t("home.highlights.label")}</p>
             <h2 className="text-2xl md:text-3xl font-extrabold text-secondary">
-              Beliebte Produkte
+              {t("home.highlights.title")}
             </h2>
           </div>
           <ProductGrid products={highlights} />
@@ -86,17 +88,17 @@ export default function Home() {
       {/* Services */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <div className="text-center mb-12 animate-fade-in-up">
-          <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Services</p>
+          <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">{t("home.services.label")}</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-secondary">
-            Mehr als nur ein Getränkemarkt
+            {t("home.services.title")}
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger-children">
           {[
-            { href: "/partyplaner", icon: "🎉", title: "Partyplaner", desc: "Mengen berechnen & direkt bestellen", gradient: "from-red-500 to-orange-500" },
-            { href: "/vermietung", icon: "🎪", title: "Vermietung", desc: "Zapfanlagen, Tische, Gläser & mehr", gradient: "from-blue-500 to-cyan-500" },
-            { href: "/finder", icon: "🔍", title: "Getränke-Finder", desc: "Finde dein perfektes Getränk", gradient: "from-purple-500 to-pink-500" },
-            { href: "/cocktails", icon: "🍸", title: "65 Cocktail-Rezepte", desc: "Von Mojito bis Espresso Martini", gradient: "from-amber-500 to-red-500" },
+            { href: "/partyplaner", icon: "🎉", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc", gradient: "from-red-500 to-orange-500" },
+            { href: "/vermietung", icon: "🎪", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc", gradient: "from-blue-500 to-cyan-500" },
+            { href: "/finder", icon: "🔍", titleKey: "home.service.finder", descKey: "home.service.finder.desc", gradient: "from-purple-500 to-pink-500" },
+            { href: "/cocktails", icon: "🍸", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc", gradient: "from-amber-500 to-red-500" },
           ].map((s) => (
             <Link
               key={s.href}
@@ -105,8 +107,8 @@ export default function Home() {
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-500`} />
               <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform duration-300">{s.icon}</span>
-              <h3 className="font-bold text-secondary group-hover:text-primary transition-colors text-lg">{s.title}</h3>
-              <p className="text-sm text-muted mt-1">{s.desc}</p>
+              <h3 className="font-bold text-secondary group-hover:text-primary transition-colors text-lg">{t(s.titleKey)}</h3>
+              <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
             </Link>
           ))}
         </div>
@@ -118,13 +120,12 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="animate-slide-left">
-              <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Community</p>
+              <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">{t("home.community.label")}</p>
               <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4">
-                Folge uns auf Instagram
+                {t("home.community.title")}
               </h2>
               <p className="text-gray-400 mb-6 leading-relaxed">
-                Gewinnspiele, exklusive Rabatte, neue Produkte und Behind-the-Scenes
-                aus dem Markt. Werde Teil der Trinkgut Jammers Community!
+                {t("home.community.text")}
               </p>
               <div className="flex flex-wrap gap-3">
                 <a
@@ -137,7 +138,7 @@ export default function Home() {
                   @trinkgutjammers_goch
                 </a>
                 <Link href="/gewinnspiel" className="inline-flex items-center gap-2 px-6 py-3 border border-gray-600 text-gray-300 hover:border-white hover:text-white font-medium rounded-xl transition-colors">
-                  🏆 Gewinnspiele
+                  {t("home.community.gewinnspiele")}
                 </Link>
               </div>
             </div>
@@ -169,20 +170,19 @@ export default function Home() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-24 text-center animate-fade-in-up">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Jetzt starten</p>
+        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">{t("home.cta.label")}</p>
         <h2 className="text-2xl md:text-4xl font-extrabold text-secondary mb-4">
-          {products.length} Artikel warten auf dich
+          {products.length} {t("home.cta.title")}
         </h2>
         <p className="text-muted mb-10 max-w-lg mx-auto">
-          Entdecke unser komplettes Sortiment und bestelle bequem online.
-          Abholung oder Lieferung — du entscheidest.
+          {t("home.cta.text")}
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <Link
             href="/produkte"
             className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl btn-hover text-lg shadow-lg shadow-red-500/20"
           >
-            Alle Produkte
+            {t("btn.alleProdukte")}
           </Link>
           <a
             href="tel:02823418707"

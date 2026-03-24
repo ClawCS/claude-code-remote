@@ -21,6 +21,24 @@ export default function BewerbungPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (form.name && form.email && form.position) {
+      // Save to localStorage
+      const existing = JSON.parse(localStorage.getItem("trinkgut-bewerbungen") || "[]");
+      existing.push({ ...form, date: new Date().toISOString() });
+      localStorage.setItem("trinkgut-bewerbungen", JSON.stringify(existing));
+
+      // Open mailto with form data
+      const subject = encodeURIComponent(`Bewerbung: ${form.position} - ${form.name}`);
+      const body = encodeURIComponent(
+        `Neue Bewerbung über die Website:\n\n` +
+        `Name: ${form.name}\n` +
+        `E-Mail: ${form.email}\n` +
+        `Telefon: ${form.telefon || "Nicht angegeben"}\n` +
+        `Position: ${form.position}\n` +
+        `Nachricht: ${form.nachricht || "Keine Nachricht"}\n\n` +
+        `Gesendet am: ${new Date().toLocaleString("de-DE")}`
+      );
+      window.open(`mailto:jammers-goch@trinkgut.de?subject=${subject}&body=${body}`, "_self");
+
       setSubmitted(true);
     }
   };

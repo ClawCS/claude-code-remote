@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-secondary text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -16,35 +21,35 @@ export default function Footer() {
               className="h-12 w-auto mb-3 rounded-lg"
             />
             <p className="text-gray-400 text-sm leading-relaxed">
-              Mit Leidenschaft für Getränke! Über 7.000 Artikel – von Bier über Wein bis Spirituosen und Softdrinks.
+              {t("footer.brand")}
             </p>
           </div>
 
           {/* Links */}
           <div>
-            <h4 className="font-semibold mb-3">Schnelllinks</h4>
+            <h4 className="font-semibold mb-3">{t("footer.quicklinks")}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link href="/produkte" className="hover:text-white transition-colors">Alle Produkte</Link></li>
-              <li><Link href="/angebote" className="hover:text-white transition-colors">Angebote</Link></li>
-              <li><Link href="/partyplaner" className="hover:text-white transition-colors">Partyplaner</Link></li>
-              <li><Link href="/vermietung" className="hover:text-white transition-colors">Vermietung</Link></li>
-              <li><Link href="/finder" className="hover:text-white transition-colors">Getränke-Finder</Link></li>
-              <li><Link href="/cocktails" className="hover:text-white transition-colors">Cocktails</Link></li>
-              <li><Link href="/bestellungen" className="hover:text-white transition-colors">Meine Bestellungen</Link></li>
+              <li><Link href="/produkte" className="hover:text-white transition-colors">{t("nav.alleProdukte")}</Link></li>
+              <li><Link href="/angebote" className="hover:text-white transition-colors">{t("nav.angebote")}</Link></li>
+              <li><Link href="/partyplaner" className="hover:text-white transition-colors">{t("nav.partyplaner")}</Link></li>
+              <li><Link href="/vermietung" className="hover:text-white transition-colors">{t("nav.vermietung")}</Link></li>
+              <li><Link href="/finder" className="hover:text-white transition-colors">{t("nav.finder")}</Link></li>
+              <li><Link href="/cocktails" className="hover:text-white transition-colors">{t("nav.cocktails")}</Link></li>
+              <li><Link href="/bestellungen" className="hover:text-white transition-colors">{t("nav.bestellungen")}</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-3">Kontakt</h4>
+            <h4 className="font-semibold mb-3">{t("footer.kontakt")}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="font-medium text-white">Trinkgut Jammers Goch e.K.</li>
-              <li>Inhaber: Nikolaos Jammers</li>
+              <li>{t("footer.inhaber")}</li>
               <li>Jurgenstr. 20, 47574 Goch</li>
               <li>Tel: <a href="tel:02823418707" className="hover:text-white transition-colors">02823-418707</a></li>
               <li>Handy: <a href="tel:017663228597" className="hover:text-white transition-colors">0176-63228597</a></li>
               <li>E-Mail: <a href="mailto:jammers-goch@trinkgut.de" className="hover:text-white transition-colors">jammers-goch@trinkgut.de</a></li>
-              <li className="pt-1">Mo–Sa: 08:00–20:00 Uhr</li>
+              <li className="pt-1">{t("footer.oeffnung")}</li>
             </ul>
             <div className="flex gap-3 mt-4">
               <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
@@ -67,7 +72,7 @@ export default function Footer() {
                 height={80}
                 className="w-20 h-20"
               />
-              <p className="text-[10px] text-gray-800 text-center mt-1 font-medium">Scannen & folgen</p>
+              <p className="text-[10px] text-gray-800 text-center mt-1 font-medium">{t("footer.scannen")}</p>
             </div>
           </div>
         </div>
@@ -77,8 +82,8 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Trinkgut Jammers Goch e.K.
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
-            <Link href="/impressum" className="hover:text-white transition-colors">Impressum</Link>
-            <Link href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
+            <Link href="/impressum" className="hover:text-white transition-colors">{t("footer.impressum")}</Link>
+            <Link href="/datenschutz" className="hover:text-white transition-colors">{t("footer.datenschutz")}</Link>
           </div>
         </div>
       </div>

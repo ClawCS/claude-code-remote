@@ -4,9 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { formatPrice, type Product } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const { t } = useTranslation();
 
   return (
     <div className="group bg-white rounded-2xl border border-border hover:border-primary/30 transition-all overflow-hidden flex flex-col card-hover-glow gradient-border">
@@ -37,7 +39,7 @@ export default function ProductCard({ product }: { product: Product }) {
             onClick={() => addItem(product)}
             className="px-3 py-1.5 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer shadow-sm hover:shadow-md hover:shadow-red-500/20"
           >
-            + Warenkorb
+            {t("btn.warenkorb")}
           </button>
         </div>
       </div>
