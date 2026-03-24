@@ -274,7 +274,7 @@ export default function AIAssistant() {
   return (
     <>
       {/* ── Floating Chat-Bubble Button ── */}
-      <div className="fixed bottom-6 left-6 z-40 group">
+      <div className="fixed bottom-12 left-6 z-40 group">
         {/* Tooltip label */}
         {!isOpen && (
           <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-white text-secondary text-xs font-semibold px-3 py-1.5 rounded-lg shadow-elevated whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
@@ -287,7 +287,7 @@ export default function AIAssistant() {
           className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${
             isOpen
               ? "bg-secondary shadow-lg rotate-0"
-              : "bg-gradient-to-br from-primary via-red-500 to-accent shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_28px_rgba(220,38,38,0.5)]"
+              : "bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 shadow-[0_4px_20px_rgba(139,92,246,0.4)] hover:shadow-[0_6px_28px_rgba(139,92,246,0.5)]"
           }`}
           aria-label={isOpen ? "Chat schließen" : "Chat öffnen"}
         >
@@ -297,23 +297,29 @@ export default function AIAssistant() {
             </svg>
           ) : (
             <div className="relative">
-              {/* Chat bubble icon */}
-              <svg className="w-8 h-8 text-white drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 5.58 2 10c0 2.24 1.12 4.26 2.94 5.7L4 20l4.45-2.04C9.58 18.3 10.76 18.5 12 18.5c5.52 0 10-3.58 10-8S17.52 2 12 2z"/>
+              {/* Robot face icon */}
+              <svg className="w-9 h-9 text-white drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                {/* Head */}
+                <rect x="3" y="4" width="18" height="14" rx="3" ry="3" />
+                {/* Antenna */}
+                <line x1="12" y1="4" x2="12" y2="1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <circle cx="12" cy="0.5" r="1.2" />
+                {/* Left eye */}
+                <circle cx="8.5" cy="10" r="2" fill="#a78bfa" />
+                <circle cx="8.5" cy="10" r="1" fill="white" />
+                {/* Right eye */}
+                <circle cx="15.5" cy="10" r="2" fill="#a78bfa" />
+                <circle cx="15.5" cy="10" r="1" fill="white" />
+                {/* Smile */}
+                <path d="M8 15c1.5 1.5 6.5 1.5 8 0" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round" fill="none" />
               </svg>
-              {/* Dots inside bubble */}
-              <div className="absolute inset-0 flex items-center justify-center gap-[3px] pb-[2px]">
-                <span className="w-[5px] h-[5px] rounded-full bg-white/90 animate-bounce" style={{ animationDuration: "1.2s", animationDelay: "0ms" }} />
-                <span className="w-[5px] h-[5px] rounded-full bg-white/90 animate-bounce" style={{ animationDuration: "1.2s", animationDelay: "200ms" }} />
-                <span className="w-[5px] h-[5px] rounded-full bg-white/90 animate-bounce" style={{ animationDuration: "1.2s", animationDelay: "400ms" }} />
-              </div>
             </div>
           )}
 
           {/* Pulse ring */}
           {pulse && !isOpen && (
             <>
-              <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping" style={{ animationDuration: "2s" }} />
+              <span className="absolute inset-0 rounded-full bg-violet-500/30 animate-ping" style={{ animationDuration: "2s" }} />
               <span className="absolute -top-1 -right-1 flex h-5 w-5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" style={{ animationDuration: "1.5s" }} />
                 <span className="relative inline-flex rounded-full h-5 w-5 bg-green-400 border-2 border-white items-center justify-center">
