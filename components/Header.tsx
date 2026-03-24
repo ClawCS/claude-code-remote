@@ -141,13 +141,13 @@ function WmTrophyIcon() {
   return (
     <Link
       href="/tippkick"
-      className="relative p-2 group"
+      className="relative flex flex-col items-center gap-0.5 group"
       title="🏆 WM 2026 Tippspiel — Hier teilnehmen!"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        className="h-6 w-6 wm-trophy-icon"
+        className="h-7 w-7 wm-trophy-icon"
         aria-label="WM 2026 Tippspiel"
       >
         <defs>
@@ -194,10 +194,8 @@ function WmTrophyIcon() {
           fill="url(#trophyShine)"
         />
       </svg>
-      {/* Tooltip */}
-      <span className="pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-secondary text-white text-xs font-medium px-3 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-50">
-        🏆 WM 2026 Tippspiel — Hier teilnehmen!
-      </span>
+      {/* Permanent label */}
+      <span className="text-[9px] font-bold leading-none text-amber-600 tracking-tight whitespace-nowrap">WM 2026</span>
     </Link>
   );
 }

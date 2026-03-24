@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
+import WeatherWidget from "./WeatherWidget";
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -30,6 +31,11 @@ export default function Hero() {
       <div className="absolute inset-0 noise-bg" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-28 md:py-40 text-white">
+        {/* Weather Widget — top right in hero */}
+        <div className="absolute top-6 right-4 sm:right-6 z-10 flex flex-col items-end">
+          <WeatherWidget />
+        </div>
+
         <div className="max-w-2xl animate-fade-in-up">
           <p className="text-base md:text-lg font-bold tracking-[0.15em] uppercase text-white/80 mb-5 glass inline-block px-4 py-1.5 rounded-full">
             {t("hero.badge")}

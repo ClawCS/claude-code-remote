@@ -1,7 +1,6 @@
 "use client";
 
 import Hero from "@/components/Hero";
-import WeatherWidget from "@/components/WeatherWidget";
 import CategoryCard from "@/components/CategoryCard";
 import ProductGrid from "@/components/ProductGrid";
 import SocialProof from "@/components/SocialProof";
@@ -20,13 +19,6 @@ export default function Home() {
   return (
     <>
       <Hero />
-
-      {/* Wetter Widget */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 mb-8">
-        <div className="flex justify-end">
-          <WeatherWidget />
-        </div>
-      </section>
 
       {/* Video Trailer */}
       <section className="relative bg-black py-16 md:py-20 overflow-hidden">
