@@ -3,14 +3,24 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
 
+export type RentalInfo = {
+  startDate: string;
+  endDate: string;
+  workdays: number;
+  periods: number;
+  basePrice: number;
+  totalRentalPrice: number;
+};
+
 export type CartItem = {
   product: Product;
   quantity: number;
+  rental?: RentalInfo;
 };
 
 type CartContextType = {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (product: Product, quantity?: number, rental?: RentalInfo) => void;
   removeItem: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
@@ -43,17 +53,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, hydrated]);
 
-  const addItem = (product: Product, quantity = 1) => {
+  const addItem = (product: Product, quantity = 1, rental?: RentalInfo) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
         return prev.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: item.quantity + quantity, ...(rental ? { rental } : {}) }
             : item
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity, ...(rental ? { rental } : {}) }];
     });
     setIsCartOpen(true);
   };
@@ -78,7 +88,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => {
+      if (item.rental) {
+        return sum + item.rental.totalRentalPrice * item.quantity;
+      }
+      return sum + item.product.price * item.quantity;
+    },
     0
   );
 

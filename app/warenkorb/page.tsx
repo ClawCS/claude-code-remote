@@ -25,31 +25,58 @@ export default function WarenkorbPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="text-3xl font-bold text-secondary mb-8">Warenkorb</h1>
       <div className="space-y-4 mb-8">
-        {items.map((item) => (
-          <div key={item.product.id} className="flex items-center gap-4 p-4 bg-white border border-border rounded-xl">
-            <div className="w-16 h-16 bg-light rounded-lg overflow-hidden flex-shrink-0 relative">
-              <Image src={item.product.image} alt={item.product.name} fill sizes="64px" className="object-contain p-1" />
+        {items.map((item) => {
+          const isRental = !!item.rental;
+          const itemTotal = isRental
+            ? item.rental!.totalRentalPrice * item.quantity
+            : item.product.price * item.quantity;
+          return (
+            <div key={item.product.id} className={`p-4 bg-white border rounded-xl ${isRental ? "border-amber-300" : "border-border"}`}>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-light rounded-lg overflow-hidden flex-shrink-0 relative">
+                  <Image src={item.product.image} alt={item.product.name} fill sizes="64px" className="object-contain p-1" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  {isRental ? (
+                    <span className="font-semibold text-secondary">{item.product.name}</span>
+                  ) : (
+                    <Link href={`/produkte/${item.product.slug}`} className="font-semibold text-secondary hover:text-primary transition-colors">{item.product.name}</Link>
+                  )}
+                  <p className="text-sm text-muted">{item.product.unit}</p>
+                </div>
+                <div className="flex items-center border border-border rounded-lg overflow-hidden">
+                  <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="px-2.5 py-1.5 hover:bg-light transition-colors font-bold text-sm">-</button>
+                  <span className="px-3 py-1.5 font-medium text-sm min-w-[2.5rem] text-center">{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="px-2.5 py-1.5 hover:bg-light transition-colors font-bold text-sm">+</button>
+                </div>
+                <div className="text-right flex-shrink-0 w-28">
+                  <p className="font-bold text-primary">{formatPrice(itemTotal)}</p>
+                  {isRental ? (
+                    <p className="text-xs text-muted">{formatPrice(item.rental!.basePrice)} x {item.rental!.periods}</p>
+                  ) : (
+                    <p className="text-xs text-muted">{formatPrice(item.product.price)} / Stk.</p>
+                  )}
+                </div>
+                <button onClick={() => removeItem(item.product.id)} className="p-1.5 text-muted hover:text-primary transition-colors flex-shrink-0" aria-label="Entfernen">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+              {/* Rental info line */}
+              {isRental && (
+                <div className="mt-3 ml-20 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+                  <p className="font-medium">
+                    Leihzeitraum: {new Date(item.rental!.startDate).toLocaleDateString("de-DE")} – {new Date(item.rental!.endDate).toLocaleDateString("de-DE")} ({item.rental!.workdays} Werktage)
+                  </p>
+                  <p className="mt-0.5">
+                    Leihgebühr: {formatPrice(item.rental!.totalRentalPrice)} (Grundgebühr {formatPrice(item.rental!.basePrice)} x {item.rental!.periods} Periode{item.rental!.periods > 1 ? "n" : ""})
+                  </p>
+                </div>
+              )}
             </div>
-            <div className="flex-1 min-w-0">
-              <Link href={`/produkte/${item.product.slug}`} className="font-semibold text-secondary hover:text-primary transition-colors">{item.product.name}</Link>
-              <p className="text-sm text-muted">{item.product.unit}</p>
-            </div>
-            <div className="flex items-center border border-border rounded-lg overflow-hidden">
-              <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="px-2.5 py-1.5 hover:bg-light transition-colors font-bold text-sm">-</button>
-              <span className="px-3 py-1.5 font-medium text-sm min-w-[2.5rem] text-center">{item.quantity}</span>
-              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="px-2.5 py-1.5 hover:bg-light transition-colors font-bold text-sm">+</button>
-            </div>
-            <div className="text-right flex-shrink-0 w-24">
-              <p className="font-bold text-primary">{formatPrice(item.product.price * item.quantity)}</p>
-              <p className="text-xs text-muted">{formatPrice(item.product.price)} / Stk.</p>
-            </div>
-            <button onClick={() => removeItem(item.product.id)} className="p-1.5 text-muted hover:text-primary transition-colors flex-shrink-0" aria-label="Entfernen">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="bg-light rounded-xl p-6">
         <div className="flex justify-between items-center mb-4">

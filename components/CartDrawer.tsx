@@ -31,26 +31,39 @@ export default function CartDrawer() {
             </div>
           ) : (
             <ul className="space-y-4">
-              {items.map((item) => (
-                <li key={item.product.id} className="flex gap-3 p-3 bg-light rounded-lg">
-                  <div className="w-14 h-14 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
-                    <Image src={item.product.image} alt={item.product.name} fill sizes="56px" className="object-contain p-1" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-secondary truncate">{item.product.name}</p>
-                    <p className="text-xs text-muted">{item.product.unit}</p>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-6 h-6 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">-</button>
-                      <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-6 h-6 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">+</button>
-                      <button onClick={() => removeItem(item.product.id)} className="ml-auto text-xs text-muted hover:text-primary transition-colors">Entfernen</button>
+              {items.map((item) => {
+                const isRental = !!item.rental;
+                const itemTotal = isRental
+                  ? item.rental!.totalRentalPrice * item.quantity
+                  : item.product.price * item.quantity;
+                return (
+                  <li key={item.product.id} className={`p-3 rounded-lg ${isRental ? "bg-amber-50 border border-amber-200" : "bg-light"}`}>
+                    <div className="flex gap-3">
+                      <div className="w-14 h-14 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
+                        <Image src={item.product.image} alt={item.product.name} fill sizes="56px" className="object-contain p-1" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-secondary truncate">{item.product.name}</p>
+                        <p className="text-xs text-muted">{item.product.unit}</p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-6 h-6 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">-</button>
+                          <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-6 h-6 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">+</button>
+                          <button onClick={() => removeItem(item.product.id)} className="ml-auto text-xs text-muted hover:text-primary transition-colors">Entfernen</button>
+                        </div>
+                      </div>
+                      <div className="text-sm font-bold text-primary flex-shrink-0">
+                        {formatPrice(itemTotal)}
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-sm font-bold text-primary flex-shrink-0">
-                    {formatPrice(item.product.price * item.quantity)}
-                  </div>
-                </li>
-              ))}
+                    {isRental && (
+                      <p className="text-xs text-amber-700 mt-2 ml-17">
+                        {new Date(item.rental!.startDate).toLocaleDateString("de-DE")} – {new Date(item.rental!.endDate).toLocaleDateString("de-DE")} | {formatPrice(item.rental!.basePrice)} x {item.rental!.periods} Per.
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

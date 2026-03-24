@@ -207,16 +207,30 @@ export default function CheckoutPage() {
           <div className="bg-light rounded-xl p-5 sticky top-24">
             <h2 className="font-semibold text-secondary mb-4">Bestellübersicht</h2>
             <ul className="space-y-3 mb-4">
-              {items.map((item) => (
-                <li key={item.product.id} className="flex justify-between text-sm">
-                  <span className="text-muted">
-                    {item.quantity}x {item.product.name}
-                  </span>
-                  <span className="font-medium text-secondary">
-                    {formatPrice(item.product.price * item.quantity)}
-                  </span>
-                </li>
-              ))}
+              {items.map((item) => {
+                const isRental = !!item.rental;
+                const itemTotal = isRental
+                  ? item.rental!.totalRentalPrice * item.quantity
+                  : item.product.price * item.quantity;
+                return (
+                  <li key={item.product.id} className="text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted">
+                        {item.quantity}x {item.product.name}
+                      </span>
+                      <span className="font-medium text-secondary">
+                        {formatPrice(itemTotal)}
+                      </span>
+                    </div>
+                    {isRental && (
+                      <div className="mt-1 text-xs text-amber-700 bg-amber-50 rounded px-2 py-1">
+                        <p>{new Date(item.rental!.startDate).toLocaleDateString("de-DE")} – {new Date(item.rental!.endDate).toLocaleDateString("de-DE")} ({item.rental!.workdays} Werktage)</p>
+                        <p>{formatPrice(item.rental!.basePrice)} x {item.rental!.periods} Periode{item.rental!.periods > 1 ? "n" : ""}</p>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
             <div className="border-t border-border pt-3 flex justify-between items-center">
               <span className="font-semibold text-secondary">Gesamt:</span>

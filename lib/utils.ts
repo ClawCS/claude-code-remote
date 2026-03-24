@@ -1,3 +1,45 @@
+/**
+ * Berechnet die Anzahl der Werktage (Mo-Sa) zwischen zwei Daten (inklusive Start- und Endtag).
+ * Samstag zählt als Werktag! Nur Sonntag ist frei.
+ */
+export function calculateWorkdays(startDate: string, endDate: string): number {
+  if (!startDate || !endDate) return 0;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (end < start) return 0;
+
+  let workdays = 0;
+  const current = new Date(start);
+  while (current <= end) {
+    const day = current.getDay();
+    // Nur Sonntag (0) ist KEIN Werktag. Mo-Sa (1-6) zählen.
+    if (day !== 0) {
+      workdays++;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+  return workdays;
+}
+
+/**
+ * Berechnet die Leihgebühr basierend auf der 3-Werktage-Regel.
+ * Erste 3 Werktage = 1x Grundgebühr, danach je 3 weitere Werktage = erneut Grundgebühr.
+ * Formel: Math.ceil(werktage / 3) * grundpreis
+ */
+export function calculateRentalPrice(basePrice: number, workdays: number): number {
+  if (workdays <= 0) return basePrice;
+  const periods = Math.ceil(workdays / 3);
+  return periods * basePrice;
+}
+
+/**
+ * Gibt die Anzahl der Leihperioden zurueck.
+ */
+export function calculateRentalPeriods(workdays: number): number {
+  if (workdays <= 0) return 1;
+  return Math.ceil(workdays / 3);
+}
+
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("de-DE", {
     style: "currency",

@@ -52,7 +52,6 @@ const navItems: NavItem[] = [
     ],
   },
   { labelKey: "nav.akademie", href: "/akademie" },
-  { labelKey: "nav.wmtipp", href: "/tippkick" },
   { labelKey: "nav.handzettel", href: "/handzettel" },
   { labelKey: "nav.jobs", href: "/bewerbung" },
 ];
@@ -135,6 +134,71 @@ function DesktopDropdown({ item, open, onToggle, t }: { item: NavItem; open: boo
         </div>
       )}
     </div>
+  );
+}
+
+function WmTrophyIcon() {
+  return (
+    <Link
+      href="/tippkick"
+      className="relative p-2 group"
+      title="🏆 WM 2026 Tippspiel — Hier teilnehmen!"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        className="h-6 w-6 wm-trophy-icon"
+        aria-label="WM 2026 Tippspiel"
+      >
+        <defs>
+          <linearGradient id="trophyGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFD700" />
+            <stop offset="50%" stopColor="#FFC107" />
+            <stop offset="100%" stopColor="#FF8F00" />
+          </linearGradient>
+          <linearGradient id="trophyShine" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#FFF9C4" />
+            <stop offset="100%" stopColor="#FFD700" />
+          </linearGradient>
+        </defs>
+        {/* Cup body */}
+        <path
+          d="M5 3h14v2c0 4.418-3.134 8-7 8S5 9.418 5 5V3z"
+          fill="url(#trophyGold)"
+          stroke="#B8860B"
+          strokeWidth="0.5"
+        />
+        {/* Left handle */}
+        <path
+          d="M5 5H3c0 2.5 1.5 4 3 4"
+          fill="none"
+          stroke="url(#trophyGold)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        {/* Right handle */}
+        <path
+          d="M19 5h2c0 2.5-1.5 4-3 4"
+          fill="none"
+          stroke="url(#trophyGold)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        {/* Stem */}
+        <rect x="10.5" y="13" width="3" height="3" rx="0.5" fill="url(#trophyGold)" />
+        {/* Base */}
+        <rect x="8" y="16" width="8" height="2" rx="1" fill="url(#trophyGold)" stroke="#B8860B" strokeWidth="0.3" />
+        {/* Star on cup */}
+        <path
+          d="M12 5.5l1 2 2.2.3-1.6 1.5.4 2.2L12 10.3 10 11.5l.4-2.2L8.8 7.8 11 7.5z"
+          fill="url(#trophyShine)"
+        />
+      </svg>
+      {/* Tooltip */}
+      <span className="pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-secondary text-white text-xs font-medium px-3 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-50">
+        🏆 WM 2026 Tippspiel — Hier teilnehmen!
+      </span>
+    </Link>
   );
 }
 
@@ -272,6 +336,9 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-center gap-1">
+            {/* WM 2026 Trophy Icon - always visible */}
+            <WmTrophyIcon />
+
             {/* Language Switcher - Desktop */}
             <LanguageSwitcher className="hidden lg:block" />
 

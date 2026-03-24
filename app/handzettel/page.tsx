@@ -17,43 +17,23 @@ export default function HandzettelPage() {
         </p>
       </div>
 
-      {/* Direkt-Link zum Trinkgut Handzettel */}
+      {/* Prospekt direkt eingebettet */}
       <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm mb-8">
-        <div className="bg-gradient-to-r from-primary to-red-700 p-6 text-white text-center">
-          <h2 className="text-2xl font-bold mb-2">Trinkgut Prospekt der Woche</h2>
-          <p className="text-white/80 text-sm">Klicke auf den Button um den aktuellen Handzettel direkt zu sehen</p>
+        <div className="bg-gradient-to-r from-primary to-red-700 p-4 text-white flex items-center justify-between">
+          <h2 className="text-lg font-bold">Trinkgut Prospekt KW {new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} — Werbekreis 3.6</h2>
+          <a
+            href="https://www.trinkgut.de/angebote/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors"
+          >
+            Vollbild öffnen ↗
+          </a>
         </div>
-        <div className="p-8 text-center">
-          <div className="grid sm:grid-cols-2 gap-4 max-w-md mx-auto mb-6">
-            <a
-              href="https://www.trinkgut.de/angebote/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 px-6 py-4 bg-primary text-white rounded-xl font-bold hover:bg-red-700 transition-colors text-lg"
-            >
-              <span className="text-2xl">🇩🇪</span>
-              Handzettel DE
-            </a>
-            <a
-              href="https://www.trinkgut.de/angebote/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 px-6 py-4 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-colors text-lg"
-            >
-              <span className="text-2xl">🇳🇱</span>
-              Folder NL
-            </a>
-          </div>
-          <p className="text-xs text-muted">Prospekt wird direkt bei trinkgut.de geoeffnet — Werbekreis 3.6</p>
-        </div>
-      </div>
-
-      {/* Iframe Embed */}
-      <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm mb-8">
         <iframe
           src="https://www.trinkgut.de/angebote/"
           className="w-full border-0"
-          style={{ height: "800px" }}
+          style={{ height: "900px" }}
           title="Trinkgut Handzettel"
           sandbox="allow-scripts allow-same-origin allow-popups"
         />
