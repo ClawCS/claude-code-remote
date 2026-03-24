@@ -18,16 +18,15 @@ type FlowState =
 
 /* ═══ Data ═══ */
 const OPENING_HOURS = [
-  "Mo - Fr: 09:00 - 19:00 Uhr",
-  "Sa: 09:00 - 18:00 Uhr",
+  "Mo - Sa: 08:00 - 20:00 Uhr",
   "So: geschlossen",
 ];
 
 const CONTACT_INFO = {
   phone: "02823-418707",
   whatsapp: "https://wa.me/491752492386",
-  email: "info@trinkgut-jammers.de",
-  address: "J\u00fcrgenstr. 20, 47574 Goch",
+  email: "jammers-goch@trinkgut.de",
+  address: "Jurgenstr. 20, 47574 Goch",
 };
 
 const DRINK_RECOMMENDATIONS: Record<string, Record<string, string[]>> = {

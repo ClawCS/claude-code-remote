@@ -68,7 +68,15 @@ export default function DatenschutzPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-secondary mb-2">7. Externe Links</h2>
+          <h2 className="text-lg font-semibold text-secondary mb-2">7. Wetterdienst</h2>
+          <p>
+            Wir nutzen den Dienst Open-Meteo (open-meteo.com) zur Anzeige von Wetterdaten. Dabei wird Ihre ungefähre Position
+            anhand Ihrer IP-Adresse ermittelt (ipapi.co). Es werden keine personenbezogenen Daten gespeichert.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold text-secondary mb-2">8. Externe Links</h2>
           <p>
             Unsere Website enthält Links zu externen Websites (z.B. Instagram, Facebook, WhatsApp).
             Für die Inhalte und Datenschutzpraktiken dieser Seiten sind wir nicht verantwortlich.
@@ -76,7 +84,7 @@ export default function DatenschutzPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-secondary mb-2">8. Änderungen</h2>
+          <h2 className="text-lg font-semibold text-secondary mb-2">9. Änderungen</h2>
           <p>
             Wir behalten uns vor, diese Datenschutzerklärung anzupassen, um sie stets den aktuellen
             rechtlichen Anforderungen anzupassen. Stand: März 2026.

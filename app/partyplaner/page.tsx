@@ -50,7 +50,7 @@ function getRecommendations(needs: ReturnType<typeof calculateNeeds>) {
     if (wine) recs.push({ product: wine, quantity: needs.wineBottles, reason: `${needs.wineBottles} Flaschen Wein` });
   }
   if (needs.softLiters > 0) {
-    const soft = products.find((p) => p.categorySlug === "softdrinks");
+    const soft = products.find((p) => p.categorySlug === "alkoholfrei");
     if (soft) recs.push({ product: soft, quantity: Math.ceil(needs.softLiters / 12), reason: `${needs.softLiters}l Softdrinks` });
   }
   if (needs.spiritBottles > 0) {
@@ -58,7 +58,7 @@ function getRecommendations(needs: ReturnType<typeof calculateNeeds>) {
     if (spirit) recs.push({ product: spirit, quantity: needs.spiritBottles, reason: `${needs.spiritBottles} Flaschen Spirituosen` });
   }
   if (needs.waterLiters > 0) {
-    const water = products.find((p) => p.categorySlug === "wasser");
+    const water = products.find((p) => p.categorySlug === "alkoholfrei" && p.name.toLowerCase().includes("mineralwasser"));
     if (water) recs.push({ product: water, quantity: Math.ceil(needs.waterLiters / 12), reason: `${needs.waterLiters}l Wasser` });
   }
 

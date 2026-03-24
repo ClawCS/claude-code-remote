@@ -98,7 +98,7 @@ export default function BewerbungPage() {
             &ldquo;Wir sind ein engagiertes Team, das mit Leidenschaft für Getränke arbeitet.&rdquo;
           </p>
           <footer className="mt-3 text-xs text-muted font-medium">
-            — Niko &amp; Sven, Geschäftsführer
+            — Niko (Inhaber) &amp; Sven
           </footer>
         </blockquote>
       </div>

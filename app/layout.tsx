@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     siteName: "Trinkgut Jammers Goch",
     title: "Trinkgut Jammers Goch – Dein Getränkemarkt Online",
     description: "Über 7.000 Getränke. Partyplaner, Vermietung, Finder-Tools und mehr.",
+    images: [
+      {
+        url: "/images/logo-trinkgut-jammers.png",
+        width: 1200,
+        height: 630,
+        alt: "Trinkgut Jammers Goch",
+      },
+    ],
   },
 };
 

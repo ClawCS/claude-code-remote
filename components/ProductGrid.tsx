@@ -1,12 +1,17 @@
+"use client";
+
 import type { Product } from "@/lib/utils";
 import ProductCard from "./ProductCard";
+import { useTranslation } from "@/lib/i18n";
 
 export default function ProductGrid({ products }: { products: Product[] }) {
+  const { t } = useTranslation();
+
   if (products.length === 0) {
     return (
       <div className="text-center py-16 text-muted">
         <p className="text-5xl mb-4">{"\u{1F50D}"}</p>
-        <p className="text-lg">Keine Produkte gefunden.</p>
+        <p className="text-lg">{t("productGrid.empty")}</p>
       </div>
     );
   }

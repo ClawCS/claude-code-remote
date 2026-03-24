@@ -57,7 +57,7 @@ export default function CartDrawer() {
                       </div>
                     </div>
                     {isRental && (
-                      <p className="text-xs text-amber-700 mt-2 ml-17">
+                      <p className="text-xs text-amber-700 mt-2 ml-[4.25rem]">
                         {new Date(item.rental!.startDate).toLocaleDateString("de-DE")} – {new Date(item.rental!.endDate).toLocaleDateString("de-DE")} | {formatPrice(item.rental!.basePrice)} x {item.rental!.periods} Per.
                       </p>
                     )}

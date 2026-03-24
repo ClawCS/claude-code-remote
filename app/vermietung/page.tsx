@@ -285,8 +285,8 @@ export default function VermietungPage() {
           <div>
             <h3 className="font-bold text-amber-900 mb-1">Leihgebühr-Information</h3>
             <p className="text-sm text-amber-800">
-              Die Leihgebühr gilt jeweils für <strong>3 Werktage</strong> (Mo–Fr). Ab dem 4. Werktag wird die Leihgebühr erneut berechnet.
-              Wochenenden (Sa/So) werden nicht mitgezählt.
+              Die Leihgebühr gilt jeweils für <strong>3 Werktage</strong> (Mo–Sa). Ab dem 4. Werktag wird die Leihgebühr erneut berechnet.
+              Nur Sonntag wird nicht mitgezählt.
             </p>
             <p className="text-sm text-amber-800 mt-1">
               <strong>Beispiel:</strong> Zapfanlage {formatPrice(25)} für 3 Werktage. Bei 5 Werktagen = {formatPrice(50)} (2 Perioden). Bei 7 Werktagen = {formatPrice(75)} (3 Perioden).
@@ -492,7 +492,7 @@ export default function VermietungPage() {
         <p className="text-white/70 mb-4">Für größere Events beraten wir dich gerne persönlich.</p>
         <div className="flex gap-3 justify-center flex-wrap">
           <a href="tel:02823418707" className="px-6 py-3 bg-accent hover:bg-accent-dark text-secondary font-bold rounded-xl transition-colors flex items-center"><PhoneIcon /> 02823-418707</a>
-          <a href="https://wa.me/4917663228597" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors flex items-center"><WhatsAppIcon /> WhatsApp</a>
+          <a href="https://wa.me/491752492386" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors flex items-center"><WhatsAppIcon /> WhatsApp</a>
         </div>
       </div>
     </div>

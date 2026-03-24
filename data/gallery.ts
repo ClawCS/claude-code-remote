@@ -26,7 +26,7 @@ export const galleryItems: GalleryItem[] = [
   { id: 11, title: "Nico — Azubi", description: "Unser fleissigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: img(11) },
 
   // ═══ MARKT ═══
-  { id: 11, title: "Deine Party. Unser Service.", description: "Über 7.000 Getränke, diverse Leihartikel, Beratung & Planung deiner Feier.", category: "markt", image: img(0) },
+  { id: 31, title: "Deine Party. Unser Service.", description: "Über 7.000 Getränke, diverse Leihartikel, Beratung & Planung deiner Feier.", category: "markt", image: img(0) },
   { id: 12, title: "Malibu Rum Aktion", description: "Malibu Rum im Sortiment — perfekt für Sommer-Cocktails.", category: "markt", image: img(2) },
   { id: 13, title: "Stauder Privatbrauerei", description: "Stauder Bier frisch aus dem Ruhrgebiet bei uns im Sortiment.", category: "markt", image: img(5) },
   { id: 14, title: "WhatsApp Kanal", description: "Schreib uns ne WhatsApp! Fragen zum Sortiment, Verfügbarkeiten checken, Bestellungen aufgeben.", category: "markt", image: img(1) },
@@ -55,7 +55,7 @@ export const galleryItems: GalleryItem[] = [
   { id: 33, title: "Black Week Deals", description: "Black Week bei Trinkgut Jammers — 5% Rabatt auf ausgewählte Artikel!", category: "aktionen", image: img(55), date: "Nov. 2025" },
   { id: 34, title: "Weihnachts-Öffnungszeiten", description: "Feiertags-Öffnungszeiten und Feuerwerksverkauf / Vuurwerkverkoop.", category: "aktionen", image: img(52), date: "Dez. 2025" },
   { id: 35, title: "Oktoberfest-Aktion", description: "O'zapft is — Wiesn-Feeling bei Trinkgut Jammers in Goch.", category: "aktionen", image: img(63), date: "Sep. 2025" },
-  { id: 36, title: "Salitos 1€ Rabatt für Follower", description: "Exklusiv nur für unsere Instagram-Follower: 1€ Rabatt auf Salitos!", category: "aktionen", image: img(11), date: "2025" },
+  { id: 36, title: "Salitos 5€ Rabatt für Follower", description: "Exklusiv nur für unsere Instagram-Follower: 5€ Rabatt auf Salitos!", category: "aktionen", image: img(11), date: "2025" },
   { id: 37, title: "Likör-Verkostung HBB Bovenkerk", description: "HBB Liköre aus Bovenkerk — kostenlose Verkostung im Markt.", category: "aktionen", image: img(12), date: "2025" },
 
   // ═══ ANGEBOTE (Knüller der Woche etc.) ═══

@@ -21,7 +21,7 @@ export default function EigenmarkePage() {
         </p>
         <p className="text-sm text-muted">
           Du möchtest vorab Infos? Schreib uns auf{" "}
-          <a href="https://wa.me/4917663228597" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">WhatsApp</a> oder ruf an:{" "}
+          <a href="https://wa.me/491752492386" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">WhatsApp</a> oder ruf an:{" "}
           <a href="tel:02823418707" className="text-primary font-medium hover:underline">02823-418707</a>
         </p>
       </div>

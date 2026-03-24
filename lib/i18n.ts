@@ -114,6 +114,9 @@ const translations = {
 
     // Mobile
     "mobile.oeffnung": "Mo\u2013Sa 08:00\u201320:00 Uhr",
+
+    // ProductGrid
+    "productGrid.empty": "Keine Produkte gefunden.",
   },
 
   en: {
@@ -223,6 +226,9 @@ const translations = {
 
     // Mobile
     "mobile.oeffnung": "Mon\u2013Sat 08:00\u201320:00",
+
+    // ProductGrid
+    "productGrid.empty": "No products found.",
   },
 
   nl: {
@@ -332,6 +338,9 @@ const translations = {
 
     // Mobile
     "mobile.oeffnung": "Ma\u2013Za 08:00\u201320:00",
+
+    // ProductGrid
+    "productGrid.empty": "Geen producten gevonden.",
   },
 } as const;
 

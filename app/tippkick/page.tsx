@@ -20,27 +20,14 @@ type Tip = {
   awayGoals: number;
 };
 
-type MatchDayProduct = {
-  id: number;
-  name: string;
-  slug: string;
-  price: number;
-  image: string;
-  category: string;
-  categorySlug: string;
-  description: string;
-  unit: string;
-  inStock: boolean;
-};
-
 type MatchDayRecommendation = {
   matchId: number;
   homeFlag: string;
   awayFlag: string;
   homeGradient: string;
   awayGradient: string;
-  homeProducts: MatchDayProduct[];
-  awayProducts: MatchDayProduct[];
+  homeProducts: Product[];
+  awayProducts: Product[];
 };
 
 const upcomingMatches: Match[] = [
@@ -180,14 +167,8 @@ function MatchDayModal({
   const { addItem } = useCart();
   const [addedIds, setAddedIds] = useState<Set<number>>(new Set());
 
-  const handleAddItem = (product: MatchDayProduct) => {
-    const cartProduct: Product = {
-      ...product,
-      originalPrice: undefined,
-      ean: undefined,
-      highlight: false,
-    };
-    addItem(cartProduct, 1);
+  const handleAddItem = (product: Product) => {
+    addItem(product, 1);
     setAddedIds((prev) => new Set(prev).add(product.id));
     setTimeout(() => {
       setAddedIds((prev) => {

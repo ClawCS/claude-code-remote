@@ -22,7 +22,7 @@ function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete
 
   const handleNext = () => {
     if (current + 1 >= questions.length) {
-      onComplete(score + (selected === q.correct ? 0 : 0)); // score already updated
+      onComplete(score);
       return;
     }
     setCurrent((c) => c + 1);

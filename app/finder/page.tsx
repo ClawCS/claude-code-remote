@@ -132,7 +132,127 @@ export default function FinderPage() {
 
   const getResults = (): Product[] => {
     if (!activeFinder) return [];
-    return products.filter((p) => p.categorySlug === activeFinder || (activeFinder === "wein" && p.categorySlug === "wein"));
+
+    // Step 1: Filter by category
+    let filtered = products.filter((p) => {
+      if (activeFinder === "bier") return p.categorySlug === "bier";
+      if (activeFinder === "wein") return p.categorySlug === "wein" || p.categorySlug === "sekt";
+      if (activeFinder === "wasser") return p.categorySlug === "alkoholfrei";
+      return false;
+    });
+
+    // Step 2: Apply answer-based filtering
+    if (activeFinder === "bier") {
+      // Q1: Biertyp (pils, weizen, alt, lager)
+      const biertyp = answers[0];
+      if (biertyp) {
+        const keywords: Record<string, string[]> = {
+          pils: ["pils", "pilsener", "pilsner"],
+          weizen: ["weizen", "weiss", "weissbier", "hefe"],
+          alt: ["alt"],
+          lager: ["export", "lager", "hell"],
+        };
+        const terms = keywords[biertyp] || [];
+        if (terms.length > 0) {
+          const matched = filtered.filter((p) => {
+            const text = `${p.name} ${p.description}`.toLowerCase();
+            return terms.some((t) => text.includes(t));
+          });
+          if (matched.length > 0) filtered = matched;
+        }
+      }
+      // Q2: Preis (cheap, mid, premium)
+      const preis = answers[1];
+      if (preis) {
+        const priceFiltered = filtered.filter((p) => {
+          if (preis === "cheap") return p.price < 12;
+          if (preis === "mid") return p.price >= 12 && p.price <= 16;
+          if (preis === "premium") return p.price > 16;
+          return true;
+        });
+        if (priceFiltered.length > 0) filtered = priceFiltered;
+      }
+    }
+
+    if (activeFinder === "wein") {
+      // Q1: Weinart (rot, weiss, rose, sekt)
+      const weinart = answers[0];
+      if (weinart) {
+        if (weinart === "sekt") {
+          const matched = filtered.filter((p) => p.categorySlug === "sekt" || ["sekt", "prosecco", "champagner", "cremant"].some((t) => `${p.name} ${p.description}`.toLowerCase().includes(t)));
+          if (matched.length > 0) filtered = matched;
+        } else {
+          const keywords: Record<string, string[]> = {
+            rot: ["rotwein", "rot", "cabernet", "merlot", "pinot noir", "tempranillo", "rioja", "chianti"],
+            weiss: ["weisswein", "weißwein", "weiss", "riesling", "chardonnay", "sauvignon", "grauburgunder", "pinot grigio"],
+            rose: ["rosé", "rose"],
+          };
+          const terms = keywords[weinart] || [];
+          if (terms.length > 0) {
+            const matched = filtered.filter((p) => {
+              const text = `${p.name} ${p.description}`.toLowerCase();
+              return terms.some((t) => text.includes(t));
+            });
+            if (matched.length > 0) filtered = matched;
+          }
+        }
+      }
+      // Q2: Geschmack (trocken, halbtrocken, lieblich)
+      const geschmack = answers[1];
+      if (geschmack) {
+        const terms: Record<string, string[]> = {
+          trocken: ["trocken", "dry", "brut", "sec"],
+          halbtrocken: ["halbtrocken", "feinherb", "demi-sec"],
+          lieblich: ["lieblich", "süß", "sweet", "dolce"],
+        };
+        const kw = terms[geschmack] || [];
+        if (kw.length > 0) {
+          const matched = filtered.filter((p) => {
+            const text = `${p.name} ${p.description}`.toLowerCase();
+            return kw.some((t) => text.includes(t));
+          });
+          if (matched.length > 0) filtered = matched;
+        }
+      }
+    }
+
+    if (activeFinder === "wasser") {
+      // Q1: Kohlensäure (sprudel, medium, still)
+      const kohlensaeure = answers[0];
+      if (kohlensaeure) {
+        const keywords: Record<string, string[]> = {
+          sprudel: ["classic", "sprudel", "spritzig"],
+          medium: ["medium"],
+          still: ["still", "naturell"],
+        };
+        const terms = keywords[kohlensaeure] || [];
+        if (terms.length > 0) {
+          const matched = filtered.filter((p) => {
+            const text = `${p.name} ${p.description}`.toLowerCase();
+            return terms.some((t) => text.includes(t));
+          });
+          if (matched.length > 0) filtered = matched;
+        }
+      }
+      // Q2: Flaschentyp (glas, pet, egal)
+      const flasche = answers[1];
+      if (flasche && flasche !== "egal") {
+        const keywords: Record<string, string[]> = {
+          glas: ["glas", "mehrweg"],
+          pet: ["pet", "einweg"],
+        };
+        const terms = keywords[flasche] || [];
+        if (terms.length > 0) {
+          const matched = filtered.filter((p) => {
+            const text = `${p.name} ${p.description}`.toLowerCase();
+            return terms.some((t) => text.includes(t));
+          });
+          if (matched.length > 0) filtered = matched;
+        }
+      }
+    }
+
+    return filtered;
   };
 
   const reset = () => {

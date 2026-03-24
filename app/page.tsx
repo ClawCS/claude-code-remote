@@ -147,7 +147,7 @@ export default function Home() {
                 { icon: "🧊", title: "Monster Cooler", sub: "Gewinnspiel" },
                 { icon: "🔥", title: "Weber Grill", sub: "600€ Gewinn" },
                 { icon: "🏖️", title: "Salitos", sub: "Sommer-Aktion" },
-                { icon: "📱", title: "1€ Rabatt", sub: "Für Follower" },
+                { icon: "📱", title: "5€ Rabatt", sub: "Für Follower" },
               ].map((card) => (
                 <div key={card.title} className="glass-dark rounded-2xl p-5 text-center card-hover">
                   <span className="text-3xl block mb-1">{card.icon}</span>

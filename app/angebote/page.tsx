@@ -10,12 +10,25 @@ export const metadata: Metadata = { title: "Aktuelle Angebote" };
 const products = productsData as Product[];
 const starOfWeek = products.find((p) => p.slug === "bitburger-pils") || products[0];
 
+function getWeekRange() {
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun, 1=Mon, ...
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMonday);
+  const saturday = new Date(monday);
+  saturday.setDate(monday.getDate() + 5);
+  const fmt = (d: Date) =>
+    d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return `Gültig vom ${fmt(monday)} bis ${fmt(saturday)}`;
+}
+
 export default function AngebotePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="text-3xl font-bold text-secondary mb-2">Aktuelle Angebote</h1>
       <p className="text-muted mb-8">
-        Gültig vom 23.03.2026 bis 28.03.2026 · trinkgut Jammers Goch · Nur solange der Vorrat reicht.
+        {getWeekRange()} · trinkgut Jammers Goch · Nur solange der Vorrat reicht.
       </p>
 
       {/* Star of the Week */}
@@ -50,7 +63,7 @@ export default function AngebotePage() {
         <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-6 flex items-center gap-4 text-white">
           <span className="text-4xl">📱</span>
           <div className="flex-1">
-            <h3 className="font-bold">1€ Rabatt für Follower!</h3>
+            <h3 className="font-bold">5€ Rabatt für Follower!</h3>
             <p className="text-xs text-white/80">Folge uns auf Instagram und spare bei ausgewählten Produkten.</p>
           </div>
           <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white text-secondary font-bold rounded-lg hover:bg-gray-100 transition-colors text-sm whitespace-nowrap">

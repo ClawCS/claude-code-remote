@@ -65,10 +65,8 @@ export default function GewinnspielPage() {
     const body = encodeURIComponent(
       `Neue Teilnahme am Gewinnspiel!\n\nGewinnspiel: ${entry.gewinnspiel}\nVorname: ${entry.vorname}\nNachname: ${entry.nachname}\nE-Mail: ${entry.email}\nInstagram: ${entry.instagram || "–"}\nZeitpunkt: ${new Date().toLocaleString("de-DE")}`
     );
-    // Open mailto in background (won't interrupt user)
-    const mailtoLink = document.createElement("a");
-    mailtoLink.href = `mailto:hanna.thewald@trinkgut-jammers.de?subject=${subject}&body=${body}`;
-    mailtoLink.click();
+    // Open mailto
+    window.location.href = `mailto:hanna.thewald@trinkgut-jammers.de?subject=${subject}&body=${body}`;
 
     setSubmitted(selectedGewinnspiel?.title || "");
     setSelectedGewinnspiel(null);
@@ -129,7 +127,7 @@ export default function GewinnspielPage() {
       <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 rounded-2xl p-8 text-white text-center mb-12">
         <h2 className="text-2xl font-bold mb-2">Exklusive Aktionen auf Instagram</h2>
         <p className="text-white/80 mb-4 max-w-md mx-auto">
-          1€ Rabatt nur für Follower, exklusive Gewinnspiele und Behind-the-Scenes aus dem Markt. Folge uns jetzt!
+          5€ Rabatt nur für Follower, exklusive Gewinnspiele und Behind-the-Scenes aus dem Markt. Folge uns jetzt!
         </p>
         <a
           href="https://www.instagram.com/trinkgutjammers_goch/"

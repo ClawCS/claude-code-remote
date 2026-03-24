@@ -6,6 +6,14 @@ export const metadata: Metadata = {
   description: "Der aktuelle Trinkgut Jammers Handzettel mit allen Wochenangeboten. Werbekreis 3.6 Goch.",
 };
 
+function getISOCalendarWeek() {
+  const now = new Date();
+  const tmp = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  tmp.setUTCDate(tmp.getUTCDate() + 4 - (tmp.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
+  return Math.ceil(((tmp.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+}
+
 export default function HandzettelPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -20,7 +28,7 @@ export default function HandzettelPage() {
       {/* Prospekt direkt eingebettet */}
       <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm mb-8">
         <div className="bg-gradient-to-r from-primary to-red-700 p-4 text-white flex items-center justify-between">
-          <h2 className="text-lg font-bold">Trinkgut Prospekt KW {new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} — Werbekreis 3.6</h2>
+          <h2 className="text-lg font-bold">Trinkgut Prospekt KW {getISOCalendarWeek()} — Werbekreis 3.6</h2>
           <a
             href="https://www.trinkgut.de/angebote/"
             target="_blank"

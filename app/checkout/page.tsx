@@ -9,6 +9,20 @@ export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const [submitted, setSubmitted] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "delivery">("pickup");
+  const [contact, setContact] = useState({
+    vorname: "",
+    nachname: "",
+    email: "",
+    telefon: "",
+    strasse: "",
+    plz: "",
+    ort: "",
+    anmerkungen: "",
+  });
+
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setContact((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   if (submitted) {
     return (
@@ -51,7 +65,7 @@ export default function CheckoutPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Save order to localStorage
+    // Save order to localStorage with contact data
     const order = {
       id: `order-${Date.now()}`,
       date: new Date().toISOString(),
@@ -60,6 +74,19 @@ export default function CheckoutPage() {
         quantity: item.quantity,
       })),
       totalPrice,
+      deliveryMethod,
+      contact: {
+        vorname: contact.vorname,
+        nachname: contact.nachname,
+        email: contact.email,
+        telefon: contact.telefon,
+        ...(deliveryMethod === "delivery" ? {
+          strasse: contact.strasse,
+          plz: contact.plz,
+          ort: contact.ort,
+        } : {}),
+        anmerkungen: contact.anmerkungen,
+      },
     };
 
     try {
@@ -70,6 +97,26 @@ export default function CheckoutPage() {
     } catch {
       // ignore storage errors
     }
+
+    // Open mailto with order details
+    const itemLines = items.map((item) => `- ${item.quantity}x ${item.product.name} (${formatPrice(item.product.price * item.quantity)})`).join("\n");
+    const subject = encodeURIComponent(`Neue Bestellung ${order.id} — ${contact.vorname} ${contact.nachname}`);
+    const body = encodeURIComponent(
+      `Neue Bestellung über die Website:\n\n` +
+      `Bestellnr.: ${order.id}\n` +
+      `Datum: ${new Date().toLocaleString("de-DE")}\n` +
+      `Methode: ${deliveryMethod === "pickup" ? "Abholung" : "Lieferung"}\n\n` +
+      `Kontakt:\n` +
+      `Name: ${contact.vorname} ${contact.nachname}\n` +
+      `E-Mail: ${contact.email}\n` +
+      `Telefon: ${contact.telefon || "Nicht angegeben"}\n` +
+      (deliveryMethod === "delivery" ? `Adresse: ${contact.strasse}, ${contact.plz} ${contact.ort}\n` : "") +
+      (contact.anmerkungen ? `Anmerkungen: ${contact.anmerkungen}\n` : "") +
+      `\nBestellung:\n${itemLines}\n\n` +
+      `Gesamt: ${formatPrice(totalPrice)}\n` +
+      `(zzgl. Pfand, inkl. MwSt.)`
+    );
+    window.open(`mailto:jammers-goch@trinkgut.de?subject=${subject}&body=${body}`, "_self");
 
     clearCart();
     setSubmitted(true);
@@ -122,6 +169,10 @@ export default function CheckoutPage() {
                 <input
                   required
                   type="text"
+                  name="vorname"
+                  value={contact.vorname}
+                  onChange={handleContactChange}
+                  autoComplete="given-name"
                   className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
@@ -130,6 +181,10 @@ export default function CheckoutPage() {
                 <input
                   required
                   type="text"
+                  name="nachname"
+                  value={contact.nachname}
+                  onChange={handleContactChange}
+                  autoComplete="family-name"
                   className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
@@ -139,6 +194,10 @@ export default function CheckoutPage() {
               <input
                 required
                 type="email"
+                name="email"
+                value={contact.email}
+                onChange={handleContactChange}
+                autoComplete="email"
                 className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
@@ -146,6 +205,10 @@ export default function CheckoutPage() {
               <label className="block text-sm font-medium text-secondary mb-1">Telefon</label>
               <input
                 type="tel"
+                name="telefon"
+                value={contact.telefon}
+                onChange={handleContactChange}
+                autoComplete="tel"
                 className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
@@ -160,6 +223,10 @@ export default function CheckoutPage() {
                 <input
                   required
                   type="text"
+                  name="strasse"
+                  value={contact.strasse}
+                  onChange={handleContactChange}
+                  autoComplete="street-address"
                   className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
@@ -169,6 +236,10 @@ export default function CheckoutPage() {
                   <input
                     required
                     type="text"
+                    name="plz"
+                    value={contact.plz}
+                    onChange={handleContactChange}
+                    autoComplete="postal-code"
                     className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
@@ -177,6 +248,10 @@ export default function CheckoutPage() {
                   <input
                     required
                     type="text"
+                    name="ort"
+                    value={contact.ort}
+                    onChange={handleContactChange}
+                    autoComplete="address-level2"
                     className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
@@ -189,6 +264,9 @@ export default function CheckoutPage() {
             <label className="block text-sm font-medium text-secondary mb-1">Anmerkungen</label>
             <textarea
               rows={3}
+              name="anmerkungen"
+              value={contact.anmerkungen}
+              onChange={handleContactChange}
               className="w-full px-3 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
               placeholder="Wunschtermin, besondere Hinweise..."
             />
