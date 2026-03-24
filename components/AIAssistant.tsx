@@ -273,42 +273,75 @@ export default function AIAssistant() {
 
   return (
     <>
-      {/* ── Floating Button ── */}
-      <button
-        onClick={() => setIsOpen((o) => !o)}
-        className={`fixed bottom-6 left-6 z-40 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${
-          isOpen ? "bg-secondary rotate-90" : "bg-primary hover:bg-primary-dark"
-        }`}
-        aria-label={isOpen ? "Chat schlie\u00dfen" : "Chat \u00f6ffnen"}
-      >
-        {isOpen ? (
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        ) : (
-          <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="10" r="1"/><circle cx="16" cy="10" r="1"/></svg>
+      {/* ── Floating Chat-Bubble Button ── */}
+      <div className="fixed bottom-6 left-6 z-40 group">
+        {/* Tooltip label */}
+        {!isOpen && (
+          <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-white text-secondary text-xs font-semibold px-3 py-1.5 rounded-lg shadow-elevated whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+            Frag mich was!
+            <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-white" />
+          </div>
         )}
-        {pulse && !isOpen && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-accent" />
-          </span>
-        )}
-      </button>
+        <button
+          onClick={() => setIsOpen((o) => !o)}
+          className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${
+            isOpen
+              ? "bg-secondary shadow-lg rotate-0"
+              : "bg-gradient-to-br from-primary via-red-500 to-accent shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_28px_rgba(220,38,38,0.5)]"
+          }`}
+          aria-label={isOpen ? "Chat schließen" : "Chat öffnen"}
+        >
+          {isOpen ? (
+            <svg className="w-6 h-6 text-white transition-transform duration-300" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          ) : (
+            <div className="relative">
+              {/* Chat bubble icon */}
+              <svg className="w-8 h-8 text-white drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 5.58 2 10c0 2.24 1.12 4.26 2.94 5.7L4 20l4.45-2.04C9.58 18.3 10.76 18.5 12 18.5c5.52 0 10-3.58 10-8S17.52 2 12 2z"/>
+              </svg>
+              {/* Dots inside bubble */}
+              <div className="absolute inset-0 flex items-center justify-center gap-[3px] pb-[2px]">
+                <span className="w-[5px] h-[5px] rounded-full bg-white/90 animate-bounce" style={{ animationDuration: "1.2s", animationDelay: "0ms" }} />
+                <span className="w-[5px] h-[5px] rounded-full bg-white/90 animate-bounce" style={{ animationDuration: "1.2s", animationDelay: "200ms" }} />
+                <span className="w-[5px] h-[5px] rounded-full bg-white/90 animate-bounce" style={{ animationDuration: "1.2s", animationDelay: "400ms" }} />
+              </div>
+            </div>
+          )}
+
+          {/* Pulse ring */}
+          {pulse && !isOpen && (
+            <>
+              <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping" style={{ animationDuration: "2s" }} />
+              <span className="absolute -top-1 -right-1 flex h-5 w-5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" style={{ animationDuration: "1.5s" }} />
+                <span className="relative inline-flex rounded-full h-5 w-5 bg-green-400 border-2 border-white items-center justify-center">
+                  <span className="text-[8px] font-bold text-white">1</span>
+                </span>
+              </span>
+            </>
+          )}
+        </button>
+      </div>
 
       {/* ── Chat Window ── */}
       {isOpen && (
         <div className="fixed bottom-24 left-6 z-50 w-[calc(100vw-3rem)] max-w-[380px] animate-scale-in origin-bottom-left">
           <div className="rounded-2xl overflow-hidden shadow-elevated border border-white/20 bg-white/80 backdrop-blur-xl flex flex-col" style={{ height: "min(520px, calc(100vh - 140px))" }}>
             {/* Header */}
-            <div className="bg-gradient-to-r from-secondary via-gray-800 to-secondary p-4 flex items-center gap-3 shrink-0">
+            <div className="bg-gradient-to-r from-primary via-red-600 to-accent p-4 flex items-center gap-3 shrink-0">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-xl">
-                  <span role="img" aria-label="Bot">&#x1F916;</span>
+                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-inner">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 5.58 2 10c0 2.24 1.12 4.26 2.94 5.7L4 20l4.45-2.04C9.58 18.3 10.76 18.5 12 18.5c5.52 0 10-3.58 10-8S17.52 2 12 2z"/>
+                  </svg>
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-secondary" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-primary ring-2 ring-green-400/30" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-white font-bold text-sm">Jammers Assistent</h3>
-                <p className="text-green-400 text-xs">Online</p>
+                <p className="text-green-200 text-xs flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> Online</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
