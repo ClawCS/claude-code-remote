@@ -11,16 +11,19 @@ const img = (n: number) => `/images/gallery/ig-${String(n).padStart(2, "0")}.jpg
 
 export const galleryItems: GalleryItem[] = [
   // ═══ TEAM (aus TEAM-Highlight + Posts) ═══
-  { id: 1, title: "Team Jammers — Gruppenfoto", description: "Das sind wir: Team Jammers! Unser engagiertes Team, das mit Leidenschaft für Getränke arbeitet.", category: "team", image: img(7) },
-  { id: 2, title: "Nikolaos Jammers — Inhaber", description: "Niko, der Inhaber von Trinkgut Jammers Goch. Bekannt aus Funk & Fernsehen.", category: "team", image: img(9) },
-  { id: 3, title: "Sven — Geschäftsführer", description: "Sven, Geschäftsführer. Wäre als Getränk definitiv ein POWERade!", category: "team", image: img(8) },
-  { id: 4, title: "Jasmin — Spirituosen & Wein", description: "Unsere Spirituosen- und Weinschubserin. Kennt jede Flasche im Regal.", category: "team", image: img(5) },
-  { id: 5, title: "Tim — Stimmungskanone", description: "Für gute Laune im Markt zuständig. Immer ein Lächeln auf den Lippen.", category: "team", image: img(4) },
-  { id: 6, title: "Gabriella — Verkauf", description: "Unsere Verkaufsallrounderin. Kann alles, weiß alles.", category: "team", image: img(3) },
-  { id: 7, title: "Hanna — Marketing", description: "Die Marketing Tante hinter unserem Instagram-Auftritt.", category: "team", image: img(2) },
-  { id: 8, title: "Justin", description: "Mitarbeiter bei Trinkgut Jammers — zieht einmal im Jahr um.", category: "team", image: img(1) },
-  { id: 9, title: "Jan Niklas — Lager", description: "Der fleißigste Ameisenfahrer im Team.", category: "team", image: img(6) },
-  { id: 10, title: "Nico — Azubi", description: "Unser fleißigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: img(10) },
+  // Team-Fotos: Reihenfolge aus dem Instagram TEAM-Highlight (Stories)
+  // Die echten Einzelportraits sind im Instagram TEAM-Highlight zu sehen
+  { id: 1, title: "Team Jammers — Gruppenfoto", description: "Das sind wir: Team Jammers! 10 Mitarbeiter mit Leidenschaft fuer Getraenke.", category: "team", image: img(7) },
+  { id: 2, title: "Sven & Niko — Geschaeftsfuehrer", description: "Die beiden Geschaeftsfuehrer von Trinkgut Jammers Goch.", category: "team", image: img(8) },
+  { id: 3, title: "Nikolaos Jammers — Inhaber", description: "Niko, der Inhaber. Bekannt aus Funk & Fernsehen #VSS.", category: "team", image: img(9) },
+  { id: 4, title: "Sven — Geschaeftsfuehrer", description: "Waere als Getraenk definitiv ein POWERade!", category: "team", image: img(10) },
+  { id: 5, title: "Justin", description: "Zieht einmal im Jahr um. Immer da wenn man ihn braucht.", category: "team", image: img(1) },
+  { id: 6, title: "Jasmin — Spirituosen & Wein", description: "Unsere Spirituosen- und Weinschubserin.", category: "team", image: img(2) },
+  { id: 7, title: "Tim — Stimmungskanone", description: "Fuer gute Laune im Markt zustaendig.", category: "team", image: img(3) },
+  { id: 8, title: "Gabriella — Verkauf", description: "Unsere Verkaufsallrounderin. Kann alles, weiss alles.", category: "team", image: img(4) },
+  { id: 9, title: "Jan Niklas — Lager", description: "Der fleissigste Ameisenfahrer im Team.", category: "team", image: img(5) },
+  { id: 10, title: "Hanna — Marketing", description: "Die Marketing Tante hinter unserem Instagram-Auftritt.", category: "team", image: img(6) },
+  { id: 11, title: "Nico — Azubi", description: "Unser fleissigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: img(11) },
 
   // ═══ MARKT ═══
   { id: 11, title: "Deine Party. Unser Service.", description: "Über 7.000 Getränke, diverse Leihartikel, Beratung & Planung deiner Feier.", category: "markt", image: img(0) },

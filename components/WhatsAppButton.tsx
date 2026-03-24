@@ -1,7 +1,7 @@
 "use client";
 
 export default function WhatsAppButton() {
-  const phone = "4917663228597";
+  const phone = "491752492386";
   const message = encodeURIComponent("Hallo Trinkgut Jammers! Ich habe eine Frage...");
   const waUrl = `https://wa.me/${phone}?text=${message}`;
   const mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20,+47574+Goch";

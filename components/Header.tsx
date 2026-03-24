@@ -32,7 +32,6 @@ const navItems: NavItem[] = [
     labelKey: "nav.angebote",
     children: [
       { href: "/angebote", labelKey: "nav.aktuelleAngebote", icon: "\u{1F3F7}\uFE0F" },
-      { href: "/handzettel", labelKey: "nav.handzettel", icon: "\u{1F4F0}" },
       { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
     ],
   },
@@ -54,6 +53,7 @@ const navItems: NavItem[] = [
   },
   { labelKey: "nav.akademie", href: "/akademie" },
   { labelKey: "nav.wmtipp", href: "/tippkick" },
+  { labelKey: "nav.handzettel", href: "/handzettel" },
   { labelKey: "nav.jobs", href: "/bewerbung" },
 ];
 
