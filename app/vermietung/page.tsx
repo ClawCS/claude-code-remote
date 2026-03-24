@@ -173,6 +173,9 @@ const rentalItems: RentalItem[] = [
   { id: 1005, name: "Theke", slug: "theke", iconKey: "theke", description: "Mobile Theke für den professionellen Look auf deiner Feier.", price: 35, unit: "pro 3 Werktage", category: "Mobiliar", maxQty: 5 },
   { id: 1006, name: "Nasstheke mit Becken", slug: "nasstheke", iconKey: "nasstheke", description: "Nasstheke mit integriertem Becken — perfekt für Cocktails und Ausschank.", price: 50, unit: "pro 3 Werktage", category: "Mobiliar", maxQty: 3 },
   { id: 1007, name: "Weingläser", slug: "weinglaeser", iconKey: "weinglaeser", description: "Weingläser für stilvolle Anlässe. Verschiedene Größen verfügbar.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1008, name: "Sektgläser", slug: "sektglaeser", iconKey: "weinglaeser", description: "Elegante Sektgläser für Empfänge, Hochzeiten und Feiern.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1009, name: "Schnapsgläser", slug: "schnapsglaeser", iconKey: "weinglaeser", description: "Schnapsgläser für Shots und Digestifs.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1010, name: "Biergläser", slug: "bierglaeser", iconKey: "weinglaeser", description: "Biergläser 0,3L — für den perfekten Biergenuss auf deiner Feier.", price: 0.20, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
 ];
 
 const rentalCategories = [...new Set(rentalItems.map(i => i.category))];

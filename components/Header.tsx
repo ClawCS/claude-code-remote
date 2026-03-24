@@ -48,11 +48,16 @@ const navItems: NavItem[] = [
     children: [
       { href: "/cocktails", labelKey: "nav.cocktails", icon: "\u{1F378}" },
       { href: "/galerie", labelKey: "nav.galerie", icon: "\u{1F4F8}" },
-      { href: "/gewinnspiel", labelKey: "nav.gewinnspiel", icon: "\u{1F3C6}" },
+    ],
+  },
+  {
+    labelKey: "nav.handzettel",
+    children: [
+      { href: "/handzettel", labelKey: "nav.handzettelDE", icon: "\u{1F1E9}\u{1F1EA}" },
+      { href: "/handzettel", labelKey: "nav.handzettelNL", icon: "\u{1F1F3}\u{1F1F1}" },
     ],
   },
   { labelKey: "nav.akademie", href: "/akademie" },
-  { labelKey: "nav.handzettel", href: "/handzettel" },
   { labelKey: "nav.jobs", href: "/bewerbung" },
 ];
 
@@ -200,6 +205,40 @@ function WmTrophyIcon() {
   );
 }
 
+function GewinnspielIcon() {
+  return (
+    <Link
+      href="/gewinnspiel"
+      className="relative flex flex-col items-center gap-0.5 group"
+      title="🎁 Monatsgewinnspiel — Jetzt mitmachen!"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 gewinnspiel-icon" aria-label="Gewinnspiel">
+        <defs>
+          <linearGradient id="giftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#C41E3A" />
+            <stop offset="100%" stopColor="#FF6B6B" />
+          </linearGradient>
+        </defs>
+        {/* Box */}
+        <rect x="3" y="10" width="18" height="10" rx="2" fill="url(#giftGrad)" />
+        {/* Lid */}
+        <rect x="2" y="7" width="20" height="4" rx="1.5" fill="url(#giftGrad)" stroke="#A01030" strokeWidth="0.3" />
+        {/* Ribbon vertical */}
+        <rect x="10.5" y="7" width="3" height="13" fill="#FFD700" />
+        {/* Ribbon horizontal */}
+        <rect x="2" y="8" width="20" height="2" fill="#FFD700" opacity="0.7" />
+        {/* Bow left */}
+        <ellipse cx="10" cy="6" rx="3" ry="2.5" fill="#FFD700" stroke="#B8860B" strokeWidth="0.3" />
+        {/* Bow right */}
+        <ellipse cx="14" cy="6" rx="3" ry="2.5" fill="#FFD700" stroke="#B8860B" strokeWidth="0.3" />
+        {/* Bow center */}
+        <circle cx="12" cy="6.5" r="1.5" fill="#C41E3A" />
+      </svg>
+      <span className="text-[9px] font-bold leading-none text-primary tracking-tight whitespace-nowrap">Gewinnspiel</span>
+    </Link>
+  );
+}
+
 function LanguageSwitcher({ className }: { className?: string }) {
   const [lang, setLang] = useState<Lang>("de");
   const [open, setOpen] = useState(false);
@@ -336,9 +375,8 @@ export default function Header() {
           <div className="flex items-center gap-1">
             {/* WM 2026 Trophy Icon - always visible */}
             <WmTrophyIcon />
-
-            {/* Language Switcher - Desktop */}
-            <LanguageSwitcher className="hidden lg:block" />
+            {/* Gewinnspiel Icon */}
+            <GewinnspielIcon />
 
             {/* Search toggle - Desktop */}
             <button
@@ -502,15 +540,6 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-            </div>
-
-            {/* Language Switcher - Mobile */}
-            <div className="px-4 pt-3 pb-1">
-              <div className="flex gap-1">
-                {(Object.keys(langLabels) as Lang[]).map((l) => (
-                  <MobileLangButton key={l} lang={l} />
-                ))}
-              </div>
             </div>
 
             {/* Mobile Nav */}
