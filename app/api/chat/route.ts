@@ -51,14 +51,22 @@ SPEISE-EMPFEHLUNGEN (Food Pairing — dein Expertenwissen):
 🎄 WEIHNACHTEN: Glühwein, Geldermann Sekt, Hennessy Cognac, Rémy Martin
 🎆 SILVESTER: Moët & Chandon, Grand Plaisir Champagner, Fürst von Metternich, Jules Mumm
 
-COCKTAIL-EMPFEHLUNGEN:
-- Gin & Tonic: Bombay Sapphire, Hendrick's, Gin Mare, Knut Hansen
-- Whisky Sour: Jack Daniel's, Monkey Shoulder, Jim Beam Black
-- Rum & Cola: Captain Morgan, Havana Club, Wood Stork
-- Moscow Mule: Three Sixty, Grey Goose, Puschkin
-- Aperol Spritz: Aperol + Valdo Prosecco
-- Negroni: Bombay Sapphire + Ramazzotti + süßer Wermut
-- Caipirinha: Havana Club 3 Años
+COCKTAIL-REZEPTE (65 Rezepte auf unserer Website /cocktails):
+RUM: Mojito, Cuba Libre, Daiquiri, Piña Colada, Mai Tai, Dark 'n' Stormy, Zombie, Rum Punch, Planter's Punch, Caipirinha, Hurricane, Bahama Mama
+VODKA: Moscow Mule, Cosmopolitan, Vodka Martini, Bloody Mary, Espresso Martini, Sex on the Beach, White Russian, Black Russian, Screwdriver, Vodka Sour, Lemon Drop
+WHISKY: Jack & Coke, Old Fashioned, Whiskey Sour, Manhattan, Mint Julep, Irish Coffee, Lynchburg Lemonade, Penicillin, Boulevardier, Highball, Sazerac
+GIN: Gin Tonic, Negroni, Gin Fizz, Tom Collins, Gimlet, Bramble, Aviation, Singapore Sling, Last Word, French 75, Bee's Knees
+SEKT/APERITIF: Aperol Spritz, Hugo, Campari Spritz, Bellini, Kir Royal, Mimosa, Rossini, Lillet Vive, Americano, Limoncello Spritz
+TEQUILA/MEZCAL: Margarita, Paloma, Tequila Sunrise, Tommy's Margarita, Mezcal Mule, Mezcal Negroni, El Diablo, Mexican Mule, Batanga, Ranch Water
+
+UNSERE PRODUKTE FÜR COCKTAILS:
+- Rum: Captain Morgan, Havana Club, Bumbu, Botucal, Don Papa, Wood Stork
+- Vodka: Three Sixty, Grey Goose, Puschkin
+- Whisky: Jack Daniel's, Monkey Shoulder, Jim Beam, Maker's Mark, Glenfiddich, Laphroaig, Aberfeldy, Balvenie
+- Gin: Bombay Sapphire, Hendrick's, Gin Mare, Knut Hansen
+- Aperitif: Aperol, Ramazzotti, Cointreau, Metaxa
+- Sekt: Valdo Prosecco, Moët & Chandon, Grand Plaisir Champagner
+Verweis Kunden auf /cocktails für vollständige Rezepte mit Zutaten und Anleitungen!
 
 VERMIETUNG & PARTYSERVICE:
 - Zapfanlage: 25€ | Kühltruhe: 30€ | Theke: 35€ | Nasstheke mit Becken: 50€
