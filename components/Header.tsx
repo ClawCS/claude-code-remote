@@ -149,10 +149,18 @@ function WmTrophyIcon() {
       className="relative flex flex-col items-center gap-0.5 group"
       title="🏆 WM 2026 Tippspiel — Hier teilnehmen!"
     >
+      {/* Animated glow ring */}
+      <span className="absolute -inset-2 rounded-full bg-gradient-to-r from-amber-400/30 via-yellow-300/20 to-amber-400/30 blur-sm animate-pulse group-hover:from-amber-400/50 group-hover:via-yellow-300/40 group-hover:to-amber-400/50 transition-all" />
+      {/* Star burst behind */}
+      <svg className="absolute -inset-1 h-12 w-12" viewBox="0 0 48 48" fill="none">
+        {[0,45,90,135,180,225,270,315].map((r) => (
+          <line key={r} x1="24" y1="24" x2="24" y2="4" stroke="#FFD700" strokeWidth="0.5" opacity="0.3" transform={`rotate(${r} 24 24)`} />
+        ))}
+      </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        className="h-7 w-7 wm-trophy-icon"
+        className="relative h-9 w-9 wm-trophy-icon drop-shadow-[0_0_6px_rgba(255,215,0,0.5)]"
         aria-label="WM 2026 Tippspiel"
       >
         <defs>
@@ -212,7 +220,15 @@ function GewinnspielIcon() {
       className="relative flex flex-col items-center gap-0.5 group"
       title="🎁 Monatsgewinnspiel — Jetzt mitmachen!"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 gewinnspiel-icon" aria-label="Gewinnspiel">
+      {/* Animated glow ring */}
+      <span className="absolute -inset-2 rounded-full bg-gradient-to-r from-red-400/30 via-pink-300/20 to-red-400/30 blur-sm animate-pulse group-hover:from-red-400/50 group-hover:via-pink-300/40 group-hover:to-red-400/50 transition-all" />
+      {/* Sparkles */}
+      <svg className="absolute -inset-1 h-12 w-12" viewBox="0 0 48 48" fill="none">
+        <circle cx="8" cy="12" r="1.5" fill="#FFD700" opacity="0.6" className="animate-ping" style={{animationDuration: "2s"}} />
+        <circle cx="40" cy="14" r="1" fill="#FFD700" opacity="0.5" className="animate-ping" style={{animationDuration: "2.5s"}} />
+        <circle cx="38" cy="38" r="1.2" fill="#FFD700" opacity="0.4" className="animate-ping" style={{animationDuration: "3s"}} />
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(196,30,58,0.4)]" aria-label="Gewinnspiel">
         <defs>
           <linearGradient id="giftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#C41E3A" />
@@ -372,7 +388,7 @@ export default function Header() {
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             {/* WM 2026 Trophy Icon - always visible */}
             <WmTrophyIcon />
             {/* Gewinnspiel Icon */}
