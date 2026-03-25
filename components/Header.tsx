@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useTranslation, LANG_KEY, LANG_CHANGE_EVENT, type Lang } from "@/lib/i18n";
 
 type DropdownItem = { href: string; labelKey: string; icon: string };
@@ -41,13 +42,20 @@ const navItems: NavItem[] = [
       { href: "/partyplaner", labelKey: "nav.partyplaner", icon: "\u{1F389}" },
       { href: "/vermietung", labelKey: "nav.vermietung", icon: "\u{1F3AA}" },
       { href: "/finder", labelKey: "nav.finder", icon: "\u{1F50D}" },
+      { href: "/leergut", labelKey: "nav.leergut", icon: "\u267B\uFE0F" },
     ],
   },
   {
     labelKey: "nav.erleben",
     children: [
       { href: "/cocktails", labelKey: "nav.cocktails", icon: "\u{1F378}" },
+      { href: "/partyspiele", labelKey: "nav.partyspiele", icon: "\u{1F3B2}" },
       { href: "/galerie", labelKey: "nav.galerie", icon: "\u{1F4F8}" },
+      { href: "/battle", labelKey: "nav.battle", icon: "\u{1F94A}" },
+      { href: "/gluecksrad", labelKey: "nav.gluecksrad", icon: "\u{1F3B0}" },
+      { href: "/oeko-tracker", labelKey: "nav.oekoTracker", icon: "\u{1F30D}" },
+      { href: "/bierkarte", labelKey: "nav.bierkarte", icon: "\u{1F5FA}\uFE0F" },
+      { href: "/kuehlschrank", labelKey: "nav.kuehlschrank", icon: "\u{1F9CA}" },
     ],
   },
   {
@@ -58,6 +66,7 @@ const navItems: NavItem[] = [
     ],
   },
   { labelKey: "nav.akademie", href: "/akademie" },
+  { labelKey: "nav.community", href: "/community" },
   { labelKey: "nav.jobs", href: "/bewerbung" },
 ];
 
@@ -316,6 +325,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
 
 export default function Header() {
   const { totalItems, setIsCartOpen } = useCart();
+  const { totalItems: wishlistTotal, setIsWishlistOpen } = useWishlist();
   const router = useRouter();
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -417,6 +427,22 @@ export default function Header() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+            </button>
+
+            {/* Wishlist */}
+            <button
+              onClick={() => setIsWishlistOpen(true)}
+              className="relative p-2 text-secondary hover:text-primary transition-colors"
+              aria-label="Merkzettel"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              {wishlistTotal > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistTotal}
+                </span>
+              )}
             </button>
 
             {/* Cart */}

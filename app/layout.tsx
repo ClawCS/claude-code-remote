@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import WishlistDrawer from "@/components/WishlistDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AIAssistant from "@/components/AIAssistant";
 import CookieBanner from "@/components/CookieBanner";
@@ -43,13 +45,16 @@ export default function RootLayout({
     <html lang="de" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <CartProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CartDrawer />
-          <WhatsAppButton />
-          <AIAssistant />
-          <CookieBanner />
+          <WishlistProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <CartDrawer />
+            <WishlistDrawer />
+            <WhatsAppButton />
+            <AIAssistant />
+            <CookieBanner />
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>
