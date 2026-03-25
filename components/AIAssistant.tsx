@@ -145,9 +145,15 @@ export default function AIAssistant() {
             </div>
           )}
 
-          {/* Notification dot */}
+          {/* Speech bubble + notification dot */}
           {!hasInteracted && !isOpen && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+            <>
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+              <span className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white text-secondary text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg animate-bounce" style={{animationDuration: "2s"}}>
+                Frag mich etwas!
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45 shadow-sm" />
+              </span>
+            </>
           )}
         </button>
       </div>

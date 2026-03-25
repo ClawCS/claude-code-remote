@@ -9,6 +9,7 @@ import AIAssistant from "@/components/AIAssistant";
 import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://trinkgut-jammers.de"),
   title: {
     default: "Trinkgut Jammers Goch – Dein Getränkemarkt Online",
     template: "%s – Trinkgut Jammers Goch",

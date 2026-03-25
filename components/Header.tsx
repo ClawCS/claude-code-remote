@@ -394,6 +394,9 @@ export default function Header() {
             {/* Gewinnspiel Icon */}
             <GewinnspielIcon />
 
+            {/* Language Switcher */}
+            <LanguageSwitcher className="hidden lg:block" />
+
             {/* Search toggle - Desktop */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
@@ -556,6 +559,11 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
+            </div>
+
+            {/* Mobile Language Switcher */}
+            <div className="flex gap-2 px-4 pt-3 pb-1">
+              <LanguageSwitcher className="" />
             </div>
 
             {/* Mobile Nav */}
