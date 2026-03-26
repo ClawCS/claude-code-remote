@@ -8,7 +8,7 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-[#1A1A2E] text-white mt-auto red-stripe-divider">
+    <footer className="bg-[#1F2937] text-white mt-auto red-stripe-divider">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
@@ -29,13 +29,13 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-3">{t("footer.quicklinks")}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link href="/produkte" className="hover:text-[#D4A853] transition-colors">{t("nav.alleProdukte")}</Link></li>
-              <li><Link href="/angebote" className="hover:text-[#D4A853] transition-colors">{t("nav.angebote")}</Link></li>
-              <li><Link href="/partyplaner" className="hover:text-[#D4A853] transition-colors">{t("nav.partyplaner")}</Link></li>
-              <li><Link href="/vermietung" className="hover:text-[#D4A853] transition-colors">{t("nav.vermietung")}</Link></li>
-              <li><Link href="/finder" className="hover:text-[#D4A853] transition-colors">{t("nav.finder")}</Link></li>
-              <li><Link href="/cocktails" className="hover:text-[#D4A853] transition-colors">{t("nav.cocktails")}</Link></li>
-              <li><Link href="/bestellungen" className="hover:text-[#D4A853] transition-colors">{t("nav.bestellungen")}</Link></li>
+              <li><Link href="/produkte" className="hover:text-[#F59E0B] transition-colors">{t("nav.alleProdukte")}</Link></li>
+              <li><Link href="/angebote" className="hover:text-[#F59E0B] transition-colors">{t("nav.angebote")}</Link></li>
+              <li><Link href="/partyplaner" className="hover:text-[#F59E0B] transition-colors">{t("nav.partyplaner")}</Link></li>
+              <li><Link href="/vermietung" className="hover:text-[#F59E0B] transition-colors">{t("nav.vermietung")}</Link></li>
+              <li><Link href="/finder" className="hover:text-[#F59E0B] transition-colors">{t("nav.finder")}</Link></li>
+              <li><Link href="/cocktails" className="hover:text-[#F59E0B] transition-colors">{t("nav.cocktails")}</Link></li>
+              <li><Link href="/bestellungen" className="hover:text-[#F59E0B] transition-colors">{t("nav.bestellungen")}</Link></li>
             </ul>
           </div>
 
@@ -46,9 +46,9 @@ export default function Footer() {
               <li className="font-medium text-white">Trinkgut Jammers Goch e.K.</li>
               <li>{t("footer.inhaber")}</li>
               <li>Jurgenstr. 20, 47574 Goch</li>
-              <li>Tel: <a href="tel:02823418707" className="hover:text-[#D4A853] transition-colors">02823-418707</a></li>
-              <li>Handy: <a href="tel:017663228597" className="hover:text-[#D4A853] transition-colors">0176-63228597</a></li>
-              <li>E-Mail: <a href="mailto:jammers-goch@trinkgut.de" className="hover:text-[#D4A853] transition-colors">jammers-goch@trinkgut.de</a></li>
+              <li>Tel: <a href="tel:02823418707" className="hover:text-[#F59E0B] transition-colors">02823-418707</a></li>
+              <li>Handy: <a href="tel:017663228597" className="hover:text-[#F59E0B] transition-colors">0176-63228597</a></li>
+              <li>E-Mail: <a href="mailto:jammers-goch@trinkgut.de" className="hover:text-[#F59E0B] transition-colors">jammers-goch@trinkgut.de</a></li>
               <li className="pt-1">{t("footer.oeffnung")}</li>
             </ul>
             <div className="flex gap-3 mt-4">
@@ -82,8 +82,8 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Trinkgut Jammers Goch e.K.
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
-            <Link href="/impressum" className="hover:text-[#D4A853] transition-colors">{t("footer.impressum")}</Link>
-            <Link href="/datenschutz" className="hover:text-[#D4A853] transition-colors">{t("footer.datenschutz")}</Link>
+            <Link href="/impressum" className="hover:text-[#F59E0B] transition-colors">{t("footer.impressum")}</Link>
+            <Link href="/datenschutz" className="hover:text-[#F59E0B] transition-colors">{t("footer.datenschutz")}</Link>
           </div>
         </div>
       </div>

@@ -10,14 +10,14 @@ import type { RentalInfo } from "@/context/CartContext";
 function ZapfanlageIcon() {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="15" y="20" width="30" height="30" rx="4" fill="#C41E3A" opacity="0.12" stroke="#C41E3A" strokeWidth="2" />
-      <rect x="27" y="8" width="6" height="16" rx="3" fill="#C41E3A" />
-      <circle cx="30" cy="8" r="4" fill="#C41E3A" />
-      <path d="M30 36 L30 42 L26 46" stroke="#C41E3A" strokeWidth="2" strokeLinecap="round" />
-      <path d="M22 46 L26 46 L27 54 L21 54 Z" fill="#C41E3A" opacity="0.2" stroke="#C41E3A" strokeWidth="1.5" strokeLinejoin="round" />
-      <circle cx="26" cy="43" r="1" fill="#C41E3A" />
-      <circle cx="30" cy="32" r="4" stroke="#C41E3A" strokeWidth="1.5" fill="none" />
-      <path d="M30 30 L31.5 33" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="15" y="20" width="30" height="30" rx="4" fill="#DC2626" opacity="0.12" stroke="#DC2626" strokeWidth="2" />
+      <rect x="27" y="8" width="6" height="16" rx="3" fill="#DC2626" />
+      <circle cx="30" cy="8" r="4" fill="#DC2626" />
+      <path d="M30 36 L30 42 L26 46" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" />
+      <path d="M22 46 L26 46 L27 54 L21 54 Z" fill="#DC2626" opacity="0.2" stroke="#DC2626" strokeWidth="1.5" strokeLinejoin="round" />
+      <circle cx="26" cy="43" r="1" fill="#DC2626" />
+      <circle cx="30" cy="32" r="4" stroke="#DC2626" strokeWidth="1.5" fill="none" />
+      <path d="M30 30 L31.5 33" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -25,15 +25,15 @@ function ZapfanlageIcon() {
 function KuehltruhIcon() {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="8" y="14" width="44" height="34" rx="4" fill="#C41E3A" opacity="0.12" stroke="#C41E3A" strokeWidth="2" />
-      <path d="M8 18 Q8 14 12 14 L48 14 Q52 14 52 18 L52 22 L8 22 Z" fill="#C41E3A" opacity="0.25" stroke="#C41E3A" strokeWidth="2" />
-      <rect x="22" y="16" width="16" height="3" rx="1.5" fill="#C41E3A" />
-      <line x1="30" y1="28" x2="30" y2="42" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="23" y1="35" x2="37" y2="35" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="25" y1="30" x2="35" y2="40" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="35" y1="30" x2="25" y2="40" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <rect x="12" y="48" width="4" height="4" rx="1" fill="#C41E3A" />
-      <rect x="44" y="48" width="4" height="4" rx="1" fill="#C41E3A" />
+      <rect x="8" y="14" width="44" height="34" rx="4" fill="#DC2626" opacity="0.12" stroke="#DC2626" strokeWidth="2" />
+      <path d="M8 18 Q8 14 12 14 L48 14 Q52 14 52 18 L52 22 L8 22 Z" fill="#DC2626" opacity="0.25" stroke="#DC2626" strokeWidth="2" />
+      <rect x="22" y="16" width="16" height="3" rx="1.5" fill="#DC2626" />
+      <line x1="30" y1="28" x2="30" y2="42" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="23" y1="35" x2="37" y2="35" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="25" y1="30" x2="35" y2="40" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="35" y1="30" x2="25" y2="40" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="12" y="48" width="4" height="4" rx="1" fill="#DC2626" />
+      <rect x="44" y="48" width="4" height="4" rx="1" fill="#DC2626" />
     </svg>
   );
 }
@@ -41,14 +41,14 @@ function KuehltruhIcon() {
 function ThekeIcon() {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="18" width="48" height="6" rx="2" fill="#C41E3A" />
-      <rect x="8" y="24" width="44" height="24" rx="2" fill="#C41E3A" opacity="0.12" stroke="#C41E3A" strokeWidth="2" />
-      <line x1="12" y1="36" x2="48" y2="36" stroke="#C41E3A" strokeWidth="1" opacity="0.4" />
-      <rect x="10" y="48" width="3" height="6" rx="1" fill="#C41E3A" />
-      <rect x="47" y="48" width="3" height="6" rx="1" fill="#C41E3A" />
-      <rect x="16" y="10" width="4" height="8" rx="2" fill="#C41E3A" opacity="0.3" />
-      <rect x="23" y="12" width="4" height="6" rx="2" fill="#C41E3A" opacity="0.2" />
-      <rect x="38" y="11" width="4" height="7" rx="2" fill="#C41E3A" opacity="0.25" />
+      <rect x="6" y="18" width="48" height="6" rx="2" fill="#DC2626" />
+      <rect x="8" y="24" width="44" height="24" rx="2" fill="#DC2626" opacity="0.12" stroke="#DC2626" strokeWidth="2" />
+      <line x1="12" y1="36" x2="48" y2="36" stroke="#DC2626" strokeWidth="1" opacity="0.4" />
+      <rect x="10" y="48" width="3" height="6" rx="1" fill="#DC2626" />
+      <rect x="47" y="48" width="3" height="6" rx="1" fill="#DC2626" />
+      <rect x="16" y="10" width="4" height="8" rx="2" fill="#DC2626" opacity="0.3" />
+      <rect x="23" y="12" width="4" height="6" rx="2" fill="#DC2626" opacity="0.2" />
+      <rect x="38" y="11" width="4" height="7" rx="2" fill="#DC2626" opacity="0.25" />
     </svg>
   );
 }
@@ -56,16 +56,16 @@ function ThekeIcon() {
 function NassthekeIcon() {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="18" width="48" height="6" rx="2" fill="#C41E3A" />
-      <rect x="8" y="24" width="44" height="24" rx="2" fill="#C41E3A" opacity="0.12" stroke="#C41E3A" strokeWidth="2" />
-      <path d="M18 20 L18 26 Q18 30 22 30 L38 30 Q42 30 42 26 L42 20" fill="none" stroke="#C41E3A" strokeWidth="2" />
-      <path d="M30 12 L30 18" stroke="#C41E3A" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M30 12 L35 12 L35 15" stroke="#C41E3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="35" cy="18" r="1" fill="#C41E3A" opacity="0.5" />
-      <circle cx="35" cy="21" r="0.8" fill="#C41E3A" opacity="0.3" />
-      <circle cx="30" cy="28" r="1.5" fill="#C41E3A" opacity="0.4" />
-      <rect x="10" y="48" width="3" height="6" rx="1" fill="#C41E3A" />
-      <rect x="47" y="48" width="3" height="6" rx="1" fill="#C41E3A" />
+      <rect x="6" y="18" width="48" height="6" rx="2" fill="#DC2626" />
+      <rect x="8" y="24" width="44" height="24" rx="2" fill="#DC2626" opacity="0.12" stroke="#DC2626" strokeWidth="2" />
+      <path d="M18 20 L18 26 Q18 30 22 30 L38 30 Q42 30 42 26 L42 20" fill="none" stroke="#DC2626" strokeWidth="2" />
+      <path d="M30 12 L30 18" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M30 12 L35 12 L35 15" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="35" cy="18" r="1" fill="#DC2626" opacity="0.5" />
+      <circle cx="35" cy="21" r="0.8" fill="#DC2626" opacity="0.3" />
+      <circle cx="30" cy="28" r="1.5" fill="#DC2626" opacity="0.4" />
+      <rect x="10" y="48" width="3" height="6" rx="1" fill="#DC2626" />
+      <rect x="47" y="48" width="3" height="6" rx="1" fill="#DC2626" />
     </svg>
   );
 }
@@ -73,16 +73,16 @@ function NassthekeIcon() {
 function KuehlwagenIcon() {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="14" width="40" height="28" rx="3" fill="#C41E3A" opacity="0.12" stroke="#C41E3A" strokeWidth="2" />
-      <path d="M44 24 L52 24 Q56 24 56 28 L56 42 L44 42 Z" fill="#C41E3A" opacity="0.2" stroke="#C41E3A" strokeWidth="2" />
-      <rect x="47" y="27" width="6" height="5" rx="1" fill="white" stroke="#C41E3A" strokeWidth="1" />
-      <line x1="24" y1="22" x2="24" y2="34" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="18" y1="28" x2="30" y2="28" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="20" y1="24" x2="28" y2="32" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="28" y1="24" x2="20" y2="32" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="16" cy="46" r="5" fill="#C41E3A" opacity="0.3" stroke="#C41E3A" strokeWidth="2" />
+      <rect x="4" y="14" width="40" height="28" rx="3" fill="#DC2626" opacity="0.12" stroke="#DC2626" strokeWidth="2" />
+      <path d="M44 24 L52 24 Q56 24 56 28 L56 42 L44 42 Z" fill="#DC2626" opacity="0.2" stroke="#DC2626" strokeWidth="2" />
+      <rect x="47" y="27" width="6" height="5" rx="1" fill="white" stroke="#DC2626" strokeWidth="1" />
+      <line x1="24" y1="22" x2="24" y2="34" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="18" y1="28" x2="30" y2="28" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="20" y1="24" x2="28" y2="32" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="28" y1="24" x2="20" y2="32" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="16" cy="46" r="5" fill="#DC2626" opacity="0.3" stroke="#DC2626" strokeWidth="2" />
       <circle cx="16" cy="46" r="2" fill="white" />
-      <circle cx="48" cy="46" r="5" fill="#C41E3A" opacity="0.3" stroke="#C41E3A" strokeWidth="2" />
+      <circle cx="48" cy="46" r="5" fill="#DC2626" opacity="0.3" stroke="#DC2626" strokeWidth="2" />
       <circle cx="48" cy="46" r="2" fill="white" />
     </svg>
   );
@@ -91,10 +91,10 @@ function KuehlwagenIcon() {
 function WeinglaserIcon() {
   return (
     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 10 Q20 28 30 32 Q40 28 40 10 Z" fill="#C41E3A" opacity="0.1" stroke="#C41E3A" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M22 18 Q22 26 30 30 Q38 26 38 18 Z" fill="#C41E3A" opacity="0.25" />
-      <line x1="30" y1="32" x2="30" y2="46" stroke="#C41E3A" strokeWidth="2" />
-      <ellipse cx="30" cy="48" rx="10" ry="3" fill="#C41E3A" opacity="0.15" stroke="#C41E3A" strokeWidth="2" />
+      <path d="M20 10 Q20 28 30 32 Q40 28 40 10 Z" fill="#DC2626" opacity="0.1" stroke="#DC2626" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M22 18 Q22 26 30 30 Q38 26 38 18 Z" fill="#DC2626" opacity="0.25" />
+      <line x1="30" y1="32" x2="30" y2="46" stroke="#DC2626" strokeWidth="2" />
+      <ellipse cx="30" cy="48" rx="10" ry="3" fill="#DC2626" opacity="0.15" stroke="#DC2626" strokeWidth="2" />
       <path d="M24 14 Q24 12 26 12" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
     </svg>
   );

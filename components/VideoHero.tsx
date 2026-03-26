@@ -282,7 +282,7 @@ export default function VideoHero() {
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "linear-gradient(135deg, #C41E3A 0%, #991B1B 50%, #7F1D1D 100%)",
+                  background: "linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%)",
                   animation: "vh-scene4-bg 15s cubic-bezier(0.4,0,0.2,1) infinite",
                   animationPlayState: paused ? "paused" : "running",
                 }}
@@ -295,7 +295,7 @@ export default function VideoHero() {
                   style={{
                     width: `${6 + (i % 4) * 3}px`,
                     height: `${6 + (i % 3) * 3}px`,
-                    background: ["#D4A853", "#FFFFFF", "#C41E3A", "#F59E0B", "#FFD700"][i % 5],
+                    background: ["#F59E0B", "#FFFFFF", "#DC2626", "#F59E0B", "#FFD700"][i % 5],
                     left: `${5 + (i * 4.7) % 90}%`,
                     top: "-10%",
                     borderRadius: i % 3 === 0 ? "50%" : "2px",
@@ -313,7 +313,7 @@ export default function VideoHero() {
                   style={{
                     width: `${5 + (i % 3) * 2}px`,
                     height: `${5 + (i % 3) * 2}px`,
-                    background: ["#D4A853", "#FFFFFF", "#C41E3A", "#F59E0B"][i % 4],
+                    background: ["#F59E0B", "#FFFFFF", "#DC2626", "#F59E0B"][i % 4],
                     left: `${10 + (i * 11) % 80}%`,
                     top: "-10%",
                     borderRadius: i % 2 === 0 ? "50%" : "2px",
@@ -365,7 +365,7 @@ export default function VideoHero() {
                   style={{
                     animation: "vh-gold-shimmer 3s linear infinite, vh-scene5-text 15s cubic-bezier(0.4,0,0.2,1) infinite",
                     animationPlayState: paused ? "paused" : "running",
-                    backgroundImage: "linear-gradient(90deg, #D4A853 0%, #FFD700 25%, #D4A853 50%, #FFD700 75%, #D4A853 100%)",
+                    backgroundImage: "linear-gradient(90deg, #F59E0B 0%, #FFD700 25%, #F59E0B 50%, #FFD700 75%, #F59E0B 100%)",
                     backgroundSize: "200% auto",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
@@ -416,15 +416,15 @@ export default function VideoHero() {
       <style jsx>{`
         /* ── Scene 1: Brand Reveal (0-3s visible) ── */
         @keyframes vh-scene1-bg {
-          0%      { opacity: 1; background: radial-gradient(circle at center, #C41E3A 0%, #000 100%); background-size: 100% 100%; }
-          2%      { background: radial-gradient(circle at center, #C41E3A 0%, #C41E3A 30%, #000 100%); }
-          10%     { opacity: 1; background: radial-gradient(circle at center, #C41E3A 0%, #C41E3A 60%, #000 100%); }
+          0%      { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #000 100%); background-size: 100% 100%; }
+          2%      { background: radial-gradient(circle at center, #DC2626 0%, #DC2626 30%, #000 100%); }
+          10%     { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #DC2626 60%, #000 100%); }
           18%     { opacity: 1; }
           22%     { opacity: 0; }
           78%     { opacity: 0; }
           85%     { opacity: 0; }
-          92%     { opacity: 1; background: radial-gradient(circle at center, #C41E3A 0%, #C41E3A 30%, #000 100%); }
-          100%    { opacity: 1; background: radial-gradient(circle at center, #C41E3A 0%, #000 100%); }
+          92%     { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #DC2626 30%, #000 100%); }
+          100%    { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #000 100%); }
         }
         @keyframes vh-scene1-text {
           0%      { opacity: 0; transform: scale(0.9); }

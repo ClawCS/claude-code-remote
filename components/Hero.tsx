@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden min-h-[600px] md:min-h-[700px]">
       {/* Animated gradient background — deep red mesh */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#9B1B30] via-[#C41E3A] to-[#7A1428] animate-gradient" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#B91C1C] via-[#DC2626] to-[#7A1428] animate-gradient" />
 
       {/* Mesh pattern overlay */}
       <div className="absolute inset-0">
@@ -65,7 +65,7 @@ export default function Hero() {
           <h1 className="text-5xl md:text-6xl lg:text-8xl font-extrabold leading-[1.02] mb-7 tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
             {t("hero.title1")}
             <br />
-            <span className="text-[#D4A853] drop-shadow-[0_2px_15px_rgba(212,168,83,0.4)]">{t("hero.title2")}</span>
+            <span className="text-[#F59E0B] drop-shadow-[0_2px_15px_rgba(212,168,83,0.4)]">{t("hero.title2")}</span>
           </h1>
           <p className="text-lg md:text-xl text-white/70 mb-12 leading-relaxed max-w-xl">
             {t("hero.subtitle")}
@@ -73,13 +73,13 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/produkte"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-[#C41E3A] font-bold rounded-2xl transition-all btn-hover btn-shimmer text-lg shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-[#DC2626] font-bold rounded-2xl transition-all btn-hover btn-shimmer text-lg shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30"
             >
               {t("hero.cta1")}
             </Link>
             <Link
               href="/partyplaner"
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#D4A853] text-white font-semibold rounded-2xl transition-all hover:bg-[#D4A853]/20 text-lg"
+              className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#F59E0B] text-white font-semibold rounded-2xl transition-all hover:bg-[#F59E0B]/20 text-lg"
             >
               {t("hero.cta2")}
             </Link>

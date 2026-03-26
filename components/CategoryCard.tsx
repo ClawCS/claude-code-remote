@@ -17,7 +17,7 @@ export default function CategoryCard({ category }: { category: Category }) {
         className="object-cover group-hover:scale-110 transition-transform duration-500"
       />
       {/* Red gradient overlay — from transparent to red */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#9B1B30]/80 via-[#C41E3A]/30 to-transparent group-hover:from-[#9B1B30]/90 group-hover:via-[#C41E3A]/40 transition-all duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#B91C1C]/80 via-[#DC2626]/30 to-transparent group-hover:from-[#B91C1C]/90 group-hover:via-[#DC2626]/40 transition-all duration-500" />
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-5">
         <span className="font-bold text-white text-sm text-center drop-shadow-lg">

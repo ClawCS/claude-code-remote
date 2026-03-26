@@ -14,7 +14,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const wishlisted = isInWishlist(product.id);
 
   return (
-    <div className="group bg-white rounded-2xl border border-[#F0D5CF] hover:border-[#C41E3A]/40 transition-all overflow-hidden flex flex-col card-hover-glow gradient-border">
+    <div className="group bg-white rounded-2xl border border-[#F0D5CF] hover:border-[#DC2626]/40 transition-all overflow-hidden flex flex-col card-hover-glow gradient-border">
       <Link href={`/produkte/${product.slug}`} className="block p-4 pb-2">
         <div className="aspect-square bg-gradient-to-br from-[#FFF8F6] to-[#FFF0EC] rounded-xl flex items-center justify-center overflow-hidden relative">
           <Image
@@ -29,7 +29,7 @@ export default function ProductCard({ product }: { product: Product }) {
             className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all"
             aria-label={wishlisted ? "Vom Merkzettel entfernen" : "Zum Merkzettel"}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-colors ${wishlisted ? "text-[#C41E3A] fill-[#C41E3A]" : "text-gray-400 hover:text-[#C41E3A]"}`} viewBox="0 0 24 24" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth={wishlisted ? 0 : 2}>
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-colors ${wishlisted ? "text-[#DC2626] fill-[#DC2626]" : "text-gray-400 hover:text-[#DC2626]"}`} viewBox="0 0 24 24" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth={wishlisted ? 0 : 2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </button>
@@ -38,9 +38,9 @@ export default function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div className="p-4 pt-2 flex flex-col flex-1">
-        <span className="inline-block text-xs text-white uppercase tracking-wide font-medium bg-[#C41E3A] px-2 py-0.5 rounded-md w-fit">{product.category}</span>
+        <span className="inline-block text-xs text-white uppercase tracking-wide font-medium bg-[#DC2626] px-2 py-0.5 rounded-md w-fit">{product.category}</span>
         <Link href={`/produkte/${product.slug}`}>
-          <h3 className="font-semibold text-[#1A1A2E] mt-1.5 group-hover:text-[#C41E3A] transition-colors line-clamp-2">
+          <h3 className="font-semibold text-[#1F2937] mt-1.5 group-hover:text-[#DC2626] transition-colors line-clamp-2">
             {product.name}
           </h3>
         </Link>
@@ -50,7 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="text-xl font-extrabold gold-price tracking-tight">{formatPrice(product.price)}</span>
           <button
             onClick={() => addItem(product)}
-            className="px-3 py-1.5 bg-[#C41E3A] hover:bg-[#9B1B30] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer btn-shimmer shadow-sm hover:shadow-md hover:shadow-red-500/20"
+            className="px-3 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer btn-shimmer shadow-sm hover:shadow-md hover:shadow-red-500/20"
           >
             {t("btn.warenkorb")}
           </button>

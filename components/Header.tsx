@@ -234,7 +234,7 @@ function GewinnspielIcon() {
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(196,30,58,0.4)]" aria-label="Gewinnspiel">
         <defs>
           <linearGradient id="giftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#C41E3A" />
+            <stop offset="0%" stopColor="#DC2626" />
             <stop offset="100%" stopColor="#FF6B6B" />
           </linearGradient>
         </defs>
@@ -251,7 +251,7 @@ function GewinnspielIcon() {
         {/* Bow right */}
         <ellipse cx="14" cy="6" rx="3" ry="2.5" fill="#FFD700" stroke="#B8860B" strokeWidth="0.3" />
         {/* Bow center */}
-        <circle cx="12" cy="6.5" r="1.5" fill="#C41E3A" />
+        <circle cx="12" cy="6.5" r="1.5" fill="#DC2626" />
       </svg>
       <span className="text-[9px] font-bold leading-none text-primary tracking-tight whitespace-nowrap">Gewinnspiel</span>
     </Link>
@@ -570,7 +570,7 @@ export default function Header() {
           <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
           <div className="fixed right-0 top-0 h-full w-[280px] bg-white z-50 shadow-2xl lg:hidden overflow-y-auto">
             {/* Mobile Header */}
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#C41E3A] to-[#9B1B30]">
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#DC2626] to-[#B91C1C]">
               <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
                 <Image src="/images/logo-trinkgut-jammers.png" alt="Trinkgut Jammers" width={130} height={51} className="h-9 w-auto" />
               </Link>

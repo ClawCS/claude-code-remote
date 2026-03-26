@@ -195,23 +195,15 @@ export default function KuehlschrankPage() {
   }, [result]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 to-white">
-      {/* Hero */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-6">
-        <div className="text-center animate-fade-in-up">
-          <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">
-            KI-Analyse
-          </p>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-secondary mb-3">
-            <span className="text-4xl md:text-6xl mr-2">{"\u{1F9CA}"}</span>
-            Kuehlschrank-Check
-          </h1>
-          <p className="text-muted max-w-xl mx-auto text-lg">
-            Wie gut ist dein Kuehlschrank bestückt? Lade ein Foto hoch und
-            unsere KI bewertet deinen Getraenkebestand!
-          </p>
-        </div>
+    <>
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Kühlschrank-Check</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Kühlschrank-Check</h1>
+        <p className="text-white/80 max-w-lg mx-auto text-lg">Lade ein Foto hoch und unsere KI bewertet deinen Getränkebestand!</p>
       </div>
+    </div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 to-white">
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-12">
         {/* Upload Zone */}
@@ -464,5 +456,6 @@ export default function KuehlschrankPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
