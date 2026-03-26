@@ -30,19 +30,13 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    labelKey: "nav.angebote",
-    children: [
-      { href: "/angebote", labelKey: "nav.aktuelleAngebote", icon: "\u{1F3F7}\uFE0F" },
-      { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
-    ],
-  },
-  {
     labelKey: "nav.services",
     children: [
       { href: "/partyplaner", labelKey: "nav.partyplaner", icon: "\u{1F389}" },
       { href: "/vermietung", labelKey: "nav.vermietung", icon: "\u{1F3AA}" },
       { href: "/finder", labelKey: "nav.finder", icon: "\u{1F50D}" },
       { href: "/leergut", labelKey: "nav.leergut", icon: "\u267B\uFE0F" },
+      { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
     ],
   },
   {
@@ -133,7 +127,7 @@ function DesktopDropdown({ item, open, onToggle, t }: { item: NavItem; open: boo
         </svg>
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-xl shadow-xl py-2 min-w-[220px] z-50">
+        <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-xl shadow-xl py-2 min-w-[220px] z-50 border-t-2 border-t-primary">
           {item.children.map((child) => (
             <Link
               key={child.href}
@@ -369,7 +363,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
+    <header className="sticky top-0 z-50 glass-header shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -576,11 +570,11 @@ export default function Header() {
           <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
           <div className="fixed right-0 top-0 h-full w-[280px] bg-white z-50 shadow-2xl lg:hidden overflow-y-auto">
             {/* Mobile Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border">
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#C41E3A] to-[#9B1B30]">
               <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
                 <Image src="/images/logo-trinkgut-jammers.png" alt="Trinkgut Jammers" width={130} height={51} className="h-9 w-auto" />
               </Link>
-              <button onClick={() => setMobileOpen(false)} className="p-1 text-muted" aria-label="Schlie\u00dfen">
+              <button onClick={() => setMobileOpen(false)} className="p-1 text-white/80 hover:text-white" aria-label="Schlie\u00dfen">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>

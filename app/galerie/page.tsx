@@ -15,19 +15,23 @@ export default function GaleriePage() {
     : galleryItems.filter((item) => item.category === activeCategory);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="text-center mb-10 animate-fade-in-up">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Galerie</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">Bilder aus dem Markt</h1>
-        <p className="text-muted max-w-xl mx-auto">
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Galerie</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Bilder aus dem Markt</h1>
+        <p className="text-white/80 max-w-xl mx-auto text-lg">
           {galleryItems.length} Bilder aus unserem Markt, unserem Team und unseren Aktionen.
           Folge uns auf{" "}
-          <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
+          <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="text-white underline font-medium">
             Instagram
           </a>{" "}
           für tägliche Updates!
         </p>
       </div>
+    </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       {/* Category Filter — Gewinnspiel highlighted */}
       <div className="flex flex-wrap gap-2 justify-center mb-8">
@@ -175,5 +179,6 @@ export default function GaleriePage() {
         </a>
       </div>
     </div>
+    </>
   );
 }

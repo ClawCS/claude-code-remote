@@ -222,20 +222,19 @@ export default function LeergutRechnerPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      {/* Hero */}
-      <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
-          <span className="text-base">{"\u267B\uFE0F"}</span> Pfand-Rechner
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-secondary mb-3">
-          Was ist dein Leergut wert?
-        </h1>
-        <p className="text-muted max-w-lg mx-auto">
-          Z&auml;hle dein Leergut manuell oder scanne es mit KI-Bilderkennung.
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Leergut-Rechner</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Leergut-Rechner</h1>
+        <p className="text-white/80 max-w-lg mx-auto text-lg">
+          Zähle dein Leergut manuell oder scanne es mit KI-Bilderkennung.
           Wir berechnen deinen Pfandwert sofort.
         </p>
       </div>
+    </div>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
       {/* Mode Toggle */}
       <div className="flex justify-center gap-2 mb-8">
@@ -484,5 +483,6 @@ export default function LeergutRechnerPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

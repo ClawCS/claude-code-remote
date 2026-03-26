@@ -188,7 +188,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (!reply) {
-      return NextResponse.json({ error: "All models rate limited" }, { status: 429 });
+      return NextResponse.json(
+        { error: "Alle Modelle sind gerade ausgelastet. Bitte in 30 Sekunden erneut versuchen." },
+        { status: 429, headers: { "Retry-After": "30" } }
+      );
     }
 
     return NextResponse.json({ reply });

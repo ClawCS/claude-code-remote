@@ -154,12 +154,12 @@ export default function GluecksradPage() {
     setSpinning(true);
 
     const winIndex = pickSegment();
-    // Calculate rotation: at least 5 full spins + target segment
-    // The pointer is at the top (12 o'clock). Segment 0 starts at the top.
-    // We need the middle of the winning segment to end up at the top.
+    // Calculate rotation: pointer is at the top (12 o'clock).
+    // The winning segment's center must align with the pointer.
+    // CSS rotates the wheel clockwise, so we subtract the segment position.
     const segmentMiddle = winIndex * SEGMENT_ANGLE + SEGMENT_ANGLE / 2;
-    const extraSpins = 5 * 360 + Math.random() * 360;
-    const targetRotation = rotation + extraSpins + (360 - segmentMiddle);
+    const fullSpins = (5 + Math.floor(Math.random() * 3)) * 360; // 5-7 full spins
+    const targetRotation = rotation + fullSpins + (360 - segmentMiddle);
 
     setRotation(targetRotation);
 
@@ -213,6 +213,15 @@ export default function GluecksradPage() {
 
       <Confetti active={showConfetti} />
 
+      {/* Red Hero Banner */}
+      <div className="page-hero-banner py-16 md:py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Glücksrad</span></nav>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Glücksrad</h1>
+          <p className="text-white/80 max-w-lg mx-auto text-lg">Drehe das Rad und gewinne tolle Preise!</p>
+        </div>
+      </div>
+
       {/* Win Modal */}
       {showModal && result && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
@@ -248,17 +257,6 @@ export default function GluecksradPage() {
         {/* Background effects */}
         <div className="absolute top-0 left-1/3 w-96 h-96 rounded-full bg-purple-600/10 blur-3xl" />
         <div className="absolute bottom-20 right-1/4 w-96 h-96 rounded-full bg-red-600/10 blur-3xl" />
-
-        {/* Header */}
-        <div className="relative z-10 pt-8 pb-4 text-center">
-          <Link href="/" className="inline-block mb-4 text-sm text-gray-500 hover:text-gray-300 transition-colors">
-            &larr; Zur&uuml;ck zur Startseite
-          </Link>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-            GL&Uuml;CKS<span className="text-red-500">RAD</span>
-          </h1>
-          <p className="mt-2 text-gray-400 text-lg">Drehe das Rad und gewinne tolle Preise!</p>
-        </div>
 
         {/* Wheel Section */}
         <div className="relative z-10 max-w-lg mx-auto px-4 pt-4 pb-8">

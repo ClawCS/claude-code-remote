@@ -44,17 +44,18 @@ export default function CommunityPage() {
     : 0;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      {/* Hero */}
-      <div className="text-center mb-10 animate-fade-in-up">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Community</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">
-          Trinkgut Jammers Community
-        </h1>
-        <p className="text-muted max-w-lg mx-auto">
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Community</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Trinkgut Jammers Community</h1>
+        <p className="text-white/80 max-w-lg mx-auto text-lg">
           Sammle Punkte, steige im Level auf und werde Monatssieger!
         </p>
       </div>
+    </div>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
       {/* Monthly Winner Banner */}
       <div className="mb-8 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
@@ -246,5 +247,6 @@ export default function CommunityPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

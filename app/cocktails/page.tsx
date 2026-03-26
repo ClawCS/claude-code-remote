@@ -14,15 +14,19 @@ export default function CocktailsPage() {
     : cocktails;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="text-center mb-10 animate-fade-in-up">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Rezepte</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">Cocktail-Rezepte</h1>
-        <p className="text-muted max-w-lg mx-auto">
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Cocktail-Rezepte</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Cocktail-Rezepte</h1>
+        <p className="text-white/80 max-w-lg mx-auto text-lg">
           {cocktails.length} Rezepte in {cocktailCategories.length} Kategorien — von Klassikern bis Trend-Drinks.
           Mit Zutaten aus deinem trinkgut Jammers Markt!
         </p>
       </div>
+    </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       {/* Category Filter */}
       <div className="flex flex-wrap gap-2 mb-8 justify-center">
@@ -172,5 +176,6 @@ export default function CocktailsPage() {
         </>
       )}
     </div>
+    </>
   );
 }

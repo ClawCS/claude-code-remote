@@ -7,12 +7,47 @@ import Link from "next/link";
 
 const LEERGUT_STORAGE_KEY = "trinkgut-leergut-historie";
 
-// CO2 savings per bottle type (grams) — Mehrweg vs Einweg comparison
-const CO2_PER_BOTTLE = 200; // ~200g CO2 saved per reused bottle
-const WATER_PER_BOTTLE = 3; // ~3L water saved per recycled bottle
-const ENERGY_PER_BOTTLE = 0.05; // ~0.05 kWh saved per bottle
-const CO2_PER_TREE_YEAR = 22000; // ~22kg = 22000g CO2 absorbed per tree per year
-const TURTLES_PER_BOTTLES = 50; // 1 "rescued turtle" per 50 bottles (humorous)
+// Echte CO2-Einsparung pro Leergut-Typ (Gramm)
+// Quelle: UBA, Deutsche Umwelthilfe, GDB Genossenschaft Deutscher Brunnen
+// Mehrweg-Glasflasche spart ~300g CO2 vs Einweg-Plastik (bis zu 50x wiederbefüllt)
+// Mehrweg-PET spart ~200g CO2 vs Einweg (bis zu 25x wiederbefüllt)
+// Einweg-Pfand: Recycling spart ~90g CO2 vs Müll
+// Kasten (Plastik/Holz): wird bis zu 100x wiederverwendet
+const CO2_SAVINGS: Record<string, number> = {
+  einweg_pet: 90,         // Recycling vs Müll
+  einweg_dose: 95,        // Aluminium-Recycling spart viel Energie
+  mehrweg_bier_033: 300,  // Mehrweg-Glas, ~50 Umläufe
+  mehrweg_bier_05: 300,   // Mehrweg-Glas, ~50 Umläufe
+  mehrweg_wasser_pet: 200,// Mehrweg-PET, ~25 Umläufe
+  mehrweg_glas: 300,      // Mehrweg-Glas 0,7/0,75L
+  bierkasten_20: 150,     // Kunststoff-Kasten, ~100 Umläufe
+  bierkasten_24: 150,     // Kunststoff-Kasten, ~100 Umläufe
+  wasserkasten: 150,      // Kunststoff-Kasten, ~100 Umläufe
+};
+const WATER_SAVINGS: Record<string, number> = {
+  einweg_pet: 1.5,        // Recycling spart Wasser
+  einweg_dose: 2.0,       // Alu-Herstellung ist wasserintensiv
+  mehrweg_bier_033: 4.0,  // Glasherstellung braucht viel Wasser
+  mehrweg_bier_05: 4.0,
+  mehrweg_wasser_pet: 2.5,
+  mehrweg_glas: 4.0,
+  bierkasten_20: 1.0,
+  bierkasten_24: 1.0,
+  wasserkasten: 1.0,
+};
+const ENERGY_SAVINGS: Record<string, number> = {
+  einweg_pet: 0.03,
+  einweg_dose: 0.05,      // Alu-Recycling spart besonders viel Energie
+  mehrweg_bier_033: 0.08,
+  mehrweg_bier_05: 0.08,
+  mehrweg_wasser_pet: 0.05,
+  mehrweg_glas: 0.08,
+  bierkasten_20: 0.02,
+  bierkasten_24: 0.02,
+  wasserkasten: 0.02,
+};
+const CO2_PER_TREE_YEAR = 22000; // ~22kg CO2 pro Baum pro Jahr
+const TURTLES_PER_CO2 = 5000;   // 1 "gerettete Schildkröte" pro 5kg CO2 (symbolisch)
 
 type LeergutHistoryEntry = {
   date: string;
@@ -29,15 +64,36 @@ type EcoStats = {
   energyKwh: number;
 };
 
-function calculateEcoStats(bottles: number): EcoStats {
-  const co2Grams = bottles * CO2_PER_BOTTLE;
+function calculateEcoStats(bottles: number, history?: LeergutHistoryEntry[]): EcoStats {
+  // Wenn Historie vorhanden: pro Typ exakt berechnen
+  if (history && history.length > 0) {
+    let co2 = 0, water = 0, energy = 0, totalItems = 0;
+    for (const entry of history) {
+      for (const [key, count] of Object.entries(entry.counts)) {
+        totalItems += count;
+        co2 += (CO2_SAVINGS[key] || 90) * count;
+        water += (WATER_SAVINGS[key] || 1.5) * count;
+        energy += (ENERGY_SAVINGS[key] || 0.03) * count;
+      }
+    }
+    return {
+      totalBottles: totalItems,
+      co2Grams: co2,
+      trees: co2 / CO2_PER_TREE_YEAR,
+      turtles: co2 / TURTLES_PER_CO2,
+      waterLiters: water,
+      energyKwh: energy,
+    };
+  }
+  // Fallback: manuelle Eingabe (Durchschnittswerte)
+  const co2Grams = bottles * 200;
   return {
     totalBottles: bottles,
     co2Grams,
     trees: co2Grams / CO2_PER_TREE_YEAR,
-    turtles: bottles / TURTLES_PER_BOTTLES,
-    waterLiters: bottles * WATER_PER_BOTTLE,
-    energyKwh: bottles * ENERGY_PER_BOTTLE,
+    turtles: co2Grams / TURTLES_PER_CO2,
+    waterLiters: bottles * 3,
+    energyKwh: bottles * 0.05,
   };
 }
 
@@ -214,7 +270,8 @@ export default function OekoTrackerPage() {
   }, []);
 
   const activeBottles = inputMode === "history" ? historyBottles : manualBottles;
-  const stats = calculateEcoStats(activeBottles);
+  const history = loadLeergutHistory();
+  const stats = inputMode === "history" ? calculateEcoStats(activeBottles, history) : calculateEcoStats(activeBottles);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">

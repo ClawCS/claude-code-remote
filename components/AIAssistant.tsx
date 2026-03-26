@@ -66,26 +66,61 @@ export default function AIAssistant() {
         text: m.text,
       }));
 
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
-      });
+      // Retry-Logik: bis zu 3 Versuche mit Wartezeit
+      let reply = "";
+      let lastError = "";
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: history }),
+        });
 
-      if (!res.ok) throw new Error("API error");
+        if (res.ok) {
+          const data = await res.json();
+          reply = data.reply;
+          break;
+        } else if (res.status === 429) {
+          lastError = "rate_limit";
+          if (attempt < 3) {
+            // Zeige Wartehinweis
+            setMessages((prev) => {
+              const filtered = prev.filter((m) => m.text !== "⏳ Einen Moment, Server ist kurz ausgelastet...");
+              return [...filtered, { id: nextId(), role: "bot", text: "⏳ Einen Moment, Server ist kurz ausgelastet..." }];
+            });
+            await new Promise((r) => setTimeout(r, attempt * 5000)); // 5s, 10s
+            continue;
+          }
+        } else {
+          lastError = "api_error";
+          break;
+        }
+      }
 
-      const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { id: nextId(), role: "bot", text: data.reply },
-      ]);
+      // Warte-Nachricht entfernen
+      setMessages((prev) => prev.filter((m) => m.text !== "⏳ Einen Moment, Server ist kurz ausgelastet..."));
+
+      if (reply) {
+        setMessages((prev) => [
+          ...prev,
+          { id: nextId(), role: "bot", text: reply },
+        ]);
+      } else {
+        const errorMsg = lastError === "rate_limit"
+          ? "Der Server ist gerade stark ausgelastet. Bitte versuch es in 30 Sekunden nochmal! ⏱️"
+          : "Entschuldigung, da ist etwas schiefgelaufen. Ruf uns an: 02823-418707 📞";
+        setMessages((prev) => [
+          ...prev,
+          { id: nextId(), role: "bot", text: errorMsg },
+        ]);
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
         {
           id: nextId(),
           role: "bot",
-          text: "Entschuldigung, da ist etwas schiefgelaufen. Versuch es bitte nochmal oder ruf uns an: 02823-418707 📞",
+          text: "Verbindungsfehler. Prüfe deine Internetverbindung oder ruf uns an: 02823-418707 📞",
         },
       ]);
     } finally {

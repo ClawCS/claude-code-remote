@@ -878,17 +878,18 @@ export default function PartyspielePageContent() {
   const activeMeta = GAMES.find((g) => g.id === activeGame);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      {/* Hero */}
-      <div className="text-center mb-10 animate-fade-in-up">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Party-Modus</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">
-          Partyspiele
-        </h1>
-        <p className="text-muted max-w-lg mx-auto">
-          8 Spiele direkt im Browser spielen — perfekt fur jede Party! Einfach Spiel wahlen und loslegen.
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Partyspiele</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyspiele</h1>
+        <p className="text-white/80 max-w-lg mx-auto text-lg">
+          8 Spiele direkt im Browser spielen — perfekt für jede Party! Einfach Spiel wählen und loslegen.
         </p>
       </div>
+    </div>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
       {/* Game Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -930,5 +931,6 @@ export default function PartyspielePageContent() {
         </GameModal>
       )}
     </div>
+    </>
   );
 }

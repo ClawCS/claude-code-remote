@@ -221,22 +221,19 @@ export default function BierkartePage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
-      {/* Hero */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-6">
-        <div className="text-center animate-fade-in-up">
-          <p className="text-sm font-semibold tracking-widest uppercase text-amber-600 mb-2">
-            Weltweit geniessen
-          </p>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-secondary mb-3">
-            Bier- & Spirituosen-Weltkarte
-          </h1>
-          <p className="text-muted max-w-2xl mx-auto text-lg">
-            {totalProducts} Produkte aus {Object.keys(countryProducts).length} Laendern — klicke
-            auf ein Land und entdecke unser internationales Sortiment.
-          </p>
-        </div>
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Bierkarte</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Bier- & Spirituosen-Weltkarte</h1>
+        <p className="text-white/80 max-w-2xl mx-auto text-lg">
+          {totalProducts} Produkte aus {Object.keys(countryProducts).length} Ländern — klicke
+          auf ein Land und entdecke unser internationales Sortiment.
+        </p>
       </div>
+    </div>
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
 
       {/* SVG Map */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-6">
@@ -497,5 +494,6 @@ export default function BierkartePage() {
         />
       )}
     </div>
+    </>
   );
 }

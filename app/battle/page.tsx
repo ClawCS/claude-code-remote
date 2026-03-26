@@ -264,6 +264,15 @@ export default function BattlePage() {
 
       <Confetti active={showConfetti} />
 
+      {/* Red Hero Banner */}
+      <div className="page-hero-banner py-16 md:py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Getränke-Battle</span></nav>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Battle</h1>
+          <p className="text-white/80 max-w-lg mx-auto text-lg">Wöchentliches Voting-Duell — Welches Getränk gewinnt?</p>
+        </div>
+      </div>
+
       <div className="min-h-screen bg-gray-950 relative overflow-hidden">
         {/* Spotlight effects */}
         <div
@@ -278,13 +287,6 @@ export default function BattlePage() {
 
         {/* Header */}
         <div className="relative z-10 pt-8 pb-4 text-center">
-          <Link href="/" className="inline-block mb-4 text-sm text-gray-500 hover:text-gray-300 transition-colors">
-            &larr; Zur&uuml;ck zur Startseite
-          </Link>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-            GETR&Auml;NKE-<span className="text-red-500">BATTLE</span>
-          </h1>
-          <p className="mt-2 text-gray-400 text-lg">W&ouml;chentliches Voting-Duell &mdash; Welches Getr&auml;nk gewinnt?</p>
 
           {/* Countdown */}
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gray-900/80 border border-gray-700 rounded-full">
