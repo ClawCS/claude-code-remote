@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useTranslation, LANG_KEY, LANG_CHANGE_EVENT, type Lang } from "@/lib/i18n";
 
 type DropdownItem = { href: string; labelKey: string; icon: string };
@@ -29,30 +30,37 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    labelKey: "nav.angebote",
-    children: [
-      { href: "/angebote", labelKey: "nav.aktuelleAngebote", icon: "\u{1F3F7}\uFE0F" },
-      { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
-    ],
-  },
-  {
     labelKey: "nav.services",
     children: [
       { href: "/partyplaner", labelKey: "nav.partyplaner", icon: "\u{1F389}" },
       { href: "/vermietung", labelKey: "nav.vermietung", icon: "\u{1F3AA}" },
       { href: "/finder", labelKey: "nav.finder", icon: "\u{1F50D}" },
+      { href: "/leergut", labelKey: "nav.leergut", icon: "\u267B\uFE0F" },
+      { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
     ],
   },
   {
     labelKey: "nav.erleben",
     children: [
       { href: "/cocktails", labelKey: "nav.cocktails", icon: "\u{1F378}" },
+      { href: "/partyspiele", labelKey: "nav.partyspiele", icon: "\u{1F3B2}" },
       { href: "/galerie", labelKey: "nav.galerie", icon: "\u{1F4F8}" },
-      { href: "/gewinnspiel", labelKey: "nav.gewinnspiel", icon: "\u{1F3C6}" },
+      { href: "/battle", labelKey: "nav.battle", icon: "\u{1F94A}" },
+      { href: "/gluecksrad", labelKey: "nav.gluecksrad", icon: "\u{1F3B0}" },
+      { href: "/oeko-tracker", labelKey: "nav.oekoTracker", icon: "\u{1F30D}" },
+      { href: "/bierkarte", labelKey: "nav.bierkarte", icon: "\u{1F5FA}\uFE0F" },
+      { href: "/kuehlschrank", labelKey: "nav.kuehlschrank", icon: "\u{1F9CA}" },
+    ],
+  },
+  {
+    labelKey: "nav.handzettel",
+    children: [
+      { href: "/handzettel", labelKey: "nav.handzettelDE", icon: "\u{1F1E9}\u{1F1EA}" },
+      { href: "/handzettel", labelKey: "nav.handzettelNL", icon: "\u{1F1F3}\u{1F1F1}" },
     ],
   },
   { labelKey: "nav.akademie", href: "/akademie" },
-  { labelKey: "nav.handzettel", href: "/handzettel" },
+  { labelKey: "nav.community", href: "/community" },
   { labelKey: "nav.jobs", href: "/bewerbung" },
 ];
 
@@ -119,7 +127,7 @@ function DesktopDropdown({ item, open, onToggle, t }: { item: NavItem; open: boo
         </svg>
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-xl shadow-xl py-2 min-w-[220px] z-50">
+        <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-xl shadow-xl py-2 min-w-[220px] z-50 border-t-2 border-t-primary">
           {item.children.map((child) => (
             <Link
               key={child.href}
@@ -144,10 +152,18 @@ function WmTrophyIcon() {
       className="relative flex flex-col items-center gap-0.5 group"
       title="🏆 WM 2026 Tippspiel — Hier teilnehmen!"
     >
+      {/* Animated glow ring */}
+      <span className="absolute -inset-2 rounded-full bg-gradient-to-r from-amber-400/30 via-yellow-300/20 to-amber-400/30 blur-sm animate-pulse group-hover:from-amber-400/50 group-hover:via-yellow-300/40 group-hover:to-amber-400/50 transition-all" />
+      {/* Star burst behind */}
+      <svg className="absolute -inset-1 h-12 w-12" viewBox="0 0 48 48" fill="none">
+        {[0,45,90,135,180,225,270,315].map((r) => (
+          <line key={r} x1="24" y1="24" x2="24" y2="4" stroke="#FFD700" strokeWidth="0.5" opacity="0.3" transform={`rotate(${r} 24 24)`} />
+        ))}
+      </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        className="h-7 w-7 wm-trophy-icon"
+        className="relative h-9 w-9 wm-trophy-icon drop-shadow-[0_0_6px_rgba(255,215,0,0.5)]"
         aria-label="WM 2026 Tippspiel"
       >
         <defs>
@@ -196,6 +212,48 @@ function WmTrophyIcon() {
       </svg>
       {/* Permanent label */}
       <span className="text-[9px] font-bold leading-none text-amber-600 tracking-tight whitespace-nowrap">WM 2026</span>
+    </Link>
+  );
+}
+
+function GewinnspielIcon() {
+  return (
+    <Link
+      href="/gewinnspiel"
+      className="relative flex flex-col items-center gap-0.5 group"
+      title="🎁 Monatsgewinnspiel — Jetzt mitmachen!"
+    >
+      {/* Animated glow ring */}
+      <span className="absolute -inset-2 rounded-full bg-gradient-to-r from-red-400/30 via-pink-300/20 to-red-400/30 blur-sm animate-pulse group-hover:from-red-400/50 group-hover:via-pink-300/40 group-hover:to-red-400/50 transition-all" />
+      {/* Sparkles */}
+      <svg className="absolute -inset-1 h-12 w-12" viewBox="0 0 48 48" fill="none">
+        <circle cx="8" cy="12" r="1.5" fill="#FFD700" opacity="0.6" className="animate-ping" style={{animationDuration: "2s"}} />
+        <circle cx="40" cy="14" r="1" fill="#FFD700" opacity="0.5" className="animate-ping" style={{animationDuration: "2.5s"}} />
+        <circle cx="38" cy="38" r="1.2" fill="#FFD700" opacity="0.4" className="animate-ping" style={{animationDuration: "3s"}} />
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(196,30,58,0.4)]" aria-label="Gewinnspiel">
+        <defs>
+          <linearGradient id="giftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#DC2626" />
+            <stop offset="100%" stopColor="#FF6B6B" />
+          </linearGradient>
+        </defs>
+        {/* Box */}
+        <rect x="3" y="10" width="18" height="10" rx="2" fill="url(#giftGrad)" />
+        {/* Lid */}
+        <rect x="2" y="7" width="20" height="4" rx="1.5" fill="url(#giftGrad)" stroke="#A01030" strokeWidth="0.3" />
+        {/* Ribbon vertical */}
+        <rect x="10.5" y="7" width="3" height="13" fill="#FFD700" />
+        {/* Ribbon horizontal */}
+        <rect x="2" y="8" width="20" height="2" fill="#FFD700" opacity="0.7" />
+        {/* Bow left */}
+        <ellipse cx="10" cy="6" rx="3" ry="2.5" fill="#FFD700" stroke="#B8860B" strokeWidth="0.3" />
+        {/* Bow right */}
+        <ellipse cx="14" cy="6" rx="3" ry="2.5" fill="#FFD700" stroke="#B8860B" strokeWidth="0.3" />
+        {/* Bow center */}
+        <circle cx="12" cy="6.5" r="1.5" fill="#DC2626" />
+      </svg>
+      <span className="text-[9px] font-bold leading-none text-primary tracking-tight whitespace-nowrap">Gewinnspiel</span>
     </Link>
   );
 }
@@ -261,6 +319,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
 
 export default function Header() {
   const { totalItems, setIsCartOpen } = useCart();
+  const { totalItems: wishlistTotal, setIsWishlistOpen } = useWishlist();
   const router = useRouter();
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -304,7 +363,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
+    <header className="sticky top-0 z-50 glass-header shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -333,11 +392,13 @@ export default function Header() {
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             {/* WM 2026 Trophy Icon - always visible */}
             <WmTrophyIcon />
+            {/* Gewinnspiel Icon */}
+            <GewinnspielIcon />
 
-            {/* Language Switcher - Desktop */}
+            {/* Language Switcher */}
             <LanguageSwitcher className="hidden lg:block" />
 
             {/* Search toggle - Desktop */}
@@ -360,6 +421,22 @@ export default function Header() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+            </button>
+
+            {/* Wishlist */}
+            <button
+              onClick={() => setIsWishlistOpen(true)}
+              className="relative p-2 text-secondary hover:text-primary transition-colors"
+              aria-label="Merkzettel"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              {wishlistTotal > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistTotal}
+                </span>
+              )}
             </button>
 
             {/* Cart */}
@@ -493,24 +570,20 @@ export default function Header() {
           <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
           <div className="fixed right-0 top-0 h-full w-[280px] bg-white z-50 shadow-2xl lg:hidden overflow-y-auto">
             {/* Mobile Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border">
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#DC2626] to-[#B91C1C]">
               <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
                 <Image src="/images/logo-trinkgut-jammers.png" alt="Trinkgut Jammers" width={130} height={51} className="h-9 w-auto" />
               </Link>
-              <button onClick={() => setMobileOpen(false)} className="p-1 text-muted" aria-label="Schlie\u00dfen">
+              <button onClick={() => setMobileOpen(false)} className="p-1 text-white/80 hover:text-white" aria-label="Schlie\u00dfen">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
-            {/* Language Switcher - Mobile */}
-            <div className="px-4 pt-3 pb-1">
-              <div className="flex gap-1">
-                {(Object.keys(langLabels) as Lang[]).map((l) => (
-                  <MobileLangButton key={l} lang={l} />
-                ))}
-              </div>
+            {/* Mobile Language Switcher */}
+            <div className="flex gap-2 px-4 pt-3 pb-1">
+              <LanguageSwitcher className="" />
             </div>
 
             {/* Mobile Nav */}

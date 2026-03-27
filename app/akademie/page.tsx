@@ -6,15 +6,19 @@ export const metadata: Metadata = { title: "Getränkeakademie" };
 
 export default function AkademiePage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="text-center mb-12 animate-fade-in-up">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Wissen</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">Getränkeakademie</h1>
-        <p className="text-muted max-w-xl mx-auto">
+    <>
+    {/* Red Hero Banner */}
+    <div className="page-hero-banner py-16 md:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Getränkeakademie</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränkeakademie</h1>
+        <p className="text-white/80 max-w-xl mx-auto text-lg">
           Werde zum Getränke-Experten! {courses.length} Kurse mit {courses.reduce((sum, c) => sum + c.lessons.length, 0)} Lektionen
           — von Bierwissen bis Likör-Herstellung.
         </p>
       </div>
+    </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
         {courses.map((course) => (
@@ -74,5 +78,6 @@ export default function AkademiePage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
