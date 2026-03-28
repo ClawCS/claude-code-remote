@@ -8,10 +8,15 @@ import SocialProof from "@/components/SocialProof";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { categories, type Product } from "@/lib/utils";
 import productsData from "@/data/products.json";
+import { galleryItems } from "@/data/gallery";
+import { courses } from "@/data/akademie";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 
 const products = productsData as Product[];
+const teamMembers = galleryItems.filter((i) => i.category === "team");
+const galleryPreview = galleryItems.filter((i) => i.category !== "team").slice(0, 8);
 
 export default function Home() {
   const highlights = products.filter((p) => p.highlight);
@@ -133,6 +138,119 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══ UNSER TEAM ═══ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+        <div className="text-center mb-12 animate-fade-in-up">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Leidenschaft & Expertise</p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+            Unser Team
+          </h2>
+          <p className="text-muted mt-3 max-w-xl mx-auto">10 Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 stagger-children">
+          {teamMembers.map((member) => (
+            <Link key={member.id} href="/galerie" className="group text-center">
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-3 border-2 border-transparent group-hover:border-[#DC2626] transition-all duration-300 shadow-md group-hover:shadow-xl">
+                <Image
+                  src={member.image}
+                  alt={member.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-2 left-2 right-2">
+                  <p className="text-white font-bold text-sm drop-shadow-lg">{member.title.split(" — ")[0]}</p>
+                </div>
+              </div>
+              <p className="text-xs text-muted group-hover:text-[#DC2626] transition-colors">{member.title.split(" — ")[1] || member.description.slice(0, 40)}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Red gradient stripe divider */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#DC2626] to-transparent opacity-20" />
+
+      {/* ═══ GALERIE PREVIEW ═══ */}
+      <section className="relative py-20 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5F3] via-white to-white" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12 animate-fade-in-up">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Einblicke</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+              Aus unserem Markt
+            </h2>
+            <p className="text-muted mt-3 max-w-xl mx-auto">{galleryItems.length} Bilder aus dem Markt, Aktionen und Gewinnspielen</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 stagger-children">
+            {galleryPreview.map((item) => (
+              <Link key={item.id} href="/galerie" className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-white font-bold text-sm drop-shadow-lg">{item.title}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/galerie" className="inline-flex items-center gap-2 px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl btn-hover shadow-lg shadow-[#DC2626]/20 transition-colors">
+              Alle {galleryItems.length} Bilder ansehen
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Red gradient stripe divider */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#DC2626] to-transparent opacity-20" />
+
+      {/* ═══ AKADEMIE TEASER ═══ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+        <div className="text-center mb-12 animate-fade-in-up">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Wissen & Zertifikate</p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+            Trinkgut Akademie
+          </h2>
+          <p className="text-muted mt-3 max-w-xl mx-auto">{courses.length} Kurse mit {courses.reduce((sum, c) => sum + c.lessons.length, 0)} Lektionen — vom Einsteiger zum Experten</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
+          {courses.slice(0, 6).map((course) => (
+            <Link key={course.slug} href={`/akademie/${course.slug}`} className="group relative p-6 bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-3xl">{course.icon}</span>
+                <div>
+                  <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors">{course.title}</h3>
+                  <p className="text-xs text-muted">{course.difficulty} · {course.lessons.length} Lektionen</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted line-clamp-2">{course.description}</p>
+              <div className="mt-3 flex items-center gap-2">
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                  course.difficulty === "Einsteiger" ? "bg-green-100 text-green-700" :
+                  course.difficulty === "Fortgeschritten" ? "bg-amber-100 text-amber-700" :
+                  "bg-red-100 text-red-700"
+                }`}>{course.difficulty}</span>
+                <span className="text-xs text-muted">{course.duration}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <Link href="/akademie" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1F2937] hover:bg-[#111827] text-white font-bold rounded-xl btn-hover shadow-lg transition-colors">
+            Alle {courses.length} Kurse entdecken
+          </Link>
         </div>
       </section>
 

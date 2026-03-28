@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import productsData from "@/data/products.json";
 import { type Product, formatPrice } from "@/lib/utils";
+import { galleryItems } from "@/data/gallery";
+import { courses } from "@/data/akademie";
 
 const products = productsData as Product[];
 
@@ -210,7 +212,7 @@ export default function NlLandingPage() {
 
         <div className="text-center mt-10">
           <Link href="/produkte" className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl">
-            Bekijk alle 7.000+ producten
+            Bekijk alle 7.000+ producten 🇩🇪
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </Link>
         </div>
@@ -356,6 +358,95 @@ export default function NlLandingPage() {
           </a>
         </div>
       </div>
+
+      {/* ═══ ONS TEAM ═══ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Ons Team</h2>
+          <p className="text-gray-500 mt-2">10 medewerkers met passie voor dranken — wij adviseren u graag!</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {galleryItems.filter((i) => i.category === "team").map((member) => (
+            <div key={member.id} className="text-center group">
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-2 shadow-md group-hover:shadow-xl transition-shadow">
+                <Image
+                  src={member.image}
+                  alt={member.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 20vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-2 left-2 right-2">
+                  <p className="text-white font-bold text-sm drop-shadow-lg">{member.title.split(" — ")[0]}</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500">{member.title.split(" — ")[1] || ""}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ GALERIE ═══ */}
+      <section className="bg-gray-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Foto&apos;s uit de winkel</h2>
+            <p className="text-gray-500 mt-2">{galleryItems.length} foto&apos;s van ons team, acties en winacties</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {galleryItems.filter((i) => i.category !== "team").slice(0, 8).map((item) => (
+              <div key={item.id} className="group relative aspect-square rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-white font-bold text-xs drop-shadow-lg">{item.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-6">
+            <Link href="/galerie" className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors text-sm">
+              Alle {galleryItems.length} foto&apos;s bekijken 🇩🇪
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ AKADEMIE ═══ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Trinkgut Academie</h2>
+          <p className="text-gray-500 mt-2">{courses.length} cursussen met {courses.reduce((sum, c) => sum + c.lessons.length, 0)} lessen — van beginner tot expert</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {courses.slice(0, 6).map((course) => (
+            <div key={course.slug} className="group p-5 bg-white border border-gray-200 rounded-xl hover:border-orange-300 hover:shadow-lg transition-all cursor-default">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-2xl">{course.icon}</span>
+                <div>
+                  <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors text-sm">{course.title}</h3>
+                  <p className="text-xs text-gray-400">{course.lessons.length} lessen</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 line-clamp-2">{course.description}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-6">
+          <Link href="/akademie" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition-colors text-sm">
+            Alle {courses.length} cursussen ontdekken 🇩🇪
+          </Link>
+        </div>
+      </section>
 
       {/* ═══ Footer ═══ */}
       <footer className="bg-gray-900 text-gray-400 py-8 text-center text-sm">
