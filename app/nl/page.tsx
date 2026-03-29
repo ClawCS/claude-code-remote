@@ -93,8 +93,9 @@ export default function NlLandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-0.5">
             {[
               { label: "💰 Aanbiedingen", href: "#deals" },
+              { label: "🎉 Partyplanner", href: "#party" },
+              { label: "🎪 Verhuur", href: "#verhuur" },
               { label: "👥 Ons Team", href: "#team" },
-              { label: "📸 Foto's", href: "#fotos" },
               { label: "🎓 Cursussen", href: "#academie" },
               { label: "📍 Route", href: "#route" },
               { label: "📞 Contact", href: "#contact" },
@@ -258,6 +259,67 @@ export default function NlLandingPage() {
         </div>
       </section>
 
+      {/* ═══ PARTYPLANNER ═══ */}
+      <section id="party" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20 scroll-mt-20">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">🎉 Partyplanner</h2>
+          <p className="text-gray-500 mt-2">Wij plannen jouw perfecte feest — van bier tot bubbels</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { icon: "🍺", title: "Drankenadvies", desc: "Hoeveel bier, wijn en fris heb je nodig? Wij berekenen het voor je op basis van het aantal gasten." },
+            { icon: "🧊", title: "Koeling & ijs", desc: "Koelkasten, ijsblokjesmachines en koeltonnen beschikbaar voor verhuur." },
+            { icon: "📦", title: "Levering & retour", desc: "Wij leveren aan huis en halen lege kratten weer op. Geen gesleep!" },
+            { icon: "🥂", title: "Sekt & bubbels", desc: "Prosecco, Champagne of Sekt — voor bruiloften, jubilea en meer." },
+            { icon: "🎯", title: "Op maat", desc: "Vertel ons je budget en het aantal gasten — wij stellen het perfecte pakket samen." },
+            { icon: "💰", title: "Duitse prijzen", desc: "Bespaar tot 40% op dranken vergeleken met Nederlandse supermarktprijzen." },
+          ].map((item) => (
+            <div key={item.title} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-orange-200 hover:shadow-lg transition-all">
+              <div className="text-3xl mb-3">{item.icon}</div>
+              <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <a href="https://wa.me/4917663228597?text=Hallo!%20Ik%20wil%20graag%20een%20feest%20plannen." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-3.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
+            💬 WhatsApp ons voor een offerte
+          </a>
+        </div>
+      </section>
+
+      {/* ═══ VERHUUR ═══ */}
+      <section id="verhuur" className="bg-gray-50 py-16 md:py-20 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">🎪 Verhuur</h2>
+            <p className="text-gray-500 mt-2">Alles voor jouw evenement — huren bij Jammers</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { icon: "🍻", title: "Tapinstallaties", desc: "Professionele tapinstallaties met CO₂ en koeling voor perfect getapt bier." },
+              { icon: "🪑", title: "Tafels & stoelen", desc: "Statafels, biertafels en stoelen voor elk formaat feest." },
+              { icon: "🥤", title: "Glazen & bekers", desc: "Bierglazen, wijnglazen, champagneglazen — schoon en klaar voor gebruik." },
+              { icon: "❄️", title: "Koeling", desc: "Koelkasten, koeltonnen en ijsblokjesmachines voor elk evenement." },
+            ].map((item) => (
+              <div key={item.title} className="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <h3 className="font-bold text-gray-900 text-lg mb-2">{item.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8 space-x-3">
+            <a href="tel:+492823418707" className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg transition-all">
+              📞 Bel ons voor beschikbaarheid
+            </a>
+            <a href="https://wa.me/4917663228597?text=Hallo!%20Ik%20wil%20graag%20informatie%20over%20verhuur." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
+              💬 WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ ROUTE & ANFAHRT ═══ */}
       <section id="route" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20">
         <div className="text-center mb-12">
@@ -402,39 +464,6 @@ export default function NlLandingPage() {
               <p className="text-xs text-gray-500">{member.title.split(" — ")[1] || ""}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* ═══ GALERIE ═══ */}
-      <section id="fotos" className="bg-gray-50 py-16 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Foto&apos;s uit de winkel</h2>
-            <p className="text-gray-500 mt-2">{galleryItems.length} foto&apos;s van ons team, acties en winacties</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {galleryItems.filter((i) => i.category !== "team").slice(0, 8).map((item) => (
-              <div key={item.id} className="group relative aspect-square rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-white font-bold text-xs drop-shadow-lg">{item.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-6">
-            <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 hover:opacity-90 text-white font-bold rounded-xl transition-colors text-sm">
-              Meer foto&apos;s op Instagram 📸
-            </a>
-          </div>
         </div>
       </section>
 
