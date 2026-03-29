@@ -98,7 +98,6 @@ export default function WeatherWidget() {
       >
         <span className="text-lg leading-none">{weatherIcon(data.code)}</span>
         <span className="text-sm font-bold">{data.temp}°</span>
-        <span className="text-[10px] text-white/60 hidden sm:inline">{data.city}</span>
         <svg className={`h-3 w-3 text-white/50 transition-transform ${expanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
@@ -114,7 +113,7 @@ export default function WeatherWidget() {
             </div>
             <span className="text-4xl">{weatherIcon(data.code)}</span>
           </div>
-          <p className="text-[10px] text-white/40 mb-3">📍 {data.city}</p>
+          <p className="text-[10px] text-white/40 mb-3">📍 Deine Region</p>
 
           <div className="flex gap-2">
             {data.daily.map((d, i) => (
