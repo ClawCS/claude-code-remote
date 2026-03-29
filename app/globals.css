@@ -56,6 +56,81 @@ body {
   background: linear-gradient(180deg, #EF4444, #DC2626);
 }
 
+/* ═══ Scroll-line for Hero ═══ */
+@keyframes scrollLine {
+  0% { top: -12px; }
+  100% { top: 100%; }
+}
+.animate-scroll-line {
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+
+/* ═══ Card Spotlight (mouse-follow) ═══ */
+.card-spotlight {
+  position: relative;
+}
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(220, 38, 38, 0.06),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* ═══ Product image contact shadow ═══ */
+.product-image-shadow {
+  position: relative;
+}
+.product-image-shadow::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 15%;
+  right: 15%;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.08) 0%, transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* ═══ Ken Burns slow zoom ═══ */
+@keyframes kenBurns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+.ken-burns {
+  animation: kenBurns 20s ease-in-out alternate infinite;
+}
+
+/* ═══ Mobile touch feedback ═══ */
+@media (hover: none) {
+  .card-hover:active,
+  .card-hover-glow:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease;
+  }
+}
+
+/* ═══ Drawer slide-in ═══ */
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.drawer-slide-in {
+  animation: slideInFromRight 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* ═══ Keyframe Animations ═══ */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(24px); }
