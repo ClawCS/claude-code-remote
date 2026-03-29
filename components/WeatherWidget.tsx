@@ -46,31 +46,13 @@ export default function WeatherWidget() {
       try {
         let lat = 51.68, lon = 6.16, city = "Goch";
 
-        // 1. Browser Geolocation (präzise, fragt User-Erlaubnis)
         try {
-          const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000, maximumAge: 600000 })
-          );
-          lat = pos.coords.latitude;
-          lon = pos.coords.longitude;
-          // Reverse Geocoding für Stadtnamen
-          try {
-            const rev = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`, { signal: AbortSignal.timeout(3000) });
-            if (rev.ok) {
-              const r = await rev.json();
-              city = r.address?.city || r.address?.town || r.address?.village || r.address?.municipality || "Dein Standort";
-            }
-          } catch { city = "Dein Standort"; }
-        } catch {
-          // 2. Fallback: IP-basiert
-          try {
-            const geo = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(3000) });
-            if (geo.ok) {
-              const g = await geo.json();
-              if (g.latitude) { lat = g.latitude; lon = g.longitude; city = g.city || "Goch"; }
-            }
-          } catch { /* fallback Goch */ }
-        }
+          const geo = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(5000) });
+          if (geo.ok) {
+            const g = await geo.json();
+            if (g.latitude) { lat = g.latitude; lon = g.longitude; city = g.city || "Goch"; }
+          }
+        } catch { /* fallback Goch */ }
 
         const res = await fetch(
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&forecast_days=3`
