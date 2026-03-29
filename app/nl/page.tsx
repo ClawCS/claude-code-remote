@@ -211,10 +211,10 @@ export default function NlLandingPage() {
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/produkte" className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl">
-            Bekijk alle 7.000+ producten 🇩🇪
+          <a href="#route" className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl">
+            Bezoek ons — Route plannen 📍
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -414,9 +414,9 @@ export default function NlLandingPage() {
             ))}
           </div>
           <div className="text-center mt-6">
-            <Link href="/galerie" className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors text-sm">
-              Alle {galleryItems.length} foto&apos;s bekijken 🇩🇪
-            </Link>
+            <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 hover:opacity-90 text-white font-bold rounded-xl transition-colors text-sm">
+              Meer foto&apos;s op Instagram 📸
+            </a>
           </div>
         </div>
       </section>
@@ -442,9 +442,9 @@ export default function NlLandingPage() {
           ))}
         </div>
         <div className="text-center mt-6">
-          <Link href="/akademie" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition-colors text-sm">
-            Alle {courses.length} cursussen ontdekken 🇩🇪
-          </Link>
+          <a href="#route" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition-colors text-sm">
+            Bezoek ons in Goch 📍
+          </a>
         </div>
       </section>
 
@@ -452,11 +452,11 @@ export default function NlLandingPage() {
       <footer className="bg-gray-900 text-gray-400 py-8 text-center text-sm">
         <p>© {new Date().getFullYear()} trinkgut Jammers Goch — Alle rechten voorbehouden</p>
         <p className="mt-1">
-          <Link href="/impressum" className="hover:text-white">Impressum</Link>
+          <a href="/impressum" target="_blank" rel="noopener noreferrer" className="hover:text-white">Impressum</a>
           {" · "}
-          <Link href="/datenschutz" className="hover:text-white">Privacy</Link>
+          <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="hover:text-white">Privacy</a>
           {" · "}
-          <Link href="/" className="hover:text-white">🇩🇪 Duitse website</Link>
+          <a href="/" className="hover:text-white">🇩🇪 Duitse website</a>
         </p>
         <p className="mt-3 text-xs text-gray-600">Geen 18, geen alcohol.</p>
       </footer>
