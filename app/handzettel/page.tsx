@@ -15,6 +15,8 @@ export default function HandzettelPage() {
   const currentKW = getISOCalendarWeek();
   const [activeTab, setActiveTab] = useState<"de" | "nl">("de");
 
+  // Trinkgut Prospekt direkt von der offiziellen Quelle
+  const trinkgutProspektUrl = "https://www.trinkgut.de/angebote/";
   const pdfPath = `/handzettel/${activeTab}/kw-${currentKW}.pdf`;
 
   return (
@@ -70,7 +72,7 @@ export default function HandzettelPage() {
         </div>
       </div>
 
-      {/* Prospekt Anzeige */}
+      {/* Prospekt Anzeige — Direkt von trinkgut.de */}
       <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm mb-8">
         <div className={`p-4 text-white flex items-center justify-between ${
           activeTab === "de"
@@ -81,53 +83,55 @@ export default function HandzettelPage() {
             {activeTab === "de" ? "🇩🇪" : "🇳🇱"} {activeTab === "de" ? "Handzettel" : "Folder"} KW {currentKW} — Werbekreis 3.6
           </h2>
           <a
-            href={pdfPath}
+            href={trinkgutProspektUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            PDF öffnen
+            Auf trinkgut.de öffnen ↗
           </a>
         </div>
 
-        {/* PDF Embed */}
+        {/* Trinkgut Prospekt Embed */}
         <div className="relative">
           <iframe
-            key={`${activeTab}-${currentKW}`}
-            src={pdfPath}
+            key={`prospekt-${activeTab}-${currentKW}`}
+            src={trinkgutProspektUrl}
             className="w-full border-0"
             style={{ height: "900px" }}
-            title={`Handzettel KW ${currentKW} ${activeTab.toUpperCase()}`}
+            title={`Trinkgut Handzettel KW ${currentKW} — Werbekreis 3.6`}
+            sandbox="allow-scripts allow-same-origin allow-popups"
           />
-          {/* Fallback wenn PDF nicht existiert */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="bg-white/90 backdrop-blur rounded-2xl p-8 text-center shadow-xl hidden" id={`fallback-${activeTab}-${currentKW}`}>
-              <span className="text-5xl block mb-4">📄</span>
-              <h3 className="text-xl font-bold text-secondary mb-2">Handzettel KW {currentKW} wird geladen...</h3>
-              <p className="text-muted text-sm">
-                Falls der Prospekt nicht angezeigt wird, nutze den Button oben um das PDF direkt zu öffnen.
+          {/* Overlay falls Embed blockiert wird */}
+          <div className="absolute inset-0 flex items-center justify-center bg-white/95">
+            <div className="text-center p-8 max-w-md">
+              <span className="text-6xl block mb-4">📰</span>
+              <h3 className="text-2xl font-bold text-secondary mb-3">
+                {activeTab === "de" ? "Aktueller Handzettel" : "Huidige folder"}
+              </h3>
+              <p className="text-muted text-sm mb-2">
+                KW {currentKW} — Werbekreis 3.6 — Goch und Umgebung
               </p>
+              <p className="text-muted text-sm mb-6">
+                {activeTab === "de"
+                  ? "Alle aktuellen Angebote direkt auf trinkgut.de ansehen:"
+                  : "Alle actuele aanbiedingen direct op trinkgut.de bekijken:"}
+              </p>
+              <a
+                href={trinkgutProspektUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-xl text-lg shadow-lg transition-all hover:scale-105 ${
+                  activeTab === "de"
+                    ? "bg-primary hover:bg-red-700 shadow-red-500/20"
+                    : "bg-orange-500 hover:bg-orange-600 shadow-orange-500/20"
+                }`}
+              >
+                📄 {activeTab === "de" ? "Handzettel öffnen" : "Folder openen"} ↗
+              </a>
+              <p className="text-xs text-muted mt-4">Öffnet trinkgut.de in einem neuen Tab</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Link zu Trinkgut.de als Fallback */}
-      <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm mb-8">
-        <div className="bg-gradient-to-r from-gray-700 to-gray-900 p-6 text-white text-center">
-          <h2 className="text-lg font-bold mb-2">Auch online verfügbar</h2>
-          <p className="text-white/70 text-sm mb-4">Den aktuellen Prospekt findest du auch direkt bei trinkgut.de</p>
-          <a
-            href="https://www.trinkgut.de/angebote/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-secondary font-bold rounded-xl hover:bg-gray-100 transition-colors"
-          >
-            Auf trinkgut.de ansehen ↗
-          </a>
         </div>
       </div>
 
