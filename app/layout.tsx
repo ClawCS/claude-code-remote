@@ -9,6 +9,7 @@ import WishlistDrawer from "@/components/WishlistDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AIAssistant from "@/components/AIAssistant";
 import CookieBanner from "@/components/CookieBanner";
+import DeChrome from "@/components/DeChrome";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://trinkgut-jammers.de"),
@@ -46,13 +47,19 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <CartProvider>
           <WishlistProvider>
-            <Header />
+            <DeChrome>
+              <Header />
+            </DeChrome>
             <main className="flex-1">{children}</main>
-            <Footer />
+            <DeChrome>
+              <Footer />
+            </DeChrome>
             <CartDrawer />
             <WishlistDrawer />
-            <WhatsAppButton />
-            <AIAssistant />
+            <DeChrome>
+              <WhatsAppButton />
+              <AIAssistant />
+            </DeChrome>
             <CookieBanner />
           </WishlistProvider>
         </CartProvider>
