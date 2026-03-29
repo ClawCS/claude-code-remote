@@ -46,13 +46,24 @@ export default function WeatherWidget() {
       try {
         let lat = 51.68, lon = 6.16, city = "Goch";
 
+        // IP-Geolocation: mehrere Dienste als Fallback
+        let geoOk = false;
         try {
-          const geo = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(5000) });
+          const geo = await fetch("http://ip-api.com/json/?fields=lat,lon,city,status", { signal: AbortSignal.timeout(5000) });
           if (geo.ok) {
             const g = await geo.json();
-            if (g.latitude) { lat = g.latitude; lon = g.longitude; city = g.city || "Goch"; }
+            if (g.status === "success" && g.lat) { lat = g.lat; lon = g.lon; city = g.city || "Goch"; geoOk = true; }
           }
-        } catch { /* fallback Goch */ }
+        } catch { /* try next */ }
+        if (!geoOk) {
+          try {
+            const geo = await fetch("https://ipwho.is/", { signal: AbortSignal.timeout(5000) });
+            if (geo.ok) {
+              const g = await geo.json();
+              if (g.success && g.latitude) { lat = g.latitude; lon = g.longitude; city = g.city || "Goch"; }
+            }
+          } catch { /* fallback Goch */ }
+        }
 
         const res = await fetch(
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&forecast_days=3`
