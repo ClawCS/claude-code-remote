@@ -45,25 +45,13 @@ export default function WeatherWidget() {
     async function load() {
       try {
         let lat = 51.68, lon = 6.16, city = "Goch";
-
-        // IP-Geolocation: mehrere Dienste als Fallback
-        let geoOk = false;
         try {
-          const geo = await fetch("http://ip-api.com/json/?fields=lat,lon,city,status", { signal: AbortSignal.timeout(5000) });
+          const geo = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(3000) });
           if (geo.ok) {
             const g = await geo.json();
-            if (g.status === "success" && g.lat) { lat = g.lat; lon = g.lon; city = g.city || "Goch"; geoOk = true; }
+            if (g.latitude) { lat = g.latitude; lon = g.longitude; city = g.city || "Goch"; }
           }
-        } catch { /* try next */ }
-        if (!geoOk) {
-          try {
-            const geo = await fetch("https://ipwho.is/", { signal: AbortSignal.timeout(5000) });
-            if (geo.ok) {
-              const g = await geo.json();
-              if (g.success && g.latitude) { lat = g.latitude; lon = g.longitude; city = g.city || "Goch"; }
-            }
-          } catch { /* fallback Goch */ }
-        }
+        } catch { /* fallback Goch */ }
 
         const res = await fetch(
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&forecast_days=3`
@@ -98,6 +86,7 @@ export default function WeatherWidget() {
       >
         <span className="text-lg leading-none">{weatherIcon(data.code)}</span>
         <span className="text-sm font-bold">{data.temp}°</span>
+        <span className="text-[10px] text-white/60 hidden sm:inline">{data.city}</span>
         <svg className={`h-3 w-3 text-white/50 transition-transform ${expanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
@@ -113,7 +102,7 @@ export default function WeatherWidget() {
             </div>
             <span className="text-4xl">{weatherIcon(data.code)}</span>
           </div>
-          <p className="text-[10px] text-white/40 mb-3">📍 Deine Region</p>
+          <p className="text-[10px] text-white/40 mb-3">📍 {data.city}</p>
 
           <div className="flex gap-2">
             {data.daily.map((d, i) => (
