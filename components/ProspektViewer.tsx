@@ -130,8 +130,7 @@ export default function ProspektViewer({
           {pdfUrl && (
             <a
               href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              download={`Handzettel-KW${kw}.pdf`}
               className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
               title="Als PDF herunterladen"
             >
@@ -140,18 +139,6 @@ export default function ProspektViewer({
               </svg>
             </a>
           )}
-          {/* Neue Tab oeffnen */}
-          <a
-            href={currentPageData.imageUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
-            title="Bild in neuem Tab oeffnen"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
           {/* Fullscreen Toggle */}
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}

@@ -90,8 +90,7 @@ export default function AngebotePage() {
             {data?.pdfUrl && (
               <a
                 href={data.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                download={`Handzettel-KW${data.kw}.pdf`}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-colors"
               >
                 📥 PDF herunterladen
