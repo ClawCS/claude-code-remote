@@ -558,3 +558,36 @@ body {
 .bg-red-gradient-section {
   background: linear-gradient(180deg, rgba(196, 30, 58, 0.04) 0%, rgba(196, 30, 58, 0.02) 50%, transparent 100%);
 }
+
+/* ═══ Category Background Particles ═══ */
+@keyframes catBgRise {
+  0% {
+    transform: translateY(100vh) translateX(0) scale(0.5);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 0.8; }
+  100% {
+    transform: translateY(-20px) translateX(30px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes catBgDrop {
+  0% {
+    transform: translateY(-20px) translateX(0) scale(0.8);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% {
+    transform: translateY(100vh) translateX(-20px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="catBg"] {
+    animation: none !important;
+  }
+}
