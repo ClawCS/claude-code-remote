@@ -306,9 +306,8 @@ export default function ProspektViewer({
   return viewerContent;
 }
 
-/** Fallback: Iframe mit Trinkgut-Viewer */
+/** Fallback: Handzettel wird geladen */
 function FallbackViewer({
-  url,
   kw,
   werbekreis,
 }: {
@@ -318,47 +317,28 @@ function FallbackViewer({
 }) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-      <div className="bg-gradient-to-r from-red-600 to-red-700 p-4 text-white flex items-center justify-between">
+      <div className="bg-gradient-to-r from-red-600 to-red-700 p-4 text-white">
         <h2 className="text-lg font-bold">
           Handzettel KW {kw} — Werbekreis {werbekreis}
         </h2>
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors"
-        >
-          Extern oeffnen
-        </a>
       </div>
 
-      <div className="relative" style={{ height: "800px" }}>
-        <iframe
-          src={url}
-          className="w-full h-full border-0"
-          title={`Trinkgut Handzettel KW ${kw}`}
-          sandbox="allow-scripts allow-same-origin allow-popups"
-        />
-
-        {/* Overlay-Fallback */}
-        <div className="absolute inset-0 flex items-center justify-center bg-white/95 pointer-events-none opacity-0 [iframe:not([src])~&]:opacity-100">
-          <div className="text-center p-8 max-w-md pointer-events-auto">
-            <span className="text-6xl block mb-4">📰</span>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">
-              Aktueller Handzettel
-            </h3>
-            <p className="text-gray-500 text-sm mb-6">
-              KW {kw} — Werbekreis {werbekreis} — Goch und Umgebung
-            </p>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-lg shadow-lg transition-all hover:scale-105"
-            >
-              Handzettel oeffnen
-            </a>
-          </div>
+      <div className="py-16 px-8">
+        <div className="text-center max-w-md mx-auto">
+          <span className="text-6xl block mb-4">📰</span>
+          <h3 className="text-2xl font-bold text-gray-800 mb-3">
+            Handzettel wird vorbereitet
+          </h3>
+          <p className="text-gray-500 text-sm mb-6">
+            KW {kw} — Werbekreis {werbekreis} — Goch und Umgebung.
+            Der Handzettel wird gerade vom Server abgerufen.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-lg shadow-lg transition-all hover:scale-105"
+          >
+            Seite neu laden
+          </button>
         </div>
       </div>
     </div>

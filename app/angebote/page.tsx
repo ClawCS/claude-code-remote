@@ -193,19 +193,17 @@ export default function AngebotePage() {
           <div className="text-center py-12 bg-gray-50 rounded-xl">
             <span className="text-5xl block mb-4">📰</span>
             <h3 className="text-lg font-bold text-secondary mb-2">
-              Handzettel wird geladen
+              Angebote werden vorbereitet
             </h3>
             <p className="text-muted text-sm mb-4">
-              Die aktuellen Wochenangebote werden vom Trinkgut-Server abgerufen.
+              Die aktuellen Wochenangebote werden vom Server abgerufen. Bitte versuche es in wenigen Minuten erneut.
             </p>
-            <a
-              href={data?.viewerUrl ?? "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest"}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => window.location.reload()}
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-red-700 transition-colors"
             >
-              Handzettel auf trinkgut.de ansehen
-            </a>
+              Seite neu laden
+            </button>
           </div>
         )}
       </section>

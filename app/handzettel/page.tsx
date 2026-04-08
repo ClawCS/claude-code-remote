@@ -169,41 +169,32 @@ export default function HandzettelPage() {
               fallbackUrl={data.viewerUrl}
             />
           ) : (
-            /* Fallback: Direkter Link zum Viewer */
+            /* Fallback: Handzettel wird geladen / Retry */
             <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mb-8">
-              <div className="bg-gradient-to-r from-primary to-red-700 p-4 text-white flex items-center justify-between">
+              <div className="bg-gradient-to-r from-primary to-red-700 p-4 text-white">
                 <h2 className="text-lg font-bold">
                   Handzettel KW {data.kw} — Werbekreis {data.werbekreis}
                 </h2>
-                <a
-                  href={data.viewerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
-                >
-                  Auf trinkgut.de oeffnen
-                </a>
               </div>
 
               <div className="p-12 text-center">
                 <span className="text-6xl block mb-4">📰</span>
                 <h3 className="text-2xl font-bold text-secondary mb-3">
-                  Handzettel online ansehen
+                  Handzettel wird vorbereitet
                 </h3>
                 <p className="text-muted text-sm mb-2">
                   KW {data.kw} — Werbekreis {data.werbekreis} — Goch und Umgebung
                 </p>
                 <p className="text-muted text-sm mb-6">
-                  Der Handzettel wird direkt auf der Trinkgut-Webseite angezeigt.
+                  Der Handzettel wird gerade vom Server abgerufen. Bitte versuche es in wenigen Minuten erneut.
                 </p>
-                <a
-                  href={data.viewerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-red-700 text-white font-bold rounded-xl text-lg shadow-lg transition-all hover:scale-105"
+                <button
+                  onClick={handleRefresh}
+                  disabled={refreshing}
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-red-700 text-white font-bold rounded-xl text-lg shadow-lg transition-all hover:scale-105 disabled:opacity-50"
                 >
-                  📄 Handzettel oeffnen
-                </a>
+                  {refreshing ? "Wird geladen..." : "Erneut laden"}
+                </button>
               </div>
             </div>
           )}
