@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "werbung.trinkgut.de",
+      },
+      {
+        protocol: "https",
         hostname: "www.thecocktaildb.com",
       },
       {

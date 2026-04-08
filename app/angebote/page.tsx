@@ -20,10 +20,20 @@ function getWeekRange() {
   saturday.setDate(monday.getDate() + 5);
   const fmt = (d: Date) =>
     d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
-  return `Gültig vom ${fmt(monday)} bis ${fmt(saturday)}`;
+  return `Gueltig vom ${fmt(monday)} bis ${fmt(saturday)}`;
+}
+
+function getISOCalendarWeek() {
+  const now = new Date();
+  const tmp = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  tmp.setUTCDate(tmp.getUTCDate() + 4 - (tmp.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
+  return Math.ceil(((tmp.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
 }
 
 export default function AngebotePage() {
+  const currentKW = getISOCalendarWeek();
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="text-3xl font-bold text-secondary mb-2">Aktuelle Angebote</h1>
@@ -40,7 +50,7 @@ export default function AngebotePage() {
           <h2 className="text-3xl font-bold mb-2">{starOfWeek.name}</h2>
           <p className="text-white/80 mb-4">{starOfWeek.description}</p>
           <span className="text-4xl font-bold text-accent">
-            {starOfWeek.price.toFixed(2).replace(".", ",")} €
+            {starOfWeek.price.toFixed(2).replace(".", ",")} EUR
           </span>
         </div>
         <div className="w-48 h-48 bg-white/10 rounded-2xl relative flex-shrink-0">
@@ -48,23 +58,30 @@ export default function AngebotePage() {
         </div>
       </section>
 
-      {/* Prospekt + Follower-Rabatt */}
+      {/* Handzettel + Follower-Rabatt */}
       <div className="grid md:grid-cols-2 gap-6 mb-12">
-        <div className="bg-light border border-border rounded-xl p-6 flex items-center gap-4">
+        <Link
+          href="/handzettel"
+          className="bg-gray-50 border border-gray-200 rounded-xl p-6 flex items-center gap-4 hover:shadow-md transition-shadow group"
+        >
           <span className="text-4xl">📰</span>
           <div className="flex-1">
-            <h3 className="font-bold text-secondary">Aktueller Handzettel</h3>
-            <p className="text-xs text-muted">Alle Angebote der Woche auf einen Blick.</p>
+            <h3 className="font-bold text-secondary group-hover:text-primary transition-colors">
+              Handzettel KW {currentKW} durchblaettern
+            </h3>
+            <p className="text-xs text-muted">
+              Alle Angebote der Woche als blaetterbarer Prospekt — Werbekreis 3.6
+            </p>
           </div>
-          <a href="https://www.trinkgut.de/angebote/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors text-sm whitespace-nowrap">
-            Ansehen
-          </a>
-        </div>
+          <svg className="w-5 h-5 text-muted group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
         <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-6 flex items-center gap-4 text-white">
           <span className="text-4xl">📱</span>
           <div className="flex-1">
-            <h3 className="font-bold">5€ Rabatt für Follower!</h3>
-            <p className="text-xs text-white/80">Folge uns auf Instagram und spare bei ausgewählten Produkten.</p>
+            <h3 className="font-bold">5 EUR Rabatt fuer Follower!</h3>
+            <p className="text-xs text-white/80">Folge uns auf Instagram und spare bei ausgewaehlten Produkten.</p>
           </div>
           <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white text-secondary font-bold rounded-lg hover:bg-gray-100 transition-colors text-sm whitespace-nowrap">
             Folgen
@@ -79,7 +96,7 @@ export default function AngebotePage() {
         {products.filter((p) => p.categorySlug === "bier").length > 8 && (
           <div className="text-center mt-4">
             <Link href="/kategorie/bier" className="text-primary hover:underline font-medium text-sm">
-              Alle {products.filter((p) => p.categorySlug === "bier").length} Bier-Angebote ansehen →
+              Alle {products.filter((p) => p.categorySlug === "bier").length} Bier-Angebote ansehen
             </Link>
           </div>
         )}
@@ -87,12 +104,12 @@ export default function AngebotePage() {
 
       {/* Alkoholfrei */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold text-secondary mb-6">🥤 Alkoholfreie Getränke</h2>
+        <h2 className="text-2xl font-bold text-secondary mb-6">🥤 Alkoholfreie Getraenke</h2>
         <ProductGrid products={products.filter((p) => p.categorySlug === "alkoholfrei").slice(0, 8)} />
         {products.filter((p) => p.categorySlug === "alkoholfrei").length > 8 && (
           <div className="text-center mt-4">
             <Link href="/kategorie/alkoholfrei" className="text-primary hover:underline font-medium text-sm">
-              Alle {products.filter((p) => p.categorySlug === "alkoholfrei").length} ansehen →
+              Alle {products.filter((p) => p.categorySlug === "alkoholfrei").length} ansehen
             </Link>
           </div>
         )}
@@ -105,7 +122,7 @@ export default function AngebotePage() {
         {products.filter((p) => p.categorySlug === "wein").length > 8 && (
           <div className="text-center mt-4">
             <Link href="/kategorie/wein" className="text-primary hover:underline font-medium text-sm">
-              Alle {products.filter((p) => p.categorySlug === "wein").length} Wein-Angebote ansehen →
+              Alle {products.filter((p) => p.categorySlug === "wein").length} Wein-Angebote ansehen
             </Link>
           </div>
         )}
@@ -124,7 +141,7 @@ export default function AngebotePage() {
         {products.filter((p) => p.categorySlug === "spirituosen").length > 8 && (
           <div className="text-center mt-4">
             <Link href="/kategorie/spirituosen" className="text-primary hover:underline font-medium text-sm">
-              Alle {products.filter((p) => p.categorySlug === "spirituosen").length} Spirituosen ansehen →
+              Alle {products.filter((p) => p.categorySlug === "spirituosen").length} Spirituosen ansehen
             </Link>
           </div>
         )}
@@ -134,11 +151,11 @@ export default function AngebotePage() {
       <div className="text-center py-8">
         <p className="text-muted mb-4">Noch mehr Angebote gibt es direkt im Markt!</p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <Link href="/produkte" className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors">
+          <Link href="/produkte" className="px-8 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-colors">
             Alle {products.length} Produkte
           </Link>
-          <Link href="/gewinnspiel" className="px-8 py-3 border border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-lg transition-colors">
-            Zu den Gewinnspielen
+          <Link href="/handzettel" className="px-8 py-3 border border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-lg transition-colors">
+            Handzettel durchblaettern
           </Link>
         </div>
       </div>
