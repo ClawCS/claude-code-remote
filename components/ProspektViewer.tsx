@@ -13,6 +13,7 @@ type ProspektViewerProps = {
   pages: Page[];
   kw: number;
   werbekreis: string;
+  pdfUrl?: string;
   fallbackUrl?: string;
 };
 
@@ -20,6 +21,7 @@ export default function ProspektViewer({
   pages,
   kw,
   werbekreis,
+  pdfUrl,
   fallbackUrl,
 }: ProspektViewerProps) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -124,6 +126,20 @@ export default function ProspektViewer({
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {/* PDF Download */}
+          {pdfUrl && (
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+              title="Als PDF herunterladen"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </a>
+          )}
           {/* Neue Tab oeffnen */}
           <a
             href={currentPageData.imageUrl}

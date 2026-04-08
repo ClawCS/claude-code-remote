@@ -1,5 +1,6 @@
 {
   "catalogId": "",
+  "catalogVersion": "1",
   "storeId": "13027",
   "werbekreis": "3.6",
   "kw": 0,
@@ -8,6 +9,7 @@
   "weekEnd": "",
   "fetchedAt": "",
   "viewerUrl": "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest",
+  "pdfUrl": "",
   "pageCount": 0,
   "pages": [],
   "status": "fallback"

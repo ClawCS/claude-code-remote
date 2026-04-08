@@ -4,9 +4,24 @@ import path from "path";
 
 const TRINKGUT_CATALOG_URL =
   "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest";
+const BASE_URL = "https://werbung.trinkgut.de";
 const CACHE_FILE = path.join(process.cwd(), "data", "handzettel-cache.json");
 const WERBEKREIS = "3.6";
 const STORE_ID = "13027";
+
+/**
+ * Plattform: Blaetterkatalog (blaetterkatalog.de) von COMINTO GmbH
+ *
+ * URL-Muster:
+ *   Viewer:    /frontend/mvc/catalog/by-name/{storeId}/newest
+ *   PDF:       /frontend/catalogs/{catalogId}/{version}/pdf/complete.pdf
+ *   Seite PDF: /frontend/catalogs/{catalogId}/{version}/pdf/save/bk_{page}.pdf
+ *   Seite Bild: Wird aus dem HTML/JS des Viewers extrahiert
+ *
+ * Wichtig: Die by-name ID (13027) ist NICHT die catalogId.
+ *   13027 = persistente Store/Gruppen-ID fuer Werbekreis 3.6
+ *   catalogId = spezifische Publikations-ID (z.B. 1212347)
+ */
 
 /** ISO-Kalenderwoche berechnen */
 function getISOWeek(date: Date): number {
@@ -38,6 +53,7 @@ export type HandzettelPage = {
 
 export type HandzettelCache = {
   catalogId: string;
+  catalogVersion: string;
   storeId: string;
   werbekreis: string;
   kw: number;
@@ -46,6 +62,7 @@ export type HandzettelCache = {
   weekEnd: string;
   fetchedAt: string;
   viewerUrl: string;
+  pdfUrl: string;
   pageCount: number;
   pages: HandzettelPage[];
   status: "ok" | "fallback";
@@ -55,7 +72,9 @@ export type HandzettelCache = {
 async function loadCache(): Promise<HandzettelCache | null> {
   try {
     const raw = await fs.readFile(CACHE_FILE, "utf-8");
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    if (!data.kw || data.kw === 0) return null;
+    return data;
   } catch {
     return null;
   }
@@ -66,20 +85,23 @@ async function saveCache(data: HandzettelCache): Promise<void> {
   await fs.writeFile(CACHE_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
+const BROWSER_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
+};
+
 /**
- * Hauptlogik: Trinkgut-Katalog abrufen und Seiten-URLs extrahieren.
- *
- * MEDIA Central / Offerista Katalog-Viewer Muster:
- *   1. /frontend/mvc/catalog/by-name/{storeId}/newest -> Redirect oder HTML mit Katalog-ID
- *   2. Katalog-ID aus URL oder HTML extrahieren
- *   3. Seiten-Bilder: /frontend/mvc/catalog/{catalogId}/page/{num}?width=800
+ * Hauptlogik: Trinkgut-Katalog vom Blaetterkatalog-System abrufen.
  */
 async function fetchCatalog(): Promise<HandzettelCache> {
   const now = new Date();
   const kw = getISOWeek(now);
   const { weekStart, weekEnd } = getWeekRange(now);
 
-  const baseResult: Omit<HandzettelCache, "catalogId" | "pageCount" | "pages" | "status"> = {
+  const baseResult = {
     storeId: STORE_ID,
     werbekreis: WERBEKREIS,
     kw,
@@ -91,15 +113,9 @@ async function fetchCatalog(): Promise<HandzettelCache> {
   };
 
   try {
-    // Schritt 1: Katalog-URL abrufen (Redirect folgen)
+    // Schritt 1: Viewer-Seite abrufen (Redirect folgen)
     const res = await fetch(TRINKGUT_CATALOG_URL, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
-      },
+      headers: BROWSER_HEADERS,
       redirect: "follow",
     });
 
@@ -110,36 +126,37 @@ async function fetchCatalog(): Promise<HandzettelCache> {
     const html = await res.text();
     const finalUrl = res.url;
 
-    // Schritt 2: Katalog-ID extrahieren
-    let catalogId = extractCatalogId(finalUrl, html);
+    // Schritt 2: catalogId und Version aus HTML/URL extrahieren
+    const catalogInfo = extractCatalogInfo(finalUrl, html);
 
-    if (!catalogId) {
-      // Fallback: ID aus dem URL-Pfad
-      const urlMatch = finalUrl.match(/\/catalog\/(\d+)/);
-      if (urlMatch) catalogId = urlMatch[1];
-    }
-
-    if (!catalogId) {
+    if (!catalogInfo.catalogId) {
       throw new Error("Katalog-ID konnte nicht extrahiert werden");
     }
 
-    // Schritt 3: Seitenanzahl ermitteln
-    const pageCount = await fetchPageCount(catalogId, html);
+    const { catalogId, version } = catalogInfo;
 
-    // Schritt 4: Seiten-URLs generieren
-    const baseUrl = "https://werbung.trinkgut.de";
+    // Schritt 3: Seitenanzahl ermitteln
+    const pageCount = await detectPageCount(catalogId, version, html);
+
+    // Schritt 4: Seiten-URLs generieren (Blaetterkatalog-Muster)
     const pages: HandzettelPage[] = [];
     for (let i = 1; i <= pageCount; i++) {
       pages.push({
         number: i,
-        imageUrl: `${baseUrl}/frontend/mvc/catalog/${catalogId}/page/${i}?width=1200`,
-        thumbnailUrl: `${baseUrl}/frontend/mvc/catalog/${catalogId}/page/${i}?width=300`,
+        // Blaetterkatalog Seiten-Bild URL-Muster
+        imageUrl: `${BASE_URL}/frontend/catalogs/${catalogId}/${version}/pages/${i}/zoom/0`,
+        thumbnailUrl: `${BASE_URL}/frontend/catalogs/${catalogId}/${version}/pages/${i}/normal`,
       });
     }
+
+    // PDF-URL
+    const pdfUrl = `${BASE_URL}/frontend/catalogs/${catalogId}/${version}/pdf/complete.pdf`;
 
     return {
       ...baseResult,
       catalogId,
+      catalogVersion: version,
+      pdfUrl,
       pageCount,
       pages,
       status: "ok",
@@ -151,6 +168,8 @@ async function fetchCatalog(): Promise<HandzettelCache> {
     return {
       ...baseResult,
       catalogId: "unknown",
+      catalogVersion: "1",
+      pdfUrl: "",
       pageCount: 0,
       pages: [],
       status: "fallback",
@@ -158,90 +177,105 @@ async function fetchCatalog(): Promise<HandzettelCache> {
   }
 }
 
-/** Katalog-ID aus URL oder HTML extrahieren */
-function extractCatalogId(url: string, html: string): string | null {
-  // Muster 1: URL enthaelt /catalog/{id}
-  const urlPatterns = [
-    /\/catalog\/(\d+)/,
-    /catalogId[=:][\s"']*(\d+)/,
-  ];
-  for (const p of urlPatterns) {
-    const m = url.match(p);
-    if (m) return m[1];
+/**
+ * Katalog-ID und Version aus der Blaetterkatalog-Seite extrahieren.
+ *
+ * Bekannte Muster im HTML/JS:
+ *   - /frontend/catalogs/{catalogId}/{version}/
+ *   - catalogId: 1212347 (7-stellig)
+ *   - version: 1-9 (einstellig)
+ */
+function extractCatalogInfo(
+  url: string,
+  html: string
+): { catalogId: string; version: string } {
+  // Muster 1: URL-Pfad /frontend/catalogs/{id}/{ver}/
+  const catalogsPattern = /\/frontend\/catalogs\/(\d{5,8})\/(\d{1,2})\//;
+
+  // Aus URL pruefen
+  const urlMatch = url.match(catalogsPattern);
+  if (urlMatch) {
+    return { catalogId: urlMatch[1], version: urlMatch[2] };
   }
 
-  // Muster 2: HTML/JS-Variablen
-  const htmlPatterns = [
-    /["']catalogId["']\s*:\s*["']?(\d+)["']?/,
-    /data-catalog-id=["'](\d+)["']/,
-    /catalogId\s*=\s*["']?(\d+)["']?/,
-    /catalog[_-]?id["']\s*:\s*(\d+)/i,
-    /\/catalog\/(\d+)\/page/,
-    /"id"\s*:\s*(\d+).*?"type"\s*:\s*"catalog"/,
+  // Aus HTML/JS pruefen
+  const htmlMatch = html.match(catalogsPattern);
+  if (htmlMatch) {
+    return { catalogId: htmlMatch[1], version: htmlMatch[2] };
+  }
+
+  // Muster 2: JSON-Config im HTML
+  const jsonPatterns = [
+    /"catalogId"\s*:\s*"?(\d{5,8})"?/,
+    /"id"\s*:\s*(\d{5,8})\b/,
+    /catalogId\s*=\s*"?(\d{5,8})"?/,
+    /data-catalog-id="(\d{5,8})"/,
   ];
-  for (const p of htmlPatterns) {
+  for (const p of jsonPatterns) {
     const m = html.match(p);
-    if (m) return m[1];
+    if (m) {
+      // Version versuchen zu finden
+      const vMatch = html.match(/"version"\s*:\s*"?(\d{1,2})"?/);
+      return { catalogId: m[1], version: vMatch ? vMatch[1] : "1" };
+    }
   }
 
-  return null;
+  // Muster 3: Aus der finalen URL nach Redirect
+  // z.B. /frontend/mvc/catalog/{catalogId}?...
+  const mvcMatch = url.match(/\/frontend\/mvc\/catalog\/(\d{5,8})\b/);
+  if (mvcMatch) {
+    return { catalogId: mvcMatch[1], version: "1" };
+  }
+
+  // Muster 4: Alle Zahlen im 5-8-stelligen Bereich aus dem HTML suchen
+  // die im Kontext von "catalogs" oder "catalog" stehen
+  const contextMatch = html.match(/catalog[s"]?\W{0,5}(\d{5,8})/i);
+  if (contextMatch) {
+    return { catalogId: contextMatch[1], version: "1" };
+  }
+
+  return { catalogId: "", version: "1" };
 }
 
-/** Seitenanzahl ermitteln */
-async function fetchPageCount(catalogId: string, html: string): Promise<number> {
-  // Muster 1: Aus HTML extrahieren
+/**
+ * Seitenanzahl des Katalogs ermitteln.
+ * Versucht mehrere Strategien.
+ */
+async function detectPageCount(
+  catalogId: string,
+  version: string,
+  html: string
+): Promise<number> {
+  // Strategie 1: Aus HTML extrahieren
   const htmlPatterns = [
     /["']?pageCount["']?\s*:\s*(\d+)/,
     /["']?numberOfPages["']?\s*:\s*(\d+)/,
-    /["']?pages["']?\s*:\s*(\d+)/,
     /["']?totalPages["']?\s*:\s*(\d+)/,
-    /data-page-count=["'](\d+)["']/,
+    /["']?numPages["']?\s*:\s*(\d+)/,
+    /data-page-count="(\d+)"/,
+    /pages\s*:\s*\[([^\]]+)\]/,
   ];
   for (const p of htmlPatterns) {
     const m = html.match(p);
-    if (m) return parseInt(m[1], 10);
-  }
-
-  // Muster 2: API-Aufruf fuer Katalog-Metadaten
-  try {
-    const metaRes = await fetch(
-      `https://werbung.trinkgut.de/frontend/mvc/catalog/${catalogId}`,
-      {
-        headers: {
-          Accept: "application/json, text/html",
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        },
+    if (m) {
+      // Fuer Array-Match: Elemente zaehlen
+      if (m[1].includes(",")) {
+        return m[1].split(",").length;
       }
-    );
-    if (metaRes.ok) {
-      const text = await metaRes.text();
-      // JSON-Antwort
-      try {
-        const json = JSON.parse(text);
-        if (json.pageCount) return json.pageCount;
-        if (json.numberOfPages) return json.numberOfPages;
-        if (json.pages && Array.isArray(json.pages)) return json.pages.length;
-      } catch {
-        // HTML-Antwort parsen
-        for (const p of htmlPatterns) {
-          const m = text.match(p);
-          if (m) return parseInt(m[1], 10);
-        }
-      }
+      const num = parseInt(m[1], 10);
+      if (num > 0 && num < 100) return num;
     }
-  } catch {
-    // Ignorieren
   }
 
-  // Muster 3: Binary Search - Seiten testen bis 404
+  // Strategie 2: Einzelne Seiten-PDFs testen (Blaetterkatalog-Muster)
   let count = 0;
   for (let i = 1; i <= 40; i++) {
     try {
-      const pageRes = await fetch(
-        `https://werbung.trinkgut.de/frontend/mvc/catalog/${catalogId}/page/${i}?width=100`,
-        { method: "HEAD" }
-      );
+      const pageUrl = `${BASE_URL}/frontend/catalogs/${catalogId}/${version}/pdf/save/bk_${i}.pdf`;
+      const pageRes = await fetch(pageUrl, {
+        method: "HEAD",
+        headers: BROWSER_HEADERS,
+      });
       if (pageRes.ok) {
         count = i;
       } else {
@@ -251,8 +285,29 @@ async function fetchPageCount(catalogId: string, html: string): Promise<number> 
       break;
     }
   }
+  if (count > 0) return count;
 
-  return count > 0 ? count : 24; // Standard: 24 Seiten
+  // Strategie 3: Seiten-Bilder testen
+  for (let i = 1; i <= 40; i++) {
+    try {
+      const imgUrl = `${BASE_URL}/frontend/catalogs/${catalogId}/${version}/pages/${i}/normal`;
+      const imgRes = await fetch(imgUrl, {
+        method: "HEAD",
+        headers: BROWSER_HEADERS,
+      });
+      if (imgRes.ok) {
+        count = i;
+      } else {
+        break;
+      }
+    } catch {
+      break;
+    }
+  }
+  if (count > 0) return count;
+
+  // Standard-Fallback: Trinkgut-Handzettel hat typischerweise 24 Seiten
+  return 24;
 }
 
 // === API-Handler ===

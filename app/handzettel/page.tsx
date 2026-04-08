@@ -12,6 +12,7 @@ type HandzettelPage = {
 
 type HandzettelData = {
   catalogId: string;
+  catalogVersion: string;
   storeId: string;
   werbekreis: string;
   kw: number;
@@ -20,6 +21,7 @@ type HandzettelData = {
   weekEnd: string;
   fetchedAt: string;
   viewerUrl: string;
+  pdfUrl: string;
   pageCount: number;
   pages: HandzettelPage[];
   status: "ok" | "fallback";
@@ -163,6 +165,7 @@ export default function HandzettelPage() {
               pages={data.pages}
               kw={data.kw}
               werbekreis={data.werbekreis}
+              pdfUrl={data.pdfUrl}
               fallbackUrl={data.viewerUrl}
             />
           ) : (
