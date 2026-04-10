@@ -8,10 +8,16 @@ import SocialProof from "@/components/SocialProof";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { categories, type Product } from "@/lib/utils";
 import productsData from "@/data/products.json";
+import { galleryItems } from "@/data/gallery";
+import { courses } from "@/data/akademie";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const products = productsData as Product[];
+const teamMembers = galleryItems.filter((i) => i.category === "team");
+const galleryPreview = galleryItems.filter((i) => i.category !== "team").slice(0, 8);
 
 export default function Home() {
   const highlights = products.filter((p) => p.highlight);
@@ -26,76 +32,83 @@ export default function Home() {
 
       {/* Kategorien */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
-        <div className="text-center mb-12 animate-fade-in-up">
+        <ScrollReveal className="text-center mb-12">
           <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.categories.label")}</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center" style={{ textWrap: "balance" }}>
             {t("home.categories.title")}
           </h2>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger-children">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.slug} category={cat} />
+        </ScrollReveal>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {categories.map((cat, i) => (
+            <ScrollReveal key={cat.slug} delay={i * 80}>
+              <CategoryCard category={cat} />
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
-      {/* Red gradient stripe divider */}
-      <div className="h-1 bg-gradient-to-r from-transparent via-[#DC2626] to-transparent opacity-20" />
+      {/* Gradient fade transition */}
+      <div className="h-24 bg-gradient-to-b from-white to-[#FFF5F3]" />
 
       {/* Highlights */}
-      <section className="relative section-divider-wave py-20 md:py-24">
+      <section className="relative py-20 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5F3] via-[#FFF0EC]/30 to-white" />
         <div className="absolute inset-0 noise-bg" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 animate-fade-in-up">
+          <ScrollReveal className="text-center mb-12">
             <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.highlights.label")}</p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center" style={{ textWrap: "balance" }}>
               {t("home.highlights.title")}
             </h2>
-          </div>
-          <ProductGrid products={highlights} />
+          </ScrollReveal>
+          <ScrollReveal delay={100}>
+            <ProductGrid products={highlights} />
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Services */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
-        <div className="text-center mb-12 animate-fade-in-up">
+        <ScrollReveal className="text-center mb-12">
           <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.services.label")}</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center" style={{ textWrap: "balance" }}>
             {t("home.services.title")}
           </h2>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger-children">
+        </ScrollReveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
             { href: "/partyplaner", icon: "🎉", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc", gradient: "from-[#DC2626] to-[#EF4444]" },
             { href: "/vermietung", icon: "🎪", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc", gradient: "from-[#B91C1C] to-[#DC2626]" },
             { href: "/finder", icon: "🔍", titleKey: "home.service.finder", descKey: "home.service.finder.desc", gradient: "from-[#F59E0B] to-[#DC2626]" },
             { href: "/cocktails", icon: "🍸", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc", gradient: "from-[#EF4444] to-[#F59E0B]" },
-          ].map((s) => (
-            <Link
-              key={s.href}
-              href={s.href}
-              className="group relative p-7 bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden"
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-500`} />
-              <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform duration-300">{s.icon}</span>
-              <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors text-lg">{t(s.titleKey)}</h3>
-              <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
-            </Link>
+          ].map((s, i) => (
+            <ScrollReveal key={s.href} delay={i * 100}>
+              <Link
+                href={s.href}
+                className="group relative p-7 bg-[#FDFCFB] border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden block"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-500`} />
+                <div className="w-14 h-14 rounded-full bg-[#DC2626]/8 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-3xl">{s.icon}</span>
+                </div>
+                <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors text-lg">{t(s.titleKey)}</h3>
+                <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
+              </Link>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
-      {/* Red gradient stripe divider */}
-      <div className="h-1 bg-gradient-to-r from-transparent via-[#DC2626] to-transparent opacity-20" />
+      {/* Gradient fade to dark */}
+      <div className="h-24 bg-gradient-to-b from-white to-[#1F2937]" />
 
       {/* Instagram + Gewinnspiel */}
-      <section className="relative section-divider-diagonal bg-[#1F2937] py-20 md:py-24 overflow-hidden red-stripe-divider">
+      <section className="relative bg-gradient-to-b from-[#1F2937] to-[#111827] py-20 md:py-24 overflow-hidden red-stripe-divider">
         <div className="absolute inset-0 noise-bg" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div className="animate-slide-left">
+            <ScrollReveal>
               <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.community.label")}</p>
               <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4 section-accent">
                 {t("home.community.title")}
@@ -117,8 +130,8 @@ export default function Home() {
                   {t("home.community.gewinnspiele")}
                 </Link>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3 animate-slide-right">
+            </ScrollReveal>
+            <ScrollReveal delay={200} className="grid grid-cols-2 gap-3">
               {[
                 { icon: "🧊", title: "Monster Cooler", sub: "Gewinnspiel" },
                 { icon: "🔥", title: "Weber Grill", sub: "600€ Gewinn" },
@@ -131,8 +144,123 @@ export default function Home() {
                   <p className="text-gray-400 text-xs">{card.sub}</p>
                 </div>
               ))}
-            </div>
+            </ScrollReveal>
           </div>
+        </div>
+      </section>
+
+      {/* Gradient fade from dark */}
+      <div className="h-24 bg-gradient-to-b from-[#111827] to-white" />
+
+      {/* ═══ UNSER TEAM ═══ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+        <ScrollReveal className="text-center mb-12">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Leidenschaft & Expertise</p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+            Unser Team
+          </h2>
+          <p className="text-muted mt-3 max-w-xl mx-auto">10 Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!</p>
+        </ScrollReveal>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          {teamMembers.map((member, i) => (
+            <ScrollReveal key={member.id} delay={i * 70}>
+            <Link href="/galerie" className="group text-center">
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-3 border-2 border-transparent group-hover:border-[#DC2626] transition-all duration-300 shadow-md group-hover:shadow-xl">
+                <Image
+                  src={member.image}
+                  alt={member.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-2 left-2 right-2">
+                  <p className="text-white font-bold text-sm drop-shadow-lg">{member.title.split(" — ")[0]}</p>
+                </div>
+              </div>
+              <p className="text-xs text-muted group-hover:text-[#DC2626] transition-colors">{member.title.split(" — ")[1] || member.description.slice(0, 40)}</p>
+            </Link>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Gradient fade */}
+      <div className="h-24 bg-gradient-to-b from-white to-[#FFF5F3]" />
+
+      {/* ═══ GALERIE PREVIEW ═══ */}
+      <section className="relative py-20 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5F3] via-white to-white" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <ScrollReveal className="text-center mb-12">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Einblicke</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+              Aus unserem Markt
+            </h2>
+            <p className="text-muted mt-3 max-w-xl mx-auto">{galleryItems.length} Bilder aus dem Markt, Aktionen und Gewinnspielen</p>
+          </ScrollReveal>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {galleryPreview.map((item) => (
+              <Link key={item.id} href="/galerie" className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-white font-bold text-sm drop-shadow-lg">{item.title}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/galerie" className="inline-flex items-center gap-2 px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl btn-hover shadow-lg shadow-[#DC2626]/20 transition-colors">
+              Alle {galleryItems.length} Bilder ansehen
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ AKADEMIE TEASER ═══ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+        <ScrollReveal className="text-center mb-12">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Wissen & Zertifikate</p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
+            Trinkgut Akademie
+          </h2>
+          <p className="text-muted mt-3 max-w-xl mx-auto">{courses.length} Kurse mit {courses.reduce((sum, c) => sum + c.lessons.length, 0)} Lektionen — vom Einsteiger zum Experten</p>
+        </ScrollReveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {courses.slice(0, 6).map((course) => (
+            <Link key={course.slug} href={`/akademie/${course.slug}`} className="group relative p-6 bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-3xl">{course.icon}</span>
+                <div>
+                  <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors">{course.title}</h3>
+                  <p className="text-xs text-muted">{course.difficulty} · {course.lessons.length} Lektionen</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted line-clamp-2">{course.description}</p>
+              <div className="mt-3 flex items-center gap-2">
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                  course.difficulty === "Einsteiger" ? "bg-green-100 text-green-700" :
+                  course.difficulty === "Fortgeschritten" ? "bg-amber-100 text-amber-700" :
+                  "bg-red-100 text-red-700"
+                }`}>{course.difficulty}</span>
+                <span className="text-xs text-muted">{course.duration}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <Link href="/akademie" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1F2937] hover:bg-[#111827] text-white font-bold rounded-xl btn-hover shadow-lg transition-colors">
+            Alle {courses.length} Kurse entdecken
+          </Link>
         </div>
       </section>
 
@@ -145,7 +273,8 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 text-center animate-fade-in-up">
+      <ScrollReveal>
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 text-center">
         <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.cta.label")}</p>
         <h2 className="text-2xl md:text-4xl font-extrabold text-[#1F2937] mb-4 section-accent-center">
           {products.length} {t("home.cta.title")}
@@ -168,6 +297,7 @@ export default function Home() {
           </a>
         </div>
       </section>
+      </ScrollReveal>
     </>
   );
 }

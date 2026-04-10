@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import productsData from "@/data/products.json";
 import { type Product, formatPrice } from "@/lib/utils";
+import { galleryItems } from "@/data/gallery";
+import { courses } from "@/data/akademie";
 
 const products = productsData as Product[];
 
@@ -68,22 +70,40 @@ export default function NlLandingPage() {
       </div>
 
       {/* ═══ Nav ═══ */}
-      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <nav className="bg-white sticky top-0 z-50 shadow-sm">
+        {/* Hauptzeile: Logo + Kontakt */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
           <Link href="/nl" className="flex items-center gap-2">
-            <span className="text-2xl font-extrabold text-[#DC2626]">JAMMERS</span>
-            <span className="text-xs text-gray-500 hidden sm:block">Getränkemarkt Goch</span>
+            <Image src="/images/logo-trinkgut-jammers.png" alt="Trinkgut Jammers" width={140} height={55} className="h-10 w-auto" />
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
-            <a href="https://wa.me/491752492386" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-700">
+            <a href="https://wa.me/4917663228597" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-700">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.025.506 3.932 1.395 5.608L.054 23.395a.6.6 0 00.727.728l5.787-1.34A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.6a9.56 9.56 0 01-5.148-1.5l-.36-.216-3.735.865.888-3.638-.237-.376A9.555 9.555 0 012.4 12c0-5.302 4.298-9.6 9.6-9.6s9.6 4.298 9.6 9.6-4.298 9.6-9.6 9.6z"/></svg>
-              WhatsApp
+              <span className="hidden sm:inline">WhatsApp</span>
             </a>
             <a href="tel:+492823418707" className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
               <span className="hidden sm:inline">02823-418707</span>
             </a>
-            <Link href="/" className="text-xs text-gray-400 hover:text-gray-600">🇩🇪 DE</Link>
+            <Link href="/" className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-md hover:bg-orange-200 font-medium">🇩🇪 DE</Link>
+          </div>
+        </div>
+        {/* Unterreiter */}
+        <div className="bg-orange-500 overflow-x-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-0.5">
+            {[
+              { label: "💰 Aanbiedingen", href: "#deals" },
+              { label: "🎉 Partyplanner", href: "#party" },
+              { label: "🎪 Verhuur", href: "#verhuur" },
+              { label: "👥 Ons Team", href: "#team" },
+              { label: "🎓 Cursussen", href: "#academie" },
+              { label: "📍 Route", href: "#route" },
+              { label: "📞 Contact", href: "#contact" },
+            ].map((item) => (
+              <a key={item.href} href={item.href} className="px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 whitespace-nowrap transition-colors">
+                {item.label}
+              </a>
+            ))}
           </div>
         </div>
       </nav>
@@ -209,10 +229,10 @@ export default function NlLandingPage() {
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/produkte" className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl">
-            Bekijk alle 7.000+ producten
+          <a href="#route" className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-orange-600 transition-all shadow-lg hover:shadow-xl">
+            Bezoek ons — Route plannen 📍
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -235,6 +255,67 @@ export default function NlLandingPage() {
                 <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ PARTYPLANNER ═══ */}
+      <section id="party" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20 scroll-mt-20">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">🎉 Partyplanner</h2>
+          <p className="text-gray-500 mt-2">Wij plannen jouw perfecte feest — van bier tot bubbels</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { icon: "🍺", title: "Drankenadvies", desc: "Hoeveel bier, wijn en fris heb je nodig? Wij berekenen het voor je op basis van het aantal gasten." },
+            { icon: "🧊", title: "Koeling & ijs", desc: "Koelkasten, ijsblokjesmachines en koeltonnen beschikbaar voor verhuur." },
+            { icon: "📦", title: "Levering & retour", desc: "Wij leveren aan huis en halen lege kratten weer op. Geen gesleep!" },
+            { icon: "🥂", title: "Sekt & bubbels", desc: "Prosecco, Champagne of Sekt — voor bruiloften, jubilea en meer." },
+            { icon: "🎯", title: "Op maat", desc: "Vertel ons je budget en het aantal gasten — wij stellen het perfecte pakket samen." },
+            { icon: "💰", title: "Duitse prijzen", desc: "Bespaar tot 40% op dranken vergeleken met Nederlandse supermarktprijzen." },
+          ].map((item) => (
+            <div key={item.title} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-orange-200 hover:shadow-lg transition-all">
+              <div className="text-3xl mb-3">{item.icon}</div>
+              <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <a href="https://wa.me/4917663228597?text=Hallo!%20Ik%20wil%20graag%20een%20feest%20plannen." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-3.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
+            💬 WhatsApp ons voor een offerte
+          </a>
+        </div>
+      </section>
+
+      {/* ═══ VERHUUR ═══ */}
+      <section id="verhuur" className="bg-gray-50 py-16 md:py-20 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">🎪 Verhuur</h2>
+            <p className="text-gray-500 mt-2">Alles voor jouw evenement — huren bij Jammers</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { icon: "🍻", title: "Tapinstallaties", desc: "Professionele tapinstallaties met CO₂ en koeling voor perfect getapt bier." },
+              { icon: "🪑", title: "Tafels & stoelen", desc: "Statafels, biertafels en stoelen voor elk formaat feest." },
+              { icon: "🥤", title: "Glazen & bekers", desc: "Bierglazen, wijnglazen, champagneglazen — schoon en klaar voor gebruik." },
+              { icon: "❄️", title: "Koeling", desc: "Koelkasten, koeltonnen en ijsblokjesmachines voor elk evenement." },
+            ].map((item) => (
+              <div key={item.title} className="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <h3 className="font-bold text-gray-900 text-lg mb-2">{item.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8 space-x-3">
+            <a href="tel:+492823418707" className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg transition-all">
+              📞 Bel ons voor beschikbaarheid
+            </a>
+            <a href="https://wa.me/4917663228597?text=Hallo!%20Ik%20wil%20graag%20informatie%20over%20verhuur." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
+              💬 WhatsApp
+            </a>
           </div>
         </div>
       </section>
@@ -284,7 +365,7 @@ export default function NlLandingPage() {
       </section>
 
       {/* ═══ OPENINGSTIJDEN & CONTACT ═══ */}
-      <section className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 text-white py-16 md:py-20">
+      <section id="contact" className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 text-white py-16 md:py-20 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {/* Openingstijden */}
@@ -357,15 +438,71 @@ export default function NlLandingPage() {
         </div>
       </div>
 
+      {/* ═══ ONS TEAM ═══ */}
+      <section id="team" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-20">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Ons Team</h2>
+          <p className="text-gray-500 mt-2">10 medewerkers met passie voor dranken — wij adviseren u graag!</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {galleryItems.filter((i) => i.category === "team").map((member) => (
+            <div key={member.id} className="text-center group">
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-2 shadow-md group-hover:shadow-xl transition-shadow">
+                <Image
+                  src={member.image}
+                  alt={member.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 20vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-2 left-2 right-2">
+                  <p className="text-white font-bold text-sm drop-shadow-lg">{member.title.split(" — ")[0]}</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500">{member.title.split(" — ")[1] || ""}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ AKADEMIE ═══ */}
+      <section id="academie" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-20">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Trinkgut Academie</h2>
+          <p className="text-gray-500 mt-2">{courses.length} cursussen met {courses.reduce((sum, c) => sum + c.lessons.length, 0)} lessen — van beginner tot expert</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {courses.slice(0, 6).map((course) => (
+            <div key={course.slug} className="group p-5 bg-white border border-gray-200 rounded-xl hover:border-orange-300 hover:shadow-lg transition-all cursor-default">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-2xl">{course.icon}</span>
+                <div>
+                  <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors text-sm">{course.title}</h3>
+                  <p className="text-xs text-gray-400">{course.lessons.length} lessen</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 line-clamp-2">{course.description}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-6">
+          <a href="#route" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition-colors text-sm">
+            Bezoek ons in Goch 📍
+          </a>
+        </div>
+      </section>
+
       {/* ═══ Footer ═══ */}
       <footer className="bg-gray-900 text-gray-400 py-8 text-center text-sm">
         <p>© {new Date().getFullYear()} trinkgut Jammers Goch — Alle rechten voorbehouden</p>
         <p className="mt-1">
-          <Link href="/impressum" className="hover:text-white">Impressum</Link>
+          <a href="/impressum" target="_blank" rel="noopener noreferrer" className="hover:text-white">Impressum</a>
           {" · "}
-          <Link href="/datenschutz" className="hover:text-white">Privacy</Link>
+          <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="hover:text-white">Privacy</a>
           {" · "}
-          <Link href="/" className="hover:text-white">🇩🇪 Duitse website</Link>
+          <a href="/" className="hover:text-white">🇩🇪 Duitse website</a>
         </p>
         <p className="mt-3 text-xs text-gray-600">Geen 18, geen alcohol.</p>
       </footer>

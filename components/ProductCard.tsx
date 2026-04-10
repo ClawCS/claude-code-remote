@@ -14,15 +14,22 @@ export default function ProductCard({ product }: { product: Product }) {
   const wishlisted = isInWishlist(product.id);
 
   return (
-    <div className="group bg-white rounded-2xl border border-[#F0D5CF] hover:border-[#DC2626]/40 transition-all overflow-hidden flex flex-col card-hover-glow gradient-border">
+    <div
+      className="group bg-[#FDFCFB] rounded-2xl border border-[#F0D5CF] hover:border-[#DC2626]/40 transition-all overflow-hidden flex flex-col card-hover-glow gradient-border card-spotlight"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      }}
+    >
       <Link href={`/produkte/${product.slug}`} className="block p-4 pb-2">
-        <div className="aspect-square bg-gradient-to-br from-[#FFF8F6] to-[#FFF0EC] rounded-xl flex items-center justify-center overflow-hidden relative">
+        <div className="aspect-square bg-gradient-to-br from-[#FFF8F6] to-[#FFF0EC] rounded-xl flex items-center justify-center overflow-hidden relative product-image-shadow">
           <Image
             src={product.image}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"
+            className="object-contain p-3 group-hover:scale-[1.06] group-hover:rotate-[0.5deg] transition-transform duration-500"
           />
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleItem(product); }}

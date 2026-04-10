@@ -22,16 +22,7 @@ export default function Hero() {
       {/* Dark gradient for readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
 
-      {/* Floating drink emojis with parallax */}
-      <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
-        <div className="absolute top-[8%] left-[5%] text-[12rem] leading-none select-none animate-float">🍺</div>
-        <div className="absolute top-[5%] right-[10%] text-[10rem] leading-none select-none animate-float-slow">🍷</div>
-        <div className="absolute bottom-[15%] left-[20%] text-[8rem] leading-none select-none animate-float" style={{ animationDelay: '2s' }}>🥤</div>
-        <div className="absolute bottom-[10%] right-[25%] text-[9rem] leading-none select-none animate-float-slow" style={{ animationDelay: '1s' }}>🥃</div>
-        <div className="absolute top-[40%] right-[5%] text-[7rem] leading-none select-none animate-float" style={{ animationDelay: '3s' }}>🍹</div>
-      </div>
-
-      {/* Particle dots */}
+      {/* Subtle particle dots */}
       <div className="absolute inset-0 pointer-events-none">
         {[
           { top: '15%', left: '10%', delay: '0s', size: '4px' },
@@ -58,41 +49,47 @@ export default function Hero() {
           <WeatherWidget />
         </div>
 
-        <div className="max-w-2xl animate-fade-in-up">
-          <p className="text-base md:text-lg font-bold tracking-[0.15em] uppercase text-white/80 mb-5 glass inline-block px-4 py-1.5 rounded-full">
+        <div className="max-w-2xl">
+          <p className="text-base md:text-lg font-bold tracking-[0.15em] uppercase text-white/80 mb-5 glass inline-block px-4 py-1.5 rounded-full animate-fade-in-up">
             {t("hero.badge")}
           </p>
-          <h1 className="text-5xl md:text-6xl lg:text-8xl font-extrabold leading-[1.02] mb-7 tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+          <h1 className="text-5xl md:text-6xl lg:text-8xl font-extrabold leading-[1.02] mb-7 tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)] animate-fade-in-up" style={{ animationDelay: '150ms', letterSpacing: '-0.025em' }}>
             {t("hero.title1")}
             <br />
             <span className="text-[#F59E0B] drop-shadow-[0_2px_15px_rgba(212,168,83,0.4)]">{t("hero.title2")}</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/70 mb-12 leading-relaxed max-w-xl">
+          <p className="text-lg md:text-xl text-white/70 mb-12 leading-relaxed max-w-xl animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             {t("hero.subtitle")}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
             <Link
               href="/produkte"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-[#DC2626] font-bold rounded-2xl transition-all btn-hover btn-shimmer text-lg shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30"
+              className="relative inline-flex items-center justify-center px-8 py-4 bg-white text-[#DC2626] font-bold rounded-2xl transition-all btn-hover btn-shimmer text-lg shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 overflow-hidden group"
             >
-              {t("hero.cta1")}
+              <span className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative">{t("hero.cta1")}</span>
             </Link>
             <Link
               href="/partyplaner"
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#F59E0B] text-white font-semibold rounded-2xl transition-all hover:bg-[#F59E0B]/20 text-lg"
+              className="relative inline-flex items-center justify-center px-8 py-4 border-2 border-[#F59E0B] text-white font-semibold rounded-2xl transition-all hover:bg-[#F59E0B]/20 text-lg overflow-hidden group"
             >
-              {t("hero.cta2")}
+              <span className="absolute inset-0 bg-gradient-to-br from-[#F59E0B]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative">{t("hero.cta2")}</span>
             </Link>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in-up hidden md:flex" style={{ animationDelay: '1.2s' }}>
+          <span className="text-[10px] text-white/30 uppercase tracking-[0.2em]">Scroll</span>
+          <div className="w-px h-8 bg-gradient-to-b from-[#F59E0B]/40 to-transparent relative overflow-hidden">
+            <div className="absolute inset-x-0 h-3 bg-[#F59E0B]/80 animate-scroll-line" />
           </div>
         </div>
       </div>
 
-      {/* Bottom wave transition */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg className="w-full h-12 md:h-16" viewBox="0 0 1440 64" preserveAspectRatio="none" fill="none">
-          <path d="M0 32C240 64 480 48 720 48S1200 64 1440 32V64H0Z" fill="#FFF8F6" />
-        </svg>
-      </div>
+      {/* Bottom gradient transition */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FFF8F6] to-transparent" />
     </section>
   );
 }
