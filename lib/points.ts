@@ -1,5 +1,5 @@
-const STORAGE_KEY = "trinkgut-community";
-const LAST_VISIT_KEY = "trinkgut-last-visit";
+const LOCAL_ID_KEY = "trinkgut-community-id";
+const LOCAL_NAME_KEY = "trinkgut-community-name";
 
 export type PointAction =
   | "daily_visit"
@@ -10,32 +10,31 @@ export type PointAction =
   | "leergut_rechner"
   | "partyspiel";
 
-export type PointEntry = {
-  action: PointAction;
+export type Level = "Bronze" | "Silber" | "Gold" | "Diamant";
+
+export type LeaderboardEntry = {
+  rank: number;
+  id: string;
+  name: string;
   points: number;
-  timestamp: string;
-  label: string;
+  level: Level;
 };
 
-export type CommunityUser = {
+export type UserProfile = {
+  id: string;
   name: string;
-  email: string;
   points: number;
-  history: PointEntry[];
+  level: Level;
+  rank: number;
+  history: { action: string; points: number; timestamp: string; label: string }[];
   joinedAt: string;
 };
 
-const ACTION_POINTS: Record<PointAction, { points: number; label: string }> = {
-  daily_visit: { points: 10, label: "Täglicher Besuch" },
-  battle_vote: { points: 5, label: "Battle-Vote" },
-  gluecksrad: { points: 5, label: "Glücksrad gedreht" },
-  kuehlschrank_check: { points: 15, label: "Kühlschrank-Check" },
-  quiz_complete: { points: 20, label: "Quiz abgeschlossen" },
-  leergut_rechner: { points: 10, label: "Leergut-Rechner genutzt" },
-  partyspiel: { points: 5, label: "Partyspiel gespielt" },
+export type MonthlyWinner = {
+  month: string;
+  name: string;
+  points: number;
 };
-
-export type Level = "Bronze" | "Silber" | "Gold" | "Diamant";
 
 export function getLevel(points: number): Level {
   if (points > 1000) return "Diamant";
@@ -69,107 +68,133 @@ export function getNextLevelThreshold(points: number): { next: Level; threshold:
   return { next: "Diamant", threshold: points };
 }
 
-function getUser(): CommunityUser | null {
+/** Gespeicherte User-ID aus localStorage holen */
+function getLocalId(): string | null {
   if (typeof window === "undefined") return null;
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return null;
-  try {
-    return JSON.parse(stored) as CommunityUser;
-  } catch {
-    return null;
-  }
+  return localStorage.getItem(LOCAL_ID_KEY);
 }
 
-function saveUser(user: CommunityUser) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-  window.dispatchEvent(new Event("trinkgut-points-change"));
+function getLocalName(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(LOCAL_NAME_KEY);
 }
 
 export const points = {
-  getUser,
-
-  register(name: string, email: string): CommunityUser {
-    const existing = getUser();
-    if (existing) return existing;
-    const user: CommunityUser = {
-      name,
-      email,
-      points: 0,
-      history: [],
-      joinedAt: new Date().toISOString(),
-    };
-    saveUser(user);
-    return user;
-  },
-
+  /** Pruefen ob registriert */
   isRegistered(): boolean {
-    return getUser() !== null;
+    return getLocalId() !== null;
   },
 
-  addPoints(action: PointAction, customPoints?: number): number {
-    const user = getUser();
-    if (!user) return 0;
-
-    const config = ACTION_POINTS[action];
-    const pts = customPoints ?? config.points;
-
-    const entry: PointEntry = {
-      action,
-      points: pts,
-      timestamp: new Date().toISOString(),
-      label: config.label,
-    };
-
-    user.points += pts;
-    user.history.unshift(entry);
-    if (user.history.length > 100) user.history = user.history.slice(0, 100);
-    saveUser(user);
-    return pts;
+  /** Lokale User-ID */
+  getUserId(): string | null {
+    return getLocalId();
   },
 
-  checkDailyVisit(): boolean {
-    if (typeof window === "undefined") return false;
-    const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
-    const today = new Date().toDateString();
-    if (lastVisit === today) return false;
-    localStorage.setItem(LAST_VISIT_KEY, today);
-    const user = getUser();
-    if (!user) return false;
-    points.addPoints("daily_visit");
-    return true;
+  /** Lokaler Username */
+  getUserName(): string | null {
+    return getLocalName();
   },
 
-  getLeaderboard(): { name: string; points: number; level: Level }[] {
-    // In a localStorage-only setup we only have the current user.
-    // For demo we generate some fake competitors + the real user.
-    const user = getUser();
-    const fakeUsers = [
-      { name: "MaxBierFan", points: 1250 },
-      { name: "LisaWein", points: 890 },
-      { name: "TomMixer", points: 720 },
-      { name: "SarahSekt", points: 580 },
-      { name: "BenHopfen", points: 430 },
-      { name: "AnnaSprudel", points: 310 },
-      { name: "PaulPils", points: 220 },
-      { name: "MiaRadler", points: 150 },
-      { name: "LeonLimo", points: 85 },
-      { name: "EmmaAle", points: 45 },
-    ];
-
-    const board = fakeUsers.map((u) => ({
-      name: u.name,
-      points: u.points,
-      level: getLevel(u.points),
-    }));
-
-    if (user) {
-      board.push({
-        name: user.name,
-        points: user.points,
-        level: getLevel(user.points),
+  /** Registrieren — serverseitig */
+  async register(name: string): Promise<{ success: boolean; error?: string; id?: string }> {
+    try {
+      const res = await fetch("/api/community", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "register", name }),
       });
-    }
+      const data = await res.json();
 
-    return board.sort((a, b) => b.points - a.points);
+      if (!res.ok) {
+        return { success: false, error: data.error || "Fehler bei der Registrierung" };
+      }
+
+      // ID lokal speichern
+      localStorage.setItem(LOCAL_ID_KEY, data.user.id);
+      localStorage.setItem(LOCAL_NAME_KEY, data.user.name);
+      window.dispatchEvent(new Event("trinkgut-points-change"));
+
+      return { success: true, id: data.user.id };
+    } catch {
+      return { success: false, error: "Server nicht erreichbar" };
+    }
+  },
+
+  /** Punkte hinzufuegen — serverseitig */
+  async addPoints(action: PointAction): Promise<{ points: number; totalPoints: number; level: Level } | null> {
+    const id = getLocalId();
+    if (!id) return null;
+
+    try {
+      const res = await fetch("/api/community", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "add_points", userId: id, pointAction: action }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) return null;
+
+      window.dispatchEvent(new Event("trinkgut-points-change"));
+      return {
+        points: data.points,
+        totalPoints: data.totalPoints,
+        level: data.level,
+      };
+    } catch {
+      return null;
+    }
+  },
+
+  /** Taeglichen Besuch pruefen + Punkte geben */
+  async checkDailyVisit(): Promise<boolean> {
+    const result = await points.addPoints("daily_visit");
+    return result !== null && result.points > 0;
+  },
+
+  /** Eigenes Profil laden */
+  async getProfile(): Promise<UserProfile | null> {
+    const id = getLocalId();
+    if (!id) return null;
+
+    try {
+      const res = await fetch(`/api/community?action=profile&id=${id}`);
+      const data = await res.json();
+      return data.user || null;
+    } catch {
+      return null;
+    }
+  },
+
+  /** Leaderboard laden */
+  async getLeaderboard(): Promise<{ leaderboard: LeaderboardEntry[]; totalPlayers: number }> {
+    try {
+      const res = await fetch("/api/community?action=leaderboard");
+      return await res.json();
+    } catch {
+      return { leaderboard: [], totalPlayers: 0 };
+    }
+  },
+
+  /** Monatssieger laden */
+  async getWinners(): Promise<MonthlyWinner[]> {
+    try {
+      const res = await fetch("/api/community?action=winners");
+      const data = await res.json();
+      return data.winners || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /** Abmelden (lokal) */
+  logout() {
+    if (typeof window === "undefined") return;
+    localStorage.removeItem(LOCAL_ID_KEY);
+    localStorage.removeItem(LOCAL_NAME_KEY);
+    // Alte Daten auch aufraeumen
+    localStorage.removeItem("trinkgut-community");
+    localStorage.removeItem("trinkgut-last-visit");
+    window.dispatchEvent(new Event("trinkgut-points-change"));
   },
 };
