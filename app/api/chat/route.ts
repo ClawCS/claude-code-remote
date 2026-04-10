@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
 
     if (!reply) {
       return NextResponse.json(
-        { error: "Alle Modelle sind gerade ausgelastet. Bitte in 30 Sekunden erneut versuchen." },
+        { error: "Der KI-Assistent ist gerade nicht erreichbar. Bitte versuche es in 30 Sekunden erneut." },
         { status: 429, headers: { "Retry-After": "30" } }
       );
     }
@@ -197,6 +197,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ reply });
   } catch (error) {
     console.error("Chat API error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    const isTimeout = error instanceof Error && (error.message.includes("fetch failed") || error.message.includes("timeout"));
+    return NextResponse.json(
+      { error: isTimeout
+          ? "Der KI-Server ist gerade nicht erreichbar. Bitte versuche es spaeter erneut."
+          : "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
+      },
+      { status: isTimeout ? 503 : 500 }
+    );
   }
 }
