@@ -20,8 +20,8 @@ export const galleryItems: GalleryItem[] = [
   { id: 8, title: "Gabriella — Verkauf", description: "Unsere Verkaufsallrounderin. Kann alles, weiss alles.", category: "team", image: teamImg("gabriella") },
   { id: 9, title: "Jan Niklas — Lager", description: "Der fleissigste Ameisenfahrer im Team.", category: "team", image: teamImg("jan-niklas") },
   { id: 10, title: "Hanna — Marketing", description: "Die Marketing Tante hinter unserem Instagram-Auftritt.", category: "team", image: teamImg("hanna") },
-  { id: 11, title: "Nico — Azubi", description: "Unser fleissigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: teamImg("nico") },
-  { id: 12, title: "Nils", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("nils") },
+  { id: 11, title: "Nico — Aushilfe", description: "Unser fleissigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: teamImg("nico") },
+  { id: 12, title: "Nils — Verkauf", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("nils") },
   { id: 13, title: "Henri", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("henri") },
 
   // ═══ MARKT ═══
