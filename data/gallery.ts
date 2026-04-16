@@ -23,6 +23,8 @@ export const galleryItems: GalleryItem[] = [
   { id: 11, title: "Nico — Aushilfe", description: "Unser fleissigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: teamImg("nico") },
   { id: 12, title: "Nils — Verkauf", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("nils") },
   { id: 13, title: "Henri", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("henri") },
+  { id: 14, title: "Tim — Stimmungskanone", description: "Unsere Stimmungskanone im Team.", category: "team", image: teamImg("tim") },
+  { id: 15, title: "Hannah — Aushilfe", description: "Wenn's bei uns mal brennt, loescht Hannah das Feuer.", category: "team", image: teamImg("hannah") },
 
   // ═══ MARKT ═══
   { id: 31, title: "Deine Party. Unser Service.", description: "Über 7.000 Getränke, diverse Leihartikel, Beratung & Planung deiner Feier.", category: "markt", image: img(0) },
