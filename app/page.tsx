@@ -157,9 +157,11 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-2 left-2 right-2">
                   <p className="text-white font-bold text-sm drop-shadow-lg">{member.title.split(" — ")[0]}</p>
+                  {member.title.includes(" — ") && (
+                    <p className="text-white/80 text-xs drop-shadow-lg">{member.title.split(" — ")[1]}</p>
+                  )}
                 </div>
               </div>
-              <p className="text-xs text-muted group-hover:text-[#DC2626] transition-colors">{member.title.split(" — ")[1] || member.description.slice(0, 40)}</p>
             </Link>
             </ScrollReveal>
           ))}
