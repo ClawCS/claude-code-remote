@@ -102,10 +102,18 @@ export default function GaleriePage() {
                 </span>
               )}
               <div className="absolute bottom-3 left-3 right-3">
-                <h3 className="font-bold text-white text-sm drop-shadow-lg line-clamp-2">{item.title}</h3>
+                <h3 className="font-bold text-white text-sm drop-shadow-lg line-clamp-2">
+                  {item.category === "team" ? item.title.split(" — ")[0] : item.title}
+                </h3>
               </div>
             </div>
-            {item.category !== "team" && (
+            {item.category === "team" ? (
+              item.title.includes(" — ") && (
+                <div className="p-2">
+                  <p className="text-xs text-muted text-center">{item.title.split(" — ")[1]}</p>
+                </div>
+              )
+            ) : (
               <div className="p-3">
                 <p className="text-xs text-primary font-semibold uppercase tracking-wide">
                   {galleryCategories.find(c => c.value === item.category)?.label}
