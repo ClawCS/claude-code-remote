@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 type HandzettelPage = {
   number: number;
@@ -62,11 +63,18 @@ export default function AngebotePage() {
   const hasPages = data?.status === "ok" && data.pages.length > 0;
 
   return (
+    <>
+    <div className="page-hero-banner py-16 md:py-24">
+      <ShimmerParticles />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Angebote</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Aktuelle Angebote</h1>
+        <p className="text-white/80 max-w-xl mx-auto text-lg">
+          KW {currentKW} · {getWeekRange()} · trinkgut Jammers Goch · Nur solange der Vorrat reicht.
+        </p>
+      </div>
+    </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-3xl font-bold text-secondary mb-2">Aktuelle Angebote</h1>
-      <p className="text-muted mb-8">
-        KW {currentKW} · {getWeekRange()} · trinkgut Jammers Goch · Nur solange der Vorrat reicht.
-      </p>
 
       {/* Handzettel Banner */}
       <section className="bg-gradient-to-r from-primary to-red-700 text-white rounded-2xl p-6 sm:p-8 mb-10 flex flex-col md:flex-row items-center gap-6">
@@ -282,5 +290,6 @@ export default function AngebotePage() {
         Angebote werden jeden Sonntag um 17:00 Uhr automatisch aktualisiert — Werbekreis 3.6
       </p>
     </div>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { cocktails, cocktailCategories, type Cocktail } from "@/data/cocktails";
 import { cocktailImages } from "@/data/cocktail-images";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 export default function CocktailsPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -17,6 +18,7 @@ export default function CocktailsPage() {
     <>
     {/* Red Hero Banner */}
     <div className="page-hero-banner py-16 md:py-24">
+      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Cocktail-Rezepte</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Cocktail-Rezepte</h1>

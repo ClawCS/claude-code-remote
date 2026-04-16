@@ -6,6 +6,7 @@ import ProductGrid from "@/components/ProductGrid";
 import CategoryBackground from "@/components/CategoryBackground";
 import { categories, type Product } from "@/lib/utils";
 import productsData from "@/data/products.json";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 const products = productsData as Product[];
 
@@ -32,7 +33,8 @@ export default function KategoriePage() {
       <CategoryBackground slug={slug} />
 
       {/* Hero-Section */}
-      <div className="relative z-10 pt-16 pb-8 text-center">
+      <div className="relative z-10 pt-16 pb-8 text-center overflow-hidden">
+        <ShimmerParticles count={24} />
         <nav className="text-sm text-white/60 mb-6 flex gap-2 justify-center">
           <Link href="/" className="hover:text-white transition-colors">Start</Link>
           <span>/</span>

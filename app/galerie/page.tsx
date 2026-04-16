@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { galleryItems } from "@/data/gallery";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 export default function GaleriePage() {
   const [lightboxItem, setLightboxItem] = useState<typeof galleryItems[0] | null>(null);
@@ -11,6 +12,7 @@ export default function GaleriePage() {
     <>
     {/* Red Hero Banner */}
     <div className="page-hero-banner py-16 md:py-24">
+      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Galerie</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Unser Team</h1>

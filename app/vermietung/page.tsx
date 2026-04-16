@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 import { formatPrice, calculateWorkdays, calculateRentalPrice, calculateRentalPeriods, type Product } from "@/lib/utils";
 import type { RentalInfo } from "@/context/CartContext";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 /* ─── SVG Icon Components ─── */
 
@@ -275,6 +276,7 @@ export default function VermietungPage() {
     <>
     {/* Red Hero Banner */}
     <div className="page-hero-banner py-16 md:py-24">
+      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Vermietung</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Vermietung & Leihsortiment</h1>
