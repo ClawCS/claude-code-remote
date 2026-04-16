@@ -3,7 +3,6 @@
 import Hero from "@/components/Hero";
 import VideoHero from "@/components/VideoHero";
 import CategoryCard from "@/components/CategoryCard";
-import ProductGrid from "@/components/ProductGrid";
 import SocialProof from "@/components/SocialProof";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { categories, type Product } from "@/lib/utils";
@@ -20,7 +19,6 @@ const teamMembers = galleryItems.filter((i) => i.category === "team");
 const galleryPreview = galleryItems.filter((i) => i.category !== "team").slice(0, 8);
 
 export default function Home() {
-  const highlights = products.filter((p) => p.highlight);
   const { t } = useTranslation();
 
   return (
@@ -49,24 +47,6 @@ export default function Home() {
 
       {/* Gradient fade transition */}
       <div className="h-24 bg-gradient-to-b from-white to-[#FFF5F3]" />
-
-      {/* Highlights */}
-      <section className="relative py-20 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5F3] via-[#FFF0EC]/30 to-white" />
-        <div className="absolute inset-0 noise-bg" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <ScrollReveal className="text-center mb-12">
-            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.highlights.label")}</p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center" style={{ textWrap: "balance" }}>
-              {t("home.highlights.title")}
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={100}>
-            <ProductGrid products={highlights} />
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* Services */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
