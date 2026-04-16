@@ -2,17 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { galleryItems, galleryCategories } from "@/data/gallery";
-
-type CategoryFilter = "alle" | "team" | "markt" | "neuheiten" | "aktionen" | "gewinnspiel" | "angebote";
+import { galleryItems } from "@/data/gallery";
 
 export default function GaleriePage() {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("alle");
   const [lightboxItem, setLightboxItem] = useState<typeof galleryItems[0] | null>(null);
-
-  const filtered = activeCategory === "alle"
-    ? galleryItems
-    : galleryItems.filter((item) => item.category === activeCategory);
 
   return (
     <>
@@ -20,57 +13,17 @@ export default function GaleriePage() {
     <div className="page-hero-banner py-16 md:py-24">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Galerie</span></nav>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Bilder aus dem Markt</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Unser Team</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
-          {galleryItems.length} Bilder aus unserem Markt, unserem Team und unseren Aktionen.
-          Folge uns auf{" "}
-          <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="text-white underline font-medium">
-            Instagram
-          </a>{" "}
-          für tägliche Updates!
+          {galleryItems.length} Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!
         </p>
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
-      {/* Category Filter — Gewinnspiel highlighted */}
-      <div className="flex flex-wrap gap-2 justify-center mb-8">
-        {galleryCategories.map((cat) => {
-          const count = cat.value === "alle" ? galleryItems.length : galleryItems.filter(i => i.category === cat.value).length;
-          const isGewinnspiel = cat.value === "gewinnspiel";
-          return (
-            <button
-              key={cat.value}
-              onClick={() => setActiveCategory(cat.value as CategoryFilter)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                activeCategory === cat.value
-                  ? isGewinnspiel
-                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/30"
-                    : "bg-primary text-white shadow-md"
-                  : isGewinnspiel
-                    ? "bg-amber-50 text-amber-700 border-2 border-amber-300 hover:bg-amber-100"
-                    : "bg-light text-muted hover:bg-border"
-              }`}
-            >
-              <span>{cat.icon}</span>
-              {cat.label}
-              <span className="opacity-60">({count})</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Gewinnspiel Banner — when filtered */}
-      {activeCategory === "gewinnspiel" && (
-        <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-6 mb-8 text-center text-white">
-          <h2 className="text-2xl font-bold mb-1">Unsere Monatsgewinnspiele</h2>
-          <p className="text-white/80 text-sm">Jeden Monat ein neues Gewinnspiel — nach Datum sortiert. Erkennbar an "Gewinnspiel / Winactie".</p>
-        </div>
-      )}
-
       {/* Gallery Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-children">
-        {filtered.map((item) => (
+        {galleryItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setLightboxItem(item)}
@@ -87,38 +40,15 @@ export default function GaleriePage() {
                 unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              {item.date && (
-                <span className={`absolute top-3 right-3 text-xs font-bold px-2 py-1 rounded-full ${
-                  item.category === "gewinnspiel"
-                    ? "bg-amber-500 text-white"
-                    : "bg-primary text-white"
-                }`}>
-                  {item.date}
-                </span>
-              )}
-              {item.category === "gewinnspiel" && (
-                <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
-                  Gewinnspiel
-                </span>
-              )}
               <div className="absolute bottom-3 left-3 right-3">
-                <h3 className="font-bold text-white text-sm drop-shadow-lg line-clamp-2">
-                  {item.category === "team" ? item.title.split(" — ")[0] : item.title}
+                <h3 className="font-bold text-white text-sm drop-shadow-lg">
+                  {item.title.split(" — ")[0]}
                 </h3>
               </div>
             </div>
-            {item.category === "team" ? (
-              item.title.includes(" — ") && (
-                <div className="p-2">
-                  <p className="text-xs text-muted text-center">{item.title.split(" — ")[1]}</p>
-                </div>
-              )
-            ) : (
-              <div className="p-3">
-                <p className="text-xs text-primary font-semibold uppercase tracking-wide">
-                  {galleryCategories.find(c => c.value === item.category)?.label}
-                </p>
-                <p className="text-xs text-muted mt-0.5 line-clamp-2">{item.description}</p>
+            {item.title.includes(" — ") && (
+              <div className="p-2">
+                <p className="text-xs text-muted text-center">{item.title.split(" — ")[1]}</p>
               </div>
             )}
           </button>
@@ -141,24 +71,10 @@ export default function GaleriePage() {
                 />
               </div>
               <div className="p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                    lightboxItem.category === "gewinnspiel" ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary"
-                  }`}>
-                    {galleryCategories.find(c => c.value === lightboxItem.category)?.label}
-                  </span>
-                  {lightboxItem.date && <span className="text-xs text-muted">{lightboxItem.date}</span>}
-                </div>
-                <h2 className="text-xl font-bold text-secondary">{lightboxItem.title}</h2>
-                <p className="text-sm text-muted mt-1">{lightboxItem.description}</p>
-                <a
-                  href="https://www.instagram.com/trinkgutjammers_goch/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-3"
-                >
-                  Auf Instagram ansehen →
-                </a>
+                <h2 className="text-xl font-bold text-secondary">{lightboxItem.title.split(" — ")[0]}</h2>
+                {lightboxItem.title.includes(" — ") && (
+                  <p className="text-sm text-muted mt-1">{lightboxItem.title.split(" — ")[1]}</p>
+                )}
               </div>
               <button
                 onClick={() => setLightboxItem(null)}
@@ -177,7 +93,7 @@ export default function GaleriePage() {
       <div className="mt-12 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 rounded-2xl p-8 text-center text-white">
         <h2 className="text-2xl font-bold mb-2">Mehr Bilder auf Instagram</h2>
         <p className="text-white/70 mb-4 max-w-md mx-auto">
-          217 Beiträge · 4.558 Follower · Täglich neue Einblicke
+          217 Beitraege · 4.558 Follower · Taeglich neue Einblicke
         </p>
         <a
           href="https://www.instagram.com/trinkgutjammers_goch/"

@@ -16,7 +16,6 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 const products = productsData as Product[];
 const teamMembers = galleryItems.filter((i) => i.category === "team");
-const galleryPreview = galleryItems.filter((i) => i.category !== "team").slice(0, 8);
 
 export default function Home() {
   const { t } = useTranslation();
@@ -170,43 +169,6 @@ export default function Home() {
 
       {/* Gradient fade */}
       <div className="h-24 bg-gradient-to-b from-white to-[#FFF5F3]" />
-
-      {/* ═══ GALERIE PREVIEW ═══ */}
-      <section className="relative py-20 md:py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5F3] via-white to-white" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <ScrollReveal className="text-center mb-12">
-            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Einblicke</p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
-              Aus unserem Markt
-            </h2>
-            <p className="text-muted mt-3 max-w-xl mx-auto">{galleryItems.length} Bilder aus dem Markt, Aktionen und Gewinnspielen</p>
-          </ScrollReveal>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {galleryPreview.map((item) => (
-              <Link key={item.id} href="/galerie" className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-white font-bold text-sm drop-shadow-lg">{item.title}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link href="/galerie" className="inline-flex items-center gap-2 px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl btn-hover shadow-lg shadow-[#DC2626]/20 transition-colors">
-              Alle {galleryItems.length} Bilder ansehen
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ═══ AKADEMIE TEASER ═══ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
