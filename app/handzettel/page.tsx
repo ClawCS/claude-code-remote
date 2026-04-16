@@ -4,16 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import ProspektViewer from "@/components/ProspektViewer";
 
-type HandzettelPage = {
-  number: number;
-  imageUrl: string;
-  thumbnailUrl: string;
-};
-
 type HandzettelData = {
-  catalogId: string;
-  catalogVersion: string;
-  storeId: string;
   werbekreis: string;
   kw: number;
   year: number;
@@ -22,8 +13,6 @@ type HandzettelData = {
   fetchedAt: string;
   viewerUrl: string;
   pdfUrl: string;
-  pageCount: number;
-  pages: HandzettelPage[];
   status: "ok" | "fallback";
 };
 
@@ -160,44 +149,12 @@ export default function HandzettelPage() {
       {/* Prospekt Viewer */}
       {data && (
         <>
-          {data.status === "ok" && data.pages.length > 0 ? (
-            <ProspektViewer
-              pages={data.pages}
-              kw={data.kw}
-              werbekreis={data.werbekreis}
-              pdfUrl={data.pdfUrl}
-              fallbackUrl={data.viewerUrl}
-            />
-          ) : (
-            /* Fallback: Handzettel wird geladen / Retry */
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mb-8">
-              <div className="bg-gradient-to-r from-primary to-red-700 p-4 text-white">
-                <h2 className="text-lg font-bold">
-                  Handzettel KW {data.kw} — Werbekreis {data.werbekreis}
-                </h2>
-              </div>
-
-              <div className="p-12 text-center">
-                <span className="text-6xl block mb-4">📰</span>
-                <h3 className="text-2xl font-bold text-secondary mb-3">
-                  Handzettel wird vorbereitet
-                </h3>
-                <p className="text-muted text-sm mb-2">
-                  KW {data.kw} — Werbekreis {data.werbekreis} — Goch und Umgebung
-                </p>
-                <p className="text-muted text-sm mb-6">
-                  Der Handzettel wird gerade vom Server abgerufen. Bitte versuche es in wenigen Minuten erneut.
-                </p>
-                <button
-                  onClick={handleRefresh}
-                  disabled={refreshing}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-red-700 text-white font-bold rounded-xl text-lg shadow-lg transition-all hover:scale-105 disabled:opacity-50"
-                >
-                  {refreshing ? "Wird geladen..." : "Erneut laden"}
-                </button>
-              </div>
-            </div>
-          )}
+          <ProspektViewer
+            viewerUrl={data.viewerUrl}
+            kw={data.kw}
+            werbekreis={data.werbekreis}
+            pdfUrl={data.pdfUrl || undefined}
+          />
 
           {/* Letzte Aktualisierung */}
           {data.fetchedAt && (
