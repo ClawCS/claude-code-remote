@@ -57,22 +57,32 @@ export default function Home() {
         </ScrollReveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { href: "/partyplaner", icon: "🎉", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc", gradient: "from-[#DC2626] to-[#EF4444]" },
-            { href: "/vermietung", icon: "🎪", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc", gradient: "from-[#B91C1C] to-[#DC2626]" },
-            { href: "/finder", icon: "🔍", titleKey: "home.service.finder", descKey: "home.service.finder.desc", gradient: "from-[#F59E0B] to-[#DC2626]" },
-            { href: "/cocktails", icon: "🍸", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc", gradient: "from-[#EF4444] to-[#F59E0B]" },
+            { href: "/partyplaner", image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=400&fit=crop", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
+            { href: "/vermietung", image: "https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=600&h=400&fit=crop", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
+            { href: "/finder", image: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&h=400&fit=crop", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
+            { href: "/cocktails", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&h=400&fit=crop", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
           ].map((s, i) => (
             <ScrollReveal key={s.href} delay={i * 100}>
               <Link
                 href={s.href}
-                className="group relative p-7 bg-[#FDFCFB] border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden block"
+                className="group relative bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden block"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-500`} />
-                <div className="w-14 h-14 rounded-full bg-[#DC2626]/8 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-3xl">{s.icon}</span>
+                {/* Photo */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={s.image}
+                    alt={t(s.titleKey)}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 </div>
-                <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors text-lg">{t(s.titleKey)}</h3>
-                <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
+                {/* Text */}
+                <div className="p-5">
+                  <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors text-lg">{t(s.titleKey)}</h3>
+                  <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
+                </div>
               </Link>
             </ScrollReveal>
           ))}
