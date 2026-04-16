@@ -95,7 +95,24 @@ export default function GewinnspielPage() {
   if (submitted) {
     return (
       <>
-        <div className="page-hero-banner py-16 md:py-24">
+        <div className="page-hero-banner py-16 md:py-24 relative">
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: `${3 + (i % 4) * 2}px`,
+                height: `${3 + (i % 4) * 2}px`,
+                background: i % 3 === 0 ? "rgba(245, 158, 11, 0.7)" : "rgba(255, 255, 255, 0.5)",
+                left: `${2 + (i * 4.2) % 96}%`,
+                top: `${5 + (i * 7.3) % 85}%`,
+                boxShadow: i % 3 === 0
+                  ? "0 0 6px rgba(245, 158, 11, 0.5)"
+                  : "0 0 4px rgba(255, 255, 255, 0.4)",
+                animation: `particleFloat ${5 + (i % 4) * 2}s ease-in-out ${(i * 0.4) % 4}s infinite`,
+              }}
+            />
+          ))}
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
             <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Gewinnspiel</span></nav>
             <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Gewinnspiele</h1>
@@ -119,8 +136,26 @@ export default function GewinnspielPage() {
 
   return (
     <>
-      {/* Hero Banner */}
-      <div className="page-hero-banner py-16 md:py-24">
+      {/* Hero Banner with shimmer particles */}
+      <div className="page-hero-banner py-16 md:py-24 relative">
+        {/* Shimmer particles */}
+        {Array.from({ length: 24 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              width: `${3 + (i % 4) * 2}px`,
+              height: `${3 + (i % 4) * 2}px`,
+              background: i % 3 === 0 ? "rgba(245, 158, 11, 0.7)" : "rgba(255, 255, 255, 0.5)",
+              left: `${2 + (i * 4.2) % 96}%`,
+              top: `${5 + (i * 7.3) % 85}%`,
+              boxShadow: i % 3 === 0
+                ? "0 0 6px rgba(245, 158, 11, 0.5)"
+                : "0 0 4px rgba(255, 255, 255, 0.4)",
+              animation: `particleFloat ${5 + (i % 4) * 2}s ease-in-out ${(i * 0.4) % 4}s infinite`,
+            }}
+          />
+        ))}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Gewinnspiel</span></nav>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Monatsgewinnspiele 2026</h1>
