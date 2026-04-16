@@ -105,12 +105,14 @@ export default function GaleriePage() {
                 <h3 className="font-bold text-white text-sm drop-shadow-lg line-clamp-2">{item.title}</h3>
               </div>
             </div>
-            <div className="p-3">
-              <p className="text-xs text-primary font-semibold uppercase tracking-wide">
-                {galleryCategories.find(c => c.value === item.category)?.label}
-              </p>
-              <p className="text-xs text-muted mt-0.5 line-clamp-2">{item.description}</p>
-            </div>
+            {item.category !== "team" && (
+              <div className="p-3">
+                <p className="text-xs text-primary font-semibold uppercase tracking-wide">
+                  {galleryCategories.find(c => c.value === item.category)?.label}
+                </p>
+                <p className="text-xs text-muted mt-0.5 line-clamp-2">{item.description}</p>
+              </div>
+            )}
           </button>
         ))}
       </div>
