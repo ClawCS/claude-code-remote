@@ -5,12 +5,133 @@
   "year": 2026,
   "weekStart": "2026-04-13",
   "weekEnd": "2026-04-18",
-  "fetchedAt": "2026-04-14T09:10:58.493Z",
+  "fetchedAt": "2026-04-16T07:26:19.525Z",
   "viewerUrl": "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest",
-  "catalogId": "unknown",
+  "catalogId": "1272749",
   "catalogVersion": "1",
-  "pdfUrl": "",
-  "pageCount": 0,
-  "pages": [],
-  "status": "fallback"
+  "pdfUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pdf/complete.pdf",
+  "pageCount": 24,
+  "pages": [
+    {
+      "number": 1,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/1/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/1/normal"
+    },
+    {
+      "number": 2,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/2/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/2/normal"
+    },
+    {
+      "number": 3,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/3/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/3/normal"
+    },
+    {
+      "number": 4,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/4/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/4/normal"
+    },
+    {
+      "number": 5,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/5/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/5/normal"
+    },
+    {
+      "number": 6,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/6/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/6/normal"
+    },
+    {
+      "number": 7,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/7/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/7/normal"
+    },
+    {
+      "number": 8,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/8/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/8/normal"
+    },
+    {
+      "number": 9,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/9/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/9/normal"
+    },
+    {
+      "number": 10,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/10/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/10/normal"
+    },
+    {
+      "number": 11,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/11/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/11/normal"
+    },
+    {
+      "number": 12,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/12/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/12/normal"
+    },
+    {
+      "number": 13,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/13/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/13/normal"
+    },
+    {
+      "number": 14,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/14/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/14/normal"
+    },
+    {
+      "number": 15,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/15/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/15/normal"
+    },
+    {
+      "number": 16,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/16/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/16/normal"
+    },
+    {
+      "number": 17,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/17/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/17/normal"
+    },
+    {
+      "number": 18,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/18/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/18/normal"
+    },
+    {
+      "number": 19,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/19/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/19/normal"
+    },
+    {
+      "number": 20,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/20/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/20/normal"
+    },
+    {
+      "number": 21,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/21/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/21/normal"
+    },
+    {
+      "number": 22,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/22/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/22/normal"
+    },
+    {
+      "number": 23,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/23/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/23/normal"
+    },
+    {
+      "number": 24,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/24/zoom/0",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/catalogs/1272749/1/pages/24/normal"
+    }
+  ],
+  "status": "ok"
 }
