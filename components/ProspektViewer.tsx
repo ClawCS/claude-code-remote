@@ -175,6 +175,7 @@ export default function ProspektViewer({
             sizes="(max-width: 768px) 100vw, 800px"
             className="object-contain"
             priority={currentPage === 0}
+            unoptimized
             onError={() => handleImageError(currentPageData.number)}
           />
         )}
@@ -272,6 +273,7 @@ export default function ProspektViewer({
                   fill
                   sizes="60px"
                   className="object-cover"
+                  unoptimized
                   onError={() => handleImageError(page.number)}
                 />
               )}
