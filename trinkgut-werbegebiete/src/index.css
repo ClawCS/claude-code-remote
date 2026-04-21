@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    background-color: #f4f2ec;
+    color: #1a1814;
+    font-family:
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Instrument Serif", ui-serif, Georgia, serif;
+    letter-spacing: -0.01em;
+    color: #1a1814;
+  }
+}
+
+@layer components {
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-ink-900/10 bg-white/80 px-3 py-1.5 text-sm font-medium text-ink-700 shadow-sm backdrop-blur transition hover:bg-white;
+  }
+  .chip-active {
+    @apply border-transparent bg-ink-900 text-cream-50 shadow-md;
+  }
+  .card {
+    @apply rounded-2xl border border-ink-900/10 bg-white shadow-card transition;
+  }
+  .card:hover {
+    @apply shadow-cardHover;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-full bg-ink-900 px-4 py-2 text-sm font-medium text-cream-50 shadow-sm transition hover:bg-ink-700 disabled:opacity-50;
+  }
+  .btn-trinkgut {
+    @apply inline-flex items-center gap-2 rounded-full bg-trinkgut px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-trinkgut-dark disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 rounded-full border border-ink-900/15 bg-white/70 px-4 py-2 text-sm font-medium text-ink-700 shadow-sm backdrop-blur transition hover:bg-white;
+  }
+  .input {
+    @apply w-full rounded-xl border border-ink-900/15 bg-white px-3 py-2 text-sm text-ink-900 outline-none transition focus:border-ink-900/40 focus:ring-2 focus:ring-ink-900/10;
+  }
+  .label {
+    @apply block text-xs font-medium uppercase tracking-wide text-ink-500;
+  }
+}
+
+.gm-style .pin-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #1a1814;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 24, 20, 0.12);
+  box-shadow: 0 1px 3px rgba(26, 24, 20, 0.1);
+  white-space: nowrap;
+}
