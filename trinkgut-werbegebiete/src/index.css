@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-cream-100 text-ink-900 font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    background: #c8102e;
+    color: #faf8f3;
+  }
+}
+
+@layer components {
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium
+           border border-ink-900/10 bg-white/70 backdrop-blur
+           transition-all hover:border-ink-900/20 hover:shadow-sm;
+  }
+  .chip-active {
+    @apply border-transparent text-white shadow-sm;
+  }
+  .card {
+    @apply rounded-2xl bg-white shadow-card ring-1 ring-ink-900/5
+           transition-shadow hover:shadow-cardHover;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium
+           transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-trinkgut text-white hover:bg-trinkgut-dark shadow-sm;
+  }
+  .btn-ghost {
+    @apply btn border border-ink-900/15 bg-white hover:bg-cream-50;
+  }
+  .input {
+    @apply w-full rounded-xl border border-ink-900/15 bg-white px-3 py-2 text-sm
+           outline-none transition-colors
+           focus:border-trinkgut focus:ring-2 focus:ring-trinkgut/20
+           placeholder:text-ink-400;
+  }
+  .label {
+    @apply block text-xs font-medium uppercase tracking-wider text-ink-500;
+  }
+}
+
+/* Google Maps label customising */
+.gm-style .gm-marker-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+/* scroll-bar auf horizontaler Chip-Leiste */
+.chip-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+.chip-scroller::-webkit-scrollbar {
+  height: 6px;
+}
+.chip-scroller::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
