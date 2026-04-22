@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function VideoHero() {
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -20,13 +22,30 @@ export default function VideoHero() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
+  // Countdown to 24.07.2026
+  useEffect(() => {
+    const target = new Date("2026-07-24T12:00:00").getTime();
+    const tick = () => {
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      setCountdown({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        mins: Math.floor((diff % 3600000) / 60000),
+        secs: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const playState = paused ? "paused" : "running";
+
   return (
     <section className="relative bg-black overflow-hidden">
       {/* Letterbox container — 21:9 cinematic ratio */}
-      <div
-        className="relative mx-auto w-full"
-        style={{ maxWidth: "1400px" }}
-      >
+      <div className="relative mx-auto w-full" style={{ maxWidth: "1400px" }}>
         {/* Top letterbox bar */}
         <div className="absolute top-0 left-0 right-0 h-6 md:h-10 bg-black z-30" />
         {/* Bottom letterbox bar */}
@@ -35,11 +54,7 @@ export default function VideoHero() {
         {/* Main stage */}
         <div
           className="relative overflow-hidden"
-          style={{
-            aspectRatio: "21/9",
-            minHeight: "320px",
-            maxHeight: "500px",
-          }}
+          style={{ aspectRatio: "21/9", minHeight: "320px", maxHeight: "500px" }}
         >
           {/* Film grain overlay */}
           <div
@@ -50,321 +65,217 @@ export default function VideoHero() {
             }}
           />
 
-          {/* ═══════════ ANIMATION STAGE ═══════════ */}
-          <div
-            className="absolute inset-0"
-            style={{
-              animationPlayState: paused ? "paused" : "running",
-            }}
-          >
-            {/* ─── SCENE 1 (0-3s): Brand Reveal ─── */}
+          {/* ═══════════ STRIKERBALL ANIMATION STAGE ═══════════ */}
+          <div className="absolute inset-0" style={{ animationPlayState: playState }}>
+
+            {/* ─── SCENE 1 (0-4s): Stadium Dark → Spotlight Reveal ─── */}
             <div
               className="absolute inset-0 flex items-center justify-center z-10"
-              style={{
-                animation: "vh-scene1-bg 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                animationPlayState: paused ? "paused" : "running",
-              }}
+              style={{ animation: `sb-scene1 18s cubic-bezier(0.4,0,0.2,1) infinite`, animationPlayState: playState }}
             >
-              <div
-                className="text-center"
-                style={{
-                  animation: "vh-scene1-text 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                  animationPlayState: paused ? "paused" : "running",
-                }}
-              >
+              {/* Stadium dark green gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#0a1a0a] via-[#0d2818] to-[#0a1a0a]" />
+              {/* Stadium floodlights */}
+              <div className="absolute top-0 left-[15%] w-40 h-full bg-gradient-to-b from-white/10 to-transparent" style={{ animation: `sb-floodlight 18s ease infinite`, animationPlayState: playState }} />
+              <div className="absolute top-0 right-[15%] w-40 h-full bg-gradient-to-b from-white/10 to-transparent" style={{ animation: `sb-floodlight 18s ease infinite 0.5s`, animationPlayState: playState }} />
+              {/* Lens flares */}
+              <div className="absolute top-[10%] left-[20%] w-4 h-4 rounded-full bg-white/60" style={{ boxShadow: "0 0 40px 20px rgba(255,255,255,0.3)", animation: `sb-flare 18s ease infinite`, animationPlayState: playState }} />
+              <div className="absolute top-[10%] right-[20%] w-4 h-4 rounded-full bg-white/60" style={{ boxShadow: "0 0 40px 20px rgba(255,255,255,0.3)", animation: `sb-flare 18s ease infinite 0.3s`, animationPlayState: playState }} />
+
+              <div className="relative z-10 text-center">
+                <p
+                  className="text-sm md:text-lg tracking-[0.4em] uppercase text-white/40 mb-3"
+                  style={{ animation: `sb-text-up 18s ease infinite`, animationPlayState: playState }}
+                >
+                  trinkgut Jammers prasentiert
+                </p>
                 <h2
-                  className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight"
+                  className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text"
                   style={{
-                    textShadow: "0 4px 20px rgba(0,0,0,0.8), 0 1px 0 rgba(0,0,0,0.5), inset 0 -2px 4px rgba(0,0,0,0.3)",
+                    backgroundImage: "linear-gradient(180deg, #FFD700 0%, #F59E0B 40%, #FF6B00 100%)",
+                    textShadow: "0 0 40px rgba(245,158,11,0.5)",
+                    WebkitBackgroundClip: "text",
+                    animation: `sb-title-reveal 18s ease infinite`,
+                    animationPlayState: playState,
+                    filter: "drop-shadow(0 4px 20px rgba(245,158,11,0.4))",
                   }}
                 >
-                  TRINKGUT JAMMERS
+                  STRIKERBALL
                 </h2>
                 <p
-                  className="text-sm md:text-lg text-white/60 tracking-[0.3em] mt-3 uppercase"
+                  className="text-2xl md:text-4xl font-black text-white mt-1"
                   style={{
-                    animation: "vh-scene1-sub 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationPlayState: paused ? "paused" : "running",
+                    textShadow: "0 4px 20px rgba(0,0,0,0.8)",
+                    animation: `sb-subtitle-reveal 18s ease infinite`,
+                    animationPlayState: playState,
                   }}
                 >
-                  Dein Moment. Unser Markt.
+                  CHALLENGE
                 </p>
               </div>
             </div>
 
-            {/* ─── SCENE 2 (3-6s): Product Showcase ─── */}
+            {/* ─── SCENE 2 (4-8s): Poster + Fire ─── */}
             <div
               className="absolute inset-0 flex items-center justify-center z-10"
-              style={{
-                animation: "vh-scene2-container 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                animationPlayState: paused ? "paused" : "running",
-              }}
+              style={{ animation: `sb-scene2 18s cubic-bezier(0.4,0,0.2,1) infinite`, animationPlayState: playState }}
             >
-              {/* Amber gradient background */}
+              {/* Stadium green background with fire glow */}
+              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #0d2818 0%, #1a3d1a 30%, #0d2818 100%)" }} />
+              {/* Fire glow from bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-orange-600/30 via-red-600/10 to-transparent" style={{ animation: `sb-fire-glow 2s ease-in-out infinite alternate`, animationPlayState: playState }} />
+
+              {/* Fire particles */}
+              {Array.from({ length: 25 }).map((_, i) => (
+                <div
+                  key={`fire-${i}`}
+                  className="absolute rounded-full"
+                  style={{
+                    width: `${3 + (i % 5) * 2}px`,
+                    height: `${3 + (i % 5) * 2}px`,
+                    background: ["#FF4500", "#FF6B00", "#FFD700", "#FF8C00", "#FFFFFF"][i % 5],
+                    left: `${5 + ((i * 3.7) % 90)}%`,
+                    bottom: "0%",
+                    borderRadius: "50%",
+                    boxShadow: `0 0 ${4 + i % 6}px ${["#FF4500", "#FF6B00", "#FFD700"][i % 3]}`,
+                    animation: `sb-fire-particle-${i % 5} 18s linear infinite`,
+                    animationPlayState: playState,
+                    opacity: 0,
+                  }}
+                />
+              ))}
+
+              {/* Poster image */}
               <div
-                className="absolute inset-0"
+                className="relative z-10 w-[180px] h-[260px] md:w-[220px] md:h-[310px] rounded-xl overflow-hidden shadow-2xl border-2 border-amber-500/40"
                 style={{
-                  background: "linear-gradient(135deg, #D97706 0%, #92400E 50%, #78350F 100%)",
-                  animation: "vh-scene2-bg 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                  animationPlayState: paused ? "paused" : "running",
-                }}
-              />
-              {/* Sliding bottle silhouettes */}
-              <div
-                className="absolute inset-0 flex items-center gap-16 md:gap-24"
-                style={{
-                  animation: "vh-bottles-slide 15s linear infinite",
-                  animationPlayState: paused ? "paused" : "running",
+                  animation: `sb-poster-reveal 18s ease infinite`,
+                  animationPlayState: playState,
+                  boxShadow: "0 0 60px rgba(245,158,11,0.3), 0 20px 40px rgba(0,0,0,0.5)",
                 }}
               >
-                {/* Beer bottle SVG */}
-                <svg className="w-16 h-28 md:w-20 md:h-36 text-white/20 flex-shrink-0" viewBox="0 0 60 120" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 10 L22 30 L15 45 L15 110 L45 110 L45 45 L38 30 L38 10 Z" />
-                  <path d="M22 10 L38 10" />
-                  <ellipse cx="30" cy="10" rx="8" ry="3" />
-                </svg>
-                {/* Wine glass SVG */}
-                <svg className="w-14 h-28 md:w-18 md:h-36 text-white/20 flex-shrink-0" viewBox="0 0 60 120" fill="none" stroke="currentColor" strokeWidth="2">
-                  <ellipse cx="30" cy="30" rx="20" ry="25" />
-                  <line x1="30" y1="55" x2="30" y2="95" />
-                  <ellipse cx="30" cy="100" rx="18" ry="5" />
-                </svg>
-                {/* Cocktail glass SVG */}
-                <svg className="w-14 h-28 md:w-18 md:h-36 text-white/20 flex-shrink-0" viewBox="0 0 60 120" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 15 L55 15 L30 65 Z" />
-                  <line x1="30" y1="65" x2="30" y2="100" />
-                  <ellipse cx="30" cy="105" rx="18" ry="5" />
-                  <line x1="40" y1="5" x2="50" y2="15" />
-                  <circle cx="40" cy="5" r="4" />
-                </svg>
-                {/* Duplicate set for seamless scroll */}
-                <svg className="w-16 h-28 md:w-20 md:h-36 text-white/20 flex-shrink-0" viewBox="0 0 60 120" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 10 L22 30 L15 45 L15 110 L45 110 L45 45 L38 30 L38 10 Z" />
-                  <ellipse cx="30" cy="10" rx="8" ry="3" />
-                </svg>
-                <svg className="w-14 h-28 md:w-18 md:h-36 text-white/20 flex-shrink-0" viewBox="0 0 60 120" fill="none" stroke="currentColor" strokeWidth="2">
-                  <ellipse cx="30" cy="30" rx="20" ry="25" />
-                  <line x1="30" y1="55" x2="30" y2="95" />
-                  <ellipse cx="30" cy="100" rx="18" ry="5" />
-                </svg>
+                <Image
+                  src="/images/events/strikerball.png"
+                  alt="Strikerball Challenge"
+                  fill
+                  className="object-cover"
+                  sizes="220px"
+                  unoptimized
+                />
               </div>
-              {/* Counter text */}
-              <div className="relative z-10 text-center">
-                <div
-                  className="text-5xl md:text-7xl font-black text-white"
-                  style={{
-                    textShadow: "0 4px 20px rgba(0,0,0,0.5)",
-                    animation: "vh-counter 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationPlayState: paused ? "paused" : "running",
-                  }}
-                >
-                  7.000+
-                </div>
-                <p
-                  className="text-lg md:text-2xl text-white/80 mt-2 tracking-wide"
-                  style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}
-                >
-                  Artikel. Eine Leidenschaft.
+              {/* Side text */}
+              <div
+                className="absolute right-[8%] md:right-[15%] z-10 text-right"
+                style={{ animation: `sb-side-text 18s ease infinite`, animationPlayState: playState }}
+              >
+                <p className="text-3xl md:text-5xl font-black text-white" style={{ textShadow: "0 4px 20px rgba(0,0,0,0.8)" }}>
+                  DEIN SCHUSS.
+                </p>
+                <p className="text-3xl md:text-5xl font-black text-amber-400 mt-1" style={{ textShadow: "0 4px 20px rgba(245,158,11,0.5)" }}>
+                  DEIN GEWINN!
                 </p>
               </div>
             </div>
 
-            {/* ─── SCENE 3 (6-9s): World Map ─── */}
+            {/* ─── SCENE 3 (8-12s): Event Details + Countdown ─── */}
             <div
               className="absolute inset-0 flex items-center justify-center z-10"
-              style={{
-                animation: "vh-scene3-container 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                animationPlayState: paused ? "paused" : "running",
-              }}
+              style={{ animation: `sb-scene3 18s cubic-bezier(0.4,0,0.2,1) infinite`, animationPlayState: playState }}
             >
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(135deg, #1E3A5F 0%, #0F172A 50%, #1E293B 100%)",
-                  animation: "vh-scene3-bg 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                  animationPlayState: paused ? "paused" : "running",
-                }}
-              />
-              {/* Map dots representing countries */}
-              <div className="absolute inset-0">
-                {/* Germany */}
+              <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%)" }} />
+              {/* Embers */}
+              {Array.from({ length: 15 }).map((_, i) => (
                 <div
-                  className="absolute rounded-full bg-white"
+                  key={`ember-${i}`}
+                  className="absolute rounded-full"
                   style={{
-                    width: "12px", height: "12px",
-                    top: "35%", left: "48%",
-                    animation: "vh-dot-pulse 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationDelay: "6.2s",
-                    animationPlayState: paused ? "paused" : "running",
-                    boxShadow: "0 0 20px 8px rgba(255,255,255,0.4)",
+                    width: `${2 + (i % 3) * 2}px`,
+                    height: `${2 + (i % 3) * 2}px`,
+                    background: i % 2 === 0 ? "#FFD700" : "#FF6B00",
+                    left: `${8 + ((i * 6.1) % 84)}%`,
+                    bottom: "-5%",
+                    boxShadow: `0 0 6px ${i % 2 === 0 ? "#FFD700" : "#FF6B00"}`,
+                    animation: `sb-ember-${i % 4} 18s linear infinite`,
+                    animationPlayState: playState,
+                    opacity: 0,
                   }}
                 />
-                {/* Italy */}
-                <div
-                  className="absolute rounded-full bg-white"
-                  style={{
-                    width: "10px", height: "10px",
-                    top: "48%", left: "50%",
-                    animation: "vh-dot-pulse 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationDelay: "6.6s",
-                    animationPlayState: paused ? "paused" : "running",
-                    boxShadow: "0 0 20px 8px rgba(255,255,255,0.4)",
-                  }}
-                />
-                {/* France */}
-                <div
-                  className="absolute rounded-full bg-white"
-                  style={{
-                    width: "10px", height: "10px",
-                    top: "40%", left: "43%",
-                    animation: "vh-dot-pulse 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationDelay: "7.0s",
-                    animationPlayState: paused ? "paused" : "running",
-                    boxShadow: "0 0 20px 8px rgba(255,255,255,0.4)",
-                  }}
-                />
-                {/* Spain */}
-                <div
-                  className="absolute rounded-full bg-white"
-                  style={{
-                    width: "10px", height: "10px",
-                    top: "50%", left: "38%",
-                    animation: "vh-dot-pulse 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationDelay: "7.4s",
-                    animationPlayState: paused ? "paused" : "running",
-                    boxShadow: "0 0 20px 8px rgba(255,255,255,0.4)",
-                  }}
-                />
-                {/* Scotland */}
-                <div
-                  className="absolute rounded-full bg-white"
-                  style={{
-                    width: "10px", height: "10px",
-                    top: "25%", left: "42%",
-                    animation: "vh-dot-pulse 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationDelay: "7.8s",
-                    animationPlayState: paused ? "paused" : "running",
-                    boxShadow: "0 0 20px 8px rgba(255,255,255,0.4)",
-                  }}
-                />
-                {/* Connecting lines (decorative arcs) */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" fill="none" preserveAspectRatio="none">
-                  <path d="M48 35 Q45 30 42 25" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" strokeDasharray="1 1" />
-                  <path d="M48 35 Q46 40 43 40" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" strokeDasharray="1 1" />
-                  <path d="M48 35 Q49 42 50 48" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" strokeDasharray="1 1" />
-                  <path d="M48 35 Q43 42 38 50" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" strokeDasharray="1 1" />
-                </svg>
-              </div>
-              <div className="relative z-10 text-center">
-                <h3
-                  className="text-3xl md:text-5xl lg:text-6xl font-black text-white"
-                  style={{ textShadow: "0 4px 20px rgba(0,0,0,0.6)" }}
-                >
-                  Aus aller Welt.
-                </h3>
-                <p
-                  className="text-xl md:text-3xl text-white/70 mt-2"
-                  style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}
-                >
-                  Für dich.
-                </p>
-              </div>
-            </div>
+              ))}
 
-            {/* ─── SCENE 4 (9-12s): Party ─── */}
-            <div
-              className="absolute inset-0 flex items-center justify-center z-10"
-              style={{
-                animation: "vh-scene4-container 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                animationPlayState: paused ? "paused" : "running",
-              }}
-            >
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%)",
-                  animation: "vh-scene4-bg 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                  animationPlayState: paused ? "paused" : "running",
-                }}
-              />
-              {/* Confetti particles */}
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute hidden md:block"
-                  style={{
-                    width: `${6 + (i % 4) * 3}px`,
-                    height: `${6 + (i % 3) * 3}px`,
-                    background: ["#F59E0B", "#FFFFFF", "#DC2626", "#F59E0B", "#FFD700"][i % 5],
-                    left: `${5 + (i * 4.7) % 90}%`,
-                    top: "-10%",
-                    borderRadius: i % 3 === 0 ? "50%" : "2px",
-                    animation: `vh-confetti-${i % 5} 15s linear infinite`,
-                    animationPlayState: paused ? "paused" : "running",
-                    opacity: 0,
-                  }}
-                />
-              ))}
-              {/* Mobile: fewer confetti */}
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={`m${i}`}
-                  className="absolute md:hidden"
-                  style={{
-                    width: `${5 + (i % 3) * 2}px`,
-                    height: `${5 + (i % 3) * 2}px`,
-                    background: ["#F59E0B", "#FFFFFF", "#DC2626", "#F59E0B"][i % 4],
-                    left: `${10 + (i * 11) % 80}%`,
-                    top: "-10%",
-                    borderRadius: i % 2 === 0 ? "50%" : "2px",
-                    animation: `vh-confetti-${i % 5} 15s linear infinite`,
-                    animationPlayState: paused ? "paused" : "running",
-                    opacity: 0,
-                  }}
-                />
-              ))}
-              {/* Light flash overlay */}
-              <div
-                className="absolute inset-0 bg-white pointer-events-none"
-                style={{
-                  animation: "vh-flash 15s ease infinite",
-                  animationPlayState: paused ? "paused" : "running",
-                }}
-              />
               <div className="relative z-10 text-center">
-                <div className="flex flex-wrap justify-center gap-x-4 md:gap-x-6">
-                  {["Events.", "Vermietung.", "Party."].map((word, i) => (
-                    <span
-                      key={word}
-                      className="text-3xl md:text-5xl lg:text-6xl font-black text-white block"
-                      style={{
-                        textShadow: "0 4px 20px rgba(0,0,0,0.5)",
-                        animation: `vh-word-stagger 15s cubic-bezier(0.34,1.56,0.64,1) infinite`,
-                        animationDelay: `${i * 0.3}s`,
-                        animationPlayState: paused ? "paused" : "running",
-                      }}
-                    >
-                      {word}
-                    </span>
+                <p
+                  className="text-lg md:text-2xl font-bold text-white/80 tracking-widest uppercase mb-4"
+                  style={{ animation: `sb-event-text1 18s ease infinite`, animationPlayState: playState }}
+                >
+                  24. Juli 2026 — trinkgut Jammers Goch
+                </p>
+                {/* Countdown */}
+                <div className="flex justify-center gap-3 md:gap-6 mb-6" style={{ animation: `sb-countdown-reveal 18s ease infinite`, animationPlayState: playState }}>
+                  {[
+                    { val: countdown.days, label: "Tage" },
+                    { val: countdown.hours, label: "Std" },
+                    { val: countdown.mins, label: "Min" },
+                    { val: countdown.secs, label: "Sek" },
+                  ].map((u) => (
+                    <div key={u.label} className="text-center">
+                      <div className="text-3xl md:text-5xl font-black text-white tabular-nums" style={{ textShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
+                        {String(u.val).padStart(2, "0")}
+                      </div>
+                      <div className="text-[10px] md:text-xs text-white/50 uppercase tracking-widest mt-1">{u.label}</div>
+                    </div>
                   ))}
                 </div>
+                {/* Event highlights */}
+                <div className="flex flex-wrap justify-center gap-4 md:gap-8" style={{ animation: `sb-highlights 18s ease infinite`, animationPlayState: playState }}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">&#9917;</span>
+                    <span className="text-white font-bold text-sm md:text-base">Volltreffer = 50&euro; Gutschein</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">&#127866;</span>
+                    <span className="text-white font-bold text-sm md:text-base">Freibier</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">&#128293;</span>
+                    <span className="text-white font-bold text-sm md:text-base">Live-Grillen</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* ─── SCENE 5 (12-15s): Finale ─── */}
+            {/* ─── SCENE 4 (12-15s): Sponsor Logos + CTA ─── */}
+            <div
+              className="absolute inset-0 flex items-center justify-center z-10"
+              style={{ animation: `sb-scene4 18s cubic-bezier(0.4,0,0.2,1) infinite`, animationPlayState: playState }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-[#0a1a0a] via-[#1a3d1a] to-[#0a1a0a]" />
+              <div className="relative z-10 text-center">
+                <p className="text-xs md:text-sm text-white/40 tracking-[0.3em] uppercase mb-6">Mit freundlicher Unterstuetzung von</p>
+                <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 max-w-lg mx-auto">
+                  {["Bitburger", "Coca-Cola", "Veltins", "Frueh", "Herforder", "Estrella Galicia", "Gerolsteiner", "Vilsa"].map((brand) => (
+                    <span key={brand} className="text-white/30 text-xs md:text-sm font-bold tracking-wider">{brand}</span>
+                  ))}
+                </div>
+                <p
+                  className="text-xl md:text-3xl font-black text-amber-400"
+                  style={{ textShadow: "0 0 30px rgba(245,158,11,0.4)", animation: `sb-cta-pulse 2s ease-in-out infinite alternate`, animationPlayState: playState }}
+                >
+                  Sei dabei. 24. Juli 2026.
+                </p>
+              </div>
+            </div>
+
+            {/* ─── SCENE 5 (15-18s): Finale Brand ─── */}
             <div
               className="absolute inset-0 flex items-center justify-center z-10 bg-black"
-              style={{
-                animation: "vh-scene5-container 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                animationPlayState: paused ? "paused" : "running",
-              }}
+              style={{ animation: `sb-scene5 18s cubic-bezier(0.4,0,0.2,1) infinite`, animationPlayState: playState }}
             >
               <div className="text-center">
                 <h2
                   className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight"
                   style={{
-                    animation: "vh-gold-shimmer 3s linear infinite, vh-scene5-text 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationPlayState: paused ? "paused" : "running",
+                    animation: `sb-gold-shimmer 3s linear infinite, sb-scene5-text 18s ease infinite`,
+                    animationPlayState: playState,
                     backgroundImage: "linear-gradient(90deg, #F59E0B 0%, #FFD700 25%, #F59E0B 50%, #FFD700 75%, #F59E0B 100%)",
                     backgroundSize: "200% auto",
                     WebkitBackgroundClip: "text",
@@ -374,20 +285,9 @@ export default function VideoHero() {
                 >
                   Trinkgut Jammers
                 </h2>
-                <div
-                  className="mt-4 space-y-1"
-                  style={{
-                    animation: "vh-scene5-info 15s cubic-bezier(0.4,0,0.2,1) infinite",
-                    animationPlayState: paused ? "paused" : "running",
-                  }}
-                >
-                  <p className="text-white/60 text-sm md:text-base tracking-[0.2em]">
-                    Jurgenstr. 20 &middot; Goch
-                  </p>
-                  <p className="text-white/40 text-xs md:text-sm tracking-[0.15em]">
-                    Seit 2024 für euch da
-                  </p>
-                </div>
+                <p className="text-white/60 text-sm md:text-base tracking-[0.2em] mt-4" style={{ animation: `sb-scene5-sub 18s ease infinite`, animationPlayState: playState }}>
+                  Jurgenstr. 20 &middot; Goch &middot; Seit 2024 fuer euch da
+                </p>
               </div>
             </div>
           </div>
@@ -399,14 +299,9 @@ export default function VideoHero() {
             aria-label={paused ? "Animation abspielen" : "Animation pausieren"}
           >
             {paused ? (
-              <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+              <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
             ) : (
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-              </svg>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
             )}
           </button>
         </div>
@@ -414,187 +309,217 @@ export default function VideoHero() {
 
       {/* ═══════════ KEYFRAME ANIMATIONS ═══════════ */}
       <style jsx>{`
-        /* ── Scene 1: Brand Reveal (0-3s visible) ── */
-        @keyframes vh-scene1-bg {
-          0%      { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #000 100%); background-size: 100% 100%; }
-          2%      { background: radial-gradient(circle at center, #DC2626 0%, #DC2626 30%, #000 100%); }
-          10%     { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #DC2626 60%, #000 100%); }
+        /* ── Scene 1: Stadium Reveal (0-4s → 0%-22%) ── */
+        @keyframes sb-scene1 {
+          0%      { opacity: 1; }
           18%     { opacity: 1; }
           22%     { opacity: 0; }
           78%     { opacity: 0; }
           85%     { opacity: 0; }
-          92%     { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #DC2626 30%, #000 100%); }
-          100%    { opacity: 1; background: radial-gradient(circle at center, #DC2626 0%, #000 100%); }
+          92%     { opacity: 1; }
+          100%    { opacity: 1; }
         }
-        @keyframes vh-scene1-text {
-          0%      { opacity: 0; transform: scale(0.9); }
-          5%      { opacity: 1; transform: scale(1); }
-          15%     { opacity: 1; transform: scale(1); }
-          20%     { opacity: 0; transform: scale(1.05); }
-          80%     { opacity: 0; }
-          90%     { opacity: 0; transform: scale(0.9); }
-          95%     { opacity: 1; transform: scale(1); }
-          100%    { opacity: 1; transform: scale(1); }
+        @keyframes sb-text-up {
+          0%      { opacity: 0; transform: translateY(20px); }
+          5%      { opacity: 1; transform: translateY(0); }
+          18%     { opacity: 1; }
+          22%     { opacity: 0; }
+          85%     { opacity: 0; }
+          93%     { opacity: 1; transform: translateY(0); }
+          100%    { opacity: 1; }
         }
-        @keyframes vh-scene1-sub {
+        @keyframes sb-title-reveal {
+          0%      { opacity: 0; transform: scale(0.8); letter-spacing: 0.3em; }
+          4%      { opacity: 1; transform: scale(1); letter-spacing: 0; }
+          18%     { opacity: 1; }
+          22%     { opacity: 0; }
+          85%     { opacity: 0; }
+          93%     { opacity: 1; transform: scale(1); }
+          100%    { opacity: 1; }
+        }
+        @keyframes sb-subtitle-reveal {
           0%      { opacity: 0; transform: translateY(10px); }
-          7%      { opacity: 1; transform: translateY(0); }
-          15%     { opacity: 1; }
+          6%      { opacity: 1; transform: translateY(0); }
+          18%     { opacity: 1; }
+          22%     { opacity: 0; }
+          85%     { opacity: 0; }
+          95%     { opacity: 1; }
+          100%    { opacity: 1; }
+        }
+        @keyframes sb-floodlight {
+          0%      { opacity: 0; }
+          3%      { opacity: 0.8; }
+          5%      { opacity: 0.2; }
+          8%      { opacity: 0.6; }
+          18%     { opacity: 0.6; }
+          22%     { opacity: 0; }
+          85%     { opacity: 0; }
+          92%     { opacity: 0.6; }
+          100%    { opacity: 0.6; }
+        }
+        @keyframes sb-flare {
+          0%      { opacity: 0; transform: scale(0); }
+          4%      { opacity: 1; transform: scale(1); }
+          5%      { opacity: 0.3; transform: scale(0.5); }
+          8%      { opacity: 0.8; transform: scale(1.2); }
+          18%     { opacity: 0.8; }
+          22%     { opacity: 0; }
+          85%     { opacity: 0; }
+          92%     { opacity: 0.8; }
+          100%    { opacity: 0.8; }
+        }
+
+        /* ── Scene 2: Poster + Fire (4-8s → 22%-44%) ── */
+        @keyframes sb-scene2 {
+          0%      { opacity: 0; }
           20%     { opacity: 0; }
-          80%     { opacity: 0; }
-          93%     { opacity: 0; transform: translateY(10px); }
-          97%     { opacity: 1; transform: translateY(0); }
+          24%     { opacity: 1; }
+          42%     { opacity: 1; }
+          46%     { opacity: 0; }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-poster-reveal {
+          0%, 20% { opacity: 0; transform: scale(0.7) rotateY(15deg); }
+          26%     { opacity: 1; transform: scale(1) rotateY(0deg); }
+          42%     { opacity: 1; transform: scale(1.02); }
+          46%     { opacity: 0; }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-side-text {
+          0%, 24% { opacity: 0; transform: translateX(40px); }
+          30%     { opacity: 1; transform: translateX(0); }
+          42%     { opacity: 1; }
+          46%     { opacity: 0; }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-fire-glow {
+          0%      { opacity: 0.5; }
           100%    { opacity: 1; }
         }
 
-        /* ── Scene 2: Products (3-6s → 20%-40%) ── */
-        @keyframes vh-scene2-container {
-          0%      { opacity: 0; }
-          18%     { opacity: 0; }
-          22%     { opacity: 1; }
-          38%     { opacity: 1; }
-          42%     { opacity: 0; }
+        /* Fire particles (5 variants) */
+        @keyframes sb-fire-particle-0 {
+          0%, 21% { opacity: 0; transform: translateY(0) scale(1); }
+          24%     { opacity: 0.9; }
+          44%     { opacity: 0; transform: translateY(-400px) scale(0.2); }
           100%    { opacity: 0; }
         }
-        @keyframes vh-scene2-bg {
-          0%      { opacity: 0; }
-          20%     { opacity: 1; }
-          40%     { opacity: 1; }
-          42%     { opacity: 0; }
+        @keyframes sb-fire-particle-1 {
+          0%, 22% { opacity: 0; transform: translateY(0) scale(1); }
+          25%     { opacity: 0.8; }
+          43%     { opacity: 0; transform: translateY(-380px) scale(0.3); }
           100%    { opacity: 0; }
         }
-        @keyframes vh-bottles-slide {
-          0%      { transform: translateX(100%); }
-          20%     { transform: translateX(50%); }
-          40%     { transform: translateX(-30%); }
-          100%    { transform: translateX(-30%); }
-        }
-        @keyframes vh-counter {
-          0%      { opacity: 0; }
-          22%     { opacity: 0; transform: scale(0.8); }
-          26%     { opacity: 1; transform: scale(1); }
-          38%     { opacity: 1; }
-          42%     { opacity: 0; }
+        @keyframes sb-fire-particle-2 {
+          0%, 23% { opacity: 0; transform: translateY(0) scale(1); }
+          26%     { opacity: 0.85; }
+          44%     { opacity: 0; transform: translateY(-420px) scale(0.1); }
           100%    { opacity: 0; }
         }
-
-        /* ── Scene 3: World (6-9s → 40%-60%) ── */
-        @keyframes vh-scene3-container {
-          0%      { opacity: 0; }
-          38%     { opacity: 0; }
-          42%     { opacity: 1; }
-          58%     { opacity: 1; }
-          62%     { opacity: 0; }
+        @keyframes sb-fire-particle-3 {
+          0%, 21.5% { opacity: 0; transform: translateY(0) scale(1); }
+          24.5%   { opacity: 0.9; }
+          42%     { opacity: 0; transform: translateY(-360px) scale(0.2); }
           100%    { opacity: 0; }
         }
-        @keyframes vh-scene3-bg {
-          0%      { opacity: 0; }
-          40%     { opacity: 1; }
-          60%     { opacity: 1; }
-          62%     { opacity: 0; }
-          100%    { opacity: 0; }
-        }
-        @keyframes vh-dot-pulse {
-          0%, 40% { opacity: 0; transform: scale(0); }
-          42%     { opacity: 0; transform: scale(0); }
-          45%     { opacity: 1; transform: scale(1.5); }
-          48%     { transform: scale(1); }
-          58%     { opacity: 1; }
-          62%     { opacity: 0; }
+        @keyframes sb-fire-particle-4 {
+          0%, 22.5% { opacity: 0; transform: translateY(0) scale(1); }
+          25.5%   { opacity: 0.75; }
+          43%     { opacity: 0; transform: translateY(-440px) scale(0.15); }
           100%    { opacity: 0; }
         }
 
-        /* ── Scene 4: Party (9-12s → 60%-80%) ── */
-        @keyframes vh-scene4-container {
+        /* ── Scene 3: Event Details (8-12s → 44%-67%) ── */
+        @keyframes sb-scene3 {
           0%      { opacity: 0; }
-          58%     { opacity: 0; }
-          62%     { opacity: 1; }
-          78%     { opacity: 1; }
-          82%     { opacity: 0; }
+          42%     { opacity: 0; }
+          46%     { opacity: 1; }
+          63%     { opacity: 1; }
+          67%     { opacity: 0; }
           100%    { opacity: 0; }
         }
-        @keyframes vh-scene4-bg {
+        @keyframes sb-event-text1 {
+          0%, 44% { opacity: 0; transform: translateY(-20px); }
+          48%     { opacity: 1; transform: translateY(0); }
+          63%     { opacity: 1; }
+          67%     { opacity: 0; }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-countdown-reveal {
+          0%, 46% { opacity: 0; transform: scale(0.9); }
+          50%     { opacity: 1; transform: scale(1); }
+          63%     { opacity: 1; }
+          67%     { opacity: 0; }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-highlights {
+          0%, 48% { opacity: 0; transform: translateY(20px); }
+          52%     { opacity: 1; transform: translateY(0); }
+          63%     { opacity: 1; }
+          67%     { opacity: 0; }
+          100%    { opacity: 0; }
+        }
+        /* Embers (4 variants) */
+        @keyframes sb-ember-0 {
+          0%, 43% { opacity: 0; transform: translateY(0); }
+          46%     { opacity: 0.8; }
+          65%     { opacity: 0; transform: translateY(-500px) rotate(720deg); }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-ember-1 {
+          0%, 44% { opacity: 0; transform: translateY(0); }
+          47%     { opacity: 0.7; }
+          64%     { opacity: 0; transform: translateY(-480px) rotate(-540deg); }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-ember-2 {
+          0%, 45% { opacity: 0; transform: translateY(0); }
+          48%     { opacity: 0.9; }
+          66%     { opacity: 0; transform: translateY(-520px) rotate(600deg); }
+          100%    { opacity: 0; }
+        }
+        @keyframes sb-ember-3 {
+          0%, 43.5% { opacity: 0; transform: translateY(0); }
+          46.5%   { opacity: 0.75; }
+          63%     { opacity: 0; transform: translateY(-460px) rotate(-680deg); }
+          100%    { opacity: 0; }
+        }
+
+        /* ── Scene 4: Sponsors (12-15s → 67%-83%) ── */
+        @keyframes sb-scene4 {
           0%      { opacity: 0; }
-          60%     { opacity: 1; }
+          65%     { opacity: 0; }
+          69%     { opacity: 1; }
           80%     { opacity: 1; }
-          82%     { opacity: 0; }
+          84%     { opacity: 0; }
           100%    { opacity: 0; }
         }
-        @keyframes vh-word-stagger {
-          0%, 58%   { opacity: 0; transform: translateY(40px) rotateX(-15deg); }
-          64%       { opacity: 1; transform: translateY(0) rotateX(0deg); }
-          78%       { opacity: 1; }
-          82%       { opacity: 0; }
-          100%      { opacity: 0; }
-        }
-        @keyframes vh-flash {
-          0%, 60%   { opacity: 0; }
-          63%       { opacity: 0.3; }
-          64%       { opacity: 0; }
-          70%       { opacity: 0; }
-          71%       { opacity: 0.15; }
-          72%       { opacity: 0; }
-          100%      { opacity: 0; }
+        @keyframes sb-cta-pulse {
+          0%      { transform: scale(1); }
+          100%    { transform: scale(1.05); text-shadow: 0 0 40px rgba(245,158,11,0.6); }
         }
 
-        /* Confetti variants */
-        @keyframes vh-confetti-0 {
-          0%, 59%   { opacity: 0; transform: translateY(0) rotate(0deg); }
-          62%       { opacity: 0.9; }
-          80%       { opacity: 0.9; transform: translateY(500px) rotate(720deg); }
-          82%       { opacity: 0; }
-          100%      { opacity: 0; }
-        }
-        @keyframes vh-confetti-1 {
-          0%, 60%   { opacity: 0; transform: translateY(0) rotate(0deg); }
-          63%       { opacity: 0.8; }
-          79%       { opacity: 0.8; transform: translateY(480px) rotate(-540deg); }
-          82%       { opacity: 0; }
-          100%      { opacity: 0; }
-        }
-        @keyframes vh-confetti-2 {
-          0%, 61%   { opacity: 0; transform: translateY(0) rotate(0deg); }
-          64%       { opacity: 0.85; }
-          78%       { opacity: 0.85; transform: translateY(520px) rotate(600deg); }
-          82%       { opacity: 0; }
-          100%      { opacity: 0; }
-        }
-        @keyframes vh-confetti-3 {
-          0%, 59.5% { opacity: 0; transform: translateY(0) rotate(0deg); }
-          62.5%     { opacity: 0.9; }
-          80%       { opacity: 0.9; transform: translateY(460px) rotate(-680deg); }
-          82%       { opacity: 0; }
-          100%      { opacity: 0; }
-        }
-        @keyframes vh-confetti-4 {
-          0%, 60.5% { opacity: 0; transform: translateY(0) rotate(0deg); }
-          63.5%     { opacity: 0.75; }
-          79%       { opacity: 0.75; transform: translateY(500px) rotate(580deg); }
-          82%       { opacity: 0; }
-          100%      { opacity: 0; }
-        }
-
-        /* ── Scene 5: Finale (12-15s → 80%-100%) ── */
-        @keyframes vh-scene5-container {
+        /* ── Scene 5: Finale (15-18s → 83%-100%) ── */
+        @keyframes sb-scene5 {
           0%      { opacity: 0; }
-          78%     { opacity: 0; }
-          82%     { opacity: 1; }
+          82%     { opacity: 0; }
+          86%     { opacity: 1; }
           98%     { opacity: 1; }
           100%    { opacity: 0; }
         }
-        @keyframes vh-scene5-text {
-          0%, 78% { opacity: 0; transform: scale(0.85); }
-          84%     { opacity: 1; transform: scale(1); }
+        @keyframes sb-scene5-text {
+          0%, 82% { opacity: 0; transform: scale(0.85); }
+          88%     { opacity: 1; transform: scale(1); }
           98%     { opacity: 1; }
           100%    { opacity: 0; }
         }
-        @keyframes vh-scene5-info {
-          0%, 82% { opacity: 0; transform: translateY(10px); }
-          88%     { opacity: 1; transform: translateY(0); }
+        @keyframes sb-scene5-sub {
+          0%, 86% { opacity: 0; transform: translateY(10px); }
+          90%     { opacity: 1; transform: translateY(0); }
           98%     { opacity: 1; }
           100%    { opacity: 0; }
         }
-        @keyframes vh-gold-shimmer {
+        @keyframes sb-gold-shimmer {
           0%      { background-position: 0% center; }
           100%    { background-position: 200% center; }
         }

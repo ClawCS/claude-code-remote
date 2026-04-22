@@ -5,6 +5,7 @@ import ProductGrid from "@/components/ProductGrid";
 import { type Product } from "@/lib/utils";
 import productsData from "@/data/products.json";
 import Link from "next/link";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 const products = productsData as Product[];
 
@@ -265,14 +266,18 @@ export default function FinderPage() {
   // Finder Selection
   if (!activeFinder) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <div className="text-center mb-10">
-          <span className="text-5xl mb-4 block">🔍</span>
-          <h1 className="text-3xl font-bold text-secondary mb-2">Getränke-Finder</h1>
-          <p className="text-muted max-w-lg mx-auto">
-            Du weißt nicht genau was du suchst? Kein Problem! Beantworte ein paar Fragen und wir finden das perfekte Getränk für dich.
+      <>
+      <div className="page-hero-banner py-16 md:py-24">
+        <ShimmerParticles />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Getränke-Finder</span></nav>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Finder</h1>
+          <p className="text-white/80 max-w-xl mx-auto text-lg">
+            Du weißt nicht genau was du suchst? Beantworte ein paar Fragen und wir finden das perfekte Getränk für dich.
           </p>
         </div>
+      </div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
         <div className="grid sm:grid-cols-3 gap-6">
           {(Object.entries(finderData) as [string, typeof finderData.bier][]).map(([key, finder]) => (
@@ -288,6 +293,7 @@ export default function FinderPage() {
           ))}
         </div>
       </div>
+      </>
     );
   }
 

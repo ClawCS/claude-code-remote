@@ -12,6 +12,7 @@ import {
   type MonthlyWinner,
   type Level,
 } from "@/lib/points";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 export default function CommunityPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -92,6 +93,7 @@ export default function CommunityPage() {
     <>
       {/* Hero Banner */}
       <div className="page-hero-banner py-16 md:py-24">
+        <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4">
             <a href="/" className="hover:text-white">Home</a>

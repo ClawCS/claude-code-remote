@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import ProspektViewer from "@/components/ProspektViewer";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 type HandzettelData = {
   werbekreis: string;
@@ -67,20 +68,18 @@ export default function HandzettelPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">
-          Wochenangebote
-        </p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">
-          Aktueller Handzettel
-        </h1>
-        <p className="text-muted max-w-lg mx-auto">
-          Unser aktueller Prospekt mit allen Angeboten der Woche. Blaettere durch
-          alle Seiten oder oeffne den Handzettel im Vollbild.
+    <>
+    <div className="page-hero-banner py-16 md:py-24">
+      <ShimmerParticles />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Handzettel</span></nav>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Aktueller Handzettel</h1>
+        <p className="text-white/80 max-w-xl mx-auto text-lg">
+          Unser aktueller Prospekt mit allen Angeboten der Woche. Blaettere durch alle Seiten oder oeffne den Handzettel im Vollbild.
         </p>
       </div>
+    </div>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
       {/* KW + Werbekreis Info */}
       <div className="flex flex-wrap justify-center gap-3 mb-6">
@@ -202,5 +201,6 @@ export default function HandzettelPage() {
         Der Handzettel wird jeden Sonntag um 17:00 Uhr automatisch aktualisiert.
       </p>
     </div>
+    </>
   );
 }

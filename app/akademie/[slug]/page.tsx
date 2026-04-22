@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { courses, type QuizQuestion } from "@/data/akademie";
 import { useState } from "react";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete: (score: number) => void }) {
   const [current, setCurrent] = useState(0);
@@ -153,8 +154,9 @@ export default function CoursePage() {
       </nav>
 
       {/* Course Header */}
-      <div className={`bg-gradient-to-br ${course.color} rounded-2xl p-6 text-white mb-8`}>
-        <div className="flex items-center gap-4 mb-4">
+      <div className={`bg-gradient-to-br ${course.color} rounded-2xl p-6 text-white mb-8 relative overflow-hidden`}>
+        <ShimmerParticles count={16} />
+        <div className="relative flex items-center gap-4 mb-4">
           <span className="text-4xl">{course.icon}</span>
           <div>
             <h1 className="text-2xl font-extrabold">{course.title}</h1>

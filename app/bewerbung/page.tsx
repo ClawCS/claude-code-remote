@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import ShimmerParticles from "@/components/ShimmerParticles";
 
 type FieldKey = "lebenslauf" | "foto" | "bewerbung" | "zeugnisse";
 
@@ -177,6 +178,7 @@ export default function BewerbungPage() {
   return (
     <>
       <div className="page-hero-banner py-16 md:py-24">
+        <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4">
             <a href="/" className="hover:text-white">Home</a>{" "}
