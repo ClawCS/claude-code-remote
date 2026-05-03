@@ -77,6 +77,17 @@ export default function Home() {
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  {s.href === "/finder" && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="relative">
+                        <svg width="90" height="90" viewBox="0 0 90 90" fill="none" className="drop-shadow-2xl">
+                          <circle cx="38" cy="38" r="26" stroke="white" strokeWidth="4" fill="white" fillOpacity="0.15" />
+                          <line x1="56" y1="56" x2="78" y2="78" stroke="white" strokeWidth="5" strokeLinecap="round" />
+                          <text x="38" y="45" textAnchor="middle" fill="white" fontSize="28" fontWeight="bold">?</text>
+                        </svg>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {/* Text */}
                 <div className="p-5">
