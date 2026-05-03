@@ -127,13 +127,12 @@ export default function Home() {
                 { image: "/images/gewinnspiele/februar.png", title: "@Home Sportpaket", sub: "Februar 2026" },
                 { image: "/images/gewinnspiele/januar.png", title: "Salitos Sommer", sub: "Januar 2026" },
               ].map((card) => (
-                <Link key={card.title} href="/gewinnspiel" className="glass-dark rounded-2xl overflow-hidden card-hover border border-[#DC2626]/10 hover:border-[#DC2626]/30 block">
-                  <div className="relative aspect-[4/3]">
-                    <Image src={card.image} alt={card.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
-                  </div>
-                  <div className="p-3 text-center">
-                    <p className="text-white font-bold text-sm">{card.title}</p>
-                    <p className="text-gray-400 text-xs">{card.sub}</p>
+                <Link key={card.title} href="/gewinnspiel" className="relative rounded-2xl overflow-hidden card-hover border border-[#DC2626]/10 hover:border-[#DC2626]/30 block aspect-square">
+                  <Image src={card.image} alt={card.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  <div className="absolute bottom-2 left-2 right-2 text-center">
+                    <p className="text-white font-bold text-sm drop-shadow-lg">{card.title}</p>
+                    <p className="text-gray-300 text-xs drop-shadow">{card.sub}</p>
                   </div>
                 </Link>
               ))}
