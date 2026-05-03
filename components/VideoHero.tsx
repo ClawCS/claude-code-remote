@@ -45,7 +45,7 @@ export default function VideoHero() {
   return (
     <section className="relative bg-black overflow-hidden">
       {/* Letterbox container — 21:9 cinematic ratio */}
-      <div className="relative mx-auto w-full" style={{ maxWidth: "1400px" }}>
+      <div className="relative mx-auto w-full max-w-[1400px]">
         {/* Top letterbox bar */}
         <div className="absolute top-0 left-0 right-0 h-6 md:h-10 bg-black z-30" />
         {/* Bottom letterbox bar */}

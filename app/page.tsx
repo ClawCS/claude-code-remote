@@ -27,6 +27,9 @@ export default function Home() {
       {/* Video Trailer */}
       <VideoHero />
 
+      {/* Transition: Video (black) → Categories (white) */}
+      <div className="h-16 bg-gradient-to-b from-black to-white" />
+
       {/* Kategorien */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <ScrollReveal className="text-center mb-12">
