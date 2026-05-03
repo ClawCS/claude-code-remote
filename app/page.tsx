@@ -59,7 +59,7 @@ export default function Home() {
           {[
             { href: "/partyplaner", image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=400&fit=crop", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
             { href: "/vermietung", image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?w=600&h=400&fit=crop", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
-            { href: "/finder", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
+            { href: "/finder", image: "/images/finder-bg.svg", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
             { href: "/cocktails", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&h=400&fit=crop", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
           ].map((s, i) => (
             <ScrollReveal key={s.href} delay={i * 100}>
@@ -77,17 +77,6 @@ export default function Home() {
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  {s.href === "/finder" && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="relative">
-                        <svg width="90" height="90" viewBox="0 0 90 90" fill="none" className="drop-shadow-2xl">
-                          <circle cx="38" cy="38" r="26" stroke="white" strokeWidth="4" fill="white" fillOpacity="0.15" />
-                          <line x1="56" y1="56" x2="78" y2="78" stroke="white" strokeWidth="5" strokeLinecap="round" />
-                          <text x="38" y="45" textAnchor="middle" fill="white" fontSize="28" fontWeight="bold">?</text>
-                        </svg>
-                      </div>
-                    </div>
-                  )}
                 </div>
                 {/* Text */}
                 <div className="p-5">
