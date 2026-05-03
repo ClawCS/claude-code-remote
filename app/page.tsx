@@ -122,16 +122,20 @@ export default function Home() {
             </ScrollReveal>
             <ScrollReveal delay={200} className="grid grid-cols-2 gap-3">
               {[
-                { icon: "🧊", title: "Monster Cooler", sub: "Gewinnspiel" },
-                { icon: "🔥", title: "Weber Grill", sub: "600€ Gewinn" },
-                { icon: "🏖️", title: "Salitos", sub: "Sommer-Aktion" },
-                { icon: "📱", title: "5€ Rabatt", sub: "Für Follower" },
+                { image: "/images/gewinnspiele/april.png", title: "Edifier + Ballantine's", sub: "April 2026" },
+                { image: "/images/gewinnspiele/maerz.png", title: "Monster Cooler", sub: "März 2026" },
+                { image: "/images/gewinnspiele/februar.png", title: "@Home Sportpaket", sub: "Februar 2026" },
+                { image: "/images/gewinnspiele/januar.png", title: "Salitos Sommer", sub: "Januar 2026" },
               ].map((card) => (
-                <div key={card.title} className="glass-dark rounded-2xl p-5 text-center card-hover border border-[#DC2626]/10 hover:border-[#DC2626]/30">
-                  <span className="text-3xl block mb-1">{card.icon}</span>
-                  <p className="text-white font-bold text-sm">{card.title}</p>
-                  <p className="text-gray-400 text-xs">{card.sub}</p>
-                </div>
+                <Link key={card.title} href="/gewinnspiel" className="glass-dark rounded-2xl overflow-hidden card-hover border border-[#DC2626]/10 hover:border-[#DC2626]/30 block">
+                  <div className="relative aspect-[4/3]">
+                    <Image src={card.image} alt={card.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
+                  </div>
+                  <div className="p-3 text-center">
+                    <p className="text-white font-bold text-sm">{card.title}</p>
+                    <p className="text-gray-400 text-xs">{card.sub}</p>
+                  </div>
+                </Link>
               ))}
             </ScrollReveal>
           </div>
