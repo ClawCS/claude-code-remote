@@ -60,7 +60,7 @@ export default function Home() {
             { href: "/partyplaner", image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=400&fit=crop", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
             { href: "/vermietung", image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?w=600&h=400&fit=crop", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
             { href: "/finder", image: "https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=600&h=400&fit=crop", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
-            { href: "/cocktails", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&h=400&fit=crop", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
+            { href: "/cocktails", image: "https://www.thecocktaildb.com/images/media/drink/jwmr1x1504372337.jpg", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
           ].map((s, i) => (
             <ScrollReveal key={s.href} delay={i * 100}>
               <Link
