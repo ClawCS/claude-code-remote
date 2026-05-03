@@ -59,7 +59,7 @@ export default function Home() {
           {[
             { href: "/partyplaner", image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=400&fit=crop", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
             { href: "/vermietung", image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?w=600&h=400&fit=crop", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
-            { href: "/finder", image: "/images/finder-bg.svg", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
+            { href: "/finder", image: "https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=600&h=400&fit=crop", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
             { href: "/cocktails", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&h=400&fit=crop", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
           ].map((s, i) => (
             <ScrollReveal key={s.href} delay={i * 100}>
@@ -77,6 +77,15 @@ export default function Home() {
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  {s.href === "/finder" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <svg width="80" height="80" viewBox="0 0 90 90" fill="none" className="drop-shadow-2xl">
+                        <circle cx="36" cy="36" r="24" stroke="white" strokeWidth="4" fill="white" fillOpacity="0.15" />
+                        <line x1="54" y1="54" x2="76" y2="76" stroke="white" strokeWidth="5" strokeLinecap="round" />
+                        <text x="36" y="44" textAnchor="middle" fill="white" fontSize="26" fontWeight="bold">?</text>
+                      </svg>
+                    </div>
+                  )}
                 </div>
                 {/* Text */}
                 <div className="p-5">
