@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { formatPrice, calculateWorkdays, calculateRentalPrice, calculateRentalPeriods, type Product } from "@/lib/utils";
 import type { RentalInfo } from "@/context/CartContext";
@@ -157,7 +156,8 @@ type RentalItem = {
   id: number;
   name: string;
   slug: string;
-  image: string;
+  icon: string;
+  gradient: string;
   description: string;
   price: number;
   unit: string;
@@ -168,16 +168,16 @@ type RentalItem = {
 /* ─── Rental Items ─── */
 
 const rentalItems: RentalItem[] = [
-  { id: 1001, name: "Zapfanlage", slug: "zapfanlage", image: "https://images.unsplash.com/photo-1580021574625-5fb31fe78df3?w=400&h=300&fit=crop", description: "Kühlt und zapft ein Fass. Inkl. CO2 und Reinigung. Für kleine bis große Feiern.", price: 25, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 10 },
-  { id: 1002, name: "Kühltruhe", slug: "kuehltruhe", image: "https://images.unsplash.com/photo-1576398289164-c48dc021b4e1?w=400&h=300&fit=crop", description: "Mobile Kühltruhe für Flaschen, Dosen und Fässer. Hält alles den ganzen Tag kalt.", price: 30, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 10 },
-  { id: 1003, name: "Kühlwagen (mit Getränken)", slug: "kuehlwagen-mit", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop", description: "Mobiler Kühlwagen für Events. Preis bei Buchung mit Getränken von uns.", price: 130, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 2 },
-  { id: 1004, name: "Kühlwagen (ohne Getränke)", slug: "kuehlwagen-ohne", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop", description: "Mobiler Kühlwagen für Events. Preis ohne Getränkebestellung.", price: 200, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 2 },
-  { id: 1005, name: "Theke", slug: "theke", image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", description: "Mobile Theke für den professionellen Look auf deiner Feier.", price: 35, unit: "pro 3 Werktage", category: "Mobiliar", maxQty: 5 },
-  { id: 1006, name: "Nasstheke mit Becken", slug: "nasstheke", image: "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=400&h=300&fit=crop", description: "Nasstheke mit integriertem Becken — perfekt für Cocktails und Ausschank.", price: 50, unit: "pro 3 Werktage", category: "Mobiliar", maxQty: 3 },
-  { id: 1007, name: "Weingläser", slug: "weinglaeser", image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400&h=300&fit=crop", description: "Weingläser für stilvolle Anlässe. Verschiedene Größen verfügbar.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
-  { id: 1008, name: "Sektgläser", slug: "sektglaeser", image: "https://images.unsplash.com/photo-1551751299-1b51cab2694c?w=400&h=300&fit=crop", description: "Elegante Sektgläser für Empfänge, Hochzeiten und Feiern.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
-  { id: 1009, name: "Schnapsgläser", slug: "schnapsglaeser", image: "https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=400&h=300&fit=crop", description: "Schnapsgläser für Shots und Digestifs.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
-  { id: 1010, name: "Biergläser", slug: "bierglaeser", image: "https://images.unsplash.com/photo-1600877920581-a26cc2721cfb?w=400&h=300&fit=crop", description: "Biergläser 0,3L — für den perfekten Biergenuss auf deiner Feier.", price: 0.20, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1001, name: "Zapfanlage", slug: "zapfanlage", icon: "🍺", gradient: "from-amber-500 to-amber-700", description: "Kühlt und zapft ein Fass. Inkl. CO2 und Reinigung. Für kleine bis große Feiern.", price: 25, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 10 },
+  { id: 1002, name: "Kühltruhe", slug: "kuehltruhe", icon: "❄️", gradient: "from-sky-500 to-blue-700", description: "Mobile Kühltruhe für Flaschen, Dosen und Fässer. Hält alles den ganzen Tag kalt.", price: 30, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 10 },
+  { id: 1003, name: "Kühlwagen (mit Getränken)", slug: "kuehlwagen-mit", icon: "🚐", gradient: "from-cyan-500 to-blue-700", description: "Mobiler Kühlwagen für Events. Preis bei Buchung mit Getränken von uns.", price: 130, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 2 },
+  { id: 1004, name: "Kühlwagen (ohne Getränke)", slug: "kuehlwagen-ohne", icon: "🚚", gradient: "from-slate-500 to-slate-700", description: "Mobiler Kühlwagen für Events. Preis ohne Getränkebestellung.", price: 200, unit: "pro 3 Werktage", category: "Kühlung & Zapf", maxQty: 2 },
+  { id: 1005, name: "Theke", slug: "theke", icon: "🪧", gradient: "from-stone-500 to-stone-700", description: "Mobile Theke für den professionellen Look auf deiner Feier.", price: 35, unit: "pro 3 Werktage", category: "Mobiliar", maxQty: 5 },
+  { id: 1006, name: "Nasstheke mit Becken", slug: "nasstheke", icon: "🚰", gradient: "from-teal-500 to-cyan-700", description: "Nasstheke mit integriertem Becken — perfekt für Cocktails und Ausschank.", price: 50, unit: "pro 3 Werktage", category: "Mobiliar", maxQty: 3 },
+  { id: 1007, name: "Weingläser", slug: "weinglaeser", icon: "🍷", gradient: "from-purple-500 to-purple-800", description: "Weingläser für stilvolle Anlässe. Verschiedene Größen verfügbar.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1008, name: "Sektgläser", slug: "sektglaeser", icon: "🥂", gradient: "from-pink-400 to-rose-700", description: "Elegante Sektgläser für Empfänge, Hochzeiten und Feiern.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1009, name: "Schnapsgläser", slug: "schnapsglaeser", icon: "🥃", gradient: "from-orange-500 to-orange-800", description: "Schnapsgläser für Shots und Digestifs.", price: 0.40, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
+  { id: 1010, name: "Biergläser", slug: "bierglaeser", icon: "🍺", gradient: "from-yellow-500 to-amber-700", description: "Biergläser 0,3L — für den perfekten Biergenuss auf deiner Feier.", price: 0.20, unit: "pro Stück / 3 Werktage", category: "Gläser", maxQty: 500 },
 ];
 
 const rentalCategories = [...new Set(rentalItems.map(i => i.category))];
@@ -424,15 +424,12 @@ export default function VermietungPage() {
           const showMultiplier = dateFrom && dateTo && workdays > 0 && periods > 1;
           return (
             <div key={item.id} className="bg-white border border-border rounded-2xl overflow-hidden card-hover">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${item.gradient}`}>
+                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.4),transparent_60%)]" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-7xl drop-shadow-lg">{item.icon}</span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-2 left-3 right-3">
                   <h3 className="font-bold text-white text-lg drop-shadow-lg">{item.name}</h3>
                 </div>

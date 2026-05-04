@@ -79,14 +79,14 @@ export type Category = {
   slug: string;
   icon: string;
   color: string;
-  image: string;
+  gradient: string;
 };
 
 export const categories: Category[] = [
-  { name: "Bier", slug: "bier", icon: "🍺", color: "bg-amber-100 text-amber-800", image: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400&h=400&fit=crop" },
-  { name: "Alkoholfreie Getränke", slug: "alkoholfrei", icon: "🥤", color: "bg-green-100 text-green-800", image: "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=400&fit=crop" },
-  { name: "Wein", slug: "wein", icon: "🍷", color: "bg-purple-100 text-purple-800", image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=400&fit=crop" },
-  { name: "Sekt & Co.", slug: "sekt", icon: "🥂", color: "bg-pink-100 text-pink-800", image: "https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?w=400&h=400&fit=crop" },
-  { name: "Spirituosen", slug: "spirituosen", icon: "🥃", color: "bg-orange-100 text-orange-800", image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=400&fit=crop" },
-  { name: "Lebensmittel & Mehr", slug: "lebensmittel", icon: "🛒", color: "bg-yellow-100 text-yellow-800", image: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=400&fit=crop" },
+  { name: "Bier", slug: "bier", icon: "🍺", color: "bg-amber-100 text-amber-800", gradient: "from-amber-500 via-amber-600 to-amber-800" },
+  { name: "Alkoholfreie Getränke", slug: "alkoholfrei", icon: "🥤", color: "bg-green-100 text-green-800", gradient: "from-emerald-500 via-emerald-600 to-emerald-800" },
+  { name: "Wein", slug: "wein", icon: "🍷", color: "bg-purple-100 text-purple-800", gradient: "from-purple-600 via-purple-700 to-purple-900" },
+  { name: "Sekt & Co.", slug: "sekt", icon: "🥂", color: "bg-pink-100 text-pink-800", gradient: "from-pink-400 via-pink-500 to-rose-700" },
+  { name: "Spirituosen", slug: "spirituosen", icon: "🥃", color: "bg-orange-100 text-orange-800", gradient: "from-orange-600 via-orange-700 to-orange-900" },
+  { name: "Lebensmittel & Mehr", slug: "lebensmittel", icon: "🛒", color: "bg-yellow-100 text-yellow-800", gradient: "from-yellow-500 via-yellow-600 to-yellow-800" },
 ];

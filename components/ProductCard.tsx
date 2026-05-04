@@ -2,16 +2,27 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatPrice, type Product } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
+
+const categoryEmoji: Record<string, string> = {
+  "Bier": "🍺",
+  "Wein": "🍷",
+  "Sekt & Co.": "🥂",
+  "Spirituosen": "🥃",
+  "Alkoholfreie Getränke": "🥤",
+  "Lebensmittel & Mehr": "🛒",
+};
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
   const { t } = useTranslation();
   const wishlisted = isInWishlist(product.id);
+  const [imgFailed, setImgFailed] = useState(false);
 
   return (
     <div
@@ -24,13 +35,20 @@ export default function ProductCard({ product }: { product: Product }) {
     >
       <Link href={`/produkte/${product.slug}`} className="block p-4 pb-2">
         <div className="aspect-square bg-gradient-to-br from-[#FFF8F6] to-[#FFF0EC] rounded-xl flex items-center justify-center overflow-hidden relative product-image-shadow">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-contain p-3 group-hover:scale-[1.06] group-hover:rotate-[0.5deg] transition-transform duration-500"
-          />
+          {imgFailed || !product.image ? (
+            <div className="absolute inset-0 flex items-center justify-center text-6xl">
+              {categoryEmoji[product.category] ?? "🍶"}
+            </div>
+          ) : (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-contain p-3 group-hover:scale-[1.06] group-hover:rotate-[0.5deg] transition-transform duration-500"
+              onError={() => setImgFailed(true)}
+            />
+          )}
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleItem(product); }}
             className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all"

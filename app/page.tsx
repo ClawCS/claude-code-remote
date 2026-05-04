@@ -60,35 +60,25 @@ export default function Home() {
         </ScrollReveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { href: "/partyplaner", image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=400&fit=crop", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
-            { href: "/vermietung", image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?w=600&h=400&fit=crop", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
-            { href: "/finder", image: "https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=600&h=400&fit=crop", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
-            { href: "/cocktails", image: "https://www.thecocktaildb.com/images/media/drink/jwmr1x1504372337.jpg", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
+            { href: "/partyplaner", icon: "🎉", gradient: "from-rose-500 via-pink-600 to-fuchsia-700", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
+            { href: "/vermietung", icon: "🍻", gradient: "from-amber-500 via-orange-600 to-red-700", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
+            { href: "/finder", icon: "🔍", gradient: "from-sky-500 via-blue-600 to-indigo-700", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
+            { href: "/cocktails", icon: "🍹", gradient: "from-emerald-500 via-teal-600 to-cyan-700", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
           ].map((s, i) => (
             <ScrollReveal key={s.href} delay={i * 100}>
               <Link
                 href={s.href}
                 className="group relative bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden block"
               >
-                {/* Photo */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={s.image}
-                    alt={t(s.titleKey)}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  {s.href === "/finder" && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                      <svg width="80" height="80" viewBox="0 0 90 90" fill="none" className="drop-shadow-2xl">
-                        <circle cx="36" cy="36" r="24" stroke="white" strokeWidth="4" fill="white" fillOpacity="0.15" />
-                        <line x1="54" y1="54" x2="76" y2="76" stroke="white" strokeWidth="5" strokeLinecap="round" />
-                        <text x="36" y="44" textAnchor="middle" fill="white" fontSize="26" fontWeight="bold">?</text>
-                      </svg>
-                    </div>
-                  )}
+                {/* Gradient hero with icon */}
+                <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${s.gradient}`}>
+                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.5),transparent_60%)]" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-7xl md:text-8xl drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
+                      {s.icon}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 </div>
                 {/* Text */}
                 <div className="p-5">
