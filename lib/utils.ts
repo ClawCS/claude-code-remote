@@ -80,13 +80,14 @@ export type Category = {
   icon: string;
   color: string;
   gradient: string;
+  image: string;
 };
 
 export const categories: Category[] = [
-  { name: "Bier", slug: "bier", icon: "🍺", color: "bg-amber-100 text-amber-800", gradient: "from-amber-500 via-amber-600 to-amber-800" },
-  { name: "Alkoholfreie Getränke", slug: "alkoholfrei", icon: "🥤", color: "bg-green-100 text-green-800", gradient: "from-emerald-500 via-emerald-600 to-emerald-800" },
-  { name: "Wein", slug: "wein", icon: "🍷", color: "bg-purple-100 text-purple-800", gradient: "from-purple-600 via-purple-700 to-purple-900" },
-  { name: "Sekt & Co.", slug: "sekt", icon: "🥂", color: "bg-pink-100 text-pink-800", gradient: "from-pink-400 via-pink-500 to-rose-700" },
-  { name: "Spirituosen", slug: "spirituosen", icon: "🥃", color: "bg-orange-100 text-orange-800", gradient: "from-orange-600 via-orange-700 to-orange-900" },
-  { name: "Lebensmittel & Mehr", slug: "lebensmittel", icon: "🛒", color: "bg-yellow-100 text-yellow-800", gradient: "from-yellow-500 via-yellow-600 to-yellow-800" },
+  { name: "Bier", slug: "bier", icon: "🍺", color: "bg-amber-100 text-amber-800", gradient: "from-amber-500 via-amber-600 to-amber-800", image: "/images/kategorien/Bier.jpg" },
+  { name: "Alkoholfreie Getränke", slug: "alkoholfrei", icon: "🥤", color: "bg-green-100 text-green-800", gradient: "from-emerald-500 via-emerald-600 to-emerald-800", image: "/images/kategorien/Alkoholfreie Getränke.jpg" },
+  { name: "Wein", slug: "wein", icon: "🍷", color: "bg-purple-100 text-purple-800", gradient: "from-purple-600 via-purple-700 to-purple-900", image: "/images/kategorien/Wein.jpg" },
+  { name: "Sekt & Co.", slug: "sekt", icon: "🥂", color: "bg-pink-100 text-pink-800", gradient: "from-pink-400 via-pink-500 to-rose-700", image: "/images/kategorien/Sekt & Co..jpg" },
+  { name: "Spirituosen", slug: "spirituosen", icon: "🥃", color: "bg-orange-100 text-orange-800", gradient: "from-orange-600 via-orange-700 to-orange-900", image: "/images/kategorien/Spirituosen.jpg" },
+  { name: "Lebensmittel & Mehr", slug: "lebensmittel", icon: "🛒", color: "bg-yellow-100 text-yellow-800", gradient: "from-yellow-500 via-yellow-600 to-yellow-800", image: "/images/kategorien/Lebenmittel & Mehr.jpg" },
 ];

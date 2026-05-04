@@ -1,22 +1,23 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Category } from "@/lib/utils";
 
 export default function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/kategorie/${category.slug}`}
-      className={`group relative flex flex-col items-center gap-3 rounded-2xl overflow-hidden card-hover aspect-square bg-gradient-to-br ${category.gradient}`}
+      className="group relative flex flex-col items-center gap-3 rounded-2xl overflow-hidden card-hover aspect-square"
     >
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.4),transparent_60%)]" />
-      {/* Big emoji */}
-      <div className="absolute inset-0 flex items-center justify-center pb-10">
-        <span className="text-6xl md:text-7xl drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
-          {category.icon}
-        </span>
-      </div>
+      <Image
+        src={category.image}
+        alt={category.name}
+        fill
+        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+        className="object-cover group-hover:scale-105 transition-transform duration-500"
+        unoptimized
+      />
       {/* Bottom gradient + label */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent pt-12 pb-5">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pt-14 pb-5">
         <span className="block font-bold text-white text-sm text-center drop-shadow-lg tracking-wide group-hover:-translate-y-1 transition-transform duration-500">
           {category.name}
         </span>
