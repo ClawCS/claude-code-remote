@@ -61,25 +61,27 @@ export default function Home() {
         </ScrollReveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { href: "/partyplaner", icon: "🎉", gradient: "from-rose-500 via-pink-600 to-fuchsia-700", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
-            { href: "/vermietung", icon: "🍻", gradient: "from-amber-500 via-orange-600 to-red-700", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
-            { href: "/finder", icon: "🔍", gradient: "from-sky-500 via-blue-600 to-indigo-700", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
-            { href: "/cocktails", icon: "🍹", gradient: "from-emerald-500 via-teal-600 to-cyan-700", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
+            { href: "/partyplaner", image: "/images/Services/Partyplaner.jpg", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
+            { href: "/vermietung", image: "/images/Services/Vermietung.jpg", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
+            { href: "/finder", image: "/images/Services/Getränke-Finder.jpg", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
+            { href: "/cocktails", image: "/images/Services/65 Cocktail-Rezepte.jpg", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
           ].map((s, i) => (
             <ScrollReveal key={s.href} delay={i * 100}>
               <Link
                 href={s.href}
                 className="group relative bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden block"
               >
-                {/* Gradient hero with icon */}
-                <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${s.gradient}`}>
-                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.5),transparent_60%)]" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-7xl md:text-8xl drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
-                      {s.icon}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                {/* Service image */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={s.image}
+                    alt={t(s.titleKey)}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    unoptimized
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 </div>
                 {/* Text */}
                 <div className="p-5">
