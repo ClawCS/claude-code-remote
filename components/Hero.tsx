@@ -13,7 +13,7 @@ export default function Hero() {
       {/* Background image — Markt-Atmosphäre */}
       <div className="absolute inset-0">
         <Image
-          src="/images/gallery/ig-00.jpg"
+          src="/images/gallery/team-gruppenfoto.jpg"
           alt="Trinkgut Jammers Markt"
           fill
           className="object-cover opacity-25"
@@ -116,7 +116,7 @@ export default function Hero() {
           {/* Trust badges */}
           <div className="flex flex-wrap items-center gap-6 mt-12 animate-fade-in-up" style={{ animationDelay: "700ms" }}>
             {[
-              { value: "7.000+", label: "Artikel" },
+              { value: "7.000+", label: "im Markt" },
               { value: "4,6★", label: "Google" },
               { value: "Seit 2024", label: "Für euch da" },
             ].map((badge) => (

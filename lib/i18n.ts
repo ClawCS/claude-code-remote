@@ -50,7 +50,7 @@ const translations = {
     "hero.badge": "Trinkgut Jammers Goch",
     "hero.title1": "Dein Getr\u00e4nkemarkt.",
     "hero.title2": "Online entdecken.",
-    "hero.subtitle": "\u00dcber 7.000 Artikel \u2014 von Bier \u00fcber Wein bis Spirituosen. Partyplanung, Vermietung und pers\u00f6nliche Beratung.",
+    "hero.subtitle": "\u00dcber 7.000 Artikel im Markt \u2014 entdecke unsere Online-Auswahl. Partyplanung, Vermietung und pers\u00f6nliche Beratung.",
     "hero.cta1": "Sortiment entdecken",
     "hero.cta2": "\ud83c\udf89 Party planen",
 
@@ -100,7 +100,7 @@ const translations = {
     "home.cta.text": "Entdecke unser komplettes Sortiment und bestelle bequem online. Abholung oder Lieferung \u2014 du entscheidest.",
 
     // Footer
-    "footer.brand": "Mit Leidenschaft f\u00fcr Getr\u00e4nke! \u00dcber 7.000 Artikel \u2013 von Bier \u00fcber Wein bis Spirituosen und Softdrinks.",
+    "footer.brand": "Mit Leidenschaft f\u00fcr Getr\u00e4nke! \u00dcber 7.000 Artikel im Markt \u2013 von Bier \u00fcber Wein bis Spirituosen und Softdrinks.",
     "footer.quicklinks": "Schnelllinks",
     "footer.kontakt": "Kontakt",
     "footer.inhaber": "Inhaber: Nikolaos Jammers",
@@ -172,7 +172,7 @@ const translations = {
     "hero.badge": "Trinkgut Jammers Goch",
     "hero.title1": "Your Beverage Store.",
     "hero.title2": "Explore Online.",
-    "hero.subtitle": "Over 7,000 items \u2014 from beer to wine to spirits. Party planning, rental services and personal advice.",
+    "hero.subtitle": "Over 7,000 items in store \u2014 discover our online selection. Party planning, rental services and personal advice.",
     "hero.cta1": "Explore Products",
     "hero.cta2": "\ud83c\udf89 Plan a Party",
 
@@ -222,7 +222,7 @@ const translations = {
     "home.cta.text": "Discover our complete range and order conveniently online. Pickup or delivery \u2014 you decide.",
 
     // Footer
-    "footer.brand": "Passionate about beverages! Over 7,000 items \u2013 from beer to wine to spirits and soft drinks.",
+    "footer.brand": "Passionate about beverages! Over 7,000 items in store \u2013 from beer to wine to spirits and soft drinks.",
     "footer.quicklinks": "Quick Links",
     "footer.kontakt": "Contact",
     "footer.inhaber": "Owner: Nikolaos Jammers",
@@ -294,7 +294,7 @@ const translations = {
     "hero.badge": "Trinkgut Jammers Goch",
     "hero.title1": "Jouw Drankenmarkt.",
     "hero.title2": "Online ontdekken.",
-    "hero.subtitle": "Meer dan 7.000 artikelen \u2014 van bier tot wijn tot sterke drank. Feestplanning, verhuur en persoonlijk advies.",
+    "hero.subtitle": "Meer dan 7.000 artikelen in de winkel \u2014 ontdek ons online aanbod. Feestplanning, verhuur en persoonlijk advies.",
     "hero.cta1": "Assortiment bekijken",
     "hero.cta2": "\ud83c\udf89 Feest plannen",
 
@@ -344,7 +344,7 @@ const translations = {
     "home.cta.text": "Ontdek ons complete assortiment en bestel gemakkelijk online. Ophalen of bezorgen \u2014 jij beslist.",
 
     // Footer
-    "footer.brand": "Met passie voor dranken! Meer dan 7.000 artikelen \u2013 van bier tot wijn tot sterke drank en frisdrank.",
+    "footer.brand": "Met passie voor dranken! Meer dan 7.000 artikelen in de winkel \u2013 van bier tot wijn tot sterke drank en frisdrank.",
     "footer.quicklinks": "Snellinks",
     "footer.kontakt": "Contact",
     "footer.inhaber": "Eigenaar: Nikolaos Jammers",

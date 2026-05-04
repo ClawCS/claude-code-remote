@@ -47,8 +47,8 @@ export default function ProductDetailPage() {
         <div>
           <span className="inline-block px-3 py-1 bg-light text-muted text-xs font-medium rounded-full mb-3">{product.category}</span>
           <h1 className="text-3xl font-bold text-secondary mb-2">{product.name}</h1>
-          <p className="text-muted mb-1">{product.unit}</p>
-          <p className="text-xs text-muted mb-6">EAN: {product.ean}</p>
+          {product.unit && <p className="text-muted mb-1">{product.unit}</p>}
+          {product.ean && <p className="text-xs text-muted mb-6">EAN: {product.ean}</p>}
           <p className="text-muted leading-relaxed mb-8">{product.description}</p>
 
           <div className="text-3xl font-bold text-primary mb-6">{formatPrice(product.price)}</div>

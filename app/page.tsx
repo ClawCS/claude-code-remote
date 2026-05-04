@@ -134,10 +134,10 @@ export default function Home() {
             </ScrollReveal>
             <ScrollReveal delay={200} className="grid grid-cols-2 gap-3">
               {[
+                { image: "/images/gewinnspiele/mai.png", title: "Vatertag Spezial", sub: "Mai 2026" },
                 { image: "/images/gewinnspiele/april.png", title: "Edifier + Ballantine's", sub: "April 2026" },
                 { image: "/images/gewinnspiele/maerz.png", title: "Monster Cooler", sub: "März 2026" },
                 { image: "/images/gewinnspiele/februar.png", title: "@Home Sportpaket", sub: "Februar 2026" },
-                { image: "/images/gewinnspiele/januar.png", title: "Salitos Sommer", sub: "Januar 2026" },
               ].map((card) => (
                 <Link key={card.title} href="/gewinnspiel" className="relative rounded-2xl overflow-hidden card-hover border border-[#DC2626]/10 hover:border-[#DC2626]/30 block aspect-square">
                   <Image src={card.image} alt={card.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
