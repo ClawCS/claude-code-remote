@@ -28,12 +28,12 @@ const gewinnspiele: Gewinnspiel[] = [
     winners: 2,
   },
   {
-    month: "Maerz",
+    month: "März",
     year: 2026,
     title: "Monster Energy Cooler",
-    prize: "Monster Energy Cooler Kuehlschrank",
+    prize: "Monster Energy Cooler Kühlschrank",
     value: "500",
-    description: "Ein exklusiver Monster Energy Cooler Kuehlschrank im Wert von ueber 500 Euro — der Hingucker fuer jede Maennerhoehle!",
+    description: "Ein exklusiver Monster Energy Cooler Kühlschrank im Wert von über 500 Euro — der Hingucker für jede Männerhöhle!",
     image: "/images/gewinnspiele/maerz.png",
     active: false,
   },
@@ -43,7 +43,7 @@ const gewinnspiele: Gewinnspiel[] = [
     title: "@Home Sportpaket",
     prize: "OTT Sports Fitness-Paket",
     value: "250",
-    description: "Ein komplettes @Home Sportpaket von OTT Sports: Yogamatte, Widerstandsbaender, Sporttasche, Springseil und mehr. Alles fuer dein Heimtraining!",
+    description: "Ein komplettes @Home Sportpaket von OTT Sports: Yogamatte, Widerstandsbänder, Sporttasche, Springseil und mehr. Alles für dein Heimtraining!",
     image: "/images/gewinnspiele/februar.png",
     active: false,
   },
@@ -51,9 +51,9 @@ const gewinnspiele: Gewinnspiel[] = [
     month: "Januar",
     year: 2026,
     title: "Salitos Sommer-Paket",
-    prize: "Salitos Surfboard + Ueberraschungspaket",
+    prize: "Salitos Surfboard + Überraschungspaket",
     value: "300",
-    description: "Starte ins neue Jahr mit Urlaubsfeeling! Ein Salitos Surfboard und ein Salitos Blue Ueberraschungspaket fuer den naechsten Sommer.",
+    description: "Starte ins neue Jahr mit Urlaubsfeeling! Ein Salitos Surfboard und ein Salitos Blue Überraschungspaket für den nächsten Sommer.",
     image: "/images/gewinnspiele/januar.png",
     active: false,
   },
@@ -124,7 +124,7 @@ export default function GewinnspielPage() {
             <h2 className="text-3xl font-bold text-[#1F2937] mb-3">Teilnahme erfolgreich!</h2>
             <p className="text-muted mb-2">Du nimmst jetzt am Gewinnspiel teil:</p>
             <p className="text-lg font-bold text-[#DC2626] mb-6">{submitted}</p>
-            <p className="text-sm text-muted mb-8">Die Gewinner werden per E-Mail benachrichtigt. Viel Glueck!</p>
+            <p className="text-sm text-muted mb-8">Die Gewinner werden per E-Mail benachrichtigt. Viel Glück!</p>
             <button onClick={() => setSubmitted(null)} className="px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl transition-colors">
               Weitere Gewinnspiele ansehen
             </button>
@@ -200,7 +200,7 @@ export default function GewinnspielPage() {
                   <p className="text-muted leading-relaxed mb-5">{activeGewinnspiel.description}</p>
                   <div className="flex flex-wrap gap-3 mb-6">
                     <span className="inline-flex items-center gap-1.5 text-sm bg-[#FFF5F3] text-[#DC2626] font-semibold px-3 py-1.5 rounded-lg">
-                      🎁 Wert: ueber {activeGewinnspiel.value}€
+                      🎁 Wert: über {activeGewinnspiel.value}€
                     </span>
                     {activeGewinnspiel.winners && (
                       <span className="inline-flex items-center gap-1.5 text-sm bg-amber-50 text-amber-700 font-semibold px-3 py-1.5 rounded-lg">
@@ -257,7 +257,7 @@ export default function GewinnspielPage() {
                         <h3 className="text-lg font-bold text-[#1F2937] mb-2">{g.title}</h3>
                         <p className="text-sm text-muted leading-relaxed mb-3">{g.description}</p>
                         <span className="inline-flex items-center gap-1.5 text-xs bg-gray-100 text-gray-600 font-medium px-2.5 py-1 rounded-lg w-fit">
-                          🎁 Wert: ueber {g.value}€
+                          🎁 Wert: über {g.value}€
                         </span>
                       </div>
                     </div>
@@ -273,7 +273,7 @@ export default function GewinnspielPage() {
           <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 rounded-2xl p-8 text-white text-center">
             <h2 className="text-2xl font-bold mb-2">Kein Gewinnspiel verpassen!</h2>
             <p className="text-white/80 mb-5 max-w-md mx-auto">
-              Folge uns auf Instagram — dort kuendigen wir jeden Monat das neue Gewinnspiel zuerst an.
+              Folge uns auf Instagram — dort kündigen wir jeden Monat das neue Gewinnspiel zuerst an.
             </p>
             <a
               href="https://www.instagram.com/trinkgutjammers_goch/"
@@ -338,7 +338,7 @@ export default function GewinnspielPage() {
                 <div className="flex items-start gap-2 pt-1">
                   <input required type="checkbox" id="consent" className="mt-1 accent-[#DC2626]" />
                   <label htmlFor="consent" className="text-xs text-muted">
-                    Ich akzeptiere die Teilnahmebedingungen und die Datenschutzerklaerung. *
+                    Ich akzeptiere die Teilnahmebedingungen und die Datenschutzerklärung. *
                   </label>
                 </div>
                 <button type="submit" className="w-full py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl transition-colors text-lg shadow-lg shadow-[#DC2626]/20">

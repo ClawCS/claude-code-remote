@@ -87,7 +87,7 @@ export default function VideoHero() {
                   className="text-sm md:text-lg tracking-[0.4em] uppercase text-white/40 mb-3"
                   style={{ animation: `sb-text-up 18s ease infinite`, animationPlayState: playState }}
                 >
-                  trinkgut Jammers prasentiert
+                  trinkgut Jammers präsentiert
                 </p>
                 <h2
                   className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text"
@@ -250,9 +250,9 @@ export default function VideoHero() {
             >
               <div className="absolute inset-0 bg-gradient-to-b from-[#0a1a0a] via-[#1a3d1a] to-[#0a1a0a]" />
               <div className="relative z-10 text-center">
-                <p className="text-xs md:text-sm text-white/40 tracking-[0.3em] uppercase mb-6">Mit freundlicher Unterstuetzung von</p>
+                <p className="text-xs md:text-sm text-white/40 tracking-[0.3em] uppercase mb-6">Mit freundlicher Unterstützung von</p>
                 <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 max-w-lg mx-auto">
-                  {["Bitburger", "Coca-Cola", "Veltins", "Frueh", "Herforder", "Estrella Galicia", "Gerolsteiner", "Vilsa"].map((brand) => (
+                  {["Bitburger", "Coca-Cola", "Veltins", "Früh", "Herforder", "Estrella Galicia", "Gerolsteiner", "Vilsa"].map((brand) => (
                     <span key={brand} className="text-white/30 text-xs md:text-sm font-bold tracking-wider">{brand}</span>
                   ))}
                 </div>
@@ -286,7 +286,7 @@ export default function VideoHero() {
                   Trinkgut Jammers
                 </h2>
                 <p className="text-white/60 text-sm md:text-base tracking-[0.2em] mt-4" style={{ animation: `sb-scene5-sub 18s ease infinite`, animationPlayState: playState }}>
-                  Jurgenstr. 20 &middot; Goch &middot; Seit 2024 fuer euch da
+                  Jurgenstr. 20 &middot; Goch &middot; Seit 2024 für euch da
                 </p>
               </div>
             </div>

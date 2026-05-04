@@ -207,9 +207,9 @@ export default function CommunityPage() {
           {[
             { icon: "\u{1F4C5}", label: "Taeglicher Besuch", pts: 10 },
             { icon: "\u{2694}\uFE0F", label: "Battle-Vote", pts: 5 },
-            { icon: "\u{1F3B0}", label: "Gluecksrad drehen", pts: 5 },
-            { icon: "\u{1F9CA}", label: "Kuehlschrank-Check", pts: 15 },
-            { icon: "\u{1F9E0}", label: "Quiz abschliessen", pts: 20 },
+            { icon: "\u{1F3B0}", label: "Glücksrad drehen", pts: 5 },
+            { icon: "\u{1F9CA}", label: "Kühlschrank-Check", pts: 15 },
+            { icon: "\u{1F9E0}", label: "Quiz abschließen", pts: 20 },
             { icon: "\u{267B}\uFE0F", label: "Leergut-Rechner", pts: 10 },
           ].map((item) => (
             <div key={item.label} className="bg-gray-50 rounded-xl p-3 text-center">
@@ -310,7 +310,7 @@ export default function CommunityPage() {
             </div>
             {profile.history.length === 0 ? (
               <div className="p-8 text-center text-muted">
-                <p>Noch keine Punkte gesammelt. Besuche die Seite taeglich fuer +10 Punkte!</p>
+                <p>Noch keine Punkte gesammelt. Besuche die Seite täglich für +10 Punkte!</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100 max-h-[400px] overflow-y-auto">

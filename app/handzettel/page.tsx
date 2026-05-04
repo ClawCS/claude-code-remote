@@ -75,7 +75,7 @@ export default function HandzettelPage() {
         <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Handzettel</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Aktueller Handzettel</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
-          Unser aktueller Prospekt mit allen Angeboten der Woche. Blaettere durch alle Seiten oder oeffne den Handzettel im Vollbild.
+          Unser aktueller Prospekt mit allen Angeboten der Woche. Blättere durch alle Seiten oder öffne den Handzettel im Vollbild.
         </p>
       </div>
     </div>

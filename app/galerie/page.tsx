@@ -95,7 +95,7 @@ export default function GaleriePage() {
       <div className="mt-12 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 rounded-2xl p-8 text-center text-white">
         <h2 className="text-2xl font-bold mb-2">Mehr Bilder auf Instagram</h2>
         <p className="text-white/70 mb-4 max-w-md mx-auto">
-          217 Beitraege · 4.558 Follower · Taeglich neue Einblicke
+          217 Beiträge · 4.558 Follower · Täglich neue Einblicke
         </p>
         <a
           href="https://www.instagram.com/trinkgutjammers_goch/"

@@ -335,7 +335,7 @@ export default function VermietungPage() {
                 </strong>
               </div>
               <div>
-                <span className="text-amber-700">Werktage (Mo–Fr):</span>{" "}
+                <span className="text-amber-700">Werktage (Mo–Sa):</span>{" "}
                 <strong className="text-amber-900">{workdays}</strong>
               </div>
               <div>
@@ -354,7 +354,7 @@ export default function VermietungPage() {
 
         {dateFrom && dateTo && workdays === 0 && (
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-            <p className="text-sm text-red-700">Der gewählte Zeitraum enthält keine Werktage. Bitte wähle einen Zeitraum mit mindestens einem Werktag (Mo–Fr).</p>
+            <p className="text-sm text-red-700">Der gewählte Zeitraum enthält keine Werktage. Bitte wähle einen Zeitraum mit mindestens einem Werktag (Mo–Sa).</p>
           </div>
         )}
 
@@ -365,7 +365,7 @@ export default function VermietungPage() {
                 <div key={month.name}>
                   <h4 className="font-medium text-secondary text-sm mb-2 text-center">{month.name}</h4>
                   <div className="grid grid-cols-7 gap-0.5 text-center text-xs">
-                    {["Mo","Di","Mi","Do","Fr","Sa","So"].map(d => <div key={d} className={`font-medium py-1 ${d === "Sa" || d === "So" ? "text-amber-500" : "text-muted"}`}>{d}</div>)}
+                    {["Mo","Di","Mi","Do","Fr","Sa","So"].map(d => <div key={d} className={`font-medium py-1 ${d === "So" ? "text-amber-500" : "text-muted"}`}>{d}</div>)}
                     {month.days.map((day, i) => {
                       if (day === null) return <div key={`e-${i}`} />;
                       const ds = `${month.year}-${String(month.month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
@@ -403,7 +403,7 @@ export default function VermietungPage() {
                 </div>
               ))}
             </div>
-            <p className="text-xs text-muted text-center mt-3">Wochenenden sind <span className="text-amber-500 font-medium">orange</span> markiert und werden nicht als Werktage gezählt.</p>
+            <p className="text-xs text-muted text-center mt-3">Sonntage sind <span className="text-amber-500 font-medium">orange</span> markiert und werden nicht als Werktage gezählt.</p>
           </div>
         )}
       </div>
@@ -472,7 +472,7 @@ export default function VermietungPage() {
           {dateFrom && dateTo && workdays > 0 && (
             <div className="text-sm text-muted mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="flex items-center"><CalendarIcon /> {new Date(dateFrom).toLocaleDateString("de-DE")} – {new Date(dateTo).toLocaleDateString("de-DE")}</p>
-              <p className="mt-1 font-medium text-amber-800">{workdays} Werktage (Mo–Fr) = {periods} Leihperiode{periods > 1 ? "n" : ""} (je 3 Werktage)</p>
+              <p className="mt-1 font-medium text-amber-800">{workdays} Werktage (Mo–Sa) = {periods} Leihperiode{periods > 1 ? "n" : ""} (je 3 Werktage)</p>
             </div>
           )}
           <div className="space-y-2 mb-4">

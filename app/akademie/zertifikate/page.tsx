@@ -26,7 +26,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "IHK / Sommelier-Union Deutschland",
     dauer: "10-12 Monate (berufsbegleitend)",
     kosten: "ca. 3.500-5.500 EUR",
-    beschreibung: "Die hoechste deutsche Sommelier-Ausbildung. Weinwissen, Service, Sensorik, Menueberatung, Kalkulation und Betriebsfuehrung. Voraussetzung: Abschluss in Gastronomie oder 3 Jahre Berufserfahrung.",
+    beschreibung: "Die höchste deutsche Sommelier-Ausbildung. Weinwissen, Service, Sensorik, Menüberatung, Kalkulation und Betriebsführung. Voraussetzung: Abschluss in Gastronomie oder 3 Jahre Berufserfahrung.",
     url: "https://www.sommelier-union.de/ausbildung/",
     kategorie: "wein",
     highlight: true,
@@ -37,7 +37,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Wine & Spirit Education Trust (WSET)",
     dauer: "1 Tag (6-8 Stunden)",
     kosten: "ca. 200-300 EUR",
-    beschreibung: "Einstieg in die Weinwelt. Grundlagen der Weintypen, Rebsorten und Verkostungstechnik. Ideal fuer Quereinsteiger und Weinliebhaber.",
+    beschreibung: "Einstieg in die Weinwelt. Grundlagen der Weintypen, Rebsorten und Verkostungstechnik. Ideal für Quereinsteiger und Weinliebhaber.",
     url: "https://www.wsetglobal.com/qualifications/wset-level-1-award-in-wines/",
     kategorie: "wein",
   },
@@ -57,7 +57,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Wine & Spirit Education Trust (WSET)",
     dauer: "ca. 6-12 Monate (berufsbegleitend)",
     kosten: "ca. 1.200-1.800 EUR",
-    beschreibung: "Fortgeschrittenes Expertenwissen. Detaillierte Analyse von Weinregionen weltweit, Vinifikation, Qualitaetsbewertung und Geschaeftsaspekte. Voraussetzung: WSET Level 2.",
+    beschreibung: "Fortgeschrittenes Expertenwissen. Detaillierte Analyse von Weinregionen weltweit, Vinifikation, Qualitätsbewertung und Geschäftsaspekte. Voraussetzung: WSET Level 2.",
     url: "https://www.wsetglobal.com/qualifications/wset-level-3-award-in-wines/",
     kategorie: "wein",
     highlight: true,
@@ -68,7 +68,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Verschiedene IHK-Standorte",
     dauer: "40-80 Stunden",
     kosten: "ca. 600-1.200 EUR",
-    beschreibung: "Grundlagen der Weinberatung im Handel. Rebsorten, Anbaugebiete, Verkostung und Kundenberatung. Ideal fuer den Getraenkehandel.",
+    beschreibung: "Grundlagen der Weinberatung im Handel. Rebsorten, Anbaugebiete, Verkostung und Kundenberatung. Ideal für den Getränkehandel.",
     url: "https://www.ihk-wein-sommelierschule.de/",
     kategorie: "wein",
   },
@@ -78,7 +78,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Deutsches Weininstitut",
     dauer: "3 Tage Intensivkurs",
     kosten: "ca. 400-600 EUR",
-    beschreibung: "Fokus auf deutsche Weine: 13 Anbaugebiete, Qualitaetsstufen, Rebsorten und Vermarktung. Perfekt fuer den deutschen Weinhandel.",
+    beschreibung: "Fokus auf deutsche Weine: 13 Anbaugebiete, Qualitätsstufen, Rebsorten und Vermarktung. Perfekt für den deutschen Weinhandel.",
     url: "https://www.deutscheweine.de/weinbranche/weinerzeuger/seminare-fuer-die-weinwirtschaft/anerkannter-berater-fuer-deutschen-wein-1",
     kategorie: "wein",
   },
@@ -86,10 +86,10 @@ const zertifikatskurse: Kurs[] = [
   {
     titel: "Biersommelier (Doemens)",
     abschluss: "Doemens-Diplom Biersommelier",
-    anbieter: "Doemens Akademie, Graefelfing",
+    anbieter: "Doemens Akademie, Gräfelfing",
     dauer: "2 Wochen Vollzeit (ca. 80 Std.)",
     kosten: "ca. 3.200-3.800 EUR",
-    beschreibung: "Die renommierteste Biersommelier-Ausbildung im deutschsprachigen Raum. Braukunst, Sensorik, Bierstile weltweit, Food Pairing, Praesentation und Beratung. Kursgebuehr: 3.450 EUR.",
+    beschreibung: "Die renommierteste Biersommelier-Ausbildung im deutschsprachigen Raum. Braukunst, Sensorik, Bierstile weltweit, Food Pairing, Präsentation und Beratung. Kursgebühr: 3.450 EUR.",
     url: "https://doemens.org/aktuelles/weiterbildung/intensiv-doemens-biersommelier/",
     kategorie: "bier",
     highlight: true,
@@ -97,10 +97,10 @@ const zertifikatskurse: Kurs[] = [
   {
     titel: "Bier-Botschafter (IHK)",
     abschluss: "IHK-Zertifikat Bier-Botschafter",
-    anbieter: "IHK Muenchen / verschiedene Standorte",
+    anbieter: "IHK München / verschiedene Standorte",
     dauer: "3-5 Tage",
     kosten: "ca. 800-1.500 EUR",
-    beschreibung: "Kompaktkurs fuer den Getraenkehandel und die Gastronomie. Bierherstellung, Bierstile, Sensorik und Kundenberatung. 56 Unterrichtseinheiten.",
+    beschreibung: "Kompaktkurs für den Getränkehandel und die Gastronomie. Bierherstellung, Bierstile, Sensorik und Kundenberatung. 56 Unterrichtseinheiten.",
     url: "https://gbz-koblenz.de/kurs/D-BB/bierbotschafter-in-ihk/",
     kategorie: "bier",
   },
@@ -108,9 +108,9 @@ const zertifikatskurse: Kurs[] = [
     titel: "Certified Beer Server (Cicerone)",
     abschluss: "Cicerone CBS Zertifikat",
     anbieter: "Cicerone Certification Program",
-    dauer: "Selbststudium + Online-Pruefung",
+    dauer: "Selbststudium + Online-Prüfung",
     kosten: "ca. 79 USD",
-    beschreibung: "Internationaler Einstieg. Grundlagen des Bierservice: Ausschank, Lagerung, Bierstile und Fehlererkennung. Online-Pruefung mit 60 Multiple-Choice-Fragen.",
+    beschreibung: "Internationaler Einstieg. Grundlagen des Bierservice: Ausschank, Lagerung, Bierstile und Fehlererkennung. Online-Prüfung mit 60 Multiple-Choice-Fragen.",
     url: "https://www.cicerone.org/us-en/certifications/certified-beer-server",
     kategorie: "bier",
   },
@@ -119,8 +119,8 @@ const zertifikatskurse: Kurs[] = [
     abschluss: "Certified Cicerone",
     anbieter: "Cicerone Certification Program",
     dauer: "6-12 Monate Vorbereitung",
-    kosten: "ca. 450 USD (Pruefung: 250 + 200 USD)",
-    beschreibung: "Fortgeschrittene Pruefung: Braukunst, Bierstile, Sensorik, Ausschank-Technologie und Pairing. Schriftlich + Verkostung + Demonstration. International hoechstes Ansehen.",
+    kosten: "ca. 450 USD (Prüfung: 250 + 200 USD)",
+    beschreibung: "Fortgeschrittene Prüfung: Braukunst, Bierstile, Sensorik, Ausschank-Technologie und Pairing. Schriftlich + Verkostung + Demonstration. International höchstes Ansehen.",
     url: "https://www.cicerone.org/us-en/certifications/certified-cicerone",
     kategorie: "bier",
     highlight: true,
@@ -132,7 +132,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Wine & Spirit Education Trust (WSET)",
     dauer: "2-3 Tage",
     kosten: "ca. 500-700 EUR",
-    beschreibung: "Systematische Einfuehrung in alle Spirituosenkategorien: Whisky, Rum, Gin, Brandy, Tequila, Vodka. Herstellung, Verkostung und Service.",
+    beschreibung: "Systematische Einführung in alle Spirituosenkategorien: Whisky, Rum, Gin, Brandy, Tequila, Vodka. Herstellung, Verkostung und Service.",
     url: "https://www.wsetglobal.com/qualifications/wset-level-2-award-in-spirits/",
     kategorie: "spirituosen",
   },
@@ -142,7 +142,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Wine & Spirit Education Trust (WSET)",
     dauer: "ca. 3-6 Monate",
     kosten: "ca. 1.500-2.000 EUR",
-    beschreibung: "Expertenniveau: Vertiefte Analyse aller Spirituosenkategorien, Destillationstechnik, Reifung, globale Maerkte und Trends.",
+    beschreibung: "Expertenniveau: Vertiefte Analyse aller Spirituosenkategorien, Destillationstechnik, Reifung, globale Märkte und Trends.",
     url: "https://www.wsetglobal.com/qualifications/wset-level-3-award-in-spirits/",
     kategorie: "spirituosen",
     highlight: true,
@@ -150,10 +150,10 @@ const zertifikatskurse: Kurs[] = [
   {
     titel: "Spirituosen-Sommelier (Doemens)",
     abschluss: "Doemens-Diplom Spirituosen-Sommelier",
-    anbieter: "Doemens Akademie, Graefelfing",
+    anbieter: "Doemens Akademie, Gräfelfing",
     dauer: "1 Woche Vollzeit",
     kosten: "ca. 2.200-2.800 EUR",
-    beschreibung: "Destillation, Reifung, Verkostung aller Spirituosenkategorien. Cocktails, Bar-Management und Kundenberatung. Abschluss mit Pruefung.",
+    beschreibung: "Destillation, Reifung, Verkostung aller Spirituosenkategorien. Cocktails, Bar-Management und Kundenberatung. Abschluss mit Prüfung.",
     url: "https://doemens.org/aktuelles/weiterbildung/",
     kategorie: "spirituosen",
   },
@@ -163,29 +163,29 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "Verschiedene IHK-Standorte",
     dauer: "1-2 Wochen",
     kosten: "ca. 800-1.500 EUR",
-    beschreibung: "Praxiskurs: Cocktailtechniken, Spirituosenkunde, Bar-Setup, Kalkulation und Gaestebetreuung. Mit praktischer Pruefung. Inkl. WSET Level 2 Spirits moeglich.",
+    beschreibung: "Praxiskurs: Cocktailtechniken, Spirituosenkunde, Bar-Setup, Kalkulation und Gästebetreuung. Mit praktischer Prüfung. Inkl. WSET Level 2 Spirits möglich.",
     url: "https://gbz-koblenz.de/kurs/D-BK/barkeeper-in-ihk-professional-expert-in-spirits-inkl-wset-level-2-award-in-spirits/",
     kategorie: "spirituosen",
   },
   // === ALLGEMEIN ===
   {
-    titel: "Getraenkefachwirt (IHK)",
-    abschluss: "IHK-Pruefungszeugnis (Meister-Niveau)",
+    titel: "Getränkefachwirt (IHK)",
+    abschluss: "IHK-Prüfungszeugnis (Meister-Niveau)",
     anbieter: "IHK",
     dauer: "12-18 Monate (berufsbegleitend)",
     kosten: "ca. 3.000-5.000 EUR",
-    beschreibung: "Die hoechste kaufmaennische Qualifikation im Getraenkehandel. BWL, Marketing, Sortimentsgestaltung, Logistik und Personalfuehrung. Auf Meisterebene (DQR 6).",
+    beschreibung: "Die höchste kaufmännische Qualifikation im Getränkehandel. BWL, Marketing, Sortimentsgestaltung, Logistik und Personalführung. Auf Meisterebene (DQR 6).",
     url: "https://www.ihk-akademie-muenchen.de/fachwirte/",
     kategorie: "allgemein",
     highlight: true,
   },
   {
-    titel: "Fachkraft fuer Getraenkeschankanlagen",
+    titel: "Fachkraft für Getränkeschankanlagen",
     abschluss: "Sachkundenachweis nach TRSK",
     anbieter: "TUEV / DEKRA / IHK",
     dauer: "2-3 Tage",
     kosten: "ca. 400-700 EUR",
-    beschreibung: "Gesetzlich vorgeschriebener Sachkundenachweis fuer den Betrieb von Schankanlagen. Hygiene, Technik, Wartung und Reinigung nach TRSK.",
+    beschreibung: "Gesetzlich vorgeschriebener Sachkundenachweis für den Betrieb von Schankanlagen. Hygiene, Technik, Wartung und Reinigung nach TRSK.",
     url: "https://www.tuv-akademie.at/kurs/ausbildung-zertifizierte-r-sachkundige-r-fuer-schankanlagen-tuevr",
     kategorie: "allgemein",
   },
@@ -195,7 +195,7 @@ const zertifikatskurse: Kurs[] = [
     anbieter: "IHK",
     dauer: "1-2 Wochen oder berufsbegleitend",
     kosten: "ca. 500-800 EUR",
-    beschreibung: "Berechtigung zur Ausbildung von Lehrlingen. Pflicht fuer Betriebe die ausbilden wollen. Paedagogik, Arbeitsrecht und Pruefungswesen.",
+    beschreibung: "Berechtigung zur Ausbildung von Lehrlingen. Pflicht für Betriebe die ausbilden wollen. Pädagogik, Arbeitsrecht und Prüfungswesen.",
     url: "https://www.ihk-akademie-muenchen.de/ausbilder/ausbildung-der-ausbilder/",
     kategorie: "allgemein",
   },
@@ -213,10 +213,10 @@ export default function ZertifikatePage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
       {/* Header */}
       <div className="text-center mb-12">
-        <Link href="/akademie" className="text-sm text-primary hover:underline mb-4 inline-block">&larr; Zurueck zur Akademie</Link>
+        <Link href="/akademie" className="text-sm text-primary hover:underline mb-4 inline-block">&larr; Zurück zur Akademie</Link>
         <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">Professionelle Zertifikatskurse</h1>
         <p className="text-muted max-w-2xl mx-auto">
-          Von der IHK ueber Doemens bis zum WSET — hier findest du alle buchbaren Kurse mit anerkanntem Abschluss.
+          Von der IHK über Doemens bis zum WSET — hier findest du alle buchbaren Kurse mit anerkanntem Abschluss.
           Investiere in dein Fachwissen und werde zertifizierter Experte.
         </p>
       </div>
@@ -227,8 +227,8 @@ export default function ZertifikatePage() {
         <div>
           <h3 className="font-bold text-lg">Du willst dich weiterbilden?</h3>
           <p className="text-white/90 text-sm">
-            Sprich uns an! Wir bei Trinkgut Jammers unterstuetzen Mitarbeiter bei Weiterbildungen.
-            Einige Kurse koennen ueber Bildungsgutscheine gefoerdert werden.
+            Sprich uns an! Wir bei Trinkgut Jammers unterstützen Mitarbeiter bei Weiterbildungen.
+            Einige Kurse können über Bildungsgutscheine gefördert werden.
           </p>
         </div>
       </div>
@@ -332,7 +332,7 @@ export default function ZertifikatePage() {
 
       {/* CTA */}
       <div className="text-center">
-        <p className="text-muted mb-4">Fragen zu Kursen oder Foerderung? Sprich uns direkt an!</p>
+        <p className="text-muted mb-4">Fragen zu Kursen oder Förderung? Sprich uns direkt an!</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/akademie" className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-red-700 transition-colors">
             Zurueck zur Akademie
