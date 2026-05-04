@@ -13,6 +13,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import ScrollReveal from "@/components/ScrollReveal";
+import HandzettelSection from "@/components/HandzettelSection";
 
 const products = productsData as Product[];
 const teamMembers = galleryItems.filter((i) => i.category === "team");
@@ -90,6 +91,12 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Gradient fade */}
+      <div className="h-24 bg-gradient-to-b from-[#FFF5F3] to-white" />
+
+      {/* Handzettel & Wochenblätter */}
+      <HandzettelSection />
 
       {/* Gradient fade to dark */}
       <div className="h-24 bg-gradient-to-b from-white to-[#1F2937]" />

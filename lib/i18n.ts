@@ -127,6 +127,21 @@ const translations = {
 
     // ProductGrid
     "productGrid.empty": "Keine Produkte gefunden.",
+
+    // Handzettel Section
+    "home.handzettel.label": "Angebote der Woche",
+    "home.handzettel.title": "Aktuelle Handzettel & Wochenblätter",
+    "home.handzettel.subtitle": "Unsere aktuellen Prospekte und Anzeigen — für Deutschland und die Niederlande.",
+    "home.handzettel.tab.de": "🇩🇪 Deutschland",
+    "home.handzettel.tab.nl": "🇳🇱 Holland",
+    "home.handzettel.current": "Aktuell",
+    "home.handzettel.openPdf": "PDF öffnen",
+    "home.handzettel.download": "Herunterladen",
+    "home.handzettel.archive": "Ältere Ausgaben",
+    "home.handzettel.enlarge": "Vergrößern",
+    "home.handzettel.kw": "KW",
+    "home.handzettel.noFlyers": "Noch keine Handzettel verfügbar.",
+    "home.handzettel.allOffers": "Alle Angebote ansehen",
   },
 
   en: {
@@ -249,6 +264,21 @@ const translations = {
 
     // ProductGrid
     "productGrid.empty": "No products found.",
+
+    // Handzettel Section
+    "home.handzettel.label": "Weekly Offers",
+    "home.handzettel.title": "Current Flyers & Ads",
+    "home.handzettel.subtitle": "Our latest flyers and newspaper ads — for Germany and the Netherlands.",
+    "home.handzettel.tab.de": "🇩🇪 Germany",
+    "home.handzettel.tab.nl": "🇳🇱 Holland",
+    "home.handzettel.current": "Current",
+    "home.handzettel.openPdf": "Open PDF",
+    "home.handzettel.download": "Download",
+    "home.handzettel.archive": "Older Issues",
+    "home.handzettel.enlarge": "Enlarge",
+    "home.handzettel.kw": "CW",
+    "home.handzettel.noFlyers": "No flyers available yet.",
+    "home.handzettel.allOffers": "View All Offers",
   },
 
   nl: {
@@ -371,6 +401,21 @@ const translations = {
 
     // ProductGrid
     "productGrid.empty": "Geen producten gevonden.",
+
+    // Handzettel Section
+    "home.handzettel.label": "Aanbiedingen van de week",
+    "home.handzettel.title": "Actuele Folders & Weekbladen",
+    "home.handzettel.subtitle": "Onze actuele folders en advertenties — voor Duitsland en Nederland.",
+    "home.handzettel.tab.de": "🇩🇪 Duitsland",
+    "home.handzettel.tab.nl": "🇳🇱 Nederland",
+    "home.handzettel.current": "Actueel",
+    "home.handzettel.openPdf": "PDF openen",
+    "home.handzettel.download": "Downloaden",
+    "home.handzettel.archive": "Oudere uitgaven",
+    "home.handzettel.enlarge": "Vergroten",
+    "home.handzettel.kw": "KW",
+    "home.handzettel.noFlyers": "Nog geen folders beschikbaar.",
+    "home.handzettel.allOffers": "Alle aanbiedingen bekijken",
   },
 } as const;
 

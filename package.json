@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/generate-handzettel-manifest.mjs",
     "build": "next build",
     "start": "next start",
+    "generate:handzettel": "node scripts/generate-handzettel-manifest.mjs",
     "lint": "eslint"
   },
   "dependencies": {

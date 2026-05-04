@@ -1,0 +1,24 @@
+{
+  "generated": "2026-05-04T15:48:49.377Z",
+  "de": [
+    {
+      "kw": 19,
+      "file": "/handzettel/de/KW19%202747%20RHEINRUHR.pdf",
+      "type": "pdf"
+    }
+  ],
+  "nl": [
+    {
+      "kw": 20,
+      "region": "Gelderländer",
+      "file": "/handzettel/nl/Gelderl%C3%A4nder/KW20%20Gelderl%C3%A4nder.png",
+      "type": "image"
+    },
+    {
+      "kw": 19,
+      "region": "Maasduinen",
+      "file": "/handzettel/nl/Maasduinen/KW19%20Maasduinen.png",
+      "type": "image"
+    }
+  ]
+}
