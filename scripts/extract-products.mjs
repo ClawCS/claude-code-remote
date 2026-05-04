@@ -18,7 +18,7 @@ if (!GEMINI_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
 function parseKW(filename) {

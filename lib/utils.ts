@@ -70,6 +70,8 @@ export type Product = {
   ean?: string;
   image: string;
   unit: string;
+  origin?: "DE" | "NL";
+  region?: string | null;
   inStock: boolean;
   highlight?: boolean;
 };

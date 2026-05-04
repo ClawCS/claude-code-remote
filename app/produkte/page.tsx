@@ -10,17 +10,23 @@ import ShimmerParticles from "@/components/ShimmerParticles";
 
 const products = productsData as Product[];
 
+type Origin = "alle" | "DE" | "NL";
+
 function ProdukteContent() {
   const searchParams = useSearchParams();
   const searchFromUrl = searchParams.get("search") || "";
   const [search, setSearch] = useState(searchFromUrl);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [origin, setOrigin] = useState<Origin>("alle");
 
   useEffect(() => {
     if (searchFromUrl) {
       setSearch(searchFromUrl);
     }
   }, [searchFromUrl]);
+
+  const deProducts = useMemo(() => products.filter(p => p.origin === "DE"), []);
+  const nlProducts = useMemo(() => products.filter(p => p.origin === "NL"), []);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -29,9 +35,10 @@ function ProdukteContent() {
         p.name.toLowerCase().includes(search.toLowerCase()) ||
         p.category.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = !activeCategory || p.categorySlug === activeCategory;
-      return matchesSearch && matchesCategory;
+      const matchesOrigin = origin === "alle" || p.origin === origin;
+      return matchesSearch && matchesCategory && matchesOrigin;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, origin]);
 
   return (
     <>
@@ -46,6 +53,31 @@ function ProdukteContent() {
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+      {/* DE / NL Tabs */}
+      <div className="flex gap-2 mb-6">
+        {([
+          { key: "alle" as Origin, label: "Alle Angebote", icon: "🛒", count: products.length },
+          { key: "DE" as Origin, label: "Deutschland", icon: "🇩🇪", count: deProducts.length },
+          { key: "NL" as Origin, label: "Nederland", icon: "🇳🇱", count: nlProducts.length },
+        ]).map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setOrigin(tab.key)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              origin === tab.key
+                ? "bg-[#DC2626] text-white shadow-lg shadow-red-500/20"
+                : "bg-white border border-[#F0D5CF] text-[#1F2937] hover:border-[#DC2626]/40"
+            }`}
+          >
+            <span className="text-lg">{tab.icon}</span>
+            <span>{tab.label}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+              origin === tab.key ? "bg-white/20" : "bg-[#F0D5CF]/60"
+            }`}>{tab.count}</span>
+          </button>
+        ))}
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <div className="sm:w-80">
