@@ -488,7 +488,7 @@ body {
 
 /* ═══ Page Hero Banner (for subpages) ═══ */
 .page-hero-banner {
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 50%, #B91C1C 100%);
+  background: linear-gradient(135deg, #B91C1C 0%, #DC2626 50%, #7A1428 100%);
   position: relative;
   overflow: hidden;
 }
