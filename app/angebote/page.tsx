@@ -77,7 +77,7 @@ export default function AngebotePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       {/* Handzettel Banner */}
-      <section className="bg-gradient-to-r from-primary to-red-700 text-white rounded-2xl p-6 sm:p-8 mb-10 flex flex-col md:flex-row items-center gap-6">
+      <section className="bg-gradient-to-r from-[#DC2626] to-[#B91C1C] text-white rounded-2xl p-6 sm:p-8 mb-10 flex flex-col md:flex-row items-center gap-6">
         <div className="flex-1">
           <span className="inline-block bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-full mb-3">
             WOCHENANGEBOTE KW {data?.kw ?? currentKW}
@@ -207,7 +207,7 @@ export default function AngebotePage() {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-red-700 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#DC2626] text-white font-bold rounded-xl hover:bg-[#B91C1C] transition-colors"
             >
               Seite neu laden
             </button>
@@ -219,7 +219,7 @@ export default function AngebotePage() {
       <div className="text-center py-8">
         <p className="text-muted mb-4">Noch mehr Angebote gibt es direkt im Markt!</p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <Link href="/produkte" className="px-8 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-colors">
+          <Link href="/produkte" className="px-8 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-lg transition-colors">
             Alle Produkte
           </Link>
           <Link href="/handzettel" className="px-8 py-3 border border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-lg transition-colors">

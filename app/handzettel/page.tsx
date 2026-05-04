@@ -124,7 +124,7 @@ export default function HandzettelPage() {
             {deCurrent ? (
               <div className="max-w-2xl mx-auto">
                 <div className="bg-white border border-[#F0D5CF]/60 rounded-2xl overflow-hidden shadow-sm">
-                  <div className="relative bg-gradient-to-br from-red-600 via-red-700 to-red-900 p-10 text-center">
+                  <div className="relative bg-gradient-to-br from-[#DC2626] via-[#B91C1C] to-[#7F1D1D] p-10 text-center">
                     <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.5),transparent_60%)]" />
                     <span className="relative text-8xl drop-shadow-lg">📰</span>
                     <div className="relative mt-5">
@@ -294,7 +294,7 @@ export default function HandzettelPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/angebote"
-              className="px-5 py-2.5 bg-primary text-white rounded-xl font-semibold hover:bg-red-700 transition-colors text-sm"
+              className="px-5 py-2.5 bg-[#DC2626] text-white rounded-xl font-semibold hover:bg-[#B91C1C] transition-colors text-sm"
             >
               Wochenangebote ansehen
             </Link>

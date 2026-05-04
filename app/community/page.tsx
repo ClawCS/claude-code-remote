@@ -150,7 +150,7 @@ export default function CommunityPage() {
               />
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-primary hover:bg-red-700 text-white font-semibold rounded-xl transition-colors whitespace-nowrap"
+                className="px-6 py-2.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-semibold rounded-xl transition-colors whitespace-nowrap"
               >
                 Los geht&apos;s
               </button>

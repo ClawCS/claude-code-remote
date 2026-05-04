@@ -25,7 +25,7 @@ export default function ProspektViewer({
       }`}
     >
       {/* Toolbar */}
-      <div className="bg-gradient-to-r from-primary to-red-700 p-4 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-[#DC2626] to-[#B91C1C] p-4 flex items-center justify-between">
         <div className="text-white text-sm font-medium">
           Handzettel KW {kw}
           <span className="hidden sm:inline text-white/70 ml-2">

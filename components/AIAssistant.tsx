@@ -198,7 +198,7 @@ export default function AIAssistant() {
         <div className="fixed bottom-48 left-6 z-50 w-[calc(100vw-3rem)] max-w-[400px] animate-scale-in origin-bottom-left">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden flex flex-col" style={{ height: "min(520px, calc(100vh - 240px))" }}>
             {/* Header */}
-            <div className="bg-gradient-to-r from-primary to-red-700 px-4 py-3 flex items-center gap-3">
+            <div className="bg-gradient-to-r from-[#DC2626] to-[#B91C1C] px-4 py-3 flex items-center gap-3">
               <div className="relative">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                   <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -279,7 +279,7 @@ export default function AIAssistant() {
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary text-white disabled:opacity-30 hover:bg-red-700 transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary text-white disabled:opacity-30 hover:bg-[#B91C1C] transition-colors"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />

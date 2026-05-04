@@ -115,7 +115,7 @@ export default function HandzettelSection() {
             {deCurrent && (
               <div className="max-w-2xl mx-auto">
                 <div className="bg-white border border-[#F0D5CF]/60 rounded-2xl overflow-hidden shadow-sm">
-                  <div className="relative bg-gradient-to-br from-red-600 via-red-700 to-red-900 p-8 text-center">
+                  <div className="relative bg-gradient-to-br from-[#DC2626] via-[#B91C1C] to-[#7F1D1D] p-8 text-center">
                     <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.5),transparent_60%)]" />
                     <span className="relative text-7xl drop-shadow-lg">📰</span>
                     <div className="relative mt-4">
