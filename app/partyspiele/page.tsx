@@ -848,7 +848,7 @@ function TabuGame() {
       )}
       <div className="grid grid-cols-2 gap-3">
         <button onClick={handleCorrect} className="py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors">Richtig!</button>
-        <button onClick={handleSkip} className="py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold rounded-xl transition-colors">Uberspringen</button>
+        <button onClick={handleSkip} className="py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold rounded-xl transition-colors">Überspringen</button>
       </div>
     </div>
   );
