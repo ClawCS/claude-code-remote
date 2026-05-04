@@ -190,7 +190,7 @@ const zertifikatskurse: Kurs[] = [
     kategorie: "allgemein",
   },
   {
-    titel: "Ausbilder-Eignungspruefung (AEVO/AdA)",
+    titel: "Ausbilder-Eignungsprüfung (AEVO/AdA)",
     abschluss: "IHK-Ausbilderschein",
     anbieter: "IHK",
     dauer: "1-2 Wochen oder berufsbegleitend",
@@ -335,9 +335,9 @@ export default function ZertifikatePage() {
         <p className="text-muted mb-4">Fragen zu Kursen oder Förderung? Sprich uns direkt an!</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/akademie" className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-red-700 transition-colors">
-            Zurueck zur Akademie
+            Zurück zur Akademie
           </Link>
-          <a href="tel:+4928234187071" className="px-6 py-3 border-2 border-secondary text-secondary rounded-xl font-semibold hover:bg-secondary hover:text-white transition-colors">
+          <a href="tel:+492823418707" className="px-6 py-3 border-2 border-secondary text-secondary rounded-xl font-semibold hover:bg-secondary hover:text-white transition-colors">
             Anrufen: 02823-418707
           </a>
         </div>
