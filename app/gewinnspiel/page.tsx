@@ -120,11 +120,11 @@ export default function GewinnspielPage() {
         </div>
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
           <div className="bg-white border border-border/60 rounded-2xl p-10 shadow-lg">
-            <span className="text-6xl block mb-4">🎉</span>
-            <h2 className="text-3xl font-bold text-[#1F2937] mb-3">Teilnahme erfolgreich!</h2>
-            <p className="text-muted mb-2">Du nimmst jetzt am Gewinnspiel teil:</p>
+            <span className="text-6xl block mb-4">📧</span>
+            <h2 className="text-3xl font-bold text-[#1F2937] mb-3">Dein Mailprogramm öffnet sich</h2>
+            <p className="text-muted mb-2">Bitte sende die E-Mail dort ab, um teilzunehmen am Gewinnspiel:</p>
             <p className="text-lg font-bold text-[#DC2626] mb-6">{submitted}</p>
-            <p className="text-sm text-muted mb-8">Die Gewinner werden per E-Mail benachrichtigt. Viel Glück!</p>
+            <p className="text-sm text-muted mb-8">Sobald deine E-Mail bei uns eingeht, bist du dabei. Die Gewinner werden per E-Mail benachrichtigt. Viel Glück!</p>
             <button onClick={() => setSubmitted(null)} className="px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl transition-colors">
               Weitere Gewinnspiele ansehen
             </button>

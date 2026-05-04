@@ -11,26 +11,21 @@ export default function NewsletterSignup() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      // Save to localStorage
-      const existing = JSON.parse(localStorage.getItem("trinkgut-newsletter") || "[]");
-      existing.push({ email, date: new Date().toISOString() });
-      localStorage.setItem("trinkgut-newsletter", JSON.stringify(existing));
-
-      // Open mailto
       const subject = encodeURIComponent("Newsletter-Anmeldung");
-      const body = encodeURIComponent(`Neue Newsletter-Anmeldung:\n\nE-Mail: ${email}\nDatum: ${new Date().toLocaleString("de-DE")}`);
+      const body = encodeURIComponent(`Hallo,\n\nich möchte mich für den Newsletter anmelden.\n\nE-Mail: ${email}\n\nViele Grüße`);
       window.open(`mailto:hanna.thewald@trinkgut-jammers.de?subject=${subject}&body=${body}`, "_self");
-
       setSubmitted(true);
     }
   };
 
   if (submitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center">
-        <span className="text-4xl block mb-3">✅</span>
-        <p className="font-bold text-green-800 text-lg">{t("newsletter.success")}</p>
-        <p className="text-sm text-green-700 mt-1">{t("newsletter.successText")}</p>
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-8 text-center">
+        <span className="text-4xl block mb-3">📧</span>
+        <p className="font-bold text-amber-900 text-lg">Dein Mailprogramm öffnet sich</p>
+        <p className="text-sm text-amber-800 mt-1">
+          Bitte sende die E-Mail dort ab, dann melden wir dich für den Newsletter an.
+        </p>
       </div>
     );
   }

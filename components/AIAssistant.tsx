@@ -212,8 +212,8 @@ export default function AIAssistant() {
                 <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="text-white font-bold text-sm">Jammers KI-Assistent</h3>
-                <p className="text-white/70 text-xs">Powered by Gemini AI</p>
+                <h3 className="text-white font-bold text-sm">Jammers Getränkeberater</h3>
+                <p className="text-white/70 text-xs">Frag uns — wir helfen gerne</p>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

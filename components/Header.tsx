@@ -52,13 +52,7 @@ const navItems: NavItem[] = [
       { href: "/kuehlschrank", labelKey: "nav.kuehlschrank", icon: "\u{1F9CA}" },
     ],
   },
-  {
-    labelKey: "nav.handzettel",
-    children: [
-      { href: "/handzettel", labelKey: "nav.handzettelDE", icon: "\u{1F1E9}\u{1F1EA}" },
-      { href: "/handzettel", labelKey: "nav.handzettelNL", icon: "\u{1F1F3}\u{1F1F1}" },
-    ],
-  },
+  { labelKey: "nav.handzettel", href: "/handzettel" },
   { labelKey: "nav.akademie", href: "/akademie" },
   { labelKey: "nav.community", href: "/community" },
   { labelKey: "nav.jobs", href: "/bewerbung" },
