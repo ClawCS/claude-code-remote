@@ -1,0 +1,22 @@
+{
+  "available": [
+    {
+      "kw": 20,
+      "year": 2026,
+      "publishAt": "2026-05-10T16:00:00+02:00",
+      "file": "kw20-2026.json",
+      "productCount": 22,
+      "de": 0,
+      "nl": 22
+    },
+    {
+      "kw": 19,
+      "year": 2026,
+      "publishAt": "2026-05-03T16:00:00+02:00",
+      "file": "kw19-2026.json",
+      "productCount": 102,
+      "de": 80,
+      "nl": 22
+    }
+  ]
+}

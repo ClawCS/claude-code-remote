@@ -18,7 +18,8 @@ if (!GEMINI_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
 function parseKW(filename) {
   const m = filename.match(/KW(\d+)/i);
