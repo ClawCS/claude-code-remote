@@ -1,0 +1,13 @@
+{
+  "categories": [
+    { "id": "bier", "label_de": "Bier", "label_nl": "Bier", "label_en": "Beer", "icon": "🍺", "keywords": ["pils", "pilsener", "weizen", "kölsch", "alt", "lager", "bier", "krombacher", "warsteiner", "veltins", "heineken", "amstel", "bitburger", "becks", "flensburger", "jever", "paulaner", "erdinger", "franziskaner", "hasseröder", "radeberger", "herforder", "bolten", "früh", "gaffel", "kasten"] },
+    { "id": "wein", "label_de": "Wein", "label_nl": "Wijn", "label_en": "Wine", "icon": "🍷", "keywords": ["wein", "wijn", "rotwein", "weißwein", "weisswein", "rosé", "rose", "merlot", "riesling", "chardonnay", "cabernet", "pinot", "sauvignon", "grauburgunder", "spätburgunder", "dornfelder", "primitivo"] },
+    { "id": "sekt", "label_de": "Sekt & Co.", "label_nl": "Bubbels & Co.", "label_en": "Sparkling & Co.", "icon": "🥂", "keywords": ["sekt", "prosecco", "champagner", "champagne", "cremant", "cava", "spumante", "freixenet", "rotkäppchen", "mumm", "henkell"] },
+    { "id": "spirituosen", "label_de": "Spirituosen", "label_nl": "Sterke drank", "label_en": "Spirits", "icon": "🥃", "keywords": ["whisky", "whiskey", "wodka", "vodka", "rum", "gin", "korn", "likör", "liqueur", "jägermeister", "ramazzotti", "aperol", "campari", "cognac", "brandy", "grappa", "ouzo", "tequila", "mezcal", "absinth"] },
+    { "id": "softdrinks", "label_de": "Softdrinks", "label_nl": "Frisdranken", "label_en": "Soft Drinks", "icon": "🥤", "keywords": ["cola", "fanta", "sprite", "limo", "limonade", "schorle", "spezi", "mezzo", "schweppes", "tonic", "ginger", "pepsi", "7up", "dr pepper", "bionade", "fritz"] },
+    { "id": "wasser", "label_de": "Wasser", "label_nl": "Water", "label_en": "Water", "icon": "💧", "keywords": ["wasser", "water", "mineral", "sprudel", "still", "medium", "gerolsteiner", "vilsa", "volvic", "evian", "bad pyrmonter", "selters"] },
+    { "id": "saft", "label_de": "Säfte", "label_nl": "Sappen", "label_en": "Juices", "icon": "🧃", "keywords": ["saft", "sap", "nektar", "fruchtsaft", "orangensaft", "apfelsaft", "multivitamin", "hohes c", "granini", "valensina", "amecke"] },
+    { "id": "energy", "label_de": "Energy & Sport", "label_nl": "Energy & Sport", "label_en": "Energy & Sport", "icon": "⚡", "keywords": ["energy", "energydrink", "red bull", "monster", "rockstar", "effect", "28 black", "iso", "sport", "powerade", "gatorade"] },
+    { "id": "sonstiges", "label_de": "Sonstiges", "label_nl": "Overige", "label_en": "Other", "icon": "🛒", "keywords": [] }
+  ]
+}
