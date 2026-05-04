@@ -1,37 +1,41 @@
 import { NextResponse } from "next/server";
 
 /**
- * Cron-Endpoint fuer wöchentliche Handzettel-Aktualisierung.
+ * Cron-Endpoint für wöchentliche Handzettel-Aktualisierung.
  *
  * Aufruf: Jeden Sonntag um 17:00 Uhr
  *
- * Fuer Vercel: vercel.json -> "crons": [{ "path": "/api/handzettel/cron", "schedule": "0 17 * * 0" }]
- * Fuer VPS: crontab -> 0 17 * * 0 curl -X POST https://deine-domain.de/api/handzettel/cron
- * Fuer externe Dienste: cron-job.org, EasyCron, etc.
+ * Für Vercel: vercel.json -> "crons": [{ "path": "/api/handzettel/cron", "schedule": "0 17 * * 0" }]
+ * Für VPS: crontab -> 0 17 * * 0 curl -X POST https://deine-domain.de/api/handzettel/cron -H "Authorization: Bearer $CRON_SECRET"
+ *
+ * SICHERHEIT: CRON_SECRET MUSS gesetzt sein, sonst gibt der Endpoint 503 zurück.
  */
 
 const CRON_SECRET = process.env.CRON_SECRET;
 
-export async function GET(request: Request) {
-  // Optionaler Schutz via Secret
-  if (CRON_SECRET) {
-    const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${CRON_SECRET}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+function authorize(request: Request): NextResponse | null {
+  if (!CRON_SECRET) {
+    return NextResponse.json(
+      { error: "Cron-Endpoint nicht konfiguriert (CRON_SECRET fehlt)." },
+      { status: 503 }
+    );
   }
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  return null;
+}
 
+export async function GET(request: Request) {
+  const denied = authorize(request);
+  if (denied) return denied;
   return runUpdate(request);
 }
 
 export async function POST(request: Request) {
-  if (CRON_SECRET) {
-    const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${CRON_SECRET}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  }
-
+  const denied = authorize(request);
+  if (denied) return denied;
   return runUpdate(request);
 }
 

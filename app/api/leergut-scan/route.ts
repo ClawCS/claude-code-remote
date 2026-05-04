@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"];
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
 const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
 
 function getGeminiUrl(model: string) {
@@ -25,8 +28,16 @@ Antworte NUR mit validem JSON, ohne Markdown-Formatierung, ohne Codeblöcke. Gen
 Wenn du keine Flaschen/Dosen erkennst, gib alle Werte als 0 zurück.`;
 
 export async function POST(request: NextRequest) {
+  const limit = rateLimit(request, { key: "leergut", max: 10, windowMs: 60_000 });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Zu viele Anfragen. Bitte einen Moment warten." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   if (!GEMINI_API_KEY) {
-    return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+    return NextResponse.json({ error: "Service derzeit nicht verfügbar." }, { status: 503 });
   }
 
   try {
@@ -34,12 +45,26 @@ export async function POST(request: NextRequest) {
     const imageFile = formData.get("image") as File | null;
 
     if (!imageFile) {
-      return NextResponse.json({ error: "No image provided" }, { status: 400 });
+      return NextResponse.json({ error: "Kein Bild hochgeladen." }, { status: 400 });
+    }
+
+    if (!ALLOWED_MIME.includes(imageFile.type)) {
+      return NextResponse.json(
+        { error: "Bildformat nicht unterstützt (nur JPEG, PNG, WebP)." },
+        { status: 400 }
+      );
+    }
+
+    if (imageFile.size > MAX_BYTES) {
+      return NextResponse.json(
+        { error: "Datei ist zu groß (max. 8 MB)." },
+        { status: 400 }
+      );
     }
 
     const bytes = await imageFile.arrayBuffer();
     const base64 = Buffer.from(bytes).toString("base64");
-    const mimeType = imageFile.type || "image/jpeg";
+    const mimeType = imageFile.type;
 
     let result = null;
 
@@ -116,6 +141,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ result: normalized });
   } catch (error) {
     console.error("Leergut scan error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Fehler bei der Verarbeitung. Bitte erneut versuchen." }, { status: 500 });
   }
 }

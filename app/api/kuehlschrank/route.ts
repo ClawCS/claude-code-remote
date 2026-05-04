@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"];
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
 const MODELS = [
   "gemini-2.5-flash",
   "gemini-2.0-flash",
@@ -28,11 +31,16 @@ WICHTIG:
 - Antworte NUR mit dem JSON, kein anderer Text`;
 
 export async function POST(req: NextRequest) {
-  if (!GEMINI_API_KEY) {
+  const limit = rateLimit(req, { key: "kuehlschrank", max: 10, windowMs: 60_000 });
+  if (!limit.allowed) {
     return NextResponse.json(
-      { error: "API key not configured" },
-      { status: 500 }
+      { error: "Zu viele Anfragen. Bitte einen Moment warten." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
     );
+  }
+
+  if (!GEMINI_API_KEY) {
+    return NextResponse.json({ error: "Service derzeit nicht verfügbar." }, { status: 503 });
   }
 
   try {
@@ -40,8 +48,19 @@ export async function POST(req: NextRequest) {
     const imageFile = formData.get("image") as File | null;
 
     if (!imageFile) {
+      return NextResponse.json({ error: "Kein Bild hochgeladen." }, { status: 400 });
+    }
+
+    if (!ALLOWED_MIME.includes(imageFile.type)) {
       return NextResponse.json(
-        { error: "Kein Bild hochgeladen" },
+        { error: "Bildformat nicht unterstützt (nur JPEG, PNG, WebP)." },
+        { status: 400 }
+      );
+    }
+
+    if (imageFile.size > MAX_BYTES) {
+      return NextResponse.json(
+        { error: "Datei ist zu groß (max. 8 MB)." },
         { status: 400 }
       );
     }
@@ -49,7 +68,7 @@ export async function POST(req: NextRequest) {
     // Convert file to base64
     const bytes = await imageFile.arrayBuffer();
     const base64 = Buffer.from(bytes).toString("base64");
-    const mimeType = imageFile.type || "image/jpeg";
+    const mimeType = imageFile.type;
 
     // Try each model in order
     let lastError: Error | null = null;
@@ -119,15 +138,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    console.error("Kuehlschrank API error:", lastError);
     return NextResponse.json(
-      { error: `Alle Modelle fehlgeschlagen: ${lastError?.message}` },
-      { status: 500 }
+      { error: "Bildanalyse derzeit nicht möglich. Bitte später erneut versuchen." },
+      { status: 503 }
     );
   } catch (err) {
+    console.error("Kuehlschrank API error:", err);
     return NextResponse.json(
-      {
-        error: `Fehler bei der Verarbeitung: ${err instanceof Error ? err.message : String(err)}`,
-      },
+      { error: "Fehler bei der Verarbeitung. Bitte erneut versuchen." },
       { status: 500 }
     );
   }

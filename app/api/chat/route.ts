@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODELS = [
@@ -129,8 +130,16 @@ REGELN:
 - Du darfst ausführlich antworten wenn die Frage es erfordert`;
 
 export async function POST(request: NextRequest) {
+  const limit = rateLimit(request, { key: "chat", max: 20, windowMs: 60_000 });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Zu viele Anfragen. Bitte einen Moment warten." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   if (!GEMINI_API_KEY) {
-    return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+    return NextResponse.json({ error: "Service derzeit nicht verfügbar." }, { status: 503 });
   }
 
   try {
@@ -200,7 +209,7 @@ export async function POST(request: NextRequest) {
     const isTimeout = error instanceof Error && (error.message.includes("fetch failed") || error.message.includes("timeout"));
     return NextResponse.json(
       { error: isTimeout
-          ? "Der KI-Server ist gerade nicht erreichbar. Bitte versuche es spaeter erneut."
+          ? "Der KI-Server ist gerade nicht erreichbar. Bitte versuche es später erneut."
           : "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
       },
       { status: isTimeout ? 503 : 500 }
