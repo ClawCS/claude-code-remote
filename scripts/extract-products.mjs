@@ -18,7 +18,7 @@ if (!GEMINI_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 function parseKW(filename) {
   const m = filename.match(/KW(\d+)/i);
@@ -71,27 +71,45 @@ Antworte NUR mit einem JSON-Array. Keine Erklärungen, kein Markdown. Beispiel:
 Wenn keine Produkte erkennbar sind, antworte mit [].
 Ignoriere Logos, Deko-Elemente und nicht-Produkt-Inhalte (Öffnungszeiten, Adressen etc.).`;
 
-async function extractFromImage(imagePath) {
+async function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function extractFromImage(imagePath, maxRetries = 4) {
   const imageData = readFileSync(imagePath);
   const base64 = imageData.toString("base64");
   const ext = extname(imagePath).toLowerCase();
   const mimeType = ext === ".png" ? "image/png" : "image/jpeg";
 
-  const result = await model.generateContent([
-    EXTRACTION_PROMPT,
-    { inlineData: { data: base64, mimeType } },
-  ]);
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await model.generateContent([
+        EXTRACTION_PROMPT,
+        { inlineData: { data: base64, mimeType } },
+      ]);
 
-  const text = result.response.text().trim();
-  const jsonStr = text.replace(/^```json?\n?/i, "").replace(/\n?```$/i, "");
+      const text = result.response.text().trim();
+      const jsonStr = text.replace(/^```json?\n?/i, "").replace(/\n?```$/i, "");
 
-  try {
-    return JSON.parse(jsonStr);
-  } catch {
-    console.warn(`  ⚠ JSON-Parse fehlgeschlagen für ${basename(imagePath)}`);
-    console.warn(`  Response: ${text.substring(0, 200)}...`);
-    return [];
+      try {
+        return JSON.parse(jsonStr);
+      } catch {
+        console.warn(`  ⚠ JSON-Parse fehlgeschlagen für ${basename(imagePath)}`);
+        console.warn(`  Response: ${text.substring(0, 200)}...`);
+        return [];
+      }
+    } catch (e) {
+      const isRetryable = e.message?.includes("429") || e.message?.includes("quota") || e.message?.includes("503") || e.message?.includes("Service Unavailable");
+      if (isRetryable && attempt < maxRetries) {
+        const waitSec = Math.pow(2, attempt + 1) * 15;
+        console.log(`    ⏳ Rate-Limit, warte ${waitSec}s (Versuch ${attempt + 1}/${maxRetries})...`);
+        await sleep(waitSec * 1000);
+      } else {
+        throw e;
+      }
+    }
   }
+  return [];
 }
 
 async function cropProductImage(sourceImage, bbox, outputPath) {
