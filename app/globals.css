@@ -25,7 +25,7 @@
 
 /* ═══ Body & Global ═══ */
 body {
-  background: linear-gradient(180deg, #FFF8F6 0%, #FFFAF8 200px, #FFF5F3 600px, #FFFFFF 1200px);
+  background: #FFFFFF;
   color: var(--color-foreground);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;

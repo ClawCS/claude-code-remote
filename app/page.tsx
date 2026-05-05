@@ -28,80 +28,85 @@ export default function Home() {
       {/* Video Trailer */}
       <VideoHero />
 
-      {/* Transition: Video (black) → Categories (white) */}
-      <div className="h-16 bg-gradient-to-b from-black to-white" />
+      {/* Transition: Video (black) → Dark stone */}
+      <div className="h-8 bg-gradient-to-b from-black to-[#1C1917]" />
 
-      {/* Kategorien */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
-        <ScrollReveal className="text-center mb-12">
-          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.categories.label")}</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center" style={{ textWrap: "balance" }}>
-            {t("home.categories.title")}
-          </h2>
-        </ScrollReveal>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((cat, i) => (
-            <ScrollReveal key={cat.slug} delay={i * 80}>
-              <CategoryCard category={cat} />
-            </ScrollReveal>
-          ))}
+      {/* Kategorien — auf dunklem Anthrazit */}
+      <section className="relative bg-[#1C1917] py-20 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 noise-bg" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.06)_0%,transparent_60%)]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <ScrollReveal className="text-center mb-12">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.categories.label")}</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white section-accent-center" style={{ textWrap: "balance" }}>
+              {t("home.categories.title")}
+            </h2>
+          </ScrollReveal>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {categories.map((cat, i) => (
+              <ScrollReveal key={cat.slug} delay={i * 80}>
+                <CategoryCard category={cat} />
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Gradient fade transition */}
-      <div className="h-24 bg-gradient-to-b from-white to-[#FFF5F3]" />
+      {/* Transition: dark stone → slightly lighter */}
+      <div className="h-2 bg-gradient-to-b from-[#1C1917] to-[#292524]" />
 
-      {/* Services */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
-        <ScrollReveal className="text-center mb-12">
-          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.services.label")}</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center" style={{ textWrap: "balance" }}>
-            {t("home.services.title")}
-          </h2>
-        </ScrollReveal>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {[
-            { href: "/partyplaner", image: "/images/Services/Partyplaner.jpg", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
-            { href: "/vermietung", image: "/images/Services/Vermietung.jpg", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
-            { href: "/finder", image: "/images/Services/Getränke-Finder.jpg", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
-            { href: "/cocktails", image: "/images/Services/65 Cocktail-Rezepte.jpg", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
-          ].map((s, i) => (
-            <ScrollReveal key={s.href} delay={i * 100}>
-              <Link
-                href={s.href}
-                className="group relative bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden block"
-              >
-                {/* Service image */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={s.image}
-                    alt={t(s.titleKey)}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    unoptimized
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                </div>
-                {/* Text */}
-                <div className="p-5">
-                  <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors text-lg">{t(s.titleKey)}</h3>
-                  <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
-                </div>
-              </Link>
-            </ScrollReveal>
-          ))}
+      {/* Services — auf warmem Dunkel */}
+      <section className="relative bg-[#292524] py-20 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 noise-bg" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <ScrollReveal className="text-center mb-12">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.services.label")}</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white section-accent-center" style={{ textWrap: "balance" }}>
+              {t("home.services.title")}
+            </h2>
+          </ScrollReveal>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { href: "/partyplaner", image: "/images/Services/Partyplaner.jpg", titleKey: "home.service.partyplaner", descKey: "home.service.partyplaner.desc" },
+              { href: "/vermietung", image: "/images/Services/Vermietung.jpg", titleKey: "home.service.vermietung", descKey: "home.service.vermietung.desc" },
+              { href: "/finder", image: "/images/Services/Getränke-Finder.jpg", titleKey: "home.service.finder", descKey: "home.service.finder.desc" },
+              { href: "/cocktails", image: "/images/Services/65 Cocktail-Rezepte.jpg", titleKey: "home.service.cocktails", descKey: "home.service.cocktails.desc" },
+            ].map((s, i) => (
+              <ScrollReveal key={s.href} delay={i * 100}>
+                <Link
+                  href={s.href}
+                  className="group relative bg-[#FDFCFB] border border-white/10 rounded-2xl card-hover-glow overflow-hidden block shadow-lg shadow-black/20"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={s.image}
+                      alt={t(s.titleKey)}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      unoptimized
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors text-lg">{t(s.titleKey)}</h3>
+                    <p className="text-sm text-muted mt-1">{t(s.descKey)}</p>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Gradient fade */}
-      <div className="h-24 bg-gradient-to-b from-[#FFF5F3] to-white" />
+      {/* Transition: dark → warm cream */}
+      <div className="h-24 bg-gradient-to-b from-[#292524] to-[#FFF8F6]" />
 
       {/* Handzettel & Wochenblätter */}
       <HandzettelSection />
 
       {/* Gradient fade to dark */}
-      <div className="h-24 bg-gradient-to-b from-white to-[#1F2937]" />
+      <div className="h-24 bg-gradient-to-b from-[#FFF8F6] to-[#1F2937]" />
 
       {/* Instagram + Gewinnspiel */}
       <section className="relative bg-gradient-to-b from-[#1F2937] to-[#111827] py-20 md:py-24 overflow-hidden red-stripe-divider">
@@ -153,7 +158,7 @@ export default function Home() {
       </section>
 
       {/* Gradient fade from dark */}
-      <div className="h-24 bg-gradient-to-b from-[#111827] to-white" />
+      <div className="h-24 bg-gradient-to-b from-[#111827] to-[#FFF8F6]" />
 
       {/* ═══ UNSER TEAM ═══ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
