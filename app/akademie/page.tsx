@@ -22,7 +22,7 @@ export default function AkademiePage() {
             <span className="mx-1">/</span>
             <span className="text-white/70">Getränkeakademie</span>
           </nav>
-          <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#F59E0B] mb-4">
+          <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#DC2626] mb-4">
             Wissen & Zertifikate · Seit 2024
           </p>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-5 leading-tight">
@@ -46,7 +46,7 @@ export default function AkademiePage() {
               <Link
                 key={course.slug}
                 href={`/akademie/${course.slug}`}
-                className="group relative block rounded-2xl overflow-hidden border border-white/5 hover:border-[#F59E0B]/40 shadow-2xl shadow-black/40 hover:shadow-[0_0_32px_rgba(245,158,11,0.2)] transition-all duration-300 hover:-translate-y-1 aspect-[3/2] bg-[#0F0F0F]"
+                className="group relative block rounded-2xl overflow-hidden border border-white/5 hover:border-[#DC2626]/50 shadow-2xl shadow-black/40 hover:shadow-[0_0_32px_rgba(220,38,38,0.25)] transition-all duration-300 hover:-translate-y-1 aspect-[3/2] bg-[#0F0F0F]"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 {course.image ? (
@@ -82,7 +82,7 @@ export default function AkademiePage() {
                         {course.lessons.length} Lektionen · {course.duration}
                       </p>
                     </div>
-                    <span className="flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 bg-[#F59E0B] text-[#1A1A1A] text-xs font-bold rounded-full opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                    <span className="flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 bg-[#DC2626] text-white text-xs font-bold rounded-full shadow-lg shadow-red-500/30 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
                       Start
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -101,10 +101,10 @@ export default function AkademiePage() {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F59E0B]/25 to-transparent" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#F59E0B] mb-2">
+            <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#DC2626] mb-2">
               Warum lernen?
             </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white section-accent-center">
               Mehr als nur Theorie
             </h2>
           </div>
@@ -116,7 +116,7 @@ export default function AkademiePage() {
             ].map((card) => (
               <div
                 key={card.title}
-                className="bg-white/[0.03] border border-white/5 hover:border-[#F59E0B]/30 rounded-2xl p-6 text-center transition-colors"
+                className="bg-white/[0.03] border border-white/5 hover:border-[#DC2626]/40 rounded-2xl p-6 text-center transition-colors"
               >
                 <span className="text-4xl block mb-3">{card.icon}</span>
                 <h3 className="font-bold text-white mb-2">{card.title}</h3>
@@ -132,10 +132,10 @@ export default function AkademiePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <Link
             href="/akademie/zertifikate"
-            className="group block bg-gradient-to-br from-[#1F1F1F] to-[#0F0F0F] border border-[#F59E0B]/20 hover:border-[#F59E0B]/50 rounded-2xl p-8 md:p-10 text-center shadow-2xl shadow-black/40 transition-all hover:-translate-y-1"
+            className="group block bg-gradient-to-br from-[#1F1F1F] via-[#2A0F0F] to-[#0F0F0F] border border-[#DC2626]/30 hover:border-[#DC2626]/60 rounded-2xl p-8 md:p-10 text-center shadow-2xl shadow-black/40 hover:shadow-[0_0_40px_rgba(220,38,38,0.2)] transition-all hover:-translate-y-1"
           >
             <span className="text-5xl block mb-4">🏅</span>
-            <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#F59E0B] mb-3">
+            <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#DC2626] mb-3">
               Professionelle Ausbildung
             </p>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3 group-hover:text-[#F59E0B] transition-colors">
@@ -144,7 +144,7 @@ export default function AkademiePage() {
             <p className="text-white/60 max-w-lg mx-auto mb-6">
               16 buchbare Kurse mit IHK-Zertifikaten, WSET-Diplomen und Sommelier-Ausbildungen — für deine Karriere im Getränkehandel.
             </p>
-            <span className="inline-flex items-center gap-2 px-6 py-3 bg-[#F59E0B] text-[#1A1A1A] font-bold rounded-xl group-hover:bg-[#FBBF24] transition-colors">
+            <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#DC2626] to-[#B91C1C] hover:from-[#EF4444] hover:to-[#DC2626] text-white font-bold rounded-xl shadow-lg shadow-red-500/30 transition-all">
               Alle Zertifikatskurse ansehen
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />

@@ -16,7 +16,7 @@ export default function EigenmarkePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.10)_0%,transparent_60%)] pointer-events-none" />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#F59E0B] mb-4">
+          <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#DC2626] mb-4">
             Trinkgut Jammers Edition · Seit 2024
           </p>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-5 leading-tight">
@@ -49,14 +49,14 @@ export default function EigenmarkePage() {
       </section>
 
       {/* Anchor-Navigation Pills */}
-      <section className="relative py-8 sticky top-16 z-30 backdrop-blur-md bg-[#1A1A1A]/60 border-y border-white/5">
+      <section className="relative py-8 sticky top-16 z-30 backdrop-blur-md bg-[#1A1A1A]/60 border-y border-[#DC2626]/15">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {eigenmarken.map((likoer) => (
               <a
                 key={likoer.slug}
                 href={`#${likoer.slug}`}
-                className="flex-shrink-0 px-4 py-2 text-xs font-bold rounded-full border border-white/10 hover:border-[#F59E0B]/50 text-white/70 hover:text-[#F59E0B] transition-colors whitespace-nowrap"
+                className="flex-shrink-0 px-4 py-2 text-xs font-bold rounded-full border border-white/10 hover:border-[#DC2626]/60 text-white/70 hover:text-white hover:bg-[#DC2626] transition-all whitespace-nowrap"
               >
                 <span className="mr-1">{likoer.emoji}</span>
                 {likoer.name}
@@ -134,10 +134,10 @@ export default function EigenmarkePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <Link
             href="/akademie/likoere"
-            className="group block bg-gradient-to-br from-[#1F1F1F] to-[#0F0F0F] border border-[#F59E0B]/20 hover:border-[#F59E0B]/50 rounded-2xl p-8 md:p-10 text-center shadow-2xl shadow-black/40 transition-all hover:-translate-y-1"
+            className="group block bg-gradient-to-br from-[#1F1F1F] via-[#2A0F0F] to-[#0F0F0F] border border-[#DC2626]/30 hover:border-[#DC2626]/60 rounded-2xl p-8 md:p-10 text-center shadow-2xl shadow-black/40 hover:shadow-[0_0_40px_rgba(220,38,38,0.2)] transition-all hover:-translate-y-1"
           >
             <div className="text-5xl mb-4">🎓</div>
-            <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#F59E0B] mb-3">
+            <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#DC2626] mb-3">
               Trinkgut Akademie
             </p>
             <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-3 group-hover:text-[#F59E0B] transition-colors">
@@ -146,7 +146,7 @@ export default function EigenmarkePage() {
             <p className="text-white/60 max-w-lg mx-auto mb-6">
               20 Lektionen, eine Abschlussprüfung — alles was du über Liköre wissen musst.
             </p>
-            <span className="inline-flex items-center gap-2 px-6 py-3 bg-[#F59E0B] text-[#1A1A1A] font-bold rounded-xl group-hover:bg-[#FBBF24] transition-colors">
+            <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#DC2626] to-[#B91C1C] hover:from-[#EF4444] hover:to-[#DC2626] text-white font-bold rounded-xl shadow-lg shadow-red-500/30 transition-all">
               Zum Kurs
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
