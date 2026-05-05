@@ -4,6 +4,7 @@ export const mineralwasserKurs: Course = {
   slug: "mineralwasser",
   title: "Wassersommelier",
   icon: "💧",
+  image: "/images/akademie/mineralwasser.png",
   description:
     "Geologie, Mineralstoffe, Sensorik, Food Pairing und Markttrends — Mineralwasser auf Experten-Niveau verstehen und vermitteln.",
   color: "from-cyan-400 to-blue-600",

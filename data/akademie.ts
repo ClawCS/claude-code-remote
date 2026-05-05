@@ -15,6 +15,7 @@ export type Course = {
   slug: string;
   title: string;
   icon: string;
+  image?: string;
   description: string;
   color: string;
   difficulty: "Einsteiger" | "Fortgeschritten" | "Experte";
@@ -41,6 +42,7 @@ export const courses: Course[] = [
     slug: "wein",
     title: "Weinwissen",
     icon: "🍷",
+    image: "/images/akademie/wein.png",
     description: "Rebsorten, Terroir, Vinifikation, Sensorik und die Kunst des Food Pairing — auf Sommelier-Niveau.",
     color: "from-purple-600 to-purple-900",
     difficulty: "Fortgeschritten",
@@ -547,6 +549,7 @@ export const courses: Course[] = [
     slug: "rum",
     title: "Rum-Experte",
     icon: "🥃",
+    image: "/images/akademie/rum.png",
     description: "Von Zuckerrohr bis zum perfekten Cocktail — Geschichte, Herstellung, Stile und Genuss von Rum auf Weltklasse-Niveau.",
     color: "from-amber-700 to-amber-900",
     difficulty: "Fortgeschritten",

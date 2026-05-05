@@ -4,6 +4,7 @@ export const bierKurs: Course = {
   slug: "bier",
   title: "Bierwissen",
   icon: "\u{1F37A}",
+  image: "/images/akademie/bier.png",
   description:
     "Vom Rohstoff bis ins Glas \u2014 Brauprozess, Bierstile, Sensorik, Food Pairing und regionale Besonderheiten auf Biersommelier-Niveau.",
   color: "from-amber-500 to-amber-700",

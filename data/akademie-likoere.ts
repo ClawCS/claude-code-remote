@@ -4,6 +4,7 @@ export const likoereKurs: Course = {
   slug: "likoere",
   title: "Likör-Experte",
   icon: "🍸",
+  image: "/images/akademie/likoere.png",
   description:
     "Von Mazeration bis Destillation, von Frucht bis Kräuter — Herstellung, Stilistik, Sensorik und Cocktail-Kunst auf Fortgeschrittenen-Niveau.",
   color: "from-purple-500 to-pink-600",

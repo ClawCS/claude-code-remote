@@ -4,6 +4,7 @@ export const saftKurs: Course = {
   slug: "saft",
   title: "Saft-Experte",
   icon: "🧃",
+  image: "/images/akademie/saft.png",
   description:
     "Von der Frucht ins Glas — Direktsaft, Konzentrat, Nektar, Herstellungsverfahren, Nährstoffe und Markttrends auf Experten-Niveau.",
   color: "from-orange-400 to-yellow-500",

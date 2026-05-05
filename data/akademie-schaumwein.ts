@@ -4,6 +4,7 @@ export const schaumweinKurs: Course = {
   slug: "schaumwein",
   title: "Schaumwein & Sekt",
   icon: "🥂",
+  image: "/images/akademie/schaumwein.png",
   description:
     "Von der Méthode Traditionnelle bis zum Pét-Nat — Herstellungsverfahren, Appellationen, Rebsorten, Dosage, Sensorik und Service auf Sommelier-Niveau.",
   color: "from-yellow-400 to-amber-500",

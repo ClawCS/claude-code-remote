@@ -4,6 +4,7 @@ export const whiskyKurs: Course = {
   slug: "whiskey",
   title: "Whisky & Whiskey",
   icon: "\uD83E\uDD43",
+  image: "/images/akademie/whiskey.png",
   description:
     "Von Scotch Single Malt bis Bourbon, von Pot Still bis Fassreifung — Herstellung, Sensorik, Cocktails und Investition auf Experten-Niveau.",
   color: "from-amber-800 to-yellow-900",

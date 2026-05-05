@@ -207,22 +207,37 @@ export default function Home() {
         </ScrollReveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {courses.slice(0, 6).map((course) => (
-            <Link key={course.slug} href={`/akademie/${course.slug}`} className="group relative p-6 bg-white border border-[#F0D5CF]/60 rounded-2xl card-hover-glow overflow-hidden">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl">{course.icon}</span>
-                <div>
-                  <h3 className="font-bold text-[#1F2937] group-hover:text-[#DC2626] transition-colors">{course.title}</h3>
-                  <p className="text-xs text-muted">{course.difficulty} · {course.lessons.length} Lektionen</p>
+            <Link
+              key={course.slug}
+              href={`/akademie/${course.slug}`}
+              className="group relative block rounded-2xl overflow-hidden border border-[#F0D5CF]/60 hover:border-[#DC2626]/40 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 aspect-[3/2] bg-white"
+            >
+              {course.image ? (
+                <Image
+                  src={course.image}
+                  alt={course.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                  unoptimized
+                />
+              ) : (
+                <div className={`absolute inset-0 bg-gradient-to-br ${course.color} flex items-center justify-center`}>
+                  <span className="text-7xl">{course.icon}</span>
                 </div>
-              </div>
-              <p className="text-sm text-muted line-clamp-2">{course.description}</p>
-              <div className="mt-3 flex items-center gap-2">
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                  course.difficulty === "Einsteiger" ? "bg-green-100 text-green-700" :
-                  course.difficulty === "Fortgeschritten" ? "bg-amber-100 text-amber-700" :
-                  "bg-red-100 text-red-700"
-                }`}>{course.difficulty}</span>
-                <span className="text-xs text-muted">{course.duration}</span>
+              )}
+
+              <span className={`absolute top-3 right-3 px-2.5 py-1 text-[10px] font-bold rounded-full backdrop-blur-md z-10 ${
+                course.difficulty === "Einsteiger" ? "bg-green-500/85 text-white" :
+                course.difficulty === "Fortgeschritten" ? "bg-amber-500/85 text-white" :
+                "bg-red-500/85 text-white"
+              }`}>{course.difficulty}</span>
+
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/85 to-transparent pt-12 pb-4 px-4">
+                <h3 className="text-base font-extrabold text-white leading-tight">{course.title}</h3>
+                <p className="text-xs text-white/70 mt-0.5">
+                  {course.lessons.length} Lektionen · {course.duration}
+                </p>
               </div>
             </Link>
           ))}
