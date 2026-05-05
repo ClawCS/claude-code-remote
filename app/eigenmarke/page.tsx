@@ -11,25 +11,25 @@ export const metadata: Metadata = {
 export default function EigenmarkePage() {
   return (
     <>
-      {/* Hero — auf Schiefer */}
-      <section className="relative pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.10)_0%,transparent_60%)] pointer-events-none" />
-
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#DC2626] mb-4">
+      {/* Red Hero Banner — identisch zur Startseite (page-hero-banner) */}
+      <div className="page-hero-banner py-16 md:py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <nav className="text-sm text-white/60 mb-4">
+            <a href="/" className="hover:text-white">Home</a>
+            <span className="mx-1">/</span>
+            <span className="text-white">Unsere Eigenmarken</span>
+          </nav>
+          <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#F59E0B] mb-4">
             Trinkgut Jammers Edition · Seit 2024
           </p>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-5 leading-tight">
-            <span className="bg-gradient-to-r from-[#DC2626] via-[#F59E0B] to-[#DC2626] bg-clip-text text-transparent">
-              Unsere Eigenmarken
-            </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">
+            Unsere Eigenmarken
           </h1>
-          <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/80 max-w-xl mx-auto text-lg">
             Sechs Liköre. Sechs Geschmäcker. Eine Familie.
           </p>
-          <div className="mx-auto w-20 h-px bg-gradient-to-r from-transparent via-[#F59E0B]/60 to-transparent mt-8" />
         </div>
-      </section>
+      </div>
 
       {/* Übersichts-Komposition */}
       <section className="relative pb-12">
