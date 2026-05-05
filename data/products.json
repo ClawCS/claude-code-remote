@@ -12,7 +12,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": true
+    "highlight": true,
+    "extractedImage": "/handzettel/extracted/kw19/de/altenmuenster-urig-wuerzig.webp"
   },
   {
     "id": 2,
@@ -27,7 +28,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": true
+    "highlight": true,
+    "extractedImage": "/handzettel/extracted/kw19/nl/bolten-altbier.webp"
   },
   {
     "id": 3,
@@ -38,11 +40,13 @@
     "categorySlug": "bier",
     "description": "Budweiser Budvar o. Budvar 0,0% – Pack 6 x 0,33 l",
     "unit": "Pack 6 x 0,33 l",
-    "image": "/handzettel/extracted/kw19/de/budweiser-budvar-o-budvar-0-0.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/8/5/9/4/8594403110135-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": true
+    "highlight": true,
+    "ean": "8594403110135",
+    "extractedImage": "/handzettel/extracted/kw19/de/budweiser-budvar-o-budvar-0-0.webp"
   },
   {
     "id": 4,
@@ -53,11 +57,13 @@
     "categorySlug": "bier",
     "description": "Carlsberg Elephant Extra Strong – 10,5% Vol. 0,5 l Dose",
     "unit": "10,5% Vol. 0,5 l Dose",
-    "image": "/handzettel/extracted/kw19/de/carlsberg-elephant-extra-strong.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/7/4/0/5740600510157-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": true
+    "highlight": true,
+    "ean": "5740600510157",
+    "extractedImage": "/handzettel/extracted/kw19/de/carlsberg-elephant-extra-strong.webp"
   },
   {
     "id": 5,
@@ -72,7 +78,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": true
+    "highlight": true,
+    "extractedImage": "/handzettel/extracted/kw19/de/estrella-galicia.webp"
   },
   {
     "id": 6,
@@ -83,11 +90,13 @@
     "categorySlug": "bier",
     "description": "Flensburger Pilsener o. Frühlingsbock – versch. Sorten, Kasten = 20x0,33L",
     "unit": "versch. Sorten, Kasten = 20x0,33L",
-    "image": "/handzettel/extracted/kw19/de/flensburger-pilsener-o-fruehlingsbock.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/1/0/3/4103060016287-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4103060016287",
+    "extractedImage": "/handzettel/extracted/kw19/de/flensburger-pilsener-o-fruehlingsbock.webp"
   },
   {
     "id": 7,
@@ -98,11 +107,13 @@
     "categorySlug": "bier",
     "description": "Frankenheim Alt o. blue – Kasten = 20 x 0,5 l / 24 x 0,33 l",
     "unit": "Kasten = 20 x 0,5 l / 24 x 0,33 l",
-    "image": "/handzettel/extracted/kw19/de/frankenheim-alt-o-blue.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/1/0/4/4104170023011-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4104170023011",
+    "extractedImage": "/handzettel/extracted/kw19/de/frankenheim-alt-o-blue.webp"
   },
   {
     "id": 8,
@@ -113,11 +124,13 @@
     "categorySlug": "bier",
     "description": "Franziskaner Weissbier – versch. Sorten Kasten = 20 x 0,5 l (Gratis-Flasche: Einen Kasten kaufen und eine 0,33 l Flasche Anheuser Busch Bud im Wert von € 1.09 gratis dazu! zzgl. Pfand)",
     "unit": "versch. Sorten Kasten = 20 x 0,5 l (Gratis-Flasche: Einen Kasten kaufen und eine 0,33 l Flasche Anheuser Busch Bud im Wert von € 1.09 gratis dazu! zzgl. Pfand)",
-    "image": "/handzettel/extracted/kw19/de/franziskaner-weissbier.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/7/2/4072700401025-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4072700401025",
+    "extractedImage": "/handzettel/extracted/kw19/de/franziskaner-weissbier.webp"
   },
   {
     "id": 9,
@@ -128,11 +141,13 @@
     "categorySlug": "bier",
     "description": "Franziskaner Witbier – diverse soorten Krat = 20x0,5l",
     "unit": "diverse soorten Krat = 20x0,5l",
-    "image": "/handzettel/extracted/kw19/nl/franziskaner-witbier.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/7/2/4072700401025-0.webp",
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4072700401025",
+    "extractedImage": "/handzettel/extracted/kw19/nl/franziskaner-witbier.webp"
   },
   {
     "id": 10,
@@ -147,7 +162,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/hb-witbier-muenchner-weisse.webp"
   },
   {
     "id": 11,
@@ -162,7 +178,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/heren-handtas-xxl.webp"
   },
   {
     "id": 12,
@@ -173,11 +190,13 @@
     "categorySlug": "bier",
     "description": "Hofbräuhaus München Helles Vollbier – Kasten 20 x 0,5 l",
     "unit": "Kasten 20 x 0,5 l",
-    "image": "/handzettel/extracted/kw19/de/hofbraeuhaus-muenchen-helles-vollbier.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/5/4005686133010-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4005686133010",
+    "extractedImage": "/handzettel/extracted/kw19/de/hofbraeuhaus-muenchen-helles-vollbier.webp"
   },
   {
     "id": 13,
@@ -188,11 +207,13 @@
     "categorySlug": "bier",
     "description": "Jever Pilsener – versch. Sorten Kasten = 20 x 0,5 l / 24 x 0,33 l",
     "unit": "versch. Sorten Kasten = 20 x 0,5 l / 24 x 0,33 l",
-    "image": "/handzettel/extracted/kw19/de/jever-pilsener.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/8/4008287840100-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4008287840100",
+    "extractedImage": "/handzettel/extracted/kw19/de/jever-pilsener.webp"
   },
   {
     "id": 14,
@@ -207,7 +228,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/kloster-scheyern-kloster-gold-hell-oder-dunkel.webp"
   },
   {
     "id": 15,
@@ -218,11 +240,13 @@
     "categorySlug": "bier",
     "description": "König Pilsener Steinie – Kasten = 20 x 0,33 l",
     "unit": "Kasten = 20 x 0,33 l",
-    "image": "/handzettel/extracted/kw19/de/koenig-pilsener-steinie.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/1/7/4017300104847-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4017300104847",
+    "extractedImage": "/handzettel/extracted/kw19/de/koenig-pilsener-steinie.webp"
   },
   {
     "id": 16,
@@ -233,11 +257,13 @@
     "categorySlug": "bier",
     "description": "Köstritzer Schwarzbier – Pack 6 x 0,33 l",
     "unit": "Pack 6 x 0,33 l",
-    "image": "/handzettel/extracted/kw19/de/koestritzer-schwarzbier.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/1/4/4014489400013-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4014489400013",
+    "extractedImage": "/handzettel/extracted/kw19/de/koestritzer-schwarzbier.webp"
   },
   {
     "id": 17,
@@ -252,7 +278,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/leikeim-premium-pils.webp"
   },
   {
     "id": 18,
@@ -263,11 +290,13 @@
     "categorySlug": "bier",
     "description": "Lübzer Pils – Kasten = 20 x 0,5 l",
     "unit": "Kasten = 20 x 0,5 l",
-    "image": "/handzettel/extracted/kw19/de/luebzer-pils.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/2/4002903022195-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4002903022195",
+    "extractedImage": "/handzettel/extracted/kw19/de/luebzer-pils.webp"
   },
   {
     "id": 19,
@@ -282,7 +311,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/oberdorfer-helles.webp"
   },
   {
     "id": 20,
@@ -293,11 +323,13 @@
     "categorySlug": "bier",
     "description": "Schneider Weisse Tap 7 Witbier – Krat = 20x0,5l",
     "unit": "Krat = 20x0,5l",
-    "image": "/handzettel/extracted/kw19/nl/schneider-weisse-tap-7-witbier.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/3/4003669032753-0.webp",
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4003669032753",
+    "extractedImage": "/handzettel/extracted/kw19/nl/schneider-weisse-tap-7-witbier.webp"
   },
   {
     "id": 21,
@@ -312,7 +344,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/stauder-blond-radler.webp"
   },
   {
     "id": 22,
@@ -327,7 +360,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/traugott-simon-pilsener-o-landbier.webp"
   },
   {
     "id": 23,
@@ -342,7 +376,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/traugott-simon-pilsener-steinie.webp"
   },
   {
     "id": 24,
@@ -357,7 +392,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/veltins-helles-puelleken-helles-puelleken-0-0-o-helles-zitronken.webp"
   },
   {
     "id": 25,
@@ -368,11 +404,13 @@
     "categorySlug": "bier",
     "description": "Warsteiner Pils – diverse soorten Krat = 20x0,5l / 24x0,33l",
     "unit": "diverse soorten Krat = 20x0,5l / 24x0,33l",
-    "image": "/handzettel/extracted/kw19/nl/warsteiner-pils.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/0/4000264010103-0.webp",
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4000264010103",
+    "extractedImage": "/handzettel/extracted/kw19/nl/warsteiner-pils.webp"
   },
   {
     "id": 26,
@@ -383,11 +421,13 @@
     "categorySlug": "bier",
     "description": "Warsteiner Pilsener – versch. Sorten, Kasten 20x0,5L oder 24x0,33L",
     "unit": "versch. Sorten, Kasten 20x0,5L oder 24x0,33L",
-    "image": "/handzettel/extracted/kw19/de/warsteiner-pilsener.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/0/4000264010103-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4000264010103",
+    "extractedImage": "/handzettel/extracted/kw19/de/warsteiner-pilsener.webp"
   },
   {
     "id": 27,
@@ -402,7 +442,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/zirndorfer.webp"
   },
   {
     "id": 28,
@@ -417,7 +458,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/grand-premier-cru-o-pfaffl.webp"
   },
   {
     "id": 29,
@@ -432,7 +474,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/leonardi.webp"
   },
   {
     "id": 30,
@@ -447,7 +490,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/oberrotweiler-winzerverein.webp"
   },
   {
     "id": 31,
@@ -462,7 +506,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/reuter-dusemund-ortega.webp"
   },
   {
     "id": 32,
@@ -477,7 +522,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/reuter-dusemund-regent.webp"
   },
   {
     "id": 33,
@@ -492,7 +538,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/vier-jahreszeiten.webp"
   },
   {
     "id": 34,
@@ -507,7 +554,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/brut-dargent-ice-chardonnay-pinot-noir.webp"
   },
   {
     "id": 35,
@@ -518,11 +566,13 @@
     "categorySlug": "sekt",
     "description": "Cinzano Asti Spumante – mild, 0,75 l Flasche",
     "unit": "mild, 0,75 l Flasche",
-    "image": "/handzettel/extracted/kw19/de/cinzano-asti-spumante.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/8/0/0/0/8000020000518-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "8000020000518",
+    "extractedImage": "/handzettel/extracted/kw19/de/cinzano-asti-spumante.webp"
   },
   {
     "id": 36,
@@ -533,11 +583,13 @@
     "categorySlug": "sekt",
     "description": "Rot-Käppchen – diverse soorten 0,75l fles",
     "unit": "diverse soorten 0,75l fles",
-    "image": "/handzettel/extracted/kw19/nl/rot-kaeppchen.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/1/4/4014913101011-0.webp",
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4014913101011",
+    "extractedImage": "/handzettel/extracted/kw19/nl/rot-kaeppchen.webp"
   },
   {
     "id": 37,
@@ -548,11 +600,13 @@
     "categorySlug": "sekt",
     "description": "Söhnlein Brillant Sekt o. White Ice – versch. Sorten, 0,75L Flasche",
     "unit": "versch. Sorten, 0,75L Flasche",
-    "image": "/handzettel/extracted/kw19/de/soehnlein-brillant-sekt-o-white-ice.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/3/4003310015016-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4003310015016",
+    "extractedImage": "/handzettel/extracted/kw19/de/soehnlein-brillant-sekt-o-white-ice.webp"
   },
   {
     "id": 38,
@@ -563,11 +617,13 @@
     "categorySlug": "spirituosen",
     "description": "Baileys – versch. Sorten, 17%/15,7% Vol., 0,7l/0,5l Flasche",
     "unit": "versch. Sorten, 17%/15,7% Vol., 0,7l/0,5l Flasche",
-    "image": "/handzettel/extracted/kw19/de/baileys.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/1/0/5010158106264-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5010158106264",
+    "extractedImage": "/handzettel/extracted/kw19/de/baileys.webp"
   },
   {
     "id": 39,
@@ -582,7 +638,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/berentzen-riem.webp"
   },
   {
     "id": 40,
@@ -593,11 +650,13 @@
     "categorySlug": "spirituosen",
     "description": "Captain Morgan – versch. Sorten, 25%-40% Vol., 0,7l Flasche",
     "unit": "versch. Sorten, 25%-40% Vol., 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/captain-morgan.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/0/0/5000281025391-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5000281025391",
+    "extractedImage": "/handzettel/extracted/kw19/de/captain-morgan.webp"
   },
   {
     "id": 41,
@@ -608,11 +667,13 @@
     "categorySlug": "spirituosen",
     "description": "Chantré – Weinbrand, Cuvée Rouge oder Crème, 15%-36% Vol., 0,7l Flasche",
     "unit": "Weinbrand, Cuvée Rouge oder Crème, 15%-36% Vol., 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/chantr.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/8/4008600151505-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4008600151505",
+    "extractedImage": "/handzettel/extracted/kw19/de/chantr.webp"
   },
   {
     "id": 42,
@@ -627,7 +688,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/chantr-brandewijn.webp"
   },
   {
     "id": 43,
@@ -638,11 +700,13 @@
     "categorySlug": "spirituosen",
     "description": "Cointreau Orangenlikör – 40% Vol. 0,7l Flasche (mit Glas-Zugabe)",
     "unit": "40% Vol. 0,7l Flasche (mit Glas-Zugabe)",
-    "image": "/handzettel/extracted/kw19/de/cointreau-orangenlikoer.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/3/0/3/5/3035542007757-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "3035542007757",
+    "extractedImage": "/handzettel/extracted/kw19/de/cointreau-orangenlikoer.webp"
   },
   {
     "id": 44,
@@ -657,7 +721,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/d-j-vu.webp"
   },
   {
     "id": 45,
@@ -672,7 +737,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/gordon-s-london-dry-gin.webp"
   },
   {
     "id": 46,
@@ -683,11 +749,13 @@
     "categorySlug": "spirituosen",
     "description": "J. Walker Red Label – 40% vol. 0,7l fles",
     "unit": "40% vol. 0,7l fles",
-    "image": "/handzettel/extracted/kw19/nl/j-walker-red-label.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/0/0/5000267014203-0.webp",
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5000267014203",
+    "extractedImage": "/handzettel/extracted/kw19/nl/j-walker-red-label.webp"
   },
   {
     "id": 47,
@@ -698,11 +766,13 @@
     "categorySlug": "spirituosen",
     "description": "Johnnie Walker Red Label – Blended Scotch Whisky, 40% Vol., 0,7l Flasche",
     "unit": "Blended Scotch Whisky, 40% Vol., 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/johnnie-walker-red-label.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/0/0/5000267014203-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5000267014203",
+    "extractedImage": "/handzettel/extracted/kw19/de/johnnie-walker-red-label.webp"
   },
   {
     "id": 48,
@@ -713,11 +783,13 @@
     "categorySlug": "spirituosen",
     "description": "Kilbeggan Irish Whiskey – Irish Whiskey oder Berry Selection 40% / 32,5% Vol. 0,7l Flasche",
     "unit": "Irish Whiskey oder Berry Selection 40% / 32,5% Vol. 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/kilbeggan-irish-whiskey.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/9/9/5099750504475-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5099750504475",
+    "extractedImage": "/handzettel/extracted/kw19/de/kilbeggan-irish-whiskey.webp"
   },
   {
     "id": 49,
@@ -732,7 +804,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/label-5-blended-scotch-whisky.webp"
   },
   {
     "id": 50,
@@ -747,7 +820,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/lillet-l-ap-ritif.webp"
   },
   {
     "id": 51,
@@ -762,7 +836,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/mamont-vodka.webp"
   },
   {
     "id": 52,
@@ -773,11 +848,13 @@
     "categorySlug": "spirituosen",
     "description": "Ouzo 12 o. 12 Gold Anis Liqueur – 38%/36% Vol., 0,7l Flasche",
     "unit": "38%/36% Vol., 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/ouzo-12-o-12-gold-anis-liqueur.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/2/0/1/5201191101029-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5201191101029",
+    "extractedImage": "/handzettel/extracted/kw19/de/ouzo-12-o-12-gold-anis-liqueur.webp"
   },
   {
     "id": 53,
@@ -788,11 +865,13 @@
     "categorySlug": "spirituosen",
     "description": "Ramazzotti – Kräuterlikör aus Italien, versch. Sorten, 0,0% - 38% Vol., 0,7L Flasche",
     "unit": "Kräuterlikör aus Italien, versch. Sorten, 0,0% - 38% Vol., 0,7L Flasche",
-    "image": "/handzettel/extracted/kw19/de/ramazzotti.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/8/0/0/0/8000100300139-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "8000100300139",
+    "extractedImage": "/handzettel/extracted/kw19/de/ramazzotti.webp"
   },
   {
     "id": 54,
@@ -803,11 +882,13 @@
     "categorySlug": "spirituosen",
     "description": "Roku Gin – Japanese Craft Gin oder Sakura Bloom Edition 43% Vol. 0,7l Flasche",
     "unit": "Japanese Craft Gin oder Sakura Bloom Edition 43% Vol. 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/roku-gin.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/9/0/1/4901777255579-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4901777255579",
+    "extractedImage": "/handzettel/extracted/kw19/de/roku-gin.webp"
   },
   {
     "id": 55,
@@ -818,11 +899,13 @@
     "categorySlug": "spirituosen",
     "description": "Verpoorten Eierlikör – Original oder Pfirsich-Maracuja inkl. Verpoorten-Glas gratis. 20% / 17% Vol. 0,7l Flasche",
     "unit": "Original oder Pfirsich-Maracuja inkl. Verpoorten-Glas gratis. 20% / 17% Vol. 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/verpoorten-eierlikoer.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/8/4008735700105-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4008735700105",
+    "extractedImage": "/handzettel/extracted/kw19/de/verpoorten-eierlikoer.webp"
   },
   {
     "id": 56,
@@ -837,7 +920,8 @@
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/nl/vescovino-limoncello-spritz.webp"
   },
   {
     "id": 57,
@@ -848,11 +932,13 @@
     "categorySlug": "spirituosen",
     "description": "Villa Massa Limoncello – 30% Vol. 0,7l Flasche",
     "unit": "30% Vol. 0,7l Flasche",
-    "image": "/handzettel/extracted/kw19/de/villa-massa-limoncello.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/8/0/0/3/8003405000203-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "8003405000203",
+    "extractedImage": "/handzettel/extracted/kw19/de/villa-massa-limoncello.webp"
   },
   {
     "id": 58,
@@ -863,11 +949,13 @@
     "categorySlug": "alkoholfrei",
     "description": "afri cola o. Bluna – versch. Sorten, teilweise koffeinhaltig, 1l PET-Flasche",
     "unit": "versch. Sorten, teilweise koffeinhaltig, 1l PET-Flasche",
-    "image": "/handzettel/extracted/kw19/de/afri-cola-o-bluna.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/2/4002540070101-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4002540070101",
+    "extractedImage": "/handzettel/extracted/kw19/de/afri-cola-o-bluna.webp"
   },
   {
     "id": 59,
@@ -882,7 +970,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/bad-brambacher-garten-limonade.webp"
   },
   {
     "id": 60,
@@ -897,7 +986,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/bio-volvic-tee-o-vitamin.webp"
   },
   {
     "id": 61,
@@ -908,11 +998,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Coca-Cola – Fanta, Sprite, Mezzo Mix & Lift Krat = 12x1l",
     "unit": "Fanta, Sprite, Mezzo Mix & Lift Krat = 12x1l",
-    "image": "/handzettel/extracted/kw19/nl/coca-cola.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/0/0/5000112547634-0.webp",
     "origin": "NL",
     "region": "Maasduinen",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5000112547634",
+    "extractedImage": "/handzettel/extracted/kw19/nl/coca-cola.webp"
   },
   {
     "id": 62,
@@ -923,11 +1015,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Coca-Cola, Fanta o. Sprite – und weitere Sorten, teilweise koffeinhaltig, 2l PET-Flasche",
     "unit": "und weitere Sorten, teilweise koffeinhaltig, 2l PET-Flasche",
-    "image": "/handzettel/extracted/kw19/de/coca-cola-fanta-o-sprite.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/4/4/9/5449000131805-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5449000131805",
+    "extractedImage": "/handzettel/extracted/kw19/de/coca-cola-fanta-o-sprite.webp"
   },
   {
     "id": 63,
@@ -942,7 +1036,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/edeka-ice-tea.webp"
   },
   {
     "id": 64,
@@ -957,7 +1052,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/emsland-sonne-limonaden.webp"
   },
   {
     "id": 65,
@@ -972,7 +1068,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/landpark-bio-quelle-erfrischungsgetraenke.webp"
   },
   {
     "id": 66,
@@ -983,11 +1080,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Pepsi Cola, Schwip Schwap o. Seven Up – versch. Sorten, teilweise koffeinhaltig, Kasten = 12x1L PET",
     "unit": "versch. Sorten, teilweise koffeinhaltig, Kasten = 12x1L PET",
-    "image": "/handzettel/extracted/kw19/de/pepsi-cola-schwip-schwap-o-seven-up.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/6/0/4060800100269-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4060800100269",
+    "extractedImage": "/handzettel/extracted/kw19/de/pepsi-cola-schwip-schwap-o-seven-up.webp"
   },
   {
     "id": 67,
@@ -1002,7 +1101,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/pfanner-sparkling-eistee.webp"
   },
   {
     "id": 68,
@@ -1013,11 +1113,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Thomas Henry Bitter Getränke – 0,75 l Glasflasche",
     "unit": "0,75 l Glasflasche",
-    "image": "/handzettel/extracted/kw19/de/thomas-henry-bitter-getraenke.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/2/6/0/4260310551012-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4260310551012",
+    "extractedImage": "/handzettel/extracted/kw19/de/thomas-henry-bitter-getraenke.webp"
   },
   {
     "id": 69,
@@ -1032,7 +1134,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/tut-gut-malzbier.webp"
   },
   {
     "id": 70,
@@ -1043,11 +1146,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Gerolsteiner Mineralwasser – versch. Sorten, 2 Kästen à 12x0,75L Glas",
     "unit": "versch. Sorten, 2 Kästen à 12x0,75L Glas",
-    "image": "/handzettel/extracted/kw19/de/gerolsteiner-mineralwasser.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/1/4001513006608-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4001513006608",
+    "extractedImage": "/handzettel/extracted/kw19/de/gerolsteiner-mineralwasser.webp"
   },
   {
     "id": 71,
@@ -1062,7 +1167,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/landpark-bio-quelle-mineralwasser.webp"
   },
   {
     "id": 72,
@@ -1077,7 +1183,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/nuerburg-quelle-o-purborn-mineralwasser.webp"
   },
   {
     "id": 73,
@@ -1092,7 +1199,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/roemerwall-mineralwasser.webp"
   },
   {
     "id": 74,
@@ -1107,7 +1215,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/st-leonhards-quelle.webp"
   },
   {
     "id": 75,
@@ -1122,7 +1231,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/toenissteiner-mineralwasser.webp"
   },
   {
     "id": 76,
@@ -1137,7 +1247,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/vitrex.webp"
   },
   {
     "id": 77,
@@ -1152,7 +1263,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/warburger-waldquell-mineralwasser.webp"
   },
   {
     "id": 78,
@@ -1163,11 +1275,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Capri-Sun – Pack = 10 x 0,2 l",
     "unit": "Pack = 10 x 0,2 l",
-    "image": "/handzettel/extracted/kw19/de/capri-sun.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/0/4000177407202-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4000177407202",
+    "extractedImage": "/handzettel/extracted/kw19/de/capri-sun.webp"
   },
   {
     "id": 79,
@@ -1178,11 +1292,13 @@
     "categorySlug": "alkoholfrei",
     "description": "hohes C – versch. Sorten ohne 100% Orange, 1l / 0,85l PET-Flasche",
     "unit": "versch. Sorten ohne 100% Orange, 1l / 0,85l PET-Flasche",
-    "image": "/handzettel/extracted/kw19/de/hohes-c.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/4/5/4045145500608-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4045145500608",
+    "extractedImage": "/handzettel/extracted/kw19/de/hohes-c.webp"
   },
   {
     "id": 80,
@@ -1197,7 +1313,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/leonie-saft.webp"
   },
   {
     "id": 81,
@@ -1208,11 +1325,13 @@
     "categorySlug": "alkoholfrei",
     "description": "28 Black Energy Drink – Peach oder Berry Mix Zero, koffeinhaltig, 0,25 l Dose",
     "unit": "Peach oder Berry Mix Zero, koffeinhaltig, 0,25 l Dose",
-    "image": "/handzettel/extracted/kw19/de/28-black-energy-drink.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/2/6/0/4260097781201-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4260097781201",
+    "extractedImage": "/handzettel/extracted/kw19/de/28-black-energy-drink.webp"
   },
   {
     "id": 82,
@@ -1223,11 +1342,13 @@
     "categorySlug": "alkoholfrei",
     "description": "effect Energy Drink – 1l Flasche",
     "unit": "1l Flasche",
-    "image": "/handzettel/extracted/kw19/de/effect-energy-drink.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/2/6/0/4260035040009-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4260035040009",
+    "extractedImage": "/handzettel/extracted/kw19/de/effect-energy-drink.webp"
   },
   {
     "id": 83,
@@ -1242,7 +1363,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/goenrgy-energy-drink.webp"
   },
   {
     "id": 84,
@@ -1253,11 +1375,13 @@
     "categorySlug": "lebensmittel",
     "description": "funny-frisch Spezialitäten – versch. Sorten, 75 g - 100 g Beutel",
     "unit": "versch. Sorten, 75 g - 100 g Beutel",
-    "image": "/handzettel/extracted/kw19/de/funny-frisch-spezialitaeten.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/3/4003586102584-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4003586102584",
+    "extractedImage": "/handzettel/extracted/kw19/de/funny-frisch-spezialitaeten.webp"
   },
   {
     "id": 85,
@@ -1272,7 +1396,8 @@
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw19/de/hawesta-heringsfilets.webp"
   },
   {
     "id": 86,
@@ -1283,11 +1408,13 @@
     "categorySlug": "lebensmittel",
     "description": "Toffifee – 4+1 gratis = 625 g Packung",
     "unit": "4+1 gratis = 625 g Packung",
-    "image": "/handzettel/extracted/kw19/de/toffifee.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/1/4/4014400900057-0.webp",
     "origin": "DE",
     "region": null,
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4014400900057",
+    "extractedImage": "/handzettel/extracted/kw19/de/toffifee.webp"
   },
   {
     "id": 87,
@@ -1298,11 +1425,13 @@
     "categorySlug": "bier",
     "description": "Beck's – diverse soorten Krat = 20x0,5L / 24x0,33L (1l = €1,20 / €1,51)",
     "unit": "diverse soorten Krat = 20x0,5L / 24x0,33L (1l = €1,20 / €1,51)",
-    "image": "/handzettel/extracted/kw20/nl/beck-s.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/1/0/0/4100130009457-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4100130009457",
+    "extractedImage": "/handzettel/extracted/kw20/nl/beck-s.webp"
   },
   {
     "id": 88,
@@ -1313,11 +1442,13 @@
     "categorySlug": "bier",
     "description": "Bitburger Pils – Kasten 24x0,5L (1l = €0,83)",
     "unit": "Kasten 24x0,5L (1l = €0,83)",
-    "image": "/handzettel/extracted/kw20/nl/bitburger-pils.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/2/4002440001017-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4002440001017",
+    "extractedImage": "/handzettel/extracted/kw20/nl/bitburger-pils.webp"
   },
   {
     "id": 89,
@@ -1328,11 +1459,13 @@
     "categorySlug": "bier",
     "description": "Desperados – diverse soorten Pack = 4x0,33L (1l = €4,54 / €3,78)",
     "unit": "diverse soorten Pack = 4x0,33L (1l = €4,54 / €3,78)",
-    "image": "/handzettel/extracted/kw20/nl/desperados.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/8/7/1/4/8714800000604-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "8714800000604",
+    "extractedImage": "/handzettel/extracted/kw20/nl/desperados.webp"
   },
   {
     "id": 90,
@@ -1343,11 +1476,13 @@
     "categorySlug": "bier",
     "description": "Erdinger Witbier – diverse soorten Krat = 20x0,5L / 24x0,33L (1l = €1,59 / €2,02)",
     "unit": "diverse soorten Krat = 20x0,5L / 24x0,33L (1l = €1,59 / €2,02)",
-    "image": "/handzettel/extracted/kw20/nl/erdinger-witbier.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/2/4002103248125-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4002103248125",
+    "extractedImage": "/handzettel/extracted/kw20/nl/erdinger-witbier.webp"
   },
   {
     "id": 91,
@@ -1358,11 +1493,13 @@
     "categorySlug": "bier",
     "description": "Faxe Premium Lager – 1L Blik",
     "unit": "1L Blik",
-    "image": "/handzettel/extracted/kw20/nl/faxe-premium-lager.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/7/4/1/5741000008904-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5741000008904",
+    "extractedImage": "/handzettel/extracted/kw20/nl/faxe-premium-lager.webp"
   },
   {
     "id": 92,
@@ -1373,11 +1510,13 @@
     "categorySlug": "bier",
     "description": "Hertog Jan – Natuurzuiver bier Krat = 24x0,3L (1l = €1,80)",
     "unit": "Natuurzuiver bier Krat = 24x0,3L (1l = €1,80)",
-    "image": "/handzettel/extracted/kw20/nl/hertog-jan.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/8/7/1/2/8712048281969-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "8712048281969",
+    "extractedImage": "/handzettel/extracted/kw20/nl/hertog-jan.webp"
   },
   {
     "id": 93,
@@ -1392,7 +1531,8 @@
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw20/nl/hofbraeu-maibock.webp"
   },
   {
     "id": 94,
@@ -1403,11 +1543,13 @@
     "categorySlug": "bier",
     "description": "Jupiler Pils – Krat 24x0,25L (1l = €2,67)",
     "unit": "Krat 24x0,25L (1l = €2,67)",
-    "image": "/handzettel/extracted/kw20/nl/jupiler-pils.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/4/1/0/5410228001034-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5410228001034",
+    "extractedImage": "/handzettel/extracted/kw20/nl/jupiler-pils.webp"
   },
   {
     "id": 95,
@@ -1418,11 +1560,13 @@
     "categorySlug": "bier",
     "description": "Krombacher – Pils vers vat Vat = 5L (1l = €2,50)",
     "unit": "Pils vers vat Vat = 5L (1l = €2,50)",
-    "image": "/handzettel/extracted/kw20/nl/krombacher.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/8/4008287050103-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4008287050103",
+    "extractedImage": "/handzettel/extracted/kw20/nl/krombacher.webp"
   },
   {
     "id": 96,
@@ -1437,7 +1581,8 @@
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw20/nl/traugott-pils.webp"
   },
   {
     "id": 97,
@@ -1448,11 +1593,13 @@
     "categorySlug": "bier",
     "description": "Veltins – diverse soorten Krat = 20x0,5L / 24x0,33L (1l = €1,25 / €1,58)",
     "unit": "diverse soorten Krat = 20x0,5L / 24x0,33L (1l = €1,25 / €1,58)",
-    "image": "/handzettel/extracted/kw20/nl/veltins.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/0/5/4005249000107-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4005249000107",
+    "extractedImage": "/handzettel/extracted/kw20/nl/veltins.webp"
   },
   {
     "id": 98,
@@ -1467,7 +1614,8 @@
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw20/nl/maybach.webp"
   },
   {
     "id": 99,
@@ -1482,7 +1630,8 @@
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw20/nl/wein-genuss.webp"
   },
   {
     "id": 100,
@@ -1493,11 +1642,13 @@
     "categorySlug": "spirituosen",
     "description": "Bacardi – diverse soorten 27% - 37,5% vol. 0,7L Fles (1l = €15,70)",
     "unit": "diverse soorten 27% - 37,5% vol. 0,7L Fles (1l = €15,70)",
-    "image": "/handzettel/extracted/kw20/nl/bacardi.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/1/0/5010677015202-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5010677015202",
+    "extractedImage": "/handzettel/extracted/kw20/nl/bacardi.webp"
   },
   {
     "id": 101,
@@ -1508,11 +1659,13 @@
     "categorySlug": "spirituosen",
     "description": "Chivas – 12 years 40% vol. 0,7L Fles (1l = €28,56)",
     "unit": "12 years 40% vol. 0,7L Fles (1l = €28,56)",
-    "image": "/handzettel/extracted/kw20/nl/chivas.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/0/0/5000299212707-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5000299212707",
+    "extractedImage": "/handzettel/extracted/kw20/nl/chivas.webp"
   },
   {
     "id": 102,
@@ -1527,7 +1680,8 @@
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw20/nl/don-papa-botucal.webp"
   },
   {
     "id": 103,
@@ -1538,11 +1692,13 @@
     "categorySlug": "spirituosen",
     "description": "Jim Beam – diverse soorten 32,5% - 40% vol. 0,7L Fles (1l = €14,27 / €14,99) alleen met de trinkgut app",
     "unit": "diverse soorten 32,5% - 40% vol. 0,7L Fles (1l = €14,27 / €14,99) alleen met de trinkgut app",
-    "image": "/handzettel/extracted/kw20/nl/jim-beam.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/6/0/5060045585172-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5060045585172",
+    "extractedImage": "/handzettel/extracted/kw20/nl/jim-beam.webp"
   },
   {
     "id": 104,
@@ -1553,11 +1709,13 @@
     "categorySlug": "spirituosen",
     "description": "Three Sixty – Vodka 37,5% vol. 3L Fles (1l = €15,66)",
     "unit": "Vodka 37,5% vol. 3L Fles (1l = €15,66)",
-    "image": "/handzettel/extracted/kw20/nl/three-sixty.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/4/0/1/4/4014250000108-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "4014250000108",
+    "extractedImage": "/handzettel/extracted/kw20/nl/three-sixty.webp"
   },
   {
     "id": 105,
@@ -1572,7 +1730,8 @@
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "extractedImage": "/handzettel/extracted/kw20/nl/elephant-bay.webp"
   },
   {
     "id": 106,
@@ -1583,11 +1742,13 @@
     "categorySlug": "alkoholfrei",
     "description": "Fuze Tea – diverse soorten 1,25L Fles (1l = €1,03)",
     "unit": "diverse soorten 1,25L Fles (1l = €1,03)",
-    "image": "/handzettel/extracted/kw20/nl/fuze-tea.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/4/4/9/5449000246387-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5449000246387",
+    "extractedImage": "/handzettel/extracted/kw20/nl/fuze-tea.webp"
   },
   {
     "id": 107,
@@ -1598,10 +1759,12 @@
     "categorySlug": "alkoholfrei",
     "description": "Monster – diverse soorten 0,5L Blik (1l = €1,58)",
     "unit": "diverse soorten 0,5L Blik (1l = €1,58)",
-    "image": "/handzettel/extracted/kw20/nl/monster.webp",
+    "image": "https://media.trinkgut.de/assets/gtin/5/0/6/0/5060335631077-0.webp",
     "origin": "NL",
     "region": "Gelderländer",
     "inStock": true,
-    "highlight": false
+    "highlight": false,
+    "ean": "5060335631077",
+    "extractedImage": "/handzettel/extracted/kw20/nl/monster.webp"
   }
 ]

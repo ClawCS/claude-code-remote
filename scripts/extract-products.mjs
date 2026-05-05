@@ -64,10 +64,11 @@ Für jedes Produkt gib zurück:
 - "deposit": Pfandbetrag als Zahl falls angegeben, sonst null
 - "category": Eine aus: ${CATEGORIES.map(c => c.id).join(", ")}
 - "boundingBox": Ungefähre Position des Produkts auf der Seite als Objekt {"x": 0-100, "y": 0-100, "w": 10-50, "h": 10-50} in Prozent der Seitenmaße
+- "ean": EAN/GTIN-13 Barcode des Produkts falls bekannt (13-stellige Zahl als String), sonst null
 - "needsReview": true wenn Preis/Titel unklar lesbar
 
 Antworte NUR mit einem JSON-Array. Keine Erklärungen, kein Markdown. Beispiel:
-[{"title":"Krombacher Pils","description":"Kasten 24×0,33L","price":12.99,"priceUnit":"Kasten","pricePerLiter":1.64,"deposit":3.42,"category":"bier","boundingBox":{"x":5,"y":10,"w":40,"h":30},"needsReview":false}]
+[{"title":"Krombacher Pils","description":"Kasten 24×0,33L","price":12.99,"priceUnit":"Kasten","pricePerLiter":1.64,"deposit":3.42,"category":"bier","boundingBox":{"x":5,"y":10,"w":40,"h":30},"ean":"4008287050103","needsReview":false}]
 
 Wenn keine Produkte erkennbar sind, antworte mit [].
 Ignoriere Logos, Deko-Elemente und nicht-Produkt-Inhalte (Öffnungszeiten, Adressen etc.).`;
@@ -111,6 +112,10 @@ async function extractFromImage(imagePath, maxRetries = 4) {
     }
   }
   return [];
+}
+
+function cdnUrl(ean) {
+  return `https://media.trinkgut.de/assets/gtin/${ean[0]}/${ean[1]}/${ean[2]}/${ean[3]}/${ean}-0.webp`;
 }
 
 async function cropProductImage(sourceImage, bbox, outputPath) {
@@ -177,11 +182,14 @@ async function processDE(kw, year) {
         const imgFile = `${s}.webp`;
         const imgPath = join(extractedDir, imgFile);
 
-        let imageUrl = null;
+        let extractedImage = null;
         if (item.boundingBox) {
           const cropped = await cropProductImage(pagePath, item.boundingBox, imgPath);
-          if (cropped) imageUrl = `/handzettel/extracted/kw${kw}/de/${imgFile}`;
+          if (cropped) extractedImage = `/handzettel/extracted/kw${kw}/de/${imgFile}`;
         }
+
+        const ean = /^\d{13}$/.test(item.ean) ? item.ean : null;
+        const imageUrl = ean ? cdnUrl(ean) : extractedImage;
 
         const { validFrom, validUntil } = kwDateRange(kw, year);
         products.push({
@@ -193,6 +201,8 @@ async function processDE(kw, year) {
           pricePerLiter: item.pricePerLiter ?? null,
           deposit: item.deposit ?? null,
           imageUrl,
+          extractedImage,
+          ean,
           category: CATEGORIES.some(c => c.id === item.category) ? item.category : "sonstiges",
           origin: "DE",
           validFrom,
@@ -253,11 +263,14 @@ async function processNL(kw, year) {
           const imgFile = `${s}.webp`;
           const outPath = join(extractedDir, imgFile);
 
-          let imageUrl = null;
+          let extractedImage = null;
           if (item.boundingBox) {
             const cropped = await cropProductImage(imgPath, item.boundingBox, outPath);
-            if (cropped) imageUrl = `/handzettel/extracted/kw${kw}/nl/${imgFile}`;
+            if (cropped) extractedImage = `/handzettel/extracted/kw${kw}/nl/${imgFile}`;
           }
+
+          const ean = /^\d{13}$/.test(item.ean) ? item.ean : null;
+          const imageUrl = ean ? cdnUrl(ean) : extractedImage;
 
           const { validFrom, validUntil } = kwDateRange(kw, year);
           products.push({
@@ -269,6 +282,8 @@ async function processNL(kw, year) {
             pricePerLiter: item.pricePerLiter ?? null,
             deposit: item.deposit ?? null,
             imageUrl,
+            extractedImage,
+            ean,
             category: CATEGORIES.some(c => c.id === item.category) ? item.category : "sonstiges",
             origin: "NL",
             region,

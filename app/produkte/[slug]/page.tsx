@@ -15,6 +15,8 @@ export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [imgFailed, setImgFailed] = useState(false);
+  const [triedFallback, setTriedFallback] = useState(false);
 
   const product = products.find((p) => p.slug === slug);
 
@@ -41,7 +43,24 @@ export default function ProductDetailPage() {
 
       <div className="grid md:grid-cols-2 gap-10 mb-16">
         <div className="bg-light rounded-2xl flex items-center justify-center p-8 relative aspect-square">
-          <Image src={product.image} alt={product.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain p-8" />
+          {imgFailed ? (
+            <span className="text-8xl">{{"Bier":"🍺","Wein":"🍷","Sekt & Co.":"🥂","Spirituosen":"🥃","Alkoholfreie Getränke":"🥤","Lebensmittel & Mehr":"🛒"}[product.category] ?? "🍶"}</span>
+          ) : (
+            <Image
+              src={triedFallback && product.extractedImage ? product.extractedImage : product.image}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-contain p-8"
+              onError={() => {
+                if (!triedFallback && product.extractedImage) {
+                  setTriedFallback(true);
+                } else {
+                  setImgFailed(true);
+                }
+              }}
+            />
+          )}
         </div>
 
         <div>

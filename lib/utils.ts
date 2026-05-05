@@ -69,6 +69,7 @@ export type Product = {
   description: string;
   ean?: string;
   image: string;
+  extractedImage?: string;
   unit: string;
   origin?: "DE" | "NL";
   region?: string | null;

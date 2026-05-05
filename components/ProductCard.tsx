@@ -22,7 +22,16 @@ export default function ProductCard({ product }: { product: Product }) {
   const { toggleItem, isInWishlist } = useWishlist();
   const { t } = useTranslation();
   const wishlisted = isInWishlist(product.id);
+  const [imgSrc, setImgSrc] = useState(product.image);
   const [imgFailed, setImgFailed] = useState(false);
+
+  const handleImageError = () => {
+    if (imgSrc === product.image && product.extractedImage) {
+      setImgSrc(product.extractedImage);
+    } else {
+      setImgFailed(true);
+    }
+  };
 
   return (
     <div
@@ -41,12 +50,12 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           ) : (
             <Image
-              src={product.image}
+              src={imgSrc}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-contain p-3 group-hover:scale-[1.06] group-hover:rotate-[0.5deg] transition-transform duration-500"
-              onError={() => setImgFailed(true)}
+              onError={handleImageError}
             />
           )}
           <button
