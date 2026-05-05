@@ -21,6 +21,7 @@ const navItems: NavItem[] = [
     labelKey: "nav.sortiment",
     children: [
       { href: "/produkte", labelKey: "nav.alleProdukte", icon: "\u{1F6D2}" },
+      { href: "/eigenmarke", labelKey: "nav.eigenmarken", icon: "✨" },
       { href: "/kategorie/bier", labelKey: "nav.bier", icon: "\u{1F37A}" },
       { href: "/kategorie/alkoholfrei", labelKey: "nav.alkoholfrei", icon: "\u{1F964}" },
       { href: "/kategorie/wein", labelKey: "nav.wein", icon: "\u{1F377}" },

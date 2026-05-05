@@ -52,8 +52,11 @@ export default function Hero() {
         />
       ))}
 
-      {/* Red accent line top */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#DC2626] to-transparent" />
+      {/* Top transition: dark stone header → burgundy → red hero (200px sanfter Verlauf) */}
+      <div className="absolute top-0 left-0 right-0 h-[200px] bg-gradient-to-b from-[#1A1A1A] via-[#3A0A14] to-transparent pointer-events-none z-[1]" />
+
+      {/* Subtle gold accent line at very top */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F59E0B]/30 to-transparent z-[2]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-28 md:py-40 text-white">
         {/* Weather Widget */}

@@ -65,7 +65,8 @@ export default function HandzettelSection() {
 
   return (
     <>
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+      <section className="bg-[#FFF8F6] py-20 md:py-24">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-10">
           <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">
             {t("home.handzettel.label")}
@@ -286,6 +287,7 @@ export default function HandzettelSection() {
             {t("home.handzettel.allOffers")}
           </Link>
         </div>
+       </div>
       </section>
 
       {/* Lightbox */}

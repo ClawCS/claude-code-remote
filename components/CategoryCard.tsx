@@ -6,7 +6,7 @@ export default function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/kategorie/${category.slug}`}
-      className="group relative flex flex-col items-center gap-3 rounded-2xl overflow-hidden card-hover aspect-square"
+      className="group relative flex flex-col items-center gap-3 rounded-2xl overflow-hidden card-hover aspect-square border border-white/5 hover:border-[#F59E0B]/40 shadow-2xl shadow-black/40 transition-colors"
     >
       <Image
         src={category.image}

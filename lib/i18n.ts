@@ -19,6 +19,7 @@ const translations = {
 
     // Navigation dropdown items
     "nav.alleProdukte": "Alle Produkte",
+    "nav.eigenmarken": "Unsere Eigenmarken ✨",
     "nav.bier": "Bier",
     "nav.alkoholfrei": "Alkoholfreie Getr\u00e4nke",
     "nav.wein": "Wein",
@@ -156,6 +157,7 @@ const translations = {
 
     // Navigation dropdown items
     "nav.alleProdukte": "All Products",
+    "nav.eigenmarken": "Our Own Brands ✨",
     "nav.bier": "Beer",
     "nav.alkoholfrei": "Non-Alcoholic Drinks",
     "nav.wein": "Wine",
@@ -293,6 +295,7 @@ const translations = {
 
     // Navigation dropdown items
     "nav.alleProdukte": "Alle Producten",
+    "nav.eigenmarken": "Onze Huismerken ✨",
     "nav.bier": "Bier",
     "nav.alkoholfrei": "Alcoholvrije Dranken",
     "nav.wein": "Wijn",

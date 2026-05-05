@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import ScrollReveal from "@/components/ScrollReveal";
 import HandzettelSection from "@/components/HandzettelSection";
+import EigenmarkenShowcase from "@/components/EigenmarkenShowcase";
 
 const products = productsData as Product[];
 const teamMembers = galleryItems.filter((i) => i.category === "team");
@@ -28,13 +29,11 @@ export default function Home() {
       {/* Video Trailer */}
       <VideoHero />
 
-      {/* Transition: Video (black) → Dark stone */}
-      <div className="h-8 bg-gradient-to-b from-black to-[#1C1917]" />
+      {/* Sanfter 200px Übergang: Video (schwarz) → Schiefer */}
+      <div className="h-[200px] bg-gradient-to-b from-black via-[#0F0F0F] to-transparent -mt-px relative z-[1]" />
 
-      {/* Kategorien — auf dunklem Anthrazit */}
-      <section className="relative bg-[#1C1917] py-20 md:py-24 overflow-hidden">
-        <div className="absolute inset-0 noise-bg" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.06)_0%,transparent_60%)]" />
+      {/* Kategorien — Schiefer-Hintergrund vom body geerbt */}
+      <section className="relative py-20 md:py-24">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <ScrollReveal className="text-center mb-12">
             <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.categories.label")}</p>
@@ -52,12 +51,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Transition: dark stone → slightly lighter */}
-      <div className="h-2 bg-gradient-to-b from-[#1C1917] to-[#292524]" />
-
-      {/* Services — auf warmem Dunkel */}
-      <section className="relative bg-[#292524] py-20 md:py-24 overflow-hidden">
-        <div className="absolute inset-0 noise-bg" />
+      {/* Services — Schiefer-Hintergrund, keine sichtbare Trennung */}
+      <section className="relative py-20 md:py-24">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <ScrollReveal className="text-center mb-12">
             <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.services.label")}</p>
@@ -75,7 +70,7 @@ export default function Home() {
               <ScrollReveal key={s.href} delay={i * 100}>
                 <Link
                   href={s.href}
-                  className="group relative bg-[#FDFCFB] border border-white/10 rounded-2xl card-hover-glow overflow-hidden block shadow-lg shadow-black/20"
+                  className="group relative bg-[#FDFCFB] border border-white/5 rounded-2xl card-hover-glow overflow-hidden block shadow-2xl shadow-black/40"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
@@ -99,18 +94,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Transition: dark → warm cream */}
-      <div className="h-24 bg-gradient-to-b from-[#292524] to-[#FFF8F6]" />
+      {/* Eigenmarken-Showcase — Schiefer-Hintergrund vom body */}
+      <EigenmarkenShowcase />
+
+      {/* Sanfter 200px Übergang: Schiefer → Warm-Cream Insel (Handzettel) */}
+      <div className="h-[200px] bg-gradient-to-b from-transparent to-[#FFF8F6] relative z-[1]" />
 
       {/* Handzettel & Wochenblätter */}
       <HandzettelSection />
 
-      {/* Gradient fade to dark */}
-      <div className="h-24 bg-gradient-to-b from-[#FFF8F6] to-[#1F2937]" />
+      {/* Sanfter 200px Übergang: Cream-Insel → Schiefer */}
+      <div className="h-[200px] bg-gradient-to-b from-[#FFF8F6] to-transparent relative z-[1]" />
 
-      {/* Instagram + Gewinnspiel */}
-      <section className="relative bg-gradient-to-b from-[#1F2937] to-[#111827] py-20 md:py-24 overflow-hidden red-stripe-divider">
-        <div className="absolute inset-0 noise-bg" />
+      {/* Instagram + Gewinnspiel — Schiefer vom body */}
+      <section className="relative py-20 md:py-24 overflow-hidden red-stripe-divider">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <ScrollReveal>
@@ -157,11 +154,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Gradient fade from dark */}
-      <div className="h-24 bg-gradient-to-b from-[#111827] to-[#FFF8F6]" />
+      {/* Sanfter 200px Übergang: Schiefer → Cream-Insel (Team + Akademie) */}
+      <div className="h-[200px] bg-gradient-to-b from-transparent to-[#FFF8F6] relative z-[1]" />
 
-      {/* ═══ UNSER TEAM ═══ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+      {/* ═══ UNSER TEAM ═══ — auf Cream-Insel */}
+      <section className="bg-[#FFF8F6]">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <ScrollReveal className="text-center mb-12">
           <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Leidenschaft & Expertise</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
@@ -194,13 +192,12 @@ export default function Home() {
             </ScrollReveal>
           ))}
         </div>
+       </div>
       </section>
 
-      {/* Gradient fade */}
-      <div className="h-24 bg-gradient-to-b from-white to-[#FFF5F3]" />
-
-      {/* ═══ AKADEMIE TEASER ═══ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
+      {/* ═══ AKADEMIE TEASER ═══ — selbe Cream-Insel */}
+      <section className="bg-[#FFF8F6]">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <ScrollReveal className="text-center mb-12">
           <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Wissen & Zertifikate</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
@@ -235,24 +232,28 @@ export default function Home() {
             Alle {courses.length} Kurse entdecken
           </Link>
         </div>
+       </div>
       </section>
 
-      {/* Social Proof */}
+      {/* Sanfter 200px Übergang: Cream → Schiefer für Social Proof + Newsletter */}
+      <div className="h-[200px] bg-gradient-to-b from-[#FFF8F6] to-transparent relative z-[1]" />
+
+      {/* Social Proof — auf Schiefer */}
       <SocialProof />
 
-      {/* Newsletter */}
+      {/* Newsletter — auf Schiefer */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
         <NewsletterSignup />
       </section>
 
-      {/* CTA */}
+      {/* CTA — auf Schiefer */}
       <ScrollReveal>
       <section className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 text-center">
         <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.cta.label")}</p>
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#1F2937] mb-4 section-accent-center">
+        <h2 className="text-2xl md:text-4xl font-extrabold text-white mb-4 section-accent-center">
           {products.length} {t("home.cta.title")}
         </h2>
-        <p className="text-muted mb-10 max-w-lg mx-auto">
+        <p className="text-white/60 mb-10 max-w-lg mx-auto">
           {t("home.cta.text")}
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
@@ -264,7 +265,7 @@ export default function Home() {
           </Link>
           <a
             href="tel:02823418707"
-            className="px-8 py-4 border-2 border-[#1F2937] text-[#1F2937] hover:bg-[#1F2937] hover:text-white font-bold rounded-2xl transition-colors text-lg"
+            className="px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-bold rounded-2xl transition-colors text-lg backdrop-blur-sm"
           >
             📞 02823-418707
           </a>
