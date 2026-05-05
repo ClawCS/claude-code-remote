@@ -29,8 +29,8 @@ export default function Home() {
       {/* Video Trailer */}
       <VideoHero />
 
-      {/* Sanfter 220px Übergang: Video (schwarz) → Schiefer (#0A0A0A) — durchgängiges Farbsystem */}
-      <div className="h-[220px] bg-gradient-to-b from-black via-[#141414] to-[#0A0A0A] -mt-px relative z-[1]" />
+      {/* Sanfter 220px Übergang: Video (schwarz) → Schiefer (#1A1A1A) — durchgängiges Farbsystem */}
+      <div className="h-[220px] bg-gradient-to-b from-black via-[#141414] to-[#1A1A1A] -mt-px relative z-[1]" />
 
       {/* Kategorien — Schiefer-Hintergrund */}
       <section className="relative bg-slate-stone py-20 md:py-24">
