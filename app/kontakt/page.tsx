@@ -38,12 +38,12 @@ export default function KontaktPage() {
               47574 Goch
             </p>
             <a
-              href="https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20,+47574+Goch"
+              href="https://www.google.com/maps/search/?api=1&query=Trinkgut+Jammers+Goch+Jurgenstrasse+20"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-4 text-sm text-primary hover:underline"
             >
-              Route in Google Maps öffnen →
+              In Google Maps öffnen →
             </a>
 
             <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
@@ -72,7 +72,7 @@ export default function KontaktPage() {
               href="https://wa.me/491752492386"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#1FB856] text-white rounded-xl font-medium transition-colors"
             >
               Schreib uns auf WhatsApp
             </a>
