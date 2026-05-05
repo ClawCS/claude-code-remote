@@ -93,7 +93,7 @@ export default function AngebotePage() {
               href="/handzettel"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary font-bold rounded-xl hover:bg-gray-100 transition-colors"
             >
-              📰 Prospekt durchblaettern
+              📰 Prospekt durchblättern
             </Link>
             {data?.pdfUrl && (
               <a
@@ -120,7 +120,7 @@ export default function AngebotePage() {
           <span className="text-4xl">📖</span>
           <div className="flex-1">
             <h3 className="font-bold text-secondary group-hover:text-primary transition-colors">
-              Handzettel KW {currentKW} interaktiv durchblaettern
+              Handzettel KW {currentKW} interaktiv durchblättern
             </h3>
             <p className="text-xs text-muted">
               Vollbild, Tastatur-Navigation, Zoom — wie ein echtes Heft
@@ -134,7 +134,7 @@ export default function AngebotePage() {
           <span className="text-4xl">📱</span>
           <div className="flex-1">
             <h3 className="font-bold">5 EUR Rabatt fuer Follower!</h3>
-            <p className="text-xs text-white/80">Folge uns auf Instagram und spare bei ausgewaehlten Produkten.</p>
+            <p className="text-xs text-white/80">Folge uns auf Instagram und spare bei ausgewählten Produkten.</p>
           </div>
           <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white text-secondary font-bold rounded-lg hover:bg-gray-100 transition-colors text-sm whitespace-nowrap">
             Folgen
@@ -223,7 +223,7 @@ export default function AngebotePage() {
             Alle Produkte
           </Link>
           <Link href="/handzettel" className="px-8 py-3 border border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-lg transition-colors">
-            Handzettel durchblaettern
+            Handzettel durchblättern
           </Link>
         </div>
       </div>

@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Bitte Position auswaehlen." }, { status: 400 });
     }
 
-    // Dateien sammeln (Lebenslauf & Bewerbungsschreiben einzeln, Zeugnisse mehrfach moeglich)
+    // Dateien sammeln (Lebenslauf & Bewerbungsschreiben einzeln, Zeugnisse mehrfach möglich)
     const collected: { field: FileField; file: File }[] = [];
     let totalSize = 0;
 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
 
         if (entry.size > MAX_FILE_SIZE) {
           return NextResponse.json(
-            { error: `Datei "${entry.name}" ist zu gross (max. 10 MB).` },
+            { error: `Datei "${entry.name}" ist zu groß (max. 10 MB).` },
             { status: 413 }
           );
         }
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 
     if (totalSize > MAX_TOTAL_SIZE) {
       return NextResponse.json(
-        { error: "Gesamtgroesse aller Anhaenge ueberschreitet 30 MB." },
+        { error: "Gesamtgröße aller Anhänge überschreitet 30 MB." },
         { status: 413 }
       );
     }

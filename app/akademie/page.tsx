@@ -59,7 +59,7 @@ export default function AkademiePage() {
       </div>
 
       {/* Zertifikate CTA */}
-      <div className="mt-12 bg-gradient-to-r from-secondary to-gray-800 rounded-2xl p-8 text-white text-center">
+      <div className="mt-12 bg-gradient-to-r from-[#7A1428] via-[#B91C1C] to-[#1F2937] rounded-2xl p-8 text-white text-center shadow-lg shadow-red-500/10">
         <span className="text-4xl block mb-3">🏅</span>
         <h2 className="text-2xl font-bold mb-2">Professionelle Zertifikatskurse</h2>
         <p className="text-white/80 max-w-lg mx-auto mb-5">

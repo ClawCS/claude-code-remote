@@ -329,7 +329,7 @@ export default function CommunityPage() {
                         })}
                       </p>
                     </div>
-                    <span className="text-sm font-bold text-green-600">+{entry.points}</span>
+                    <span className="text-sm font-bold text-[#F59E0B]">+{entry.points}</span>
                   </div>
                 ))}
               </div>

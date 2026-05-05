@@ -41,7 +41,7 @@ const FILE_SLOTS: FileSlot[] = [
   {
     field: "zeugnisse",
     label: "Zeugnisse",
-    hint: "PDF oder Foto, mehrere moeglich, je max. 10 MB",
+    hint: "PDF oder Foto, mehrere möglich, je max. 10 MB",
     icon: "🎓",
     accept: ".pdf,image/jpeg,image/png,image/webp,application/pdf",
     multiple: true,
@@ -89,10 +89,10 @@ export default function BewerbungPage() {
   ) => {
     setUploadError(null);
     const selected = Array.from(e.target.files || []);
-    // Groesse clientseitig validieren
+    // Größe clientseitig validieren
     for (const f of selected) {
       if (f.size > MAX_FILE_SIZE) {
-        setUploadError(`Datei "${f.name}" ist zu gross (max. 10 MB).`);
+        setUploadError(`Datei "${f.name}" ist zu groß (max. 10 MB).`);
         return;
       }
     }
@@ -107,7 +107,7 @@ export default function BewerbungPage() {
       ...prev,
       [field]: prev[field].filter((_, i) => i !== index),
     }));
-    // Input zuruecksetzen, damit dieselbe Datei erneut gewaehlt werden kann
+    // Input zurücksetzen, damit dieselbe Datei erneut gewählt werden kann
     const input = fileInputRefs.current[field];
     if (input) input.value = "";
   };
@@ -155,11 +155,11 @@ export default function BewerbungPage() {
         <span className="text-6xl block mb-4">🎉</span>
         <h2 className="text-2xl font-bold text-secondary mb-2">Bewerbung gesendet!</h2>
         <p className="text-muted mb-2">
-          Vielen Dank, {form.name}! Wir melden uns so schnell wie moeglich bei dir.
+          Vielen Dank, {form.name}! Wir melden uns so schnell wie möglich bei dir.
         </p>
         {totalFiles > 0 && (
           <p className="text-muted text-sm mb-6">
-            {totalFiles} {totalFiles === 1 ? "Anhang" : "Anhaenge"} erfolgreich hochgeladen.
+            {totalFiles} {totalFiles === 1 ? "Anhang" : "Anhänge"} erfolgreich hochgeladen.
           </p>
         )}
         <button
@@ -308,10 +308,10 @@ export default function BewerbungPage() {
             />
           </div>
 
-          {/* Anhaenge */}
+          {/* Anhänge */}
           <div className="border-t border-border pt-5">
             <h3 className="font-semibold text-secondary mb-1 flex items-center gap-2">
-              <span>📎</span> Anhaenge
+              <span>📎</span> Anhänge
             </h3>
             <p className="text-xs text-muted mb-4">
               Lade deine Bewerbungsunterlagen hoch. Optional, aber empfohlen. Max. 10 MB pro Datei.
@@ -385,7 +385,7 @@ export default function BewerbungPage() {
 
             {totalFiles > 0 && (
               <p className="text-xs text-muted mt-3">
-                {totalFiles} {totalFiles === 1 ? "Datei ausgewaehlt" : "Dateien ausgewaehlt"}
+                {totalFiles} {totalFiles === 1 ? "Datei ausgewählt" : "Dateien ausgewählt"}
               </p>
             )}
           </div>
@@ -405,7 +405,7 @@ export default function BewerbungPage() {
           </button>
 
           <p className="text-xs text-muted text-center">
-            Mit dem Absenden erklaerst du dich einverstanden, dass wir deine Daten und Anhaenge zur Bearbeitung deiner Bewerbung speichern.
+            Mit dem Absenden erklärst du dich einverstanden, dass wir deine Daten und Anhänge zur Bearbeitung deiner Bewerbung speichern.
           </p>
         </form>
       </div>

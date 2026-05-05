@@ -102,7 +102,7 @@ export default function KuehlschrankPage() {
       return;
     }
     if (file.size > 20 * 1024 * 1024) {
-      setError("Das Bild ist zu gross (max. 20 MB).");
+      setError("Das Bild ist zu groß (max. 20 MB).");
       return;
     }
     setError(null);

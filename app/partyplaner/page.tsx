@@ -141,10 +141,10 @@ export default function PartyplanerPage() {
         <h3 className="font-semibold text-secondary mb-4">Was trinken deine Gäste? (Prozent-Verteilung)</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { key: "beerDrinkers" as const, label: "🍺 Bier", color: "text-amber-600" },
-            { key: "wineDrinkers" as const, label: "🍷 Wein", color: "text-purple-600" },
-            { key: "softDrinkers" as const, label: "🥤 Softdrinks", color: "text-green-600" },
-            { key: "spiritDrinkers" as const, label: "🥃 Spirituosen", color: "text-orange-600" },
+            { key: "beerDrinkers" as const, label: "🍺 Bier", color: "text-[#F59E0B]" },
+            { key: "wineDrinkers" as const, label: "🍷 Wein", color: "text-[#7A1428]" },
+            { key: "softDrinkers" as const, label: "🥤 Softdrinks", color: "text-[#DC2626]" },
+            { key: "spiritDrinkers" as const, label: "🥃 Spirituosen", color: "text-[#B91C1C]" },
           ].map(({ key, label, color }) => (
             <div key={key} className="text-center">
               <label className="block text-sm font-medium text-muted mb-1">{label}</label>
