@@ -111,8 +111,8 @@ export default function AngebotePage() {
         </div>
       </section>
 
-      {/* Follower-Rabatt */}
-      <div className="grid md:grid-cols-2 gap-6 mb-10">
+      {/* Handzettel CTA */}
+      <div className="mb-10">
         <Link
           href="/handzettel"
           className="bg-gray-50 border border-gray-200 rounded-xl p-6 flex items-center gap-4 hover:shadow-md transition-shadow group"
@@ -130,16 +130,6 @@ export default function AngebotePage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link>
-        <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-6 flex items-center gap-4 text-white">
-          <span className="text-4xl">📱</span>
-          <div className="flex-1">
-            <h3 className="font-bold">5 EUR Rabatt fuer Follower!</h3>
-            <p className="text-xs text-white/80">Folge uns auf Instagram und spare bei ausgewählten Produkten.</p>
-          </div>
-          <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white text-secondary font-bold rounded-lg hover:bg-gray-100 transition-colors text-sm whitespace-nowrap">
-            Folgen
-          </a>
-        </div>
       </div>
 
       {/* Wochenangebote aus Handzettel */}

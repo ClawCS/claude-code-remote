@@ -37,7 +37,6 @@ const navItems: NavItem[] = [
       { href: "/vermietung", labelKey: "nav.vermietung", icon: "\u{1F3AA}" },
       { href: "/finder", labelKey: "nav.finder", icon: "\u{1F50D}" },
       { href: "/leergut", labelKey: "nav.leergut", icon: "\u267B\uFE0F" },
-      { href: "/follower-rabatt", labelKey: "nav.followerRabatt", icon: "\u{1F4F1}" },
     ],
   },
   {

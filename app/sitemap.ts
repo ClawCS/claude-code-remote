@@ -20,7 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/community", priority: 0.7, changeFrequency: "weekly" },
     { path: "/gewinnspiel", priority: 0.7, changeFrequency: "monthly" },
     { path: "/gewinnspiel/archiv", priority: 0.5, changeFrequency: "monthly" },
-    { path: "/follower-rabatt", priority: 0.7, changeFrequency: "monthly" },
     { path: "/leergut", priority: 0.7, changeFrequency: "monthly" },
     { path: "/kuehlschrank", priority: 0.7, changeFrequency: "monthly" },
     { path: "/bierkarte", priority: 0.7, changeFrequency: "monthly" },
