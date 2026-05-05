@@ -13,7 +13,7 @@ export default function WhatsAppButton() {
         href="https://www.instagram.com/trinkgutjammers_goch/"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 hover:from-purple-700 hover:via-pink-600 hover:to-orange-500 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all group"
+        className="bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all group"
         aria-label="Instagram"
       >
         <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -29,7 +29,7 @@ export default function WhatsAppButton() {
         href={mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all group"
+        className="bg-[#1F2937] hover:bg-[#111827] text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all group"
         aria-label="Route planen"
       >
         <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -45,7 +45,7 @@ export default function WhatsAppButton() {
         href={waUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3.5 shadow-lg hover:shadow-xl transition-all group"
+        className="bg-[#F59E0B] hover:bg-[#D97706] text-white rounded-full p-3.5 shadow-lg hover:shadow-xl transition-all group"
         aria-label="WhatsApp Chat"
       >
         <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">

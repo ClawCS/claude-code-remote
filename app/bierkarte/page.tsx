@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
@@ -227,7 +228,7 @@ export default function BierkartePage() {
     <div className="page-hero-banner py-16 md:py-24">
       <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Bierkarte</span></nav>
+        <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Bierkarte</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Bier- & Spirituosen-Weltkarte</h1>
         <p className="text-white/80 max-w-2xl mx-auto text-lg">
           {totalProducts} Produkte aus {Object.keys(countryProducts).length} Ländern — klicke

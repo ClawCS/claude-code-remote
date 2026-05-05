@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -96,7 +97,7 @@ export default function CommunityPage() {
         <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4">
-            <a href="/" className="hover:text-white">Home</a>
+            <Link href="/" className="hover:text-white">Home</Link>
             <span className="mx-1">/</span>
             <span className="text-white">Community</span>
           </nav>

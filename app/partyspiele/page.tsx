@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState } from "react";
 import ShimmerParticles from "@/components/ShimmerParticles";
@@ -20,14 +21,14 @@ type GameMeta = {
 };
 
 const GAMES: GameMeta[] = [
-  { id: "roulette", name: "Trink-Roulette", icon: "\u{1F3B0}", players: "2-10", difficulty: "Leicht", difficultyColor: "bg-green-100 text-green-700", description: "Digitales Rad mit Aufgaben. Namen eintragen, drehen, machen!" },
-  { id: "wahrheit", name: "Wahrheit oder Pflicht", icon: "\u{1F525}", players: "3-12", difficulty: "Mittel", difficultyColor: "bg-amber-100 text-amber-700", description: "Getränke-Edition mit lustigen Fragen und Aufgaben." },
-  { id: "bierpong", name: "Bier-Pong Scoreboard", icon: "\u{1F3C6}", players: "2 Teams", difficulty: "Leicht", difficultyColor: "bg-green-100 text-green-700", description: "Digitaler Punktezahler mit Timer und Regeln." },
-  { id: "flunkyball", name: "Flunkyball Timer", icon: "\u{26BD}", players: "4-20", difficulty: "Mittel", difficultyColor: "bg-amber-100 text-amber-700", description: "Countdown & Scoreboard für Flunkyball-Turniere." },
-  { id: "kingscup", name: "Kings Cup", icon: "\u{1F0CF}", players: "3-10", difficulty: "Mittel", difficultyColor: "bg-amber-100 text-amber-700", description: "Ring of Fire — digitale Karten mit Regeln aufdecken." },
-  { id: "ichhabnochnie", name: "Ich hab noch nie...", icon: "\u{1F648}", players: "3-15", difficulty: "Leicht", difficultyColor: "bg-green-100 text-green-700", description: "Zufällige Statements — wer es getan hat, trinkt!" },
-  { id: "cocktailquiz", name: "Cocktail-Quiz", icon: "\u{1F378}", players: "1-8", difficulty: "Schwer", difficultyColor: "bg-red-100 text-red-700", description: "Multiple Choice über Cocktails. Timer, Punkte, Highscore." },
-  { id: "tabu", name: "Getränke-Tabu", icon: "\u{1F910}", players: "4-12", difficulty: "Schwer", difficultyColor: "bg-red-100 text-red-700", description: "Beschreibe ein Getränk ohne bestimmte Wörter!" },
+  { id: "roulette", name: "Trink-Roulette", icon: "\u{1F3B0}", players: "2-10", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#F59E0B]", description: "Digitales Rad mit Aufgaben. Namen eintragen, drehen, machen!" },
+  { id: "wahrheit", name: "Wahrheit oder Pflicht", icon: "\u{1F525}", players: "3-12", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#EF4444]", description: "Getränke-Edition mit lustigen Fragen und Aufgaben." },
+  { id: "bierpong", name: "Bier-Pong Scoreboard", icon: "\u{1F3C6}", players: "2 Teams", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#F59E0B]", description: "Digitaler Punktezahler mit Timer und Regeln." },
+  { id: "flunkyball", name: "Flunkyball Timer", icon: "\u{26BD}", players: "4-20", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#EF4444]", description: "Countdown & Scoreboard für Flunkyball-Turniere." },
+  { id: "kingscup", name: "Kings Cup", icon: "\u{1F0CF}", players: "3-10", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#EF4444]", description: "Ring of Fire — digitale Karten mit Regeln aufdecken." },
+  { id: "ichhabnochnie", name: "Ich hab noch nie...", icon: "\u{1F648}", players: "3-15", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#F59E0B]", description: "Zufällige Statements — wer es getan hat, trinkt!" },
+  { id: "cocktailquiz", name: "Cocktail-Quiz", icon: "\u{1F378}", players: "1-8", difficulty: "Schwer", difficultyColor: "bg-red-50 text-[#B91C1C]", description: "Multiple Choice über Cocktails. Timer, Punkte, Highscore." },
+  { id: "tabu", name: "Getränke-Tabu", icon: "\u{1F910}", players: "4-12", difficulty: "Schwer", difficultyColor: "bg-red-50 text-[#B91C1C]", description: "Beschreibe ein Getränk ohne bestimmte Wörter!" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -53,7 +54,7 @@ function GameModal({ title, icon, onClose, children, alkoholfrei, setAlkoholfrei
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-1.5 text-xs cursor-pointer select-none">
               <input type="checkbox" checked={alkoholfrei} onChange={(e) => setAlkoholfrei(e.target.checked)} className="accent-primary w-4 h-4" />
-              <span className={alkoholfrei ? "text-green-600 font-semibold" : "text-muted"}>Alkoholfrei</span>
+              <span className={alkoholfrei ? "text-[#F59E0B] font-semibold" : "text-muted"}>Alkoholfrei</span>
             </label>
             <button onClick={onClose} className="p-1 text-muted hover:text-secondary" aria-label="Schließen">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -261,7 +262,7 @@ function WahrheitOderPflichtGame({ alkoholfrei }: { alkoholfrei: boolean }) {
   return (
     <div className="text-center">
       <div className="flex gap-3 justify-center mb-6">
-        <button onClick={() => draw("Wahrheit")} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl transition-colors shadow-md">
+        <button onClick={() => draw("Wahrheit")} className="px-6 py-3 bg-[#1F2937] hover:bg-[#111827] text-white font-bold rounded-xl transition-colors shadow-md">
           Wahrheit
         </button>
         <button onClick={() => draw("Pflicht")} className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors shadow-md">
@@ -269,7 +270,7 @@ function WahrheitOderPflichtGame({ alkoholfrei }: { alkoholfrei: boolean }) {
         </button>
       </div>
       {current && (
-        <div className={`p-6 rounded-xl ${current.type === "Wahrheit" ? "bg-blue-50 border border-blue-200" : "bg-red-50 border border-red-200"}`}>
+        <div className={`p-6 rounded-xl ${current.type === "Wahrheit" ? "bg-[#FFF8F6] border border-[#F0D5CF]" : "bg-red-50 border border-red-200"}`}>
           <span className="text-xs font-bold uppercase tracking-wider text-muted">{current.type}</span>
           <p className="text-lg font-semibold text-secondary mt-2">{current.text}</p>
         </div>
@@ -328,9 +329,9 @@ function BierPongGame() {
       <div className="text-center mb-6">
         <p className="text-4xl font-mono font-bold text-secondary">{formatTime(timer)}</p>
         <div className="flex gap-2 justify-center mt-2">
-          <button onClick={startTimer} disabled={running} className="px-4 py-1.5 bg-green-500 text-white text-sm font-medium rounded-lg disabled:opacity-50">Start</button>
-          <button onClick={stopTimer} className="px-4 py-1.5 bg-amber-500 text-white text-sm font-medium rounded-lg">Stopp</button>
-          <button onClick={resetGame} className="px-4 py-1.5 bg-gray-500 text-white text-sm font-medium rounded-lg">Reset</button>
+          <button onClick={startTimer} disabled={running} className="px-4 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white text-sm font-medium rounded-lg disabled:opacity-50">Start</button>
+          <button onClick={stopTimer} className="px-4 py-1.5 bg-[#F59E0B] hover:bg-[#D97706] text-white text-sm font-medium rounded-lg">Stopp</button>
+          <button onClick={resetGame} className="px-4 py-1.5 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-lg">Reset</button>
         </div>
       </div>
       {/* Scores */}
@@ -417,10 +418,10 @@ function FlunkyballGame() {
       </div>
       {/* Scores */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-blue-50 rounded-xl p-4">
-          <p className="font-bold text-blue-700">Team 1</p>
-          <p className="text-4xl font-extrabold text-blue-600 my-2">{team1Score}</p>
-          <button onClick={() => setTeam1Score(team1Score + 1)} className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg">+1 Punkt</button>
+        <div className="bg-[#FFF8F6] border border-[#F0D5CF] rounded-xl p-4">
+          <p className="font-bold text-secondary">Team 1</p>
+          <p className="text-4xl font-extrabold text-[#1F2937] my-2">{team1Score}</p>
+          <button onClick={() => setTeam1Score(team1Score + 1)} className="px-4 py-2 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-lg">+1 Punkt</button>
         </div>
         <div className="bg-red-50 rounded-xl p-4">
           <p className="font-bold text-red-700">Team 2</p>
@@ -577,8 +578,8 @@ function IchHabNochNieGame({ alkoholfrei }: { alkoholfrei: boolean }) {
   return (
     <div className="text-center">
       {current ? (
-        <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl mb-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-purple-500 mb-2">Ich hab noch nie...</p>
+        <div className="p-6 bg-gradient-to-br from-[#FFF8F6] to-[#FFE4DC] border border-[#F0D5CF] rounded-xl mb-6">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#DC2626] mb-2">Ich hab noch nie...</p>
           <p className="text-xl font-semibold text-secondary">{current}</p>
         </div>
       ) : (
@@ -701,7 +702,7 @@ function CocktailQuizGame() {
       </div>
       <div className="flex items-center gap-2 mb-4">
         <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all duration-1000 ${timeLeft <= 5 ? "bg-red-500" : "bg-green-500"}`} style={{ width: `${(timeLeft / 15) * 100}%` }} />
+          <div className={`h-full rounded-full transition-all duration-1000 ${timeLeft <= 5 ? "bg-[#DC2626]" : "bg-[#F59E0B]"}`} style={{ width: `${(timeLeft / 15) * 100}%` }} />
         </div>
         <span className={`text-sm font-bold ${timeLeft <= 5 ? "text-red-500" : "text-muted"}`}>{timeLeft}s</span>
       </div>
@@ -710,7 +711,7 @@ function CocktailQuizGame() {
         {q.options.map((opt, i) => {
           let cls = "w-full text-left px-4 py-3 rounded-xl border transition-colors text-sm font-medium ";
           if (selected !== null) {
-            if (i === q.correct) cls += "bg-green-50 border-green-300 text-green-700";
+            if (i === q.correct) cls += "bg-[#FFF8F6] border-[#F59E0B] text-[#DC2626]";
             else if (i === selected) cls += "bg-red-50 border-red-300 text-red-700";
             else cls += "bg-light border-border text-muted";
           } else {
@@ -847,7 +848,7 @@ function TabuGame() {
         </div>
       )}
       <div className="grid grid-cols-2 gap-3">
-        <button onClick={handleCorrect} className="py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors">Richtig!</button>
+        <button onClick={handleCorrect} className="py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl transition-colors">Richtig!</button>
         <button onClick={handleSkip} className="py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold rounded-xl transition-colors">Überspringen</button>
       </div>
     </div>
@@ -884,7 +885,7 @@ export default function PartyspielePageContent() {
     <div className="page-hero-banner py-16 md:py-24">
       <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Partyspiele</span></nav>
+        <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyspiele</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyspiele</h1>
         <p className="text-white/80 max-w-lg mx-auto text-lg">
           8 Spiele direkt im Browser spielen — perfekt für jede Party! Einfach Spiel wählen und loslegen.

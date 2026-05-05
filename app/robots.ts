@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/bestellungen"],
+      disallow: ["/api/", "/bestellungen", "/checkout", "/warenkorb"],
     },
     sitemap: "https://trinkgut-jammers.de/sitemap.xml",
   };

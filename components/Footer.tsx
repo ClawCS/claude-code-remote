@@ -84,6 +84,7 @@ export default function Footer() {
           <div className="flex gap-4 text-sm text-gray-500">
             <Link href="/impressum" className="hover:text-[#F59E0B] transition-colors">{t("footer.impressum")}</Link>
             <Link href="/datenschutz" className="hover:text-[#F59E0B] transition-colors">{t("footer.datenschutz")}</Link>
+            <Link href="/agb" className="hover:text-[#F59E0B] transition-colors">AGB</Link>
           </div>
         </div>
       </div>

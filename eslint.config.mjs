@@ -13,6 +13,14 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // React 19 react-hooks/set-state-in-effect: too strict for our patterns
+  // (legitimate state-syncs from MediaQueries, scroll listeners, etc.).
+  // We treat as warning instead of error.
+  {
+    rules: {
+      "react-hooks/set-state-in-effect": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;

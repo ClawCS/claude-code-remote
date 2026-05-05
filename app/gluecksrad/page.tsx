@@ -39,32 +39,42 @@ type SpinRecord = {
 };
 
 /* ─── Confetti ─── */
+type GluecksradParticle = { left: number; delay: number; dur: number; color: string; size: number };
+
 function Confetti({ active }: { active: boolean }) {
+  const [particles, setParticles] = useState<GluecksradParticle[]>([]);
+  useEffect(() => {
+    if (active) {
+      const colors = ["#DC2626", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6", "#EC4899", "#FFD700"];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setParticles(
+        Array.from({ length: 80 }).map((_, i) => ({
+          left: Math.random() * 100,
+          delay: Math.random() * 0.6,
+          dur: 1.5 + Math.random() * 2,
+          color: colors[i % colors.length],
+          size: 6 + Math.random() * 10,
+        }))
+      );
+    }
+  }, [active]);
   if (!active) return null;
-  const colors = ["#DC2626", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6", "#EC4899", "#FFD700"];
   return (
     <div className="fixed inset-0 pointer-events-none z-50" aria-hidden>
-      {Array.from({ length: 80 }).map((_, i) => {
-        const left = Math.random() * 100;
-        const delay = Math.random() * 0.6;
-        const dur = 1.5 + Math.random() * 2;
-        const color = colors[i % colors.length];
-        const size = 6 + Math.random() * 10;
-        return (
-          <span
-            key={i}
-            className="absolute top-0 rounded-sm"
-            style={{
-              left: `${left}%`,
-              width: size,
-              height: size * 0.6,
-              background: color,
-              animation: `glueckConfetti ${dur}s ${delay}s ease-in forwards`,
-              opacity: 0,
-            }}
-          />
-        );
-      })}
+      {particles.map((p, i) => (
+        <span
+          key={i}
+          className="absolute top-0 rounded-sm"
+          style={{
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size * 0.6,
+            background: p.color,
+            animation: `glueckConfetti ${p.dur}s ${p.delay}s ease-in forwards`,
+            opacity: 0,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -218,7 +228,7 @@ export default function GluecksradPage() {
       <div className="page-hero-banner py-16 md:py-24">
         <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Glücksrad</span></nav>
+          <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Glücksrad</span></nav>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Glücksrad</h1>
           <p className="text-white/80 max-w-lg mx-auto text-lg">Drehe das Rad und gewinne tolle Preise!</p>
         </div>

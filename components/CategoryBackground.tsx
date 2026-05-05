@@ -96,19 +96,17 @@ export default function CategoryBackground({ slug }: { slug: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const config = CATEGORY_CONFIG[slug];
-  if (!config) return null;
-
-  const particleCount = isMobile ? 8 : 20;
-  const particles = generateParticles(config.particleType, config.particleColor, particleCount);
 
   useEffect(() => {
     // Reduced motion check
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReducedMotion(mq.matches);
     const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
     mq.addEventListener("change", handler);
 
     // Mobile check
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobile(window.innerWidth < 768);
     const resizeHandler = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", resizeHandler);
@@ -121,7 +119,7 @@ export default function CategoryBackground({ slug }: { slug: string }) {
 
   // Lottie laden (optional)
   useEffect(() => {
-    if (reducedMotion) return;
+    if (!config || reducedMotion) return;
     fetch(config.lottieFile)
       .then((r) => {
         if (r.ok) return r.json();
@@ -129,7 +127,12 @@ export default function CategoryBackground({ slug }: { slug: string }) {
       })
       .then(setLottieData)
       .catch(() => setLottieData(null));
-  }, [config.lottieFile, reducedMotion]);
+  }, [config, reducedMotion]);
+
+  if (!config) return null;
+
+  const particleCount = isMobile ? 8 : 20;
+  const particles = generateParticles(config.particleType, config.particleColor, particleCount);
 
   // Reduced motion: nur statischer Gradient
   if (reducedMotion) {

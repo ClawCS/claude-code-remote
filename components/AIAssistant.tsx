@@ -148,7 +148,7 @@ export default function AIAssistant() {
           className={`relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${
             isOpen
               ? "bg-secondary shadow-lg rotate-0"
-              : "bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 shadow-[0_4px_24px_rgba(124,58,237,0.5)] hover:shadow-[0_8px_32px_rgba(124,58,237,0.6)]"
+              : "bg-gradient-to-br from-[#DC2626] via-[#B91C1C] to-[#7A1428] shadow-[0_4px_24px_rgba(220,38,38,0.5)] hover:shadow-[0_8px_32px_rgba(220,38,38,0.6)]"
           }`}
           aria-label={isOpen ? "Chat schließen" : "Chat öffnen"}
         >
@@ -164,15 +164,15 @@ export default function AIAssistant() {
                 {/* Head */}
                 <rect x="8" y="10" width="24" height="20" rx="6" fill="white" opacity="0.95" />
                 {/* Eyes - glowing */}
-                <circle cx="15" cy="19" r="3" fill="#7C3AED" />
-                <circle cx="25" cy="19" r="3" fill="#7C3AED" />
+                <circle cx="15" cy="19" r="3" fill="#F59E0B" />
+                <circle cx="25" cy="19" r="3" fill="#F59E0B" />
                 <circle cx="15.8" cy="18.2" r="1" fill="white" />
                 <circle cx="25.8" cy="18.2" r="1" fill="white" />
                 {/* Smile */}
-                <path d="M15 25 Q20 28 25 25" stroke="#7C3AED" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                <path d="M15 25 Q20 28 25 25" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" fill="none" />
                 {/* Antenna */}
                 <line x1="20" y1="10" x2="20" y2="5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                <circle cx="20" cy="4" r="2" fill="#22D3EE" className="animate-pulse" />
+                <circle cx="20" cy="4" r="2" fill="#F59E0B" className="animate-pulse" />
                 {/* Ear nodes */}
                 <circle cx="6" cy="20" r="2.5" fill="white" opacity="0.8" />
                 <circle cx="34" cy="20" r="2.5" fill="white" opacity="0.8" />

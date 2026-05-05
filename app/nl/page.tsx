@@ -502,7 +502,7 @@ export default function NlLandingPage() {
           {" · "}
           <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="hover:text-white">Privacy</a>
           {" · "}
-          <a href="/" className="hover:text-white">🇩🇪 Duitse website</a>
+          <Link href="/" className="hover:text-white">🇩🇪 Duitse website</Link>
         </p>
         <p className="mt-3 text-xs text-gray-600">Geen 18, geen alcohol.</p>
       </footer>

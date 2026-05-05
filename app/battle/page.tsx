@@ -119,32 +119,44 @@ function getCurrentDuel(): Duel {
 }
 
 /* ─── Confetti component ─── */
-function Confetti({ active }: { active: boolean }) {
-  if (!active) return null;
+type Particle = { left: number; delay: number; dur: number; color: string; size: number };
+
+function generateParticles(count: number, maxSize: number, maxDelay: number): Particle[] {
   const colors = ["#DC2626", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6", "#EC4899", "#FFD700"];
+  return Array.from({ length: count }).map((_, i) => ({
+    left: Math.random() * 100,
+    delay: Math.random() * maxDelay,
+    dur: 1.5 + Math.random() * 2,
+    color: colors[i % colors.length],
+    size: 6 + Math.random() * maxSize,
+  }));
+}
+
+function Confetti({ active }: { active: boolean }) {
+  const [particles, setParticles] = useState<Particle[]>([]);
+  useEffect(() => {
+    if (active) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setParticles(generateParticles(60, 8, 0.5));
+    }
+  }, [active]);
+  if (!active) return null;
   return (
     <div className="fixed inset-0 pointer-events-none z-50" aria-hidden>
-      {Array.from({ length: 60 }).map((_, i) => {
-        const left = Math.random() * 100;
-        const delay = Math.random() * 0.5;
-        const dur = 1.5 + Math.random() * 2;
-        const color = colors[i % colors.length];
-        const size = 6 + Math.random() * 8;
-        return (
-          <span
-            key={i}
-            className="absolute top-0 rounded-sm"
-            style={{
-              left: `${left}%`,
-              width: size,
-              height: size * 0.6,
-              background: color,
-              animation: `confettiFall ${dur}s ${delay}s ease-in forwards`,
-              opacity: 0,
-            }}
-          />
-        );
-      })}
+      {particles.map((p, i) => (
+        <span
+          key={i}
+          className="absolute top-0 rounded-sm"
+          style={{
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size * 0.6,
+            background: p.color,
+            animation: `confettiFall ${p.dur}s ${p.delay}s ease-in forwards`,
+            opacity: 0,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -269,7 +281,7 @@ export default function BattlePage() {
       <div className="page-hero-banner py-16 md:py-24">
         <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Getränke-Battle</span></nav>
+          <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Getränke-Battle</span></nav>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Battle</h1>
           <p className="text-white/80 max-w-lg mx-auto text-lg">Wöchentliches Voting-Duell — Welches Getränk gewinnt?</p>
         </div>

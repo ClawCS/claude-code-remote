@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -45,7 +46,7 @@ function ProdukteContent() {
     <div className="page-hero-banner py-16 md:py-24">
       <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <nav className="text-sm text-white/60 mb-4"><a href="/" className="hover:text-white">Home</a> <span className="mx-1">/</span> <span className="text-white">Sortiment</span></nav>
+        <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Sortiment</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Alle Produkte</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
           {products.length} Artikel — von Bier über Wein bis Spirituosen. Alles für dich.
