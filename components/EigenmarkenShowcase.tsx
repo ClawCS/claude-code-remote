@@ -7,7 +7,7 @@ import { eigenmarken } from "@/data/eigenmarken";
 
 export default function EigenmarkenShowcase() {
   return (
-    <section className="relative py-20 md:py-24">
+    <section className="relative bg-slate-stone py-20 md:py-24">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-12">
           <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">

@@ -32,26 +32,22 @@
   display: none;
 }
 
-/* ═══ Schiefer-Textur (Slate Stone) ═══ */
-.bg-slate-stone,
-body {
+/* ═══ Schiefer-Textur (Slate Stone) — nur als Klasse für gezielte Sektionen ═══ */
+.bg-slate-stone {
   background-color: #1A1A1A;
   background-image:
-    /* feine diagonale Schiefer-Maserung */
     linear-gradient(135deg, transparent 49%, rgba(255, 255, 255, 0.018) 50%, transparent 51%),
     linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.012) 50%, transparent 51%),
-    /* warme Goldflecken weit verteilt */
     radial-gradient(ellipse 800px 400px at 15% 30%, rgba(245, 158, 11, 0.04), transparent 70%),
     radial-gradient(ellipse 600px 600px at 85% 70%, rgba(220, 38, 38, 0.03), transparent 70%),
-    /* feiner Beton-Noise via SVG */
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
   background-size: 80px 80px, 80px 80px, 100% 100%, 100% 100%, 256px 256px;
-  background-attachment: fixed, fixed, fixed, fixed, fixed;
 }
 
 /* ═══ Body & Global ═══ */
 body {
-  color: #E5E7EB;
+  background: #FFFFFF;
+  color: var(--color-foreground);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
