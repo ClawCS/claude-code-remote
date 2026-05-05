@@ -21,37 +21,34 @@ export default function EigenmarkenShowcase() {
           </p>
         </ScrollReveal>
 
-        {/* Mobile: horizontal scroll. Desktop: grid */}
-        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:gap-4 sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0">
+        {/* Mobile: horizontal scroll. Desktop: grid mit 3 oben / 3 unten */}
+        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0">
           {eigenmarken.map((likoer, i) => (
-            <ScrollReveal key={likoer.slug} delay={i * 100} className="snap-center flex-shrink-0 w-[180px] sm:w-auto">
+            <ScrollReveal key={likoer.slug} delay={i * 80} className="snap-center flex-shrink-0 w-[260px] sm:w-auto">
               <Link
                 href={`/eigenmarke#${likoer.slug}`}
-                className="group relative block rounded-2xl overflow-hidden border border-white/5 hover:border-[#F59E0B]/40 shadow-2xl shadow-black/40 hover:shadow-[0_0_32px_rgba(245,158,11,0.2)] transition-all duration-300 aspect-[2/3] hover:-translate-y-1"
+                className="group relative block rounded-2xl overflow-hidden border border-white/5 hover:border-[#F59E0B]/40 shadow-2xl shadow-black/40 hover:shadow-[0_0_32px_rgba(245,158,11,0.25)] transition-all duration-300 aspect-[707/1000] hover:-translate-y-2"
               >
                 <Image
-                  src={likoer.posterImage}
-                  alt={likoer.name}
+                  src={likoer.image}
+                  alt={`${likoer.name} — ${likoer.flavor}`}
                   fill
-                  sizes="(max-width: 640px) 180px, (max-width: 1024px) 33vw, 16vw"
-                  className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                  sizes="(max-width: 640px) 260px, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
                   unoptimized
                 />
 
-                {/* ABV pill — top right */}
-                <span className="absolute top-3 right-3 px-2 py-1 text-[10px] font-bold text-[#1A1A1A] bg-[#F59E0B] rounded-full shadow-md">
-                  {likoer.abv}% Vol.
-                </span>
+                {/* Subtle hover glow overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#F59E0B]/0 to-[#F59E0B]/0 group-hover:from-[#F59E0B]/10 transition-colors duration-300 pointer-events-none" />
 
-                {/* Bottom gradient + name */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent pt-16 pb-4 px-3 text-center">
-                  <p className="font-extrabold text-white text-sm drop-shadow-lg">
-                    {likoer.name}
-                  </p>
-                  <p className="text-[#F59E0B] text-[11px] mt-0.5 opacity-80">
-                    {likoer.flavor}
-                  </p>
-                  <div className="mx-auto w-0 group-hover:w-8 h-px bg-[#F59E0B] mt-2 transition-all duration-500" />
+                {/* Bottom CTA-Pill on hover */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F59E0B] text-[#1A1A1A] text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
+                    Mehr erfahren
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </span>
                 </div>
               </Link>
             </ScrollReveal>

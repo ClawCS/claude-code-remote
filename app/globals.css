@@ -23,6 +23,15 @@
   --shadow-red-glow: 0 0 20px rgba(220, 38, 38, 0.15), 0 4px 16px rgba(220, 38, 38, 0.1);
 }
 
+/* ═══ Hide scrollbar utility ═══ */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ═══ Schiefer-Textur (Slate Stone) ═══ */
 .bg-slate-stone,
 body {
