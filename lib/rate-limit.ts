@@ -7,10 +7,16 @@ type Bucket = { count: number; resetAt: number };
 const buckets = new Map<string, Bucket>();
 
 function getClientIp(req: NextRequest): string {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
+  // Auf dem Hetzner-VPS läuft die App hinter einem vertrauenswürdigen Reverse-Proxy
+  // (Caddy/nginx), der x-real-ip auf die echte Client-IP setzt. Diesen Header
+  // bevorzugen — proxy-kontrolliert, nicht vom Client fälschbar.
   const real = req.headers.get("x-real-ip");
   if (real) return real.trim();
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const hops = forwarded.split(",").map((s) => s.trim()).filter(Boolean);
+    if (hops.length) return hops[hops.length - 1];
+  }
   return "unknown";
 }
 

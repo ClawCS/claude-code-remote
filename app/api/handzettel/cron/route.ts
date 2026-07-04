@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
+import { isAuthorizedBearer } from "@/lib/cron-auth";
 
 /**
  * Cron-Endpoint für wöchentliche Handzettel-Aktualisierung.
  *
- * Aufruf: Jeden Sonntag um 17:00 Uhr
+ * Aufruf: Jeden Sonntag um 16:00 Uhr (neuer Handzettel von trinkgut.de übernehmen).
  *
- * Für Vercel: vercel.json -> "crons": [{ "path": "/api/handzettel/cron", "schedule": "0 17 * * 0" }]
- * Für VPS: crontab -> 0 17 * * 0 curl -X POST https://deine-domain.de/api/handzettel/cron -H "Authorization: Bearer $CRON_SECRET"
+ * Hetzner-VPS: crontab -> 0 16 * * 0 curl -X POST https://trinkgut-jammers.de/api/handzettel/cron -H "Authorization: Bearer $CRON_SECRET"
  *
  * SICHERHEIT: CRON_SECRET MUSS gesetzt sein, sonst gibt der Endpoint 503 zurück.
+ * Der Vergleich ist timing-sicher (siehe lib/cron-auth.ts).
  */
 
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -20,8 +21,7 @@ function authorize(request: Request): NextResponse | null {
       { status: 503 }
     );
   }
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!isAuthorizedBearer(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   return null;
@@ -43,10 +43,14 @@ async function runUpdate(request: Request) {
   const baseUrl = new URL(request.url).origin;
 
   try {
-    // 1. Alten Cache loeschen und neu abrufen
+    // 1. Alten Cache loeschen und neu abrufen — das eigene CRON_SECRET
+    //    weiterreichen, da der refresh=true-Endpoint jetzt authentifiziert ist.
     const fetchRes = await fetch(`${baseUrl}/api/handzettel/fetch?refresh=true`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${CRON_SECRET}`,
+      },
     });
 
     if (!fetchRes.ok) {

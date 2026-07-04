@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { isAuthorizedBearer } from "@/lib/cron-auth";
 
 const TRINKGUT_CATALOG_URL =
   "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest";
@@ -317,11 +318,18 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const forceRefresh = searchParams.get("refresh") === "true";
 
+  // Ein erzwungener Refresh löst einen ausgehenden Scrape + Disk-Write aus und
+  // ist deshalb nur mit CRON_SECRET erlaubt (verhindert Request-Amplifikation).
+  if (forceRefresh && !isAuthorizedBearer(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const cache = await loadCache();
   const now = new Date();
   const currentKw = getISOWeek(now);
 
-  // Cache verwenden wenn aktuell (gleiche KW) und kein Force-Refresh
+  // Cache verwenden wenn aktuell (gleiche KW) und kein Force-Refresh.
+  // Bei neuer Kalenderwoche wird EINMAL automatisch neu abgerufen (Self-Healing).
   if (cache && cache.kw === currentKw && cache.year === now.getFullYear() && !forceRefresh) {
     return NextResponse.json(cache);
   }
@@ -333,8 +341,12 @@ export async function GET(request: Request) {
   return NextResponse.json(data);
 }
 
-/** POST: Manuelles Update erzwingen */
-export async function POST() {
+/** POST: Manuelles Update erzwingen — nur mit CRON_SECRET */
+export async function POST(request: Request) {
+  if (!isAuthorizedBearer(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const data = await fetchCatalog();
   await saveCache(data);
 

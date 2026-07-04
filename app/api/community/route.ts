@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   loadDB,
   saveDB,
@@ -15,6 +16,14 @@ const ACTION_POINTS: Record<string, { points: number; label: string }> = {
   quiz_complete: { points: 20, label: "Quiz abgeschlossen" },
   leergut_rechner: { points: 10, label: "Leergut-Rechner genutzt" },
   partyspiel: { points: 5, label: "Partyspiel gespielt" },
+};
+
+// Tageslimit pro Aktion & Nutzer (begrenzt Punkte-Farming per Script)
+const ACTION_DAILY_CAP: Record<string, number> = {
+  kuehlschrank_check: 3,
+  quiz_complete: 5,
+  leergut_rechner: 3,
+  partyspiel: 10,
 };
 
 /**
@@ -72,7 +81,16 @@ export async function GET(request: Request) {
  * POST /api/community
  * Body: { action: "register" | "add_points", ... }
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Rate-Limit gegen Punkte-Injection & register-Flooding
+  const limit = rateLimit(request, { key: "community", max: 30, windowMs: 60_000 });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Zu viele Anfragen. Bitte einen Moment warten." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   const body = await request.json();
   const db = await loadDB();
 
@@ -140,6 +158,18 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, points: 0, alreadyVisited: true });
       }
       db.users[id].lastVisit = today;
+    }
+
+    // Tageslimit pro Aktion durchsetzen (Farming-Schutz)
+    const dailyCap = ACTION_DAILY_CAP[pointAction];
+    if (dailyCap) {
+      const today = new Date().toDateString();
+      const grantedToday = db.users[id].history.filter(
+        (h) => h.action === pointAction && new Date(h.timestamp).toDateString() === today
+      ).length;
+      if (grantedToday >= dailyCap) {
+        return NextResponse.json({ success: true, points: 0, capped: true });
+      }
     }
 
     const pts = config.points;
