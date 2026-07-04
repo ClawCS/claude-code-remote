@@ -11,7 +11,6 @@ import {
 
 const ACTION_POINTS: Record<string, { points: number; label: string }> = {
   daily_visit: { points: 10, label: "Taeglicher Besuch" },
-  battle_vote: { points: 5, label: "Battle-Vote" },
   kuehlschrank_check: { points: 15, label: "Kuehlschrank-Check" },
   quiz_complete: { points: 20, label: "Quiz abgeschlossen" },
   leergut_rechner: { points: 10, label: "Leergut-Rechner genutzt" },

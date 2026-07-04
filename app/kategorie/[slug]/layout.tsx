@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
   return {
-    title: `${category.name} — Sortiment | Trinkgut Jammers`,
+    title: `${category.name} — Sortiment`,
     description: `Alle ${category.name}-Angebote bei Trinkgut Jammers Goch. Aktuelle Wochenpreise und Top-Marken auf einen Blick.`,
   };
 }

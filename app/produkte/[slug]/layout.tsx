@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
   return {
-    title: `${product.name} | Trinkgut Jammers`,
+    title: `${product.name}`,
     description: product.description || `${product.name} – ${product.category || "Getränk"} bei Trinkgut Jammers Goch.`,
   };
 }

@@ -5,7 +5,7 @@ import { eigenmarken } from "@/data/eigenmarken";
 import ShimmerParticles from "@/components/ShimmerParticles";
 
 export const metadata: Metadata = {
-  title: "Unsere Eigenmarken — 6 exklusive Liköre | Trinkgut Jammers",
+  title: "Unsere Eigenmarken — 6 exklusive Liköre",
   description: "Sechs handwerklich kuratierte Eigenmarken-Liköre — exklusiv bei Trinkgut Jammers in Goch.",
 };
 

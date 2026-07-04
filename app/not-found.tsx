@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Seite nicht gefunden — 404 | Trinkgut Jammers",
+  title: "Seite nicht gefunden — 404",
   description: "Die gesuchte Seite existiert nicht. Zurück zur Startseite oder Sortiment durchsuchen.",
 };
 

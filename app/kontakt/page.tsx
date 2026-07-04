@@ -3,7 +3,7 @@ import Link from "next/link";
 import ShimmerParticles from "@/components/ShimmerParticles";
 
 export const metadata: Metadata = {
-  title: "Kontakt — Trinkgut Jammers Goch",
+  title: "Kontakt",
   description: "Kontaktiere Trinkgut Jammers in Goch — Telefon, WhatsApp, E-Mail, Adresse und Öffnungszeiten.",
 };
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Datenschutzerklärung – Trinkgut Jammers Goch",
+  title: "Datenschutzerklärung",
 };
 
 export default function DatenschutzPage() {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AGB — Allgemeine Geschäftsbedingungen | Trinkgut Jammers",
+  title: "AGB — Allgemeine Geschäftsbedingungen",
   description: "Allgemeine Geschäftsbedingungen für Trinkgut Jammers Goch. Bestellprozess, Lieferung, Widerrufsrecht, Zahlung und Haftung.",
 };
 

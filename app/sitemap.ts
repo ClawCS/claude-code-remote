@@ -25,7 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/bierkarte", priority: 0.7, changeFrequency: "monthly" },
     { path: "/oeko-tracker", priority: 0.6, changeFrequency: "weekly" },
     { path: "/partyspiele", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/battle", priority: 0.6, changeFrequency: "monthly" },
     { path: "/nl", priority: 0.7, changeFrequency: "weekly" },
     { path: "/kontakt", priority: 0.7, changeFrequency: "yearly" },
     { path: "/bewerbung", priority: 0.6, changeFrequency: "monthly" },

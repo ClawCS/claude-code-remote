@@ -51,6 +51,13 @@ function ProdukteContent() {
         <p className="text-white/80 max-w-xl mx-auto text-lg">
           {products.length} Artikel — von Bier über Wein bis Spirituosen. Alles für dich.
         </p>
+        <Link
+          href="/angebote"
+          className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white/90 backdrop-blur transition-colors hover:border-white/50 hover:bg-white/10"
+        >
+          🗓️ Tagesaktuelle Wochenangebote im Handzettel
+          <span aria-hidden>→</span>
+        </Link>
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -58,7 +65,7 @@ function ProdukteContent() {
       {/* DE / NL Tabs */}
       <div className="flex gap-2 mb-6">
         {([
-          { key: "alle" as Origin, label: "Alle Angebote", icon: "🛒", count: products.length },
+          { key: "alle" as Origin, label: "Alle Artikel", icon: "🛒", count: products.length },
           { key: "DE" as Origin, label: "Deutschland", icon: "🇩🇪", count: deProducts.length },
           { key: "NL" as Origin, label: "Nederland", icon: "🇳🇱", count: nlProducts.length },
         ]).map((tab) => (
