@@ -155,7 +155,7 @@ export default function Home() {
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
             Unser Team
           </h2>
-          <p className="text-muted mt-3 max-w-xl mx-auto">10 Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!</p>
+          <p className="text-muted mt-3 max-w-xl mx-auto">{teamMembers.length} Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!</p>
         </ScrollReveal>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
           {teamMembers.map((member, i) => (

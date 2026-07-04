@@ -66,7 +66,7 @@ export default function NlLandingPage() {
     <div className="min-h-screen bg-white">
       {/* ═══ Top bar ═══ */}
       <div className="bg-orange-500 text-white text-center py-2 px-4 text-sm font-semibold">
-        🇳🇱 Speciaal voor onze Nederlandse klanten — Bespaar tot 40% op dranken!
+        🇳🇱 Speciaal voor onze Nederlandse klanten — Bespaar tot 25% op dranken!
       </div>
 
       {/* ═══ Nav ═══ */}
@@ -77,7 +77,7 @@ export default function NlLandingPage() {
             <Image src="/images/logo-trinkgut-jammers.png" alt="Trinkgut Jammers" width={140} height={55} className="h-10 w-auto" />
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
-            <a href="https://wa.me/4917663228597" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-700">
+            <a href="https://wa.me/491752492386" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-700">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.025.506 3.932 1.395 5.608L.054 23.395a.6.6 0 00.727.728l5.787-1.34A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.6a9.56 9.56 0 01-5.148-1.5l-.36-.216-3.735.865.888-3.638-.237-.376A9.555 9.555 0 012.4 12c0-5.302 4.298-9.6 9.6-9.6s9.6 4.298 9.6 9.6-4.298 9.6-9.6 9.6z"/></svg>
               <span className="hidden sm:inline">WhatsApp</span>
             </a>
@@ -120,7 +120,7 @@ export default function NlLandingPage() {
             <span className="text-lg">🇳🇱</span> Speciaal voor Nederlandse klanten
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
-            Bespaar tot <span className="text-yellow-300">40%</span><br />
+            Bespaar tot <span className="text-yellow-300">25%</span><br />
             op al je dranken
           </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-2xl mx-auto">
@@ -244,7 +244,7 @@ export default function NlLandingPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: "💰", title: "Tot 40% goedkoper", desc: "Duitse prijzen liggen fors lager dan in Nederland. Bespaar op bier, wijn, sterke drank en meer." },
+              { icon: "💰", title: "Tot 25% goedkoper", desc: "Duitse prijzen liggen fors lager dan in Nederland. Bespaar op bier, wijn, sterke drank en meer." },
               { icon: "🏪", title: "7.000+ producten", desc: "Het grootste assortiment in de regio. Van lokaal Duits bier tot internationale topmerken." },
               { icon: "🅿️", title: "Gratis parkeren", desc: "Ruime gratis parkeerplaats direct voor de deur. Makkelijk laden, ook met een volle kofferbak." },
               { icon: "🗣️", title: "Wij spreken Nederlands", desc: "Ons team helpt je graag in het Nederlands. Je hoeft geen Duits te spreken!" },
@@ -272,7 +272,7 @@ export default function NlLandingPage() {
             { icon: "📦", title: "Levering & retour", desc: "Wij leveren aan huis en halen lege kratten weer op. Geen gesleep!" },
             { icon: "🥂", title: "Sekt & bubbels", desc: "Prosecco, Champagne of Sekt — voor bruiloften, jubilea en meer." },
             { icon: "🎯", title: "Op maat", desc: "Vertel ons je budget en het aantal gasten — wij stellen het perfecte pakket samen." },
-            { icon: "💰", title: "Duitse prijzen", desc: "Bespaar tot 40% op dranken vergeleken met Nederlandse supermarktprijzen." },
+            { icon: "💰", title: "Duitse prijzen", desc: "Bespaar tot 25% op dranken vergeleken met Nederlandse supermarktprijzen." },
           ].map((item) => (
             <div key={item.title} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-orange-200 hover:shadow-lg transition-all">
               <div className="text-3xl mb-3">{item.icon}</div>
@@ -282,7 +282,7 @@ export default function NlLandingPage() {
           ))}
         </div>
         <div className="text-center mt-8">
-          <a href="https://wa.me/4917663228597?text=Hallo!%20Ik%20wil%20graag%20een%20feest%20plannen." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-3.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
+          <a href="https://wa.me/491752492386?text=Hallo!%20Ik%20wil%20graag%20een%20feest%20plannen." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-3.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
             💬 WhatsApp ons voor een offerte
           </a>
         </div>
@@ -313,7 +313,7 @@ export default function NlLandingPage() {
             <a href="tel:+492823418707" className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg transition-all">
               📞 Bel ons voor beschikbaarheid
             </a>
-            <a href="https://wa.me/4917663228597?text=Hallo!%20Ik%20wil%20graag%20informatie%20over%20verhuur." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
+            <a href="https://wa.me/491752492386?text=Hallo!%20Ik%20wil%20graag%20informatie%20over%20verhuur." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all">
               💬 WhatsApp
             </a>
           </div>

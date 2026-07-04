@@ -8,6 +8,7 @@ import ShimmerParticles from "@/components/ShimmerParticles";
 
 export default function GaleriePage() {
   const [lightboxItem, setLightboxItem] = useState<typeof galleryItems[0] | null>(null);
+  const teamCount = galleryItems.filter((i) => i.category === "team").length;
 
   return (
     <>
@@ -18,7 +19,7 @@ export default function GaleriePage() {
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Galerie</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Unser Team</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
-          {galleryItems.length} Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!
+          {teamCount} Mitarbeiter mit Herz und Leidenschaft — wir beraten dich gerne!
         </p>
       </div>
     </div>
@@ -96,7 +97,7 @@ export default function GaleriePage() {
       <div className="mt-12 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 rounded-2xl p-8 text-center text-white">
         <h2 className="text-2xl font-bold mb-2">Mehr Bilder auf Instagram</h2>
         <p className="text-white/70 mb-4 max-w-md mx-auto">
-          217 Beiträge · 4.558 Follower · Täglich neue Einblicke
+@trinkgutjammers_goch · Täglich neue Einblicke aus dem Markt
         </p>
         <a
           href="https://www.instagram.com/trinkgutjammers_goch/"

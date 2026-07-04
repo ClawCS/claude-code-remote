@@ -76,7 +76,27 @@ export default function DatenschutzPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-secondary mb-2">8. Externe Links</h2>
+          <h2 className="text-lg font-semibold text-secondary mb-2">8. KI-Assistent &amp; Bild-Uploads (Google Gemini)</h2>
+          <p>
+            Unser Website-Chat („Frag mich etwas") sowie die Funktionen Kühlschrank- und Leergut-Scan nutzen die
+            KI-Schnittstelle Google Gemini (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland).
+            Wenn Sie den Chat verwenden, werden Ihre eingegebenen Texte an Google übermittelt und dort verarbeitet,
+            um eine Antwort zu erzeugen. Beim Kühlschrank- oder Leergut-Scan wird zusätzlich das von Ihnen
+            hochgeladene Bild an Google übermittelt und analysiert. Die Verarbeitung kann auf Servern außerhalb der
+            EU (u. a. in den USA) erfolgen; Google stützt solche Drittlandübermittlungen auf die
+            EU-Standardvertragsklauseln.
+          </p>
+          <p className="mt-2">
+            Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem funktionierenden
+            Beratungs- und Service-Angebot). Bitte geben Sie im Chat keine sensiblen personenbezogenen Daten ein und
+            laden Sie nur Bilder hoch, auf denen keine Personen erkennbar sind. Wir speichern die Chat-Inhalte und
+            hochgeladenen Bilder nicht dauerhaft auf unseren Systemen. Weitere Informationen finden Sie in den
+            Datenschutzhinweisen von Google (policies.google.com/privacy).
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold text-secondary mb-2">9. Externe Links</h2>
           <p>
             Unsere Website enthält Links zu externen Websites (z.B. Instagram, Facebook, WhatsApp).
             Für die Inhalte und Datenschutzpraktiken dieser Seiten sind wir nicht verantwortlich.
@@ -84,10 +104,10 @@ export default function DatenschutzPage() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-secondary mb-2">9. Änderungen</h2>
+          <h2 className="text-lg font-semibold text-secondary mb-2">10. Änderungen</h2>
           <p>
             Wir behalten uns vor, diese Datenschutzerklärung anzupassen, um sie stets den aktuellen
-            rechtlichen Anforderungen anzupassen. Stand: März 2026.
+            rechtlichen Anforderungen anzupassen. Stand: Juli 2026.
           </p>
         </section>
       </div>

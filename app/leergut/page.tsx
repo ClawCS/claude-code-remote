@@ -386,7 +386,7 @@ export default function LeergutRechnerPage() {
           Mo&ndash;Sa 08:00&ndash;20:00 Uhr | Jurgenstr. 20, 47574 Goch
         </p>
         <a
-          href="https://wa.me/4901752492386?text=Hallo%2C+ich+m%C3%B6chte+mein+Leergut+abgeben!"
+          href="https://wa.me/491752492386?text=Hallo%2C+ich+m%C3%B6chte+mein+Leergut+abgeben!"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors text-sm"

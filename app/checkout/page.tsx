@@ -6,7 +6,7 @@ import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 
 export default function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice } = useCart();
   const [submitted, setSubmitted] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "delivery">("pickup");
   const [contact, setContact] = useState({
@@ -27,10 +27,15 @@ export default function CheckoutPage() {
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <p className="text-6xl mb-4">🎉</p>
-        <h1 className="text-2xl font-bold text-secondary mb-2">Bestellung eingegangen!</h1>
+        <p className="text-6xl mb-4">📧</p>
+        <h1 className="text-2xl font-bold text-secondary mb-2">Fast geschafft!</h1>
         <p className="text-muted mb-6">
-          Vielen Dank für deine Bestellung. Wir melden uns in Kürze bei dir.
+          Wir haben eine vorausgefüllte E-Mail mit deiner Bestellung geöffnet. Bitte
+          <strong> sende diese E-Mail ab</strong>, damit deine Anfrage bei uns ankommt — wir melden uns dann
+          zur Bestätigung. Kein Mailprogramm eingerichtet? Ruf uns an unter{" "}
+          <a href="tel:02823418707" className="text-primary hover:underline">02823&nbsp;418707</a>{" "}
+          oder schreib uns per{" "}
+          <a href="https://wa.me/491752492386" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">WhatsApp</a>.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
@@ -118,7 +123,9 @@ export default function CheckoutPage() {
     );
     window.open(`mailto:jammers-goch@trinkgut.de?subject=${subject}&body=${body}`, "_self");
 
-    clearCart();
+    // Warenkorb NICHT sofort leeren: Der Versand der E-Mail lässt sich technisch
+    // nicht bestätigen. So gehen die Artikel nicht verloren, falls der Nutzer den
+    // E-Mail-Entwurf abbricht oder kein Mailprogramm eingerichtet ist.
     setSubmitted(true);
   };
 
