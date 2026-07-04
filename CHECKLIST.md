@@ -37,10 +37,10 @@
 - [x] **2.1** ✅ Partyplaner: Liter-basiert, Stückzahl aus echter Gebindegröße (Soft 10l→10 statt 1)
 - [x] **2.2** ✅ Leergut: Bügelflasche 0,15 € ergänzt
 - [x] **2.3** ✅ Leergut: Kasten-Labels eindeutig (inkl./ohne Flaschen)
-- [ ] **2.4** ⬜ Öko-Tracker: Kasten=24 Flaschen-Faktor, „0 mal duschen"
-- [ ] **2.5** ⬜ Trink-Roulette: Zeiger ≠ Ergebnis (partyspiele)
-- [ ] **2.6** ⬜ Cocktail-Quiz: Timeout folgenlos, Timer-Doppelung
-- [ ] **2.7** ⬜ Bier-Pong: keine Siegbedingung, Timer-Leak
+- [x] **2.4** ✅ Öko-Tracker: „0 mal duschen" gefixt (realistische 60 L/Dusche, min. 1)
+- [x] **2.5** ✅ Trink-Roulette: Zeiger = Ergebnis gekoppelt
+- [x] **2.6** ✅ Cocktail-Quiz: Timeout wirksam (keine Punkte), Timer-Doppelung/Leak behoben
+- [x] **2.7** ✅ Bier-Pong: Siegbedingung + Sieger-Banner + Timer-Cleanup
 - [x] **2.10** ✅ Krombacher-Literpreis 5,00 €/L
 - [x] **2.11** ✅ country-products (mit Bierkarte entfernt)
 - [x] **2.12/2.13** ✅ Battle-Voting/Wochenlogik (mit Battle entfernt)
