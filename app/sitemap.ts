@@ -22,7 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/gewinnspiel/archiv", priority: 0.5, changeFrequency: "monthly" },
     { path: "/leergut", priority: 0.7, changeFrequency: "monthly" },
     { path: "/kuehlschrank", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/bierkarte", priority: 0.7, changeFrequency: "monthly" },
     { path: "/oeko-tracker", priority: 0.6, changeFrequency: "weekly" },
     { path: "/partyspiele", priority: 0.7, changeFrequency: "monthly" },
     { path: "/nl", priority: 0.7, changeFrequency: "weekly" },

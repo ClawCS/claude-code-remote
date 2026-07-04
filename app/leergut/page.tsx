@@ -19,11 +19,12 @@ const PFAND_TYPES: PfandType[] = [
   { key: "einweg_dose", label: "Einweg-Dose", icon: "\uD83E\uDD64", price: 0.25, description: "0,25 \u20AC Pfand" },
   { key: "mehrweg_bier_033", label: "Mehrweg-Bier 0,33L", icon: "\uD83C\uDF7A", price: 0.08, description: "0,08 \u20AC Pfand" },
   { key: "mehrweg_bier_05", label: "Mehrweg-Bier 0,5L", icon: "\uD83C\uDF7A", price: 0.08, description: "0,08 \u20AC Pfand" },
+  { key: "mehrweg_buegel", label: "B\u00FCgelflasche (z.B. Flensburger)", icon: "\uD83C\uDF7E", price: 0.15, description: "0,15 \u20AC Pfand" },
   { key: "mehrweg_wasser_pet", label: "Mehrweg-Wasser PET", icon: "\uD83D\uDCA7", price: 0.15, description: "0,15 \u20AC Pfand" },
   { key: "mehrweg_glas", label: "Mehrweg-Glas 0,7/0,75L", icon: "\uD83C\uDF77", price: 0.15, description: "0,15 \u20AC Pfand" },
-  { key: "bierkasten_20", label: "Bierkasten 20er", icon: "\uD83D\uDCE6", price: 1.50, description: "1,50 \u20AC Pfand" },
-  { key: "bierkasten_24", label: "Bierkasten 24er", icon: "\uD83D\uDCE6", price: 3.42, description: "3,42 \u20AC inkl. Flaschen" },
-  { key: "wasserkasten", label: "Wasserkasten 12er", icon: "\uD83D\uDCE6", price: 3.30, description: "3,30 \u20AC inkl. Flaschen" },
+  { key: "bierkasten_20", label: "Bierkasten 20er (nur Kasten)", icon: "\uD83D\uDCE6", price: 1.50, description: "1,50 \u20AC \u2014 Flaschen separat z\u00E4hlen" },
+  { key: "bierkasten_24", label: "Bierkasten 24er (inkl. Flaschen)", icon: "\uD83D\uDCE6", price: 3.42, description: "3,42 \u20AC inkl. Flaschen" },
+  { key: "wasserkasten", label: "Wasserkasten 12er (inkl. Flaschen)", icon: "\uD83D\uDCE6", price: 3.30, description: "3,30 \u20AC inkl. Flaschen" },
 ];
 
 type Counts = Record<string, number>;

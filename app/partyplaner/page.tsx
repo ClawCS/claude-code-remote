@@ -24,44 +24,67 @@ function calculateNeeds(config: PartyConfig) {
   const drinksPerHour = 2;
   const totalDrinks = guests * duration * drinksPerHour;
 
-  const beerCount = Math.ceil((totalDrinks * beerDrinkers) / 100);
-  const wineCount = Math.ceil((totalDrinks * wineDrinkers) / 100);
-  const softCount = Math.ceil((totalDrinks * softDrinkers) / 100);
-  const spiritCount = Math.ceil((totalDrinks * spiritDrinkers) / 100);
+  // Portionen (Getränke) pro Kategorie
+  const beerServings = (totalDrinks * beerDrinkers) / 100;
+  const wineServings = (totalDrinks * wineDrinkers) / 100;
+  const softServings = (totalDrinks * softDrinkers) / 100;
+  const spiritServings = (totalDrinks * spiritDrinkers) / 100;
 
-  // Convert to units: beer=0.5l bottles, wine=0.75l bottles (4 glasses), soft=1l bottles (4 glasses), spirits=0.7l (14 shots)
-  const beerBottles = beerCount;
-  const beerCases = Math.ceil(beerBottles / 20);
-  const wineBottles = Math.ceil(wineCount / 4);
-  const softLiters = Math.ceil(softCount / 4);
-  const spiritBottles = Math.ceil(spiritCount / 14);
-  const waterLiters = Math.ceil(guests * duration * 0.3);
+  // Portionsgrößen → tatsächlicher Liter-Bedarf pro Kategorie
+  const beerLiters = beerServings * 0.33; // Flasche/Glas ~0,33 l
+  const wineLiters = wineServings * 0.2; // Weinglas ~0,2 l
+  const softLiters = softServings * 0.25; // Glas ~0,25 l
+  const spiritLiters = spiritServings * 0.04; // Shot 4 cl
+  const waterLiters = guests * duration * 0.2; // ~0,2 l pro Person und Stunde
 
-  return { beerCases, wineBottles, softLiters, spiritBottles, waterLiters, totalDrinks };
+  return { beerLiters, wineLiters, softLiters, spiritLiters, waterLiters, totalDrinks };
+}
+
+/** Liest das Volumen eines Produkts (in Litern) aus unit/description — z.B. "16 x 0,33 l" = 5,28 l, "5L" = 5 l. */
+function parseVolumeLiters(p: Product): number {
+  const text = `${p.unit ?? ""} ${p.description ?? ""}`.toLowerCase().replace(/,/g, ".");
+  const multi = text.match(/(\d+)\s*[x×]\s*(\d+(?:\.\d+)?)\s*l/);
+  if (multi) return parseInt(multi[1], 10) * parseFloat(multi[2]);
+  const single = text.match(/(\d+(?:\.\d+)?)\s*l\b/);
+  if (single) return parseFloat(single[1]);
+  return 0;
+}
+
+/** Wie viele Einheiten des Produkts decken den Liter-Bedarf (mind. 1)? */
+function unitsFor(liters: number, product: Product): number {
+  const vol = parseVolumeLiters(product);
+  return Math.max(1, Math.ceil(liters / (vol > 0 ? vol : 1)));
 }
 
 function getRecommendations(needs: ReturnType<typeof calculateNeeds>) {
   const recs: { product: Product; quantity: number; reason: string }[] = [];
 
-  if (needs.beerCases > 0) {
+  const fmtL = (l: number) => `~${Math.round(l)} l`;
+  const waterRegex = /(wasser|gerolsteiner|fachingen|volvic|quelle|pellegrino|rheinfels)/i;
+
+  if (needs.beerLiters > 0) {
     const beer = products.find((p) => p.categorySlug === "bier");
-    if (beer) recs.push({ product: beer, quantity: needs.beerCases, reason: `${needs.beerCases} Kasten Bier` });
+    if (beer) recs.push({ product: beer, quantity: unitsFor(needs.beerLiters, beer), reason: `${fmtL(needs.beerLiters)} Bier` });
   }
-  if (needs.wineBottles > 0) {
+  if (needs.wineLiters > 0) {
     const wine = products.find((p) => p.categorySlug === "wein");
-    if (wine) recs.push({ product: wine, quantity: needs.wineBottles, reason: `${needs.wineBottles} Flaschen Wein` });
+    if (wine) recs.push({ product: wine, quantity: unitsFor(needs.wineLiters, wine), reason: `${fmtL(needs.wineLiters)} Wein` });
   }
   if (needs.softLiters > 0) {
-    const soft = products.find((p) => p.categorySlug === "alkoholfrei");
-    if (soft) recs.push({ product: soft, quantity: Math.ceil(needs.softLiters / 12), reason: `${needs.softLiters}l Softdrinks` });
+    const soft =
+      products.find((p) => p.categorySlug === "alkoholfrei" && !waterRegex.test(p.name)) ||
+      products.find((p) => p.categorySlug === "alkoholfrei");
+    if (soft) recs.push({ product: soft, quantity: unitsFor(needs.softLiters, soft), reason: `${fmtL(needs.softLiters)} Softdrinks` });
   }
-  if (needs.spiritBottles > 0) {
+  if (needs.spiritLiters > 0) {
     const spirit = products.find((p) => p.categorySlug === "spirituosen");
-    if (spirit) recs.push({ product: spirit, quantity: needs.spiritBottles, reason: `${needs.spiritBottles} Flaschen Spirituosen` });
+    if (spirit) recs.push({ product: spirit, quantity: unitsFor(needs.spiritLiters, spirit), reason: `${fmtL(needs.spiritLiters)} Spirituosen` });
   }
   if (needs.waterLiters > 0) {
-    const water = products.find((p) => p.categorySlug === "alkoholfrei" && p.name.toLowerCase().includes("mineralwasser"));
-    if (water) recs.push({ product: water, quantity: Math.ceil(needs.waterLiters / 12), reason: `${needs.waterLiters}l Wasser` });
+    const water =
+      products.find((p) => p.categorySlug === "alkoholfrei" && waterRegex.test(p.name)) ||
+      products.find((p) => p.categorySlug === "alkoholfrei");
+    if (water) recs.push({ product: water, quantity: unitsFor(needs.waterLiters, water), reason: `${fmtL(needs.waterLiters)} Wasser` });
   }
 
   return recs;
