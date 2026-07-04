@@ -78,7 +78,7 @@ export default function DatenschutzPage() {
         <section>
           <h2 className="text-lg font-semibold text-secondary mb-2">8. KI-Assistent &amp; Bild-Uploads (Google Gemini)</h2>
           <p>
-            Unser Website-Chat („Frag mich etwas") sowie die Funktionen Kühlschrank- und Leergut-Scan nutzen die
+            Unser Website-Chat (&bdquo;Frag mich etwas&ldquo;) sowie die Funktionen Kühlschrank- und Leergut-Scan nutzen die
             KI-Schnittstelle Google Gemini (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland).
             Wenn Sie den Chat verwenden, werden Ihre eingegebenen Texte an Google übermittelt und dort verarbeitet,
             um eine Antwort zu erzeugen. Beim Kühlschrank- oder Leergut-Scan wird zusätzlich das von Ihnen
