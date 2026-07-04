@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ShimmerParticles from "@/components/ShimmerParticles";
 
 /* ═══════════════════════════════════════════════════════════════
@@ -130,10 +130,21 @@ function RouletteGame({ alkoholfrei }: { alkoholfrei: boolean }) {
     setSpinning(true);
     setResult(null);
     const tasks = alkoholfrei ? ROULETTE_TASKS_AF : ROULETTE_TASKS;
-    const extraRotation = 1440 + Math.random() * 1440;
+
+    // Gewinner ZUERST bestimmen, dann die Rotation so berechnen, dass genau dessen
+    // Segment unter dem Zeiger (oben, 0°) stoppt — Anzeige und Ergebnis stimmen überein.
+    const n = players.length;
+    const winnerIndex = Math.floor(Math.random() * n);
+    const seg = 360 / n;
+    const targetMod = (360 - seg * winnerIndex) % 360;
+    const currentMod = ((rotation % 360) + 360) % 360;
+    const delta = (targetMod - currentMod + 360) % 360;
+    const fullTurns = 4 + Math.floor(Math.random() * 3); // 4–6 volle Umdrehungen
+    const extraRotation = fullTurns * 360 + delta;
     setRotation((prev) => prev + extraRotation);
+
     setTimeout(() => {
-      const player = players[Math.floor(Math.random() * players.length)];
+      const player = players[winnerIndex];
       const task = tasks[Math.floor(Math.random() * tasks.length)];
       setResult({ player, task });
       setSpinning(false);
@@ -290,9 +301,17 @@ function BierPongGame() {
   const [running, setRunning] = useState(false);
   const [intervalId, setIntervalId] = useState<ReturnType<typeof setInterval> | null>(null);
   const [showRules, setShowRules] = useState(false);
+  const [winner, setWinner] = useState<string | null>(null);
+
+  // Timer-Cleanup beim Unmount (z.B. Modal schließen) — verhindert Interval-Leak
+  useEffect(() => {
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [intervalId]);
 
   const startTimer = () => {
-    if (running) return;
+    if (running || winner) return;
     setRunning(true);
     const id = setInterval(() => setTimer((t) => t + 1), 1000);
     setIntervalId(id);
@@ -307,6 +326,7 @@ function BierPongGame() {
   const resetGame = () => {
     stopTimer();
     setTimer(0);
+    setWinner(null);
     setTeam1({ name: "Team 1", score: 0, cups: 10 });
     setTeam2({ name: "Team 2", score: 0, cups: 10 });
   };
@@ -314,12 +334,18 @@ function BierPongGame() {
   const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
 
   const hitCup = (team: 1 | 2) => {
+    if (winner) return;
+    // Gegner-Becher reduzieren; bei 0 ist das treffende Team Sieger → Timer stoppen
     if (team === 1) {
+      const remaining = Math.max(0, team2.cups - 1);
       setTeam2((t) => ({ ...t, cups: Math.max(0, t.cups - 1) }));
       setTeam1((t) => ({ ...t, score: t.score + 1 }));
+      if (remaining === 0) { setWinner(team1.name); stopTimer(); }
     } else {
+      const remaining = Math.max(0, team1.cups - 1);
       setTeam1((t) => ({ ...t, cups: Math.max(0, t.cups - 1) }));
       setTeam2((t) => ({ ...t, score: t.score + 1 }));
+      if (remaining === 0) { setWinner(team2.name); stopTimer(); }
     }
   };
 
@@ -334,6 +360,13 @@ function BierPongGame() {
           <button onClick={resetGame} className="px-4 py-1.5 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-lg">Reset</button>
         </div>
       </div>
+      {/* Sieger-Banner */}
+      {winner && (
+        <div className="mb-4 rounded-xl bg-gradient-to-r from-[#DC2626] to-[#B91C1C] text-white text-center py-3 px-4 shadow-lg">
+          <p className="text-lg font-extrabold">🏆 {winner} gewinnt!</p>
+          <p className="text-sm text-white/80">Zeit: {formatTime(timer)} — „Reset" für ein neues Spiel</p>
+        </div>
+      )}
       {/* Scores */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         {[{ team: team1, num: 1 as const }, { team: team2, num: 2 as const }].map(({ team, num }) => (
@@ -347,7 +380,8 @@ function BierPongGame() {
             <p className="text-sm text-muted mt-1">Becher übrig: {team.cups}</p>
             <button
               onClick={() => hitCup(num)}
-              className="mt-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors w-full"
+              disabled={!!winner}
+              className="mt-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Treffer!
             </button>
