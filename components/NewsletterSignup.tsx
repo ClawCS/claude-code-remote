@@ -36,7 +36,7 @@ export default function NewsletterSignup() {
       <div className="absolute top-0 right-0 opacity-10 text-[8rem] leading-none select-none">📬</div>
 
       <div className="relative max-w-xl">
-        <p className="text-sm font-semibold tracking-widest uppercase text-white/50 mb-2">{t("newsletter.label")}</p>
+        <p className="text-sm font-semibold tracking-[0.25em] uppercase text-white/50 mb-2">{t("newsletter.label")}</p>
         <h3 className="text-2xl md:text-3xl font-extrabold mb-2">
           {t("newsletter.title")}
         </h3>

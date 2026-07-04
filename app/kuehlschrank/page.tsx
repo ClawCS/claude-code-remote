@@ -342,7 +342,7 @@ export default function KuehlschrankPage() {
           <div className="space-y-6 animate-fade-in-up">
             {/* Score */}
             <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
-              <p className="text-sm font-semibold tracking-widest uppercase text-muted mb-4">
+              <p className="text-sm font-semibold tracking-[0.25em] uppercase text-muted mb-4">
                 Dein Ergebnis
               </p>
               <ScoreCircle score={result.score} />

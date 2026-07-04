@@ -176,7 +176,7 @@ export default function GewinnspielPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DC2626] opacity-75" />
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#DC2626]" />
               </span>
-              <h2 className="text-sm font-bold tracking-widest uppercase text-[#DC2626]">Aktuelles Gewinnspiel — {activeGewinnspiel.month} {activeGewinnspiel.year}</h2>
+              <h2 className="text-sm font-bold tracking-[0.25em] uppercase text-[#DC2626]">Aktuelles Gewinnspiel — {activeGewinnspiel.month} {activeGewinnspiel.year}</h2>
             </div>
             <div className="relative bg-white border border-border/60 rounded-3xl overflow-hidden shadow-xl group">
               <div className="grid md:grid-cols-2">
@@ -224,7 +224,7 @@ export default function GewinnspielPage() {
 
         {/* Vergangene Gewinnspiele — Timeline */}
         <section className="mb-16">
-          <h2 className="text-sm font-bold tracking-widest uppercase text-muted mb-8">Bisherige Gewinnspiele 2026</h2>
+          <h2 className="text-sm font-bold tracking-[0.25em] uppercase text-muted mb-8">Bisherige Gewinnspiele 2026</h2>
           <div className="relative">
             {/* Timeline-Linie */}
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-border to-transparent hidden md:block" />

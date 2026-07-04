@@ -191,7 +191,7 @@ export default function NlLandingPage() {
       {/* ═══ TOP DEALS ═══ */}
       <section id="deals" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20">
         <div className="text-center mb-10">
-          <p className="text-sm font-semibold tracking-widest uppercase text-orange-500 mb-2">Onze beste deals</p>
+          <p className="text-sm font-semibold tracking-[0.25em] uppercase text-orange-500 mb-2">Onze beste deals</p>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
             Populair bij onze Nederlandse klanten
           </h2>

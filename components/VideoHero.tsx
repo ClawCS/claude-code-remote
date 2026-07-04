@@ -204,7 +204,7 @@ export default function VideoHero() {
 
               <div className="relative z-10 text-center">
                 <p
-                  className="text-lg md:text-2xl font-bold text-white/80 tracking-widest uppercase mb-4"
+                  className="text-lg md:text-2xl font-bold text-white/80 tracking-[0.25em] uppercase mb-4"
                   style={{ animation: `sb-event-text1 18s ease infinite`, animationPlayState: playState }}
                 >
                   24. Juli 2026 — trinkgut Jammers Goch

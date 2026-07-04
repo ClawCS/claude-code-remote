@@ -3,7 +3,7 @@ export default function SocialProof() {
     <section className="py-16 bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
-          <p className="text-sm font-semibold tracking-widest uppercase text-primary mb-2">Kundenstimmen</p>
+          <p className="text-sm font-semibold tracking-[0.25em] uppercase text-primary mb-2">Kundenstimmen</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-secondary mb-3">
             Was unsere Kunden sagen
           </h2>

@@ -67,7 +67,7 @@ export default function HandzettelSection() {
     <>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <ScrollReveal className="text-center mb-10">
-          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">
+          <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">
             {t("home.handzettel.label")}
           </p>
           <h2
