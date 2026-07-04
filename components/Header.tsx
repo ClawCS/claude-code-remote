@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useTranslation, LANG_KEY, LANG_CHANGE_EVENT, type Lang } from "@/lib/i18n";
+import { useModalA11y } from "@/lib/useModalA11y";
 
 type DropdownItem = { href: string; labelKey: string; icon: string };
 
@@ -251,6 +252,8 @@ export default function Header() {
   const [mobileSearchQuery, setMobileSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+  const mobileDrawerRef = useModalA11y(mobileOpen, () => setMobileOpen(false));
+  const mobileSearchRef = useModalA11y(mobileSearchOpen, () => setMobileSearchOpen(false));
 
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
@@ -436,7 +439,13 @@ export default function Header() {
 
       {/* Mobile fullscreen search overlay */}
       {mobileSearchOpen && (
-        <div className="fixed inset-0 bg-white z-[60] lg:hidden">
+        <div
+          ref={mobileSearchRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Produktsuche"
+          className="fixed inset-0 bg-white z-[60] lg:hidden"
+        >
           <div className="flex items-center gap-2 p-4 border-b border-border">
             <form onSubmit={handleMobileSearchSubmit} className="flex-1 relative">
               <svg
@@ -485,8 +494,14 @@ export default function Header() {
       {/* Mobile Drawer */}
       {mobileOpen && (
         <>
-          <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
-          <div className="fixed right-0 top-0 h-full w-[280px] bg-white z-50 shadow-2xl lg:hidden overflow-y-auto">
+          <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setMobileOpen(false)} aria-hidden="true" />
+          <div
+            ref={mobileDrawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigationsmenü"
+            className="fixed right-0 top-0 h-full w-[280px] bg-white z-50 shadow-2xl lg:hidden overflow-y-auto"
+          >
             {/* Mobile Header */}
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#DC2626] to-[#B91C1C]">
               <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">

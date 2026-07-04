@@ -49,6 +49,17 @@ export default function AIAssistant() {
     }
   }, [isOpen]);
 
+  // ESC schließt den Chat. Bewusst nicht-modal (kein Scroll-Lock/Fokus-Trap),
+  // damit die Seite bei geöffnetem Chat weiter bedienbar bleibt.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen]);
+
   async function sendMessage(text: string) {
     if (!text.trim()) return;
     setHasInteracted(true);
@@ -195,7 +206,12 @@ export default function AIAssistant() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-48 left-6 z-50 w-[calc(100vw-3rem)] max-w-[400px] animate-scale-in origin-bottom-left">
+        <div
+          role="dialog"
+          aria-modal="false"
+          aria-label="Chat mit dem KI-Assistenten"
+          className="fixed bottom-48 left-6 z-50 w-[calc(100vw-3rem)] max-w-[400px] animate-scale-in origin-bottom-left"
+        >
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden flex flex-col" style={{ height: "min(520px, calc(100vh - 240px))" }}>
             {/* Header */}
             <div className="bg-gradient-to-r from-[#DC2626] to-[#B91C1C] px-4 py-3 flex items-center gap-3">
