@@ -289,6 +289,7 @@ export default function AIAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Schreib mir eine Nachricht..."
+                aria-label="Nachricht an den KI-Assistenten"
                 className="flex-1 px-3.5 py-2 bg-gray-50 rounded-xl text-sm text-secondary placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
                 disabled={isTyping}
               />

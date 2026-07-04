@@ -413,6 +413,7 @@ export default function Header() {
                 ref={searchInputRef}
                 type="text"
                 placeholder={t("search.placeholder")}
+                aria-label="Produkte suchen"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-20 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
@@ -464,6 +465,7 @@ export default function Header() {
                 ref={mobileSearchInputRef}
                 type="text"
                 placeholder={t("search.placeholder")}
+                aria-label="Produkte suchen"
                 value={mobileSearchQuery}
                 onChange={(e) => setMobileSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
