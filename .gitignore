@@ -43,3 +43,8 @@ next-env.d.ts
 
 # Bewerbungen (private Personendaten + Datei-Uploads)
 /data/bewerbungen/
+
+# Laufzeitdaten & Build-Artefakte (werden zur Laufzeit/beim Build erzeugt — nicht versionieren, verhindert Merge-Konflikte)
+/data/community.json
+/data/handzettel-cache.json
+/public/handzettel/manifest.json
