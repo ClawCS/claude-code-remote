@@ -2,6 +2,7 @@
 
 @theme inline {
   --font-sans: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-display), var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
   --color-primary: #DC2626;
   --color-primary-dark: #B91C1C;
   --color-primary-light: #EF4444;
@@ -59,14 +60,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ═══ Display-Schrift für alle Headlines — premium, technisch (Apple/SpaceX) ═══ */
+h1, h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
 /* ═══ Selection Color ═══ */
 ::selection {
-  background: rgba(196, 30, 58, 0.2);
+  background: rgba(220, 38, 38, 0.2);
   color: #1F2937;
 }
 
 ::-moz-selection {
-  background: rgba(196, 30, 58, 0.2);
+  background: rgba(220, 38, 38, 0.2);
   color: #1F2937;
 }
 
@@ -219,8 +230,8 @@ body {
 }
 
 @keyframes pulseRed {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(196, 30, 58, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
 }
 
 @keyframes meshMove {
@@ -369,7 +380,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  background: linear-gradient(135deg, #DC2626, #D4A853, #DC2626);
+  background: linear-gradient(135deg, #DC2626, #C8962C, #DC2626);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -420,7 +431,7 @@ body {
 .card-hover-glow:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: var(--shadow-elevated), var(--shadow-red-glow);
-  border-color: rgba(196, 30, 58, 0.3);
+  border-color: rgba(220, 38, 38, 0.3);
 }
 
 .btn-hover {
@@ -428,7 +439,7 @@ body {
 }
 .btn-hover:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 .btn-hover:active {
   transform: translateY(0);
@@ -461,7 +472,7 @@ body {
 
 /* ═══ Gradient Text ═══ */
 .gradient-text {
-  background: linear-gradient(135deg, #DC2626, #D4A853);
+  background: linear-gradient(135deg, #DC2626, #C8962C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -480,7 +491,7 @@ body {
   display: block;
   width: 40px;
   height: 3px;
-  background: linear-gradient(90deg, #DC2626, #D4A853);
+  background: linear-gradient(90deg, #DC2626, #C8962C);
   border-radius: 2px;
   margin-top: 12px;
 }
@@ -490,7 +501,7 @@ body {
   display: block;
   width: 40px;
   height: 3px;
-  background: linear-gradient(90deg, #DC2626, #D4A853);
+  background: linear-gradient(90deg, #DC2626, #C8962C);
   border-radius: 2px;
   margin: 12px auto 0;
 }
@@ -540,7 +551,7 @@ body {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #DC2626, #EF4444, #D4A853, #EF4444, #DC2626);
+  background: linear-gradient(90deg, #DC2626, #EF4444, #C8962C, #EF4444, #DC2626);
   background-size: 200% 100%;
   animation: gradientShift 6s ease infinite;
 }
@@ -578,24 +589,38 @@ body {
 
 .group:hover .gewinnspiel-icon {
   animation: none;
-  filter: drop-shadow(0 0 8px rgba(196, 30, 58, 0.6)) drop-shadow(0 0 16px rgba(255, 215, 0, 0.4));
+  filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.6)) drop-shadow(0 0 16px rgba(255, 215, 0, 0.4));
   transform: scale(1.15) rotate(5deg);
 }
 
 @keyframes gewinnspielPulse {
-  0%, 100% { filter: drop-shadow(0 0 3px rgba(196, 30, 58, 0.3)); }
-  50% { filter: drop-shadow(0 0 8px rgba(196, 30, 58, 0.6)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.3)); }
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(220, 38, 38, 0.3)); }
+  50% { filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.6)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.3)); }
 }
 
-/* ═══ Gold Price Tag ═══ */
+/* ═══ Price Tag — dunkel & lesbar (WCAG), Gold nur als Akzentstrich ═══ */
 .gold-price {
-  color: #D4A853;
-  text-shadow: 0 1px 2px rgba(212, 168, 83, 0.2);
+  color: #1A1A1A;
+  font-weight: 800;
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  position: relative;
+  display: inline-block;
+}
+.gold-price::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 3px;
+  margin-top: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #DC2626, #C8962C);
 }
 
 /* ═══ Red Section Background ═══ */
 .bg-red-gradient-section {
-  background: linear-gradient(180deg, rgba(196, 30, 58, 0.04) 0%, rgba(196, 30, 58, 0.02) 50%, transparent 100%);
+  background: linear-gradient(180deg, rgba(220, 38, 38, 0.04) 0%, rgba(220, 38, 38, 0.02) 50%, transparent 100%);
 }
 
 /* ═══ Category Background Particles ═══ */

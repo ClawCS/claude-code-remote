@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-jakarta",
+  display: "swap",
+});
+
+// Display-Schrift für Headlines (modern/technisch — Apple/SpaceX-Anmutung)
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
   display: "swap",
 });
 import { CartProvider } from "@/context/CartContext";
@@ -51,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={`h-full antialiased ${jakarta.variable}`}>
+    <html lang="de" className={`h-full antialiased ${jakarta.variable} ${spaceGrotesk.variable}`}>
       <body className="min-h-full flex flex-col font-sans">
         <CartProvider>
           <WishlistProvider>

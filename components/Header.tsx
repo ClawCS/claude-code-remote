@@ -46,7 +46,6 @@ const navItems: NavItem[] = [
       { href: "/partyspiele", labelKey: "nav.partyspiele", icon: "\u{1F3B2}" },
       { href: "/galerie", labelKey: "nav.galerie", icon: "\u{1F4F8}" },
       { href: "/oeko-tracker", labelKey: "nav.oekoTracker", icon: "\u{1F30D}" },
-      { href: "/bierkarte", labelKey: "nav.bierkarte", icon: "\u{1F5FA}\uFE0F" },
       { href: "/kuehlschrank", labelKey: "nav.kuehlschrank", icon: "\u{1F9CA}" },
     ],
   },
@@ -152,7 +151,7 @@ function GewinnspielIcon() {
         <circle cx="40" cy="14" r="1" fill="#FFD700" opacity="0.5" className="animate-ping" style={{animationDuration: "2.5s"}} />
         <circle cx="38" cy="38" r="1.2" fill="#FFD700" opacity="0.4" className="animate-ping" style={{animationDuration: "3s"}} />
       </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(196,30,58,0.4)]" aria-label="Gewinnspiel">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(220, 38, 38,0.4)]" aria-label="Gewinnspiel">
         <defs>
           <linearGradient id="giftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#DC2626" />
