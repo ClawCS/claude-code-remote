@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
   return {
-    title: `${product.name}`,
+    title: { absolute: `${product.name} – Trinkgut Jammers Goch` },
     description: product.description || `${product.name} – ${product.category || "Getränk"} bei Trinkgut Jammers Goch.`,
     alternates: { canonical: `/produkte/${product.slug}` },
     openGraph: {

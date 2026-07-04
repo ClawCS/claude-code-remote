@@ -221,7 +221,7 @@ export default function VideoHero() {
                       <div className="text-3xl md:text-5xl font-black text-white tabular-nums" style={{ textShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
                         {String(u.val).padStart(2, "0")}
                       </div>
-                      <div className="text-[10px] md:text-xs text-white/50 uppercase tracking-widest mt-1">{u.label}</div>
+                      <div className="text-[10px] md:text-xs text-white/50 uppercase tracking-[0.25em] mt-1">{u.label}</div>
                     </div>
                   ))}
                 </div>
