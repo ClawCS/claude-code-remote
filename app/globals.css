@@ -51,6 +51,11 @@
 }
 
 /* ═══ Body & Global ═══ */
+html {
+  /* Sicherheitsnetz gegen horizontales Scrollen (z.B. durch breite Elemente auf Mobile) */
+  overflow-x: hidden;
+}
+
 body {
   background: #FFFFFF;
   color: var(--color-foreground);
@@ -58,6 +63,8 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* ═══ Display-Schrift für alle Headlines — premium, technisch (Apple/SpaceX) ═══ */
