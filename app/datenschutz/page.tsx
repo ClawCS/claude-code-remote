@@ -13,7 +13,7 @@ export default function DatenschutzPage() {
         <section>
           <h2 className="text-lg font-semibold text-secondary mb-2">1. Verantwortlicher</h2>
           <p>
-            Trinkgut Jammers, Jammers e.K.<br />
+            Trinkgut Jammers Goch e.K.<br />
             Inhaber: Nikolaos Jammers<br />
             Jurgenstr. 20, 47574 Goch<br />
             E-Mail: jammers-goch@trinkgut.de<br />
