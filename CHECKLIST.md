@@ -3,6 +3,12 @@
 > Quelle: AUDIT.md (Durchgang 1 + 2). Stand: 04.07.2026 nach autonomem Durchlauf.
 > Legende: ✅ erledigt · ⚠️ teilweise · ⬜ offen · ⏸ bewusst zurückgestellt · 🔴 rechtlich/finanziell riskant
 
+## Endstand (autonomer Loop, 04.07.2026)
+
+**Verifiziert:** Production-Build erfolgreich (107 Produkt- + 6 Kategorie-Seiten als SSG vorgerendert) · 31/31 Routen HTTP 200 · entfernte Routen + ungültige Slugs = echtes 404 · TSC 0 Fehler · ESLint 0 Fehler · zwei Verifikations-Workflows gegen beide Audits (keine kritischen Regressionen). Alle 7 Arbeitspakete abgeschlossen.
+
+**Bewusst offen (braucht dich / Deployment):** echte Produktfotos (größter verbleibender Wertigkeits-Hebel — Handzettel-Crops), Hetzner-Deployment (Server/TLS/Backups/Bewerbungs-Mail), RSC-Migration (Perf), i18n-Grundsatzentscheidung (E4). Ein Design-Detail bleibt bewusst offen: zwei Gold-Töne (#F59E0B Akzent + #C8962C Preis/Deko) als absichtliche Zwei-Ton-Skala.
+
 ## Fortschritt autonomer Durchlauf (Zusammenfassung)
 
 **Erledigt:** Tippkick/Glücksrad/Battle/Bierkarte entfernt · abgelaufene Angebote reframed · komplette API-Härtung (Header, Chat-Guardrails, Cron/Refresh-Secret, MIME, Rate-Limits) · Partyplaner-Mengenlogik · Krombacher/Leergut-Daten · Datenschutz-Gemini · Inhaltswidersprüche · SEO-Metas + LocalBusiness-JSON-LD · Design-Foundation (Display-Schrift, lesbarer Preis, ein Rot/ein Gold) · Hero-Redesign · Floating-UI entrümpelt · A11y-Drawer + reduced-motion + overflow-Netz.
