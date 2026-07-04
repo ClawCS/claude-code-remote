@@ -151,7 +151,7 @@ function GewinnspielIcon() {
         <circle cx="40" cy="14" r="1" fill="#FFD700" opacity="0.5" className="animate-ping" style={{animationDuration: "2.5s"}} />
         <circle cx="38" cy="38" r="1.2" fill="#FFD700" opacity="0.4" className="animate-ping" style={{animationDuration: "3s"}} />
       </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(220, 38, 38,0.4)]" aria-label="Gewinnspiel">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-9 w-9 gewinnspiel-icon drop-shadow-[0_0_6px_rgba(220,38,38,0.4)]" aria-label="Gewinnspiel">
         <defs>
           <linearGradient id="giftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#DC2626" />

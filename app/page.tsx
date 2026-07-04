@@ -36,7 +36,7 @@ export default function Home() {
       <section className="relative bg-slate-stone py-20 md:py-24">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <ScrollReveal className="text-center mb-12">
-            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.categories.label")}</p>
+            <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">{t("home.categories.label")}</p>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white section-accent-center" style={{ textWrap: "balance" }}>
               {t("home.categories.title")}
             </h2>
@@ -55,7 +55,7 @@ export default function Home() {
       <section className="relative bg-slate-stone py-20 md:py-24">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <ScrollReveal className="text-center mb-12">
-            <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.services.label")}</p>
+            <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">{t("home.services.label")}</p>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white section-accent-center" style={{ textWrap: "balance" }}>
               {t("home.services.title")}
             </h2>
@@ -105,7 +105,7 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <ScrollReveal>
-              <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.community.label")}</p>
+              <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">{t("home.community.label")}</p>
               <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4 section-accent">
                 {t("home.community.title")}
               </h2>
@@ -151,7 +151,7 @@ export default function Home() {
       {/* ═══ UNSER TEAM ═══ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <ScrollReveal className="text-center mb-12">
-          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Leidenschaft & Expertise</p>
+          <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">Leidenschaft & Expertise</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
             Unser Team
           </h2>
@@ -187,7 +187,7 @@ export default function Home() {
       {/* ═══ AKADEMIE TEASER ═══ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-24">
         <ScrollReveal className="text-center mb-12">
-          <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">Wissen & Zertifikate</p>
+          <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">Wissen & Zertifikate</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2937] section-accent-center">
             Trinkgut Akademie
           </h2>
@@ -248,7 +248,7 @@ export default function Home() {
       {/* CTA */}
       <ScrollReveal>
       <section className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 text-center">
-        <p className="text-sm font-semibold tracking-widest uppercase text-[#DC2626] mb-2">{t("home.cta.label")}</p>
+        <p className="text-sm font-semibold tracking-[0.25em] uppercase text-[#DC2626] mb-2">{t("home.cta.label")}</p>
         <h2 className="text-2xl md:text-4xl font-extrabold text-[#1F2937] mb-4 section-accent-center">
           {products.length} {t("home.cta.title")}
         </h2>

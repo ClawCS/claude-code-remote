@@ -42,7 +42,7 @@ export default function ProductCard({ product }: { product: Product }) {
         e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
       }}
     >
-      <Link href={`/produkte/${product.slug}`} className="block p-4 pb-2">
+      <Link href={`/produkte/${product.slug}`} className="block p-5 pb-2">
         <div className="aspect-square bg-gradient-to-br from-[#FFF8F6] to-[#FFF0EC] rounded-xl flex items-center justify-center overflow-hidden relative product-image-shadow">
           {imgFailed || !product.image ? (
             <div className="absolute inset-0 flex items-center justify-center text-6xl">
@@ -71,7 +71,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      <div className="p-4 pt-2 flex flex-col flex-1">
+      <div className="p-5 pt-2 flex flex-col flex-1">
         <span className="inline-block text-xs text-white uppercase tracking-wide font-medium bg-[#DC2626] px-2 py-0.5 rounded-md w-fit">{product.category}</span>
         <Link href={`/produkte/${product.slug}`}>
           <h3 className="font-semibold text-[#1F2937] mt-1.5 group-hover:text-[#DC2626] transition-colors line-clamp-2">
