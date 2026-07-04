@@ -505,9 +505,9 @@ h1, h2 {
   background: linear-gradient(
     110deg,
     transparent 20%,
-    rgba(212, 168, 83, 0.2) 40%,
-    rgba(212, 168, 83, 0.3) 50%,
-    rgba(212, 168, 83, 0.2) 60%,
+    rgba(200,150,44, 0.2) 40%,
+    rgba(200,150,44, 0.3) 50%,
+    rgba(200,150,44, 0.2) 60%,
     transparent 80%
   );
   background-size: 200% 100%;
@@ -613,7 +613,7 @@ h1, h2 {
   inset: 0;
   background:
     radial-gradient(ellipse at 20% 50%, rgba(232, 53, 74, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(212, 168, 83, 0.15) 0%, transparent 50%);
+    radial-gradient(ellipse at 80% 50%, rgba(200,150,44, 0.15) 0%, transparent 50%);
   pointer-events: none;
 }
 .page-hero-banner::after {

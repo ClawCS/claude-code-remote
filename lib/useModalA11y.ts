@@ -2,6 +2,24 @@
 
 import { useEffect, useRef } from "react";
 
+// Modulweiter Zähler, damit sich mehrere gleichzeitig offene Dialoge den
+// Body-Scroll-Lock korrekt teilen (erst der letzte gibt ihn wieder frei).
+let lockCount = 0;
+let savedOverflow = "";
+function lockScroll() {
+  if (lockCount === 0) {
+    savedOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+  }
+  lockCount += 1;
+}
+function unlockScroll() {
+  lockCount = Math.max(0, lockCount - 1);
+  if (lockCount === 0) {
+    document.body.style.overflow = savedOverflow;
+  }
+}
+
 /**
  * Macht ein Overlay zu einem echten Dialog:
  * - Body-Scroll-Lock, solange offen
@@ -19,8 +37,7 @@ export function useModalA11y(open: boolean, onClose: () => void) {
     const panel = ref.current;
     const prevFocus = document.activeElement as HTMLElement | null;
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    lockScroll();
 
     const focusable = () =>
       panel
@@ -59,7 +76,7 @@ export function useModalA11y(open: boolean, onClose: () => void) {
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      unlockScroll();
       prevFocus?.focus?.();
     };
   }, [open, onClose]);

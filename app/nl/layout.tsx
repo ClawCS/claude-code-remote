@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Jammers Getränkemarkt Goch — Bespaar tot 40% op dranken | 3 km van de grens",
+  title: { absolute: "Jammers Getränkemarkt Goch — Bespaar tot 25% op dranken | 3 km van de grens" },
   description:
-    "Duitse dranken tot 40% goedkoper dan in Nederland! 7.000+ producten: bier, wijn, sterke drank en meer. Slechts 3 km over de grens in Goch. Gratis parkeren, wij spreken Nederlands.",
+    "Duitse dranken tot 25% goedkoper dan in Nederland! 7.000+ producten: bier, wijn, sterke drank en meer. Slechts 3 km over de grens in Goch. Gratis parkeren, wij spreken Nederlands.",
   keywords: [
     "goedkoop bier Duitsland",
     "dranken kopen Goch",
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     "Getränkemarkt Goch",
   ],
   openGraph: {
-    title: "Jammers Goch — Bespaar tot 40% op dranken over de grens!",
+    title: "Jammers Goch — Bespaar tot 25% op dranken over de grens!",
     description:
-      "7.000+ producten, Duitse prijzen. Bier, wijn, sterke drank tot 40% goedkoper. Slechts 3 km van de grens. Gratis parkeren!",
+      "7.000+ producten, Duitse prijzen. Bier, wijn, sterke drank tot 25% goedkoper. Slechts 3 km van de grens. Gratis parkeren!",
     locale: "nl_NL",
     type: "website",
     siteName: "Jammers Getränkemarkt Goch",

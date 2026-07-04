@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
   return {
-    title: `${course.title} — ${course.lessons.length} Lektionen | Trinkgut Akademie`,
+    title: `${course.title} — ${course.lessons.length} Lektionen`,
     description: course.description,
   };
 }
