@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
+import { useModalA11y } from "@/lib/useModalA11y";
 
 export default function WishlistDrawer() {
   const { items, removeItem, clearWishlist, isWishlistOpen, setIsWishlistOpen } = useWishlist();
   const { addItem: addToCart } = useCart();
+  const panelRef = useModalA11y(isWishlistOpen, () => setIsWishlistOpen(false));
 
   const addAllToCart = () => {
     items.forEach((product) => addToCart(product, 1));
@@ -22,11 +24,18 @@ export default function WishlistDrawer() {
       <div
         className="fixed inset-0 bg-black/30 z-50"
         onClick={() => setIsWishlistOpen(false)}
+        aria-hidden="true"
       />
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wishlist-drawer-title"
+        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="text-lg font-bold text-secondary flex items-center gap-2">
+          <h2 id="wishlist-drawer-title" className="text-lg font-bold text-secondary flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
               <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
             </svg>

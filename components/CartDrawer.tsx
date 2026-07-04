@@ -4,18 +4,26 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
+import { useModalA11y } from "@/lib/useModalA11y";
 
 export default function CartDrawer() {
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, totalPrice } = useCart();
+  const panelRef = useModalA11y(isCartOpen, () => setIsCartOpen(false));
 
   if (!isCartOpen) return null;
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setIsCartOpen(false)} />
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col">
+      <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setIsCartOpen(false)} aria-hidden="true" />
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cart-drawer-title"
+        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
+      >
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="text-lg font-bold text-secondary">Warenkorb</h2>
+          <h2 id="cart-drawer-title" className="text-lg font-bold text-secondary">Warenkorb</h2>
           <button onClick={() => setIsCartOpen(false)} className="p-1 text-muted hover:text-secondary transition-colors" aria-label="Schließen">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
