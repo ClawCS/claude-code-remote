@@ -208,7 +208,6 @@ export default function CommunityPage() {
           {[
             { icon: "\u{1F4C5}", label: "Taeglicher Besuch", pts: 10 },
             { icon: "\u{2694}\uFE0F", label: "Battle-Vote", pts: 5 },
-            { icon: "\u{1F3B0}", label: "Glücksrad drehen", pts: 5 },
             { icon: "\u{1F9CA}", label: "Kühlschrank-Check", pts: 15 },
             { icon: "\u{1F9E0}", label: "Quiz abschließen", pts: 20 },
             { icon: "\u{267B}\uFE0F", label: "Leergut-Rechner", pts: 10 },

@@ -4,7 +4,6 @@ const LOCAL_NAME_KEY = "trinkgut-community-name";
 export type PointAction =
   | "daily_visit"
   | "battle_vote"
-  | "gluecksrad"
   | "kuehlschrank_check"
   | "quiz_complete"
   | "leergut_rechner"

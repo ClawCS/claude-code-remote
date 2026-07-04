@@ -6,15 +6,15 @@
 
 ## Block 0 — Offene Entscheidungen (Niko)
 
-- [ ] **E1** ⏸ 🔴 **Hosting: Vercel oder Hetzner?** → blockiert ganz Block 6 (Bewerbungen/Community-Speicherung, Rate-Limits). *Niko überlegt noch.*
-- [x] **E2** ✅ Tippkick: **komplett entfernen** — entschieden 04.07., umgesetzt (siehe 1.1)
-- [ ] **E3** ⬜ Glücksrad: vorerst **abschalten** oder ohne Sachpreise weiterlaufen lassen? (Empfehlung: abschalten bis Server-Auslosung — direktes Kostenrisiko)
+- [x] **E1** ✅ 🔴 **Hosting: HETZNER** (entschieden 04.07.) → Block 6 entblockt. Datei-basierte Persistenz kann bleiben (VPS mit `next start`), muss aber abgesichert werden (Backups, Concurrency, Schreibpfad außerhalb des Deploy-Ordners).
+- [x] **E2** ✅ Tippkick: **komplett entfernt** — entschieden 04.07., umgesetzt (siehe 1.1)
+- [x] **E3** ✅ Glücksrad: **komplett entfernt** — entschieden 04.07., umgesetzt (siehe 1.2)
 - [ ] **E4** ⬜ i18n: echtes Mehrsprachen-Setup ODER Umschalter + /nl-Seite entfernen? (Zwischenzustand schadet; → 8.1)
 
 ## Block 1 — Sofort: aktive Risiken & Falschangaben stoppen
 
 - [x] **1.1** ✅ **Tippkick komplett entfernt** (04.07.): Route `app/tippkick/` gelöscht, WM-Trophy-Icon + Funktion aus `components/Header.tsx`, `trophyPulse`-CSS aus `globals.css`, Sitemap-Eintrag, Tippspiel-Versprechen aus Chat-Prompt (`app/api/chat/route.ts`), `nav.wmtipp`-Keys aus `lib/i18n.ts`. Verifiziert: /tippkick → 404, tsc sauber.
-- [ ] **1.2** ⬜ 🔴 **Glücksrad absichern/abschalten** — Jackpot ~4,6 %/Dreh, Cooldown per Inkognito umgehbar, kein Gewinncode, Screenshot = „Beweis" (`app/gluecksrad/page.tsx:28,110-116,189`) → je nach E3
+- [x] **1.2** ✅ **Glücksrad komplett entfernt** (04.07.): Route `app/gluecksrad/` gelöscht, Nav-Eintrag aus `components/Header.tsx`, Punkte-Aktion aus `app/api/community/route.ts` + `app/community/page.tsx` + `lib/points.ts`, Sitemap-Eintrag, `nav.gluecksrad`-Keys aus `lib/i18n.ts`. Verifiziert: /gluecksrad → 404, /community → 200, tsc sauber.
 - [ ] **1.3** ⬜ 🔴 **Bierkarte deaktivieren** — 100 % falsche Länderzuordnungen (`data/country-products.ts` + `app/bierkarte/page.tsx:179-183`); Reaktivierung nach 2.11
 - [ ] **1.4** ⬜ 🔴 **Abgelaufene Angebote** — Katalog KW 19/20, heute KW 27; `validFrom/validUntil` in `data/products.json` einführen + Abgelaufenes ausblenden
 - [ ] **1.5** ⬜ **Battle: 7/10 tote Slugs filtern** statt 0,00 € rendern (`app/battle/page.tsx:50-74,95-107`)
@@ -32,8 +32,8 @@
 - [ ] **2.5** ⬜ **Trink-Roulette**: Zeiger ≠ Ergebnis (~50 % Widerspruch) — erst Gewinner ziehen, Rotation daraus berechnen (`app/partyspiele/page.tsx:133-137`)
 - [ ] **2.6** ⬜ **Cocktail-Quiz**: Timeout folgenlos, „Nochmal spielen" doppelt Timer (`partyspiele/page.tsx:636-662`)
 - [ ] **2.7** ⬜ **Bier-Pong**: keine Siegbedingung, Timer-Leak nach Modal-Schließen (`partyspiele/page.tsx:316-324`)
-- [ ] **2.8** ⬜ **Glücksrad: Rotations-Akkumulation** — ab Spin 2 stoppt Zeiger falsch (`gluecksrad/page.tsx:173`) *(falls Rad bleibt)*
-- [ ] **2.9** ⬜ **Glücksrad: Gewinnchancen** offenlegen oder Segmente proportional zeichnen (Nieten 36,7 % statt optisch 25 %) *(falls Rad bleibt)*
+- ~~**2.8** Glücksrad: Rotations-Akkumulation~~ — hinfällig, Feature entfernt (E3)
+- ~~**2.9** Glücksrad: Gewinnchancen~~ — hinfällig, Feature entfernt (E3)
 - [ ] **2.10** ⬜ **Krombacher-Literpreis**: 5,00 €/L statt „1l = €2,50" (`data/products.json`)
 - [ ] **2.11** ⬜ **country-products.ts neu mappen** (per Slug statt numerischer ID, gegen aktuelle products.json) → danach Bierkarte wieder aktivieren
 - [ ] **2.12** ⬜ **Battle-Voting echt machen** (`/api/battle` GET/POST) oder Prozentbalken entfernen + ehrlich labeln (`app/battle/page.tsx:212-232,359-392`)
@@ -59,8 +59,8 @@
 - [ ] **4.6** ⬜ **„4,6 ★ Google"** mit Bewertungsanzahl belegen oder entfernen (Hero + SocialProof)
 - [ ] **4.7** ⬜ **Gewinnspiel-Seite** aktualisieren (zeigt Veraltetes, inkonsistent zur Startseite)
 - [ ] **4.8** ⬜ **Checkout ehrlich machen**: „Bitte sende die geöffnete E-Mail ab" + `clearCart` erst nach bestätigtem Versand (`app/checkout/page.tsx:119`)
-- [ ] **4.9** ⬜ 🔴 **Glücksrad: Teilnahmebedingungen + Datenverwendungshinweis** *(falls Rad bleibt)*
-- [ ] **4.10** ⬜ **Glücksrad-Kontaktpflichtfeld**: wird nie versendet — speichern/versenden oder Feld entfernen
+- ~~**4.9** Glücksrad: Teilnahmebedingungen~~ — hinfällig, Feature entfernt (E3)
+- ~~**4.10** Glücksrad-Kontaktpflichtfeld~~ — hinfällig, Feature entfernt (E3)
 - [ ] **4.11** ⬜ **/nl: „Bespaar tot 40 %"** korrigieren (real max. ~26 % nach eigener Formel)
 - [ ] **4.12** ⬜ **SocialProof**: 2–3 echte Google-Zitate einsetzen (Box NICHT entfernen — ist der Reviews-CTA)
 - [ ] **4.13** ⬜ **Hero-Versprechen „Online entdecken"** vs. Abhol-Realität — Formulierung schärfen
@@ -78,14 +78,17 @@
 - [ ] **5.9** ⬜ **/kontakt in Header-/Footer-Menü** aufnehmen (Seite existiert, ist unauffindbar)
 - [ ] **5.10** ⬜ **hreflang reziprok** machen ODER entfernen (hängt an E4)
 
-## Block 6 — Persistenz & Deployment ⏸ WARTET AUF E1 (Hosting)
+## Block 6 — Persistenz & Deployment (Hetzner VPS, E1 = Hetzner)
 
-- [ ] **6.1** ⏸ 🔴 **Bewerbungen speicherfest** (Vercel: Blob/S3 · Hetzner: Disk + Backup) — aktuell gehen echte Bewerbungen ggf. verloren
-- [ ] **6.2** ⏸ **Bewerbungs-Benachrichtigung**: E-Mail an Niko bei Eingang (aktuell merkt niemand etwas)
-- [ ] **6.3** ⏸ **Community-Punkte speicherfest** (KV/Redis oder VPS-Disk)
-- [ ] **6.4** ⏸ **Handzettel-Cache** (KV oder Disk)
-- [ ] **6.5** ⏸ **Rate-Limiter shared** (Redis/KV) + deployment-abhängige IP-Quelle (x-real-ip ist genauso spoofbar!)
-- [ ] **6.6** ⏸ **Deployment einrichten** + `CRON_SECRET`/`GEMINI_API_KEY` als Env-Vars
+> Auf Hetzner mit `next start` funktioniert die Datei-Persistenz — Fokus liegt auf Robustheit, Backups und Concurrency, NICHT auf externem KV/Blob.
+
+- [ ] **6.1** ⬜ 🔴 **Bewerbungen speicherfest**: Schreibpfad auf ein persistentes Volume außerhalb des Deploy-/Git-Ordners legen (z. B. `/var/lib/trinkgut/`), damit Deploys nichts überschreiben; Datei-Locking gegen parallele Schreibzugriffe
+- [ ] **6.2** ⬜ **Bewerbungs-Benachrichtigung**: E-Mail an Niko bei Eingang (SMTP/Resend) — aktuell merkt niemand etwas
+- [ ] **6.3** ⬜ **Community-Punkte + Handzettel-Cache** auf dasselbe persistente Volume; atomare Writes (temp-Datei + rename) gegen Korruption
+- [ ] **6.4** ⬜ **Automatisches Backup** des Daten-Volumes (Cron + Hetzner Storage Box / Snapshot)
+- [ ] **6.5** ⬜ **Rate-Limiter**: In-Memory reicht bei Single-Instance auf einem VPS; IP-Quelle an den Reverse-Proxy anpassen (nginx/Caddy setzt `x-real-ip` vertrauenswürdig) → nur den vom Proxy gesetzten Hop lesen
+- [ ] **6.6** ⬜ **Deployment-Setup**: Node-Prozess via systemd/PM2, Reverse-Proxy (Caddy/nginx) + TLS, `CRON_SECRET`/`GEMINI_API_KEY` als Env-Vars, Cron-Job für `/api/handzettel/cron`
+- [ ] **6.7** ⬜ **Server-Security**: Firewall (nur 80/443/SSH), SSH-Key-only, automatische Sicherheitsupdates, fail2ban
 
 ## Block 7 — Design „50k-Look"
 
@@ -121,3 +124,4 @@
 - ~~Wetter-Widget „auf Goch stellen"~~ — kein Bug, IP-Geolokalisierung ist ein Feature (D2/K2)
 - ~~SocialProof-Box entfernen~~ — ist der Google-Reviews-CTA; stattdessen 4.12 (D2/K5)
 - ~~Tippkick reparieren (N6)~~ — Feature komplett entfernt (E2/1.1)
+- ~~Glücksrad absichern/reparieren (N3, 2.8, 2.9, 4.9, 4.10)~~ — Feature komplett entfernt (E3/1.2)

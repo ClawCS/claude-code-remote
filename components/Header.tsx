@@ -46,7 +46,6 @@ const navItems: NavItem[] = [
       { href: "/partyspiele", labelKey: "nav.partyspiele", icon: "\u{1F3B2}" },
       { href: "/galerie", labelKey: "nav.galerie", icon: "\u{1F4F8}" },
       { href: "/battle", labelKey: "nav.battle", icon: "\u{1F94A}" },
-      { href: "/gluecksrad", labelKey: "nav.gluecksrad", icon: "\u{1F3B0}" },
       { href: "/oeko-tracker", labelKey: "nav.oekoTracker", icon: "\u{1F30D}" },
       { href: "/bierkarte", labelKey: "nav.bierkarte", icon: "\u{1F5FA}\uFE0F" },
       { href: "/kuehlschrank", labelKey: "nav.kuehlschrank", icon: "\u{1F9CA}" },
