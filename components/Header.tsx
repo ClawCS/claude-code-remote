@@ -315,9 +315,11 @@ export default function Header() {
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-4">
-            {/* Gewinnspiel Icon */}
-            <GewinnspielIcon />
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Gewinnspiel Icon — auf sehr kleinen Screens ausgeblendet (über Menü erreichbar), entlastet die Leiste */}
+            <span className="hidden sm:block">
+              <GewinnspielIcon />
+            </span>
 
             {/* Language Switcher */}
             <LanguageSwitcher className="hidden lg:block" />
