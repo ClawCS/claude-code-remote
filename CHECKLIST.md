@@ -111,7 +111,7 @@
 - [ ] **8.3** ⬜ loading.tsx/Suspense + API-Caching
 - [x] **8.4** ✅ Tote Video-/Lottie-Schicht aus CategoryBackground entfernt (+ Hydration-Mismatch behoben)
 - [x] **8.5** ✅ A11y-Overlays: Cart-/Wishlist-Drawer + Header-Mobile-Drawer + Mobile-Suche (modal, ESC, Fokus-Trap, Scroll-Lock) + AIAssistant (non-modal Dialog + ESC)
-- [x] **8.6** ⚠️ prefers-reduced-motion global ✅; einzelne fehlende Form-Labels noch offen
+- [x] **8.6** ✅ prefers-reduced-motion global; Form-Labels ergänzt (Newsletter/Header-Suche/Chat aria-label; Checkout hat sichtbare Labels). Rest: Checkout htmlFor-Verknüpfung optional
 - [x] **8.7** ✅ Globales overflow-x-Netz + Mobile-Header entlastet (Gewinnspiel unter sm aus, kein Hamburger-Clipping). Touch-Target-Sweep (44px) noch offen
 - [x] **8.8** ✅ Laufzeitdaten (community.json, handzettel-cache.json, manifest.json) aus git genommen + .gitignore. Offen: alter Mac-Klon `~/Desktop/Claude Code/` löschen (nur du lokal)
 - [x] **8.9** ⚠️ `lottie-react` jetzt ungenutzt → per `npm uninstall lottie-react` entfernbar (nicht live gemacht wg. Dev-Server/Lockfile). `@google/generative-ai` nur in Build-Skripten (deprecated, belassen)
