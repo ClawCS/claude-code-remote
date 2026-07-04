@@ -658,6 +658,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
 ];
 
 function CocktailQuizGame() {
+  const [started, setStarted] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -665,22 +666,35 @@ function CocktailQuizGame() {
   const [timeLeft, setTimeLeft] = useState(15);
   const [timerId, setTimerId] = useState<ReturnType<typeof setInterval> | null>(null);
 
+  // Interval-Cleanup beim Unmount (Modal schließen) — verhindert Leak/Doppel-Timer
+  useEffect(() => {
+    return () => {
+      if (timerId) clearInterval(timerId);
+    };
+  }, [timerId]);
+
   const startTimer = () => {
+    setTimerId((prev) => {
+      if (prev) clearInterval(prev); // laufenden Timer zuerst stoppen (kein Doppel-Countdown)
+      return null;
+    });
     setTimeLeft(15);
     const id = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
           clearInterval(id);
+          // Zeit abgelaufen: Frage sperren, KEINE Punkte (nur wenn noch nicht beantwortet)
+          setSelected((s) => (s === null ? -1 : s));
           return 0;
         }
         return t - 1;
       });
     }, 1000);
     setTimerId(id);
-    return id;
   };
 
   const handleStart = () => {
+    setStarted(true);
     setQuestionIndex(0);
     setScore(0);
     setSelected(null);
@@ -693,7 +707,8 @@ function CocktailQuizGame() {
     setSelected(idx);
     if (timerId) clearInterval(timerId);
     const q = QUIZ_QUESTIONS[questionIndex];
-    if (idx === q.correct) setScore((s) => s + (timeLeft > 10 ? 30 : timeLeft > 5 ? 20 : 10));
+    // Punkte nur bei Antwort innerhalb der Zeit (timeLeft > 0)
+    if (idx === q.correct && timeLeft > 0) setScore((s) => s + (timeLeft > 10 ? 30 : timeLeft > 5 ? 20 : 10));
   };
 
   const nextQuestion = () => {
@@ -717,7 +732,7 @@ function CocktailQuizGame() {
     );
   }
 
-  if (questionIndex === 0 && selected === null && timeLeft === 15) {
+  if (!started) {
     return (
       <div className="text-center">
         <p className="text-muted mb-4">Teste dein Cocktail-Wissen! {QUIZ_QUESTIONS.length} Fragen, je schneller desto mehr Punkte.</p>
@@ -758,6 +773,9 @@ function CocktailQuizGame() {
           );
         })}
       </div>
+      {selected === -1 && (
+        <p className="mt-3 text-center text-sm font-semibold text-red-500">⏱ Zeit abgelaufen — keine Punkte</p>
+      )}
       {selected !== null && (
         <button onClick={nextQuestion} className="mt-4 w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors">
           {questionIndex + 1 >= QUIZ_QUESTIONS.length ? "Ergebnis anzeigen" : "Nächste Frage"}
