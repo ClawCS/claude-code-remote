@@ -816,6 +816,13 @@ function TabuGame() {
   const [tId, setTId] = useState<ReturnType<typeof setInterval> | null>(null);
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
 
+  // Timer-Cleanup beim Unmount (Modal schließen) — verhindert Interval-Leak
+  useEffect(() => {
+    return () => {
+      if (tId) clearInterval(tId);
+    };
+  }, [tId]);
+
   const drawCard = () => {
     const available = TABU_CARDS.map((_, i) => i).filter((i) => !usedIndices.has(i));
     if (available.length === 0) {

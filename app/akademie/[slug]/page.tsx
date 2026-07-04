@@ -97,7 +97,6 @@ export default function CoursePage() {
   }
 
   const lesson = course.lessons[activeLesson];
-  const totalQuizQuestions = course.lessons.reduce((sum, l) => sum + l.quiz.length, 0) + course.finalExam.length;
   const completedLessons = Object.keys(lessonQuizDone).length;
 
   if (examScore !== null) {
