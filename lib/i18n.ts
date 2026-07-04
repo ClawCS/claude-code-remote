@@ -14,7 +14,6 @@ const translations = {
     "nav.services": "Services",
     "nav.erleben": "Erleben",
     "nav.akademie": "Akademie",
-    "nav.wmtipp": "\u26BD WM Tipp",
     "nav.jobs": "Jobs",
 
     // Navigation dropdown items
@@ -151,7 +150,6 @@ const translations = {
     "nav.services": "Services",
     "nav.erleben": "Experience",
     "nav.akademie": "Academy",
-    "nav.wmtipp": "\u26BD World Cup Tips",
     "nav.jobs": "Jobs",
 
     // Navigation dropdown items
@@ -288,7 +286,6 @@ const translations = {
     "nav.services": "Diensten",
     "nav.erleben": "Beleving",
     "nav.akademie": "Academie",
-    "nav.wmtipp": "\u26BD WK Tips",
     "nav.jobs": "Vacatures",
 
     // Navigation dropdown items

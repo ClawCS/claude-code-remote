@@ -571,29 +571,6 @@ body {
   background-size: 256px 256px;
 }
 
-/* ═══ WM Trophy Icon Animation ═══ */
-@keyframes trophyPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.3));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 16px rgba(255, 193, 7, 0.3));
-    transform: scale(1.05);
-  }
-}
-
-.wm-trophy-icon {
-  animation: trophyPulse 2.5s ease-in-out infinite;
-  transition: transform 0.2s ease;
-}
-
-.group:hover .wm-trophy-icon {
-  animation: none;
-  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7)) drop-shadow(0 0 20px rgba(76, 175, 80, 0.4));
-  transform: scale(1.15) rotate(-5deg);
-}
-
 .gewinnspiel-icon {
   animation: gewinnspielPulse 3s ease-in-out infinite;
   transition: transform 0.2s ease;

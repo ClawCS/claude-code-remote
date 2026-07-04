@@ -139,77 +139,6 @@ function DesktopDropdown({ item, open, onToggle, t }: { item: NavItem; open: boo
   );
 }
 
-function WmTrophyIcon() {
-  return (
-    <Link
-      href="/tippkick"
-      className="relative flex flex-col items-center gap-0.5 group"
-      title="🏆 WM 2026 Tippspiel — Hier teilnehmen!"
-    >
-      {/* Animated glow ring */}
-      <span className="absolute -inset-2 rounded-full bg-gradient-to-r from-amber-400/30 via-yellow-300/20 to-amber-400/30 blur-sm animate-pulse group-hover:from-amber-400/50 group-hover:via-yellow-300/40 group-hover:to-amber-400/50 transition-all" />
-      {/* Star burst behind */}
-      <svg className="absolute -inset-1 h-12 w-12" viewBox="0 0 48 48" fill="none">
-        {[0,45,90,135,180,225,270,315].map((r) => (
-          <line key={r} x1="24" y1="24" x2="24" y2="4" stroke="#FFD700" strokeWidth="0.5" opacity="0.3" transform={`rotate(${r} 24 24)`} />
-        ))}
-      </svg>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        className="relative h-9 w-9 wm-trophy-icon drop-shadow-[0_0_6px_rgba(255,215,0,0.5)]"
-        aria-label="WM 2026 Tippspiel"
-      >
-        <defs>
-          <linearGradient id="trophyGold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFD700" />
-            <stop offset="50%" stopColor="#FFC107" />
-            <stop offset="100%" stopColor="#FF8F00" />
-          </linearGradient>
-          <linearGradient id="trophyShine" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#FFF9C4" />
-            <stop offset="100%" stopColor="#FFD700" />
-          </linearGradient>
-        </defs>
-        {/* Cup body */}
-        <path
-          d="M5 3h14v2c0 4.418-3.134 8-7 8S5 9.418 5 5V3z"
-          fill="url(#trophyGold)"
-          stroke="#B8860B"
-          strokeWidth="0.5"
-        />
-        {/* Left handle */}
-        <path
-          d="M5 5H3c0 2.5 1.5 4 3 4"
-          fill="none"
-          stroke="url(#trophyGold)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        {/* Right handle */}
-        <path
-          d="M19 5h2c0 2.5-1.5 4-3 4"
-          fill="none"
-          stroke="url(#trophyGold)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        {/* Stem */}
-        <rect x="10.5" y="13" width="3" height="3" rx="0.5" fill="url(#trophyGold)" />
-        {/* Base */}
-        <rect x="8" y="16" width="8" height="2" rx="1" fill="url(#trophyGold)" stroke="#B8860B" strokeWidth="0.3" />
-        {/* Star on cup */}
-        <path
-          d="M12 5.5l1 2 2.2.3-1.6 1.5.4 2.2L12 10.3 10 11.5l.4-2.2L8.8 7.8 11 7.5z"
-          fill="url(#trophyShine)"
-        />
-      </svg>
-      {/* Permanent label */}
-      <span className="text-[9px] font-bold leading-none text-amber-600 tracking-tight whitespace-nowrap">WM 2026</span>
-    </Link>
-  );
-}
-
 function GewinnspielIcon() {
   return (
     <Link
@@ -387,8 +316,6 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-center gap-4">
-            {/* WM 2026 Trophy Icon - always visible */}
-            <WmTrophyIcon />
             {/* Gewinnspiel Icon */}
             <GewinnspielIcon />
 
