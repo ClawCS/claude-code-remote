@@ -73,10 +73,10 @@
 - [x] **5.1** ✅ 19 kaputte Meta-Descriptions (Präfix „ Trinkgut Jammers|") bereinigt
 - [x] **5.2** ✅ 7 Doppel-Brand-Titel bereinigt
 - [x] **5.3** ✅ LocalBusiness-JSON-LD (LiquorStore, Adresse/Öffnungszeiten/Geo)
-- [ ] **5.4** ⬜ Product-Schema auf Produktseiten
-- [ ] **5.5** ⬜ OG-Karten pro Produkt + korrektes og:image
-- [ ] **5.6** ⬜ Canonical-URLs
-- [ ] **5.7** ⬜ Echte 404 via notFound() + generateStaticParams
+- [x] **5.4** ✅ Product-Schema (Offer/Preis/Verfügbarkeit) auf Produktseiten
+- [x] **5.5** ✅ OG-Karten pro Produkt + og:image
+- [x] **5.6** ✅ Canonical-URLs auf Detailrouten (produkte/kategorie/akademie)
+- [x] **5.7** ✅ Echte 404 via generateStaticParams + dynamicParams=false
 - [x] **5.8** ✅ Sitemap: entfernte Routen raus (dynamische Slugs noch offen)
 - [x] **5.9** ✅ /kontakt ins Footer-Menü
 - [ ] **5.10** ⬜ hreflang reziprok (hängt an E4)
@@ -104,7 +104,7 @@
 - [ ] **8.2** ⏸ RSC-Sanierung (use client / Akademie-Bundle) — größerer Umbau
 - [ ] **8.3** ⬜ loading.tsx/Suspense + API-Caching
 - [ ] **8.4** ⬜ Tote Video-/Lottie-Schicht aus CategoryBackground
-- [x] **8.5** ⚠️ A11y-Overlays: Cart-/Wishlist-Drawer ✅ (role=dialog, ESC, Fokus-Trap, Scroll-Lock); AIAssistant + Header-Mobile-Drawer noch offen
+- [x] **8.5** ✅ A11y-Overlays: Cart-/Wishlist-Drawer + Header-Mobile-Drawer + Mobile-Suche (modal, ESC, Fokus-Trap, Scroll-Lock) + AIAssistant (non-modal Dialog + ESC)
 - [x] **8.6** ⚠️ prefers-reduced-motion global ✅; einzelne fehlende Form-Labels noch offen
 - [x] **8.7** ✅ Globales overflow-x-Netz (Touch-Targets-Sweep noch offen)
 - [ ] **8.8** ⚠️ Git-Sync: nach jedem Batch committet+gepusht; Laufzeitdateien-.gitignore + alter Klon noch offen
