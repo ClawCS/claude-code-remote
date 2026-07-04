@@ -440,11 +440,11 @@ export default function OekoTrackerPage() {
                   Autofahrt weniger.
                 </p>
               )}
-              {stats.waterLiters >= 10 && (
+              {stats.waterLiters >= 60 && (
                 <p>
                   {"\uD83D\uDEB0"} Mit {stats.waterLiters}L gespartem Wasser k&ouml;nntest du{" "}
                   <strong className="text-secondary">
-                    {Math.round(stats.waterLiters / 150)} mal
+                    {Math.max(1, Math.round(stats.waterLiters / 60))} mal
                   </strong>{" "}
                   duschen.
                 </p>
