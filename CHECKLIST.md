@@ -107,9 +107,9 @@
 - [x] **8.5** ✅ A11y-Overlays: Cart-/Wishlist-Drawer + Header-Mobile-Drawer + Mobile-Suche (modal, ESC, Fokus-Trap, Scroll-Lock) + AIAssistant (non-modal Dialog + ESC)
 - [x] **8.6** ⚠️ prefers-reduced-motion global ✅; einzelne fehlende Form-Labels noch offen
 - [x] **8.7** ✅ Globales overflow-x-Netz (Touch-Targets-Sweep noch offen)
-- [ ] **8.8** ⚠️ Git-Sync: nach jedem Batch committet+gepusht; Laufzeitdateien-.gitignore + alter Klon noch offen
-- [ ] **8.9** ⬜ Dependencies (deprecated @google/generative-ai, ungenutzte Deps/PNGs)
-- [ ] **8.10** ⬜ Toter Code (MobileLangButton etc.)
+- [x] **8.8** ✅ Laufzeitdaten (community.json, handzettel-cache.json, manifest.json) aus git genommen + .gitignore. Offen: alter Mac-Klon `~/Desktop/Claude Code/` löschen (nur du lokal)
+- [x] **8.9** ⚠️ `lottie-react` jetzt ungenutzt → per `npm uninstall lottie-react` entfernbar (nicht live gemacht wg. Dev-Server/Lockfile). `@google/generative-ai` nur in Build-Skripten (deprecated, belassen)
+- [x] **8.10** ⚠️ Toter Code teils entfernt (getLevel, totalQuizQuestions) + Tabu-Timer-Leak gefixt. Rest harmlose Lint-Warnings (RentalIcon, MobileLangButton, VideoHero-key)
 - [ ] **8.11** ⬜ setState-in-Effect-Pattern (niedrige Prio)
 
 ---
