@@ -91,6 +91,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Trinkgut Jammers Goch e.K.
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
+            <Link href="/kontakt" className="hover:text-[#F59E0B] transition-colors">Kontakt</Link>
             <Link href="/impressum" className="hover:text-[#F59E0B] transition-colors">{t("footer.impressum")}</Link>
             <Link href="/datenschutz" className="hover:text-[#F59E0B] transition-colors">{t("footer.datenschutz")}</Link>
             <Link href="/agb" className="hover:text-[#F59E0B] transition-colors">AGB</Link>

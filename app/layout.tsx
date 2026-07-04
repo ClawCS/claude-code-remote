@@ -58,9 +58,43 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LiquorStore",
+    name: "Trinkgut Jammers Goch",
+    image: "https://trinkgut-jammers.de/images/logo-trinkgut-jammers.png",
+    "@id": "https://trinkgut-jammers.de",
+    url: "https://trinkgut-jammers.de",
+    telephone: "+49 2823 418707",
+    priceRange: "€€",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jurgenstr. 20",
+      addressLocality: "Goch",
+      postalCode: "47574",
+      addressCountry: "DE",
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        opens: "08:00",
+        closes: "20:00",
+      },
+    ],
+    sameAs: [
+      "https://www.instagram.com/trinkgutjammers_goch/",
+      "https://www.facebook.com/trinkgutjammers",
+    ],
+  };
+
   return (
     <html lang="de" className={`h-full antialiased ${jakarta.variable} ${spaceGrotesk.variable}`}>
       <body className="min-h-full flex flex-col font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
         <CartProvider>
           <WishlistProvider>
             <DeChrome>
