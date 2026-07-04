@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { categories } from "@/lib/utils";
 
+// Nur existierende Kategorie-Slugs sind gültig → sonst echtes 404
+export function generateStaticParams() {
+  return categories.map((c) => ({ slug: c.slug }));
+}
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const category = categories.find((c) => c.slug === slug);
@@ -12,7 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
   return {
     title: `${category.name} — Sortiment`,
-    description: `Alle ${category.name}-Angebote bei Trinkgut Jammers Goch. Aktuelle Wochenpreise und Top-Marken auf einen Blick.`,
+    description: `${category.name} aus unserem Sortiment bei Trinkgut Jammers Goch — Top-Marken auf einen Blick.`,
+    alternates: { canonical: `/kategorie/${category.slug}` },
   };
 }
 
