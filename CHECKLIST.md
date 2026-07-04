@@ -103,7 +103,7 @@
 - [ ] **8.1** ⬜ i18n-Grundsatzentscheidung (E4)
 - [ ] **8.2** ⏸ RSC-Sanierung (use client / Akademie-Bundle) — größerer Umbau
 - [ ] **8.3** ⬜ loading.tsx/Suspense + API-Caching
-- [ ] **8.4** ⬜ Tote Video-/Lottie-Schicht aus CategoryBackground
+- [x] **8.4** ✅ Tote Video-/Lottie-Schicht aus CategoryBackground entfernt (+ Hydration-Mismatch behoben)
 - [x] **8.5** ✅ A11y-Overlays: Cart-/Wishlist-Drawer + Header-Mobile-Drawer + Mobile-Suche (modal, ESC, Fokus-Trap, Scroll-Lock) + AIAssistant (non-modal Dialog + ESC)
 - [x] **8.6** ⚠️ prefers-reduced-motion global ✅; einzelne fehlende Form-Labels noch offen
 - [x] **8.7** ✅ Globales overflow-x-Netz (Touch-Targets-Sweep noch offen)
