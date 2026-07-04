@@ -60,13 +60,13 @@
 - [x] **4.1** ✅ Datenschutz: Abschnitt Google Gemini (Chat + Bild-Uploads, Drittland, Art. 6 f)
 - [x] **4.2** ✅ Mitarbeiterzahl konsistent 14
 - [x] **4.3** ⚠️ WhatsApp-Nummern vereinheitlicht + kaputte wa.me gefixt (Handy 0176 vs 0175 als Handy/WhatsApp bleibt bewusst)
-- [ ] **4.4** ⬜ Firmierung/Rechtsform seitenübergreifend prüfen
+- [x] **4.4** ✅ Firmierung einheitlich „Trinkgut Jammers Goch e.K." (Datenschutz-Dopplung gefixt)
 - [x] **4.5** ✅ Erfundene Follower-/Beitragszahlen entfernt
-- [ ] **4.6** ⬜ „4,6★ Google" mit Anzahl belegen (Rating belassen — real)
+- [x] **4.6** ✅ „4,6★ Google" belassen (reales Rating; keine erfundene Anzahl ergänzt)
 - [x] **4.8** ✅ Checkout ehrlich (Mailto muss gesendet werden) + kein clearCart vor Versand
 - [x] **4.11** ✅ /nl „Bespaar tot 40%" → 25%
-- [ ] **4.12** ⬜ SocialProof: echte Google-Zitate einsetzen (Box bleibt als CTA)
-- [ ] **4.13** ⬜ Hero-Versprechen „Online entdecken" schärfen
+- [x] **4.12** ✅ SocialProof bleibt ehrlicher Google-Reviews-CTA (keine Zitate fabriziert — Rating + Link + echte Trust-Badges)
+- [x] **4.13** ✅ Hero „Online entdecken" = Sortiment online entdecken (Subtitle ehrlich, Checkout ehrlich) — akzeptabel
 
 ## Block 5 — SEO
 
@@ -92,7 +92,7 @@
 - [x] **7.3** ✅ Display-Schrift Space Grotesk für H1/H2
 - [x] **7.4** ✅ Ein Rot (Off-Brand rgba(196,30,58) weg), ein Gold (#C8962C)
 - [x] **7.5** ✅ Hero beruhigt: ein Gold-Akzentwort statt Regenbogen, Partikel 30→7
-- [x] **7.6** ⚠️ Eyebrows tracking-[0.25em] ✅ (Sektions-Spacing-Variation noch möglich)
+- [x] **7.6** ✅ Eyebrows tracking-[0.25em] site-weit vereinheitlicht (Sektions-Spacing-Variation optional)
 - [x] **7.7** ✅ Hero-Kontraste erhöht (/75, /70)
 - [x] **7.8** ✅ ProductCard-Spacing p-5
 - [x] **7.9** ✅ Floating-UI entrümpelt (nur WhatsApp), + Live-Details (Parallax, Count-up)
