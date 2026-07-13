@@ -3,13 +3,13 @@
 ## D-0001 — Aktiver Projektordner
 
 Datum: 13.07.2026
-Status: vorgeschlagen, wartet auf G0
+Status: bestätigt an G0 am 13.07.2026
 
 Entscheidung: /Users/niko/Desktop/Homepage/trinkgut-jammers-v2 ist die künftige Arbeitsbasis.
 
 Begründung: gleicher Remote und gleicher Ursprungsbranch wie der zweite Klon, aber 60 Commits weiter, jüngere Quellen, mehr vollständige Features und der aktuelle Remote-Stand. Der ältere Klon hat keine exklusiven lokalen Commits.
 
-Folge: Nach Nikos G0-Freigabe wird nur der alte Ordner unter Desktop/Claude Code in trinkgut-jammers-v2_ARCHIV_2026-07-13 umbenannt. Kein Löschen.
+Folge: Der alte Ordner unter Desktop/Claude Code ist als trinkgut-jammers-v2_ARCHIV_2026-07-13 erhalten. Er wurde nicht gelöscht. Alle weitere Arbeit findet ausschließlich unter Desktop/Homepage statt.
 
 ## D-0002 — Bestehenden Next.js-Stand weiterentwickeln
 

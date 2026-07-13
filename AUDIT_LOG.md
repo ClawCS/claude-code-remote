@@ -2,7 +2,7 @@
 
 Stand: 13.07.2026, Phase 0
 Branch: codex/p0-bestandsaufnahme
-Gate-Status: G0 wartet auf Freigabe von Niko
+Gate-Status: G0 PASS — von Niko am 13.07.2026 bestätigt
 
 ## Schweregrade
 
@@ -23,7 +23,7 @@ Gate-Status: G0 wartet auf Freigabe von Niko
 
 Entscheidungsvorschlag: /Users/niko/Desktop/Homepage/trinkgut-jammers-v2 ist nach der verbindlichen Entscheidungsregel der aktive Stand. Der Ordner unter Desktop/Claude Code ist ein 60 Commits älterer Klon derselben Remote-Branch und enthält keine lokalen Commits, die dem aktiven Stand voraus sind.
 
-Noch nicht ausgeführt: Der alte Ordner wurde weder umbenannt noch gelöscht. Nach G0 soll er in trinkgut-jammers-v2_ARCHIV_2026-07-13 umbenannt werden.
+Ausgeführt und verifiziert: Der alte Ordner ist unter /Users/niko/Desktop/Claude Code/trinkgut-jammers-v2_ARCHIV_2026-07-13 archiviert. Sein HEAD bleibt 966d9b6; er wurde nicht gelöscht oder inhaltlich verändert.
 
 Wichtiger Worktree-Hinweis: Bereits vor dieser Prüfung zeigte Git im aktiven Ordner 14 gelöschte, getrackte PNGs unter public/images/Expertise Liköre (A5)/. Diese Änderungen stammen nicht von Codex und wurden weder repariert noch gestaged.
 
@@ -31,9 +31,9 @@ Wichtiger Worktree-Hinweis: Bereits vor dieser Prüfung zeigte Git im aktiven Or
 
 ### P0-001 — P1 — G0 wartet auf Ordnerfreigabe
 
-Status: offen
+Status: behoben und verifiziert am 13.07.2026
 
-Der aktive Kandidat ist technisch eindeutig, darf gemäß Arbeitsauftrag aber erst nach Nikos Bestätigung zur alleinigen Arbeitsbasis erklärt werden. Der alte Klon bleibt bis dahin unverändert.
+Niko hat /Users/niko/Desktop/Homepage/trinkgut-jammers-v2 als alleinige Arbeitsbasis bestätigt. Der alte Klon ist unter dem vereinbarten Archivnamen erhalten.
 
 ### P0-002 — P2 — Instagram-Brandinput fehlt
 
@@ -121,8 +121,9 @@ Mehrere Bildgruppen sind SHA-identische Kopien. Sechs Kategorie- und vier Servic
 
 ## G0-Freigabe
 
-Ausstehende Entscheidung von Niko:
+PASS am 13.07.2026:
 
-1. /Users/niko/Desktop/Homepage/trinkgut-jammers-v2 wird als alleiniger aktiver Stand bestätigt.
-2. /Users/niko/Desktop/Claude Code/trinkgut-jammers-v2 darf nur umbenannt und als Archiv erhalten werden.
-3. Das vorliegende Asset- und Feature-Inventar wird als Phase-0-Ausgangspunkt akzeptiert.
+1. /Users/niko/Desktop/Homepage/trinkgut-jammers-v2 ist der alleinige aktive Stand.
+2. Der alte Klon ist als trinkgut-jammers-v2_ARCHIV_2026-07-13 erhalten.
+3. Asset- und Feature-Inventar sind als Phase-0-Ausgangspunkt akzeptiert.
+4. Tag: gate-0 (wird auf dem bestätigten Gate-Commit gesetzt).
