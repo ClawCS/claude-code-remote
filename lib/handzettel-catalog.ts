@@ -162,11 +162,26 @@ function parseAttributes(source: string, context: string): Record<string, string
 function extractExpiryMeta(html: string): string {
   const values: string[] = [];
   for (const match of html.matchAll(/<meta\b([^>]*)>/gi)) {
-    const attributes = parseAttributes(match[1], "expires meta");
-    if (attributes["http-equiv"]?.toLowerCase() === "expires") {
-      if (!attributes.content) throw new TypeError("missing expiry");
-      values.push(attributes.content);
+    const attributeSource = match[1].replace(/\/\s*$/, "");
+    const httpEquivValues = [
+      ...attributeSource.matchAll(/(?:^|\s)http-equiv\s*=\s*(["'])(.*?)\1/gi),
+    ].map((attributeMatch) => decodeMarkup(attributeMatch[2]).toLowerCase());
+    if (!httpEquivValues.includes("expires")) continue;
+
+    const attributes = parseAttributes(attributeSource, "expires meta");
+    const htmlAttribute = (name: string) => {
+      const matches = Object.entries(attributes).filter(
+        ([attributeName]) => attributeName.toLowerCase() === name,
+      );
+      if (matches.length > 1) throw new TypeError(`duplicate expires meta attribute ${name}`);
+      return matches[0]?.[1];
+    };
+    if (htmlAttribute("http-equiv")?.toLowerCase() !== "expires") {
+      throw new TypeError("conflicting expiry meta");
     }
+    const content = htmlAttribute("content");
+    if (!content) throw new TypeError("missing expiry");
+    values.push(content);
   }
   if (values.length === 0) throw new TypeError("missing expiry");
   const distinct = [...new Set(values)];

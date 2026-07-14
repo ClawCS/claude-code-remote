@@ -273,6 +273,35 @@ describe("official leaflet catalog", () => {
     });
   });
 
+  it("ignores unrelated self-closing meta tags from the live viewer head", () => {
+    const liveHeadHtml = viewerHtml().replace(
+      "</head>",
+      `  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>`,
+    );
+
+    expect(extractCatalogInfo(HANDZETTEL_VIEWER_URL, liveHeadHtml)).toMatchObject({
+      catalogId: CATALOG_ID,
+      version: CATALOG_VERSION,
+      catalogGroupId: HANDZETTEL_STORE_ID,
+      title: CATALOG_TITLE,
+      validTo: "2026-07-18",
+    });
+  });
+
+  it("still rejects conflicting expiry meta when the second tag is self-closing", () => {
+    const conflictingExpiryHtml = viewerHtml().replace(
+      "</head>",
+      `  <meta http-equiv="expires" content="Sat, 25 Jul 2026 23:59:59 CEST"/>
+  </head>`,
+    );
+
+    expect(() => extractCatalogInfo(HANDZETTEL_VIEWER_URL, conflictingExpiryHtml)).toThrow(
+      /conflicting expiry/,
+    );
+  });
+
   it("rejects conflicting viewer metadata", () => {
     expect(() =>
       extractCatalogInfo(
@@ -538,6 +567,59 @@ describe("leaflet refresh route", () => {
     });
     expect(network).not.toHaveBeenCalled();
     await expect(readdir(path.join(sandbox, "data"))).rejects.toThrow();
+  });
+
+  it("returns fallback for malformed cache JSON without network or file mutation", async () => {
+    const cacheFile = path.join(sandbox, "data", "handzettel-cache.json");
+    const malformed = '{"status":"ok",';
+    await mkdir(path.dirname(cacheFile), { recursive: true });
+    await writeFile(cacheFile, malformed, "utf8");
+    const network = vi.fn(() => {
+      throw new Error("malformed-cache GET attempted network access");
+    });
+    vi.stubGlobal("fetch", network);
+
+    const result = await GET(new Request("https://example.test/api/handzettel/fetch"));
+
+    expect(result.status).toBe(200);
+    expect(result.headers.get("cache-control")).toBe("no-store");
+    expect(await result.json()).toMatchObject({
+      status: "fallback",
+      pageCount: 0,
+      pages: [],
+    });
+    expect(network).not.toHaveBeenCalled();
+    expect(await readFile(cacheFile, "utf8")).toBe(malformed);
+    expect(await readdir(path.dirname(cacheFile))).toEqual(["handzettel-cache.json"]);
+  });
+
+  it("returns fallback for a legacy cache schema without network or file mutation", async () => {
+    const cacheFile = path.join(sandbox, "data", "handzettel-cache.json");
+    const { validFrom, validTo, ...currentFields } = validCache();
+    const legacy = `${JSON.stringify(
+      { ...currentFields, weekStart: validFrom, weekEnd: validTo },
+      null,
+      2,
+    )}\n`;
+    await mkdir(path.dirname(cacheFile), { recursive: true });
+    await writeFile(cacheFile, legacy, "utf8");
+    const network = vi.fn(() => {
+      throw new Error("legacy-cache GET attempted network access");
+    });
+    vi.stubGlobal("fetch", network);
+
+    const result = await GET(new Request("https://example.test/api/handzettel/fetch"));
+
+    expect(result.status).toBe(200);
+    expect(result.headers.get("cache-control")).toBe("no-store");
+    expect(await result.json()).toMatchObject({
+      status: "fallback",
+      pageCount: 0,
+      pages: [],
+    });
+    expect(network).not.toHaveBeenCalled();
+    expect(await readFile(cacheFile, "utf8")).toBe(legacy);
+    expect(await readdir(path.dirname(cacheFile))).toEqual(["handzettel-cache.json"]);
   });
 
   it("serves only a validated active cache without network access", async () => {
