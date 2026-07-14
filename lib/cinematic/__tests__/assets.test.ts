@@ -1,15 +1,18 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn, type ChildProcess } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
+  copyFileSync,
   existsSync,
   mkdtempSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
+  renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 import sharp from "sharp";
 import { describe, expect, test } from "vitest";
@@ -88,6 +91,30 @@ const sources = [
 
 const sha256 = (file: string) =>
   createHash("sha256").update(readFileSync(file)).digest("hex");
+
+async function waitForStagingDirectory(
+  fixture: string,
+  child: ChildProcess,
+  stderr: () => string,
+): Promise<void> {
+  const deadline = Date.now() + 10_000;
+  while (Date.now() < deadline) {
+    if (
+      readdirSync(fixture).some((name) =>
+        name.startsWith(".output.staging-"),
+      )
+    ) {
+      return;
+    }
+    if (child.exitCode !== null) {
+      throw new Error(
+        `Fixture build exited before staging (${child.exitCode}): ${stderr()}`,
+      );
+    }
+    await new Promise((resolveTimeout) => setTimeout(resolveTimeout, 2));
+  }
+  throw new Error("Timed out waiting for post-validation staging");
+}
 
 describe("cinematic image pipeline", () => {
   test("pins the deterministic Sharp toolchain and scripts", () => {
@@ -192,4 +219,79 @@ describe("cinematic image pipeline", () => {
       rmSync(temp, { recursive: true, force: true });
     }
   });
+
+  test(
+    "builds exclusively from the immutable bytes that passed validation",
+    async () => {
+      const fixture = mkdtempSync(
+        join(process.cwd(), ".cinematic-toctou-"),
+      );
+      let child: ChildProcess | undefined;
+
+      try {
+        for (const source of sources) {
+          const destination = join(fixture, source.path);
+          mkdirSync(dirname(destination), { recursive: true });
+          copyFileSync(resolve(source.path), destination);
+        }
+
+        const fixtureScript = join(
+          fixture,
+          "scripts/build-cinematic-assets.mjs",
+        );
+        mkdirSync(dirname(fixtureScript), { recursive: true });
+        copyFileSync(
+          resolve("scripts/build-cinematic-assets.mjs"),
+          fixtureScript,
+        );
+
+        const swappedLogo = await sharp({
+          create: {
+            width: 828,
+            height: 324,
+            channels: 3,
+            background: "#000000",
+          },
+        })
+          .png()
+          .toBuffer();
+        const swapPath = join(fixture, "public/images/logo-swap.png");
+        writeFileSync(swapPath, swappedLogo);
+
+        let stderr = "";
+        child = spawn(process.execPath, [fixtureScript], {
+          env: {
+            ...process.env,
+            CINEMATIC_ASSET_OUTPUT_DIR: join(fixture, "output"),
+          },
+          stdio: ["ignore", "ignore", "pipe"],
+        });
+        child.stderr?.on("data", (chunk) => {
+          stderr += String(chunk);
+        });
+        const completion = new Promise<number | null>((resolveCompletion) => {
+          child?.once("close", resolveCompletion);
+        });
+
+        await waitForStagingDirectory(fixture, child, () => stderr);
+        renameSync(
+          swapPath,
+          join(fixture, "public/images/logo-trinkgut-jammers.png"),
+        );
+
+        const exitCode = await completion;
+        if (exitCode !== 0) {
+          throw new Error(`Fixture build failed (${exitCode}): ${stderr}`);
+        }
+
+        expect(sha256(join(fixture, "output/og-home.jpg"))).toBe(
+          sha256(join(output, "og-home.jpg")),
+        );
+      } finally {
+        if (child?.exitCode === null) child.kill();
+        rmSync(fixture, { recursive: true, force: true });
+      }
+    },
+    15_000,
+  );
 });

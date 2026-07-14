@@ -202,7 +202,13 @@ function sha256(buffer) {
 }
 
 async function validateSources() {
+  const validatedSources = Object.create(null);
+
   for (const job of JOBS) {
+    if (Object.hasOwn(validatedSources, job.id)) {
+      throw new Error(`Duplicate Cinematic source id: ${job.id}`);
+    }
+
     const file = sourcePath(job);
     const bytes = await readFile(file);
     if (sha256(bytes) !== job.sourceHash) {
@@ -216,11 +222,27 @@ async function validateSources() {
     ) {
       throw new Error(`Source dimensions mismatch: ${job.source}`);
     }
+
+    Object.defineProperty(validatedSources, job.id, {
+      value: bytes,
+      enumerable: true,
+      configurable: false,
+      writable: false,
+    });
   }
+
+  return Object.freeze(validatedSources);
 }
 
-async function buildTeam(job, destination) {
-  await sharp(sourcePath(job))
+function validatedSource(validatedSources, jobId) {
+  if (!Object.hasOwn(validatedSources, jobId)) {
+    throw new Error(`Missing validated Cinematic source: ${jobId}`);
+  }
+  return validatedSources[jobId];
+}
+
+async function buildTeam(job, destination, validatedSources) {
+  await sharp(validatedSource(validatedSources, job.id))
     .rotate()
     .extract(job.crop)
     .toColourspace("srgb")
@@ -229,8 +251,8 @@ async function buildTeam(job, destination) {
     .toFile(destination);
 }
 
-async function buildPoster(job, destination) {
-  await sharp(sourcePath(job))
+async function buildPoster(job, destination, validatedSources) {
+  await sharp(validatedSource(validatedSources, job.id))
     .rotate()
     .toColourspace("srgb")
     .webp({ quality: 82, effort: 6 })
@@ -290,11 +312,11 @@ function ogOverlay() {
   `);
 }
 
-async function buildOg(job, destination) {
+async function buildOg(job, destination, validatedSources) {
   const heroJob = JOBS.find(({ id }) => id === job.compositionSourceId);
   if (!heroJob?.crop) throw new Error("OG composition source is invalid");
 
-  const hero = await sharp(sourcePath(heroJob))
+  const hero = await sharp(validatedSource(validatedSources, heroJob.id))
     .rotate()
     .extract(heroJob.crop)
     .resize({ width: 680, height: 630, fit: "cover", position: "centre" })
@@ -303,7 +325,7 @@ async function buildOg(job, destination) {
     .png()
     .toBuffer();
 
-  const logo = await sharp(sourcePath(job))
+  const logo = await sharp(validatedSource(validatedSources, job.id))
     .rotate()
     .resize({ width: 410, withoutEnlargement: true })
     .toColourspace("srgb")
@@ -328,13 +350,18 @@ async function buildOg(job, destination) {
     .toFile(destination);
 }
 
-async function buildInto(stagingDirectory) {
+async function buildInto(stagingDirectory, validatedSources) {
   for (const job of JOBS) {
     const destination = join(stagingDirectory, job.output.name);
-    if (job.kind === "team") await buildTeam(job, destination);
-    else if (job.kind === "poster") await buildPoster(job, destination);
-    else if (job.kind === "og") await buildOg(job, destination);
-    else throw new Error(`Unsupported Cinematic job: ${job.id}`);
+    if (job.kind === "team") {
+      await buildTeam(job, destination, validatedSources);
+    } else if (job.kind === "poster") {
+      await buildPoster(job, destination, validatedSources);
+    } else if (job.kind === "og") {
+      await buildOg(job, destination, validatedSources);
+    } else {
+      throw new Error(`Unsupported Cinematic job: ${job.id}`);
+    }
   }
 }
 
@@ -419,7 +446,7 @@ async function replaceTarget(stagingDirectory) {
 }
 
 async function main() {
-  await validateSources();
+  const validatedSources = await validateSources();
 
   const outputParent = dirname(OUTPUT_DIR);
   await mkdir(outputParent, { recursive: true });
@@ -428,7 +455,7 @@ async function main() {
   );
 
   try {
-    await buildInto(stagingDirectory);
+    await buildInto(stagingDirectory, validatedSources);
     await validateOutputs(stagingDirectory);
 
     if (CHECK_MODE) {
