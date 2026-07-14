@@ -909,41 +909,125 @@ git commit -m "feat: add curated cinematic image pipeline"
 
 ### Task 3: Correct Root Metadata and Isolate the Production Homepage Chrome
 
+**Hard prerequisite and atomic handoff:**
+
+- Task 2 must be committed, independently review-clean, and green through `npm run assets:cinematic:check` and `npm run build`; `public/images/home/cinematic/og-home.jpg` is a required 1200×630 JPEG input, not an optional future asset.
+- Start from a clean worktree. Do not create a local substitute for the Task-1 fact contract or the Task-2 OG asset.
+- This task deliberately removes the legacy root shell before Task 4 supplies the Cinematic banner/main/contentinfo. Its commit is therefore a non-deployable intermediate state. Do not push, deploy, or pause the handoff between Task 3 and Task 4; final root-landmark and no-JS acceptance is completed in Task 4.
+
 **Files:**
 - Create: `lib/cinematic/metadata.ts`
 - Create: `lib/chrome-visibility.ts`
 - Create: `lib/cinematic/__tests__/metadata.test.ts`
 - Create: `lib/cinematic/__tests__/chrome-visibility.test.ts`
+- Create: `lib/cinematic/__tests__/json-ld-script.test.tsx`
+- Create: `components/JsonLdScript.tsx`
+- Create: `components/RouteContent.tsx`
+- Create: `e2e/metadata-chrome.spec.ts`
+- Modify: `app/page.tsx`
 - Modify: `app/layout.tsx`
+- Modify: `app/nl/layout.tsx`
 - Modify: `components/DeChrome.tsx`
+- Modify: `components/Header.tsx`
 
 **Interfaces:**
-- Produces: `SITE_METADATA: Metadata`, `HOMEPAGE_METADATA: Metadata`, `LOCAL_BUSINESS_JSON_LD`, and `shouldHideLegacyChrome(pathname: string): boolean`.
-- Consumes: `MARKET` and `SITE_LINKS` from Task 1. Existing providers, cookie banner, and non-root route chrome remain intact; legacy chrome/drawers are lazy chunks that are not requested on `/`.
+- Produces: `SITE_METADATA: Metadata`, `HOMEPAGE_METADATA: Metadata`, `LOCAL_BUSINESS_JSON_LD`, `serializeJsonLd(value)`, and `shouldHideLegacyChrome(pathname: string): boolean`.
+- Consumes: `MARKET` and `SITE_LINKS` from Task 1 plus the exact Task-2 asset `public/images/home/cinematic/og-home.jpg`.
+- `SITE_METADATA` is site-wide and must never assign the root canonical or the homepage-specific OG image to child routes. `HOMEPAGE_METADATA` owns the complete root canonical, reciprocal `de`/`nl` alternates, and homepage OG record.
+- Existing cart/wishlist providers, cookie banner, and non-root route chrome remain intact. Legacy header/footer/drawers/floating tools become lazy chunks and are not requested on `/` or `/nl`.
+- `RouteContent` preserves the existing global `<main>` on every non-root route, including `/nl`, but uses a neutral `<div>` on `/` so Task 4 can own the root banner/main/contentinfo without nested landmarks.
+- Because the predecessor `app/page.tsx` is a Client Component and cannot export metadata, Task 3 replaces it with a minimal Server Component handoff that exports `HOMEPAGE_METADATA`. This intentionally non-deployable surface contains only `data-cinematic-handoff`; Task 4 immediately replaces it with the complete Cinematic homepage. Do not retain or relocate the old client homepage.
 
-- [ ] **Step 1: Write failing metadata and route-boundary tests**
+- [ ] **Step 1: Write failing metadata, serializer, and route-boundary tests**
+
+Before creating any RED test file, produce and freeze the clean Task-2 predecessor build:
+
+```bash
+npm run build
+test -s .next/BUILD_ID
+cp .next/BUILD_ID /tmp/cinematic-task3-predecessor-build-id
+```
+
+This is a baseline artifact check, not a GREEN result for Task 3. After the RED files exist, do not rebuild the predecessor: `tsconfig.json` intentionally includes those unresolved unit-test imports. The browser RED must start this exact captured `.next` build and first pass `cmp -s .next/BUILD_ID /tmp/cinematic-task3-predecessor-build-id`.
 
 Create `lib/cinematic/__tests__/metadata.test.ts`:
 
 ```ts
 import { describe, expect, test } from "vitest";
-import { HOMEPAGE_METADATA, LOCAL_BUSINESS_JSON_LD } from "@/lib/cinematic/metadata";
+import { metadata as nlMetadata } from "@/app/nl/layout";
+import {
+  HOMEPAGE_METADATA,
+  LOCAL_BUSINESS_JSON_LD,
+  SITE_METADATA,
+  serializeJsonLd,
+} from "@/lib/cinematic/metadata";
 
 describe("homepage metadata", () => {
-  test("contains exact approved contact and LocalBusiness values", () => {
+  test("keeps root-only canonical, hreflang, and OG out of site metadata", () => {
+    expect(SITE_METADATA.alternates?.canonical).toBeUndefined();
+    expect(SITE_METADATA.openGraph).toBeUndefined();
     expect(HOMEPAGE_METADATA.title).toEqual({ absolute: "Goch schenkt ein. | Trinkgut Jammers" });
-    expect(HOMEPAGE_METADATA.alternates).toEqual({ canonical: "/" });
-    expect(LOCAL_BUSINESS_JSON_LD).toMatchObject({
+    expect(HOMEPAGE_METADATA.alternates).toEqual({
+      canonical: "/",
+      languages: { de: "/", nl: "/nl" },
+    });
+    expect(HOMEPAGE_METADATA.openGraph).toMatchObject({
+      url: "/",
+      title: "Goch schenkt ein. | Trinkgut Jammers",
+      images: [{
+        url: "/images/home/cinematic/og-home.jpg",
+        width: 1200,
+        height: 630,
+      }],
+    });
+    expect(nlMetadata.alternates).toEqual({
+      canonical: "/nl",
+      languages: { de: "/", nl: "/nl" },
+    });
+    expect(nlMetadata.keywords).toBeUndefined();
+    expect(JSON.stringify(nlMetadata)).not.toMatch(/25\s*%|7(?:[.,\s]?000)|3\s*km|gratis parkeren|wij spreken|goedko(?:op|per)|bespaar|Duitse prijzen/i);
+  });
+
+  test("contains exactly the approved LocalBusiness facts", () => {
+    expect(LOCAL_BUSINESS_JSON_LD).toEqual({
+      "@context": "https://schema.org",
       "@type": "LiquorStore",
-      name: "Getränkesupermarkt Jammers e.K.",
+      "@id": "https://trinkgut-jammers.de/#market",
+      name: "Trinkgut Jammers",
+      legalName: "Getränkesupermarkt Jammers e.K.",
+      url: "https://trinkgut-jammers.de",
       telephone: "+49 2823 418707",
       email: "jammers-goch@trinkgut.de",
-      address: { streetAddress: "Jurgensstraße 20", postalCode: "47574", addressLocality: "Goch" },
+      owner: { "@type": "Person", name: "Nikolaos Jammers" },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Jurgensstraße 20",
+        postalCode: "47574",
+        addressLocality: "Goch",
+        addressCountry: "DE",
+      },
+      openingHoursSpecification: [{
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        opens: "08:00",
+        closes: "20:00",
+      }],
+      sameAs: ["https://www.instagram.com/trinkgutjammers_goch/"],
     });
-    expect(JSON.stringify(LOCAL_BUSINESS_JSON_LD)).not.toMatch(/7\.000|Lieferung|inStock|priceRange/);
+    expect(JSON.stringify(LOCAL_BUSINESS_JSON_LD)).not.toMatch(
+      /7(?:[.,\s]?000)|liefer(?:ung|n)|inStock|priceRange|25\s*%/i,
+    );
+  });
+
+  test("serializes JSON-LD without a script-breakout sequence", () => {
+    const serialized = serializeJsonLd({ probe: "</script><script>alert(1)</script>" });
+    expect(serialized).not.toContain("<");
+    expect(serialized).toContain("\\u003c/script>");
   });
 });
 ```
+
+Create `lib/cinematic/__tests__/json-ld-script.test.tsx` before implementation. Render `JsonLdScript` with `renderToStaticMarkup` and the sentinel `</script><script>alert(1)</script>`. Assert that the output contains one `application/ld+json` script, contains `\\u003c/script>`, and contains neither the raw sentinel nor a second script element. This test proves the serializer is used at the real script sink rather than only in isolation.
 
 Create `lib/cinematic/__tests__/chrome-visibility.test.ts`:
 
@@ -952,20 +1036,45 @@ import { describe, expect, test } from "vitest";
 import { shouldHideLegacyChrome } from "@/lib/chrome-visibility";
 
 describe("legacy chrome boundary", () => {
-  test.each([["/", true], ["/nl", true], ["/nl/angebote", true], ["/angebote", false], ["/kontakt", false]])(
+  test.each([["/", true], ["/nl", true], ["/nl/angebote", true], ["/nlde", false], ["/angebote", false], ["/kontakt", false]])(
     "%s => %s",
     (pathname, expected) => expect(shouldHideLegacyChrome(pathname)).toBe(expected),
   );
 });
 ```
 
+Also create the complete `e2e/metadata-chrome.spec.ts` contract described in Step 5 now, before any Task-3 production change. Prefix every pre-implementation browser contract title with `[product-contract]` so the RED harness can distinguish intended assertion failures from infrastructure failures. Keep all expected title, metadata, URL, JSON-LD, sentinel, and accessibility values as test-owned literals: the E2E file must not import the not-yet-existing `LOCAL_BUSINESS_JSON_LD`, serializer, chrome helper, or any Cinematic component before the browser RED.
+
 - [ ] **Step 2: Run the tests to prove the red state**
 
-Run: `npm test -- lib/cinematic/__tests__/metadata.test.ts lib/cinematic/__tests__/chrome-visibility.test.ts`
+Run the focused unit tests, verify the frozen predecessor `BUILD_ID` is unchanged, start that already-built artifact on an isolated verified port without invoking `next build`, and run `e2e/metadata-chrome.spec.ts` once before implementation. Capture both REDs explicitly; a later successful command must never mask them.
 
-Expected: FAIL with unresolved `metadata` and `chrome-visibility` imports.
+```bash
+set -euo pipefail
+set +e
+npm test -- lib/cinematic/__tests__/metadata.test.ts lib/cinematic/__tests__/chrome-visibility.test.ts lib/cinematic/__tests__/json-ld-script.test.tsx > /tmp/cinematic-task3-unit-red.log 2>&1
+UNIT_RED=$?
+set -e
+cat /tmp/cinematic-task3-unit-red.log
+test "$UNIT_RED" -ne 0
+rg -q 'Cannot find|Failed to resolve|does not provide an export|expected' /tmp/cinematic-task3-unit-red.log
+cmp -s .next/BUILD_ID /tmp/cinematic-task3-predecessor-build-id
+```
 
-- [ ] **Step 3: Implement metadata and the pure chrome boundary**
+For the browser RED, use the owned-process harness from Step 6 but accept any `200` root response as readiness because the predecessor has no Task-3 marker yet. Port freedom, live PID, explicit readiness, and cleanup are still mandatory. Run Playwright with `--reporter=json` under a temporary `set +e`, store `BROWSER_RED=$?`, restore `set -e`, and require all of: nonzero `BROWSER_RED`, at least one `[product-contract]` record with an `unexpected` result, and no `ECONNREFUSED`, `ERR_CONNECTION_REFUSED`, port-collision, missing-test-file, or config/import error. Expected: unit RED from unresolved Task-3 modules; browser RED from concrete old-metadata, legacy-root, Unicode-name, and chunk-boundary assertions. A missing server, port collision, or broken test import does not count as product RED.
+
+```bash
+set +e
+PLAYWRIGHT_BASE_URL="http://127.0.0.1:$PORT" npm run test:e2e -- e2e/metadata-chrome.spec.ts --reporter=json > /tmp/cinematic-task3-browser-red.json 2>&1
+BROWSER_RED=$?
+set -e
+test "$BROWSER_RED" -ne 0
+rg -Fq '[product-contract]' /tmp/cinematic-task3-browser-red.json
+rg -q '"status"[[:space:]]*:[[:space:]]*"unexpected"' /tmp/cinematic-task3-browser-red.json
+! rg -qi 'ECONNREFUSED|ERR_CONNECTION_REFUSED|address already in use|No tests found|Cannot find module|Failed to resolve import' /tmp/cinematic-task3-browser-red.json
+```
+
+- [ ] **Step 3: Implement split metadata, exact JSON-LD semantics, and safe serialization**
 
 Create `lib/cinematic/metadata.ts`:
 
@@ -980,33 +1089,33 @@ export const SITE_METADATA: Metadata = {
   metadataBase: new URL("https://trinkgut-jammers.de"),
   title: { default: "Trinkgut Jammers Goch", template: "%s | Trinkgut Jammers" },
   description,
-  alternates: { canonical: "/" },
+};
+
+export const HOMEPAGE_METADATA: Metadata = {
+  title: { absolute: "Goch schenkt ein. | Trinkgut Jammers" },
+  description,
+  alternates: { canonical: "/", languages: { de: "/", nl: "/nl" } },
   openGraph: {
     type: "website",
     locale: "de_DE",
     siteName: "Trinkgut Jammers",
+    url: "/",
     title: "Goch schenkt ein. | Trinkgut Jammers",
     description,
     images: [{ url: "/images/home/cinematic/og-home.jpg", width: 1200, height: 630, alt: "Trinkgut Jammers – Goch schenkt ein." }],
   },
 };
 
-export const HOMEPAGE_METADATA: Metadata = {
-  title: { absolute: "Goch schenkt ein. | Trinkgut Jammers" },
-  description,
-  alternates: { canonical: "/" },
-};
-
 export const LOCAL_BUSINESS_JSON_LD = Object.freeze({
   "@context": "https://schema.org",
   "@type": "LiquorStore",
   "@id": "https://trinkgut-jammers.de/#market",
-  name: MARKET.legalName,
-  alternateName: MARKET.displayName,
+  name: MARKET.displayName,
+  legalName: MARKET.legalName,
   url: "https://trinkgut-jammers.de",
   telephone: "+49 2823 418707",
   email: MARKET.email,
-  founder: { "@type": "Person", name: MARKET.owner },
+  owner: { "@type": "Person", name: MARKET.owner },
   address: {
     "@type": "PostalAddress",
     streetAddress: MARKET.street,
@@ -1022,7 +1131,32 @@ export const LOCAL_BUSINESS_JSON_LD = Object.freeze({
   }],
   sameAs: [SITE_LINKS.instagram],
 });
+
+export function serializeJsonLd(value: unknown): string {
+  const serialized = JSON.stringify(value);
+  if (serialized === undefined) throw new TypeError("JSON-LD value is not serializable");
+  return serialized.replace(/</g, "\\u003c");
+}
 ```
+
+Do not place any root canonical or `og-home.jpg` reference in `SITE_METADATA`. Do not reintroduce `founder`, `alternateName`, `priceRange`, delivery, assortment-size, stock, discount, or unverified social claims.
+
+Create `components/JsonLdScript.tsx` as a Server Component. It accepts `value: unknown` and is the only production sink for JSON-LD:
+
+```tsx
+import { serializeJsonLd } from "@/lib/cinematic/metadata";
+
+export default function JsonLdScript({ value }: { value: unknown }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(value) }}
+    />
+  );
+}
+```
+
+- [ ] **Step 4: Implement the pure chrome boundary, lazy slots, and route-sensitive content wrapper**
 
 Create `lib/chrome-visibility.ts`:
 
@@ -1060,52 +1194,158 @@ export default function DeChrome({ slot }: { slot: LegacySlot }) {
 }
 ```
 
+Create `components/RouteContent.tsx`:
+
+```tsx
+"use client";
+
+import { usePathname } from "next/navigation";
+
+export default function RouteContent({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  return pathname === "/"
+    ? <div className="flex-1">{children}</div>
+    : <main className="flex-1">{children}</main>;
+}
+```
+
 In `app/layout.tsx`, replace the inline metadata and JSON-LD object with imports and keep the existing fonts/providers unchanged:
 
 ```tsx
-import { LOCAL_BUSINESS_JSON_LD, SITE_METADATA } from "@/lib/cinematic/metadata";
+import {
+  LOCAL_BUSINESS_JSON_LD,
+  SITE_METADATA,
+} from "@/lib/cinematic/metadata";
+import JsonLdScript from "@/components/JsonLdScript";
 export const metadata = SITE_METADATA;
-// Use JSON.stringify(LOCAL_BUSINESS_JSON_LD) in the existing application/ld+json script.
+// Render <JsonLdScript value={LOCAL_BUSINESS_JSON_LD} />; do not keep a second inline script sink.
 ```
 
 Also remove direct imports of `Header`, `Footer`, `CartDrawer`, `WishlistDrawer`, `WhatsAppButton`, and `AIAssistant`, then render the lazy slots inside the existing providers:
 
 ```tsx
 <DeChrome slot="header" />
-<main className="flex-1">{children}</main>
+<RouteContent>{children}</RouteContent>
 <DeChrome slot="footer" />
 <DeChrome slot="drawers" />
 <DeChrome slot="floating" />
 <CookieBanner />
 ```
 
-- [ ] **Step 4: Verify the metadata and ensure non-root chrome is unchanged**
+Keep provider order unchanged. In `components/Header.tsx`, fix the three JSX-attribute literals so their accessible names are real Unicode text: `Warenkorb öffnen`, `Menü`, and `Schließen`; JavaScript `\\u` escapes inside a quoted JSX attribute are otherwise exposed literally.
+
+In `app/nl/layout.tsx`, add `canonical: "/nl"`, retain the reciprocal `languages: { de: "/", nl: "/nl" }` set, delete the entire legacy `keywords` field, and replace every unverified metadata claim (`25%`, `7.000+`, `3 km`, free parking, language promise, `goedkoop`/`goedkoper`, `bespaar`, or `Duitse prijzen`) with neutral confirmed copy: a Dutch-information title plus personal advice, party supplies, rental, Jurgensstraße 20, and Mo–Sa 08:00–20:00. Neutralize title, description, and Open Graph together. Keep the existing NL page body out of this homepage task, but do not publish unsupported claims in its metadata.
+
+Replace the legacy client `app/page.tsx` with the explicit atomic-handoff Server Component so the Task-3 metadata contract is actually bound to `/` before its browser smoke:
+
+```tsx
+import { HOMEPAGE_METADATA } from "@/lib/cinematic/metadata";
+
+export const metadata = HOMEPAGE_METADATA;
+
+export default function CinematicHandoff() {
+  return <div data-cinematic-handoff />;
+}
+```
+
+Do not move the predecessor page to another production file. Its unsupported content and default-prefetch links must not survive as an unused bundle or contaminate the root chunk-isolation smoke. This handoff file is replaced—not wrapped—by Task 4.
+
+- [ ] **Step 5: Add a real production metadata/chrome smoke**
+
+Create `e2e/metadata-chrome.spec.ts` against a production build. It must fail before the Task-3 implementation and prove all of the following without weak URL-only assertions:
+
+- `/` head: exact absolute title, canonical `/`, reciprocal `de`/`nl` alternates, homepage OG title, absolute OG image meta value `https://trinkgut-jammers.de/images/home/cinematic/og-home.jpg`, and absolute `og:url` `https://trinkgut-jammers.de/`. Do not request the production origin: parse the asserted OG value, request only its pathname `/images/home/cinematic/og-home.jpg` against Playwright's local `baseURL`, and require local `200` plus `content-type: image/jpeg`.
+- `/` body contains exactly one `script[type="application/ld+json"]`; parse that real script sink and require deep equality with the approved object, including nested `@type` values, while the raw response contains no `</script><script>` breakout sequence.
+- `/kontakt` and `/angebote`: neither route inherits canonical `/` nor `og-home.jpg`.
+- `/nl`: canonical `/nl`, reciprocal `de`/`nl` alternates, custom NL navigation present, no legacy `.glass-header`.
+- Prove the chunk detector first in a fresh `/angebote` context: capture JavaScript response bodies and map all six unique sentinels to their loaded script URLs—Header `Warenkorb öffnen`, Footer `Trinkgut Jammers Goch e.K.`, CartDrawer `Dein Warenkorb ist leer.`, WishlistDrawer `Dein Merkzettel ist leer`, WhatsAppButton `WhatsApp Chat`, and AIAssistant `Jammers Assistent`. Fail if any sentinel is not found; two strings are not sufficient evidence for six modules.
+- In a separate fresh `/` context: no `.glass-header`, legacy floating control, cart/wishlist drawer, any of the six sentinels, or any script URL proven above may be requested. Count production prefetch downloads as real downloads; if a root link causes legacy chunks to load, set `prefetch={false}` on that root link in Task 4 rather than weakening this assertion.
+- `/angebote`: legacy header, footer, WhatsApp/floating tools remain; both `Warenkorb öffnen` and `Merkzettel` open their named dialogs and can close again.
+- With `localStorage` empty, `Wir nutzen Cookies` remains visible on `/` and `/angebote`.
+- Capture `console.error`, console warnings containing hydration text, and `pageerror`; require an empty list.
+
+This Task-3 smoke requires exactly one `[data-cinematic-handoff]` and intentionally does not accept the final root landmark tree because the Cinematic shell is created in Task 4. It also proves the retired legacy root page contributes no content or prefetch downloads. Task 4 replaces the handoff with exactly one root banner/main/contentinfo, no nesting, and No-JS server content.
+
+- [ ] **Step 6: Verify unit contracts and the real production boundary**
 
 Run:
 
 ```bash
-npm test -- lib/cinematic/__tests__/metadata.test.ts lib/cinematic/__tests__/chrome-visibility.test.ts
+set -euo pipefail
+npm test -- lib/cinematic/__tests__/metadata.test.ts lib/cinematic/__tests__/chrome-visibility.test.ts lib/cinematic/__tests__/json-ld-script.test.tsx
+npm test
 npx tsc --noEmit
 npm run lint
 npm run build
+PORT=3102
+LOG=/tmp/cinematic-task3.log
+HTML=/tmp/cinematic-task3.html
+test -z "$(lsof -nP -iTCP:$PORT -sTCP:LISTEN -t)"
+: > "$LOG"
+APP_PID=""
+cleanup() {
+  status=$?
+  trap - EXIT
+  trap '' INT TERM
+  if test -n "$APP_PID"; then
+    if kill -0 "$APP_PID" 2>/dev/null; then kill "$APP_PID" 2>/dev/null || true; fi
+    wait "$APP_PID" 2>/dev/null || true
+  fi
+  exit "$status"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
+APP_PID=$!
+READY=0
+for attempt in {1..30}; do
+  kill -0 "$APP_PID" 2>/dev/null || { tail -80 "$LOG"; exit 1; }
+  if curl -fsS "http://127.0.0.1:$PORT/" > "$HTML" &&
+    rg -q 'images/home/cinematic/og-home\.jpg' "$HTML" &&
+    rg -q 'data-cinematic-handoff' "$HTML"; then
+    READY=1
+    break
+  fi
+  sleep 1
+done
+test "$READY" -eq 1
+PLAYWRIGHT_BASE_URL="http://127.0.0.1:$PORT" npm run test:e2e -- e2e/metadata-chrome.spec.ts
+test "$(curl -fsSI "http://127.0.0.1:$PORT/images/home/cinematic/og-home.jpg" | awk 'BEGIN{IGNORECASE=1} /^content-type:/{print tolower($0)}' | tr -d '\r')" = "content-type: image/jpeg"
 ```
 
-Expected: 7 cases PASS; TypeScript/lint/build exit `0`; build still lists `/`, `/angebote`, `/kontakt`, and `/nl` without route errors.
+Expected: all unit and production-browser assertions PASS; TypeScript/lint/build exit `0`; build still lists `/`, `/angebote`, `/kontakt`, and `/nl`; the process is always cleaned up. Confirm `git diff --check` and a targeted scope diff before commit.
 
-- [ ] **Step 5: Commit metadata and chrome isolation**
+- [ ] **Step 7: Commit the non-deployable metadata/chrome half of the atomic handoff**
 
 ```bash
-git add lib/cinematic/metadata.ts lib/chrome-visibility.ts lib/cinematic/__tests__/metadata.test.ts lib/cinematic/__tests__/chrome-visibility.test.ts app/layout.tsx components/DeChrome.tsx
+git add lib/cinematic/metadata.ts lib/chrome-visibility.ts lib/cinematic/__tests__/metadata.test.ts lib/cinematic/__tests__/chrome-visibility.test.ts lib/cinematic/__tests__/json-ld-script.test.tsx app/page.tsx app/layout.tsx app/nl/layout.tsx components/JsonLdScript.tsx components/DeChrome.tsx components/RouteContent.tsx components/Header.tsx e2e/metadata-chrome.spec.ts
 git commit -m "feat: isolate cinematic root chrome and metadata"
 ```
 
+Immediately continue to Task 4. Do not push or deploy this intermediate commit.
+
 ### Task 4: Compose the Static-First Homepage and Consume the Shared Content Adapter
 
+**Hard start gate:**
+
+- Tasks 2 and 3 must be committed, independently review-clean, and green through their production builds and Task-3 browser smoke. `HOMEPAGE_METADATA`, `RouteContent`, the lazy chrome boundary, and all Task-2 assets must exist for real; do not create local substitutes.
+- Start from a clean worktree at the reviewed Task-3 head. Task 3 is not separately deployable, so finish and review this task before any push or deployment.
+- Use an isolated production port, never the ambient port 3000 or an already-running checkout.
+
 **Files:**
+- Modify: `.gitignore`
+- Modify: `package.json`
+- Modify: `package-lock.json`
 - Modify: `app/page.tsx`
 - Create: `app/home.module.css`
 - Create: `lib/cinematic/presentation.ts`
+- Create: `lib/cinematic/server-clock.ts`
 - Create: `lib/cinematic/__tests__/presentation.test.ts`
+- Create: `lib/cinematic/__tests__/server-clock.test.ts`
+- Create: `lib/cinematic/__tests__/handzettel-e2e-fixture.test.ts`
+- Create: `lib/cinematic/__tests__/composition.test.tsx`
+- Create: `lib/cinematic/__tests__/component-boundaries.test.ts`
 - Create: `components/cinematic/CinematicHome.tsx`
 - Create: `components/cinematic/CinematicHeader.tsx`
 - Create: `components/cinematic/MobileNavigation.tsx`
@@ -1119,39 +1359,71 @@ git commit -m "feat: isolate cinematic root chrome and metadata"
 - Create: `components/cinematic/ActionsSection.tsx`
 - Create: `components/cinematic/InstagramSection.tsx`
 - Create: `components/cinematic/LocationFooter.tsx`
+- Create: `e2e/fixtures/handzettel-cache.json`
+- Create: `e2e/homepage-interactions.spec.ts`
+- Modify: `e2e/metadata-chrome.spec.ts`
 
 **Interfaces:**
 - Consumes exactly: `getHomepageContent(now?: Date): Promise<HomepageContent>` and the four types from `@/lib/homepage-content`.
-- Produces: `CinematicHome({ content, nowIso }: { content: HomepageContent; nowIso: string })` and pure `buildCurrentView(content: HomepageContent): CurrentView`.
+- Produces: `CinematicHome({ content, nowIso }: { content: HomepageContent; nowIso: string })`, pure `buildCurrentView(content)`, `formatDate(dateKey)`, `formatDateRange(from, to)`, `formatPageCount(count)`, and fail-closed `canRenderHomepageImage(src)`.
+- `resolveHomepageNow()` is the only root server clock. It uses real time unless both `CINEMATIC_E2E=1` and a strict canonical `CINEMATIC_TEST_NOW` are present; no global Date monkeypatch is permitted.
 - Client boundaries: only `MobileNavigation`, `LiveMarketStatus`, and `FlyerViewer` carry `"use client"` in this task.
+- The Hybrid adapter owns validity and fallback text. Presentation code never re-derives `active`/`expired`, extends a date, or invents a second fallback string.
+- `validFrom`/`validTo` are a publication or action-validity interval, not proof of an event appointment. Render them only as `Gültig …` or `Aktionszeitraum …`; an actual appointment may appear only in the approved `summary`.
+- Every non-root `Link` rendered by the root homepage uses `prefetch={false}` so production prefetch cannot download legacy route chrome on `/`.
 
-- [ ] **Step 1: Write failing presentation/view-model tests with an exact shared-interface fixture**
+- [ ] **Step 1: Write failing presentation, image-policy, composition, and client-boundary tests**
+
+Before creating any Task-4 RED file, freeze the clean, review-green Task-3 predecessor build:
+
+```bash
+npm run build
+test -s .next/BUILD_ID
+cp .next/BUILD_ID /tmp/cinematic-task4-predecessor-build-id
+```
+
+Do not rebuild after the intentionally unresolved Task-4 unit imports are written. The browser RED starts this exact captured Task-3 artifact and first passes `cmp -s .next/BUILD_ID /tmp/cinematic-task4-predecessor-build-id`.
+
+As test-infrastructure setup in this same RED step, add `/data/.handzettel-cache.*` to `.gitignore` before the cache harness is ever run, and prove both `data/.handzettel-cache.backup.probe` and `data/.handzettel-cache.install.probe` are ignored with `git check-ignore -q`. This protects the worktree even if the shell itself is killed before its EXIT trap can run; it does not alter application behavior.
 
 Create `lib/cinematic/__tests__/presentation.test.ts`:
 
 ```ts
 import { describe, expect, test } from "vitest";
 import type { HomepageContent } from "@/lib/homepage-content";
-import { buildCurrentView, formatDateRange } from "@/lib/cinematic/presentation";
+import nextConfig from "../../../next.config";
+import {
+  buildCurrentView,
+  canRenderHomepageImage,
+  formatDate,
+  formatDateRange,
+  formatPageCount,
+} from "@/lib/cinematic/presentation";
 
 const base: HomepageContent = {
   generatedAt: "2026-07-14T06:15:00.000Z",
   flyer: null,
   event: null,
   archive: [],
-  fallbackMessage: null,
+  fallbackMessage: "Der nächste Handzettel wird vorbereitet.",
 };
 
 describe("homepage presentation adapter", () => {
-  test("formats date-only ranges without timezone drift", () => {
+  test("formats date-only values and ranges without timezone drift", () => {
+    expect(formatDate("2026-07-24")).toBe("24.07.2026");
+    expect(formatDateRange("2026-07-24", "2026-07-24")).toBe("24.07.2026");
     expect(formatDateRange("2026-07-13", "2026-07-18")).toBe("13.–18.07.2026");
+    expect(formatDateRange("2026-07-30", "2026-08-02")).toBe("30.07.–02.08.2026");
+    expect(formatDateRange("2026-12-30", "2027-01-02")).toBe("30.12.2026–02.01.2027");
+    expect(formatPageCount(1)).toBe("1 Seite");
+    expect(formatPageCount(10)).toBe("10 Seiten");
   });
 
-  test("maps the empty flyer state to the exact calm fallback", () => {
+  test("passes the adapter-owned empty state through verbatim", () => {
     expect(buildCurrentView(base)).toEqual({
       flyer: null,
       event: null,
-      fallbackMessage: "Der nächste Handzettel wird vorbereitet",
+      fallbackMessage: "Der nächste Handzettel wird vorbereitet.",
     });
   });
 
@@ -1160,16 +1432,88 @@ describe("homepage presentation adapter", () => {
     const event = { id: "striker-2026", title: "Striker Ball Challenge", summary: "Am 24.07.2026 bei Trinkgut Jammers.", validFrom: "2026-07-14", validTo: "2026-07-24", image: "/images/events/strikerball.png", href: "/kontakt", sourceUrl: "https://example.test/event" };
     expect(buildCurrentView({ ...base, flyer, event })).toEqual({ flyer, event, fallbackMessage: null });
   });
+
+  test("allows only local image assets and configured official remote hosts", () => {
+    const configured = nextConfig.images?.remotePatterns?.map(({ hostname }) => hostname);
+    expect(configured).toEqual(expect.arrayContaining([
+      "media.trinkgut.de",
+      "www.trinkgut.de",
+      "werbung.trinkgut.de",
+    ]));
+    expect(canRenderHomepageImage("/images/events/strikerball.png")).toBe(true);
+    expect(canRenderHomepageImage("https://werbung.trinkgut.de/catalog/cover.jpg")).toBe(true);
+    expect(canRenderHomepageImage("https://unconfigured.example/asset.jpg")).toBe(false);
+    expect(canRenderHomepageImage("/api/content/current")).toBe(false);
+    expect(canRenderHomepageImage("/images/../api/content.jpg")).toBe(false);
+    expect(canRenderHomepageImage("/images/%252e%252e/api/content.jpg")).toBe(false);
+    expect(canRenderHomepageImage("/images/%252525252e%252525252e/api/content.jpg")).toBe(false);
+    expect(canRenderHomepageImage("/images/%25252525252e%25252525252e/api/content.jpg")).toBe(false);
+    expect(canRenderHomepageImage("/images/poster.jpg%0a")).toBe(false);
+    expect(canRenderHomepageImage("//attacker.example/images/event.jpg")).toBe(false);
+    expect(canRenderHomepageImage(" https://werbung.trinkgut.de/catalog/cover.jpg")).toBe(false);
+    expect(canRenderHomepageImage("https://werbung.trinkgut.de/catalog/cover.jpg ")).toBe(false);
+    expect(canRenderHomepageImage("https://werbung.trinkgut.de/catalog\\cover.jpg")).toBe(false);
+    expect(canRenderHomepageImage("https://werbung.trinkgut.de:444/catalog/cover.jpg")).toBe(false);
+    expect(canRenderHomepageImage("https://werbung.trinkgut.de/catalog/cover.jpg%250a")).toBe(false);
+    expect(canRenderHomepageImage("https://werbung.trinkgut.de/%252525252e%252525252e/cover.jpg")).toBe(false);
+  });
 });
 ```
 
+Create `lib/cinematic/__tests__/composition.test.tsx` with `renderToStaticMarkup` and deterministic empty and populated `HomepageContent` fixtures. Mock `next/link` before importing the components so its `prefetch` prop is exposed as `data-prefetch`; mock `next/image` as a semantic test `<img>` while removing Next-only props. Real image optimization and chunk loading remain production-build/browser gates. Before creating components, lock all of these assertions:
+
+- exactly one `h1` and, inside `CinematicHome`, exactly one `header`, `main`, and `footer`; neither header nor footer is a descendant of main;
+- order: Hero → Aktuell → Menschen → Service → Spotlight → optional Aktionen → Instagram → Footer;
+- exactly five People figures and three poster figures in manifest order;
+- empty state uses the adapter text with its final period; populated state uses only fixture flyer/event/archive data;
+- no iframe while closed; flyer external viewer and PDF links already exist in server HTML;
+- the dedicated event-interval element equals `Aktionszeitraum · ${formatDateRange(...)}` and never derives `Termin` or `Am …` from validity keys; do not scan the approved summary globally because it may legitimately contain `Am 24. Juli`; archive uses `Rückblick · 01.07.2026`;
+- empty action state has neither `section#aktionen` nor a matching desktop/mobile navigation link; event or archive makes both appear, with every visible fragment link resolving to exactly one ID;
+- audited Instagram fallback contains `Neue Einblicke folgen`, zero Instagram figures, and zero `<time>` elements; `reviewedAt` never appears;
+- no `assets/source`, `Preislisten`, raw private path, unverified `7.000`, delivery, `inStock`, `sofort verfügbar`, or discount claim appears;
+- exact Hero lead, rental evidence wording, reserve wording, contact links, WhatsApp, route, Instagram, NL, and legal links;
+- HTTPS external event/source/viewer/PDF links carry `target="_blank" rel="noopener noreferrer"`; an internal event `href` such as `/kontakt` remains same-tab and, like every root link leaving `/`, exposes `prefetch={false}` through the Link mock.
+
+Create `lib/cinematic/__tests__/component-boundaries.test.ts`. Read the Task-4 TSX sources and require that exactly `MobileNavigation.tsx`, `LiveMarketStatus.tsx`, and `FlyerViewer.tsx` start with `"use client"`; `app/page.tsx`, `CinematicHome`, and every section remain Server Components. Require `lib/cinematic/server-clock.ts` to begin with `import "server-only";`, and prove none of the three client islands imports `server-clock`. Task 6 may later extend this allowlist only with `MotionIsland.tsx`.
+
+Create `lib/cinematic/__tests__/server-clock.test.ts` before production code. Hoist `vi.mock("server-only", () => ({}))` before importing the resolver so Vitest substitutes only the marker package while the real Next build still enforces the boundary. The tests must prove: absent test variables call an injected real-clock function; a fixed value without `CINEMATIC_E2E=1` fails closed; malformed, whitespace-padded, or non-canonical ISO values fail; and the exact guarded value `2026-07-14T12:00:00.000Z` resolves without changing global `Date` or `Date.now()`.
+
+Create the tracked `e2e/fixtures/handzettel-cache.json` from the already validated official KW29/2026 catalog with these exact identity fields: `catalogId: "1335913"`, `catalogVersion: "2"`, `storeId: "13027"`, `werbekreis: "3.6"`, `kw: 29`, `year: 2026`, `validFrom: "2026-07-13"`, `validTo: "2026-07-18"`, `fetchedAt: "2026-07-14T10:00:00.000Z"`, and `status: "ok"`. Use the exact official viewer/PDF paths, `pageCount: 10`, and ten consecutively numbered official normal/thumbnail page URLs. Create `lib/cinematic/__tests__/handzettel-e2e-fixture.test.ts`: in an isolated temporary working directory, install that fixture as `data/handzettel-cache.json`, call `loadValidatedHandzettelCache(new Date("2026-07-14T12:00:00.000Z"))`, require deep equality with all identity fields and the exact ten-page catalog, then restore the original cwd and delete the temp tree. Never touch the user's ignored real cache in this unit test.
+
+Also, before Task-4 implementation, extend `e2e/metadata-chrome.spec.ts` with the final root landmark/no-JS/chunk assertions from Step 6 and create the complete `e2e/homepage-interactions.spec.ts` contract from Step 6. Prefix the Task-4 cases with `[product-contract]`. Keep expected dates, flyer values, labels, section order, and accessible names as test-owned literals; these browser files must not import `formatDateRange`, `resolveHomepageNow`, presentation helpers, or any not-yet-existing Cinematic component before RED. The browser tests must exist and fail on concrete missing Cinematic behavior before any Task-4 production file is created.
+
 - [ ] **Step 2: Run the test to prove the red state**
 
-Run: `npm test -- lib/cinematic/__tests__/presentation.test.ts`
+Run:
 
-Expected: FAIL because `lib/cinematic/presentation.ts` does not exist. If `@/lib/homepage-content` is unresolved, stop and finish the separate Hybrid interface implementation before continuing; do not create a local substitute.
+```bash
+set -euo pipefail
+set +e
+npm test -- lib/cinematic/__tests__/presentation.test.ts lib/cinematic/__tests__/server-clock.test.ts lib/cinematic/__tests__/handzettel-e2e-fixture.test.ts lib/cinematic/__tests__/composition.test.tsx lib/cinematic/__tests__/component-boundaries.test.ts > /tmp/cinematic-task4-unit-red.log 2>&1
+UNIT_RED=$?
+set -e
+cat /tmp/cinematic-task4-unit-red.log
+test "$UNIT_RED" -ne 0
+rg -q 'Cannot find|Failed to resolve|expected' /tmp/cinematic-task4-unit-red.log
+cmp -s .next/BUILD_ID /tmp/cinematic-task4-predecessor-build-id
+```
 
-- [ ] **Step 3: Implement the pure visual adapter**
+Then install the tracked flyer fixture with the backup/restore harness from Step 7, start the unchanged Task-3 head, and run the two root browser specs once. Expected: focused unit RED because presentation/server-clock/Cinematic modules do not exist, plus browser RED from concrete missing root landmarks/sections/dialog behavior. If `@/lib/homepage-content`, Task-3 metadata/route shell, or Task-2 editorial imports are unresolved, stop and finish the prerequisite instead of creating a substitute. Missing server, cache corruption, or a port collision does not count as product RED.
+
+For this pre-implementation browser RED only, reuse the Step-7 port ownership, cache backup/restore, live-PID, signal, and cleanup logic but treat a generic successful root `200` as readiness; `data-cinematic-root`, the active flyer title, and the page-count marker are the behavior under test and must not be used as the RED server-readiness condition.
+
+```bash
+set +e
+PLAYWRIGHT_BASE_URL="http://127.0.0.1:$PORT" npm run test:e2e -- e2e/metadata-chrome.spec.ts e2e/homepage-interactions.spec.ts --reporter=json > /tmp/cinematic-task4-browser-red.json 2>&1
+BROWSER_RED=$?
+set -e
+test "$BROWSER_RED" -ne 0
+rg -Fq '[product-contract]' /tmp/cinematic-task4-browser-red.json
+rg -q '"status"[[:space:]]*:[[:space:]]*"unexpected"' /tmp/cinematic-task4-browser-red.json
+! rg -qi 'ECONNREFUSED|ERR_CONNECTION_REFUSED|address already in use|No tests found|Cannot find module|Failed to resolve import' /tmp/cinematic-task4-browser-red.json
+```
+
+- [ ] **Step 3: Implement the pure date, page-count, image-policy, and view-model adapter**
 
 Create `lib/cinematic/presentation.ts`:
 
@@ -1186,30 +1530,128 @@ const germanDate = new Intl.DateTimeFormat("de-DE", {
   day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Berlin",
 });
 
-function dateOnly(value: string): Date {
-  return new Date(`${value}T12:00:00.000Z`);
+const homepageRemoteImageHosts = new Set([
+  "media.trinkgut.de",
+  "www.trinkgut.de",
+  "werbung.trinkgut.de",
+]);
+
+const unsafeUrlCharacters = /[\u0000-\u001f\u007f\\]/;
+const imageExtension = /\.(?:avif|gif|jpe?g|png|svg|webp)$/i;
+
+function decodeToFixedPoint(
+  value: string,
+  decode: (input: string) => string,
+): string | null {
+  if (value !== value.trim() || unsafeUrlCharacters.test(value)) return null;
+  let decoded = value;
+  for (let depth = 0; depth < 4; depth += 1) {
+    try {
+      const next = decode(decoded);
+      if (unsafeUrlCharacters.test(next)) return null;
+      if (next === decoded) break;
+      decoded = next;
+    } catch {
+      return null;
+    }
+  }
+  try {
+    if (decode(decoded) !== decoded) return null;
+  } catch {
+    return null;
+  }
+  return decoded;
+}
+
+function hasSafeUrlEncoding(src: string): boolean {
+  const decodedUrl = decodeToFixedPoint(src, decodeURI);
+  if (!decodedUrl) return false;
+  try {
+    const schemeEnd = decodedUrl.indexOf("://");
+    const pathStart = schemeEnd < 0 ? -1 : decodedUrl.indexOf("/", schemeEnd + 3);
+    const rawPathAndSuffix = pathStart < 0 ? "/" : decodedUrl.slice(pathStart);
+    const pathEnd = Math.min(
+      ...[rawPathAndSuffix.indexOf("?"), rawPathAndSuffix.indexOf("#")]
+        .filter((index) => index >= 0),
+      rawPathAndSuffix.length,
+    );
+    const decodedPath = decodeToFixedPoint(
+      rawPathAndSuffix.slice(0, pathEnd),
+      decodeURIComponent,
+    );
+    if (!decodedPath) return false;
+    const segments = decodedPath.split("/");
+    if (segments.some((segment) => segment === "." || segment === "..")) return false;
+    const url = new URL(decodedUrl);
+    return url.href === new URL(src).href && imageExtension.test(decodedPath);
+  } catch {
+    return false;
+  }
+}
+
+function isRenderSafeLocalImage(src: string): boolean {
+  if (!src.startsWith("/") || src.startsWith("//") || unsafeUrlCharacters.test(src)) return false;
+  const delimiters = [src.indexOf("?"), src.indexOf("#")].filter((index) => index >= 0);
+  const pathEnd = Math.min(...delimiters, src.length);
+  const decoded = decodeToFixedPoint(src.slice(0, pathEnd), decodeURIComponent);
+  if (!decoded) return false;
+  const segments = decoded.split("/");
+  return decoded.startsWith("/images/") &&
+    !segments.some((segment) => segment === "." || segment === "..") &&
+    imageExtension.test(decoded);
+}
+
+function dateOnly(value: string): { date: Date; year: string; month: string; day: string } {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) throw new TypeError(`Invalid date key: ${value}`);
+  const [, year, month, day] = match;
+  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), 12));
+  if (date.toISOString().slice(0, 10) !== value) throw new TypeError(`Invalid date key: ${value}`);
+  return { date, year, month, day };
+}
+
+export function formatDate(value: string): string {
+  return germanDate.format(dateOnly(value).date);
 }
 
 export function formatDateRange(validFrom: string, validTo: string): string {
-  const from = germanDate.format(dateOnly(validFrom));
-  const to = germanDate.format(dateOnly(validTo));
-  const [fromDay, fromMonth, fromYear] = from.split(".");
-  const [toDay, toMonth, toYear] = to.split(".");
-  return fromMonth === toMonth && fromYear === toYear
-    ? `${fromDay}.–${toDay}.${toMonth}.${toYear}`
-    : `${from}–${to}`;
+  const from = dateOnly(validFrom);
+  const to = dateOnly(validTo);
+  if (validFrom === validTo) return formatDate(validFrom);
+  if (from.year === to.year && from.month === to.month) {
+    return `${from.day}.–${to.day}.${to.month}.${to.year}`;
+  }
+  if (from.year === to.year) {
+    return `${from.day}.${from.month}.–${to.day}.${to.month}.${to.year}`;
+  }
+  return `${formatDate(validFrom)}–${formatDate(validTo)}`;
+}
+
+export function formatPageCount(pageCount: number): string {
+  return `${pageCount} ${pageCount === 1 ? "Seite" : "Seiten"}`;
+}
+
+export function canRenderHomepageImage(src: string): boolean {
+  if (src.startsWith("/")) return isRenderSafeLocalImage(src);
+  if (!hasSafeUrlEncoding(src)) return false;
+  try {
+    const url = new URL(src);
+    return url.protocol === "https:" && !url.username && !url.password && !url.port && homepageRemoteImageHosts.has(url.hostname);
+  } catch {
+    return false;
+  }
 }
 
 export function buildCurrentView(content: HomepageContent): CurrentView {
   return {
     flyer: content.flyer,
     event: content.event,
-    fallbackMessage: content.flyer
-      ? null
-      : content.fallbackMessage ?? "Der nächste Handzettel wird vorbereitet",
+    fallbackMessage: content.flyer ? null : content.fallbackMessage,
   };
 }
 ```
+
+The local branch may be stricter than the Hybrid adapter and fail closed to text; it must never be broader. Tests compare every allowed remote host with the real `next.config.ts`. Do not use `unoptimized` to bypass this boundary.
 
 - [ ] **Step 4: Write the root Server Component and exact section composition**
 
@@ -1218,6 +1660,7 @@ Replace `app/page.tsx` completely:
 ```tsx
 import { getHomepageContent } from "@/lib/homepage-content";
 import { HOMEPAGE_METADATA } from "@/lib/cinematic/metadata";
+import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 import CinematicHome from "@/components/cinematic/CinematicHome";
 
 export const metadata = HOMEPAGE_METADATA;
@@ -1225,11 +1668,48 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Home() {
-  const now = new Date();
+  const now = resolveHomepageNow();
   const content = await getHomepageContent(now);
   return <CinematicHome content={content} nowIso={now.toISOString()} />;
 }
 ```
+
+Install the exact React/Next marker package with `npm install --save-exact server-only@0.0.1`, then create `lib/cinematic/server-clock.ts` as the only root-page clock. The test override is deliberately double-gated and dependency-injected for unit tests; a supplied override without the exact guard throws instead of silently changing production time:
+
+```ts
+import "server-only";
+
+type ClockEnvironment = Readonly<{
+  CINEMATIC_E2E?: string;
+  CINEMATIC_TEST_NOW?: string;
+}>;
+
+type ClockOptions = Readonly<{
+  env?: ClockEnvironment;
+  realNow?: () => Date;
+}>;
+
+const canonicalInstant = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+
+export function resolveHomepageNow({
+  env = process.env,
+  realNow = () => new Date(),
+}: ClockOptions = {}): Date {
+  const fixed = env.CINEMATIC_TEST_NOW;
+  if (fixed === undefined) return realNow();
+  if (env.CINEMATIC_E2E !== "1") {
+    throw new TypeError("CINEMATIC_TEST_NOW requires CINEMATIC_E2E=1");
+  }
+  if (!canonicalInstant.test(fixed)) throw new TypeError("invalid CINEMATIC_TEST_NOW");
+  const parsed = new Date(fixed);
+  if (Number.isNaN(parsed.valueOf()) || parsed.toISOString() !== fixed) {
+    throw new TypeError("invalid CINEMATIC_TEST_NOW");
+  }
+  return parsed;
+}
+```
+
+`server-clock.test.ts` passes explicit `env` objects and a spy `realNow`; it never mutates `process.env`. It snapshots `globalThis.Date` and `Date.now`, calls every branch, and proves both identities remain unchanged.
 
 Create `components/cinematic/CinematicHome.tsx` with exactly this ordering and no client directive:
 
@@ -1248,17 +1728,18 @@ import SpotlightSection from "./SpotlightSection";
 import styles from "@/app/home.module.css";
 
 export default function CinematicHome({ content, nowIso }: { content: HomepageContent; nowIso: string }) {
+  const hasActions = Boolean(content.event || content.archive.length);
   return (
     <div className={styles.home} data-cinematic-root data-motion-state="static" data-motion-controller-count="0" data-motion-trigger-count="0" style={cinematicTokenStyle}>
       <a className={styles.skipLink} href="#main-content">Zum Hauptinhalt</a>
-      <CinematicHeader nowIso={nowIso} />
+      <CinematicHeader nowIso={nowIso} hasActions={hasActions} />
       <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <CurrentSection content={content} />
         <PeopleSection />
         <ServiceSection />
         <SpotlightSection />
-        <ActionsSection archive={content.archive} event={content.event} />
+        {hasActions ? <ActionsSection archive={content.archive} event={content.event} /> : null}
         <InstagramSection />
       </main>
       <LocationFooter />
@@ -1267,42 +1748,49 @@ export default function CinematicHome({ content, nowIso }: { content: HomepageCo
 }
 ```
 
+`CinematicHome` owns the only root banner/main/contentinfo. `RouteContent` from Task 3 remains a neutral root wrapper. No section may add another `<main>`.
+
 - [ ] **Step 5: Implement semantic section markup and the three small interaction islands**
 
-Use these exact public signatures and DOM contracts; every `Image` uses `placeholder="blur"` for static imports, `fill` plus a stable aspect-ratio wrapper for adapter URL strings, and an exact `sizes` string:
+Use these exact public signatures and DOM contracts. Static imports use `placeholder="blur"`. Adapter URL strings use `fill`, a stable aspect-ratio wrapper, an exact `sizes` string, and `canRenderHomepageImage`; unsupported hosts render the already-present text/poster surface and never reach `Image`. Do not use `unoptimized`.
 
 ```tsx
 // CinematicHeader.tsx (Server Component)
-export default function CinematicHeader({ nowIso }: { nowIso: string }): React.JSX.Element;
-// <header>, logo link, desktop <nav aria-label="Hauptnavigation"> using CINEMATIC_NAV,
-// <LiveMarketStatus initialNowIso={nowIso} />, visible SITE_LINKS.whatsapp, <MobileNavigation />.
+export default function CinematicHeader({ nowIso, hasActions }: { nowIso: string; hasActions: boolean }): React.JSX.Element;
+// Filter CINEMATIC_NAV exactly once when hasActions is false. Desktop and MobileNavigation receive the same list.
+// <header>, logo link named "Trinkgut Jammers – Startseite", <nav aria-label="Hauptnavigation">,
+// <LiveMarketStatus initialNowIso={nowIso} />, safe external WhatsApp link, <MobileNavigation items={items} />.
 
 // MobileNavigation.tsx (Client enhancement over native no-JS details)
-export default function MobileNavigation(): React.JSX.Element;
-// <details data-mobile-navigation>, <summary aria-label="Menü öffnen">, same six links;
+export default function MobileNavigation({ items }: { items: readonly NavItem[] }): React.JSX.Element;
+// <details data-mobile-navigation>, <summary aria-label="Menü öffnen">, exactly the server-filtered links;
 // Escape and outside pointer close details; link activation closes it; native details remains usable without JS.
 
 // LiveMarketStatus.tsx (Client)
 export default function LiveMarketStatus({ initialNowIso }: { initialNowIso: string }): React.JSX.Element;
 // Seed getMarketStatus(new Date(initialNowIso)); refresh immediately and every 60_000 ms;
-// render <span aria-live="polite" data-market-open={String(status.isOpen)}>status.label</span>.
+// render <span aria-live="polite" aria-atomic="true" data-market-open={String(status.isOpen)}>status.label</span>.
 
 // HeroSection.tsx (Server)
 export default function HeroSection(): React.JSX.Element;
 // section[data-hero="cinematic"] with kicker "Trinkgut Jammers · Goch", one h1 "Goch schenkt ein.",
 // exact lead "Persönliche Beratung, Partybedarf und Vermietung vor Ort.", WhatsApp primary CTA,
-// route secondary CTA, hero asset, and a three-item dl for Jurgensstraße 20 / Mo–Sa 08–20 Uhr / 47574 Goch.
+// route secondary CTA, hero asset, and a three-item dl for Jurgensstraße 20 / Mo–Sa 08:00–20:00 Uhr / 47574 Goch.
 
 // CurrentSection.tsx (Server)
 export default function CurrentSection({ content }: { content: HomepageContent }): React.JSX.Element;
-// section#aktuell aria-labelledby="aktuell-title"; flyer card with visible formatDateRange and pageCount;
-// event summary only when event is non-null; no empty grid cell; fallback + WhatsApp when flyer is null.
+// Call buildCurrentView(content) exactly once. section#aktuell aria-labelledby="aktuell-title";
+// flyer card labelled `Gültig …` plus dynamic `1 Seite`/`n Seiten`; event interval labelled `Aktionszeitraum …`;
+// event summary only when event is non-null; no empty grid cell; exact adapter fallback + WhatsApp when flyer is null.
 
 // FlyerViewer.tsx (Client)
 export default function FlyerViewer({ flyer }: { flyer: HomepageFlyer }): React.JSX.Element;
-// Always render native external viewer and PDF links. Enhance with a button opening role="dialog" aria-modal="true";
-// trap focus with useModalA11y, close on Escape, iframe only after open, 8-second loading timeout,
-// and show external viewer/PDF fallback on timeout or iframe onError.
+// Server HTML always contains visible text fallback plus safe external viewer/PDF links.
+// Cover rendering and its error state stay inside this existing island—do not add a fourth client island.
+// Enhance with a button opening role="dialog" aria-modal="true" aria-labelledby=<visible heading id>.
+// Memoize onClose with useCallback; make the close button the first focusable element; trap focus with useModalA11y.
+// Create the titled iframe only after open. Clear the 8-second timeout on success, close, and unmount;
+// reset timeout/error on every reopen. Escape closes and restores trigger focus. Timeout/onError shows both external links.
 
 // PeopleSection.tsx (Server)
 export default function PeopleSection(): React.JSX.Element;
@@ -1311,7 +1799,9 @@ export default function PeopleSection(): React.JSX.Element;
 // ServiceSection.tsx (Server)
 export default function ServiceSection(): React.JSX.Element;
 // section#service with h2 "Deine Party. Unser Service.", the three confirmed SERVICE_ITEMS, five RENTAL_HIGHLIGHTS,
-// visible source dates 01.01.2026 and 06.03.2026, and text "Bestand laut Liste. Reservierung erforderlich."
+// each price labelled "Preis laut Leihartikel-Preisliste · Stand 01.01.2026",
+// stock labelled "Bestand laut Liste · Stand 06.03.2026", and exact text
+// "Bestand laut Liste. Reservierung erforderlich." Never imply current availability.
 
 // SpotlightSection.tsx (Server)
 export default function SpotlightSection(): React.JSX.Element;
@@ -1320,8 +1810,9 @@ export default function SpotlightSection(): React.JSX.Element;
 
 // ActionsSection.tsx (Server)
 export default function ActionsSection(props: { event: HomepageEvent | null; archive: readonly HomepageArchiveItem[] }): React.JSX.Element | null;
-// section#aktionen only if event or archive exists; current event with date/CTA/source link; archive ordered as received,
-// each labelled "Rückblick" plus formatted date; kind never changes visual validity.
+// section#aktionen only if event or archive exists; adapter-filtered records stay in received order/status.
+// Event interval is `Aktionszeitraum · ${formatDateRange(...)}`—never an appointment inferred from validFrom/validTo.
+// Archive is `Rückblick · ${formatDate(item.date)}`. kind never changes visual validity.
 
 // InstagramSection.tsx (Server)
 export default function InstagramSection(): React.JSX.Element;
@@ -1334,34 +1825,143 @@ export default function LocationFooter(): React.JSX.Element;
 // footer#kontakt with MARKET data, route/WhatsApp/Instagram/NL links, and /kontakt /impressum /datenschutz /agb.
 ```
 
-`app/home.module.css` must initially define `.home` (black background, white text, sans font, isolation) and `.skipLink` (off-screen until `:focus-visible`, then fixed top-left with yellow background/black text and a `44px` minimum target). Section-specific CSS is Task 5.
+Every section has one unique `aria-labelledby` target and no duplicate ID. External HTTPS WhatsApp, route, Instagram, event/source, viewer, and PDF links use `target="_blank" rel="noopener noreferrer"`. Internal event CTAs and all other internal links remain same-tab and use `prefetch={false}` when leaving root. Footer phone is `tel:+492823418707`; email is `mailto:jammers-goch@trinkgut.de`.
 
-- [ ] **Step 6: Run the server-render and route smoke checks**
+`app/home.module.css` initially defines `.home` (black background, white text, sans font, isolation) and `.skipLink` (off-screen until `:focus-visible`, then fixed top-left with yellow background/black text and a 44×44 CSS-pixel minimum target). The skip link focuses `#main-content`. Section-specific layout CSS is Task 5; all interactive DOM is classable for the later 44×44 gate.
+
+- [ ] **Step 6: Verify the already-written deterministic interaction and landmark contracts**
+
+Do not add browser coverage after seeing the implementation. The final assertions below were created in Step 1 and were already observed RED against the unchanged Task-3 head. Run them unchanged against the composed Task-4 page, using only the guarded `resolveHomepageNow()` environment and the tracked, validated flyer cache fixture installed by the Step-7 backup/restore harness.
+
+The Task-4 additions already present in `e2e/metadata-chrome.spec.ts` prove:
+
+- `/` has exactly one banner, main, and contentinfo; banner/contentinfo are not descendants of main; no duplicate `main-content` ID.
+- all required sections are server-readable and in order; every visible fragment link resolves to exactly one target.
+- a `javaScriptEnabled: false` context still sees the h1, exact fallback/current copy, people, services, posters, Instagram fallback, and location finale.
+- root still requests no legacy-identifying script after all non-root links render with prefetch disabled.
+
+The already-present `e2e/homepage-interactions.spec.ts` proves against that isolated production server:
+
+- first load has zero iframe and no Instagram/map/viewer request;
+- flyer dialog has a visible accessible name, close button receives first focus, iframe has a title and appears only after click;
+- Escape closes and returns focus to the trigger;
+- use Playwright clock control or an aborted viewer request to reach timeout/error deterministically; both safe external viewer/PDF links remain visible;
+- reopening resets the error state and creates a fresh timeout;
+- mobile details closes on Escape, outside pointer, and link activation while its native HTML remains useful without JavaScript;
+- console errors, hydration warnings, and page errors remain empty.
+
+The flyer fixture must be visible through the real `loadValidatedHandzettelCache` path as `Angebote der Woche`, `Gültig 13.–18.07.2026`, and `10 Seiten`. No test may mock `getHomepageContent`, patch global `Date`, or bypass the filesystem loader in this browser gate.
+
+- [ ] **Step 7: Run the full server-render, browser, and route smoke checks**
 
 Run:
 
 ```bash
-npm test -- lib/cinematic/__tests__/presentation.test.ts
+set -euo pipefail
+npm test -- lib/cinematic/__tests__/presentation.test.ts lib/cinematic/__tests__/server-clock.test.ts lib/cinematic/__tests__/handzettel-e2e-fixture.test.ts lib/cinematic/__tests__/composition.test.tsx lib/cinematic/__tests__/component-boundaries.test.ts
+npm test
 npx tsc --noEmit
 npm run lint
 npm run build
-npm run dev -- --hostname 127.0.0.1
+PORT=3103
+LOG=/tmp/cinematic-task4.log
+HTML=/tmp/cinematic-task4.html
+CACHE=data/handzettel-cache.json
+FIXTURE=e2e/fixtures/handzettel-cache.json
+test -z "$(lsof -nP -iTCP:$PORT -sTCP:LISTEN -t)"
+mkdir -p data
+BACKUP=""
+INSTALL=""
+BACKUP_READY=0
+CACHE_REPLACED=0
+if test -e "$CACHE"; then
+  BACKUP="$(mktemp data/.handzettel-cache.backup.XXXXXX)"
+  if cp -p "$CACHE" "$BACKUP" && cmp -s "$CACHE" "$BACKUP"; then
+    BACKUP_READY=1
+  else
+    rm -f "$BACKUP"
+    echo "Cache backup failed; original cache was not intentionally modified." >&2
+    exit 1
+  fi
+fi
+APP_PID=""
+cleanup() {
+  status=$?
+  restore_status=0
+  trap - EXIT
+  trap '' INT TERM
+  if test -n "$APP_PID"; then
+    if kill -0 "$APP_PID" 2>/dev/null; then kill "$APP_PID" 2>/dev/null || true; fi
+    wait "$APP_PID" 2>/dev/null || true
+  fi
+  if test "$CACHE_REPLACED" -eq 1; then
+    if test "$BACKUP_READY" -eq 1; then
+      if mv -f "$BACKUP" "$CACHE"; then
+        BACKUP_READY=0
+      else
+        restore_status=1
+        echo "Cache restore failed; verified backup preserved at $BACKUP" >&2
+      fi
+    else
+      if ! rm -f "$CACHE"; then
+        restore_status=1
+        echo "Temporary cache removal failed; inspect $CACHE" >&2
+      fi
+    fi
+  elif test "$BACKUP_READY" -eq 1; then
+    rm -f "$BACKUP" || restore_status=$?
+  fi
+  if test -n "$INSTALL" && test -e "$INSTALL"; then
+    if ! rm -f "$INSTALL"; then
+      if test "$restore_status" -eq 0; then restore_status=1; fi
+    fi
+  fi
+  if test "$status" -eq 0 && test "$restore_status" -ne 0; then status=$restore_status; fi
+  exit "$status"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+INSTALL="$(mktemp data/.handzettel-cache.install.XXXXXX)"
+cp "$FIXTURE" "$INSTALL"
+cmp -s "$FIXTURE" "$INSTALL"
+CACHE_REPLACED=1
+mv -f "$INSTALL" "$CACHE"
+INSTALL=""
+: > "$LOG"
+CINEMATIC_E2E=1 CINEMATIC_TEST_NOW=2026-07-14T12:00:00.000Z node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
+APP_PID=$!
+READY=0
+for attempt in {1..30}; do
+  kill -0 "$APP_PID" 2>/dev/null || { tail -80 "$LOG"; exit 1; }
+  if curl -fsS "http://127.0.0.1:$PORT/" > "$HTML" &&
+    rg -q 'data-cinematic-root' "$HTML" &&
+    rg -Fq 'Angebote der Woche' "$HTML"; then
+    READY=1
+    break
+  fi
+  sleep 1
+done
+test "$READY" -eq 1
+kill -0 "$APP_PID"
+PLAYWRIGHT_BASE_URL="http://127.0.0.1:$PORT" npm run test:e2e -- e2e/metadata-chrome.spec.ts e2e/homepage-interactions.spec.ts
+kill -0 "$APP_PID"
+for marker in 'Goch schenkt ein' 'Angebote der Woche' 'Gültig' '13.–18.07.2026' '10 Seiten' 'Menschen hinter Jammers' 'Deine Party. Unser Service' 'Drei Originale im Licht' 'Jurgensstraße 20' 'Neue Einblicke folgen'; do
+  rg -Fq "$marker" "$HTML"
+done
+! rg '<iframe|assets/source|Preislisten|glass-header|Jammers Assistent|Der nächste Handzettel wird vorbereitet\.' "$HTML"
 ```
 
-In another terminal run:
+Expected: unit/SSR/boundary tests, full suite, type/lint/build, production browser tests, and curl assertions PASS. Root has exactly one valid landmark tree, the real validated active flyer, no legacy shell or private path, no first-load iframe, and complete server-readable content. The owned process is killed and waited for; the ignored pre-existing cache is byte-preservingly restored (or the temporary cache removed) on success, failure, SIGINT, and SIGTERM. `git diff --check` and the targeted scope diff are clean.
+
+- [ ] **Step 8: Commit the deployable static-first half of the atomic handoff**
 
 ```bash
-curl -s http://127.0.0.1:3000/ | rg 'Goch schenkt ein|Menschen hinter Jammers|Deine Party\. Unser Service|Drei Originale im Licht|Jurgensstraße 20'
-```
-
-Expected: 3 presentation tests PASS, type/lint/build PASS, and `curl` finds every string in server HTML without requiring JavaScript.
-
-- [ ] **Step 7: Commit the complete static-first homepage markup**
-
-```bash
-git add app/page.tsx app/home.module.css lib/cinematic/presentation.ts lib/cinematic/__tests__/presentation.test.ts components/cinematic
+git add .gitignore package.json package-lock.json app/page.tsx app/home.module.css lib/cinematic/presentation.ts lib/cinematic/server-clock.ts lib/cinematic/__tests__/presentation.test.ts lib/cinematic/__tests__/server-clock.test.ts lib/cinematic/__tests__/handzettel-e2e-fixture.test.ts lib/cinematic/__tests__/composition.test.tsx lib/cinematic/__tests__/component-boundaries.test.ts components/cinematic e2e/fixtures/handzettel-cache.json e2e/homepage-interactions.spec.ts e2e/metadata-chrome.spec.ts
 git commit -m "feat: compose cinematic homepage sections"
 ```
+
+Re-run the combined Task-3/Task-4 production smoke after commit. Only this two-commit state may proceed to visual styling; neither commit is pushed yet.
 
 ### Task 5: Apply the Cinematic Visual System and Responsive Editorial Layout
 
@@ -1690,8 +2290,16 @@ test("renders exact landmarks, heading hierarchy, facts, and section order", asy
 });
 
 test("offers exact navigation, contact, route, Instagram, NL, and legal links", async ({ page }) => {
-  for (const label of ["Angebote", "Party & Miete", "Eigenmarken", "Aktionen", "Über uns", "Kontakt"]) {
-    await expect(page.getByRole("navigation", { name: "Hauptnavigation" }).getByRole("link", { name: label })).toBeVisible();
+  const navigation = page.getByRole("navigation", { name: "Hauptnavigation" });
+  for (const label of ["Angebote", "Party & Miete", "Eigenmarken", "Über uns", "Kontakt"]) {
+    await expect(navigation.getByRole("link", { name: label })).toBeVisible();
+  }
+  const actionSections = await page.locator("section#aktionen").count();
+  await expect(navigation.getByRole("link", { name: "Aktionen" })).toHaveCount(actionSections);
+  for (const link of await navigation.locator('a[href^="#"]').all()) {
+    const href = await link.getAttribute("href");
+    expect(href).not.toBeNull();
+    await expect(page.locator(href!)).toHaveCount(1);
   }
   await expect(page.getByRole("link", { name: /WhatsApp/ }).first()).toHaveAttribute("href", /wa\.me\/491752492386/);
   await expect(page.getByRole("link", { name: /Route/ }).last()).toHaveAttribute("href", /google\.com\/maps\/dir/);

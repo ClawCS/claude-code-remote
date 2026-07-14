@@ -99,7 +99,7 @@ Three.js wird nicht eingesetzt. Die vorhandenen Poster sind zweidimensionale Ori
 - Kurztext: persönliche Beratung, Partybedarf und Vermietung vor Ort.
 - Primär-CTA: WhatsApp-Anfrage.
 - Sekundär-CTA: Route oder aktuelle Angebote.
-- Sichtbare Marktfakten: Jurgensstraße 20, Mo–Sa 08–20 Uhr, 47574 Goch.
+- Sichtbare Marktfakten: Jurgensstraße 20, Mo–Sa 08:00–20:00 Uhr, 47574 Goch.
 - Authentischer Hero-Kandidat: Canva-Upload `D9175606-F3FB-4C4F-8CD2-EEBDD88AC3CA/L0/001-14.12.2024, 12:50:18.jpg`, 3238 × 5756 px, Mitarbeiter im Markt mit Wein.
 
 ### 3. „Jetzt bei Jammers“
@@ -153,7 +153,7 @@ Die drei freigegebenen Originalposter bilden die scrollgesteuerte Signature-Stre
 
 ### 7. Aktionen, Gewinnspiele und Rückblicke
 
-Aktuelle Aktionen erhalten eine große Bühne mit Datum und CTA. Rückblicke erscheinen als kleinere, klar datierte Chronik. Beispiel für den Rückblick:
+Aktuelle Aktionen erhalten eine große Bühne mit belegtem `Aktionszeitraum` und CTA. `validFrom`/`validTo` beschreiben die Veröffentlichungs- oder Gültigkeitsspanne und dürfen nicht als tatsächlicher Veranstaltungstermin umgedeutet werden; ein Termin erscheint nur, wenn er in der freigegebenen Kurzbeschreibung belegt ist. Rückblicke erscheinen als kleinere, klar datierte Chronik. Beispiel für den Rückblick:
 
 - Gewinnerfoto Januar 2026 nur klein und nur nach Rechteprüfung.
 - Erdinger-Gewinnspiel Mai 2026 ausschließlich als `Rückblick · Mai 2026`.
@@ -216,7 +216,7 @@ Jeder zeitgebundene Eintrag besitzt mindestens:
 
 - Quellenfehler verlängern keine Gültigkeit.
 - Der zuletzt bekannte Handzettel bleibt nur bis zu seinem belegten `validTo` sichtbar.
-- Fehlt ein gültiger Handzettel, erscheint eine ruhige Meldung `Der nächste Handzettel wird vorbereitet` plus WhatsApp-CTA.
+- Fehlt ein gültiger Handzettel, erscheint exakt die ruhige Adaptermeldung `Der nächste Handzettel wird vorbereitet.` plus WhatsApp-CTA.
 - Fehlt eine aktive Aktion, entfällt die Aktionskarte ohne Layoutloch.
 - Ungültige oder nicht plausible Datumswerte blockieren die Veröffentlichung und erzeugen einen Audit-Hinweis.
 - Externe Bild- oder Viewerfehler erhalten ein lokales Poster-/Text-Fallback.
@@ -233,6 +233,9 @@ Jeder zeitgebundene Eintrag besitzt mindestens:
 - Bilder laufen über Next Image und die projektweite Sharp-Pipeline mit AVIF/WebP, `srcset`, festen Größen und Blur-Placeholdern.
 - Redaktionelle Zeitlogik liegt in reinen, unit-testbaren Funktionen und verwendet explizit `Europe/Berlin`.
 - Das vorhandene Handzettel-API wird gehärtet, nicht doppelt neu gebaut.
+- Site-weite Metadaten vererben weder die Root-Canonical noch das Homepage-OG an Unterseiten; Deutsch und Niederländisch besitzen reziproke Canonical-/Hreflang-Sets.
+- LocalBusiness-JSON-LD verwendet bestätigte Marken-, Rechts-, Inhaber-, Kontakt- und Öffnungszeitenwerte und wird vor dem Einsetzen in ein Script gegen `<`-basierte Breakout-Sequenzen serialisiert.
+- Der globale Routen-Wrapper überlässt ausschließlich `/` die eigenen Banner-/Main-/Contentinfo-Landmarken; bestehende Unterseiten behalten ihren bisherigen globalen Main-Bereich.
 
 ## Branch- und Veröffentlichungsschutz
 
