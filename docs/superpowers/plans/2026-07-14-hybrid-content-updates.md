@@ -933,6 +933,7 @@ git commit -m "feat: expose date-safe homepage content"
 
 **Files:**
 - Modify: `app/api/handzettel/cron/route.ts`
+- Modify: `app/api/handzettel/fetch/route.ts`
 - Create: `lib/handzettel-cron-handler.ts`
 - Create: `lib/handzettel-update-result.ts`
 - Create: `lib/__tests__/handzettel-route.test.ts`
@@ -940,21 +941,29 @@ git commit -m "feat: expose date-safe homepage content"
 
 **Interfaces:**
 - Consumes: `CRON_SECRET` at request time and the internal `refreshHandzettelCache()` helper from Task 3.
-- Produces: authenticated GET/POST returning `200` only for a validated non-empty catalog; normalized `502` for thrown, rejected, malformed, fallback, or empty refresh results; `401` for bad bearer; `503` when no secret is configured. Every response is `Cache-Control: no-store`.
+- Produces: authenticated GET/POST returning `200` only for a validated non-empty catalog; normalized `502` for thrown, rejected, malformed, fallback, or empty refresh results; `401` for bad bearer; `503` when no secret is configured. Any non-GET/POST request delivered to the shared handler—critically Next's auto-implemented HEAD—returns fail-closed `405`. Every handler response is `Cache-Control: no-store`.
 
 - [ ] **Step 1: Write failing request-time authorization, fail-closed result, and production-wiring tests**
 
 Use real `Request` objects and a dependency-injected refresh function for handler semantics. Preserve and restore the original `CRON_SECRET`, module mocks, and `globalThis.fetch` in every test. Cover both `GET` and `POST` where request-method behavior matters.
 
+Run RED in two explicit phases. First add and run an old-route characterization test that dynamically imports only the existing cron route under controlled environment/global-fetch state; capture the real self-fetch/no-store behavior before replacing it. Then add the new handler-contract tests below. They must load the not-yet-created handler module only through a per-test dynamic helper so their expected module failures do not block collection or execution of the old-route characterization test.
+
 ```ts
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createHandzettelCronHandler } from "@/lib/handzettel-cron-handler";
 
 const ORIGINAL_CRON_SECRET = process.env.CRON_SECRET;
 const request = (token?: string) => new Request(
   "https://example.test/api/handzettel/cron",
   { headers: token ? { authorization: `Bearer ${token}` } : undefined },
 );
+
+async function createHandler(refresh: () => unknown | Promise<unknown>) {
+  const { createHandzettelCronHandler } = await import(
+    "@/lib/handzettel-cron-handler"
+  );
+  return createHandzettelCronHandler(refresh);
+}
 
 afterEach(() => {
   if (ORIGINAL_CRON_SECRET === undefined) delete process.env.CRON_SECRET;
@@ -966,10 +975,26 @@ afterEach(() => {
 });
 
 describe("cron handler", () => {
+  it("rejects authenticated HEAD before auth or refresh", async () => {
+    process.env.CRON_SECRET = "correct-secret";
+    const refresh = vi.fn();
+    const response = await (await createHandler(refresh))(
+      new Request(request("correct-secret").url, {
+        method: "HEAD",
+        headers: { authorization: "Bearer correct-secret" },
+      }),
+    );
+    expect(response.status).toBe(405);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("allow")).toBe("GET, POST");
+    expect(await response.text()).toBe("");
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
   it("returns no-store 503 for GET and POST when no secret exists and never refreshes", async () => {
     delete process.env.CRON_SECRET;
     const refresh = vi.fn();
-    const handler = createHandzettelCronHandler(refresh);
+    const handler = await createHandler(refresh);
     for (const method of ["GET", "POST"]) {
       const response = await handler(new Request(request().url, { method }));
       expect(response.status).toBe(503);
@@ -985,7 +1010,20 @@ describe("cron handler", () => {
   ])("returns no-store 401 for an invalid bearer and never refreshes (%s)", async (token) => {
     process.env.CRON_SECRET = token === "same-length-bad" ? "same-length-ok!" : "correct-secret";
     const refresh = vi.fn();
-    const response = await createHandzettelCronHandler(refresh)(request(token));
+    const response = await (await createHandler(refresh))(request(token));
+    expect(response.status).toBe(401);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("rejects a malformed authorization scheme", async () => {
+    process.env.CRON_SECRET = "correct-secret";
+    const refresh = vi.fn();
+    const response = await (await createHandler(refresh))(
+      new Request(request().url, {
+        headers: { authorization: "Basic correct-secret" },
+      }),
+    );
     expect(response.status).toBe(401);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(refresh).not.toHaveBeenCalled();
@@ -994,7 +1032,7 @@ describe("cron handler", () => {
   it("reads CRON_SECRET when the request arrives, not when the handler is created", async () => {
     delete process.env.CRON_SECRET;
     const refresh = vi.fn().mockResolvedValue({ status: "ok", pageCount: 10 });
-    const handler = createHandzettelCronHandler(refresh);
+    const handler = await createHandler(refresh);
     process.env.CRON_SECRET = "late-secret";
     const response = await handler(request("late-secret"));
     expect(response.status).toBe(200);
@@ -1004,7 +1042,7 @@ describe("cron handler", () => {
   it("returns no-store 200 only for status ok plus an integer page count from 1 through 60", async () => {
     process.env.CRON_SECRET = "correct-secret";
     const refresh = vi.fn().mockResolvedValue({ status: "ok", pageCount: 10 });
-    const response = await createHandzettelCronHandler(refresh)(request("correct-secret"));
+    const response = await (await createHandler(refresh))(request("correct-secret"));
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(await response.json()).toEqual({ success: true, status: "ok", pageCount: 10 });
@@ -1023,10 +1061,23 @@ describe("cron handler", () => {
     { status: "ok", pageCount: "10" },
   ])("normalizes an invalid refresh result to no-store 502 (%#)", async (result) => {
     process.env.CRON_SECRET = "correct-secret";
-    const response = await createHandzettelCronHandler(() => result)(request("correct-secret"));
+    const response = await (await createHandler(() => result))(request("correct-secret"));
     expect(response.status).toBe(502);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(await response.json()).toEqual({ success: false, status: "fallback", pageCount: 0 });
+  });
+
+  it("snapshots unknown data once and rejects accessors", async () => {
+    process.env.CRON_SECRET = "correct-secret";
+    let getterCalls = 0;
+    const stateful = {
+      get status() { getterCalls += 1; return getterCalls === 1 ? "ok" : "fallback"; },
+      get pageCount() { getterCalls += 1; return 10; },
+    };
+    const response = await (await createHandler(() => stateful))(request("correct-secret"));
+    expect(response.status).toBe(502);
+    expect(await response.json()).toEqual({ success: false, status: "fallback", pageCount: 0 });
+    expect(getterCalls).toBe(0);
   });
 
   it.each(["sync throw", "rejection"])("normalizes %s to generic no-store 502", async (mode) => {
@@ -1034,7 +1085,7 @@ describe("cron handler", () => {
     const refresh = mode === "sync throw"
       ? () => { throw new Error("private source detail"); }
       : () => Promise.reject(new Error("private source detail"));
-    const response = await createHandzettelCronHandler(refresh)(request("correct-secret"));
+    const response = await (await createHandler(refresh))(request("correct-secret"));
     expect(response.status).toBe(502);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(JSON.stringify(await response.json())).not.toContain("private source detail");
@@ -1042,19 +1093,25 @@ describe("cron handler", () => {
 });
 ```
 
+Extend the structural-mapper table beyond the accessor example: reject an array with assigned fields, an object whose values are inherited, a class instance with own fields, a Proxy whose `getPrototypeOf` throws, and a Proxy whose `getOwnPropertyDescriptor` throws. Each must return exact generic `502`, `no-store`, and no body/status mismatch. Add one positive null-prototype object with own data fields to prove that explicitly allowed input returns `200`.
+
 Add a separate route-wiring test with a mocked `refreshHandzettelCache`. Import `app/api/handzettel/cron/route.ts` only after the mock is installed, assert its only runtime exports are `GET` and `POST`, call both with a valid bearer, and prove each calls the helper exactly once. Spy on `globalThis.fetch` and assert it is untouched: the route must not self-fetch, forward the secret, or depend on the public fetch route.
 
-`vi.resetModules()` does not clear Vitest's mock registry and `vi.restoreAllMocks()` does not remove `vi.doMock()` registrations. Explicitly call `vi.doUnmock("@/lib/handzettel-catalog")` before resetting modules (or dispose the `vi.doMock()` registration with its returned disposable). Immediately follow the wiring test with an unmocked `vi.importActual()`/dynamic-import sanity assertion proving the real `refreshHandzettelCache` export is restored before any later smoke or suite executes.
+`vi.resetModules()` does not clear Vitest's mock registry and `vi.restoreAllMocks()` does not remove `vi.doMock()` registrations. Explicitly call `vi.doUnmock("@/lib/handzettel-catalog")` before resetting modules (or dispose the `vi.doMock()` registration with its returned disposable). Immediately follow the wiring test with a normal dynamic `await import("@/lib/handzettel-catalog")` sanity assertion proving the real exports are restored before any later smoke or suite executes. Do not use `vi.importActual()` for this proof because it bypasses the mock registry even when a registration still leaks.
+
+Next 16 auto-implements a missing `HEAD` export by invoking the exported `GET` handler with a HEAD request. Because GET mutates the validated cache, the shared handler must inspect `request.method` before secret lookup, authorization, or refresh. Only `GET` and `POST` are allowed inside the shared handler; a delivered HEAD returns a null-body `405` with `Cache-Control: no-store` and `Allow: GET, POST`, and never calls refresh. Keep the userland route exports limited to GET/POST. Other unsupported methods are rejected by Next before userland and need only retain framework `405` semantics; do not pretend a direct PUT unit call proves custom production headers.
+
+The existing public fetch route has the same Next auto-HEAD mutation risk at `/api/handzettel/fetch?refresh=true`. Add a minimal request-method gate at the start of its exported `GET` (and keep POST semantics unchanged): a delivered HEAD must return the same null-body `405`, `no-store`, and `Allow: GET, POST` before cache load, authorization, network, or refresh. Test it with mocked catalog helpers and assert zero calls. Do not otherwise refactor its validated read/refresh behavior.
 
 - [ ] **Step 2: Run and verify RED against current behavior**
 
 Run: `npm test -- lib/__tests__/handzettel-route.test.ts`
 
-Expected: FAIL because the current route snapshots the secret at module import, self-fetches `/api/handzettel/fetch?refresh=true`, leaks raw failures, emits `500`, can report fallback payloads as success, and omits `no-store` on authorization failures.
+Expected: FAIL. Record concrete old-route assertion failures separately from missing-new-module failures: collection/module resolution proves only that the new interface does not exist, not the old route's fetch, environment, error, or cache behavior. Dynamically exercise the existing route with controlled environment/global fetch at least once before replacing it, and report only defects the RED output actually observed.
 
 - [ ] **Step 3: Implement request-time authorization and a fail-closed result mapper**
 
-Create a dependency-free result mapper that accepts `unknown`. Only `{ status: "ok", pageCount }` with an integer `pageCount` from 1 through 60 is success. Every other value maps to the same public fallback response; do not echo upstream values or exception messages.
+Create one dependency-free result mapper that accepts `unknown` and atomically returns both HTTP status and public body. Do not validate or read the unknown object twice. Snapshot `status` and `pageCount` exactly once from own data-property descriptors of a plain/null-prototype object inside `try/catch`; reject arrays, inherited fields, class instances, accessors, throwing proxies, malformed descriptors, and invalid values. Only a snapshotted `status === "ok"` plus integer `pageCount` from 1 through 60 is success. Every other value maps to the same public fallback response; do not echo upstream values or exception messages.
 
 ```ts
 export type HandzettelUpdateResult = Readonly<{
@@ -1062,24 +1119,41 @@ export type HandzettelUpdateResult = Readonly<{
   pageCount: number;
 }>;
 
-function isSuccessfulUpdate(data: unknown): data is HandzettelUpdateResult {
-  if (typeof data !== "object" || data === null) return false;
-  const candidate = data as Record<string, unknown>;
-  return candidate.status === "ok"
-    && typeof candidate.pageCount === "number"
-    && Number.isInteger(candidate.pageCount)
-    && candidate.pageCount >= 1
-    && candidate.pageCount <= 60;
+function snapshotSuccessfulUpdate(data: unknown): HandzettelUpdateResult | null {
+  try {
+    if (typeof data !== "object" || data === null || Array.isArray(data)) return null;
+    const prototype = Object.getPrototypeOf(data);
+    if (prototype !== Object.prototype && prototype !== null) return null;
+    const statusProperty = Object.getOwnPropertyDescriptor(data, "status");
+    const pageCountProperty = Object.getOwnPropertyDescriptor(data, "pageCount");
+    if (!statusProperty || !("value" in statusProperty)) return null;
+    if (!pageCountProperty || !("value" in pageCountProperty)) return null;
+    const status = statusProperty.value;
+    const pageCount = pageCountProperty.value;
+    if (
+      status !== "ok"
+      || typeof pageCount !== "number"
+      || !Number.isInteger(pageCount)
+      || pageCount < 1
+      || pageCount > 60
+    ) return null;
+    return { status, pageCount };
+  } catch {
+    return null;
+  }
 }
 
-export function handzettelUpdateHttpStatus(data: unknown): 200 | 502 {
-  return isSuccessfulUpdate(data) ? 200 : 502;
-}
-
-export function handzettelUpdateBody(data: unknown) {
-  return isSuccessfulUpdate(data)
-    ? { success: true, status: "ok", pageCount: data.pageCount } as const
-    : { success: false, status: "fallback", pageCount: 0 } as const;
+export function mapHandzettelUpdateResult(data: unknown) {
+  const snapshot = snapshotSuccessfulUpdate(data);
+  return snapshot
+    ? {
+        httpStatus: 200 as const,
+        body: { success: true, status: "ok", pageCount: snapshot.pageCount } as const,
+      }
+    : {
+        httpStatus: 502 as const,
+        body: { success: false, status: "fallback", pageCount: 0 } as const,
+      };
 }
 ```
 
@@ -1087,10 +1161,7 @@ Read `process.env.CRON_SECRET` inside every request. Keep `isAuthorizedBearer()`
 
 ```ts
 import { isAuthorizedBearer } from "@/lib/cron-auth";
-import {
-  handzettelUpdateBody,
-  handzettelUpdateHttpStatus,
-} from "@/lib/handzettel-update-result";
+import { mapHandzettelUpdateResult } from "@/lib/handzettel-update-result";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" } as const;
 
@@ -1098,6 +1169,12 @@ export function createHandzettelCronHandler(
   refresh: () => unknown | Promise<unknown>,
 ) {
   return async function handler(request: Request): Promise<Response> {
+    if (request.method !== "GET" && request.method !== "POST") {
+      return new Response(null, {
+        status: 405,
+        headers: { ...NO_STORE_HEADERS, Allow: "GET, POST" },
+      });
+    }
     if (!process.env.CRON_SECRET) {
       return Response.json(
         { success: false, error: "Cron is not configured" },
@@ -1111,14 +1188,15 @@ export function createHandzettelCronHandler(
       );
     }
     try {
-      const data = await refresh();
-      return Response.json(handzettelUpdateBody(data), {
-        status: handzettelUpdateHttpStatus(data),
+      const mapped = mapHandzettelUpdateResult(await refresh());
+      return Response.json(mapped.body, {
+        status: mapped.httpStatus,
         headers: NO_STORE_HEADERS,
       });
     } catch {
-      return Response.json(handzettelUpdateBody(undefined), {
-        status: 502,
+      const mapped = mapHandzettelUpdateResult(undefined);
+      return Response.json(mapped.body, {
+        status: mapped.httpStatus,
         headers: NO_STORE_HEADERS,
       });
     }
@@ -1140,6 +1218,8 @@ export const POST = handler;
 
 Do not fetch the route's own origin, call `/api/handzettel/fetch`, forward `CRON_SECRET`, expose a raw error, or persist a fallback. Task 3's helper validates the official catalog and atomically stores only a valid result; it returns that valid `status: "ok"` cache or throws.
 
+In `app/api/handzettel/fetch/route.ts`, reject a non-GET request delivered to its exported GET before any other logic. This is specifically required because Next routes HEAD through GET. Keep its existing GET cache response, authenticated `?refresh=true`, and POST behavior otherwise byte-for-byte equivalent where practical.
+
 - [ ] **Step 4: Run focused and full tests**
 
 Run: `npm test -- lib/__tests__/handzettel-route.test.ts`
@@ -1158,12 +1238,13 @@ Run: `npm run lint`
 
 Run: `npm run build`
 
-Expected: all PASS. Confirm the cron route remains dynamic and no cache file is created or modified by unauthorized/invalid-result tests.
+Expected: all PASS. Confirm the routes remain dynamic and no cache file is created or modified by method/auth/invalid-result tests. Start the built app without a cron secret and issue real HEAD requests to `/api/handzettel/cron` and `/api/handzettel/fetch?refresh=true`; both Next auto-HEAD paths must return `405`, `Cache-Control: no-store`, `Allow: GET, POST`, and an empty body rather than entering GET refresh semantics.
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add app/api/handzettel/cron/route.ts lib/handzettel-cron-handler.ts lib/handzettel-update-result.ts lib/__tests__/handzettel-route.test.ts
+git add app/api/handzettel/cron/route.ts app/api/handzettel/fetch/route.ts lib/handzettel-cron-handler.ts lib/handzettel-update-result.ts lib/__tests__/handzettel-route.test.ts
+# If and only if a RED regression required an auth-helper change, also add lib/cron-auth.ts.
 git commit -m "fix: make leaflet cron failures truthful"
 ```
 
@@ -1180,6 +1261,8 @@ git commit -m "fix: make leaflet cron failures truthful"
 - [ ] **Step 1: Write the runbook before configuring external state**
 
 The runbook must contain the exact source order, `validFrom`/`validTo` rules, rights checklist, failure policy, and these verification commands:
+
+It must also state the accepted refresh-concurrency restriction: the shared valid-only cache write is atomic but not serialized across cron and public refresh routes. Concurrent valid refreshes are therefore last-finisher-wins. Operators must avoid overlapping manual/scheduled refreshes and rerun once after overlap; the automation must not claim Task 5 introduced cross-route locking.
 
 ```bash
 npm test
