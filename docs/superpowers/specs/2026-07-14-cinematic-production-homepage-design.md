@@ -132,17 +132,15 @@ Kleine Bilder werden nicht über ihre Auflösung hinaus vergrößert. Die Bildst
 
 ### 5. „Deine Party. Unser Service.“
 
-Die Leistungen werden nicht als generisches Vier-Karten-Raster inszeniert. Eine große typografische Servicewand führt durch:
+Die Leistungen werden nicht als generisches Kartenraster inszeniert. Eine große typografische Servicewand beschränkt sich auf die drei bestätigten Aussagen:
 
-- Beratung und Planung,
+- persönliche Beratung,
 - Partybedarf,
-- Kommissionskauf,
-- Packservice,
-- Leihartikel und Reservierung.
+- Vermietung mit Reservierungsanfrage.
 
 Solange keine konsistente Fotoserie der tatsächlichen Leihartikel vorliegt, verwendet die Produktionsseite echte Preis-/Bestandsdaten, präzise Typografie und zurückhaltende Produktzeichnungen statt KI- oder Stockbildern.
 
-Die Mietartikelquelle ist `public/images/Preislisten/2.png` mit Stand 01.01.2026; `public/images/Preislisten/1.png` belegt den Bestand. Preise und Konditionen werden daraus strukturiert, nicht aus Legacy-Hardcodes.
+Die Mietartikelquelle wird wegen eingebetteter Canva-Konto-Metadaten nicht öffentlich verlinkt: die private Repository-Quelle `assets/source/preislisten/2.png` hat Stand 01.01.2026; `assets/source/preislisten/1.png` belegt den Bestand mit Stand 06.03.2026. Die Produktionsseite zeigt nur strukturierte Fakten, Quellenbezeichnung und Stand—keinen Rohdatei-Link.
 
 ### 6. Eigenmarken-Spotlight
 
@@ -169,6 +167,8 @@ Kein Drittanbieter-Embed. Ein lokales, statisches Raster zeigt 4–6 kuratierte 
 - Datum,
 - kurze redaktionelle Bildunterschrift,
 - Deep-Link zum Instagram-Profil oder Beitrag, wenn verfügbar.
+
+Fail-closed gilt auch redaktionell: Solange kein Motiv ein echtes Aufnahme-/Veröffentlichungsdatum, Rechtebeleg, Caption und Quellen-/Beitragslink besitzt, wird kein Raster erfunden. Die erste Produktionsfassung zeigt dann ausschließlich einen klaren Instagram-Profil-CTA mit `Neue Einblicke folgen`; `reviewedAt` darf nie als Postdatum ausgegeben werden.
 
 ### 9. Standort-Finale
 
@@ -297,4 +297,3 @@ Der Push erfolgt erst nach:
 - Keine Stock-/KI-Ersatzbilder oder unbelegten Verkaufsclaims.
 - Mobile, Reduced Motion, No-JS, A11y und Performance bestehen die definierten Gates.
 - Der Cinematic-only-Branch enthält keine Premium-Light-Implementierung oder -Evidenz.
-

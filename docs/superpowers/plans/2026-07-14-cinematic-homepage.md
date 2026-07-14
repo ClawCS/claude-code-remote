@@ -13,7 +13,7 @@
 - Work only in the isolated `codex/cinematic-production` worktree, based on confirmed P0; do not cherry-pick the comparison branch or copy any excluded-direction route, asset, test, evidence, or commit.
 - Keep Next.js 16 App Router and React 19. The root homepage must be predominantly a Server Component; only navigation enhancement, live status, flyer viewer, and motion may be client islands.
 - Use the exact visible business data: `Trinkgut Jammers`, legal name `Getränkesupermarkt Jammers e.K.`, owner `Nikolaos Jammers`, `Jurgensstraße 20`, `47574 Goch`, Monday–Saturday `08:00–20:00`, phone `02823 418707`, WhatsApp `+49 175 2492386`, and `jammers-goch@trinkgut.de`.
-- Use only the explicitly confirmed service claims: personal advice, party supplies, and rentals. Rental prices come from `public/images/Preislisten/2.png` dated `01.01.2026`; stock counts come from `public/images/Preislisten/1.png` dated `06.03.2026`.
+- Use only the explicitly confirmed service claims: personal advice, party supplies, and rentals. Rental prices come from private repository evidence `assets/source/preislisten/2.png` dated `01.01.2026`; stock counts come from `assets/source/preislisten/1.png` dated `06.03.2026`. Never expose their Canva-metadata-bearing raw files as public URLs.
 - Use a single central TypeScript token contract for color, typography, spacing, layout, and motion. Production Cinematic CSS must contain no raw color literals, brand hex values, motion durations, or cubic-bezier values.
 - Preserve the approved palette exactly: yellow `#FEE005`, red `#E20F1D`, blue `#0086C8`, gray `#414045`, black `#000000`, and white `#FFFFFF`. Yellow directs attention; red marks one decisive gesture per scene; blue remains a rare functional accent.
 - Keep the existing self-hosted-at-build `Plus Jakarta Sans` and `Space Grotesk` setup through `next/font`; do not add a browser-time font request.
@@ -113,7 +113,7 @@ Visual ownership starts after that adapter returns. `CurrentSection` renders `fl
 | `components/cinematic/SpotlightSection.tsx` | Static-first three-poster signature sequence. |
 | `components/cinematic/MotionIsland.tsx` | Page-local GSAP/ScrollTrigger enhancement and complete cleanup over native scrolling. |
 | `components/cinematic/ActionsSection.tsx` | Current action plus dated archive chronology. |
-| `components/cinematic/InstagramSection.tsx` | Local 4–6 item editorial grid with dates and profile links. |
+| `components/cinematic/InstagramSection.tsx` | Dated/release-gated local editorial grid when evidence exists; honest profile-CTA fallback otherwise. |
 | `components/cinematic/LocationFooter.tsx` | Address/contact/opening hours/route/NL/legal finale. |
 | `components/cinematic/*.module.css` | Scoped chrome, hero, current, editorial, and Spotlight styling. |
 | `lib/cinematic/__tests__/*.test.ts` | Token, fact, metadata, asset, date/view-model, editorial, and CSS contracts. |
@@ -500,6 +500,10 @@ git commit -m "test: establish cinematic homepage contracts"
 - Modify: `package.json`
 - Modify: `package-lock.json`
 - Modify: `next.config.ts`
+- Modify: `lib/cinematic/tokens.ts`
+- Modify: `lib/cinematic/__tests__/tokens.test.ts`
+- Modify: `assets/INVENTAR.md`
+- Move with Git: `public/images/Preislisten/{1,2,3,4}.png` → `assets/source/preislisten/{1,2,3,4}.png`
 - Create: `scripts/build-cinematic-assets.mjs`
 - Create: `data/cinematic-editorial.ts`
 - Create: `lib/cinematic/__tests__/assets.test.ts`
@@ -516,69 +520,126 @@ git commit -m "test: establish cinematic homepage contracts"
 
 **Interfaces:**
 - Produces: `EDITORIAL_IMAGES`, `PEOPLE_STORY`, `INSTAGRAM_SELECTION`, `SPOTLIGHT_POSTERS`, `SERVICE_ITEMS`, and `RENTAL_HIGHLIGHTS` from `data/cinematic-editorial.ts`.
-- Consumes: five existing approved local employee-gallery originals, three existing original posters, Sharp, and Niko's `14.07.2026` project-use approval.
+- Consumes: five existing approved local employee-gallery originals, three existing original posters, the tracked Jammers raster logo, two private rental evidence images, pinned Sharp `0.34.5`, and Niko's `14.07.2026` project-use approval.
+- `INSTAGRAM_SELECTION` is intentionally empty in this production pass. Until a local candidate has a genuine capture/publication date, rights evidence, caption, and source/deep-link, the homepage renders only an honest Instagram profile CTA—never a duplicated pseudo-feed.
+- Rental source evidence is private repository data, not a public URL. Runtime copy exposes only source label and `asOf`; it never links the metadata-bearing Canva PNGs.
 
-- [ ] **Step 1: Verify the five already-local approved employee originals and keep Canva candidates review-only**
+- [ ] **Step 1: Audit and lock approved inputs; define the privacy move without mutating yet**
 
 Use only these tracked local files for this production pass:
 
-| Source | Required pixels | Sharp `extract` rectangle | Production derivative |
-|---|---:|---|---|
-| `public/images/gallery/team-sven-niko.jpg` | `1350 × 1688` | `{ left: 217, top: 383, width: 915, height: 803 }` | `hero-team.webp` |
-| `public/images/gallery/team-gruppenfoto.jpg` | `1350 × 1688` | `{ left: 200, top: 350, width: 950, height: 840 }` | `team-group.webp` |
-| `public/images/gallery/team-niko.jpg` | `1080 × 1350` | `{ left: 146, top: 220, width: 745, height: 727 }` | `team-niko.webp` |
-| `public/images/gallery/team-jasmin.jpg` | `1080 × 1350` | `{ left: 146, top: 231, width: 756, height: 718 }` | `team-jasmin.webp` |
-| `public/images/gallery/team-gabriella.jpg` | `1080 × 1350` | `{ left: 145, top: 242, width: 762, height: 711 }` | `team-gabriella.webp` |
+| Source | Required pixels | Required SHA-256 | Sharp `extract` rectangle | Production derivative |
+|---|---:|---|---|---|
+| `public/images/gallery/team-sven-niko.jpg` | `1350 × 1688` | `c00d3e0e3b4b12b3a639322acf1cbfa653a08b59f4de3b8e7617f798ade3a908` | `{ left: 217, top: 383, width: 915, height: 803 }` | `hero-team.webp` |
+| `public/images/gallery/team-gruppenfoto.jpg` | `1350 × 1688` | `56b8dd3d1bb23c710f4c8ab3ff5cb25acbdc23363c49fcba7e59b0eb86c726d3` | `{ left: 200, top: 350, width: 950, height: 840 }` | `team-group.webp` |
+| `public/images/gallery/team-niko.jpg` | `1080 × 1350` | `ce5bc792792a4ea767a52cce59e1c24edea3b25307462b0fab2c82cd9c1ea889` | `{ left: 146, top: 220, width: 745, height: 727 }` | `team-niko.webp` |
+| `public/images/gallery/team-jasmin.jpg` | `1080 × 1350` | `f4abdade990528506045f32f35b59868e486abb236813b11ffcfc0a7beff0846` | `{ left: 146, top: 231, width: 756, height: 718 }` | `team-jasmin.webp` |
+| `public/images/gallery/team-gabriella.jpg` | `1080 × 1350` | `fc750f2e676888a79b426e05b35f84d20743ff5b3957411a1bf3892a6a159fdf` | `{ left: 145, top: 242, width: 762, height: 711 }` | `team-gabriella.webp` |
 
-The Canva-named candidates in the approved spec remain a later review queue and are not required, downloaded, or referenced by runtime code. Continue to exclude customers, children, winners, and unverified third parties.
+Lock these additional build inputs:
+
+| Source | Required pixels | Required SHA-256 | Use |
+|---|---:|---|---|
+| `public/images/eigenmarken/pralle-kirsche.png` | `1054 × 1493` | `6b7d52284a6543a4c8a6922effa296b74e8ca8025db4549bc83c558f6904e694` | poster 01 |
+| `public/images/eigenmarken/schwarzer-teufel.png` | `1054 × 1492` | `349bd8ca7c6912987857a1c76a97eb8fe45ac9093cf1fa233239687f1166dbdc` | poster 02 |
+| `public/images/eigenmarken/caramello.png` | `1054 × 1493` | `9a1b89a5f3156981913561f0901f1f03c65f341ea4c1047d11d0b913db7b93dd` | poster 03 |
+| `public/images/logo-trinkgut-jammers.png` | `828 × 324` | `275dbc9364073ca251933729218228bc661cc5f581fbd5a2107129bc69da09fb` | Open Graph branding |
 
 Run:
 
 ```bash
-for image in public/images/gallery/team-sven-niko.jpg public/images/gallery/team-gruppenfoto.jpg public/images/gallery/team-niko.jpg public/images/gallery/team-jasmin.jpg public/images/gallery/team-gabriella.jpg; do sips -g pixelWidth -g pixelHeight "$image"; done
+for image in public/images/gallery/team-sven-niko.jpg public/images/gallery/team-gruppenfoto.jpg public/images/gallery/team-niko.jpg public/images/gallery/team-jasmin.jpg public/images/gallery/team-gabriella.jpg public/images/eigenmarken/pralle-kirsche.png public/images/eigenmarken/schwarzer-teufel.png public/images/eigenmarken/caramello.png public/images/logo-trinkgut-jammers.png; do sips -g pixelWidth -g pixelHeight "$image"; shasum -a 256 "$image"; done
 ```
 
-Expected: all five tracked files exist and report the exact dimensions above; no external download or new rights decision is needed for these employee images.
+Expected: all nine tracked build inputs exist with the exact dimensions and SHA-256 values above; no external download or new rights decision is needed.
+
+All four current `public/images/Preislisten/*.png` files expose Canva XMP identifiers. Confirm that fact read-only now, but do not move them until the privacy regression is RED in Step 3. The implementation must then move them with `git mv` to `assets/source/preislisten/`, update `assets/INVENTAR.md`, and assert no `public/images/Preislisten` file remains. Preserve these exact private evidence hashes for the two used records:
+
+- inventory `1.png`: `e75ce8cc5df983417bc8953226ff6a13de7b8f5e311d6e1295480327c2199336` (`1414 × 2000`, as of `06.03.2026`);
+- price `2.png`: `6e14d9f95450550e1fb69861bccf4ba96d66f04d54c8ed3f14f04145ca944bee` (`1414 × 2000`, as of `01.01.2026`).
+
+The Canva-named candidates remain a later review queue and are not downloaded or referenced by runtime code. Continue to exclude customers, children, winners, unverified third parties, and extra young-looking portraits from this pass.
 
 - [ ] **Step 2: Write failing output and editorial-contract tests**
 
 Create `lib/cinematic/__tests__/assets.test.ts`:
 
 ```ts
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { createHash } from "node:crypto";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 import { describe, expect, test } from "vitest";
 import nextConfig from "../../../next.config";
 
 const output = resolve(process.cwd(), "public/images/home/cinematic");
 const expected = [
-  ["hero-team.webp", "webp", 915],
-  ["team-group.webp", "webp", 950],
-  ["team-niko.webp", "webp", 745],
-  ["team-jasmin.webp", "webp", 756],
-  ["team-gabriella.webp", "webp", 762],
-  ["poster-pralle-kirsche.webp", "webp", 1054],
-  ["poster-schwarzer-teufel.webp", "webp", 1054],
-  ["poster-caramello.webp", "webp", 1054],
-  ["og-home.jpg", "jpeg", 1200],
+  { name: "hero-team.webp", format: "webp", width: 915, height: 803, maxBytes: 100_000 },
+  { name: "team-group.webp", format: "webp", width: 950, height: 840, maxBytes: 100_000 },
+  { name: "team-niko.webp", format: "webp", width: 745, height: 727, maxBytes: 60_000 },
+  { name: "team-jasmin.webp", format: "webp", width: 756, height: 718, maxBytes: 90_000 },
+  { name: "team-gabriella.webp", format: "webp", width: 762, height: 711, maxBytes: 70_000 },
+  { name: "poster-pralle-kirsche.webp", format: "webp", width: 1054, height: 1493, maxBytes: 230_000 },
+  { name: "poster-schwarzer-teufel.webp", format: "webp", width: 1054, height: 1492, maxBytes: 230_000 },
+  { name: "poster-caramello.webp", format: "webp", width: 1054, height: 1493, maxBytes: 230_000 },
+  { name: "og-home.jpg", format: "jpeg", width: 1200, height: 630, maxBytes: 160_000 },
 ] as const;
 
+const sha256 = (file: string) => createHash("sha256").update(readFileSync(file)).digest("hex");
+
 describe("cinematic image pipeline", () => {
-  test.each(expected)("creates %s as bounded %s", async (name, format, maxWidth) => {
+  test("pins the deterministic Sharp toolchain", () => {
+    const packageJson = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
+    expect(packageJson.dependencies.sharp).toBe("0.34.5");
+  });
+
+  test.each(expected)("creates exact, stripped $name", async ({ name, format, width, height, maxBytes }) => {
     const file = resolve(output, name);
     expect(existsSync(file)).toBe(true);
     const metadata = await sharp(file).metadata();
-    expect(metadata.format).toBe(format);
-    expect(metadata.width).toBeLessThanOrEqual(maxWidth);
-    expect(metadata.width).toBeGreaterThanOrEqual(name === "og-home.jpg" ? 1200 : 700);
-    expect(readFileSync(file).byteLength).toBeLessThan(550_000);
+    expect(metadata).toMatchObject({ format, width, height });
+    expect(metadata.exif).toBeUndefined();
+    expect(metadata.xmp).toBeUndefined();
+    expect(metadata.icc).toBeUndefined();
+    expect(readFileSync(file).byteLength).toBeLessThan(maxBytes);
   });
 
-  test("negotiates AVIF/WebP and offers honest responsive candidates", () => {
+  test("contains only the exact output allowlist", () => {
+    expect(readdirSync(output).sort()).toEqual(expected.map(({ name }) => name).sort());
+  });
+
+  test("uses a valid ordered Next 16 candidate partition", () => {
     expect(nextConfig.images?.formats).toEqual(["image/avif", "image/webp"]);
-    expect(nextConfig.images?.deviceSizes).toEqual([360, 390, 768, 1024, 1440, 1920, 2560]);
-    expect(nextConfig.images?.imageSizes).toContain(512);
+    expect(nextConfig.images?.deviceSizes).toEqual([640, 768, 1024, 1280, 1440, 1920, 2560]);
+    expect(nextConfig.images?.imageSizes).toEqual([32, 48, 64, 96, 128, 256, 360, 390, 512]);
+    expect(Math.max(...nextConfig.images!.imageSizes!)).toBeLessThan(Math.min(...nextConfig.images!.deviceSizes!));
+  });
+
+  test("keeps Canva evidence private and source-bound", () => {
+    expect(existsSync(resolve("public/images/Preislisten"))).toBe(false);
+    expect(readdirSync(resolve("assets/source/preislisten")).sort()).toEqual(["1.png", "2.png", "3.png", "4.png"]);
+    expect(sha256(resolve("assets/source/preislisten/1.png"))).toBe("e75ce8cc5df983417bc8953226ff6a13de7b8f5e311d6e1295480327c2199336");
+    expect(sha256(resolve("assets/source/preislisten/2.png"))).toBe("6e14d9f95450550e1fb69861bccf4ba96d66f04d54c8ed3f14f04145ca944bee");
+    expect(sha256(resolve("assets/source/preislisten/3.png"))).toBe("c623c88575d0e4f0c5fd11740e33967632720bc80ab1e9655629ed47dce10ffb");
+    expect(sha256(resolve("assets/source/preislisten/4.png"))).toBe("9311dcdaba18705460faf12f43144fb5b2a55b3b2e079167cb4a912aa40cfdf2");
+  });
+
+  test("rebuilds byte-identically in a clean temp target and removes stale output", () => {
+    const temp = mkdtempSync(join(tmpdir(), "jammers-cinematic-"));
+    try {
+      writeFileSync(join(temp, "stale.txt"), "must disappear");
+      const env = { ...process.env, CINEMATIC_ASSET_OUTPUT_DIR: temp };
+      execFileSync(process.execPath, ["scripts/build-cinematic-assets.mjs"], { env });
+      const first = Object.fromEntries(readdirSync(temp).sort().map((name) => [name, sha256(join(temp, name))]));
+      execFileSync(process.execPath, ["scripts/build-cinematic-assets.mjs"], { env });
+      const second = Object.fromEntries(readdirSync(temp).sort().map((name) => [name, sha256(join(temp, name))]));
+      expect(Object.keys(first)).toEqual(expected.map(({ name }) => name).sort());
+      expect(second).toEqual(first);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
   });
 });
 ```
@@ -588,9 +649,11 @@ Create `lib/cinematic/__tests__/editorial.test.ts`:
 ```ts
 import { describe, expect, test } from "vitest";
 import {
+  EDITORIAL_IMAGES,
   INSTAGRAM_SELECTION,
   PEOPLE_STORY,
   RENTAL_HIGHLIGHTS,
+  RENTAL_SOURCES,
   SERVICE_ITEMS,
   SPOTLIGHT_POSTERS,
 } from "@/data/cinematic-editorial";
@@ -605,14 +668,20 @@ describe("cinematic editorial contract", () => {
     expect(SPOTLIGHT_POSTERS.every(({ label, href }) => label === "Originalposter" && href === "/eigenmarke")).toBe(true);
   });
 
-  test("keeps people and Instagram selections local, dated, and release-gated", () => {
+  test("keeps the approved people story local, unique, and release-gated", () => {
     expect(PEOPLE_STORY).toHaveLength(5);
-    expect(INSTAGRAM_SELECTION).toHaveLength(5);
-    for (const item of [...PEOPLE_STORY, ...INSTAGRAM_SELECTION]) {
+    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(5);
+    for (const item of PEOPLE_STORY) {
       expect(item.alt.length).toBeGreaterThan(12);
       expect(item.reviewedAt).toBe("2026-07-14");
       expect(item.releaseBasis).toBe("user-approved-local-employee-pool-2026-07-14");
     }
+    expect(EDITORIAL_IMAGES.jasmin.caption).toBe("Jasmin · Team Jammers");
+    expect(EDITORIAL_IMAGES.gabriella.caption).toBe("Gabriella · Team Jammers");
+  });
+
+  test("does not fabricate a dated Instagram feed", () => {
+    expect(INSTAGRAM_SELECTION).toEqual([]);
   });
 
   test("uses the sourced rental price and inventory facts", () => {
@@ -623,80 +692,101 @@ describe("cinematic editorial contract", () => {
       { name: "Zapfanlage", price: "25 €", stock: 3 },
       { name: "Bierzeltgarnitur", price: "15 €", stock: 13 },
     ]);
+    expect(RENTAL_SOURCES).toEqual({
+      price: { label: "Leihartikel-Preisliste", asOf: "01.01.2026" },
+      inventory: { label: "Bestandsprüfung", asOf: "06.03.2026" },
+    });
+    expect(JSON.stringify(RENTAL_SOURCES)).not.toContain("Preislisten/");
+    expect(JSON.stringify(RENTAL_SOURCES)).not.toContain("href");
   });
 
   test("limits service promises to the three explicitly confirmed services", () => {
-    expect(SERVICE_ITEMS.map(({ title }) => title)).toEqual(["Persönliche Beratung", "Partybedarf", "Vermietung"]);
+    expect(SERVICE_ITEMS).toEqual([
+      { number: "01", title: "Persönliche Beratung", text: "Direkter Kontakt mit dem Team im Markt.", href: "/kontakt" },
+      { number: "02", title: "Partybedarf", text: "Partybedarf bei Trinkgut Jammers in Goch.", href: "/partyplaner" },
+      { number: "03", title: "Vermietung", text: "Mietartikel anfragen und Verfügbarkeit bestätigen lassen.", href: "/vermietung" },
+    ]);
   });
+
+  test("deep-freezes every exported collection and nested record", () => {
+    for (const value of [EDITORIAL_IMAGES, PEOPLE_STORY, INSTAGRAM_SELECTION, SPOTLIGHT_POSTERS, SERVICE_ITEMS, RENTAL_HIGHLIGHTS, RENTAL_SOURCES]) {
+      expect(Object.isFrozen(value)).toBe(true);
+    }
+    expect(Object.values(EDITORIAL_IMAGES).every(Object.isFrozen)).toBe(true);
+    expect([...SPOTLIGHT_POSTERS, ...SERVICE_ITEMS, ...RENTAL_HIGHLIGHTS].every(Object.isFrozen)).toBe(true);
+  });
+});
+```
+
+Before touching the token implementation, extend `lib/cinematic/__tests__/tokens.test.ts`:
+
+```ts
+test("caps every Spotlight frame at the 1054 CSS-pixel poster master", () => {
+  expect(CINEMATIC_TOKENS.layout.posterWidth).toBe(
+    "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
+  );
+  expect(cinematicTokenStyle["--cinematic-layout-poster-width"]).toBe(
+    "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
+  );
 });
 ```
 
 - [ ] **Step 3: Run the tests to prove the red state**
 
-Run: `npm test -- lib/cinematic/__tests__/assets.test.ts lib/cinematic/__tests__/editorial.test.ts`
+Run: `npm test -- lib/cinematic/__tests__/assets.test.ts lib/cinematic/__tests__/editorial.test.ts lib/cinematic/__tests__/tokens.test.ts`
 
-Expected: FAIL because the optimized outputs and `data/cinematic-editorial.ts` do not exist.
+Expected: FAIL because the private evidence move, exact outputs, build/check script, native-width token, and `data/cinematic-editorial.ts` do not exist. Record assertion failures separately from missing-module failures.
 
 - [ ] **Step 4: Implement the deterministic Sharp build**
 
 Create `scripts/build-cinematic-assets.mjs`:
 
-```js
-import { mkdir } from "node:fs/promises";
-import { resolve } from "node:path";
-import sharp from "sharp";
+Start implementation by creating `assets/source/preislisten/`, moving all four PNGs there with `git mv`, and updating the inventory note. Do not decode/re-encode or otherwise alter the private evidence bytes; the hash tests are the audit chain. No public derivative or manifest link is created for them.
 
-const root = process.cwd();
-const output = resolve(root, "public/images/home/cinematic");
-await mkdir(output, { recursive: true });
+Implement these exact invariants rather than the earlier minimal loop:
 
-const jobs = [
-  { input: "public/images/gallery/team-sven-niko.jpg", name: "hero-team.webp", extract: { left: 217, top: 383, width: 915, height: 803 }, grade: true },
-  { input: "public/images/gallery/team-gruppenfoto.jpg", name: "team-group.webp", extract: { left: 200, top: 350, width: 950, height: 840 }, grade: true },
-  { input: "public/images/gallery/team-niko.jpg", name: "team-niko.webp", extract: { left: 146, top: 220, width: 745, height: 727 }, grade: true },
-  { input: "public/images/gallery/team-jasmin.jpg", name: "team-jasmin.webp", extract: { left: 146, top: 231, width: 756, height: 718 }, grade: true },
-  { input: "public/images/gallery/team-gabriella.jpg", name: "team-gabriella.webp", extract: { left: 145, top: 242, width: 762, height: 711 }, grade: true },
-  { input: "public/images/eigenmarken/pralle-kirsche.png", name: "poster-pralle-kirsche.webp", extract: null, grade: false },
-  { input: "public/images/eigenmarken/schwarzer-teufel.png", name: "poster-schwarzer-teufel.webp", extract: null, grade: false },
-  { input: "public/images/eigenmarken/caramello.png", name: "poster-caramello.webp", extract: null, grade: false },
-];
+1. Store the nine source paths, exact dimensions, hashes, crops, and output dimensions in one frozen job table. Read and SHA-256 every input and inspect every source with Sharp **before** creating or replacing any output.
+2. Accept `CINEMATIC_ASSET_OUTPUT_DIR` for temp-test builds; otherwise target `public/images/home/cinematic`. Build all nine outputs into a random same-parent staging directory. Validate its exact allowlist before replacing the destination; remove/rollback staging on error so a failed source/build never leaves a partial public directory. A successful rebuild removes stale outputs.
+3. Apply `rotate()`, the exact approved crop, `toColourspace("srgb")`, the specified team grade, and `.webp({ quality: 82, effort: 6 })`. Never call `withMetadata`; output EXIF/XMP/ICC must be absent. Do not resize/upscale the eight WebPs.
+4. Build `og-home.jpg` as `1200 × 630`: darkened authentic hero crop on the right; approved `logo-trinkgut-jammers.png` on the left; deterministic yellow/red brand geometry; and `GOCH SCHENKT EIN.` as path/rectangle geometry rather than environment-font-dependent SVG `<text>`. Use only approved palette literals in this build script. Visually inspect the result at full size before commit.
+5. Support `--check`: build to temp, compare exact filenames and bytes against the committed destination, delete temp, and exit non-zero on drift without modifying tracked files.
+6. Print `Built 9 Cinematic assets in …` only after a fully successful build. Never reference the duplicate uppercase poster directory.
 
-for (const { input, name, extract, grade } of jobs) {
-  let pipeline = sharp(resolve(root, input)).rotate();
-  if (extract) pipeline = pipeline.extract(extract);
-  if (grade) pipeline = pipeline.modulate({ brightness: 0.82, saturation: 0.92 });
-  await pipeline
-    .webp({ quality: 82, effort: 6 })
-    .toFile(resolve(output, name));
-}
+Pin the already-installed runtime exactly:
 
-const ogPhoto = await sharp(resolve(root, "public/images/gallery/team-sven-niko.jpg"))
-  .rotate()
-  .extract({ left: 217, top: 383, width: 915, height: 803 })
-  .resize({ height: 630, withoutEnlargement: true })
-  .modulate({ brightness: 0.72, saturation: 0.88 })
-  .jpeg({ quality: 84, mozjpeg: true })
-  .toBuffer();
-
-await sharp({ create: { width: 1200, height: 630, channels: 3, background: "#000000" } })
-  .composite([{ input: ogPhoto, left: 482, top: 0 }])
-  .jpeg({ quality: 84, mozjpeg: true })
-  .toFile(resolve(output, "og-home.jpg"));
-
-console.log(`Built ${jobs.length + 1} Cinematic assets in ${output}`);
+```bash
+npm install --save-exact sharp@0.34.5
+npm pkg set scripts.assets:cinematic="node scripts/build-cinematic-assets.mjs"
+npm pkg set scripts.assets:cinematic:check="node scripts/build-cinematic-assets.mjs --check"
 ```
 
-Add script `"assets:cinematic": "node scripts/build-cinematic-assets.mjs"` to `package.json`. In `next.config.ts`, add these keys inside the existing `images` object while preserving every existing route dependency:
+In `next.config.ts`, add these keys inside the existing `images` object while preserving every existing route dependency:
 
 ```ts
 formats: ["image/avif", "image/webp"],
-deviceSizes: [360, 390, 768, 1024, 1440, 1920, 2560],
-imageSizes: [32, 48, 64, 96, 128, 256, 384, 512],
+deviceSizes: [640, 768, 1024, 1280, 1440, 1920, 2560],
+imageSizes: [32, 48, 64, 96, 128, 256, 360, 390, 512],
 ```
 
-Run: `npm run assets:cinematic`
+Update the reviewed layout token to cap the poster at its native width:
 
-Expected: `Built 9 Cinematic assets` and all nine output files exist.
+```ts
+layout: {
+  // existing values unchanged
+  posterWidth: "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
+},
+```
+
+The token regression must already be RED from Step 3. The outer pixel `min()` is mandatory: a rem-only maximum can exceed the 1054 CSS-pixel master when the user increases the root font size. Later image components must additionally cap every employee image to its own static-import intrinsic width and use honest `sizes`; no component may visually upscale a derivative.
+
+Run:
+
+```bash
+npm run assets:cinematic
+npm run assets:cinematic:check
+```
+
+Expected: build prints `Built 9 Cinematic assets`; check exits `0`; the nine exact outputs exist with no stale file and no tracked drift after the check.
 
 - [ ] **Step 5: Create the typed editorial manifest with concrete copy and sourced service facts**
 
@@ -712,7 +802,13 @@ import teamGabriella from "@/public/images/home/cinematic/team-gabriella.webp";
 import teamGroup from "@/public/images/home/cinematic/team-group.webp";
 import teamJasmin from "@/public/images/home/cinematic/team-jasmin.webp";
 import teamNiko from "@/public/images/home/cinematic/team-niko.webp";
-import { SITE_LINKS } from "@/lib/cinematic/site";
+
+function deepFreeze<T extends object>(value: T): T {
+  for (const entry of Object.values(value)) {
+    if (typeof entry === "object" && entry !== null && !Object.isFrozen(entry)) deepFreeze(entry);
+  }
+  return Object.freeze(value);
+}
 
 type EditorialImage = Readonly<{
   id: string;
@@ -723,15 +819,26 @@ type EditorialImage = Readonly<{
   releaseBasis: "user-approved-local-employee-pool-2026-07-14";
 }>;
 
-export const EDITORIAL_IMAGES = Object.freeze({
+export type InstagramSelectionItem = Readonly<{
+  id: string;
+  image: StaticImageData;
+  date: string;
+  dateKind: "captured" | "published";
+  caption: string;
+  href: string;
+  sourceUrl: string;
+  releaseBasis: string;
+}>;
+
+export const EDITORIAL_IMAGES = deepFreeze({
   hero: { id: "hero-team", image: heroTeam, alt: "Sven und Niko von Trinkgut Jammers", caption: "Sven & Niko · vor Ort in Goch", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
   group: { id: "team-group", image: teamGroup, alt: "Mitarbeiterinnen und Mitarbeiter von Trinkgut Jammers", caption: "Team Jammers", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
   niko: { id: "team-niko", image: teamNiko, alt: "Nikolaos Jammers im Markt", caption: "Niko · Inhaber", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
-  jasmin: { id: "team-jasmin", image: teamJasmin, alt: "Jasmin von Trinkgut Jammers", caption: "Jasmin · Beratung im Markt", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
-  gabriella: { id: "team-gabriella", image: teamGabriella, alt: "Gabriella von Trinkgut Jammers", caption: "Gabriella · Verkauf im Markt", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
+  jasmin: { id: "team-jasmin", image: teamJasmin, alt: "Jasmin von Trinkgut Jammers", caption: "Jasmin · Team Jammers", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
+  gabriella: { id: "team-gabriella", image: teamGabriella, alt: "Gabriella von Trinkgut Jammers", caption: "Gabriella · Team Jammers", reviewedAt: "2026-07-14", releaseBasis: "user-approved-local-employee-pool-2026-07-14" },
 } as const satisfies Readonly<Record<string, EditorialImage>>);
 
-export const PEOPLE_STORY = Object.freeze([
+export const PEOPLE_STORY = deepFreeze([
   EDITORIAL_IMAGES.group,
   EDITORIAL_IMAGES.hero,
   EDITORIAL_IMAGES.niko,
@@ -739,23 +846,21 @@ export const PEOPLE_STORY = Object.freeze([
   EDITORIAL_IMAGES.gabriella,
 ] as const);
 
-export const INSTAGRAM_SELECTION = Object.freeze(
-  PEOPLE_STORY.map((item) => ({ ...item, href: SITE_LINKS.instagram })),
-);
+export const INSTAGRAM_SELECTION: readonly InstagramSelectionItem[] = deepFreeze([] as InstagramSelectionItem[]);
 
-export const SPOTLIGHT_POSTERS = Object.freeze([
+export const SPOTLIGHT_POSTERS = deepFreeze([
   { number: "01", name: "Pralle Kirsche", label: "Originalposter", copy: "Rot im Bild. Goch im Rücken.", image: posterPralleKirsche, alt: "Originalposter Pralle Kirsche", href: "/eigenmarke" },
   { number: "02", name: "Schwarzer Teufel", label: "Originalposter", copy: "Schwarz gerahmt. Direkt ins Licht.", image: posterSchwarzerTeufel, alt: "Originalposter Schwarzer Teufel", href: "/eigenmarke" },
   { number: "03", name: "Caramello", label: "Originalposter", copy: "Goldener Auftritt. Teil der Jammers-Serie.", image: posterCaramello, alt: "Originalposter Caramello", href: "/eigenmarke" },
 ] as const);
 
-export const SERVICE_ITEMS = Object.freeze([
+export const SERVICE_ITEMS = deepFreeze([
   { number: "01", title: "Persönliche Beratung", text: "Direkter Kontakt mit dem Team im Markt.", href: "/kontakt" },
   { number: "02", title: "Partybedarf", text: "Partybedarf bei Trinkgut Jammers in Goch.", href: "/partyplaner" },
   { number: "03", title: "Vermietung", text: "Mietartikel anfragen und Verfügbarkeit bestätigen lassen.", href: "/vermietung" },
 ] as const);
 
-export const RENTAL_HIGHLIGHTS = Object.freeze([
+export const RENTAL_HIGHLIGHTS = deepFreeze([
   { name: "Kühlanhänger", price: "150 €", stock: 3 },
   { name: "Kühltruhe", price: "35 €", stock: 4 },
   { name: "Stehtisch", price: "12 €", stock: 20 },
@@ -763,11 +868,13 @@ export const RENTAL_HIGHLIGHTS = Object.freeze([
   { name: "Bierzeltgarnitur", price: "15 €", stock: 13 },
 ] as const);
 
-export const RENTAL_SOURCES = Object.freeze({
-  price: { href: "/images/Preislisten/2.png", asOf: "01.01.2026" },
-  inventory: { href: "/images/Preislisten/1.png", asOf: "06.03.2026" },
+export const RENTAL_SOURCES = deepFreeze({
+  price: { label: "Leihartikel-Preisliste", asOf: "01.01.2026" },
+  inventory: { label: "Bestandsprüfung", asOf: "06.03.2026" },
 } as const);
 ```
+
+Do not add a capture/publication date to a team image unless it is evidenced. `reviewedAt` is a rights/editorial review date only and is never rendered as an Instagram post date. `Niko · Inhaber` is verified; Jasmin and Gabriella remain neutral team labels until separately confirmed. Keep all poster copy visual/character-based and add no taste, quality, price, or availability claim.
 
 - [ ] **Step 6: Verify images, manifest, type safety, and absence of accidental raw sources**
 
@@ -775,16 +882,28 @@ Run:
 
 ```bash
 npm test -- lib/cinematic/__tests__/assets.test.ts lib/cinematic/__tests__/editorial.test.ts
+npm test -- lib/cinematic/__tests__/tokens.test.ts lib/cinematic/__tests__/site.test.ts
+npm run assets:cinematic:check
 npx tsc --noEmit
+npm run lint
+npm run build
+test -d .next
+set +e
+rg -l 'assets/source/preislisten' .next --glob '*.nft.json'
+trace_status=$?
+set -e
+test "$trace_status" -eq 1
 git status --short
 ```
 
-Expected: all asset/editorial assertions PASS; TypeScript exits `0`; `git status` lists only optimized outputs, code, package files, and image configuration—no new raw source directory.
+Expected: all tests, deterministic check, TypeScript, lint, build, and private-trace exclusion PASS; only `rg` exit `1` means no traced match, while exit `2` remains a failure. If Next traces a private evidence file, add the narrow supported `outputFileTracingExcludes` rule and rebuild until the assertion is clean. View every derivative at original size. Confirm crops contain only the approved employee pool; posters are complete/not upscaled; OG has authentic team evidence, logo, claim geometry, and no blank accidental panel. Before staging, `git status` shows the four old `public/images/Preislisten` paths exclusively as deletions and the four new `assets/source/preislisten` paths exclusively as untracked private files; no public replacement, external download, or other raw source appears.
 
 - [ ] **Step 7: Commit the curated pipeline**
 
 ```bash
-git add package.json package-lock.json next.config.ts scripts/build-cinematic-assets.mjs data/cinematic-editorial.ts lib/cinematic/__tests__/assets.test.ts lib/cinematic/__tests__/editorial.test.ts public/images/home/cinematic
+git add package.json package-lock.json next.config.ts lib/cinematic/tokens.ts lib/cinematic/__tests__/tokens.test.ts scripts/build-cinematic-assets.mjs data/cinematic-editorial.ts lib/cinematic/__tests__/assets.test.ts lib/cinematic/__tests__/editorial.test.ts public/images/home/cinematic assets/INVENTAR.md
+git add -u public/images/Preislisten
+git add assets/source/preislisten
 git commit -m "feat: add curated cinematic image pipeline"
 ```
 
@@ -1206,7 +1325,9 @@ export default function ActionsSection(props: { event: HomepageEvent | null; arc
 
 // InstagramSection.tsx (Server)
 export default function InstagramSection(): React.JSX.Element;
-// section aria-labelledby="instagram-title" with exactly five local INSTAGRAM_SELECTION figures, caption, external link.
+// section aria-labelledby="instagram-title"; render dated local figures only when INSTAGRAM_SELECTION is non-empty.
+// In the audited first production pass it is empty, so render an honest profile CTA plus "Neue Einblicke folgen"—no empty grid,
+// duplicated PEOPLE_STORY images, invented post dates, or implication that the local team archive is an Instagram publication.
 
 // LocationFooter.tsx (Server)
 export default function LocationFooter(): React.JSX.Element;
@@ -1352,8 +1473,8 @@ Use token variables for every color/font/spacing/motion declaration and implemen
 | `chrome.module.css`: `.header`, `.headerInner`, `.logo`, `.desktopNav`, `.status`, `.whatsapp`, `.mobileDetails`, `.mobilePanel` | Sticky compact black header, yellow lower rule, max `120rem`; desktop nav at `>=64rem`; native details below; panel is absolute below header rather than fixed over hero; every link/summary `min-block-size: var(--cinematic-spacing-target)`; visible yellow focus outline. |
 | `hero.module.css`: `.hero`, `.grid`, `.lightAxis`, `.copy`, `.kicker`, `.title`, `.lead`, `.actions`, `.primary`, `.secondary`, `.portrait`, `.portraitImage`, `.redGesture`, `.facts` | `min-height: calc(100svh - headerHeight)`; 12-column structural grid; yellow light axis; uppercase three-line display title with `schenkt` yellow; authentic portrait crop; exactly one red circular gesture; facts use three non-overlapping columns at `>=48rem`, two columns at `390px`, and one column at `360px`; primary CTA and portrait are inside the first `844px` at `390px`. |
 | `current.module.css`: `.section`, `.heading`, `.stage`, `.flyer`, `.cover`, `.validity`, `.event`, `.fallback`, `.viewerDialog`, `.viewerFrame` | Black/white editorial cover card, yellow validity band, event card absent without event, fallback occupies the flyer column without a hole; dialog stays within viewport, close button first in tab order, iframe not present while closed. |
-| `editorial.module.css`: `.section`, `.sectionHeading`, `.peopleGrid`, `.figure`, `.image`, `.caption`, `.serviceWall`, `.serviceRow`, `.rentalStrip`, `.actionsStage`, `.archive`, `.instagramGrid`, `.footer`, `.legal` | People mosaic uses asymmetric `7/5` and `5/7` spans desktop and one column mobile; image wrappers never exceed intrinsic display width; service is full-width numbered rows, never a four-card grid; rental facts use a horizontally wrapping definition list; Instagram is 2 columns mobile/5 desktop; footer contains route/NL/legal links without an embed. |
-| `spotlight.module.css`: `.section`, `.intro`, `.railViewport`, `.rail`, `.frame`, `.posterWindow`, `.posterImage`, `.number`, `.posterMeta` | Static HTML starts as a vertical grid. At `>=64rem` the rail becomes `display:flex;width:max-content`; each frame width uses the poster token; full original poster remains visible with `object-fit:contain`; below `64rem`, reduced motion, and `(scripting:none)` force a normal one-column grid and clear transforms. |
+| `editorial.module.css`: `.section`, `.sectionHeading`, `.peopleGrid`, `.figure`, `.image`, `.caption`, `.serviceWall`, `.serviceRow`, `.rentalStrip`, `.actionsStage`, `.archive`, `.instagramGrid`, `.instagramFallback`, `.footer`, `.legal` | People mosaic uses asymmetric `7/5` and `5/7` spans desktop and one column mobile; image wrappers never exceed intrinsic display width; service is full-width numbered rows, never a four-card grid; rental facts use a horizontally wrapping definition list; a non-empty audited Instagram selection is 2 columns mobile/5 desktop, while the initial empty selection renders a deliberate profile-CTA fallback; footer contains route/NL/legal links without an embed. |
+| `spotlight.module.css`: `.section`, `.intro`, `.railViewport`, `.rail`, `.frame`, `.posterWindow`, `.posterImage`, `.number`, `.posterMeta` | Static HTML starts as a vertical grid. At `>=64rem` the rail becomes `display:flex;width:max-content`; each frame width uses the corrected `min(..., 1054px)` poster token and never exceeds the native 1054 CSS pixels even with an enlarged root font; full original poster remains visible with `object-fit:contain` and honest `sizes`; below `64rem`, reduced motion, and `(scripting:none)` force a normal one-column grid and clear transforms. |
 
 Add these exact global fallbacks to the end of `spotlight.module.css`:
 
@@ -1579,6 +1700,17 @@ test("offers exact navigation, contact, route, Instagram, NL, and legal links", 
   for (const href of ["/kontakt", "/impressum", "/datenschutz", "/agb"]) await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
 });
 
+test("renders the audited Instagram fallback without fabricated posts or dates", async ({ page }) => {
+  const section = page.locator('section[aria-labelledby="instagram-title"]');
+  await expect(section.getByText("Neue Einblicke folgen", { exact: true })).toBeVisible();
+  await expect(section.getByRole("link", { name: /Instagram/ })).toHaveAttribute(
+    "href",
+    "https://www.instagram.com/trinkgutjammers_goch/",
+  );
+  await expect(section.locator("figure")).toHaveCount(0);
+  await expect(section.locator("time")).toHaveCount(0);
+});
+
 test("supports a visible keyboard path through skip link, navigation, and CTAs", async ({ page }) => {
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Zum Hauptinhalt" })).toBeFocused();
@@ -1679,7 +1811,7 @@ Expected: all homepage E2E tests and all unit tests PASS; TypeScript/lint exit `
 
 - [ ] **Step 5: Visually inspect all six screenshots at original detail**
 
-Open each file with the workspace image viewer at original resolution. Explicitly verify: authentic/non-stretched faces; hero crop; one red gesture; readable flyer dates; no facts collision; all three complete posters; no small-image upscaling; no empty event hole; dates on archive/Instagram; visible focus; legal/contact finale; no accidental legacy header/footer/floating widgets.
+Open each file with the workspace image viewer at original resolution. Explicitly verify: authentic/non-stretched faces; hero crop; one red gesture; readable flyer dates; no facts collision; all three complete posters; no small-image upscaling; no empty event hole; dates on every rendered archive item and on Instagram items only when an audited selection is non-empty; otherwise the intentional `Neue Einblicke folgen` profile fallback with no figures/times; visible focus; legal/contact finale; no accidental legacy header/footer/floating widgets.
 
 Expected: zero open visual P1/P2 findings. Any finding returns to Step 4 and regenerates all six screenshots.
 
