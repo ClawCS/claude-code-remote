@@ -37,6 +37,12 @@ async function refresh(): Promise<NextResponse> {
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
+  if (request.method !== "GET") {
+    return new NextResponse(null, {
+      status: 405,
+      headers: { ...NO_STORE_HEADERS, Allow: "GET, POST" },
+    });
+  }
   const shouldRefresh = new URL(request.url).searchParams.get("refresh") === "true";
   if (!shouldRefresh) {
     const now = new Date();
