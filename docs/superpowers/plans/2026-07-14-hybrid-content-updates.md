@@ -575,8 +575,10 @@ git commit -m "feat: add gated editorial repository"
 - Modify: `app/api/handzettel/fetch/route.ts`
 
 **Interfaces:**
-- Produces: `HandzettelPage`, `HandzettelCache`, `extractCatalogInfo`, `validateCatalog`, `fetchOfficialCatalog(now, fetchImpl?)`.
+- Produces: `HandzettelPage`, `HandzettelCache`, `extractCatalogInfo`, `extractCatalogManifest`, `validateCatalog`, `fetchOfficialCatalog(now, fetchImpl?)`.
 - Consumes: official store ID `13027`, Werbekreis `3.6`.
+
+**Verified source contract (live audit 2026-07-14):** The `newest` viewer may return `200` without redirect. Its HTML exposes one coherent `catalogId`, `catalogVersion`, `catalogGroupId`, catalog title, and expiry meta value. The authoritative page manifest is `/frontend/mvc/api/catalogs/{catalogId}/v{version}/xml/catalog.xml`; for catalog `1335913` / version `2` it reports `name="KW29 2747 RHEINRUHR"` and `nofpages="10"`. Valid page assets use `/frontend/mvc/api/catalogs/{catalogId}/v{version}/normal/bk_{page}.jpg` and `/thumbnails/bk_{page}.jpg`. The legacy `/pages/{page}/normal`, `/zoom/0`, and single-page PDF HEAD probes are not valid proof and must not be used.
 
 - [ ] **Step 1: Write failing parser and plausibility tests**
 
@@ -632,6 +634,8 @@ describe("official leaflet catalog", () => {
 });
 ```
 
+Before implementation, extend this RED suite with deterministic viewer-HTML and catalog-XML fixtures copied down to the verified fields only. The suite must prove: coherent `catalogId`/version/group/title/expiry extraction; exactly ten pages from `nofpages` and mapping coverage; exact MVC-API normal/thumbnail URL generation; rejection of wrong group, KW, expiry, XML name, mapping, status, or content type; and ISO week-year correctness around December/January. Each injected fetch response must be asserted so an unplanned URL or network call fails the test.
+
 - [ ] **Step 2: Run the tests and verify RED**
 
 Run: `npm test -- lib/__tests__/handzettel-catalog.test.ts`
@@ -640,7 +644,9 @@ Expected: FAIL because the module is absent.
 
 - [ ] **Step 3: Move pure catalog logic and remove the 24-page guess**
 
-Create `lib/handzettel-catalog.ts` from the existing route functions. Import `getPublicationWeekRange` from Task 1; do not duplicate calendar math. `detectPageCount` must return `0` when HTML and HEAD probes cannot prove a page count. `validateCatalog` must require the exact store ID and Werbekreis, target validity range, numeric catalog ID, 1–60 pages, matching page array length, HTTPS viewer/PDF/page URLs, and consecutive page numbers.
+Create `lib/handzettel-catalog.ts` from the existing route functions. Import `getPublicationWeekRange` from Task 1; do not duplicate calendar math. Remove every guessed/default ID, version, validity value, and page count. `extractCatalogInfo` must accept either an exact `/frontend/catalogs/{id}/{version}/` path or one coherent viewer field set and must never default the version to `1`. `extractCatalogManifest` must parse the authoritative XML `name`, `nofpages`, normal/thumbnails detail levels, and mapping coverage. It must return no catalog when the XML is malformed, the mapping does not cover exactly `1..nofpages`, or required detail levels are absent.
+
+`validateCatalog` must require the exact store ID and Werbekreis, `status: "ok"`, target validity range, numeric catalog ID/version, correct ISO week and ISO week-year, a valid `fetchedAt`, 1–60 pages, matching page array length, exact `werbung.trinkgut.de` HTTPS hosts, URLs whose embedded catalog ID/version/page numbers match the object, and consecutive page numbers. It must reject source metadata whose `catalogGroupId`, title KW, expiry date, XML name, or page manifest does not prove the expected Berlin publication range.
 
 ```ts
 export const HANDZETTEL_STORE_ID = "13027" as const;
@@ -673,6 +679,7 @@ export function validateCatalog(
   value: HandzettelCache,
   expectedRange: Readonly<{ validFrom: string; validTo: string }>,
 ): void {
+  if (value.status !== "ok") throw new TypeError("invalid status");
   if (!/^\d{5,8}$/.test(value.catalogId)) throw new TypeError("invalid catalogId");
   if (!/^\d{1,2}$/.test(value.catalogVersion)) throw new TypeError("invalid catalogVersion");
   if (value.storeId !== HANDZETTEL_STORE_ID) throw new TypeError("invalid storeId");
@@ -680,13 +687,17 @@ export function validateCatalog(
   if (value.validFrom !== expectedRange.validFrom || value.validTo !== expectedRange.validTo) {
     throw new TypeError("invalid validity range");
   }
-  if (!value.viewerUrl.startsWith("https://werbung.trinkgut.de/")) throw new TypeError("invalid viewerUrl");
-  if (value.pageCount < 1 || value.pageCount > 60) throw new TypeError("invalid pageCount");
+  if (!Number.isInteger(value.kw) || !Number.isInteger(value.year)) throw new TypeError("invalid week identity");
+  if (Number.isNaN(Date.parse(value.fetchedAt))) throw new TypeError("invalid fetchedAt");
+  if (value.viewerUrl !== "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest") throw new TypeError("invalid viewerUrl");
+  if (!Number.isInteger(value.pageCount) || value.pageCount < 1 || value.pageCount > 60) throw new TypeError("invalid pageCount");
   if (value.pages.length !== value.pageCount) throw new TypeError("page count mismatch");
-  if (!value.pdfUrl.startsWith("https://werbung.trinkgut.de/")) throw new TypeError("invalid pdfUrl");
+  const expectedPdfUrl = `https://werbung.trinkgut.de/frontend/catalogs/${value.catalogId}/${value.catalogVersion}/pdf/complete.pdf`;
+  if (value.pdfUrl !== expectedPdfUrl) throw new TypeError("invalid pdfUrl");
   for (const page of value.pages) {
-    if (!page.imageUrl.startsWith("https://werbung.trinkgut.de/")) throw new TypeError("invalid page imageUrl");
-    if (!page.thumbnailUrl.startsWith("https://werbung.trinkgut.de/")) throw new TypeError("invalid thumbnailUrl");
+    const assetBase = `https://werbung.trinkgut.de/frontend/mvc/api/catalogs/${value.catalogId}/v${value.catalogVersion}`;
+    if (page.imageUrl !== `${assetBase}/normal/bk_${page.number}.jpg`) throw new TypeError("invalid page imageUrl");
+    if (page.thumbnailUrl !== `${assetBase}/thumbnails/bk_${page.number}.jpg`) throw new TypeError("invalid thumbnailUrl");
   }
   const expectedNumbers = Array.from({ length: value.pageCount }, (_, index) => index + 1);
   if (value.pages.some((page, index) => page.number !== expectedNumbers[index])) {
@@ -700,17 +711,19 @@ export async function fetchOfficialCatalog(
 ): Promise<HandzettelCache>;
 ```
 
-Move the existing ISO-week helper, redirect parsing, HTML catalog extraction, HEAD page probes, and official URL builders into this module. `fetchOfficialCatalog(now, fetchImpl)` must call `getPublicationWeekRange(now)`, build every page record only after the page count is proven, call `validateCatalog(result, targetRange)`, and return `status: "ok"`. It must throw on a source or validation failure; only the route may decide whether a still-current cache is safe to serve. The injected `fetchImpl` is mandatory in tests so redirects, HTML, HEAD probes, and failures require no network.
+`fetchOfficialCatalog(now, fetchImpl)` must call `getPublicationWeekRange(now)`, fetch the viewer, require coherent viewer metadata for group `13027`, verify the expected KW and expiry, fetch and parse the authoritative XML manifest, then build the exact MVC-API normal/thumbnail URLs. It must prove every generated page with an injected GET/HEAD response whose status is successful and whose content type is `image/jpeg`; the complete PDF must likewise prove a successful `application/pdf` response. Build page records only after these checks, call `validateCatalog(result, targetRange)`, and return `status: "ok"`. It must throw on every source or validation failure. The injected `fetchImpl` is mandatory in tests so viewer HTML, XML, asset proofs, PDF proofs, and failures require no live network. Do not use canary/legacy URL patterns or individual-page PDF HEAD probes.
 
 - [ ] **Step 4: Reduce the route to cache/auth orchestration**
 
-`app/api/handzettel/fetch/route.ts` imports `fetchOfficialCatalog` and `HandzettelCache`. Keep the current timing-safe bearer guard. On fetch failure, return the last cache only if `validFrom <= berlinDateKey(now) <= validTo`; otherwise return a truthful fallback object with `pageCount: 0`, `pages: []`, and `status: "fallback"`. The response must carry `Cache-Control: no-store` so an expired current offer cannot remain publicly stale after the next Berlin midnight.
+`app/api/handzettel/fetch/route.ts` imports `fetchOfficialCatalog`, `validateCatalog`, and `HandzettelCache`. Keep the timing-safe bearer guard. Public `GET` without `refresh=true` is strictly read-only: it may parse and fully validate the cache for the target range but must never call the official network or write the filesystem. A missing, malformed, invalid, or non-current cache yields a truthful, non-persisted fallback response with `pageCount: 0`, `pages: []`, and `status: "fallback"`.
+
+Only an authenticated `GET ?refresh=true` or authenticated `POST` may call `fetchOfficialCatalog`. A successful refresh writes only a validated `status: "ok"` cache, atomically via same-directory temporary file and rename. A failed refresh must return `502`, must not overwrite the cache, and must never report a stale/current cache as a successful refresh. The public read path may continue to serve an independently validated current cache after a failed refresh. Every response carries `Cache-Control: no-store` so an expired offer cannot remain publicly stale after the next Berlin midnight.
 
 - [ ] **Step 5: Run focused and route type checks**
 
 Run: `npm test -- lib/__tests__/handzettel-catalog.test.ts`
 
-Expected: PASS, 3 tests.
+Expected: PASS for the three baseline tests plus fixture-driven coverage proving the real viewer/XML contract, exact ten-page MVC asset mapping, wrong group/KW/expiry/XML-name rejection, malformed or inconsistent mapping rejection, content-type/status rejection, and ISO week-year behavior.
 
 Run: `npx tsc --noEmit`
 
@@ -753,7 +766,7 @@ describe("homepage content", () => {
         viewerUrl: "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest",
         pdfUrl: "https://werbung.trinkgut.de/frontend/catalogs/1234567/1/pdf/complete.pdf",
         pageCount: 8,
-        coverUrl: "https://werbung.trinkgut.de/frontend/catalogs/1234567/1/pages/1/normal",
+        coverUrl: "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1234567/v1/normal/bk_1.jpg",
         sourceUrl: "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest"
       },
       campaigns: [{
