@@ -1,33 +1,22 @@
 import type { Metadata } from "next";
 
+const description =
+  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgensstraße 20 in Goch. Ma–za 08:00–20:00 uur.";
+
 export const metadata: Metadata = {
-  title: { absolute: "Jammers Getränkemarkt Goch — Bespaar tot 25% op dranken | 3 km van de grens" },
-  description:
-    "Duitse dranken tot 25% goedkoper dan in Nederland! 7.000+ producten: bier, wijn, sterke drank en meer. Slechts 3 km over de grens in Goch. Gratis parkeren, wij spreken Nederlands.",
-  keywords: [
-    "goedkoop bier Duitsland",
-    "dranken kopen Goch",
-    "grenswinkel Goch",
-    "Duitse dranken grens",
-    "bier kopen Duitsland",
-    "wijn kopen Duitsland",
-    "sterke drank Duitsland",
-    "grenshandel Nederland Duitsland",
-    "trinkgut Goch",
-    "Jammers Goch",
-    "drankenmarkt grens",
-    "goedkoop whisky Duitsland",
-    "Getränkemarkt Goch",
-  ],
+  title: {
+    absolute: "Informatie voor Nederlandse klanten | Trinkgut Jammers",
+  },
+  description,
   openGraph: {
-    title: "Jammers Goch — Bespaar tot 25% op dranken over de grens!",
-    description:
-      "7.000+ producten, Duitse prijzen. Bier, wijn, sterke drank tot 25% goedkoper. Slechts 3 km van de grens. Gratis parkeren!",
+    title: "Informatie voor Nederlandse klanten | Trinkgut Jammers",
+    description,
     locale: "nl_NL",
     type: "website",
-    siteName: "Jammers Getränkemarkt Goch",
+    siteName: "Trinkgut Jammers",
   },
   alternates: {
+    canonical: "/nl",
     languages: {
       de: "/",
       nl: "/nl",
@@ -40,9 +29,5 @@ export const metadata: Metadata = {
 };
 
 export default function NlLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div lang="nl">
-      {children}
-    </div>
-  );
+  return <div lang="nl">{children}</div>;
 }
