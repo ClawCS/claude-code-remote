@@ -1,0 +1,15 @@
+[
+  {
+    "id": "strikerball-2026-07-24",
+    "kind": "event",
+    "title": "Striker Ball Challenge",
+    "summary": "Dein Schuss. Dein Gewinn. Am 24. Juli bei Trinkgut Jammers.",
+    "validFrom": "2026-07-14",
+    "validTo": "2026-07-24",
+    "image": "/images/events/strikerball.png",
+    "href": "https://www.trinkgut.de/strikerball",
+    "source": "trinkgut-official",
+    "sourceUrl": "https://www.trinkgut.de/strikerball",
+    "rightsStatus": "official"
+  }
+]
