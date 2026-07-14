@@ -1,0 +1,27 @@
+.home {
+  min-height: 100%;
+  isolation: isolate;
+  background: var(--cinematic-color-black);
+  color: var(--cinematic-color-white);
+  font-family: var(--cinematic-typography-family-sans);
+}
+
+.skipLink {
+  position: fixed;
+  inset-block-start: var(--cinematic-spacing-md);
+  inset-inline-start: var(--cinematic-spacing-md);
+  z-index: 1000;
+  display: flex;
+  min-width: var(--cinematic-spacing-target);
+  min-height: var(--cinematic-spacing-target);
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--cinematic-spacing-md);
+  color: var(--cinematic-color-black);
+  background: var(--cinematic-color-yellow);
+  transform: translateY(calc(-100% - var(--cinematic-spacing-xl)));
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
+}

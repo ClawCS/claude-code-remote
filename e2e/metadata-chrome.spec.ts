@@ -66,6 +66,7 @@ type ScriptObservation = {
   bodies: Map<string, string>;
   requestedUrls: Set<string>;
   runtimeIssues: string[];
+  waitForIdle: () => Promise<void>;
 };
 
 function localUrl(baseURL: string | undefined, pathname: string): string {
@@ -144,12 +145,16 @@ async function observeScripts(
     void pending.finally(() => pendingBodies.delete(pending));
   });
 
+  const waitForIdle = async () => {
+    await page.waitForLoadState("networkidle");
+    await expect.poll(() => pendingBodies.size, { timeout: 10_000 }).toBe(0);
+  };
+
   const response = await page.goto(url, { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
-  await page.waitForLoadState("networkidle");
-  await expect.poll(() => pendingBodies.size, { timeout: 10_000 }).toBe(0);
+  await waitForIdle();
 
-  return { page, bodies, requestedUrls, runtimeIssues };
+  return { page, bodies, requestedUrls, runtimeIssues, waitForIdle };
 }
 
 async function expectAlternate(
@@ -224,8 +229,171 @@ test("[product-contract] binds exact homepage metadata and the local OG JPEG", a
   );
   expect(localOgResponse.status()).toBe(200);
   expect(localOgResponse.headers()["content-type"]).toMatch(/^image\/jpeg\b/i);
-  await expect(page.locator("[data-cinematic-handoff]")).toHaveCount(1);
+  await expect(page.locator("[data-cinematic-root]")).toHaveCount(1);
+  await expect(page.locator("[data-cinematic-handoff]")).toHaveCount(0);
   expect(runtimeIssues).toEqual([]);
+});
+
+test("[product-contract] renders one final landmark tree and ordered server sections", async ({
+  page,
+}) => {
+  const runtimeIssues = collectRuntimeIssues(page);
+  const response = await page.goto("/", { waitUntil: "domcontentloaded" });
+  expect(response?.status()).toBe(200);
+
+  await expect(page.locator("[data-cinematic-root]")).toHaveCount(1);
+  await expect(page.getByRole("banner")).toHaveCount(1);
+  await expect(page.locator("main#main-content")).toHaveCount(1);
+  await expect(page.getByRole("contentinfo")).toHaveCount(1);
+  await expect(page.locator('[id="main-content"]')).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Goch schenkt ein." }),
+  ).toHaveCount(1);
+  await expect(page.locator("main header, main footer")).toHaveCount(0);
+
+  const sectionOrder = await page
+    .locator("main#main-content > section")
+    .evaluateAll((sections) =>
+      sections.map((section) => {
+        if (section.getAttribute("data-hero") === "cinematic") return "hero";
+        if (section.id) return section.id;
+        if (section.getAttribute("aria-labelledby") === "instagram-title") {
+          return "instagram";
+        }
+        return "unknown";
+      }),
+    );
+  expect(sectionOrder).toEqual([
+    "hero",
+    "aktuell",
+    "menschen",
+    "service",
+    "eigenmarken",
+    "aktionen",
+    "instagram",
+  ]);
+
+  await expect(page.getByText("Persönliche Beratung, Partybedarf und Vermietung vor Ort.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Angebote der Woche", { exact: true })).toBeVisible();
+  await expect(page.getByText("Gültig 13.–18.07.2026", { exact: true })).toBeVisible();
+  await expect(page.getByText("10 Seiten", { exact: true })).toBeVisible();
+  await expect(
+    page
+      .locator("#aktuell")
+      .getByText("Aktionszeitraum · 14.–24.07.2026", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator("#aktionen")
+      .getByText("Aktionszeitraum · 14.–24.07.2026", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator("#aktuell")
+      .getByText(
+        "Dein Schuss. Dein Gewinn. Am 24. Juli bei Trinkgut Jammers.",
+        { exact: true },
+      ),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator("#aktionen")
+      .getByText(
+        "Dein Schuss. Dein Gewinn. Am 24. Juli bei Trinkgut Jammers.",
+        { exact: true },
+      ),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Menschen hinter Jammers" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Deine Party. Unser Service." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Drei Originale im Licht." })).toBeVisible();
+  await expect(page.locator("#menschen figure")).toHaveCount(5);
+  await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
+  await expect(page.locator("#eigenmarken figcaption")).toHaveText([
+    /Pralle Kirsche/,
+    /Schwarzer Teufel/,
+    /Caramello/,
+  ]);
+  await expect(page.getByText("Neue Einblicke folgen", { exact: true })).toBeVisible();
+  await expect(page.locator("footer#kontakt")).toContainText("Jurgensstraße 20");
+  await expect(page.locator("footer#kontakt")).toContainText("Mo–Sa 08:00–20:00 Uhr");
+  await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
+
+  const fragments = page.locator('a[href^="#"]:visible');
+  for (let index = 0; index < (await fragments.count()); index += 1) {
+    const href = await fragments.nth(index).getAttribute("href");
+    expect(href).toMatch(/^#[A-Za-z][\w-]*$/);
+    await expect(page.locator(`[id="${href!.slice(1)}"]`)).toHaveCount(1);
+  }
+  expect(runtimeIssues).toEqual([]);
+});
+
+test("[product-contract] keeps the complete active homepage server-readable without JavaScript", async ({
+  browser,
+  baseURL,
+}) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: { width: 390, height: 844 },
+  });
+
+  try {
+    const page = await context.newPage();
+    const response = await page.goto(localUrl(baseURL, "/"), {
+      waitUntil: "domcontentloaded",
+    });
+    expect(response?.status()).toBe(200);
+
+    await expect(page.locator("[data-cinematic-root]")).toHaveCount(1);
+    await expect(page.getByRole("banner")).toHaveCount(1);
+    await expect(page.locator("main#main-content")).toHaveCount(1);
+    await expect(page.getByRole("contentinfo")).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: "Goch schenkt ein." })).toHaveCount(1);
+
+    const sectionOrder = await page
+      .locator("main#main-content > section")
+      .evaluateAll((sections) =>
+        sections.map((section) =>
+          section.getAttribute("data-hero") === "cinematic"
+            ? "hero"
+            : section.id ||
+              (section.getAttribute("aria-labelledby") === "instagram-title"
+                ? "instagram"
+                : "unknown"),
+        ),
+      );
+    expect(sectionOrder).toEqual([
+      "hero",
+      "aktuell",
+      "menschen",
+      "service",
+      "eigenmarken",
+      "aktionen",
+      "instagram",
+    ]);
+
+    for (const exactText of [
+      "Persönliche Beratung, Partybedarf und Vermietung vor Ort.",
+      "Angebote der Woche",
+      "Gültig 13.–18.07.2026",
+      "10 Seiten",
+      "Menschen hinter Jammers",
+      "Deine Party. Unser Service.",
+      "Pralle Kirsche",
+      "Schwarzer Teufel",
+      "Caramello",
+      "Neue Einblicke folgen",
+      "Jurgensstraße 20",
+      "Mo–Sa 08:00–20:00 Uhr",
+    ]) {
+      await expect(page.getByText(exactText, { exact: true }).first()).toBeVisible();
+    }
+    await expect(page.locator("#menschen figure")).toHaveCount(5);
+    await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
+    await expect(page.locator("iframe")).toHaveCount(0);
+    await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
 });
 
 test("[product-contract] renders one exact serializer-backed LocalBusiness script", async ({
@@ -354,14 +522,27 @@ test("[product-contract] loads all six legacy chunks off-root and none on root",
         rootObservation.page.getByRole("button", { name: "Merkzettel" }),
       ).toHaveCount(0);
       await expect(
-        rootObservation.page.getByRole("link", {
-          name: "Per WhatsApp schreiben",
-        }),
-      ).toHaveCount(0);
-      await expect(
         rootObservation.page.getByRole("button", { name: "Chat öffnen" }),
       ).toHaveCount(0);
       await expect(rootObservation.page.getByRole("dialog")).toHaveCount(0);
+
+      const rootInternalLinks = rootObservation.page.locator(
+        'a[href^="/"]:visible',
+      );
+      for (
+        let index = 0;
+        index < (await rootInternalLinks.count());
+        index += 1
+      ) {
+        await rootInternalLinks.nth(index).scrollIntoViewIfNeeded();
+        await rootObservation.page.evaluate(
+          () =>
+            new Promise<void>((resolve) =>
+              requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+            ),
+        );
+      }
+      await rootObservation.waitForIdle();
 
       for (const [moduleName, sentinel] of Object.entries(LEGACY_SENTINELS)) {
         expect(

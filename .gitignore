@@ -49,6 +49,7 @@ next-env.d.ts
 # Laufzeitdaten & Build-Artefakte (werden zur Laufzeit/beim Build erzeugt — nicht versionieren, verhindert Merge-Konflikte)
 /data/community.json
 /data/handzettel-cache.json
+/data/.handzettel-cache.*
 /public/handzettel/manifest.json
 
 # Local agent execution ledger and review packages

@@ -1,0 +1,67 @@
+{
+  "catalogId": "1335913",
+  "catalogVersion": "2",
+  "storeId": "13027",
+  "werbekreis": "3.6",
+  "kw": 29,
+  "year": 2026,
+  "validFrom": "2026-07-13",
+  "validTo": "2026-07-18",
+  "fetchedAt": "2026-07-14T10:00:00.000Z",
+  "viewerUrl": "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest",
+  "pdfUrl": "https://werbung.trinkgut.de/frontend/catalogs/1335913/2/pdf/complete.pdf",
+  "pageCount": 10,
+  "pages": [
+    {
+      "number": 1,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_1.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_1.jpg"
+    },
+    {
+      "number": 2,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_2.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_2.jpg"
+    },
+    {
+      "number": 3,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_3.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_3.jpg"
+    },
+    {
+      "number": 4,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_4.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_4.jpg"
+    },
+    {
+      "number": 5,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_5.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_5.jpg"
+    },
+    {
+      "number": 6,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_6.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_6.jpg"
+    },
+    {
+      "number": 7,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_7.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_7.jpg"
+    },
+    {
+      "number": 8,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_8.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_8.jpg"
+    },
+    {
+      "number": 9,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_9.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_9.jpg"
+    },
+    {
+      "number": 10,
+      "imageUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/normal/bk_10.jpg",
+      "thumbnailUrl": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2/thumbnails/bk_10.jpg"
+    }
+  ],
+  "status": "ok"
+}

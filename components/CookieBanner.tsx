@@ -35,7 +35,11 @@ export default function CookieBanner() {
           <p className="text-xs text-muted leading-relaxed">
             Diese Website verwendet technisch notwendige Cookies für die Grundfunktionalität.
             Weitere Informationen findest du in unserer{" "}
-            <Link href="/datenschutz" className="text-primary hover:underline">
+            <Link
+              href="/datenschutz"
+              prefetch={false}
+              className="text-primary hover:underline"
+            >
               Datenschutzerklärung
             </Link>.
           </p>
