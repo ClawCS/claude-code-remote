@@ -745,7 +745,9 @@ git commit -m "refactor: validate official leaflet catalog"
 
 **Interfaces:**
 - Produces: `HomepageContent`, `HomepageFlyer`, `HomepageEvent`, `HomepageArchiveItem`, `getHomepageContent(now?: Date): Promise<HomepageContent>`.
-- Consumes: validated `data/handzettel-cache.json`, approved campaigns/archive, schedule gate.
+- Consumes: Task 3 `loadValidatedHandzettelCache(now)`, approved campaigns/archive loaders, schedule gate.
+
+**Integration contract:** The cache file is ignored and may not exist on first start. Never cast JSON directly to a flyer/cache type and never persist or consume a fallback as a catalog. Map a validated `HandzettelCache` through one explicit adapter; its cover is exactly `cache.pages[0].imageUrl`, not a reconstructed or thumbnail URL. Load failures are isolated per source so a missing/bad flyer yields no flyer, bad campaigns yield no event, and bad archive yields an empty archive without taking down otherwise valid homepage content.
 
 - [ ] **Step 1: Write failing aggregation tests**
 
@@ -834,6 +836,8 @@ describe("homepage content", () => {
 });
 ```
 
+Extend the RED suite before implementation to cover the production boundaries the three baseline examples do not prove: exact cache-to-flyer mapping with the first `normal/bk_1.jpg` cover; active-end and next-Berlin-midnight expiry; a Sunday-preloaded Monday flyer hidden until Monday; exact `generatedAt`; deterministic event ranking; scheduled/expired/review-required/giveaway exclusion; fallback text even when an event exists; invalid/future archive filtering plus deterministic four-item limit; independently rejected unsafe campaign/archive URLs; isolated loader failures; and the current-content route's `force-dynamic`/HTTP 200/`Cache-Control: no-store` contract.
+
 - [ ] **Step 2: Run the test and verify RED**
 
 Run: `npm test -- lib/__tests__/homepage-content.test.ts`
@@ -885,6 +889,14 @@ export type HomepageContent = Readonly<{
 
 Implement `aggregateHomepageContent` as a pure helper for tests and `getHomepageContent(now = new Date())` as the filesystem-backed loader. The flyer is current only when `validFrom <= berlinDateKey(now) <= validTo`. For the singular `HomepageEvent` slot, filter to `kind === "event"`, require `isEditorialPublishable`, then sort by explicit source rank (`trinkgut-official`, `local`, `canva`, `instagram`), `validFrom`, and `id`. A giveaway can only appear in the separately typed archive. Limit archive to four parser-approved items sorted newest first. Set `fallbackMessage` whenever `flyer` is null, regardless of whether an event exists.
 
+Add an explicit validated-cache adapter that maps `id` as `catalog-{storeId}-{kw}-{year}`, title as `Angebote der Woche`, validity/viewer/PDF/page count directly from the cache, `coverUrl` from `cache.pages[0].imageUrl`, and `sourceUrl` from the exact viewer URL. Never construct a legacy page path.
+
+Event selection order is source rank ascending (`trinkgut-official: 0`, `local: 1`, `canva: 2`, `instagram: 3`), then `validFrom` descending, then `id` ascending. Before output, `href` must be safe root-relative (not protocol-relative) or HTTPS; `image` must be a safe root-relative asset path or HTTPS. The same image gate applies to archive entries.
+
+Archive entries additionally require a real calendar-valid `YYYY-MM-DD` whose date is not after `berlinDateKey(now)`; sort `date` descending then `id` ascending and only then limit to four. Giveaway campaigns never auto-flow into archive.
+
+Implement the production loader through dependency-injected/testable source functions (a small factory is acceptable) while preserving the exact public `getHomepageContent(now = new Date())` signature. Settle flyer, campaigns, and archive independently; a rejection in one source must not erase successful data from another. `generatedAt` is exactly `now.toISOString()`.
+
 - [ ] **Step 4: Add the read-only current-content route**
 
 ```ts
@@ -904,7 +916,7 @@ export async function GET() {
 
 Run: `npm test -- lib/__tests__/homepage-content.test.ts`
 
-Expected: PASS, 3 tests.
+Expected: PASS for the three baseline tests plus all cache-adapter, Berlin-boundary, ranking, URL-safety, archive, loader-isolation, and no-store route tests listed above.
 
 Run: `npx tsc --noEmit`
 
