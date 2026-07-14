@@ -8,6 +8,7 @@ import CurrentSection from "./CurrentSection";
 import HeroSection from "./HeroSection";
 import InstagramSection from "./InstagramSection";
 import LocationFooter from "./LocationFooter";
+import MotionIsland from "./MotionIsland";
 import PeopleSection from "./PeopleSection";
 import ServiceSection from "./ServiceSection";
 import SpotlightSection from "./SpotlightSection";
@@ -48,6 +49,7 @@ export default function CinematicHome({
         <InstagramSection />
       </main>
       <LocationFooter />
+      <MotionIsland />
     </div>
   );
 }

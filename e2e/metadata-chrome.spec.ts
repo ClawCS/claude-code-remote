@@ -252,7 +252,9 @@ test("[product-contract] renders one final landmark tree and ordered server sect
   await expect(page.locator("main header, main footer")).toHaveCount(0);
 
   const sectionOrder = await page
-    .locator("main#main-content > section")
+    .locator(
+      "main#main-content > section, main#main-content > .pin-spacer > section",
+    )
     .evaluateAll((sections) =>
       sections.map((section) => {
         if (section.getAttribute("data-hero") === "cinematic") return "hero";
