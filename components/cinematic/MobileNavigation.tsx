@@ -53,7 +53,9 @@ export default function MobileNavigation({
       className={styles.mobileDetails}
       data-mobile-navigation
     >
-      <summary aria-label="Menü öffnen">Menü</summary>
+      <summary role="button" aria-label="Menü öffnen">
+        Menü
+      </summary>
       <nav className={styles.mobilePanel} aria-label="Mobile Navigation">
         <ul className={styles.mobileList}>
           {items.map((item) => (

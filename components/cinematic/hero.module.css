@@ -153,7 +153,7 @@
 
 .redGesture {
   position: absolute;
-  z-index: 3;
+  z-index: 0;
   inset-block-start: var(--cinematic-spacing-xl);
   inset-inline-end: calc(-1 * var(--cinematic-spacing-xl));
   width: clamp(5rem, 16vw, 10rem);

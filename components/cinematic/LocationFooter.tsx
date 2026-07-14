@@ -53,7 +53,7 @@ export default function LocationFooter(): React.JSX.Element {
           Instagram
         </a>
         <Link href={SITE_LINKS.nl} prefetch={false}>
-          Nederlands
+          Für Grenzkunden: Nederlands
         </Link>
       </nav>
       <nav className={styles.legal} aria-label="Rechtliche Informationen">
