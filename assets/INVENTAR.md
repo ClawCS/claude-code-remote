@@ -78,7 +78,11 @@ Hinweis: Das Rasterlogo enthält Verläufe und 30.851 unterschiedliche RGB-Werte
 - Sechs Kategorie- und vier Servicebilder: .jpg-Endung, intern PNG, teils 2,2–4,1 MB; vor Wiederverwendung Rechte, Motiv und Kompression prüfen.
 - Fünf Gewinnspielmotive plus Strikerball und Bier des Monats: zeitgebundene Promoassets, nicht für evergreen Content.
 - Fünf SVGs: Next/Vercel-Boilerplate, kein Markenmaterial.
-- Vier Preislisten-PNGs: redaktionelle Quelle, keine Web-Heroes.
+- Vier Preislisten-PNGs unter `assets/source/preislisten/`: private,
+  byte-identische redaktionelle Evidenz. Wegen eingebetteter Canva-XMP-Konto-IDs
+  wurden sie aus `public/` entfernt und dürfen weder verlinkt noch in ein
+  Deployment-Trace aufgenommen werden. `1.png` belegt den Bestand mit Stand
+  06.03.2026, `2.png` die Leihartikelpreise mit Stand 01.01.2026.
 - 14 getrackte Expertise-Liköre-PNGs fehlen bereits im Worktree; der ältere Klon bzw. Git-History bewahrt sie. Nicht von Codex gelöscht.
 
 ## Fehlender Input

@@ -46,4 +46,13 @@ describe("cinematic token contract", () => {
       'Duplicate cinematic CSS variable "--cinematic-motion-runtime-scroll-scrub-seconds"',
     );
   });
+
+  test("caps every Spotlight frame at the 1054 CSS-pixel poster master", () => {
+    expect(CINEMATIC_TOKENS.layout.posterWidth).toBe(
+      "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
+    );
+    expect(cinematicTokenStyle["--cinematic-layout-poster-width"]).toBe(
+      "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
+    );
+  });
 });

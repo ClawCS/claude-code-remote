@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  outputFileTracingExcludes: {
+    "/api/content/current": ["assets/source/preislisten/**/*"],
+  },
   images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 768, 1024, 1280, 1440, 1920, 2560],
+    imageSizes: [32, 48, 64, 96, 128, 256, 360, 390, 512],
     remotePatterns: [
       {
         protocol: "https",

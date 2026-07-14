@@ -12,7 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "audit:lighthouse": "lighthouse"
+    "audit:lighthouse": "lighthouse",
+    "assets:cinematic": "node scripts/build-cinematic-assets.mjs",
+    "assets:cinematic:check": "node scripts/build-cinematic-assets.mjs --check"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -20,7 +22,7 @@
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sharp": "^0.34.5"
+    "sharp": "0.34.5"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",

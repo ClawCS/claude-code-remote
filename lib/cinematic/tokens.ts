@@ -60,7 +60,7 @@ export const CINEMATIC_TOKENS = deepFreeze({
     contentMax: "120rem",
     textMeasure: "54ch",
     headerHeight: "4.5rem",
-    posterWidth: "clamp(34rem, 68vw, 70rem)",
+    posterWidth: "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
   },
   motion: {
     duration: { instant: "0ms", fast: "160ms", medium: "320ms", slow: "700ms", scene: "1200ms" },
