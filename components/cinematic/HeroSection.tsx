@@ -52,8 +52,9 @@ export default function HeroSection(): React.JSX.Element {
             src={hero.image}
             alt={hero.alt}
             placeholder="blur"
-            sizes="(max-width: 63.999rem) 100vw, 55vw"
+            sizes="(max-width: 47.999rem) 100vw, (max-width: 79.999rem) 40vw, min(50vw, 915px)"
             priority
+            fetchPriority="high"
           />
           <figcaption>{hero.caption}</figcaption>
         </figure>

@@ -59,6 +59,11 @@ test("owns no motion resources under reduced motion", async ({ browser }) => {
 
 test("keeps all posters and links without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
+  await context.route("**/*", (route) =>
+    route.request().resourceType() === "image"
+      ? route.abort("blockedbyclient")
+      : route.continue(),
+  );
   const page = await context.newPage();
   await page.goto("/");
   const rail = page.locator('[data-rail="cinematic"]');

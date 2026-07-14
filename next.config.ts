@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    inlineCss: true,
+  },
   outputFileTracingExcludes: {
     "/api/content/current": ["assets/source/preislisten/**/*"],
   },

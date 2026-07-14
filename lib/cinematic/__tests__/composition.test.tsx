@@ -221,6 +221,22 @@ describe("cinematic homepage composition", () => {
     );
   });
 
+  test("gives only the responsive Hero image high fetch priority", () => {
+    const html = render(populatedContent);
+    const hero = extractElement(html, "section", 'data-hero="cinematic"');
+    const heroImage = /<img\b[^>]*alt="Sven und Niko von Trinkgut Jammers"[^>]*>/.exec(
+      hero,
+    );
+
+    expect(heroImage).not.toBeNull();
+    expect(heroImage![0]).toContain('fetchPriority="high"');
+    expect(heroImage![0]).toContain(
+      'sizes="(max-width: 47.999rem) 100vw, (max-width: 79.999rem) 40vw, min(50vw, 915px)"',
+    );
+    expect(count(html, /<img\b[^>]*fetchPriority="high"/)).toBe(1);
+    expect(count(html, /<link\b[^>]*fetchPriority="high"/)).toBe(1);
+  });
+
   test("passes through the exact empty state and exposes no phantom action", () => {
     const html = render(emptyContent);
 

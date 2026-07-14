@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-07-14T19:30:37.644Z",
+  "measurementNote": "Mobile uses DevTools-mode Lighthouse so the canonical slow-4G and 4x CPU profile is applied in Chromium. Desktop uses Lighthouse's canonical simulated desktop profile. The separate mobile Lighthouse 13.4.0 simulate pair is retained as a diagnostic because its Lantern estimate diverges materially from the observed trace; it is not used as a passing substitute.",
+  "simulateDiagnostic": {
+    "files": {
+      "json": "audit/lighthouse/cinematic-production/mobile-simulate-diagnostic.json",
+      "html": "audit/lighthouse/cinematic-production/mobile-simulate-diagnostic.html"
+    },
+    "fetchTime": "2026-07-14T19:19:13.402Z",
+    "throttlingMethod": "simulate",
+    "performanceScore": 0.89,
+    "cls": 0,
+    "lcp": 3769.2911000000004,
+    "observedLcp": 110,
+    "htmlReportMatchesJson": true
+  },
+  "mobile": {
+    "fetchTime": "2026-07-14T19:19:43.005Z",
+    "finalUrl": "http://127.0.0.1:3103/",
+    "lighthouseVersion": "13.4.0",
+    "formFactor": "mobile",
+    "throttlingMethod": "devtools",
+    "htmlReportMatchesJson": true,
+    "rawScores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    },
+    "scores": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "lcp": 888.178,
+    "observedLcp": 888,
+    "cls": 0
+  },
+  "desktop": {
+    "fetchTime": "2026-07-14T19:27:37.432Z",
+    "finalUrl": "http://127.0.0.1:3103/",
+    "lighthouseVersion": "13.4.0",
+    "formFactor": "desktop",
+    "throttlingMethod": "simulate",
+    "htmlReportMatchesJson": true,
+    "rawScores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    },
+    "scores": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "lcp": 814.40455,
+    "observedLcp": 159,
+    "cls": 0.0006781852759340187
+  }
+}

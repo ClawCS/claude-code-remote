@@ -18,6 +18,7 @@ const jakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-jakarta",
   display: "swap",
+  preload: false,
 });
 
 // Display-Schrift für Headlines (modern/technisch — Apple/SpaceX-Anmutung)
@@ -26,6 +27,7 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["500", "600", "700"],
   variable: "--font-display",
   display: "swap",
+  preload: false,
 });
 
 export const metadata = SITE_METADATA;
