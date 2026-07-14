@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 
-import { CINEMATIC_TOKENS, cinematicTokenStyle } from "@/lib/cinematic/tokens";
+import {
+  CINEMATIC_TOKENS,
+  cinematicTokenStyle,
+  createTokenStyle,
+} from "@/lib/cinematic/tokens";
 
 describe("cinematic token contract", () => {
   test("locks the approved six-color palette", () => {
@@ -25,6 +29,21 @@ describe("cinematic token contract", () => {
     });
     expect(new Set(Object.keys(cinematicTokenStyle)).size).toBe(
       Object.keys(cinematicTokenStyle).length,
+    );
+  });
+
+  test("rejects colliding full-path CSS variables before object conversion", () => {
+    expect(() =>
+      createTokenStyle({
+        motion: {
+          runtime: {
+            scrollScrubSeconds: 0.55,
+            "scroll-scrub-seconds": 0.8,
+          },
+        },
+      }),
+    ).toThrowError(
+      'Duplicate cinematic CSS variable "--cinematic-motion-runtime-scroll-scrub-seconds"',
     );
   });
 });

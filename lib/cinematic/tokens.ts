@@ -81,6 +81,9 @@ export const CINEMATIC_TOKENS = deepFreeze({
 
 type TokenLeaf = string | number;
 type CinematicCustomProperty = `--cinematic-${string}`;
+type CinematicTokenStyle = Readonly<
+  CSSProperties & Record<CinematicCustomProperty, TokenLeaf>
+>;
 
 function kebabCase(segment: string): string {
   return segment.replace(/([a-z\d])([A-Z])/g, "$1-$2").toLowerCase();
@@ -102,6 +105,20 @@ function tokenEntries(
   });
 }
 
-export const cinematicTokenStyle = Object.freeze(
-  Object.fromEntries(tokenEntries(CINEMATIC_TOKENS)),
-) as Readonly<CSSProperties & Record<CinematicCustomProperty, TokenLeaf>>;
+export function createTokenStyle<
+  Tokens extends Readonly<Record<string, unknown>>,
+>(tokens: Tokens): CinematicTokenStyle {
+  const entries = tokenEntries(tokens);
+  const variables = new Set<CinematicCustomProperty>();
+
+  for (const [variable] of entries) {
+    if (variables.has(variable)) {
+      throw new TypeError(`Duplicate cinematic CSS variable "${variable}"`);
+    }
+    variables.add(variable);
+  }
+
+  return Object.freeze(Object.fromEntries(entries)) as CinematicTokenStyle;
+}
+
+export const cinematicTokenStyle = createTokenStyle(CINEMATIC_TOKENS);
