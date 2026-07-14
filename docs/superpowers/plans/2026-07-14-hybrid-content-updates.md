@@ -959,6 +959,7 @@ const request = (token?: string) => new Request(
 afterEach(() => {
   if (ORIGINAL_CRON_SECRET === undefined) delete process.env.CRON_SECRET;
   else process.env.CRON_SECRET = ORIGINAL_CRON_SECRET;
+  vi.doUnmock("@/lib/handzettel-catalog");
   vi.restoreAllMocks();
   vi.resetModules();
   vi.unstubAllGlobals();
@@ -1042,6 +1043,8 @@ describe("cron handler", () => {
 ```
 
 Add a separate route-wiring test with a mocked `refreshHandzettelCache`. Import `app/api/handzettel/cron/route.ts` only after the mock is installed, assert its only runtime exports are `GET` and `POST`, call both with a valid bearer, and prove each calls the helper exactly once. Spy on `globalThis.fetch` and assert it is untouched: the route must not self-fetch, forward the secret, or depend on the public fetch route.
+
+`vi.resetModules()` does not clear Vitest's mock registry and `vi.restoreAllMocks()` does not remove `vi.doMock()` registrations. Explicitly call `vi.doUnmock("@/lib/handzettel-catalog")` before resetting modules (or dispose the `vi.doMock()` registration with its returned disposable). Immediately follow the wiring test with an unmocked `vi.importActual()`/dynamic-import sanity assertion proving the real `refreshHandzettelCache` export is restored before any later smoke or suite executes.
 
 - [ ] **Step 2: Run and verify RED against current behavior**
 
