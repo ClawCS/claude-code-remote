@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import JsonLdScript from "@/components/JsonLdScript";
 import productsData from "@/data/products.json";
 
 type Product = {
@@ -71,9 +73,7 @@ export default async function Layout({
 
   return (
     <>
-      {jsonLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      )}
+      {jsonLd && <JsonLdScript value={jsonLd} />}
       {children}
     </>
   );
