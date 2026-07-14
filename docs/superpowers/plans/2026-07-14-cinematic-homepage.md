@@ -1284,14 +1284,14 @@ test -z "$(lsof -nP -iTCP:$PORT -sTCP:LISTEN -t)"
 : > "$LOG"
 APP_PID=""
 cleanup() {
-  status=$?
+  exit_code=$?
   trap - EXIT
   trap '' INT TERM
   if test -n "$APP_PID"; then
     if kill -0 "$APP_PID" 2>/dev/null; then kill "$APP_PID" 2>/dev/null || true; fi
     wait "$APP_PID" 2>/dev/null || true
   fi
-  exit "$status"
+  exit "$exit_code"
 }
 trap cleanup EXIT
 trap 'exit 130' INT
@@ -1886,7 +1886,7 @@ if test -e "$CACHE"; then
 fi
 APP_PID=""
 cleanup() {
-  status=$?
+  exit_code=$?
   restore_status=0
   trap - EXIT
   trap '' INT TERM
@@ -1916,8 +1916,8 @@ cleanup() {
       if test "$restore_status" -eq 0; then restore_status=1; fi
     fi
   fi
-  if test "$status" -eq 0 && test "$restore_status" -ne 0; then status=$restore_status; fi
-  exit "$status"
+  if test "$exit_code" -eq 0 && test "$restore_status" -ne 0; then exit_code=$restore_status; fi
+  exit "$exit_code"
 }
 trap cleanup EXIT
 trap 'exit 130' INT
