@@ -48,3 +48,6 @@ next-env.d.ts
 /data/community.json
 /data/handzettel-cache.json
 /public/handzettel/manifest.json
+
+# Local agent execution ledger and review packages
+/.superpowers/
