@@ -364,7 +364,7 @@ function BierPongGame() {
       {winner && (
         <div className="mb-4 rounded-xl bg-gradient-to-r from-[#DC2626] to-[#B91C1C] text-white text-center py-3 px-4 shadow-lg">
           <p className="text-lg font-extrabold">🏆 {winner} gewinnt!</p>
-          <p className="text-sm text-white/80">Zeit: {formatTime(timer)} — „Reset" für ein neues Spiel</p>
+          <p className="text-sm text-white/80">Zeit: {formatTime(timer)} — „Reset&ldquo; für ein neues Spiel</p>
         </div>
       )}
       {/* Scores */}

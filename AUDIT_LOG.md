@@ -96,11 +96,11 @@ Screenshot: audit/screenshots/p0/home-mobile-390.jpg
 
 Bei 390 × 844 px liegt die eigentliche Hero-Botschaft zunächst unterhalb des sichtbaren Bereichs. Gleichzeitig erscheinen AI-Chat und WhatsApp als konkurrierende Floating-Elemente. Desktop zeigt die scrollgebundene Hero-Bühne über mehrere Viewports: audit/screenshots/p0/home-desktop-1440.jpg.
 
-### P0-012 — P2 — Kein automatisiertes Testfundament; Lint-Gate rot
+### P0-012 — P2 — Kein automatisiertes Testfundament; Lint-Gate war rot
 
-Status: offen vor P2
+Status: teilweise behoben am 14.07.2026; Testfundament und 20 Alt-Warnungen bleiben vor P2 offen
 
-Es gibt kein Test-Script, keine Unit-/E2E-Tests und keine CI. Frischer Production-Build: PASS, Next.js 16.2.4, 161 generierte Seiten. Frischer ESLint-Lauf: FAIL mit einem Fehler in app/partyspiele/page.tsx:367 und 20 Warnungen. Root Cause des Fehlers ist ein nicht maskiertes ASCII-Anführungszeichen in JSX; eingeführt in Commit 1a52cfe.
+Der reproduzierbare ESLint-Blocker in `app/partyspiele/page.tsx:367` ist durch die korrekte deutsche schließende Anführungszeichen-Entität behoben. Gezielter Dateilint und vollständiger ESLint-Lauf sind PASS; der vollständige Lauf meldet weiterhin exakt 20 bereits vorhandene Warnungen. Der frische Production-Build bleibt PASS mit Next.js 16.2.4 und 161 generierten Seiten. Unit-/E2E-Test-Scripts und CI werden im P2-Produktionsplan ergänzt.
 
 ### P0-013 — P3 — Asset-Dubletten und falsche Dateiendungen
 
@@ -115,7 +115,7 @@ Mehrere Bildgruppen sind SHA-identische Kopien. Sechs Kategorie- und vier Servic
 | git fetch + ff-only merge aktiver Stand | PASS, bereits aktuell |
 | TypeScript | PASS laut unabhängiger P0-Prüfung |
 | npm run build | PASS, 161 Seiten |
-| npm run lint | FAIL, 1 Fehler / 20 Warnungen |
+| npm run lint | PASS, 0 Fehler / 20 dokumentierte Alt-Warnungen |
 | Browser-Konsole Home 390 px | 0 Errors / 0 Warnings |
 | Instagram öffentlich | Eingeschränktes Profil, Analyse ohne Login nicht möglich |
 
