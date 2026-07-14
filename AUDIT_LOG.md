@@ -108,6 +108,18 @@ Status: offen bis P4
 
 Mehrere Bildgruppen sind SHA-identische Kopien. Sechs Kategorie- und vier Service-Dateien heißen .jpg, enthalten technisch jedoch PNG und sind jeweils bis zu rund 4 MB groß. Eine konsolidierte Sharp-Pipeline fehlt.
 
+### P0-014 — P1 — Direkte Next.js-Produktions-Advisories
+
+Status: behoben und verifiziert am 14.07.2026; eine begründete moderate Restabweichung ist dokumentiert
+
+Vorher: `npm audit --omit=dev --json` auf dem exakten Pin `next@16.2.4` endete mit Exit `1` und meldete `1 high`, `1 moderate`, `0 critical`. Next.js war eine direkte Abhängigkeit mit mehreren High-Advisories, darunter betroffene Bereiche `>=16.0.0 <16.2.5` und `>=16.0.0 <16.2.6`; npm bot `16.2.10` als nicht-major Fix an.
+
+Maßnahme: Nur `next` und `eslint-config-next` wurden exakt auf `16.2.10` angehoben. React und React DOM bleiben exakt `19.2.4`; Scripts und alle anderen direkten Versionspins blieben unverändert. Next.js `16.2.10` verlangt Node `>=20.9.0` und ist mit der eingesetzten Node-Version `25.8.0` kompatibel.
+
+Nachher: `npm audit --omit=dev --json` meldet `0 high` und `0 critical`; die direkten Next.js-Sicherheits-Advisories sind entfernt. Als einzig akzeptierte Produktions-Restabweichung bleibt die moderate transitive Kette `next@16.2.10 -> postcss@8.4.31` für `GHSA-qx2v-qp2m-jg93`. Es wird weder ein npm-Override noch ein Canary eingesetzt: Der stabile Next.js-Stand pinnt die Build-Abhängigkeit, und der Next-Maintainer erklärt in [vercel/next.js#93234](https://github.com/vercel/next.js/issues/93234), dass das Finding Next.js-Nutzer nicht betrifft, weil PostCSS nur zur Build-Zeit läuft.
+
+Verifikation: fokussierte Cinematic-Tests `10/10` PASS, TypeScript PASS, ESLint PASS mit `0` Fehlern und den `20` dokumentierten Alt-Warnungen, Production-Build PASS mit Next.js `16.2.10` und `161` generierten Seiten, exakter npm-Paketbaum PASS und `git diff --check` PASS.
+
 ## Baseline-Verifikation
 
 | Prüfung | Ergebnis |

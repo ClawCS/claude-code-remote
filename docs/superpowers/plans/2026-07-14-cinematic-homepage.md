@@ -6,7 +6,7 @@
 
 **Architecture:** `app/page.tsx` remains a Server Component and calls the separately owned Hybrid content adapter once per request. It passes a serializable snapshot into focused server-rendered sections; only live status, mobile navigation enhancement, the optional flyer viewer, and GSAP/ScrollTrigger motion are client islands. A deeply frozen TypeScript token contract emits CSS custom properties into one root wrapper, while scoped CSS Modules and a curated Sharp asset pipeline keep the visual system deterministic and auditable.
 
-**Tech Stack:** Existing Next.js 16.2.4 App Router, React 19.2.4, TypeScript 5, Tailwind CSS 4 plus CSS Modules, and Sharp 0.34.5; GSAP/ScrollTrigger, Vitest, Playwright, axe-core, and Lighthouse are installed at execution-time versions first verified as available and Node-compatible by `npm view`, then locked exactly in `package-lock.json`.
+**Tech Stack:** Existing Next.js 16.2.10 App Router, React 19.2.4, TypeScript 5, Tailwind CSS 4 plus CSS Modules, and Sharp 0.34.5; GSAP/ScrollTrigger, Vitest, Playwright, axe-core, and Lighthouse are installed at execution-time versions first verified as available and Node-compatible by `npm view`, then locked exactly in `package-lock.json`.
 
 ## Global Constraints
 
@@ -148,8 +148,8 @@ Run:
 ```bash
 node --version
 for package in gsap vitest @playwright/test @axe-core/playwright lighthouse; do npm view "$package" version engines --json; done
-npm install --save-exact next@16.2.4 react@19.2.4 react-dom@19.2.4
-npm install --save-dev --save-exact eslint-config-next@16.2.4
+npm install --save-exact next@16.2.10 react@19.2.4 react-dom@19.2.4
+npm install --save-dev --save-exact eslint-config-next@16.2.10
 npm install --save-exact "gsap@$(npm view gsap version)"
 npm install --save-dev --save-exact "vitest@$(npm view vitest version)" "@playwright/test@$(npm view @playwright/test version)" "@axe-core/playwright@$(npm view @axe-core/playwright version)" "lighthouse@$(npm view lighthouse version)"
 npm pkg set scripts.test="vitest run" scripts.test:watch="vitest" scripts.test:e2e="playwright test" scripts.audit:lighthouse="lighthouse"
@@ -202,7 +202,7 @@ export default defineConfig({
 });
 ```
 
-Expected: every `npm view` exits `0` and its `engines.node` range contains the printed Node version before installation. `npm ls next react react-dom eslint-config-next gsap vitest @playwright/test @axe-core/playwright lighthouse` exits `0`, keeps Next/React/React DOM at `16.2.4`/`19.2.4`/`19.2.4`, aligns `eslint-config-next` to `16.2.4`, and records exact non-range versions for every newly installed package in `package.json` and `package-lock.json`.
+Expected: every `npm view` exits `0` and its `engines.node` range contains the printed Node version before installation. `npm ls next react react-dom eslint-config-next gsap vitest @playwright/test @axe-core/playwright lighthouse` exits `0`, keeps Next/React/React DOM at `16.2.10`/`19.2.4`/`19.2.4`, aligns `eslint-config-next` to `16.2.10`, and records exact non-range versions for every newly installed package in `package.json` and `package-lock.json`.
 
 - [ ] **Step 2: Write failing token and site-contract tests**
 

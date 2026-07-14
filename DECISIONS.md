@@ -60,3 +60,14 @@ Status: von Niko freigegeben
 Entscheidung: Die Produktion erfolgt im isolierten Worktree `.worktrees/cinematic-production` auf Branch `codex/cinematic-production`, ausgehend vom bestätigten P0-Stand. Gemischte P1-Commits werden nicht cherry-gepickt. Nur Cinematic-Dateien und -Evidenz dürfen in die öffentliche Branch-Historie gelangen.
 
 Begründung: Der lokale Vergleichsbranch enthält die ausgeschlossene Richtung Premium Light in seiner Historie. Ein sauberer Produktionsbranch verhindert deren unbeabsichtigte Veröffentlichung.
+
+## D-0008 — Next.js-Sicherheitspatch vor weiterer Produktionsarbeit
+
+Datum: 14.07.2026
+Status: umgesetzt und verifiziert
+
+Entscheidung: Next.js und `eslint-config-next` wurden exakt von `16.2.4` auf `16.2.10` angehoben. React und React DOM bleiben exakt auf `19.2.4`; weitere direkte Abhängigkeiten wurden nicht aktualisiert.
+
+Begründung: Der reproduzierbare Produktions-Audit auf `16.2.4` meldet direkte Next.js-Findings mit hohem Schweregrad, darunter betroffene Bereiche unter `16.2.5` und `16.2.6`, und bietet `16.2.10` als nicht-major Fix an. Die Registry bestätigt für Next.js `16.2.10` Node `>=20.9.0`, kompatibel mit der eingesetzten Node-Version `25.8.0`. Das eng begrenzte Patch-Upgrade beseitigt die direkten Next.js-Produktionsfindings, bevor weitere Features auf diesem Fundament entstehen.
+
+Restabweichung: `npm audit --omit=dev` rollt weiterhin `GHSA-qx2v-qp2m-jg93` als moderate Kette `next -> postcss@8.4.31` hoch. Sie wird ohne Override und ohne Canary akzeptiert: Next.js `16.2.10` ist der stabile Zielstand und pinnt diese Version; der Next-Maintainer erläutert in [vercel/next.js#93234](https://github.com/vercel/next.js/issues/93234), dass das Finding Next.js-Nutzer nicht betrifft, weil PostCSS dort nur zur Build-Zeit ausgeführt wird.
