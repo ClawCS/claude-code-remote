@@ -289,6 +289,13 @@ describe("homepage content", () => {
     expect(aggregate({ campaigns: [makeCampaign({ href })] }).event).toBeNull();
   });
 
+  it("keeps the existing single-slash root-relative href contract", () => {
+    const href = "/api/content/current";
+    expect(aggregate({ campaigns: [makeCampaign({ href })] }).event?.href).toBe(
+      href,
+    );
+  });
+
   it.each([
     "//example.test/image.jpg",
     "http://example.test/image.jpg",
@@ -298,6 +305,15 @@ describe("homepage content", () => {
     "https://example.test\\@attacker.test/image.jpg",
     "/images/unsafe\r.jpg",
     "/images/%ZZ.jpg",
+    "/%61pi/content.jpg",
+    "/%2Fapi/content.jpg",
+    "/images/%2e%2e/api/content.jpg",
+    "/images/%252e%252e/api/content.jpg",
+    "/images%2F..%2Fapi/content.jpg",
+    "/images/safe.jpg%5C..%5Capi/content.jpg",
+    "/images/safe.jpg%3F/../api/content.jpg",
+    "/images/safe.jpg%23/../api/content.jpg",
+    "/images/safe.jpg?variant=%0A",
     "not-a-path",
   ])("rejects unsafe event image %s", (image) => {
     expect(aggregate({ campaigns: [makeCampaign({ image })] }).event).toBeNull();
@@ -318,12 +334,22 @@ describe("homepage content", () => {
     ).toBeNull();
   });
 
-  it("accepts a safe root-relative image asset outside the images folder", () => {
+  it("rejects a local image asset outside the public images namespace", () => {
     expect(
       aggregate({
         campaigns: [makeCampaign({ image: "/assets/events/strikerball.webp" })],
-      }).event?.image,
-    ).toBe("/assets/events/strikerball.webp");
+      }).event,
+    ).toBeNull();
+  });
+
+  it.each([
+    "/images/events/strikerball.webp?v=2#hero",
+    "/%69mages/events/strikerball.webp",
+    "https://cdn.example.test/render?id=strikerball",
+  ])("accepts the safe published image %s", (image) => {
+    expect(aggregate({ campaigns: [makeCampaign({ image })] }).event?.image).toBe(
+      image,
+    );
   });
 
   it("filters invalid and future archive dates before deterministic limiting", () => {
@@ -366,8 +392,25 @@ describe("homepage content", () => {
     "https://user:pass@example.test/image.jpg",
     "/images/unsafe\u0000.jpg",
     "/images/%ZZ.jpg",
+    "/%61pi/content.jpg",
+    "/%2Fapi/content.jpg",
+    "/images/%2e%2e/api/content.jpg",
+    "/images/%252e%252e/api/content.jpg",
+    "/images%2F..%2Fapi/content.jpg",
+    "/images/safe.jpg%5C..%5Capi/content.jpg",
+    "/images/safe.jpg%3F/../api/content.jpg",
+    "/images/safe.jpg%23/../api/content.jpg",
+    "/images/safe.jpg?variant=%0A",
+    "/assets/archive/content.jpg",
   ])("rejects unsafe archive image %s", (image) => {
     expect(aggregate({ archive: [makeArchive({ image })] }).archive).toEqual([]);
+  });
+
+  it("preserves a safe query and hash on an archive image asset", () => {
+    const image = "/images/archive/content.jpg?v=2#card";
+    expect(aggregate({ archive: [makeArchive({ image })] }).archive[0]?.image).toBe(
+      image,
+    );
   });
 
   it("does not auto-flow giveaway campaigns into the archive", () => {

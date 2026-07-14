@@ -77,7 +77,6 @@ const SOURCE_RANK: Readonly<Record<EditorialSource, number>> = {
   instagram: 3,
 };
 const UNSAFE_URL_CHARACTERS = /[\u0000-\u001f\u007f\\]/;
-const LOCAL_ASSET_ORIGIN = "https://local.asset.invalid";
 const IMAGE_FILE_EXTENSION = /\.(?:avif|gif|ico|jpe?g|png|svg|webp)$/i;
 
 function isCalendarDateKey(value: string): boolean {
@@ -111,16 +110,53 @@ function isSafePublishedUrl(value: string): boolean {
   return isCredentialFreeHttpsUrl(value);
 }
 
+function decodeImagePath(value: string): string | null {
+  const queryIndex = value.indexOf("?");
+  const hashIndex = value.indexOf("#");
+  const pathEnd = Math.min(
+    queryIndex === -1 ? value.length : queryIndex,
+    hashIndex === -1 ? value.length : hashIndex,
+  );
+  let decoded = value.slice(0, pathEnd);
+  for (let depth = 0; depth < 4; depth += 1) {
+    let next: string;
+    try {
+      next = decodeURIComponent(decoded);
+    } catch {
+      return null;
+    }
+    if (next === decoded) break;
+    decoded = next;
+  }
+  try {
+    if (decodeURIComponent(decoded) !== decoded) return null;
+  } catch {
+    return null;
+  }
+  if (
+    !decoded.startsWith("/") ||
+    decoded.startsWith("//") ||
+    decoded.includes("?") ||
+    decoded.includes("#") ||
+    UNSAFE_URL_CHARACTERS.test(decoded)
+  ) {
+    return null;
+  }
+  const segments = decoded.split("/");
+  if (segments.some((segment) => segment === "." || segment === "..")) {
+    return null;
+  }
+  return `/${segments.filter(Boolean).join("/")}`.normalize("NFC");
+}
+
 function isSafeImageUrl(value: string): boolean {
   if (!value.startsWith("/")) return isCredentialFreeHttpsUrl(value);
   if (!isSafePublishedUrl(value)) return false;
-  try {
-    const parsed = new URL(value, LOCAL_ASSET_ORIGIN);
-    const firstSegment = parsed.pathname.split("/")[1];
-    return firstSegment !== "api" && IMAGE_FILE_EXTENSION.test(parsed.pathname);
-  } catch {
-    return false;
-  }
+  const normalizedPath = decodeImagePath(value);
+  return Boolean(
+    normalizedPath?.startsWith("/images/") &&
+      IMAGE_FILE_EXTENSION.test(normalizedPath),
+  );
 }
 
 function isCurrentFlyer(flyer: HomepageFlyer, now: Date): boolean {
