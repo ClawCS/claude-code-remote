@@ -7,6 +7,8 @@ import type { HomepageFlyer } from "@/lib/homepage-content";
 import { canRenderHomepageImage } from "@/lib/cinematic/presentation";
 import { useModalA11y } from "@/lib/useModalA11y";
 
+import styles from "./current.module.css";
+
 const VIEWER_TIMEOUT_MS = 8_000;
 const VIEWER_ERROR_COPY = "Der Handzettel konnte hier nicht geladen werden.";
 
@@ -18,7 +20,7 @@ function ExternalFlyerLinks({
   flyer: HomepageFlyer;
 }): React.JSX.Element {
   return (
-    <div data-flyer-fallback-links>
+    <div className={styles.viewerLinks} data-flyer-fallback-links>
       <a
         href={flyer.viewerUrl}
         target="_blank"
@@ -100,11 +102,8 @@ export default function FlyerViewer({
     !coverFailed && canRenderHomepageImage(flyer.coverUrl);
 
   return (
-    <div data-flyer-viewer>
-      <div
-        data-flyer-cover
-        style={{ position: "relative", aspectRatio: "4 / 5" }}
-      >
+    <div className={styles.viewer} data-flyer-viewer>
+      <div className={styles.cover} data-flyer-cover>
         {canRenderCover ? (
           <Image
             src={flyer.coverUrl}
@@ -117,14 +116,21 @@ export default function FlyerViewer({
           <p>Handzettel ohne Vorschaubild</p>
         )}
       </div>
-      <button type="button" onClick={openViewer}>
+      <button
+        className={styles.viewerTrigger}
+        type="button"
+        onClick={openViewer}
+      >
         Handzettel ansehen
       </button>
-      <p>Der externe Handzettel kann auch direkt geöffnet werden.</p>
+      <p className={styles.viewerHelp}>
+        Der externe Handzettel kann auch direkt geöffnet werden.
+      </p>
       <ExternalFlyerLinks flyer={flyer} />
 
       {open ? (
         <div
+          className={styles.viewerBackdrop}
           data-flyer-dialog-backdrop
           onMouseDown={(event) => {
             if (event.currentTarget === event.target) closeViewer();
@@ -132,6 +138,7 @@ export default function FlyerViewer({
         >
           <div
             ref={dialogRef}
+            className={styles.viewerDialog}
             role="dialog"
             aria-modal="true"
             aria-labelledby={headingId}
@@ -147,13 +154,18 @@ export default function FlyerViewer({
             </button>
             <h2 id={headingId}>{flyer.title} ansehen</h2>
             {viewerState === "error" ? (
-              <div role="status" data-flyer-state="error">
+              <div
+                className={styles.viewerError}
+                role="status"
+                data-flyer-state="error"
+              >
                 <p>{VIEWER_ERROR_COPY}</p>
                 <ExternalFlyerLinks flyer={flyer} />
               </div>
             ) : (
               <>
                 <iframe
+                  className={styles.viewerFrame}
                   key={viewerSession}
                   src={flyer.viewerUrl}
                   title={`${flyer.title} – externer Handzettel`}

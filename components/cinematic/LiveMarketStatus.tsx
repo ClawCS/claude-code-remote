@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { getMarketStatus } from "@/lib/cinematic/site";
 
+import styles from "./chrome.module.css";
+
 export default function LiveMarketStatus({
   initialNowIso,
 }: {
@@ -22,6 +24,7 @@ export default function LiveMarketStatus({
 
   return (
     <span
+      className={styles.status}
       aria-live="polite"
       aria-atomic="true"
       data-market-open={String(status.isOpen)}

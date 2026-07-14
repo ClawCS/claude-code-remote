@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import styles from "./chrome.module.css";
+
 export type NavItem = Readonly<{
   label: string;
   href: string;
@@ -46,15 +48,22 @@ export default function MobileNavigation({
   }, []);
 
   return (
-    <details ref={detailsRef} data-mobile-navigation>
+    <details
+      ref={detailsRef}
+      className={styles.mobileDetails}
+      data-mobile-navigation
+    >
       <summary aria-label="Menü öffnen">Menü</summary>
-      <nav aria-label="Mobile Navigation">
-        <ul>
+      <nav className={styles.mobilePanel} aria-label="Mobile Navigation">
+        <ul className={styles.mobileList}>
           {items.map((item) => (
             <li key={item.href}>
-              <a href={item.href} onClick={() => {
-                if (detailsRef.current) detailsRef.current.open = false;
-              }}>
+              <a
+                href={item.href}
+                onClick={() => {
+                  if (detailsRef.current) detailsRef.current.open = false;
+                }}
+              >
                 {item.label}
               </a>
             </li>

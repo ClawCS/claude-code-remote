@@ -11,6 +11,8 @@ import {
   formatDateRange,
 } from "@/lib/cinematic/presentation";
 
+import styles from "./editorial.module.css";
+
 function EventLink({ event }: { event: HomepageEvent }): React.JSX.Element {
   if (event.href.startsWith("/") && !event.href.startsWith("//")) {
     return (
@@ -37,62 +39,68 @@ export default function ActionsSection({
   if (!event && archive.length === 0) return null;
 
   return (
-    <section id="aktionen" aria-labelledby="aktionen-title">
-      <p>Im Markt passiert mehr.</p>
-      <h2 id="aktionen-title">Aktionen &amp; Rückblicke</h2>
-      {event ? (
-        <article data-action-current>
-          {canRenderHomepageImage(event.image) ? (
-            <div
-              data-action-image
-              style={{ position: "relative", aspectRatio: "16 / 9" }}
-            >
-              <Image
-                src={event.image}
-                alt=""
-                fill
-                sizes="(max-width: 63.999rem) 100vw, 50vw"
-              />
+    <section
+      className={styles.actionsStage}
+      id="aktionen"
+      aria-labelledby="aktionen-title"
+    >
+      <div className={styles.sectionHeading}>
+        <p className={styles.eyebrow}>Im Markt passiert mehr.</p>
+        <h2 id="aktionen-title">Aktionen &amp; Rückblicke</h2>
+      </div>
+      <div className={styles.actionLayout}>
+        {event ? (
+          <article className={styles.actionCard} data-action-current>
+            {canRenderHomepageImage(event.image) ? (
+              <div className={styles.actionImage} data-action-image>
+                <Image
+                  src={event.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 63.999rem) 100vw, 50vw"
+                />
+              </div>
+            ) : null}
+            <p className={styles.actionValidity} data-event-interval>
+              Aktionszeitraum · {formatDateRange(event.validFrom, event.validTo)}
+            </p>
+            <h3>{event.title}</h3>
+            <p>{event.summary}</p>
+            <div className={styles.actionLinks}>
+              <EventLink event={event} />
+              <a
+                href={event.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Quelle öffnen
+              </a>
             </div>
-          ) : null}
-          <p data-event-interval>
-            Aktionszeitraum · {formatDateRange(event.validFrom, event.validTo)}
-          </p>
-          <h3>{event.title}</h3>
-          <p>{event.summary}</p>
-          <EventLink event={event} />
-          <a
-            href={event.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Quelle öffnen
-          </a>
-        </article>
-      ) : null}
-      {archive.length ? (
-        <div data-action-archive>
-          {archive.map((item) => (
-            <article key={item.id}>
-              {canRenderHomepageImage(item.image) ? (
-                <div
-                  data-archive-image
-                  style={{ position: "relative", aspectRatio: "16 / 9" }}
-                >
-                  <Image
-                    src={item.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 47.999rem) 100vw, 33vw"
-                  />
-                </div>
-              ) : null}
-              <p>Rückblick · {formatDate(item.date)}</p>
-              <h3>{item.title}</h3>
-            </article>
-          ))}
-        </div>
-      ) : null}
+          </article>
+        ) : null}
+        {archive.length ? (
+          <div className={styles.archive} data-action-archive>
+            {archive.map((item) => (
+              <article key={item.id}>
+                {canRenderHomepageImage(item.image) ? (
+                  <div className={styles.archiveImage} data-archive-image>
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 47.999rem) 100vw, 33vw"
+                    />
+                  </div>
+                ) : null}
+                <p className={styles.archiveDate}>
+                  Rückblick · {formatDate(item.date)}
+                </p>
+                <h3>{item.title}</h3>
+              </article>
+            ))}
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }

@@ -1,9 +1,12 @@
 .home {
   min-height: 100%;
   isolation: isolate;
+  overflow: clip;
   background: var(--cinematic-color-black);
   color: var(--cinematic-color-white);
   font-family: var(--cinematic-typography-family-sans);
+  font-size: var(--cinematic-typography-size-body);
+  line-height: var(--cinematic-typography-line-height-body);
 }
 
 .skipLink {
@@ -20,8 +23,27 @@
   color: var(--cinematic-color-black);
   background: var(--cinematic-color-yellow);
   transform: translateY(calc(-100% - var(--cinematic-spacing-xl)));
+  transition: transform var(--cinematic-motion-duration-fast)
+    var(--cinematic-motion-easing-standard);
 }
 
 .skipLink:focus-visible {
   transform: translateY(0);
+  outline: 3px solid var(--cinematic-color-white);
+  outline-offset: 3px;
+}
+
+.home :global(section[id]),
+.home :global(footer[id]),
+.home :global(#main-content) {
+  scroll-margin-top: calc(
+    var(--cinematic-layout-header-height) + var(--cinematic-spacing-md)
+  );
+}
+
+.home :global(a:focus-visible),
+.home :global(button:focus-visible),
+.home :global(summary:focus-visible) {
+  outline: 3px solid var(--cinematic-color-yellow);
+  outline-offset: 3px;
 }

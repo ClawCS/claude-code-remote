@@ -4,13 +4,21 @@ import { INSTAGRAM_SELECTION } from "@/data/cinematic-editorial";
 import { formatDate } from "@/lib/cinematic/presentation";
 import { SITE_LINKS } from "@/lib/cinematic/site";
 
+import styles from "./editorial.module.css";
+
 export default function InstagramSection(): React.JSX.Element {
   return (
-    <section id="instagram" aria-labelledby="instagram-title">
-      <p>Direkt aus Goch</p>
-      <h2 id="instagram-title">Jammers auf Instagram</h2>
+    <section
+      className={styles.instagramSection}
+      id="instagram"
+      aria-labelledby="instagram-title"
+    >
+      <div className={styles.sectionHeading}>
+        <p className={styles.eyebrow}>Direkt aus Goch</p>
+        <h2 id="instagram-title">Jammers auf Instagram</h2>
+      </div>
       {INSTAGRAM_SELECTION.length ? (
-        <div data-instagram-selection>
+        <div className={styles.instagramGrid} data-instagram-selection>
           {INSTAGRAM_SELECTION.map((item) => (
             <figure key={item.id}>
               <a
@@ -33,7 +41,7 @@ export default function InstagramSection(): React.JSX.Element {
           ))}
         </div>
       ) : (
-        <div data-instagram-fallback>
+        <div className={styles.instagramFallback} data-instagram-fallback>
           <p>Neue Einblicke folgen</p>
           <a
             href={SITE_LINKS.instagram}

@@ -1,0 +1,139 @@
+.section {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  padding: var(--cinematic-spacing-section) 0;
+  background: var(--cinematic-color-black);
+  color: var(--cinematic-color-white);
+}
+
+.intro {
+  display: grid;
+  width: min(100%, var(--cinematic-layout-content-max));
+  margin: 0 auto var(--cinematic-spacing-two-xl);
+  padding: 0 var(--cinematic-spacing-gutter);
+  gap: var(--cinematic-spacing-sm);
+}
+
+.intro p {
+  margin: 0;
+  color: var(--cinematic-color-yellow);
+  font-size: var(--cinematic-typography-size-label);
+  font-weight: var(--cinematic-typography-weight-bold);
+  line-height: var(--cinematic-typography-line-height-body);
+  letter-spacing: var(--cinematic-typography-tracking-wide);
+  text-transform: uppercase;
+}
+
+.intro h2 {
+  max-width: 14ch;
+  margin: 0;
+  font-family: var(--cinematic-typography-family-display);
+  font-size: var(--cinematic-typography-size-heading);
+  font-weight: var(--cinematic-typography-weight-extra-bold);
+  line-height: var(--cinematic-typography-line-height-heading);
+  letter-spacing: var(--cinematic-typography-tracking-tight);
+  text-transform: uppercase;
+}
+
+.railViewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.rail {
+  display: grid;
+  width: 100%;
+  padding: 0 var(--cinematic-spacing-gutter);
+  gap: var(--cinematic-spacing-xl);
+}
+
+.frame {
+  display: block;
+  width: min(100%, 58rem);
+  color: var(--cinematic-color-white);
+  text-decoration: none;
+}
+
+.posterWindow {
+  display: grid;
+  margin: 0;
+  gap: var(--cinematic-spacing-md);
+}
+
+.posterImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 1054px;
+  object-fit: contain;
+  background: var(--cinematic-color-white);
+}
+
+.posterMeta {
+  display: grid;
+  gap: var(--cinematic-spacing-xs);
+  grid-template-columns: auto minmax(0, 1fr);
+  color: var(--cinematic-color-white);
+  font-size: var(--cinematic-typography-size-small);
+  line-height: var(--cinematic-typography-line-height-body);
+}
+
+.number {
+  grid-row: 1 / span 3;
+  color: var(--cinematic-color-yellow);
+  font-family: var(--cinematic-typography-family-display);
+  font-size: var(--cinematic-typography-size-heading);
+  font-weight: var(--cinematic-typography-weight-extra-bold);
+  line-height: var(--cinematic-typography-line-height-heading);
+}
+
+.posterName {
+  font-family: var(--cinematic-typography-family-display);
+  font-size: var(--cinematic-typography-size-lead);
+  font-weight: var(--cinematic-typography-weight-bold);
+  line-height: var(--cinematic-typography-line-height-heading);
+  text-transform: uppercase;
+}
+
+.posterLabel {
+  color: var(--cinematic-color-yellow);
+  font-weight: var(--cinematic-typography-weight-bold);
+  text-transform: uppercase;
+}
+
+.posterCopy {
+  color: var(--cinematic-color-white);
+}
+
+@media (min-width: 64rem) {
+  .rail {
+    display: flex;
+    width: max-content;
+    gap: var(--cinematic-spacing-three-xl);
+  }
+
+  .frame {
+    width: var(--cinematic-layout-poster-width);
+    flex: 0 0 auto;
+  }
+
+  .posterImage {
+    width: min(100%, 1054px);
+  }
+}
+
+@media (max-width: 63.999rem), (prefers-reduced-motion: reduce), (scripting: none) {
+  .section { min-height: auto; overflow: visible; }
+  .railViewport { overflow: visible; }
+  .rail { display: grid; width: 100%; transform: none !important; }
+  .frame { width: min(100%, 58rem); transform: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section *, .section *::before, .section *::after {
+    scroll-behavior: auto !important;
+    animation-duration: var(--cinematic-motion-duration-instant) !important;
+    transition-duration: var(--cinematic-motion-duration-instant) !important;
+  }
+}

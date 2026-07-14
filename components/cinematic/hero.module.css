@@ -1,0 +1,249 @@
+.hero {
+  position: relative;
+  min-height: calc(100svh - var(--cinematic-layout-header-height));
+  overflow: hidden;
+  border-block-end: 1px solid var(--cinematic-color-gray);
+  background: var(--cinematic-color-black);
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  width: min(100%, var(--cinematic-layout-content-max));
+  min-height: inherit;
+  margin: auto;
+  padding: var(--cinematic-spacing-xl) var(--cinematic-spacing-gutter)
+    var(--cinematic-spacing-two-xl);
+  gap: var(--cinematic-spacing-xl);
+  align-content: start;
+}
+
+.lightAxis {
+  position: absolute;
+  z-index: 0;
+  inset-block: 0;
+  inset-inline-start: var(--cinematic-spacing-gutter);
+  width: 1px;
+  background: var(--cinematic-color-yellow);
+  opacity: 0.55;
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  max-width: 52rem;
+  gap: var(--cinematic-spacing-md);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--cinematic-color-yellow);
+  font-size: var(--cinematic-typography-size-label);
+  font-weight: var(--cinematic-typography-weight-bold);
+  line-height: var(--cinematic-typography-line-height-body);
+  letter-spacing: var(--cinematic-typography-tracking-wide);
+  text-transform: uppercase;
+}
+
+.title {
+  display: grid;
+  margin: 0;
+  color: var(--cinematic-color-white);
+  font-family: var(--cinematic-typography-family-display);
+  font-size: var(--cinematic-typography-size-display);
+  font-weight: var(--cinematic-typography-weight-extra-bold);
+  line-height: var(--cinematic-typography-line-height-display);
+  letter-spacing: var(--cinematic-typography-tracking-tight);
+  text-transform: uppercase;
+}
+
+.titleLight {
+  color: var(--cinematic-color-yellow);
+}
+
+.lead {
+  max-width: var(--cinematic-layout-text-measure);
+  margin: 0;
+  color: var(--cinematic-color-white);
+  font-size: var(--cinematic-typography-size-lead);
+  font-weight: var(--cinematic-typography-weight-medium);
+  line-height: var(--cinematic-typography-line-height-body);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cinematic-spacing-sm);
+  align-items: center;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  min-block-size: var(--cinematic-spacing-target);
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--cinematic-spacing-lg);
+  font-size: var(--cinematic-typography-size-small);
+  font-weight: var(--cinematic-typography-weight-extra-bold);
+  line-height: var(--cinematic-typography-line-height-body);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color var(--cinematic-motion-duration-fast)
+      var(--cinematic-motion-easing-standard),
+    background-color var(--cinematic-motion-duration-fast)
+      var(--cinematic-motion-easing-standard);
+}
+
+.primary {
+  border: 1px solid var(--cinematic-color-yellow);
+  background: var(--cinematic-color-yellow);
+  color: var(--cinematic-color-black);
+}
+
+.primary:hover {
+  background: var(--cinematic-color-white);
+  color: var(--cinematic-color-black);
+}
+
+.secondary {
+  border: 1px solid var(--cinematic-color-white);
+  color: var(--cinematic-color-white);
+}
+
+.secondary:hover {
+  background: var(--cinematic-color-white);
+  color: var(--cinematic-color-black);
+}
+
+.portrait {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 32rem);
+  max-width: 915px;
+  height: clamp(16rem, 38vh, 24rem);
+  margin: 0;
+  justify-self: end;
+  overflow: hidden;
+  border-block-end: var(--cinematic-spacing-xs) solid
+    var(--cinematic-color-yellow);
+  background: var(--cinematic-color-gray);
+}
+
+.portraitImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.portrait figcaption {
+  position: absolute;
+  inset-block-end: var(--cinematic-spacing-sm);
+  inset-inline-start: var(--cinematic-spacing-sm);
+  padding: var(--cinematic-spacing-xs) var(--cinematic-spacing-sm);
+  background: var(--cinematic-color-black);
+  color: var(--cinematic-color-white);
+  font-size: var(--cinematic-typography-size-label);
+  font-weight: var(--cinematic-typography-weight-bold);
+  line-height: var(--cinematic-typography-line-height-body);
+  text-transform: uppercase;
+}
+
+.redGesture {
+  position: absolute;
+  z-index: 3;
+  inset-block-start: var(--cinematic-spacing-xl);
+  inset-inline-end: calc(-1 * var(--cinematic-spacing-xl));
+  width: clamp(5rem, 16vw, 10rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cinematic-color-red);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.facts {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  margin: 0;
+  border-block-start: 1px solid var(--cinematic-color-gray);
+  border-inline-start: 1px solid var(--cinematic-color-gray);
+}
+
+.facts > div {
+  min-width: 0;
+  padding: var(--cinematic-spacing-sm);
+  border-inline-end: 1px solid var(--cinematic-color-gray);
+  border-block-end: 1px solid var(--cinematic-color-gray);
+}
+
+.facts dt {
+  color: var(--cinematic-color-yellow);
+  font-size: var(--cinematic-typography-size-label);
+  font-weight: var(--cinematic-typography-weight-bold);
+  line-height: var(--cinematic-typography-line-height-body);
+  letter-spacing: var(--cinematic-typography-tracking-wide);
+  text-transform: uppercase;
+}
+
+.facts dd {
+  margin: var(--cinematic-spacing-xs) 0 0;
+  color: var(--cinematic-color-white);
+  font-size: var(--cinematic-typography-size-small);
+  font-weight: var(--cinematic-typography-weight-semibold);
+  line-height: var(--cinematic-typography-line-height-body);
+}
+
+@media (min-width: 23.75rem) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .facts > div:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .copy {
+    grid-column: 1 / span 7;
+  }
+
+  .portrait {
+    width: 100%;
+    height: clamp(28rem, 62vh, 48rem);
+    grid-column: 8 / -1;
+    grid-row: 1;
+  }
+
+  .facts {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .facts > div:last-child {
+    grid-column: auto;
+  }
+}
+
+@media (min-width: 80rem) {
+  .grid {
+    padding-block: var(--cinematic-spacing-three-xl);
+  }
+
+  .copy {
+    grid-column: 1 / span 6;
+  }
+
+  .portrait {
+    grid-column: 7 / -1;
+  }
+}
