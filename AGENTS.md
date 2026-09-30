@@ -35,3 +35,13 @@ Nach jeder Code-Aenderung an UI/Seiten (`app/**`, `components/**`, `lib/**`, `pu
 4. **Hook-Backup** — `.claude/settings.json` enthaelt einen PostToolUse-Hook, der nach jedem Write/Edit auf Code-Dateien `localhost:3000` pingt, um Turbopack-Recompile + HMR-Push zu triggern. Der Hook ersetzt den manuellen Check NICHT — er beschleunigt ihn nur.
 
 Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen.
+
+# Verbindliche Bildregel — Niko, 30.09.2026
+
+- Für die Homepage ausschließlich Fotos aus Nikos verbundenem Canva-Bestand verwenden. Eine lokale Datei oder frühere Fotofreigabe allein beweist diese Herkunft nicht. Keine KI-generierten Ersatzfotos oder externen Stockfotos einsetzen.
+- Vor Veröffentlichung jedes Foto einer belegten Canva-Design-/Seiten- oder Upload-Asset-Identität zuordnen; Originalexport, Dateihash, Freigabe und vorgesehene Rubrik dokumentieren. Ungeklärte Motive nicht als Canva-verifiziert ausgeben und keine neuen ungeklärten Motive einbauen. Bereits aktive, noch ungeklärte Bilder müssen vor der endgültigen Abnahme geklärt oder ersetzt werden.
+- Fotos redaktionell passend ordnen: Markt und Beratung zum Einstieg/Markt; Portraits und Gruppenbilder zum Team; tatsächliche Leihartikel zur Vermietung; Sortimentfotos zur passenden Getränkekategorie; Aktionsfotos nur zur belegten Aktion beziehungsweise zum datierten Rückblick. Kein Motiv als beliebige Dekoration über mehrere unpassende Rubriken verteilen.
+- Pro Motiv sinnvollen Ausschnitt und Fokuspunkt festlegen. Desktop und Mobil separat prüfen: Köpfe, Hände, Produkte und wichtige Beschriftung dürfen nicht ungewollt angeschnitten werden. Gruppenfotos brauchen ein breites oder natürliches Format; fertig beschnittene Bilder nicht nochmals pauschal in 4:5 zwingen. Zentrierung ist ein gestalterisches Ergebnis, kein universeller `object-position:center`-Ersatz für die Prüfung.
+- Originale in Canva unverändert lassen. Nur lokale Web-Derivate optimieren: richtige Größe, natürliche Farben, keine Verzerrung, kein künstlicher KI-Look. Logos, Originalposter und datierte Handzettel sind Marken-/Werbemittel, keine dekorativen Ersatzfotos; vollständig und lesbar darstellen.
+- Die Canva-Verbindung als redaktionelle Quelle eingerichtet lassen, nicht entfernen. Bei jedem Content-Lauf Lesefunktion und Exportzugang prüfen. Abgelaufene Anmeldung/Autorisierung konkret melden und vom Betreiber erneuern lassen; dauerhafte Verfügbarkeit nicht versprechen. Keine Account- oder Designänderungen und kein Login-Umgehen.
+- Die Website verwendet geprüfte lokale Exporte, keine ablaufenden signierten Canva-Thumbnail-URLs und keine vom Besucher abhängigen Canva-Logins. Interne Herkunftsnachweise und Account-Metadaten nicht öffentlich ausgeben.

@@ -2,6 +2,16 @@
 
 Zeitzone: Europe/Berlin. Vorbereiten sonntags 17:00, Statuskontrolle täglich 06:15. Niko hat Lesen/Exportieren in Canva, Lesen in Instagram sowie Website-Updates und Push autorisiert. Designs und Social-Accounts werden nicht verändert.
 
+## Verbindliche Fotoregel
+
+Seit 30.09.2026 dürfen Homepage-Fotos ausschließlich aus Nikos Canva-Bestand stammen. Für jede neue Bildverwendung Canva-Design und Seite beziehungsweise Upload-Asset, originalen Export, SHA-256, Freigabe, Rubrik und motivabhängigen Ausschnitt belegen. Lokale Originale ohne diese Zuordnung sind nicht automatisch Canva-verifiziert. Keine externen Stock- oder KI-Ersatzfotos. Die konkrete Regel in `AGENTS.md` ist auch bei wöchentlichen Läufen einzuhalten.
+
+Zuordnung: Markt/Beratung zum Einstieg und Marktleben; Menschen zum Team; echte Leihartikel zu Party/Vermietung; Produkt- und Regalfotos zur jeweiligen Kategorie; Aktionen zu ihrem belegten Zeitraum. Keine beliebige Wiederholung derselben Fotos über unpassende Rubriken. Gruppenbilder natürlich/breit halten, Portraits motivabhängig rahmen, Beschriftungen und Gesichter in Desktop und Mobil vollständig berücksichtigen. Canva-Originale werden nicht verändert; Web-Derivate sind lokale Exporte, keine signierten Vorschaulinks.
+
+Den vorhandenen Canva-Connector eingerichtet lassen. Bei jedem Lauf Zugriff lesend prüfen; für Export den authentifizierten Browser verwenden. Abgelaufene Anmeldung melden und betroffene Schritte zurückhalten, keinen dauerhaften Zugriff garantieren oder Sicherheitsprüfungen umgehen.
+
+Prüfstand dieser ergänzten Regel: Der Connector konnte am 30.09.2026 `Mitarbeiter Vorstellung` (`DAGdA1P68ig`, 31 Seiten) und `A4 trinkgut Jammers Bild` (`DAGmzUCT0Jc`) lesen. Für die fünf aktiven Teamfotoderivate ist die lokale Hash-Kette vorhanden, aber die eindeutige Zuordnung zur Canva-Quelle noch offen. Die aktive Vorschau wird deshalb nicht als vollständig Canva-konform abgenommen. Der Browser wartet weiterhin auf Betreiber-Verifizierung. Die motivabhängige Bildüberarbeitung ist noch nicht durchgeführt.
+
 ## Vorbereiten
 
 1. Repository `/Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production`, Branch `codex/cinematic-production` verwenden. AGENTS.md beachten, fetch/ff-only, fremde Änderungen bewahren.
