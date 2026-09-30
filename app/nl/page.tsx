@@ -22,7 +22,7 @@ export default async function NederlandsPage() {
     <main>
       <section className="max-w-6xl mx-auto px-6 py-12 md:py-20 grid md:grid-cols-2 gap-10 items-center">
         <div><p className="text-primary uppercase tracking-wide text-sm font-bold mb-4">Trinkgut Jammers · Goch</p><h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">Goed gezelschap.<br/><span className="text-primary">Goede dranken.</span></h1><p className="text-lg leading-relaxed mb-6">Ontdek ons drankenassortiment en maak kennis met de mensen achter Jammers. Wij helpen je persoonlijk bij je keuze, je feest en het huren van feestbenodigdheden.</p><a href="#handzettel" className="inline-flex bg-primary text-white px-5 py-3 font-bold rounded">Bekijk de weekaanbiedingen</a><p className="mt-6 font-semibold">{MARKET.street} · 47574 Goch<br/>Ma–za 08:00–20:00 uur · gesloten op feestdagen</p></div>
-        <figure className="m-0 border-8 border-primary bg-white"><Image src={EDITORIAL_IMAGES.hero.image} alt="Sven en Niko in onze winkel" sizes="(max-width: 768px) 100vw, 50vw" className="w-full h-auto"/><figcaption className="p-3 text-sm font-bold">Sven & Niko · Team Jammers</figcaption></figure>
+        <figure className="m-0 border-8 border-primary bg-white"><Image src={EDITORIAL_IMAGES.hero.image} alt="Sven en Niko in onze winkel" sizes="(max-width: 768px) 100vw, 50vw" className="w-full h-auto"/><figcaption className="p-3 text-sm font-bold">{EDITORIAL_IMAGES.hero.caption}</figcaption></figure>
       </section>
       <FlyerIndexView index={index} compact/>
       <section id="service" className="max-w-6xl mx-auto px-6 py-14">
@@ -34,7 +34,7 @@ export default async function NederlandsPage() {
       </section>
       <section className="max-w-6xl mx-auto px-6 py-14 border-t border-red-100">
         <h2 className="text-3xl md:text-4xl font-bold mb-8">De mensen achter Jammers.</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">{PEOPLE_STORY.map(person=><figure key={person.id} className={person.id === "team-group" ? "m-0 col-span-2 md:col-span-4 max-w-4xl mx-auto" : "m-0"}><Image src={person.image} alt={person.alt} sizes={person.id === "team-group" ? "(max-width: 768px) 100vw, 900px" : "(max-width: 768px) 50vw, 25vw"} className="w-full h-auto"/><figcaption className="font-bold text-sm pt-3">{person.caption}</figcaption></figure>)}</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">{PEOPLE_STORY.map(person=><figure key={person.id} className={person.id === "team-group" ? "m-0 col-span-2 md:col-span-4 max-w-4xl mx-auto" : "m-0"}><Image src={person.image} alt={person.alt} sizes={person.id === "team-group" ? "(max-width: 768px) 100vw, 900px" : "(max-width: 768px) 50vw, 25vw"} className="w-full h-auto"/>{person.caption && <figcaption className="font-bold text-sm pt-3">{person.caption}</figcaption>}</figure>)}</div>
       </section>
       <section className="max-w-6xl mx-auto px-6 py-14 border-t border-red-100">
         <h2 className="text-3xl font-bold mb-4">Ook een wereld voor verzamelaars.</h2><p className="mb-5">GrailBid is onze eigen TCG-wereld voor trading cards en verzamelaars. De externe webshop is nog in ontwikkeling.</p><a href={SITE_LINKS.grailbid} target="_blank" rel="noopener noreferrer" className="inline-flex px-5 py-3 bg-[#281E1E] text-white font-bold">Naar GrailBid.com ↗</a>

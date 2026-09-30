@@ -39,10 +39,6 @@ describe("cinematic editorial contract", () => {
         "user-approved-canva-pool-2026-09-30",
       );
     }
-    expect(EDITORIAL_IMAGES.jasmin.caption).toBe("Jasmin · Team Jammers");
-    expect(EDITORIAL_IMAGES.gabriella.caption).toBe(
-      "Gabriella · Team Jammers",
-    );
   });
 
   test("does not fabricate a dated Instagram feed", () => {

@@ -38,9 +38,9 @@ export default function PeopleSection(): React.JSX.Element {
                 placeholder="blur"
                 sizes={`(max-width: 47.999rem) min(100vw, ${person.image.width}px), min(${desktopWidth}, ${person.image.width}px)`}
               />
-              <figcaption className={styles.caption}>
+              {person.caption && <figcaption className={styles.caption}>
                 {person.caption}
-              </figcaption>
+              </figcaption>}
             </figure>
           );
         })}

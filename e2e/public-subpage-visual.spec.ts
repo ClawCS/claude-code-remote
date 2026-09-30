@@ -104,7 +104,7 @@ async function expectNaturalEditorialImages(page: Page, path: string): Promise<v
     const alt = name === "Niko" ? "Nikolaos Jammers im Markt" : `${name} von Trinkgut Jammers`;
     await expect(team.getByRole("img", { name: alt, exact: true })).toHaveCount(1);
     await expect(path === "/"
-      ? team.getByText(`${name} · ${name === "Niko" ? "Inhaber" : "Team Jammers"}`, { exact: true })
+      ? team.getByText(name, { exact: true })
       : team.getByRole("heading", { name, exact: true })).toHaveCount(1);
   }
   await expect(team.getByText(/\b(?:Harpe|Justin)\b/i)).toHaveCount(0);

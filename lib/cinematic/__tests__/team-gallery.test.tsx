@@ -14,6 +14,16 @@ import GaleriePage from "@/app/galerie/page";
 import { galleryItems } from "@/data/gallery";
 
 describe("source-gated team gallery", () => {
+  test("labels each portrait with only its name and omits a generic group caption", () => {
+    const html = renderToStaticMarkup(<GaleriePage />);
+    const captions = [...html.matchAll(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/g)]
+      .map(([, caption]) => caption.replace(/<[^>]+>/g, "").trim());
+    expect(captions).toEqual([
+      "Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna",
+      "Nico", "Nils", "Henri", "Tim", "Hannah",
+    ]);
+  });
+
   test("restores all eleven names without turning group images into employees", () => {
     const html = renderToStaticMarkup(<GaleriePage />);
     for (const name of ["Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna", "Nico", "Nils", "Henri", "Tim", "Hannah"]) {

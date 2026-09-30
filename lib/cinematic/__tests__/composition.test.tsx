@@ -211,22 +211,12 @@ describe("cinematic homepage composition", () => {
     const spotlight = extractElement(html, "section", 'id="eigenmarken"');
 
     expect(count(people, /<figure\b/)).toBe(12);
-    const peopleOrder = [
-      "Team Jammers",
-      "Niko · Inhaber",
-      "Sven · Team Jammers",
-      "Jasmin · Team Jammers",
-      "Gabriella · Team Jammers",
-      "Jan Niklas · Team Jammers",
-      "Hanna · Team Jammers",
-      "Nico · Team Jammers",
-      "Nils · Team Jammers",
-      "Tim · Team Jammers",
-    ].map((caption) => people.indexOf(caption));
-    expect(peopleOrder.every((position) => position >= 0)).toBe(true);
-    expect(peopleOrder).toEqual(
-      [...peopleOrder].sort((left, right) => left - right),
-    );
+    const peopleCaptions = [...people.matchAll(/<figcaption\b[^>]*>([^<]*)<\/figcaption>/g)]
+      .map(([, caption]) => caption);
+    expect(peopleCaptions).toEqual([
+      "Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna",
+      "Nico", "Nils", "Tim", "Henri", "Hannah",
+    ]);
 
     expect(count(spotlight, /<figure\b/)).toBe(3);
     const posterOrder = [

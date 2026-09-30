@@ -227,10 +227,8 @@ async function expectPublicChrome(page: Page): Promise<void> {
 async function expectNaturalPeopleStory(page: Page): Promise<void> {
   await expect(page.locator("#menschen figure")).toHaveCount(12);
   await expect(page.locator("#menschen figcaption")).toHaveText([
-    "Team Jammers", "Niko · Inhaber", "Sven · Team Jammers",
-    "Jasmin · Team Jammers", "Gabriella · Team Jammers",
-    "Jan Niklas · Team Jammers", "Hanna · Team Jammers", "Nico · Team Jammers",
-    "Nils · Team Jammers", "Tim · Team Jammers", "Henri · Team Jammers", "Hannah · Team Jammers",
+    "Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna",
+    "Nico", "Nils", "Tim", "Henri", "Hannah",
   ]);
   const photos = page.locator("#menschen figure img");
   await expect(photos).toHaveCount(12);
