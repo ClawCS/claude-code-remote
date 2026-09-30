@@ -31,6 +31,8 @@ Jeder CLI-Lauf erzeugt `audit/content-runs/<run-id>.json` mit Zielzeitraum, Star
 
 Lokale geplante Aufgaben brauchen einen eingeschalteten Mac und laufende Codex-App. Connector und Browser-Anmeldung sind getrennt. Solange die öffentliche Bereitstellung unbekannt oder der Browser nicht eingeloggt ist, sind diese Schritte ausdrücklich eingeschränkt.
 
+Wird ein Push wegen ungültiger Git-Anmeldung abgewiesen, keine neuen Tokens oder Berechtigungen anlegen. `gh auth status` darf den vorhandenen Zugang prüfen, ohne Tokens auszugeben. Am 30.09. war dieser Zugang gültig; der defekte Standard-Helper wurde nur für den einzelnen Push umgangen: `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push -u origin codex/cinematic-production`. Globale Git-Konfiguration und gespeicherte Zugangsdaten bleiben unverändert. Ist auch dieser Zugang ungültig, den Betreiber um Anmeldung bitten, nicht unverändert weiter versuchen.
+
 ## Stand und Abnahme
 
 Am 30.09.2026 sind die zwei Aufgaben im bestehenden Chat aktiv: sonntags 17:00 vorbereiten und täglich 06:15 prüfen. `publicUrl` ist noch nicht eingerichtet. Der Canva-Connector kann Designs lesen, der Browser wartet jedoch auf den vom Betreiber einzugebenden E-Mail-Code. Deshalb enthält `flyers.json` noch keine behaupteten Canva-Exports. Der aktuelle offizielle Goch-Katalog für 28.09.–03.10.2026 ist vorhanden und lokal überprüft.
