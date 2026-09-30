@@ -9,6 +9,7 @@ import type {
   EditorialCampaign,
 } from "@/lib/editorial-repository";
 import type { HandzettelCache } from "@/lib/handzettel-catalog";
+import type { FlyerPackage } from "@/lib/flyer-packages";
 import {
   aggregateHomepageContent,
   createHomepageContentLoader,
@@ -23,6 +24,7 @@ const VIEWER_URL =
   "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest";
 const ASSET_BASE =
   "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2";
+const nlPackage:FlyerPackage={id:"nl-2026-07-13",language:"nl",title:"Aanbiedingen",validFrom:"2026-07-13",validTo:"2026-07-18",sourceUrl:"https://www.canva.com/design/test/view",designId:"test",pageNumbers:[14],rightsStatus:"approved",exportedAt:"2026-07-12T15:00:00Z",pdfPath:"/handzettel/2026/nl.pdf",coverPath:"/images/content/nl.webp",pdfSha256:"a".repeat(64),coverSha256:"b".repeat(64)};
 
 function makeCache(): HandzettelCache {
   return {
@@ -112,6 +114,35 @@ function aggregate(overrides: {
 }
 
 describe("homepage content", () => {
+  it("retains a source-approved Friday-ending KW40 NL page on Friday only",()=>{
+    const nlFlyer=makeFlyer({id:"nl-kw40",validFrom:"2026-09-28",validTo:"2026-10-02",pageCount:1,viewerUrl:"/handzettel/2026/nl.pdf",pdfUrl:"/handzettel/2026/nl.pdf",coverUrl:"/images/content/nl.webp",sourceUrl:"https://www.canva.com/design/test/view"});
+    const friday=aggregateHomepageContent({now:new Date("2026-10-02T12:00:00Z"),flyer:null,nlFlyer,campaigns:[],archive:[]});
+    expect(friday.nlFlyer?.validTo).toBe("2026-10-02");
+    const saturday=aggregateHomepageContent({now:new Date("2026-10-02T22:00:00Z"),flyer:null,nlFlyer,campaigns:[],archive:[]});
+    expect(saturday.nlFlyer).toBeNull();
+  });
+  it("adds the current one-page NL flyer without replacing official DE or the event",async()=>{
+    const load=createHomepageContentLoader({loadValidatedHandzettelCache:async()=>makeCache(),loadApprovedCampaigns:async()=>[makeCampaign()],loadEditorialArchive:async()=>[],loadFlyerPackages:async()=>[nlPackage]});
+    const content=await load(NOW);
+    expect(content.flyer?.id).toBe("catalog-13027-29-2026");
+    expect(content.nlFlyer).toMatchObject({id:"nl-2026-07-13",pageCount:1,coverUrl:"/images/content/nl.webp",pdfUrl:"/handzettel/2026/nl.pdf"});
+    expect(content.event?.id).toBe("strikerball-2026-07-24");
+  });
+  it.each([
+    {validFrom:"2026-07-06",validTo:"2026-07-11"},
+    {validFrom:"2026-07-20",validTo:"2026-07-25"},
+    {validFrom:"2026-07-14",validTo:"2026-07-18"},
+    {validFrom:"2026-07-13",validTo:"2026-07-17"},
+  ])("keeps expired, future or partial-week NL content off the homepage: %j",async dates=>{
+    const load=createHomepageContentLoader({loadValidatedHandzettelCache:async()=>makeCache(),loadApprovedCampaigns:async()=>[],loadEditorialArchive:async()=>[],loadFlyerPackages:async()=>[{...nlPackage,...dates}]});
+    expect((await load(NOW)).nlFlyer).toBeNull();
+  });
+  it("activates the preloaded NL page at Berlin Monday and removes it after Saturday",async()=>{
+    const load=createHomepageContentLoader({loadValidatedHandzettelCache:async()=>null,loadApprovedCampaigns:async()=>[],loadEditorialArchive:async()=>[],loadFlyerPackages:async()=>[nlPackage]});
+    expect((await load(new Date("2026-07-12T15:00:00Z"))).nlFlyer).toBeNull();
+    expect((await load(new Date("2026-07-12T22:00:00Z"))).nlFlyer?.id).toBe("nl-2026-07-13");
+    expect((await load(new Date("2026-07-18T22:00:00Z"))).nlFlyer).toBeNull();
+  });
   it("returns the current flyer and official event", () => {
     const content = aggregateHomepageContent({
       now: NOW,
@@ -520,6 +551,7 @@ describe("homepage content loader", () => {
     expect(content).toEqual({
       generatedAt: NOW.toISOString(),
       flyer: null,
+      nlFlyer: null,
       event: {
         id: "strikerball-2026-07-24",
         title: "Striker Ball Challenge",

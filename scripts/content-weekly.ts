@@ -3,12 +3,14 @@ import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "../lib/editorial-schedule";
 import { fetchOfficialCatalog, loadValidatedHandzettelCache, validateCatalog } from "../lib/handzettel-catalog";
-import { loadFlyerPackages, selectActiveFlyerPackages, verifyFlyerFiles } from "../lib/flyer-packages";
-import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, type PublishedFlyer } from "../lib/content-verification";
+import { loadFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer, verifyFlyerFiles } from "../lib/flyer-packages";
+import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, type PublishedFlyer } from "../lib/content-verification";
 import { mapFlyerPackageToFlyer, mapHandzettelCacheToFlyer } from "../lib/homepage-content";
+import { getOfferDemandRange, getOfficialOfferRange } from "../lib/offer-validity";
 
 const {prepare,now,week:explicitWeek,url:overrideUrl} = parseContentArguments(process.argv.slice(2));
 const range = explicitWeek ? getCurrentWeekRange(new Date(`${explicitWeek}T12:00:00Z`)) : prepare ? getPublicationWeekRange(now) : getCurrentWeekRange(now);
+const offersRequired = prepare || berlinDateKey(now) <= getOfferDemandRange(range).validTo;
 if (explicitWeek && range.validFrom !== explicitWeek) throw new Error("--week muss ein gültiger Montag sein.");
 const root = process.cwd();
 const lockPath = path.join(root, "data/editorial/.content-update.lock");
@@ -50,11 +52,12 @@ try {
         if (!response.ok || !response.headers.get("content-type")?.startsWith(type)) errors.push(`Offizielle Datei nicht erreichbar: ${url}`);
       }
       sources.push({source: "trinkgut-official", id: catalog.catalogId, validFrom: catalog.validFrom, validTo: catalog.validTo, result: "active"});
-    } else if (berlinDateKey(now) <= range.validTo) errors.push("Kein gültiger deutscher Handzettel für die laufende Woche.");
+    } else if (offersRequired) errors.push("Kein gültiger deutscher Handzettel für die laufende Woche.");
   }
 
   const packages = await loadFlyerPackages();
-  const relevant = prepare ? packages.filter((item) => item.validFrom <= range.validTo && item.validTo >= range.validFrom) : selectActiveFlyerPackages(packages, now);
+  const nlFlyer = selectWeeklyNlFlyer(packages, range);
+  const relevant = (prepare ? packages.filter((item) => item.validFrom <= range.validTo && item.validTo >= range.validFrom) : selectActiveFlyerPackages(packages, now)).filter(item => item.language !== "nl" || item.id === nlFlyer?.id);
   for (const item of relevant) {
     try {
       await verifyFlyerFiles(item, root);
@@ -62,7 +65,7 @@ try {
       sources.push({source: "canva", id: item.id, designId: item.designId, pageNumbers: item.pageNumbers, language: item.language, validFrom: item.validFrom, validTo: item.validTo, pdfSha256: item.pdfSha256, result: prepare ? "scheduled-and-verified" : "active-and-verified"});
     } catch (error) { errors.push(error instanceof Error ? error.message : `Dateifehler: ${item.id}`); }
   }
-  if (!packages.some((item) => item.language === "nl" && item.validFrom <= range.validFrom && item.validTo >= range.validTo)) warnings.push("Kein geprüfter NL-Flyer für die gesamte Zielwoche; offizielle DE-Werbung bleibt die Hauptquelle.");
+  if (offersRequired && !nlFlyer) errors.push("Pflicht-NL-Flyer fehlt: genau eine geprüfte Canva-Seite für die vollständige Zielwoche erforderlich.");
 
   const config = JSON.parse(await readFile(path.join(root, "data/editorial/source-config.json"), "utf8"));
   const publicUrl = overrideUrl ?? config.publicUrl;
@@ -71,10 +74,12 @@ try {
     if (origin.username || origin.password || !["https:", "http:"].includes(origin.protocol)) throw new Error("Ungültige Prüf-URL.");
     const response = await fetch(new URL("/api/content/current", origin), {cache: "no-store", signal: AbortSignal.timeout(20_000)});
     const content = await response.json();
-    if (!response.ok || (berlinDateKey(now) <= range.validTo && (!content.flyer || content.flyer.validFrom !== range.validFrom || content.flyer.validTo !== range.validTo))) errors.push("Website/API zeigt nicht das erwartete aktuelle Wochenpaket.");
+    const expectedDeEnd = expectedFlyers.find(flyer => flyer.language === "de")?.validTo ?? getOfficialOfferRange(range).validTo;
+    if (!response.ok || (offersRequired && (!content.flyer || content.flyer.validFrom !== range.validFrom || content.flyer.validTo !== expectedDeEnd))) errors.push("Website/API zeigt nicht das erwartete aktuelle Wochenpaket.");
     const home = await fetch(origin, {cache: "no-store", signal: AbortSignal.timeout(20_000)});
     const html = await home.text();
     if (!home.ok || !html.includes('id="aktuell"')) errors.push("Homepage oder Angebotsbereich nicht erreichbar.");
+    errors.push(...verifyPublishedFlyerMarkup(expectedFlyers, html, "/"));
     if (content.flyer) {
       for (const [link, type] of [[content.flyer.pdfUrl, "application/pdf"], [content.flyer.coverUrl, "image/"]]) {
         const file = await fetch(new URL(link, origin), {method: "HEAD", cache: "no-store", signal: AbortSignal.timeout(20_000)});
@@ -86,11 +91,12 @@ try {
     const index = await indexResponse.json();
     if (!indexResponse.ok) errors.push("Veröffentlichter Flyerindex ist nicht erreichbar.");
     if (index.status === "degraded") errors.push("Veröffentlichter Flyerindex meldet einen Integritätsfehler.");
-    errors.push(...comparePublishedFlyers(expectedFlyers,index.flyers,content.flyer));
-    for (const route of ["/angebote","/handzettel"]) {
+    errors.push(...comparePublishedFlyers(expectedFlyers,index.flyers,content.flyer,content.nlFlyer));
+    for (const route of ["/angebote","/handzettel","/nl"]) {
       const page = await fetch(new URL(route,origin),{cache:"no-store",signal:AbortSignal.timeout(20_000)});
       const markup = await page.text();
-      if (!page.ok || expectedFlyers.some(item=>!markup.includes(item.pdfUrl.replaceAll("&","&amp;")))) errors.push(`Wochenflyer fehlen auf ${route}.`);
+      if (!page.ok) errors.push(`Wochenflyerseite nicht erreichbar: ${route}.`);
+      errors.push(...verifyPublishedFlyerMarkup(expectedFlyers, markup, route));
     }
     for (const item of selectActiveFlyerPackages(packages, now)) {
       if (item.language === "de" && content.flyer?.id.startsWith("catalog-")) continue;

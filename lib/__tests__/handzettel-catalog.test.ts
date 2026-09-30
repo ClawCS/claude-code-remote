@@ -31,6 +31,17 @@ const ASSET_BASE =
 const MANIFEST_URL = `${ASSET_BASE}/xml/catalog.xml`;
 const PDF_URL =
   `https://werbung.trinkgut.de/frontend/catalogs/${CATALOG_ID}/${CATALOG_VERSION}/pdf/complete.pdf`;
+const REVIEWED_NOW = new Date("2026-09-30T10:00:00.000Z");
+const REVIEWED_CALENDAR_RANGE = {
+  validFrom: "2026-09-28",
+  validTo: "2026-10-03",
+} as const;
+const REVIEWED_PRINTED_RANGE = {
+  validFrom: "2026-09-28",
+  validTo: "2026-10-02",
+} as const;
+const REVIEWED_CATALOG_ID = "1384969";
+const REVIEWED_CATALOG_TITLE = "KW40 2747 RHEINRUHR";
 
 type ViewerFixtureOptions = Readonly<{
   catalogId?: string;
@@ -112,6 +123,8 @@ type PlannedFailure = Readonly<{
 }>;
 
 type FetchFixtureOptions = Readonly<{
+  catalogId?: string;
+  version?: string;
   html?: string;
   xml?: string;
   viewerResponseUrl?: string;
@@ -142,12 +155,19 @@ function expectedAssetCalls(catalogId = CATALOG_ID, version = CATALOG_VERSION) {
 }
 
 function createFetchStub({
+  catalogId = CATALOG_ID,
+  version = CATALOG_VERSION,
   html = viewerHtml(),
   xml = manifestXml(),
   viewerResponseUrl = HANDZETTEL_VIEWER_URL,
   failures = {},
 }: FetchFixtureOptions = {}) {
   const calls: string[] = [];
+  const assetBase =
+    `https://werbung.trinkgut.de/frontend/mvc/api/catalogs/${catalogId}/v${version}`;
+  const manifestUrl = `${assetBase}/xml/catalog.xml`;
+  const pdfUrl =
+    `https://werbung.trinkgut.de/frontend/catalogs/${catalogId}/${version}/pdf/complete.pdf`;
   const fetchImpl = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url =
       typeof input === "string"
@@ -172,13 +192,13 @@ function createFetchStub({
     if (key === `GET ${HANDZETTEL_VIEWER_URL}`) {
       return response(html, "text/html; charset=UTF-8", 200, viewerResponseUrl);
     }
-    if (key === `GET ${MANIFEST_URL}`) {
+    if (key === `GET ${manifestUrl}`) {
       return response(xml, "application/xml; charset=UTF-8", 200, url);
     }
-    if (expectedAssetCalls().includes(key)) {
+    if (expectedAssetCalls(catalogId, version).includes(key)) {
       return response(null, "image/jpeg; charset=binary", 200, url);
     }
-    if (key === `HEAD ${PDF_URL}`) {
+    if (key === `HEAD ${pdfUrl}`) {
       return response(null, "application/pdf; charset=binary", 200, url);
     }
 
@@ -196,18 +216,22 @@ function defaultContentType(url: string): string {
 }
 
 function validCache(overrides: Partial<HandzettelCache> = {}): HandzettelCache {
+  const catalogId = overrides.catalogId ?? CATALOG_ID;
+  const catalogVersion = overrides.catalogVersion ?? CATALOG_VERSION;
+  const assetBase =
+    `https://werbung.trinkgut.de/frontend/mvc/api/catalogs/${catalogId}/v${catalogVersion}`;
   const pages = Array.from({ length: 10 }, (_, index) => {
     const number = index + 1;
     return {
       number,
-      imageUrl: `${ASSET_BASE}/normal/bk_${number}.jpg`,
-      thumbnailUrl: `${ASSET_BASE}/thumbnails/bk_${number}.jpg`,
+      imageUrl: `${assetBase}/normal/bk_${number}.jpg`,
+      thumbnailUrl: `${assetBase}/thumbnails/bk_${number}.jpg`,
     };
   });
 
   return {
-    catalogId: CATALOG_ID,
-    catalogVersion: CATALOG_VERSION,
+    catalogId,
+    catalogVersion,
     storeId: HANDZETTEL_STORE_ID,
     werbekreis: HANDZETTEL_WERBEKREIS,
     kw: 29,
@@ -216,12 +240,24 @@ function validCache(overrides: Partial<HandzettelCache> = {}): HandzettelCache {
     validTo: TARGET_RANGE.validTo,
     fetchedAt: NOW.toISOString(),
     viewerUrl: HANDZETTEL_VIEWER_URL,
-    pdfUrl: PDF_URL,
+    pdfUrl:
+      `https://werbung.trinkgut.de/frontend/catalogs/${catalogId}/${catalogVersion}/pdf/complete.pdf`,
     pageCount: 10,
     pages,
     status: "ok",
     ...overrides,
   };
+}
+
+function reviewedCache(catalogVersion = "4", overrides: Partial<HandzettelCache> = {}): HandzettelCache {
+  return validCache({
+    catalogId: REVIEWED_CATALOG_ID,
+    catalogVersion,
+    kw: 40,
+    ...REVIEWED_PRINTED_RANGE,
+    fetchedAt: REVIEWED_NOW.toISOString(),
+    ...overrides,
+  });
 }
 
 describe("official leaflet catalog", () => {
@@ -394,6 +430,94 @@ describe("official leaflet catalog", () => {
     ]);
   });
 
+  it.each(["4", "5"])("returns the reviewed printed Friday deadline for catalog version %s", async (version) => {
+    const stub = createFetchStub({
+      catalogId: REVIEWED_CATALOG_ID,
+      version,
+      html: viewerHtml({
+        catalogId: REVIEWED_CATALOG_ID,
+        version,
+        title: REVIEWED_CATALOG_TITLE,
+        expiry: "Sat, 03 Oct 2026 23:59:59 CEST",
+      }),
+      xml: manifestXml({ name: REVIEWED_CATALOG_TITLE }),
+    });
+
+    expect(await fetchOfficialCatalog(REVIEWED_NOW, stub.fetchImpl)).toEqual(reviewedCache(version));
+  });
+
+  it.each(["4", "5"])("accepts catalog version %s printed dates against its calendar target", (version) => {
+    expect(() => validateCatalog(reviewedCache(version), REVIEWED_CALENDAR_RANGE)).not.toThrow();
+  });
+
+  it.each(["4", "5"])("accepts catalog version %s source-mapped printed expected range", (version) => {
+    expect(() => validateCatalog(reviewedCache(version), REVIEWED_PRINTED_RANGE)).not.toThrow();
+  });
+
+  it.each(["4", "5"])("rejects an obsolete Saturday offer label for reviewed catalog version %s", (version) => {
+    expect(() =>
+      validateCatalog(reviewedCache(version, { validTo: "2026-10-03" }), REVIEWED_CALENDAR_RANGE),
+    ).toThrow(/validity range/);
+  });
+
+  it.each(["4", "5"])("rejects Friday viewer expiry for reviewed catalog version %s", async (version) => {
+    const stub = createFetchStub({
+      catalogId: REVIEWED_CATALOG_ID,
+      version,
+      html: viewerHtml({
+        catalogId: REVIEWED_CATALOG_ID,
+        version,
+        title: REVIEWED_CATALOG_TITLE,
+        expiry: "Fri, 02 Oct 2026 23:59:59 CEST",
+      }),
+      xml: manifestXml({ name: REVIEWED_CATALOG_TITLE }),
+    });
+
+    await expect(fetchOfficialCatalog(REVIEWED_NOW, stub.fetchImpl)).rejects.toThrow(/viewer expiry/);
+  });
+
+  it.each([
+    { catalogId: REVIEWED_CATALOG_ID, catalogVersion: "6" },
+    { catalogId: "1384970", catalogVersion: "4" },
+  ])("does not inherit Friday validity for unreviewed source $catalogId v$catalogVersion", (identity) => {
+    expect(() =>
+      validateCatalog(reviewedCache(identity.catalogVersion, { ...identity, validTo: "2026-10-03" }), REVIEWED_CALENDAR_RANGE),
+    ).not.toThrow();
+    expect(() =>
+      validateCatalog(reviewedCache(identity.catalogVersion, identity), REVIEWED_CALENDAR_RANGE),
+    ).toThrow(/validity range/);
+    expect(() =>
+      validateCatalog(reviewedCache(identity.catalogVersion, identity), REVIEWED_PRINTED_RANGE),
+    ).toThrow(/target validity range/);
+  });
+
+  it.each([
+    { validFrom: "2026-09-28", validTo: "2026-10-01", kw: 40 },
+    { validFrom: "2026-09-21", validTo: "2026-09-25", kw: 39 },
+    { validFrom: "2026-09-29", validTo: "2026-10-02", kw: 40 },
+  ])("rejects arbitrary partial target range $validFrom through $validTo", ({ validFrom, validTo, kw }) => {
+    expect(() =>
+      validateCatalog(reviewedCache("4", { validFrom, validTo, kw }), { validFrom, validTo }),
+    ).toThrow(/target validity range/);
+  });
+
+  it("does not reinterpret a wrong-week reviewed viewer title", async () => {
+    const title = "KW39 2747 RHEINRUHR";
+    const stub = createFetchStub({
+      catalogId: REVIEWED_CATALOG_ID,
+      version: "4",
+      html: viewerHtml({
+        catalogId: REVIEWED_CATALOG_ID,
+        version: "4",
+        title,
+        expiry: "Sat, 03 Oct 2026 23:59:59 CEST",
+      }),
+      xml: manifestXml({ name: title }),
+    });
+
+    await expect(fetchOfficialCatalog(REVIEWED_NOW, stub.fetchImpl)).rejects.toThrow(/calendar week/);
+  });
+
   it.each([
     {
       label: "wrong group",
@@ -526,6 +650,16 @@ describe("official leaflet catalog", () => {
       message: "Quelle nicht verfügbar",
     });
   });
+
+  it("uses the reviewed week's Friday demand deadline in a fallback", () => {
+    expect(createHandzettelFallback(REVIEWED_NOW)).toMatchObject({
+      kw: 40,
+      year: 2026,
+      validFrom: "2026-09-28",
+      validTo: "2026-10-02",
+      status: "fallback",
+    });
+  });
 });
 
 describe("leaflet refresh route", () => {
@@ -639,6 +773,28 @@ describe("leaflet refresh route", () => {
     expect(result.status).toBe(200);
     expect(result.headers.get("cache-control")).toBe("no-store");
     expect(await result.json()).toEqual(validCache());
+    expect(network).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { now: "2026-10-02T21:59:59.000Z", expectedStatus: "ok" },
+    { now: "2026-10-02T22:00:00.000Z", expectedStatus: "fallback" },
+  ])("serves reviewed offers only through printed Friday at $now", async ({ now, expectedStatus }) => {
+    vi.setSystemTime(new Date(now));
+    await mkdir(path.join(sandbox, "data"), { recursive: true });
+    await writeFile(
+      path.join(sandbox, "data", "handzettel-cache.json"),
+      JSON.stringify(reviewedCache()),
+      "utf8",
+    );
+    const network = vi.fn(() => {
+      throw new Error("reviewed cache read attempted network access");
+    });
+    vi.stubGlobal("fetch", network);
+
+    const result = await GET(new Request("https://example.test/api/handzettel/fetch"));
+
+    expect((await result.json()).status).toBe(expectedStatus);
     expect(network).not.toHaveBeenCalled();
   });
 

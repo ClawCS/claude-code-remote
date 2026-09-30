@@ -6,6 +6,7 @@ import type {
 
 export type CurrentView = Readonly<{
   flyer: HomepageFlyer | null;
+  nlFlyer?: HomepageFlyer | null;
   event: HomepageEvent | null;
   fallbackMessage: string | null;
 }>;
@@ -182,6 +183,7 @@ export function canRenderHomepageImage(src: string): boolean {
 export function buildCurrentView(content: HomepageContent): CurrentView {
   return {
     flyer: content.flyer,
+    ...(content.nlFlyer !== undefined ? {nlFlyer: content.nlFlyer} : {}),
     event: content.event,
     fallbackMessage: content.flyer ? null : content.fallbackMessage,
   };

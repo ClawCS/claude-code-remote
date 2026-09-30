@@ -11,10 +11,12 @@ import {
 } from "@/lib/handzettel-catalog";
 import {
   berlinDateKey,
+  getCurrentWeekRange,
   isEditorialPublishable,
   type EditorialSource,
 } from "@/lib/editorial-schedule";
-import { loadFlyerPackages, selectActiveFlyerPackages, type FlyerPackage } from "@/lib/flyer-packages";
+import { loadFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer, type FlyerPackage } from "@/lib/flyer-packages";
+import { getAcceptedNlOfferRanges } from "@/lib/offer-validity";
 
 export type HomepageFlyer = Readonly<{
   id: string;
@@ -50,6 +52,7 @@ export type HomepageArchiveItem = Readonly<{
 export type HomepageContent = Readonly<{
   generatedAt: string;
   flyer: HomepageFlyer | null;
+  nlFlyer?: HomepageFlyer | null;
   event: HomepageEvent | null;
   archive: readonly HomepageArchiveItem[];
   fallbackMessage: string | null;
@@ -67,6 +70,7 @@ export type HomepageContentSources = Readonly<{
 type AggregateHomepageContentInput = Readonly<{
   now: Date;
   flyer: HomepageFlyer | null;
+  nlFlyer?: HomepageFlyer | null;
   campaigns: readonly EditorialCampaign[];
   archive: readonly EditorialArchiveItem[];
 }>;
@@ -268,10 +272,13 @@ export function mapFlyerPackageToFlyer(item: FlyerPackage): HomepageFlyer {
 export function aggregateHomepageContent({
   now,
   flyer,
+  nlFlyer = null,
   campaigns,
   archive,
 }: AggregateHomepageContentInput): HomepageContent {
   const currentFlyer = flyer && isCurrentFlyer(flyer, now) ? flyer : null;
+  const range = getCurrentWeekRange(now);
+  const currentNlFlyer = nlFlyer && nlFlyer.pageCount === 1 && getAcceptedNlOfferRanges(range).some(accepted => nlFlyer.validFrom === accepted.validFrom && nlFlyer.validTo === accepted.validTo) && isCurrentFlyer(nlFlyer, now) ? nlFlyer : null;
   let event: HomepageEvent | null = null;
   let currentArchive: readonly HomepageArchiveItem[] = [];
   try {
@@ -287,6 +294,7 @@ export function aggregateHomepageContent({
   return {
     generatedAt: now.toISOString(),
     flyer: currentFlyer,
+    nlFlyer: currentNlFlyer,
     event,
     archive: currentArchive,
     fallbackMessage: currentFlyer ? null : FLYER_FALLBACK,
@@ -318,9 +326,12 @@ export function createHomepageContentLoader(
       if (active) flyer = mapFlyerPackageToFlyer(active);
     }
 
+    const nlPackage = packagesResult.status === "fulfilled" ? selectWeeklyNlFlyer(selectActiveFlyerPackages(packagesResult.value, now), getCurrentWeekRange(now)) : null;
+
     return aggregateHomepageContent({
       now,
       flyer,
+      nlFlyer: nlPackage ? mapFlyerPackageToFlyer(nlPackage) : null,
       campaigns:
         campaignsResult.status === "fulfilled" ? campaignsResult.value : [],
       archive: archiveResult.status === "fulfilled" ? archiveResult.value : [],

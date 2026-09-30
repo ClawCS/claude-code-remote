@@ -3,16 +3,60 @@ import type { HomepageFlyer } from "./homepage-content";
 export type PublishedFlyer = HomepageFlyer & {language: "de" | "nl"};
 const fields = ["id","title","validFrom","validTo","viewerUrl","pdfUrl","coverUrl","pageCount","sourceUrl"] as const;
 
-export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actual: unknown, home: unknown): string[] {
+export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actual: unknown, home: unknown, nlHome: unknown = null): string[] {
   const errors: string[] = [];
   if (!Array.isArray(actual)) return ["Veröffentlichter Flyerindex ist keine Liste."];
   if (actual.length !== expected.length) errors.push("Die Anzahl der veröffentlichten Flyer weicht vom geprüften Paket ab.");
   for (const item of expected) {
+    if (item.language === "nl" && item.pageCount !== 1) errors.push(`Der geprüfte niederländische Handzettel muss genau eine Seite enthalten: ${item.id}`);
     const matches = actual.filter((entry) => entry?.id === item.id);
     if (matches.length !== 1 || [...fields,"language"].some(key => matches[0]?.[key] !== item[key as keyof PublishedFlyer])) errors.push(`Veröffentlichter Flyer stimmt nicht mit dem geprüften Paket überein: ${item.id}`);
   }
   const expectedHome = expected.find(item => item.language === "de");
   if (expectedHome ? !home || typeof home !== "object" || fields.some(key => (home as Record<string,unknown>)[key] !== expectedHome[key]) : home !== null) errors.push("Die Homepage zeigt nicht den geprüften deutschen Handzettel.");
+  const expectedNlHome = expected.find(item => item.language === "nl");
+  if (expectedNlHome ? !nlHome || typeof nlHome !== "object" || fields.some(key => (nlHome as Record<string,unknown>)[key] !== expectedNlHome[key]) : nlHome != null) errors.push("Die Homepage zeigt nicht den geprüften niederländischen Handzettel.");
+  return errors;
+}
+
+export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], html: string, route: string): string[] {
+  const errors: string[] = [];
+  const renderedHtml = html.replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(script|textarea|style|title|iframe|noscript|xmp|noembed|noframes)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "")
+    .replace(/<plaintext\b[\s\S]*$/gi, "");
+  const links: string[] = [];
+  const images: string[] = [];
+  const stack: {tag: string; hidden: boolean}[] = [];
+  const voidTags = new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
+  // Track inert/hidden ancestors, including nested templates. This verifies the
+  // server markup; actual CSS visibility still belongs to browser acceptance.
+  for (const match of renderedHtml.matchAll(/<\/?([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi)) {
+    const tag = match[1].toLowerCase();
+    if (match[0].startsWith("</")) {
+      const index = stack.findLastIndex(item => item.tag === tag);
+      if (index >= 0) stack.length = index;
+      continue;
+    }
+    const attributes = Array.from(match[0].matchAll(/\s([a-z_:][\w:.-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/gi));
+    const hidden = Boolean(stack.at(-1)?.hidden || tag === "template" || attributes.some(item => item[1].toLowerCase() === "hidden"));
+    if (!hidden && (tag === "a" || tag === "img")) {
+      const attribute = tag === "a" ? "href" : "src";
+      const value = attributes.find(item => item[1].toLowerCase() === attribute);
+      if (value) (attribute === "href" ? links : images).push((value[2] ?? value[3] ?? value[4] ?? "").replaceAll("&amp;", "&"));
+    }
+    if (!voidTags.has(tag)) stack.push({tag, hidden});
+  }
+  for (const flyer of expected) {
+    if (!links.includes(flyer.pdfUrl)) errors.push(`Geprüfter ${flyer.language.toUpperCase()}-Flyer-PDF-Link fehlt auf ${route}: ${flyer.id}`);
+    const hasCover = images.some(src => {
+      if (src === flyer.coverUrl) return true;
+      try {
+        const image = new URL(src, "https://markup.invalid");
+        return image.pathname === "/_next/image" && image.searchParams.get("url") === flyer.coverUrl;
+      } catch { return false; }
+    });
+    if (!hasCover) errors.push(`Geprüftes ${flyer.language.toUpperCase()}-Flyer-Vorschaubild fehlt auf ${route}: ${flyer.id}`);
+  }
   return errors;
 }
 

@@ -12,3 +12,11 @@ it("uses Dutch empty and scheduled states",()=>{
   const html=renderToStaticMarkup(<FlyerIndexView index={{...index,flyers:[],scheduled:[{id:"next",language:"nl",title:"Volgende folder",validFrom:"2026-10-05",validTo:"2026-10-10"}]}} compact/>);
   expect(html).toContain("wordt voorbereid");expect(html).toContain("Binnenkort");expect(html).not.toContain("Der nächste gültige Handzettel");expect(html).not.toContain("Als Nächstes");
 });
+it("shows a Dutch NL-specific missing notice even while the DE flyer is available",()=>{
+  const html=renderToStaticMarkup(<FlyerIndexView index={{...index,status:"degraded",issues:["nl-flyer-missing"]}} compact/>);
+  expect(html).toContain("Nederlandse weekfolder is nog niet beschikbaar");expect(html).toContain("Originaltitel");
+});
+it("shows the German NL-specific missing notice on the German index",()=>{
+  const html=renderToStaticMarkup(<FlyerIndexView index={{...index,status:"degraded",issues:["nl-flyer-missing"]}}/>);
+  expect(html).toContain("niederländische Wochenflyer ist noch nicht verfügbar");
+});

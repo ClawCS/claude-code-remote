@@ -3,6 +3,7 @@ import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "@/lib/editorial-schedule";
+import { getOfficialOfferRange, getOfferDemandRange } from "@/lib/offer-validity";
 
 const HANDZETTEL_ORIGIN = "https://werbung.trinkgut.de";
 
@@ -504,7 +505,14 @@ export function validateCatalog(
   value: unknown,
   expectedRange: PublicationRange,
 ): asserts value is HandzettelCache {
-  assertPublicationRange(expectedRange);
+  if (!isValidDateKey(expectedRange.validFrom) || !isValidDateKey(expectedRange.validTo)) {
+    throw new TypeError("invalid target validity range");
+  }
+  const calendarRange = {
+    validFrom: expectedRange.validFrom,
+    validTo: addCalendarDays(expectedRange.validFrom, 5),
+  };
+  assertPublicationRange(calendarRange);
   if (!isRecord(value)) throw new TypeError("invalid catalog shape");
   assertExactKeys(value, CACHE_KEYS, "catalog");
 
@@ -513,6 +521,16 @@ export function validateCatalog(
   assertString(value.catalogVersion, "catalogVersion");
   if (!/^[1-9]\d?$/.test(value.catalogVersion)) {
     throw new TypeError("invalid catalogVersion");
+  }
+  const offerRange = getOfficialOfferRange(calendarRange, {
+    catalogId: value.catalogId,
+    catalogVersion: value.catalogVersion,
+  });
+  if (
+    expectedRange.validTo !== calendarRange.validTo &&
+    expectedRange.validTo !== offerRange.validTo
+  ) {
+    throw new TypeError("invalid target validity range");
   }
   if (value.storeId !== HANDZETTEL_STORE_ID) throw new TypeError("invalid storeId");
   if (value.werbekreis !== HANDZETTEL_WERBEKREIS) {
@@ -523,8 +541,8 @@ export function validateCatalog(
   assertString(value.validFrom, "validFrom");
   assertString(value.validTo, "validTo");
   if (
-    value.validFrom !== expectedRange.validFrom ||
-    value.validTo !== expectedRange.validTo
+    value.validFrom !== offerRange.validFrom ||
+    value.validTo !== offerRange.validTo
   ) {
     throw new TypeError("invalid validity range");
   }
@@ -689,6 +707,10 @@ export async function fetchOfficialCatalog(
     headers: { ...BROWSER_HEADERS, Accept: "application/pdf" },
   });
   assertResponse(pdfResponse, ["application/pdf"], "catalog PDF", pdfUrl);
+  const offerRange = getOfficialOfferRange(targetRange, {
+    catalogId: info.catalogId,
+    catalogVersion: info.version,
+  });
 
   const catalog: HandzettelCache = {
     catalogId: info.catalogId,
@@ -697,8 +719,8 @@ export async function fetchOfficialCatalog(
     werbekreis: HANDZETTEL_WERBEKREIS,
     kw: expectedIdentity.kw,
     year: expectedIdentity.year,
-    validFrom: targetRange.validFrom,
-    validTo: targetRange.validTo,
+    validFrom: offerRange.validFrom,
+    validTo: offerRange.validTo,
     fetchedAt: now.toISOString(),
     viewerUrl: HANDZETTEL_VIEWER_URL,
     pdfUrl,
@@ -714,7 +736,7 @@ export function createHandzettelFallback(
   now = new Date(),
   message = "Aktueller Handzettel momentan nicht verfügbar.",
 ): HandzettelFallback {
-  const targetRange = getPublicationWeekRange(now);
+  const targetRange = getOfferDemandRange(getPublicationWeekRange(now));
   const identity = isoWeekIdentity(targetRange.validFrom);
   return {
     storeId: HANDZETTEL_STORE_ID,

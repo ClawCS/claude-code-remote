@@ -5,7 +5,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { PDFDocument } from "pdf-lib";
 import sharp from "sharp";
-import { loadFlyerPackages, parseFlyerPackages, selectActiveFlyerPackages, verifyFlyerFiles } from "@/lib/flyer-packages";
+import { loadFlyerPackages, parseFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer, verifyFlyerFiles } from "@/lib/flyer-packages";
 
 const flyer = {
   id: "maasduinen-2026-10-05", language: "nl" as const, title: "Aanbiedingen",
@@ -18,6 +18,18 @@ const flyer = {
 };
 
 describe("dated Canva flyer packages", () => {
+  it("accepts the reviewed KW40 Friday-ending NL page without extending its printed validity",()=>{
+    const item={...flyer,validFrom:"2026-09-28",validTo:"2026-10-02"};
+    expect(selectWeeklyNlFlyer([item],{validFrom:"2026-09-28",validTo:"2026-10-03"})?.validTo).toBe("2026-10-02");
+  });
+  it("still accepts the calendar Saturday ending when that is what the NL source prints",()=>{
+    const item={...flyer,validFrom:"2026-09-28",validTo:"2026-10-03"};
+    expect(selectWeeklyNlFlyer([item],{validFrom:"2026-09-28",validTo:"2026-10-03"})?.validTo).toBe("2026-10-03");
+  });
+  it.each([{validFrom:"2026-09-28",validTo:"2026-10-01"},{validFrom:"2026-09-29",validTo:"2026-10-02"},{validFrom:"2026-10-05",validTo:"2026-10-09"}])("does not generalize the reviewed exception into arbitrary shortened weeks: %j", dates=>{
+    const range=dates.validFrom==="2026-10-05"?{validFrom:"2026-10-05",validTo:"2026-10-10"}:{validFrom:"2026-09-28",validTo:"2026-10-03"};
+    expect(selectWeeklyNlFlyer([{...flyer,...dates}],range)).toBeNull();
+  });
   it("refuses to load metadata for missing exported files", async () => {
     const root = await mkdtemp(path.join(tmpdir(), "jammers-flyer-"));
     const cwd = vi.spyOn(process, "cwd").mockReturnValue(root);
@@ -42,6 +54,9 @@ describe("dated Canva flyer packages", () => {
     expect(() => parseFlyerPackages([{...flyer, ...override}])).toThrow();
   });
   it("rejects duplicate IDs", () => expect(() => parseFlyerPackages([flyer, flyer])).toThrow());
+  it("rejects a multi-page NL export instead of accepting a collection as the weekly page", () => {
+    expect(() => parseFlyerPackages([{...flyer, pageNumbers: [13, 14]}])).toThrow(/NL|niederländ|Seite/i);
+  });
   it("rejects overlapping weekly packages of the same language", () => expect(() => parseFlyerPackages([flyer,{...flyer,id:"another-weekly-flyer"}])).toThrow());
   it.each(["broken-pdf","wrong-page-count","broken-cover","valid"])("checks actual PDF structure, selected-page count and cover decoding: %s", async mode => {
     const root = await mkdtemp(path.join(tmpdir(),"jammers-export-"));

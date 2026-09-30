@@ -5,6 +5,7 @@ import { PDFDocument } from "pdf-lib";
 import sharp from "sharp";
 
 import { berlinDateKey } from "@/lib/editorial-schedule";
+import { getAcceptedNlOfferRanges } from "@/lib/offer-validity";
 
 export type FlyerPackage = Readonly<{
   id: string;
@@ -50,6 +51,7 @@ export function parseFlyerPackages(value: unknown): readonly FlyerPackage[] {
     const source = new URL(item.sourceUrl as string);
     if (source.protocol !== "https:" || source.username || source.password || source.hostname !== "www.canva.com" || !source.pathname.startsWith(`/design/${item.designId}/`)) throw new TypeError("Ungültige Canva-Herkunft.");
     if (!Array.isArray(item.pageNumbers) || !item.pageNumbers.length || item.pageNumbers.length > 60 || item.pageNumbers.some((n) => !Number.isInteger(n) || n < 1 || n > 1000) || new Set(item.pageNumbers).size !== item.pageNumbers.length) throw new TypeError("Ungültige Canva-Seitenauswahl.");
+    if (item.language === "nl" && item.pageNumbers.length !== 1) throw new TypeError("Der NL-Wochenflyer muss genau eine Canva-Seite enthalten.");
     if (!pdfPath.test(item.pdfPath as string) || !coverPath.test(item.coverPath as string)) throw new TypeError("Ungültiger lokaler Flyerpfad.");
     if (!hash.test(item.pdfSha256 as string) || !hash.test(item.coverSha256 as string)) throw new TypeError("Ungültige Dateiprüfsumme.");
     if (!Number.isFinite(Date.parse(item.exportedAt as string))) throw new TypeError("Ungültige Exportzeit.");
@@ -78,6 +80,18 @@ export function selectActiveFlyerPackages(packages: readonly FlyerPackage[], now
   const today = berlinDateKey(now);
   return packages.filter((item) => item.validFrom <= today && today <= item.validTo)
     .toSorted((a, b) => b.validFrom.localeCompare(a.validFrom) || a.id.localeCompare(b.id));
+}
+
+// A dated weekly NL page is mandatory alongside the official DE catalog.
+// Only the exact calendar week or explicit reviewed KW40 exception can satisfy it;
+// arbitrary partial weeks, multi-week intervals and duplicates cannot.
+export function selectWeeklyNlFlyer(
+  packages: readonly FlyerPackage[],
+  range: Readonly<{validFrom: string; validTo: string}>,
+): FlyerPackage | null {
+  const acceptedRanges = getAcceptedNlOfferRanges(range);
+  const matches = packages.filter(item => item.language === "nl" && item.pageNumbers.length === 1 && acceptedRanges.some(accepted => item.validFrom === accepted.validFrom && item.validTo === accepted.validTo));
+  return matches.length === 1 ? matches[0] : null;
 }
 
 export async function verifyFlyerFiles(item: FlyerPackage, root = process.cwd()): Promise<void> {

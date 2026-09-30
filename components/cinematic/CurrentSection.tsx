@@ -47,6 +47,7 @@ export default function CurrentSection({
         <h2 id="aktuell-title">Diese Woche im Markt</h2>
       </div>
       <div className={styles.stage}>
+        <div className={styles.flyers}>
         {view.flyer ? (
           <article className={styles.flyer} data-current-flyer>
             <p className={styles.validity}>
@@ -68,6 +69,16 @@ export default function CurrentSection({
             </a>
           </div>
         )}
+
+        {view.nlFlyer ? (
+          <article className={styles.flyer} data-current-nl-flyer lang="nl">
+            <p className={styles.validity}>Nederlands · Geldig {formatDateRange(view.nlFlyer.validFrom, view.nlFlyer.validTo)}</p>
+            <h3>{view.nlFlyer.title}</h3>
+            <p>1 pagina</p>
+            <FlyerViewer flyer={view.nlFlyer} locale="nl" />
+          </article>
+        ) : null}
+        </div>
 
         {view.event ? (
           <article className={styles.event} data-current-event>

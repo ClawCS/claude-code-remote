@@ -163,6 +163,12 @@ function expectEveryFragmentResolvesOnce(html: string): void {
 }
 
 describe("cinematic homepage composition", () => {
+  test("renders the Dutch one-page card beside DE while retaining the current event",()=>{
+    const html=render({...populatedContent,nlFlyer:{id:"nl-week",title:"Nederlandse weekfolder",validFrom:"2026-07-13",validTo:"2026-07-18",viewerUrl:"/handzettel/2026/nl.pdf",pdfUrl:"/handzettel/2026/nl.pdf",pageCount:1,coverUrl:"/images/content/nl.webp",sourceUrl:"https://www.canva.com/design/test/view"}});
+    const current=extractElement(html,"section",'id="aktuell"');
+    expect(current).toContain("Angebote der Woche");expect(current).toContain("Nederlandse weekfolder");expect(current).toContain('data-current-nl-flyer');
+    expect(current).toContain("1 pagina");expect(current).toContain("Folder bekijken");expect(current).toContain("/images/content/nl.webp");expect(current).toContain("Striker Ball Challenge");
+  });
   test("shows sourced giveaways and a dedicated agenda without stale chances", () => {
     const september = render(emptyContent, "2026-09-30T12:00:00.000Z");
     expect(september).toContain("Veltins Helles Lager");
