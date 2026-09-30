@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { CartProvider } from "@/context/CartContext";
 import RentalPage from "@/app/vermietung/page";
 import { rentalItems } from "@/data/rentals";
+import ServiceSection from "@/components/cinematic/ServiceSection";
 
 describe("source-backed rental catalog", () => {
   const html = () => renderToStaticMarkup(<CartProvider><RentalPage /></CartProvider>);
@@ -41,6 +42,11 @@ describe("source-backed rental catalog", () => {
     expect(trailer).toContain("je 3 Werktage");
     expect(counter).toContain("Preis auf Anfrage");
     expect(counter).not.toContain("0,00");
+  });
+  it("shows the same confirmed price unit in the homepage rental section", () => {
+    const result = renderToStaticMarkup(<ServiceSection />);
+    expect(result).toContain("Referenzpreise je 3 Werktage");
+    expect(result).not.toContain("kein bestätigter Mietzeitraum");
   });
   it("lets visitors choose dates directly without the removed long conditions block", () => {
     const result = html();
