@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { CartProvider } from "@/context/CartContext";
 import RentalPage from "@/app/vermietung/page";
+import { rentalItems } from "@/data/rentals";
 
 describe("source-backed rental catalog", () => {
   const html = () => renderToStaticMarkup(<CartProvider><RentalPage /></CartProvider>);
@@ -20,8 +21,26 @@ describe("source-backed rental catalog", () => {
     expect(result).toContain("Bruchersatz");
     expect(result).toContain("Unverbindlich anfragen");
     expect(result).toContain("Keine Reservierungsbestätigung und kein berechneter Mietgesamtpreis.");
-    expect(result).not.toMatch(/3 Werktage|Leihperiode|Kühlwagen|Entlüfter|Zapfhahn|<svg|<img/);
+    expect(result).not.toMatch(/Leihperiode|Kühlwagen|Entlüfter|Zapfhahn|<svg|<img/);
     expect(result).not.toContain("Kaution");
+  });
+  it("offers bounded plus/minus controls alongside direct quantity entry for every item", () => {
+    const result = html();
+    for (const { name } of rentalItems) {
+      const article = result.split(`data-rental-name="${name}"`)[1]?.split("</article>")[0];
+      expect(article).toContain(`aria-label="Menge für ${name} verringern"`);
+      expect(article).toContain(`aria-label="Menge für ${name} erhöhen"`);
+      expect(article).toContain(`aria-label="Menge für ${name}"`);
+      expect(article).toMatch(/aria-label="Menge für [^"]+ verringern"[^>]*disabled/);
+    }
+  });
+  it("shows the operator-confirmed three-workday price unit without pricing unmatched items", () => {
+    const result = html();
+    const trailer = result.split('data-rental-name="Kühlanhänger"')[1]?.split("</article>")[0];
+    const counter = result.split('data-rental-name="Theke"')[1]?.split("</article>")[0];
+    expect(trailer).toContain("je 3 Werktage");
+    expect(counter).toContain("Preis auf Anfrage");
+    expect(counter).not.toContain("0,00");
   });
   it("lets visitors choose dates directly without the removed long conditions block", () => {
     const result = html();

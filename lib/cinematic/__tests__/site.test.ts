@@ -29,6 +29,7 @@ describe("verified market contract", () => {
     expect(CINEMATIC_NAV).toEqual([
       { label: "Angebote", href: "/angebote" },
       { label: "Sortiment", href: "/produkte" },
+      { label: "Cocktail-Rezepte", href: "/cocktails" },
       { label: "Party & Miete", href: "/vermietung" },
       { label: "Eigenmarken", href: "/eigenmarke" },
       { label: "Gewinnspiele", href: "/gewinnspiel" },

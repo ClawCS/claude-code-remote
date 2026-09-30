@@ -20,6 +20,20 @@ export default function VermietungPage() {
   const quantity = (id: number) => Math.min(quantities[id] ?? 0,capacity(id));
   const selectedCount = rentalItems.reduce((sum,item) => sum + quantity(item.id),0);
 
+  function selectQuantity(id: number, value: number) {
+    if (!Number.isInteger(value)) return;
+    setQuantities(previous => {
+      const next = {...previous, [id]: Math.max(0, Math.min(value, capacity(id)))};
+      if (next[id] > 0) {
+        for (const other of rentalItems) {
+          if (rentalFurnitureConflict(id, other.id)) next[other.id] = 0;
+        }
+      }
+      return next;
+    });
+    setMessage("");
+  }
+
   function addSelected() {
     if (!datesValid || !selectedCount) return;
     const rental: RentalInfo = {...range,workdays:calculateWorkdays(startDate,endDate),periods:0,basePrice:0,totalRentalPrice:0,priceStatus:"personal-confirmation-required"};
@@ -63,19 +77,17 @@ export default function VermietungPage() {
                 <article key={item.id} data-rental-name={item.name} data-physical-stock={item.physicalStock} className="bg-white border border-border rounded-xl p-5 flex flex-col">
                   <h3 className="text-xl font-bold mb-3">{item.name}</h3>
                   <p className="text-primary font-bold text-lg">{item.price === null ? "Preis auf Anfrage" : formatPrice(item.price)}</p>
-                  {item.price !== null && <p className="text-xs mt-1">Richtpreis laut Preisliste · 01.01.2026</p>}
+                  {item.price !== null && <p className="text-xs mt-1">je 3 Werktage · Richtpreis laut Preisliste · 01.01.2026</p>}
                   <p className="text-sm mt-3">Physischer Bestand: {item.physicalStock} Stück</p>
                   {item.breakagePrice !== null && <p className="text-sm mt-1">Bruchersatz: {formatPrice(item.breakagePrice)} je Stück</p>}
-                  <label className="block text-sm font-medium mt-auto pt-5">Gewünschte Menge
-                    <input type="number" aria-label={`Menge für ${item.name}`} min={0} max={capacity(item.id)} step={1} value={quantity(item.id)} onChange={event=>{
-                      const value = Number(event.target.value);
-                      if (Number.isInteger(value)) setQuantities(previous=>{
-                        const next = {...previous,[item.id]:Math.max(0,Math.min(value,capacity(item.id)))};
-                        if (next[item.id] > 0) for (const other of rentalItems) if (rentalFurnitureConflict(item.id,other.id)) next[other.id] = 0;
-                        return next;
-                      });
-                    }} className="block w-full min-h-12 border border-border rounded-lg px-3 mt-2 text-secondary" />
-                  </label>
+                  <div className="mt-auto pt-5">
+                    <label htmlFor={`rental-quantity-${item.id}`} className="block text-sm font-medium">Gewünschte Menge</label>
+                    <div className="flex items-stretch mt-2 rounded-lg border border-border overflow-hidden">
+                      <button type="button" aria-label={`Menge für ${item.name} verringern`} disabled={quantity(item.id) === 0} onClick={() => selectQuantity(item.id, quantity(item.id) - 1)} className="w-12 min-h-12 shrink-0 bg-light font-bold text-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-50">−</button>
+                      <input id={`rental-quantity-${item.id}`} type="number" inputMode="numeric" aria-label={`Menge für ${item.name}`} min={0} max={capacity(item.id)} step={1} value={quantity(item.id)} onChange={event => selectQuantity(item.id, Number(event.target.value))} className="min-w-0 w-full min-h-12 border-x border-border px-2 text-center text-secondary font-semibold" />
+                      <button type="button" aria-label={`Menge für ${item.name} erhöhen`} disabled={quantity(item.id) >= capacity(item.id)} onClick={() => selectQuantity(item.id, quantity(item.id) + 1)} className="w-12 min-h-12 shrink-0 bg-light font-bold text-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-50">+</button>
+                    </div>
+                  </div>
                   {datesValid && capacity(item.id) < item.physicalStock && <p className="text-xs mt-2">Für diesen Zeitraum noch höchstens {capacity(item.id)} Stück zusätzlich in deiner Anfrageliste.</p>}
                 </article>
               ))}

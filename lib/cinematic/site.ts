@@ -27,6 +27,7 @@ export const SITE_LINKS = Object.freeze({
 export const CINEMATIC_NAV = Object.freeze([
   { label: "Angebote", href: "/angebote" },
   { label: "Sortiment", href: "/produkte" },
+  { label: "Cocktail-Rezepte", href: "/cocktails" },
   { label: "Party & Miete", href: "/vermietung" },
   { label: "Eigenmarken", href: "/eigenmarke" },
   { label: "Gewinnspiele", href: "/gewinnspiel" },
