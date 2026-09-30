@@ -5,7 +5,6 @@ import ProductGrid from "@/components/ProductGrid";
 import { type Product } from "@/lib/utils";
 import { assortmentProducts as products } from "@/lib/catalog";
 import Link from "next/link";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 type FinderType = "bier" | "wein" | "wasser" | null;
 
@@ -260,7 +259,6 @@ export default function FinderPage() {
     return (
       <>
       <div className="page-hero-banner py-16 md:py-24">
-        <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Getränke-Finder</span></nav>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Finder</h1>
@@ -278,7 +276,7 @@ export default function FinderPage() {
               onClick={() => setActiveFinder(key as FinderType)}
               className="group p-8 bg-white border-2 border-border rounded-xl hover:border-primary hover:shadow-lg transition-all text-center"
             >
-              <span className="text-6xl block mb-4 group-hover:scale-110 transition-transform">{finder.icon}</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-primary block mb-4">Persönlicher Geschmack</span>
               <h2 className="text-xl font-bold text-secondary group-hover:text-primary transition-colors">{finder.title}</h2>
               <p className="text-sm text-muted mt-2">{finder.questions.length} Fragen</p>
             </button>
@@ -297,7 +295,6 @@ export default function FinderPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="text-center mb-10">
-          <span className="text-5xl mb-4 block">🎯</span>
           <h2 className="text-3xl font-bold text-secondary mb-2">Unsere Empfehlungen für dich!</h2>
           <p className="text-muted">Unverbindliche Sortimentsideen – aktuelle Preise und Verfügbarkeit bestätigen wir persönlich.</p>
         </div>
@@ -332,7 +329,6 @@ export default function FinderPage() {
       </button>
 
       <div className="text-center mb-8">
-        <span className="text-4xl mb-3 block">{finder.icon}</span>
         <h1 className="text-2xl font-bold text-secondary">{finder.title}</h1>
         <div className="flex gap-1 justify-center mt-4">
           {finder.questions.map((_, i) => (

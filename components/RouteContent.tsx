@@ -8,9 +8,9 @@ export default function RouteContent({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  return pathname === "/" ? (
+  return pathname === "/" || pathname === "/nl" ? (
     <div className="flex-1">{children}</div>
   ) : (
-    <main className="flex-1">{children}</main>
+    <main id="main-content" tabIndex={-1} className="flex-1 public-subpage">{children}</main>
   );
 }

@@ -45,7 +45,7 @@ export default function CinematicHome({
         <ServiceSection />
         <SpotlightSection />
         {hasActions ? (
-          <ActionsSection archive={content.archive} event={content.event} />
+          <ActionsSection archive={content.archive} event={content.event} nowIso={nowIso} />
         ) : null}
         <PeopleSection />
         <GrailBidSection />

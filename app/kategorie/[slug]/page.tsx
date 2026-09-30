@@ -1,61 +1,38 @@
-"use client";
-
-import { useParams } from "next/navigation";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import ProductGrid from "@/components/ProductGrid";
-import CategoryBackground from "@/components/CategoryBackground";
 import { categories } from "@/lib/utils";
-import { assortmentProducts as products } from "@/lib/catalog";
-import ShimmerParticles from "@/components/ShimmerParticles";
+import { assortmentProducts } from "@/lib/catalog";
 
-export default function KategoriePage() {
-  const { slug } = useParams<{ slug: string }>();
-  const category = categories.find((c) => c.slug === slug);
-  const filtered = products.filter((p) => p.categorySlug === slug);
+const introductions: Record<string, string> = {
+  bier: "Pils, Alt, Weizen und Fassbier: Entdecke eine Auswahl aus unserem Markt. Für die große Runde beraten wir dich auch zu Fassbier und Zapfanlagen.",
+  alkoholfrei: "Wasser, Limonaden, Säfte und neue Drinks. Für Alltag, Sport und Feiern – wir helfen dir bei der Auswahl.",
+  wein: "Wein zum Essen, für einen besonderen Abend oder als Geschenk. Sprich uns an: Gemeinsam finden wir etwas Passendes.",
+  sekt: "Sekt und prickelnde Begleiter für Empfang und Feier. Auswahl, Mengen und Gläser stimmen wir mit dir ab.",
+  spirituosen: "Von vertrauten Klassikern bis zu regionalen Spezialitäten und unseren Jammers-Likören. Entdecke deine nächste Genussidee.",
+  lebensmittel: "Mehr als Getränke: eine Auswahl an Begleitern für deinen Einkauf und deinen Anlass. Das aktuelle Sortiment erfährst du im Markt.",
+};
 
-  if (!category) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <p className="text-5xl mb-4">😕</p>
-        <h1 className="text-2xl font-bold text-secondary mb-2">Kategorie nicht gefunden</h1>
-        <Link href="/produkte" className="text-primary hover:underline">
-          Alle Produkte ansehen
-        </Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative min-h-screen">
-      {/* Immersiver Hintergrund: Video + Lottie + CSS-Partikel */}
-      <CategoryBackground slug={slug} />
-
-      {/* Hero-Section */}
-      <div className="relative z-10 pt-16 pb-8 text-center overflow-hidden">
-        <ShimmerParticles count={24} />
-        <nav className="text-sm text-white/60 mb-6 flex gap-2 justify-center">
-          <Link href="/" className="hover:text-white transition-colors">Start</Link>
-          <span>/</span>
-          <Link href="/produkte" className="hover:text-white transition-colors">Produkte</Link>
-          <span>/</span>
-          <span className="text-white">{category.name}</span>
-        </nav>
-
-        <div className="animate-fade-in-up">
-          <span className="text-6xl block mb-4 drop-shadow-lg">{category.icon}</span>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow-lg mb-2">
-            {category.name}
-          </h1>
-          <p className="text-white/70 text-lg">{filtered.length} Produkte</p>
-        </div>
-      </div>
-
-      {/* Produkte mit Glass-Hintergrund fuer Lesbarkeit */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-16">
-        <div className="glass rounded-2xl p-4 sm:p-6 shadow-elevated">
-          <ProductGrid products={filtered} />
-        </div>
+export default async function KategoriePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const category = categories.find(item => item.slug === slug);
+  if (!category) notFound();
+  const products = assortmentProducts.filter(item => item.categorySlug === slug);
+  return <>
+    <div className="category-intro" data-category-intro>
+      <div>
+        <nav aria-label="Brotkrumennavigation"><Link href="/">Startseite</Link><span>/</span><Link href="/produkte">Sortiment</Link><span>/</span><span>{category.name}</span></nav>
+        <h1>{category.name}</h1>
+        <p>{introductions[slug]}</p>
+        <p>Sortimentsbeispiele · Preise und Verfügbarkeit bestätigen wir persönlich.</p>
       </div>
     </div>
-  );
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      <nav className="category-links" aria-label="Warengruppen">{categories.map(item => <Link key={item.slug} href={`/kategorie/${item.slug}`} aria-current={slug === item.slug ? "page" : undefined}>{item.name}</Link>)}</nav>
+      {slug === "spirituosen" && <p className="mb-8"><Link href="/regionale-spirituosen" className="text-primary underline font-bold">Regionale Spezialitäten vom Niederrhein entdecken</Link></p>}
+      <p className="text-muted mb-6">{products.length} Sortimentsbeispiele</p>
+      <ProductGrid products={products} />
+      {slug === "spirituosen" && <Link href="/eigenmarke" className="inline-block text-primary underline mt-8">Unsere Jammers-Eigenmarken kennenlernen</Link>}
+    </div>
+  </>;
 }

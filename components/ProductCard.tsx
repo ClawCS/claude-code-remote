@@ -7,88 +7,46 @@ import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { type Product } from "@/lib/utils";
 
-const categoryEmoji: Record<string, string> = {
-  "Bier": "🍺",
-  "Wein": "🍷",
-  "Sekt & Co.": "🥂",
-  "Spirituosen": "🥃",
-  "Alkoholfreie Getränke": "🥤",
-  "Lebensmittel & Mehr": "🛒",
-};
-
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
   const wishlisted = isInWishlist(product.id);
   const [imgSrc, setImgSrc] = useState(product.image);
   const [imgFailed, setImgFailed] = useState(false);
+  const hasPhoto = Boolean(product.image) && product.image !== "/images/home/brand-logo.webp";
 
   const handleImageError = () => {
-    if (imgSrc === product.image && product.extractedImage) {
-      setImgSrc(product.extractedImage);
-    } else {
-      setImgFailed(true);
-    }
+    if (imgSrc === product.image && product.extractedImage) setImgSrc(product.extractedImage);
+    else setImgFailed(true);
   };
 
   return (
-    <div
-      className="group bg-[#FDFCFB] rounded-2xl border border-[#F0D5CF] hover:border-[#DC2626]/40 transition-all overflow-hidden flex flex-col card-hover-glow gradient-border card-spotlight"
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-      }}
-    >
-      <Link href={`/produkte/${product.slug}`} className="block p-5 pb-2">
-        <div className="aspect-square bg-gradient-to-br from-[#FFF8F6] to-[#FFF0EC] rounded-xl flex items-center justify-center overflow-hidden relative product-image-shadow">
-          {imgFailed || !product.image ? (
-            <div className="absolute inset-0 flex items-center justify-center text-6xl">
-              {categoryEmoji[product.category] ?? "🍶"}
-            </div>
-          ) : (
-            <Image
-              src={imgSrc}
-              alt={product.image === "/images/home/brand-logo.webp" ? "Trinkgut Jammers – neutrales Sortimentsbild" : product.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-contain p-3 group-hover:scale-[1.06] group-hover:rotate-[0.5deg] transition-transform duration-500"
-              onError={handleImageError}
-            />
-          )}
-          <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleItem(product); }}
-            className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all"
-            aria-label={wishlisted ? "Vom Merkzettel entfernen" : "Zum Merkzettel"}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-colors ${wishlisted ? "text-[#DC2626] fill-[#DC2626]" : "text-gray-400 hover:text-[#DC2626]"}`} viewBox="0 0 24 24" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth={wishlisted ? 0 : 2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </button>
-          {/* Category badge */}
+    <article data-product-card className={`group relative bg-[#FFFDFA] rounded-xl border border-[#DFD2C5] hover:border-[#E20F1D] transition-colors overflow-hidden flex flex-col ${hasPhoto ? "" : "product-text-card"}`}>
+      <button type="button" onClick={() => toggleItem(product)}
+        className="absolute top-3 right-3 z-10 p-2 bg-white rounded-full border border-[#DFD2C5] hover:border-[#E20F1D]"
+        aria-label={wishlisted ? "Vom Merkzettel entfernen" : "Zum Merkzettel"} aria-pressed={wishlisted}>
+        <svg aria-hidden="true" className={`h-5 w-5 ${wishlisted ? "text-[#E20F1D]" : "text-gray-500"}`} viewBox="0 0 24 24" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
+      {hasPhoto && <Link href={`/produkte/${product.slug}`} className="block p-5 pb-2">
+        <div className="aspect-square bg-white rounded-lg flex items-center justify-center overflow-hidden relative">
+          {imgFailed ? <p className="text-sm text-muted">Produktfoto nicht verfügbar</p> :
+            <Image src={imgSrc} alt={product.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-contain p-3" onError={handleImageError} />}
         </div>
-      </Link>
-
-      <div className="p-5 pt-2 flex flex-col flex-1">
-        <span className="inline-block text-xs text-white uppercase tracking-wide font-medium bg-[#DC2626] px-2 py-0.5 rounded-md w-fit">{product.category}</span>
+      </Link>}
+      <div className="p-5 flex flex-col flex-1">
+        <span className="text-xs text-[#A51522] uppercase tracking-wide font-semibold w-fit pr-10">{product.category}</span>
         <Link href={`/produkte/${product.slug}`}>
-          <h3 className="font-semibold text-[#1F2937] mt-1.5 group-hover:text-[#DC2626] transition-colors line-clamp-2">
-            {product.name}
-          </h3>
+          <h3 className="font-semibold text-[#302923] mt-2 pr-8 group-hover:text-[#E20F1D] transition-colors">{product.name}</h3>
         </Link>
-        <p className="text-xs text-muted mt-1">{product.unit}</p>
-        {product.image === "/images/home/brand-logo.webp" && <p className="text-xs text-muted mt-1">Sortimentsbeispiel · Produktfoto folgt</p>}
-
-        <div className="mt-auto pt-3 flex items-center justify-between">
+        <p className="text-sm text-muted mt-1">{product.unit}</p>
+        {!hasPhoto && <p data-photo-missing className="text-xs text-muted mt-2">Sortimentsbeispiel · konkrete Abbildung folgt</p>}
+        <div className="mt-auto pt-5 flex items-center justify-between gap-3">
           <span className="text-xs text-muted">Preis auf Anfrage</span>
-          <button
-            onClick={() => addItem(product)}
-            className="px-3 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer btn-shimmer shadow-sm hover:shadow-md hover:shadow-red-500/20"
-          >
-            Anfragen
-          </button>
+          <button type="button" onClick={() => addItem(product)} className="px-4 py-2 bg-[#E20F1D] hover:bg-[#A51522] text-white text-sm font-semibold rounded-lg transition-colors">Anfragen</button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

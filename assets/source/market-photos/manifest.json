@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-30",
+  "releaseBasis": "user-approved-canva-pool-2026-09-30",
+  "provenance": "Only operator-reviewed, lossless source crops from the approved Canva pool; no account/design/page IDs or raw promotional collages are published.",
+  "entries": [
+    {
+      "id": "gift-basket",
+      "kind": "photo",
+      "source": "gift-basket.png",
+      "sourceHash": "920b21382a54fa35c03e1cf954a3c23acfd2dfd9f5211cdf2e4d5823ebb7d4ce",
+      "sourceDimensions": {
+        "width": 666,
+        "height": 910
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 666,
+        "height": 910
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "geschenke",
+      "output": {
+        "name": "gift-basket.webp",
+        "maxBytes": 120000,
+        "sha256": "2fd0c3a3c78134f0a077e11a09b524e54a16b0498ce8222ccf3635f13d5638f2"
+      }
+    },
+    {
+      "id": "salitos-market",
+      "kind": "photo",
+      "source": "salitos-market.png",
+      "sourceHash": "2eec65e7d0ac748d94784a62accb9897ec7cb6b1cd48db9ba7b9055fd7ff3445",
+      "sourceDimensions": {
+        "width": 696,
+        "height": 975
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 696,
+        "height": 975
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "markt",
+      "output": {
+        "name": "salitos-market.webp",
+        "maxBytes": 150000,
+        "sha256": "178308dcb2a5af95336e051a3df4c3779cbcd793e0b07cc63db89166a5d84da8"
+      }
+    },
+    {
+      "id": "regional-tante-dele",
+      "kind": "product-graphic",
+      "source": "regional-tante-dele.png",
+      "sourceHash": "f546505f527a2bf879e5524070258d73d6ed474a9b03c8a2a28d181b57bc7e3d",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "regionale-spirituosen",
+      "output": {
+        "name": "regional-tante-dele.webp",
+        "maxBytes": 300000,
+        "sha256": "57b88cd7870aee9a9ce4c4d9553d580a3a02088cfe180ae8d559c25ee3ea3d56"
+      }
+    },
+    {
+      "id": "regional-schokolaedchen",
+      "kind": "product-graphic",
+      "source": "regional-schokolaedchen.png",
+      "sourceHash": "f20504e67da41aa11ff83cdce34cedc175133e04db7793856af826d3cb663dac",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "regionale-spirituosen",
+      "output": {
+        "name": "regional-schokolaedchen.webp",
+        "maxBytes": 300000,
+        "sha256": "211414d28abf4a6bb1af657ed26d583ea29b8e92a9146001419ebfd65adf6118"
+      }
+    },
+    {
+      "id": "regional-kaeffchen",
+      "kind": "product-graphic",
+      "source": "regional-kaeffchen.png",
+      "sourceHash": "6fd8bd31495575c710a4cda4ec0163d0cad3b916f055e62f5222d6171263f817",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "regionale-spirituosen",
+      "output": {
+        "name": "regional-kaeffchen.webp",
+        "maxBytes": 300000,
+        "sha256": "2b364a9797e549a983527093b8e04107908dc7923ae49d3a55c1862cea30babd"
+      }
+    },
+    {
+      "id": "niko-market-life",
+      "kind": "photo",
+      "source": "niko-market-life.png",
+      "sourceHash": "9dc1fd21dc7d9ffefca13ec906f99f39144125bb8cfc671f550d30d0d68a6169",
+      "sourceDimensions": {
+        "width": 705,
+        "height": 940
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 705,
+        "height": 940
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "marktleben",
+      "output": {
+        "name": "niko-market-life.webp",
+        "maxBytes": 100000,
+        "sha256": "1a4616a7a39df0833daf1a3dc60adb0050334d4ab0dc742d201c0891dc2f1c04"
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
 import { removeLegacyPersonalData } from "@/lib/reservation-inquiry";
-import { addCartItem, cartLineKey, parseStoredCart } from "@/lib/cart-items";
+import { addCartItem, cartLineKey, parseStoredCart, updateCartQuantity } from "@/lib/cart-items";
 
 export type RentalInfo = {
   startDate: string;
@@ -12,6 +12,8 @@ export type RentalInfo = {
   periods: number;
   basePrice: number;
   totalRentalPrice: number;
+  /** Zeroed price fields are not a free rental or a quote. */
+  priceStatus?: "personal-confirmation-required";
 };
 
 export type CartItem = {
@@ -73,11 +75,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem(lineKey);
       return;
     }
-    setItems((prev) =>
-      prev.map((item) =>
-        cartLineKey(item) === lineKey ? { ...item, quantity: Math.min(999, quantity) } : item
-      )
-    );
+    setItems((prev) => updateCartQuantity(prev,lineKey,quantity));
   };
 
   const clearCart = () => setItems([]);
@@ -86,7 +84,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalPrice = items.reduce(
     (sum, item) => {
       if (item.rental) {
-        return sum + item.rental.totalRentalPrice * item.quantity;
+        return sum;
       }
       return sum + item.product.price * item.quantity;
     },

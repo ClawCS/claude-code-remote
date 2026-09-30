@@ -25,13 +25,18 @@ describe("cinematic editorial contract", () => {
   });
 
   test("keeps the approved people story local, unique, and release-gated", () => {
-    expect(PEOPLE_STORY).toHaveLength(4);
-    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(4);
+    expect(PEOPLE_STORY).toHaveLength(12);
+    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(12);
+    expect(PEOPLE_STORY.map(({ id }) => id)).toEqual([
+      "team-group", "team-niko", "team-sven", "team-jasmin",
+      "team-gabriella", "team-jan-niklas", "team-hanna", "team-nico",
+      "team-nils", "team-tim", "team-henri", "team-hannah",
+    ]);
     for (const item of PEOPLE_STORY) {
       expect(item.alt.length).toBeGreaterThan(12);
-      expect(item.reviewedAt).toBe("2026-07-14");
+      expect(item.reviewedAt).toBe("2026-09-30");
       expect(item.releaseBasis).toBe(
-        "user-approved-local-employee-pool-2026-07-14",
+        "user-approved-canva-pool-2026-09-30",
       );
     }
     expect(EDITORIAL_IMAGES.jasmin.caption).toBe("Jasmin · Team Jammers");

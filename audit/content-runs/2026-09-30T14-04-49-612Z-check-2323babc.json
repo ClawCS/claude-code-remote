@@ -1,0 +1,30 @@
+{
+  "runId": "2026-09-30T14-04-49-612Z-check-2323babc",
+  "mode": "check",
+  "startedAt": "2026-09-30T14:04:49.613Z",
+  "evaluatedAt": "2026-09-30T14:04:49.612Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-09-28",
+    "validTo": "2026-10-03"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "1384969",
+      "validFrom": "2026-09-28",
+      "validTo": "2026-10-03",
+      "result": "active"
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "Kein geprüfter NL-Flyer für die gesamte Zielwoche; offizielle DE-Werbung bleibt die Hauptquelle.",
+    "Keine bestätigte öffentliche Produktionsadresse geprüft; nur Website-/Vorschauprüfung."
+  ],
+  "deploymentVerified": false,
+  "websiteVerified": true,
+  "checkedUrl": "http://127.0.0.1:3000",
+  "finishedAt": "2026-09-30T14:04:50.272Z",
+  "status": "degraded"
+}

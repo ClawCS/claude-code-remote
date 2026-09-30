@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import JsonLdScript from "@/components/JsonLdScript";
 import { assortmentProducts as products } from "@/lib/catalog";
@@ -41,20 +42,19 @@ export default async function Layout({
 }) {
   const { slug } = await params;
   const product = products.find((p) => p.slug === slug);
-  const jsonLd = product
-    ? {
+  if (!product) notFound();
+  const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
         name: product.name,
         description: product.description || `${product.name} bei Trinkgut Jammers Goch.`,
         image: product.image && product.image !== "/images/home/brand-logo.webp" ? `${BASE}${product.image}` : undefined,
         category: product.category,
-      }
-    : null;
+      };
 
   return (
     <>
-      {jsonLd && <JsonLdScript value={jsonLd} />}
+      <JsonLdScript value={jsonLd} />
       {children}
     </>
   );

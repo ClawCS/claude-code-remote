@@ -15,11 +15,8 @@ type CinematicHeaderProps = Readonly<{
 
 export default function CinematicHeader({
   nowIso,
-  hasActions,
 }: CinematicHeaderProps): React.JSX.Element {
-  const items = hasActions
-    ? CINEMATIC_NAV
-    : CINEMATIC_NAV.filter(({ href }) => href !== "#aktionen");
+  const items = CINEMATIC_NAV;
 
   return (
     <header className={styles.header} data-cinematic-header>
@@ -36,7 +33,9 @@ export default function CinematicHeader({
           <ul className={styles.desktopNavList}>
             {items.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} prefetch={false}>{item.label}</Link>
+                <Link href={item.href} prefetch={false}
+                  {...(item.href.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                >{item.label}</Link>
               </li>
             ))}
           </ul>

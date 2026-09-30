@@ -27,6 +27,7 @@ export default function LocationFooter(): React.JSX.Element {
           {MARKET.postalCode} {MARKET.city}
         </span>
         <span>{MARKET.openingHours}</span>
+        <span>{MARKET.openingHoursNote}</span>
         <a href={MARKET.phoneHref}>{MARKET.phoneDisplay}</a>
         <a href={`mailto:${MARKET.email}`}>{MARKET.email}</a>
       </address>
@@ -63,6 +64,17 @@ export default function LocationFooter(): React.JSX.Element {
           </Link>
         ))}
       </nav>
+      <p className={styles.footerFineprint}>
+        <Link href="/cocktails" prefetch={false}>Cocktail-Rezepte</Link>{" · "}
+        <Link href="/partyplaner" prefetch={false}>Party planen</Link>{" · "}
+        <Link href="/akademie" prefetch={false}>Getränkewissen</Link>{" · "}
+        <Link href="/geschenkideen" prefetch={false}>Geschenkideen</Link>{" · "}
+        <Link href="/marktleben" prefetch={false}>Marktleben</Link>{" · "}
+        <Link href="/regionale-spirituosen" prefetch={false}>Regionale Spezialitäten</Link>{" · "}
+        <Link href="/gewinnspiel#jahresagenda" prefetch={false}>Gewinnspiel-Agenda</Link>{" · "}
+        <Link href="/warenkorb" prefetch={false}>Anfrageliste</Link>{" · "}
+        <Link href="/merkzettel" prefetch={false}>Merkzettel</Link>
+      </p>
       <p className={styles.footerFineprint}>
         {MARKET.legalName} · Inhaber {MARKET.owner}
       </p>

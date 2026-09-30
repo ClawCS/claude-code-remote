@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "prebuild": "tsx scripts/validate-content-build.ts",
     "build": "next build",
     "start": "next start",
@@ -16,7 +16,10 @@
     "test:e2e": "playwright test",
     "audit:lighthouse": "lighthouse",
     "assets:cinematic": "node scripts/build-cinematic-assets.mjs",
-    "assets:cinematic:check": "node scripts/build-cinematic-assets.mjs --check"
+    "assets:cinematic:check": "node scripts/build-cinematic-assets.mjs --check",
+    "assets:market": "node scripts/build-market-assets.mjs",
+    "assets:market:check": "node scripts/build-market-assets.mjs --check",
+    "audit:public": "node scripts/audit-public-site.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

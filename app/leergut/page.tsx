@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 // --- Pfand types & prices ---
 
@@ -71,7 +70,7 @@ function saveHistory(entries: HistoryEntry[]) {
 function CounterCard({ type, count, onChange }: { type: PfandType; count: number; onChange: (val: number) => void }) {
   return (
     <div className="bg-white border border-border rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-      <span className="text-3xl">{type.icon}</span>
+      <span className="text-xl" aria-hidden="true">{type.icon}</span>
       <div className="flex-1 min-w-0">
         <div className="font-semibold text-secondary text-sm">{type.label}</div>
         <div className="text-xs text-muted">{type.description}</div>
@@ -228,7 +227,6 @@ export default function LeergutRechnerPage() {
     <>
     {/* Red Hero Banner */}
     <div className="page-hero-banner py-16 md:py-24">
-      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Leergut-Rechner</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Leergut-Rechner</h1>

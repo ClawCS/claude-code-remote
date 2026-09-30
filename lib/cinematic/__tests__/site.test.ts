@@ -27,14 +27,14 @@ describe("verified market contract", () => {
 
   test("exposes useful market and GrailBid navigation destinations", () => {
     expect(CINEMATIC_NAV).toEqual([
-      { label: "Angebote", href: "#aktuell" },
+      { label: "Angebote", href: "/angebote" },
       { label: "Sortiment", href: "/produkte" },
-      { label: "Party & Miete", href: "#service" },
-      { label: "Eigenmarken", href: "#eigenmarken" },
-      { label: "Aktionen", href: "#aktionen" },
-      { label: "Team", href: "#menschen" },
-      { label: "TCG", href: "#grailbid" },
-      { label: "Kontakt", href: "#kontakt" },
+      { label: "Party & Miete", href: "/vermietung" },
+      { label: "Eigenmarken", href: "/eigenmarke" },
+      { label: "Gewinnspiele", href: "/gewinnspiel" },
+      { label: "Team", href: "/galerie" },
+      { label: "TCG", href: "https://grailbid.com" },
+      { label: "Kontakt", href: "/kontakt" },
     ]);
   });
 

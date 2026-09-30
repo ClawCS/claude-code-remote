@@ -17,6 +17,7 @@
 
 # next.js
 /.next/
+/.next-dev/
 /out/
 
 # production
@@ -54,3 +55,9 @@ next-env.d.ts
 
 # Local agent execution ledger and review packages
 /.superpowers/
+
+# Private Canva exports and source-identity evidence (repository is public).
+/assets/source/canva-exports-2026-09-30/
+/assets/source/team-canva/
+/assets/source/giveaways/
+/.market-pipeline-test-*/

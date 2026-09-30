@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -11,7 +10,6 @@ export default function KontaktPage() {
   return (
     <>
       <div className="page-hero-banner py-16 md:py-24">
-        <ShimmerParticles />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4">
             <Link href="/" className="hover:text-white">Home</Link>
@@ -51,7 +49,7 @@ export default function KontaktPage() {
             </h2>
             <p className="text-secondary leading-relaxed">
               Montag – Samstag: 08:00 – 20:00 Uhr<br />
-              Sonntag: geschlossen
+              Sonn- und Feiertage: geschlossen
             </p>
           </div>
 
@@ -100,7 +98,7 @@ export default function KontaktPage() {
           </div>
         </div>
 
-        <div className="mt-10 p-6 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-2xl text-center">
+        <div className="mt-10 p-6 bg-[#fff8ee] border border-primary/20 rounded-2xl text-center">
           <p className="text-sm text-muted">
             Für rechtliche Angaben siehe{" "}
             <Link href="/impressum" className="text-primary hover:underline">Impressum</Link>,{" "}

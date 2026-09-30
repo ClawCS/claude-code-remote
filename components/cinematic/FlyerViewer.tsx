@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import type { HomepageFlyer } from "@/lib/homepage-content";
 import { canRenderHomepageImage } from "@/lib/cinematic/presentation";
@@ -10,6 +10,9 @@ import { useModalA11y } from "@/lib/useModalA11y";
 import styles from "./current.module.css";
 
 const VIEWER_TIMEOUT_MS = 8_000;
+const subscribeToHydration = () => () => undefined;
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
 const COPY = {
   de: {external:"Handzettel extern öffnen",pdf:"Handzettel als PDF öffnen",cover:"Titelseite",noCover:"Handzettel ohne Vorschaubild",view:"Handzettel ansehen",help:"Der externe Handzettel kann auch direkt geöffnet werden.",closeLabel:"Handzettel schließen",close:"Schließen",viewTitle:"ansehen",frame:"externer Handzettel",error:"Der Handzettel konnte hier nicht geladen werden."},
   nl: {external:"Folder extern openen",pdf:"Folder als PDF openen",cover:"Voorpagina",noCover:"Folder zonder voorbeeldafbeelding",view:"Folder bekijken",help:"Je kunt de externe folder ook rechtstreeks openen.",closeLabel:"Folder sluiten",close:"Sluiten",viewTitle:"bekijken",frame:"externe folder",error:"De folder kon hier niet worden geladen."},
@@ -48,6 +51,13 @@ export default function FlyerViewer({
   locale?: "de" | "nl";
 }): React.JSX.Element {
   const copy = COPY[locale];
+  // The HTML arrives before its click handler. Keep the native links usable,
+  // but expose the dialog action only once React can actually open it.
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot,
+  );
   const [open, setOpen] = useState(false);
   const [viewerState, setViewerState] = useState<ViewerState>("loading");
   const [viewerSession, setViewerSession] = useState(0);
@@ -127,6 +137,8 @@ export default function FlyerViewer({
       <button
         className={styles.viewerTrigger}
         type="button"
+        disabled={!hydrated}
+        aria-busy={!hydrated}
         onClick={openViewer}
       >
         {copy.view}

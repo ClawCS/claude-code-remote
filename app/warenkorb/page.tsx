@@ -11,7 +11,6 @@ export default function WarenkorbPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <p className="text-6xl mb-4">🛒</p>
         <h1 className="text-2xl font-bold text-secondary mb-2">Deine Anfrageliste ist leer</h1>
         <p className="text-muted mb-6">Füge Produkte hinzu, um loszulegen.</p>
         <Link href="/produkte" className="inline-flex px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors">
@@ -30,9 +29,9 @@ export default function WarenkorbPage() {
           return (
             <div key={cartLineKey(item)} className={`p-4 bg-white border rounded-xl ${isRental ? "border-amber-300" : "border-border"}`}>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-light rounded-lg overflow-hidden flex-shrink-0 relative">
+                {item.product.image && item.product.image !== "/images/home/brand-logo.webp" && <div className="w-16 h-16 bg-light rounded-lg overflow-hidden flex-shrink-0 relative">
                   <Image src={item.product.image} alt={item.product.name} fill sizes="64px" className="object-contain p-1" />
-                </div>
+                </div>}
                 <div className="flex-1 min-w-0">
                   {isRental ? (
                     <span className="font-semibold text-secondary">{item.product.name}</span>
@@ -54,7 +53,7 @@ export default function WarenkorbPage() {
               </div>
               {/* Rental info line */}
               {isRental && (
-                <div className="mt-3 ml-20 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+                <div className="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
                   <p className="font-medium">
                     Leihzeitraum: {new Date(item.rental!.startDate).toLocaleDateString("de-DE")} – {new Date(item.rental!.endDate).toLocaleDateString("de-DE")} ({item.rental!.workdays} Werktage)
                   </p>

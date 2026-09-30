@@ -2,7 +2,6 @@
 import Link from "next/link";
 
 import { useState, useEffect } from "react";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 /* ═══════════════════════════════════════════════════════════════
    GAME DATA & TYPES
@@ -724,7 +723,7 @@ function CocktailQuizGame() {
   if (finished) {
     return (
       <div className="text-center">
-        <div className="text-5xl mb-4">{score > 200 ? "\u{1F3C6}" : score > 100 ? "\u{1F44D}" : "\u{1F4AA}"}</div>
+        <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">Quiz-Ergebnis</p>
         <p className="text-2xl font-extrabold text-secondary">{score} Punkte</p>
         <p className="text-muted mt-2">{QUIZ_QUESTIONS.length} Fragen beantwortet</p>
         <button onClick={handleStart} className="mt-4 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl">Nochmal spielen</button>
@@ -867,7 +866,7 @@ function TabuGame() {
   if (!running && timer === 0) {
     return (
       <div className="text-center">
-        <p className="text-4xl mb-2">{"\u{23F0}"}</p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-2">Zeit abgelaufen</p>
         <p className="text-xl font-bold text-secondary">Zeit abgelaufen!</p>
         <p className="text-muted mt-2">Richtig: {score.correct} | Übersprungen: {score.skip}</p>
         <button onClick={start} className="mt-4 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl">Nochmal spielen</button>
@@ -942,7 +941,6 @@ export default function PartyspielePageContent() {
     <>
     {/* Red Hero Banner */}
     <div className="page-hero-banner py-16 md:py-24">
-      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyspiele</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyspiele</h1>
@@ -961,7 +959,7 @@ export default function PartyspielePageContent() {
             onClick={() => setActiveGame(game.id)}
             className="group bg-white rounded-2xl border border-border hover:border-primary/30 transition-all overflow-hidden text-left p-5 card-hover-glow"
           >
-            <span className="text-4xl">{game.icon}</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-primary">{game.difficulty}</span>
             <h3 className="font-bold text-secondary mt-3 group-hover:text-primary transition-colors">{game.name}</h3>
             <p className="text-xs text-muted mt-1 line-clamp-2">{game.description}</p>
             <div className="flex items-center gap-2 mt-3">

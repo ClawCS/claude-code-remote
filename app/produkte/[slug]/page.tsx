@@ -16,6 +16,7 @@ export default function ProductDetailPage() {
   const [triedFallback, setTriedFallback] = useState(false);
 
   const product = products.find((p) => p.slug === slug);
+  const hasPhoto = Boolean(product?.image) && product?.image !== "/images/home/brand-logo.webp";
 
   if (!product) {
     return (
@@ -38,10 +39,10 @@ export default function ProductDetailPage() {
         <span className="text-secondary">{product.name}</span>
       </nav>
 
-      <div className="grid md:grid-cols-2 gap-10 mb-16">
-        <div className="bg-light rounded-2xl flex items-center justify-center p-8 relative aspect-square">
+      <div className={`grid ${hasPhoto ? "md:grid-cols-2" : "max-w-3xl"} gap-10 mb-16`}>
+        {hasPhoto && <div className="bg-light rounded-2xl flex items-center justify-center p-8 relative aspect-square">
           {imgFailed ? (
-            <span className="text-8xl">{{"Bier":"🍺","Wein":"🍷","Sekt & Co.":"🥂","Spirituosen":"🥃","Alkoholfreie Getränke":"🥤","Lebensmittel & Mehr":"🛒"}[product.category] ?? "🍶"}</span>
+            <p className="text-muted">Produktfoto nicht verfügbar</p>
           ) : (
             <Image
               src={triedFallback && product.extractedImage ? product.extractedImage : product.image}
@@ -58,13 +59,13 @@ export default function ProductDetailPage() {
               }}
             />
           )}
-        </div>
+        </div>}
 
         <div>
           <span className="inline-block px-3 py-1 bg-light text-muted text-xs font-medium rounded-full mb-3">{product.category}</span>
           <h1 className="text-3xl font-bold text-secondary mb-2">{product.name}</h1>
           {product.unit && <p className="text-muted mb-1">{product.unit}</p>}
-          {product.image === "/images/home/brand-logo.webp" && <p className="text-sm text-muted mb-3">Neutrales Sortimentsbild; die konkrete Produktabbildung folgt.</p>}
+          {!hasPhoto && <p className="text-sm text-muted mb-3">Sortimentsbeispiel; die konkrete Produktabbildung folgt.</p>}
           {product.ean && <p className="text-xs text-muted mb-6">EAN: {product.ean}</p>}
           <p className="text-muted leading-relaxed mb-8">{product.description}</p>
 

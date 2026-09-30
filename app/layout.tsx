@@ -1,6 +1,6 @@
 import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 
-import DeChrome from "@/components/DeChrome";
+import PublicChrome from "@/components/PublicChrome";
 import JsonLdScript from "@/components/JsonLdScript";
 import RouteContent from "@/components/RouteContent";
 import { CartProvider } from "@/context/CartContext";
@@ -11,6 +11,9 @@ import {
 } from "@/lib/cinematic/metadata";
 
 import "./globals.css";
+import "./public-site.css";
+import { cinematicTokenStyle } from "@/lib/cinematic/tokens";
+import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -36,6 +39,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nowIso = resolveHomepageNow().toISOString();
   return (
     <html
       lang="de"
@@ -45,11 +49,12 @@ export default function RootLayout({
         <JsonLdScript value={LOCAL_BUSINESS_JSON_LD} />
         <CartProvider>
           <WishlistProvider>
-            <DeChrome slot="header" />
-            <RouteContent>{children}</RouteContent>
-            <DeChrome slot="footer" />
-            <DeChrome slot="drawers" />
-            <DeChrome slot="floating" />
+            <div className="public-site" style={cinematicTokenStyle}>
+              <PublicChrome slot="header" nowIso={nowIso} />
+              <RouteContent>{children}</RouteContent>
+              <PublicChrome slot="footer" nowIso={nowIso} />
+              <PublicChrome slot="drawers" nowIso={nowIso} />
+            </div>
           </WishlistProvider>
         </CartProvider>
       </body>

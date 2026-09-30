@@ -1,32 +1,32 @@
-export type GalleryItem = {
+import type { StaticImageData } from "next/image";
+import { EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
+
+export type GalleryItem = Readonly<{
   id: number;
   title: string;
   description: string;
   category: "team";
-  image: string;
-  date?: string;
-};
+  image: StaticImageData | null;
+  alt: string;
+}>;
 
-const teamImg = (name: string) => `/images/gallery/team-${name}.jpg`;
-
-export const galleryItems: GalleryItem[] = [
-  // ═══ TEAM (echte Portrait-Fotos) ═══
-  { id: 1, title: "Team Jammers — Gruppenfoto", description: "Das sind wir: Team Jammers! 10 Mitarbeiter mit Leidenschaft für Getränke.", category: "team", image: teamImg("gruppenfoto") },
-  { id: 2, title: "Sven & Niko — Geschäftsführer", description: "Die beiden Geschäftsführer von Trinkgut Jammers Goch.", category: "team", image: teamImg("sven-niko") },
-  { id: 3, title: "Niko — Inhaber", description: "Niko, der Inhaber. Bekannt aus Funk & Fernsehen #VSS.", category: "team", image: teamImg("niko") },
-  { id: 4, title: "Sven — Geschäftsführer", description: "Wäre als Getränk definitiv ein POWERade!", category: "team", image: teamImg("sven") },
-  { id: 6, title: "Jasmin — Spirituosen & Wein", description: "Unsere Spirituosen- und Weinschubserin.", category: "team", image: teamImg("jasmin") },
-  { id: 8, title: "Gabriella — Verkauf", description: "Unsere Verkaufsallrounderin. Kann alles, weiß alles.", category: "team", image: teamImg("gabriella") },
-  { id: 9, title: "Jan Niklas — Lager", description: "Der fleißigste Ameisenfahrer im Team.", category: "team", image: teamImg("jan-niklas") },
-  { id: 10, title: "Hanna — Marketing", description: "Die Marketing Tante hinter unserem Instagram-Auftritt.", category: "team", image: teamImg("hanna") },
-  { id: 11, title: "Nico — Aushilfe", description: "Unser fleißigster Rekrut. Die Zukunft von Trinkgut Jammers.", category: "team", image: teamImg("nico") },
-  { id: 12, title: "Nils — Verkauf", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("nils") },
-  { id: 13, title: "Henri — Mitarbeiter", description: "Teil des Teams bei Trinkgut Jammers.", category: "team", image: teamImg("henri") },
-  { id: 14, title: "Tim — Stimmungskanone", description: "Unsere Stimmungskanone im Team.", category: "team", image: teamImg("tim") },
-  { id: 15, title: "Hannah — Aushilfe", description: "Wenn's bei uns mal brennt, löscht Hannah das Feuer.", category: "team", image: teamImg("hannah") },
+// Named portraits are separate from the group introduction. Photo counts do
+// not establish a current employee count or current employment status.
+export const galleryItems: readonly GalleryItem[] = [
+  { id: 3, title: "Niko", description: "Inhaber", category: "team", image: EDITORIAL_IMAGES.niko.image, alt: EDITORIAL_IMAGES.niko.alt },
+  { id: 4, title: "Sven", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.sven.image, alt: EDITORIAL_IMAGES.sven.alt },
+  { id: 6, title: "Jasmin", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.jasmin.image, alt: EDITORIAL_IMAGES.jasmin.alt },
+  { id: 8, title: "Gabriella", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.gabriella.image, alt: EDITORIAL_IMAGES.gabriella.alt },
+  { id: 9, title: "Jan Niklas", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.janNiklas.image, alt: EDITORIAL_IMAGES.janNiklas.alt },
+  { id: 10, title: "Hanna", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.hanna.image, alt: EDITORIAL_IMAGES.hanna.alt },
+  { id: 11, title: "Nico", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.nico.image, alt: EDITORIAL_IMAGES.nico.alt },
+  { id: 12, title: "Nils", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.nils.image, alt: EDITORIAL_IMAGES.nils.alt },
+  { id: 13, title: "Henri", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.henri.image, alt: EDITORIAL_IMAGES.henri.alt },
+  { id: 14, title: "Tim", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.tim.image, alt: EDITORIAL_IMAGES.tim.alt },
+  { id: 15, title: "Hannah", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.hannah.image, alt: EDITORIAL_IMAGES.hannah.alt },
 ];
 
 export const galleryCategories = [
   { value: "alle" as const, label: "Alle", icon: "📸" },
-  { value: "team" as const, label: "Mitarbeiter", icon: "👥" },
+  { value: "team" as const, label: "Team Jammers", icon: "👥" },
 ];

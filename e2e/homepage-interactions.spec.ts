@@ -104,8 +104,9 @@ test("[product-contract] flyer dialog is named, focus-trapped, lazy, and restore
 
   const response = await page.goto("/", { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
-  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1_000);
   const trigger = page.getByRole("button", { name: TRIGGER_NAME });
+  await expect(trigger).toBeEnabled();
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1_000);
   await expect(page.locator("iframe")).toHaveCount(0);
   await trigger.click();
 
@@ -152,8 +153,9 @@ test("[product-contract] flyer timeout is deterministic and resets on every reop
 
   const response = await page.goto("/", { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
-  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1_000);
   const trigger = page.getByRole("button", { name: TRIGGER_NAME });
+  await expect(trigger).toBeEnabled();
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1_000);
   await trigger.click();
   let dialog = page.getByRole("dialog", { name: DIALOG_NAME });
   await expect(dialog.locator(`iframe[title="${IFRAME_TITLE}"]`)).toHaveCount(1);
@@ -189,6 +191,8 @@ test("[product-contract] mobile details closes on Escape, outside pointer, and l
   expect(response?.status()).toBe(200);
 
   const details = page.locator("details[data-mobile-navigation]");
+  // Native details can open before React's Escape/outside handlers hydrate.
+  await page.waitForLoadState("networkidle");
   const summary = details.locator(':scope > summary[aria-label="Menü öffnen"]');
   await expect(details).toHaveCount(1);
   await summary.click();
@@ -204,8 +208,13 @@ test("[product-contract] mobile details closes on Escape, outside pointer, and l
   await summary.click();
   await expect(details).toHaveAttribute("open", "");
   await details.getByRole("link", { name: "Party & Miete" }).click();
+  await expect(page).toHaveURL(/\/vermietung$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Deine Feier. Unser Leihsortiment." })).toBeVisible();
+  await expect(page.locator("[data-cinematic-header]")).toHaveCount(1);
+  await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
+  // This locator now resolves the menu on the destination, not the old document.
   await expect(details).not.toHaveAttribute("open", "");
-  await expect(page).toHaveURL(/\/#service$/);
+  await expect(details.getByRole("navigation")).not.toBeVisible();
   expect(runtimeIssues).toEqual([]);
 });
 
@@ -234,18 +243,26 @@ test("[product-contract] native mobile navigation remains usable without JavaScr
     await summary.click();
     await expect(details).toHaveAttribute("open", "");
 
-    for (const label of [
-      "Angebote",
-      "Party & Miete",
-      "Eigenmarken",
-      "Aktionen",
-      "Team",
-      "Kontakt",
+    for (const [label, href] of [
+      ["Angebote", "/angebote"],
+      ["Sortiment", "/produkte"],
+      ["Party & Miete", "/vermietung"],
+      ["Eigenmarken", "/eigenmarke"],
+      ["Gewinnspiele", "/gewinnspiel"],
+      ["Team", "/galerie"],
+      ["Kontakt", "/kontakt"],
     ]) {
-      await expect(details.getByRole("link", { name: label })).toBeVisible();
+      const link = details.getByRole("link", { name: label, exact: true });
+      await expect(link).toBeVisible();
+      await expect(link).toHaveAttribute("href", href);
     }
     await details.getByRole("link", { name: "Party & Miete" }).click();
-    await expect(page).toHaveURL(/\/#service$/);
+    await expect(page).toHaveURL(/\/vermietung$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Deine Feier. Unser Leihsortiment." })).toBeVisible();
+    await expect(page.locator("details[data-mobile-navigation]")).not.toHaveAttribute("open", "");
+    await expect(page.locator("[data-cinematic-header]")).toHaveCount(1);
+    await expect(page.getByRole("contentinfo")).toHaveCount(1);
+    await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
     await expect(page.locator("iframe")).toHaveCount(0);
   } finally {
     await context.close();

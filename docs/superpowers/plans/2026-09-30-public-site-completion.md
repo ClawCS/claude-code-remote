@@ -39,14 +39,14 @@
 
 ### Task 2 Einheitlicher Rahmen und echte Kategorieziele
 
-**Files:** `components/DeChrome.tsx`, `components/RouteContent.tsx`, `app/layout.tsx`, `lib/cinematic/site.ts`, `components/cinematic/CinematicHeader.tsx`, neue Unterseiten-CSS, `/produkte`, `/kategorie/[slug]`, Produktdetail.
+**Files:** `components/PublicChrome.tsx`, `components/RouteContent.tsx`, `app/layout.tsx`, `lib/cinematic/site.ts`, `components/cinematic/CinematicHeader.tsx`, neue Unterseiten-CSS, `/produkte`, `/kategorie/[slug]`, Produktdetail.
 
 **Interfaces:** Wiederverwendung von `CinematicHeader({nowIso,hasActions})` und `LocationFooter()`. Fachnavigation liefert absolute lokale Routen, GrailBid bleibt extern. Anfrage- und Merklisten bleiben erreichbar.
 
-- [ ] Regressionstest für direkte Unterseiten und Kategorien schreiben und rot beobachten.
-- [ ] Gleichen Header/Footer und roten Seitenstil herstellen; alte Schimmer-/Kategorie-Hintergründe entfernen.
-- [ ] Navigation auf `/angebote`, `/produkte`, `/vermietung`, `/eigenmarke`, `/gewinnspiel`, `/galerie`, `/kontakt` und GrailBid legen; Rezepte/Partyplanung sichtbar erreichbar halten.
-- [ ] Einzeltests und konkrete Browserwechsel prüfen.
+- [x] Regressionstest für direkte Unterseiten und Kategorien schreiben und rot beobachten.
+- [x] Gleichen Header/Footer und roten Seitenstil herstellen; alte Schimmer-/Kategorie-Hintergründe entfernen.
+- [x] Navigation auf `/angebote`, `/produkte`, `/vermietung`, `/eigenmarke`, `/gewinnspiel`, `/galerie`, `/kontakt` und GrailBid legen; Rezepte/Partyplanung sichtbar erreichbar halten.
+- [x] Einzeltests und konkrete Browserwechsel prüfen.
 
 ### Task 3 Leihkatalog und Mengenbegrenzung
 
@@ -54,11 +54,11 @@
 
 **Interfaces:** `RentalItem` liefert Identität, belegten Preis oder null, Bruchersatz oder null, physischen Bestand und Quellenstand. Gemeinsame Mengenvalidierung wird in Auswahl, Warenkorb und Anfrage verwendet.
 
-- [ ] Exakte Quellzeilen und Mengenbypass als fehlgeschlagene Tests festhalten.
-- [ ] Sämtliche belegten Leihartikel übernehmen; unbelegte Kühlwagenvarianten und Tagespreise entfernen.
-- [ ] Obergrenzen bei wiederholter Auswahl und überlappenden Mietzeiträumen prüfen; keine verbindliche Verfügbarkeit behaupten.
-- [ ] Homepage-Kurzliste mit Preis und Bestand anzeigen; Vollkatalog auf eigener Unterseite.
-- [ ] Unit- und Browserprüfung von Auswahl bis Anfrage durchführen.
+- [x] Exakte Quellzeilen und Mengenbypass als fehlgeschlagene Tests festhalten.
+- [x] Sämtliche belegten Leihartikel übernehmen; unbelegte Kühlwagenvarianten und Tagespreise entfernen.
+- [x] Obergrenzen bei wiederholter Auswahl und überlappenden Mietzeiträumen prüfen; keine verbindliche Verfügbarkeit behaupten. Gemeinsamer Garnitur-/Einzelmöbelbestand zusätzlich abgesichert.
+- [x] Homepage-Kurzliste mit Preis und Bestand anzeigen; Vollkatalog auf eigener Unterseite.
+- [x] Unit- und Browserprüfung von Auswahl bis Anfrage durchführen.
 
 ### Task 4 Team und Canva-Bildzuordnung
 
@@ -66,10 +66,10 @@
 
 **Interfaces:** Jedes neue Bild benötigt bekannte Canva-Identität, lokalen Originalexport, Hash, Rubrik und Ausschnitt. Alte Namenslisten sind keine aktuelle Beschäftigungsbestätigung.
 
-- [ ] Die acht fehlenden lokalen Portraits mit Canva-Motiven abgleichen.
-- [ ] Alle belegten alten Teammitglieder zeigen; keine unbestätigten zusätzlichen Namen oder Rollen übernehmen.
-- [ ] Gruppenfoto breit, Portraits ohne doppelten pauschalen Crop darstellen; keine falsche Mitarbeiterzahl aus Bildanzahl ableiten.
-- [ ] Desktop und Mobil visuell prüfen. Nicht auflösbare Originalexport-Lücken ausdrücklich dokumentieren.
+- [x] Alle acht fehlenden lokalen Portraits Canva zuordnen; Henri/Hannah zusätzlich im alten Carousel-Original identifiziert und vom Betreiber bestätigt. Hanna und Hannah bleiben getrennt; ausgeschlossene ehemalige Mitarbeiter nicht verwenden.
+- [x] Elf belegte Portraits zeigen; alle elf alten Namen erhalten und keine Rollen aus dekorativen Slogans erfinden.
+- [x] Gruppenfoto natürlich, Portraits ohne doppelten pauschalen Crop darstellen; keine falsche Mitarbeiterzahl aus Bildanzahl ableiten.
+- [x] Desktop und Mobil visuell prüfen. Dreizehn Originalmotive und natürliche Derivate privat dokumentiert; Gruppenbild 900 × 875. Öffentliche Buildquellen verlustfrei und metadatenfrei, private Identitäten und Rohoriginale ignoriert.
 
 ### Task 5 Gewinnspielseite und Agenda 2026
 
@@ -77,25 +77,25 @@
 
 **Interfaces:** Datensätze enthalten Jahr/Monat, Gewinn, Originalpost, belegten Teilnahmeschluss und optional verifiziertes lokales Canva-Motiv. Status entsteht aus Berliner Datum; Teilnahme bleibt beim Originalbeitrag.
 
-- [ ] Instagram-Originale Januar bis September mit Canva beziehungsweise lokalen Exporten abgleichen.
-- [ ] Monatsagenda mit belegten Aktionen auf eigener URL anzeigen; noch nicht angekündigte Monate nicht erfinden.
-- [ ] Aktuelle und beendete Aktionen trennen, auf der Startseite sichtbaren Einstieg ergänzen.
-- [ ] Berliner Tagesgrenzen und Jahreswechsel testen; 2025-Motiv als 2026 ausschließen.
+- [x] Instagram-Originale Januar bis September lesen und belegen; drei weitere Sonderaktionen und Guinness ergänzen. Bildexport-Zuordnung ist davon getrennt und noch nicht vollständig.
+- [x] Monatsagenda mit belegten Aktionen auf eigener URL anzeigen; noch nicht angekündigte Monate nicht erfinden.
+- [x] Aktuelle und beendete Aktionen trennen, auf der Startseite sichtbaren Einstieg ergänzen.
+- [x] Berliner Tagesgrenzen und Jahreswechsel testen; 2025-Motiv als 2026 ausschließen. Privater Quellenvergleich: `assets/source/giveaways/PROVENANCE-2026.md`.
 
 ### Task 6 Rubrikbilder und Rezeptunterseiten
 
 **Files:** Rubrikdaten, `AssortmentSection.tsx`, `/cocktails`, Kategorie- und Service-Bildkomponenten, Herkunftsnachweise.
 
-- [ ] Vorhandene Canva-Motive passend auf Sortiment, Menschen, Eigenmarken und Vermietung verteilen.
-- [ ] Große Emoji-/Logo-Bildersatzflächen entfernen. Fehlende konkrete Fotos nicht durch thematisch falsche Bilder kaschieren.
-- [ ] Rezepte über eigene Detail-URLs zugänglich machen; keine falsche Rezeptabbildung aus beliebigem Produktfoto.
-- [ ] Weitere Themen nur bei tatsächlich passendem Material ergänzen, etwa regionale Spezialitäten, Geschenkideen oder echte Marktaktionen.
+- [x] Belegte Canva-Motive passend auf Menschen, Eigenmarken, Marktleben, Geschenkideen und regionale Spirituosen verteilen. Keine falschen Motive für fehlende konkrete Geräte-/Cocktailfotos einsetzen; diese Bildlücke bleibt offen.
+- [x] Große Emoji-/Logo-Bildersatzflächen entfernen, auch in Anfrageliste und Partyvorschlägen. Fehlende konkrete Fotos nicht durch thematisch falsche Bilder kaschieren.
+- [x] 65 Rezepte und sechs Rezeptkategorien über eigene URLs zugänglich machen; keine falsche Rezeptabbildung aus beliebigem Produktfoto.
+- [x] Marktleben, Geschenkideen und regionale Spirituosen auf drei eigenen Seiten aus tatsächlichen Canva-Motiven entwickeln; historische Preis-/Neu-Hinweise nicht als aktuelle Aktionen behaupten.
 
 ### Task 7 Forensische Abschlussprüfung und Sicherung
 
-- [ ] Alle öffentlichen Routen, internen Links und aktiven/gesperrten Endpunkte testen.
-- [ ] Anfrageliste, Mietmengen, mobile Navigation, Tastaturbedienung, Rezeptdetails und Jahresagenda prüfen.
-- [ ] Volle Unit-Suite, TypeScript, ESLint, Produktionsbuild und Browsertests ausführen.
-- [ ] Unabhängiger Review; relevante Findings debuggen und erneut prüfen.
+- [x] Öffentliche Routen, interne Links und aktive/gesperrte Endpunkte im dokumentierten Umfang testen: HTTP-Audit 224 Seiten, 364 lokale Ressourcen, fünf unbekannte Slugs und 13 API-Verträge ohne Finding. Externe Zielseiten und authentifizierte Schreibabläufe sind nicht Teil dieses Audits.
+- [x] Anfrageliste, Mietmengen, mobile Navigation, Tastaturbedienung, Rezeptdetails und Jahresagenda prüfen.
+- [x] Volle Unit-Suite (484 Tests), TypeScript, ESLint (0 Fehler, 20 bestehende Warnungen), Produktionsbuild und 85 Browsertests ausführen. 61 Kontrakttests mit fester Juli-Testuhr und 24 reale Produktionsprüfungen ohne Fixtures getrennt abgenommen.
+- [x] Unabhängiger Review; gemeinsame Möbelbestände, Wishlist-Bulkaktionen, verschachteltes Main und Agenda-Ziel korrigiert. Schlussreview fand außerdem doppelte Marken-Suffixe in drei neuen Seitentiteln; im realen Browser test-first reproduziert und korrigiert. Keine weiteren bestätigten Hochrisiko-Fehler im geprüften Umfang.
 - [ ] Reale Vorschau auf 3000 und 3103 aktualisieren, Screenshots speichern, genaue Dateien committen und pushen.
 - [ ] Abnahme mit belegten Ergebnissen und noch offenen Quellen-/Betreiberangaben übergeben; keine pauschale Behauptung vollständiger Rechtskonformität.

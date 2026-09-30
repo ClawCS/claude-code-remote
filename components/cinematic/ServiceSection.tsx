@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import {
   RENTAL_HIGHLIGHTS,
+  RENTAL_SOURCES,
   SERVICE_ITEMS,
 } from "@/data/cinematic-editorial";
 
@@ -40,9 +41,11 @@ export default function ServiceSection(): React.JSX.Element {
               {rental.name}
             </dt>
             <dd><Link href="/vermietung" prefetch={false}>Termin &amp; Verfügbarkeit anfragen ↗</Link></dd>
+            <dd className={styles.rentalReference}>{rental.price} · Bestand laut Liste: {rental.stock}</dd>
           </div>
         ))}
       </dl>
+      <p className={styles.rentalNote}>Preisstand {RENTAL_SOURCES.price.asOf} · Bestandsstand {RENTAL_SOURCES.inventory.asOf}. Referenzpreise, kein bestätigter Mietzeitraum. Verfügbarkeit und Konditionen klären wir persönlich.</p>
     </section>
   );
 }

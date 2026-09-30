@@ -1,0 +1,32 @@
+.public-site { flex: 1; background: var(--cinematic-color-paper); color: var(--cinematic-color-ink); }
+.public-subpage { min-height: 55vh; font-size: 1rem; line-height: 1.65; }
+.public-subpage h1, .public-subpage h2 { color: var(--cinematic-color-ink); }
+.public-subpage .page-hero-banner { background: var(--cinematic-color-warm); border-bottom: 1px solid var(--cinematic-color-line); }
+.public-subpage .page-hero-banner::before, .public-subpage .page-hero-banner::after { display: none; }
+.public-subpage .page-hero-banner h1 { color: var(--cinematic-color-red); text-shadow: none; }
+.public-subpage .page-hero-banner p, .public-subpage .page-hero-banner nav { color: var(--cinematic-color-muted); }
+.public-subpage .page-hero-banner nav a, .public-subpage .page-hero-banner nav span { color: var(--cinematic-color-ink); }
+.public-subpage nav[aria-label^="Brot"] a { text-decoration: underline; text-underline-offset: .2em; }
+.public-subpage .page-hero-banner a:not(nav a) { color: var(--cinematic-color-red); border-color: var(--cinematic-color-red); }
+.public-site a:focus-visible, .public-site button:focus-visible, .public-site input:focus-visible, .public-site summary:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 3px; }
+.public-site section[id], .public-site main { scroll-margin-top: 6rem; }
+.category-intro { display: grid; gap: 2rem; align-items: center; max-width: 82rem; margin: auto; padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 4rem); border-bottom: 1px solid var(--cinematic-color-line); }
+.category-intro h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); color: var(--cinematic-color-red); line-height: 1.1; margin: 1rem 0; }
+.category-intro p { max-width: 58ch; color: var(--cinematic-color-muted); }
+.category-intro nav { display: flex; gap: .6rem; flex-wrap: wrap; font-size: .9rem; }
+.category-photo { margin: 0 auto; width: 100%; max-width: 20rem; }
+.category-photo img { display: block; width: 100%; height: auto; }
+.category-photo figcaption { margin-top: .75rem; color: var(--cinematic-color-muted); font-size: .8rem; }
+@media (min-width: 768px) { .category-intro[data-category-photo] { grid-template-columns: 1.4fr 1fr; } }
+.category-links { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.5rem 0; }
+.category-links a { padding: .6rem 1rem; border: 1px solid var(--cinematic-color-line); border-radius: 2rem; background: var(--cinematic-color-surface); color: var(--cinematic-color-ink); }
+.category-links a:hover, .category-links a[aria-current="page"] { background: var(--cinematic-color-red); border-color: var(--cinematic-color-red); color: white; }
+.product-text-card { min-height: 15rem; background: var(--cinematic-color-surface); border: 1px solid var(--cinematic-color-line); border-radius: .8rem; padding: 1.5rem; }
+.product-text-card h3 { font-size: 1.2rem; line-height: 1.35; }
+.product-text-card [data-photo-missing] { color: var(--cinematic-color-muted); font-size: .85rem; }
+.public-subpage .regional-specialties {max-width:76rem;margin:auto;padding:3rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:2rem;align-items:start;}
+.public-subpage .regional-specialties article {min-width:0;}
+.public-subpage .regional-specialties figure {margin:0;max-width:24rem;}
+.public-subpage .regional-specialties img {display:block;width:100%;height:auto;}
+.public-subpage .regional-specialties figcaption {font-size:.875rem;color:#655b53;margin-top:.75rem;}
+.public-subpage .regional-specialties h2 {font-size:1.65rem;margin:1.5rem 0 .75rem;}

@@ -41,6 +41,13 @@
   gap:var(--cinematic-spacing-lg);
 }
 
+.giveawayWall {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--cinematic-spacing-lg);
+  margin-block-end: var(--cinematic-spacing-lg);
+}
+
 .sectionHeading > p:last-child:not(.eyebrow) { margin:0; line-height:var(--cinematic-typography-line-height-body); }
 
 .figure {
@@ -57,9 +64,7 @@
   height: auto;
   max-width: 100%;
   justify-self: start;
-  object-fit: cover;
-  aspect-ratio: 4 / 5;
-  object-position: top;
+  object-fit: contain;
 }
 
 .caption {
@@ -73,6 +78,13 @@
 .serviceWall {
   display: grid;
   border-block-start: 1px solid var(--cinematic-color-line);
+}
+
+.rentalReference,
+.rentalNote {
+  font-size: var(--cinematic-typography-size-small);
+  line-height: var(--cinematic-typography-line-height-body);
+  color: var(--cinematic-color-muted);
 }
 
 .serviceRow {
@@ -172,7 +184,7 @@
   color:var(--cinematic-color-white);
 }
 
-.actionsStage .eyebrow, .actionsStage a, .actionsStage .actionValidity, .actionsStage .archiveDate { color:var(--cinematic-color-white); }
+.actionsStage .eyebrow, .actionsStage .actionLinks a, .actionsStage .actionValidity, .actionsStage .archiveDate { color:var(--cinematic-color-white); }
 .actionsStage .actionCard, .actionsStage .archive article { border-color: var(--cinematic-color-translucent); }
 .actionsStage .actionCard:only-child { grid-column: 1 / -1; max-width: 50rem; }
 
@@ -338,12 +350,10 @@
     grid-column: auto;
   }
 
-  .figure:first-child {
+  .peopleGrid [data-people-group] {
     grid-column: 1 / -1;
-    max-width: none;
+    justify-self: center;
   }
-
-  .figure:first-child img { aspect-ratio: 21 / 9; }
 
   .serviceRow {
     grid-template-columns: minmax(0, 1fr) auto;

@@ -7,7 +7,6 @@ import ProductGrid from "@/components/ProductGrid";
 import SearchBar from "@/components/SearchBar";
 import { categories } from "@/lib/utils";
 import { assortmentProducts as products } from "@/lib/catalog";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 type Origin = "alle" | "DE" | "NL";
 
@@ -15,7 +14,6 @@ function ProdukteContent() {
   const searchParams = useSearchParams();
   const searchFromUrl = searchParams.get("search") || "";
   const [search, setSearch] = useState(searchFromUrl);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [origin, setOrigin] = useState<Origin>("alle");
 
   useEffect(() => {
@@ -33,27 +31,25 @@ function ProdukteContent() {
         !search ||
         p.name.toLowerCase().includes(search.toLowerCase()) ||
         p.category.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = !activeCategory || p.categorySlug === activeCategory;
       const matchesOrigin = origin === "alle" || p.origin === origin;
-      return matchesSearch && matchesCategory && matchesOrigin;
+      return matchesSearch && matchesOrigin;
     });
-  }, [search, activeCategory, origin]);
+  }, [search, origin]);
 
   return (
     <>
     <div className="page-hero-banner py-16 md:py-24">
-      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Sortiment</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Alle Produkte</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
-          {products.length} Artikel — von Bier über Wein bis Spirituosen. Alles für dich.
+          Entdecke unsere Warengruppen und eine Auswahl aus dem Markt. Preise und Verfügbarkeit bestätigen wir persönlich.
         </p>
         <Link
           href="/angebote"
           className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white/90 backdrop-blur transition-colors hover:border-white/50 hover:bg-white/10"
         >
-          🗓️ Tagesaktuelle Wochenangebote im Handzettel
+          Datierte Wochenangebote im Handzettel
           <span aria-hidden>→</span>
         </Link>
       </div>
@@ -90,30 +86,17 @@ function ProdukteContent() {
           <SearchBar value={search} onChange={setSearch} />
         </div>
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setActiveCategory(null)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              !activeCategory
-                ? "bg-primary text-white"
-                : "bg-light text-muted hover:bg-border"
-            }`}
-          >
+          <Link href="/produkte" className="px-3 py-1.5 rounded-full text-sm font-medium bg-primary text-white" aria-current="page">
             Alle
-          </button>
+          </Link>
           {categories.map((cat) => (
-            <button
+            <Link
               key={cat.slug}
-              onClick={() =>
-                setActiveCategory(activeCategory === cat.slug ? null : cat.slug)
-              }
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === cat.slug
-                  ? "bg-primary text-white"
-                  : "bg-light text-muted hover:bg-border"
-              }`}
+              href={`/kategorie/${cat.slug}`}
+              className="px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-light text-muted hover:bg-border"
             >
-              {cat.icon} {cat.name}
-            </button>
+              {cat.name}
+            </Link>
           ))}
         </div>
       </div>

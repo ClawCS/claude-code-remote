@@ -14,13 +14,13 @@ export default function CartDrawer() {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setIsCartOpen(false)} aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/40 z-[200]" onClick={() => setIsCartOpen(false)} aria-hidden="true" />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="cart-drawer-title"
-        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
+        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col"
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="cart-drawer-title" className="text-lg font-bold text-secondary">Deine Anfrageliste</h2>
@@ -34,7 +34,6 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto p-4">
           {items.length === 0 ? (
             <div className="text-center py-12 text-muted">
-              <p className="text-4xl mb-3">🛒</p>
               <p>Deine Anfrageliste ist leer.</p>
             </div>
           ) : (
@@ -44,9 +43,9 @@ export default function CartDrawer() {
                 return (
                   <li key={cartLineKey(item)} className={`p-3 rounded-lg ${isRental ? "bg-amber-50 border border-amber-200" : "bg-light"}`}>
                     <div className="flex gap-3">
-                      <div className="w-14 h-14 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
+                      {item.product.image && item.product.image !== "/images/home/brand-logo.webp" && <div className="w-14 h-14 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
                         <Image src={item.product.image} alt={item.product.name} fill sizes="56px" className="object-contain p-1" />
-                      </div>
+                      </div>}
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-secondary truncate">{item.product.name}</p>
                         <p className="text-xs text-muted">{item.product.unit}</p>
@@ -59,7 +58,7 @@ export default function CartDrawer() {
                       </div>
                     </div>
                     {isRental && (
-                      <p className="text-xs text-amber-700 mt-2 ml-[4.25rem]">
+                      <p className="text-xs text-amber-700 mt-2">
                         {item.rental!.startDate} – {item.rental!.endDate}
                       </p>
                     )}

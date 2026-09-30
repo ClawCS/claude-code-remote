@@ -1,0 +1,16 @@
+import { REGIONAL_SPECIALTIES } from "@/data/regional-specialties";
+
+export type MarketPhoto = Readonly<{ src: string; width: number; height: number; alt: string; caption: string }>;
+
+/** Public rendering data only. Original exports and source identities remain private. */
+export const MARKET_PHOTOS = {
+  market: { src: "/images/editorial/canva/salitos-market.webp", width: 696, height: 975, alt: "Salitos-Getränkeaufbau im Markt von Trinkgut Jammers", caption: "Marktleben · ein Blick auf einen Getränkeaufbau" },
+  behindScenes: { src: "/images/editorial/canva/niko-market-life.webp", width: 705, height: 940, alt: "Niko im roten Jammers-Pullover mit gelben Reinigungshandschuhen und Sprühflasche", caption: "Hinter den Kulissen · Niko im Marktalltag" },
+  gifts: { src: "/images/editorial/canva/gift-basket.webp", width: 666, height: 910, alt: "In Folie verpackter Geschenkkorb mit Getränken bei Trinkgut Jammers", caption: "Geschenkideen · mit Liebe zusammengestellt" },
+} as const satisfies Record<string, MarketPhoto>;
+
+export const MARKET_DISCOVERIES = [
+  { id: "marktleben", title: "Nicht einfach irgendein Markt.", text: "Echte Einblicke, besondere Aufbauten und Menschen, die mit anpacken. Das ist Jammers in Goch.", href: "/marktleben", photo: MARKET_PHOTOS.market },
+  { id: "geschenke", title: "Eine Freude zum Mitnehmen.", text: "Für Gastgeber, Geburtstage oder ein kleines Dankeschön: Lass dich zu einer passenden Geschenkidee beraten.", href: "/geschenkideen", photo: MARKET_PHOTOS.gifts },
+  { id: "regional", title: "Vom Niederrhein. Für dich.", text: "Regionale Spezialitäten mit Charakter. Entdecke Brüdergeist und weitere Genussideen aus unserem Markt.", href: "/regionale-spirituosen", photo: { ...REGIONAL_SPECIALTIES[0], caption: "Brüdergeist · originale Canva-Produktgrafik" } },
+] as const;

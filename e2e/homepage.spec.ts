@@ -39,24 +39,22 @@ test("offers exact navigation, contact, route, Instagram, NL, and legal links", 
   page,
 }) => {
   const navigation = page.getByRole("navigation", { name: "Hauptnavigation" });
-  for (const label of [
-    "Angebote",
-    "Party & Miete",
-    "Eigenmarken",
-    "Team",
-    "Kontakt",
+  for (const [label, href] of [
+    ["Angebote", "/angebote"],
+    ["Sortiment", "/produkte"],
+    ["Party & Miete", "/vermietung"],
+    ["Eigenmarken", "/eigenmarke"],
+    ["Gewinnspiele", "/gewinnspiel"],
+    ["Team", "/galerie"],
+    ["TCG", "https://grailbid.com"],
+    ["Kontakt", "/kontakt"],
   ]) {
-    await expect(navigation.getByRole("link", { name: label })).toBeVisible();
+    const link = navigation.getByRole("link", { name: label, exact: true });
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", href);
   }
-  const actionSections = await page.locator("section#aktionen").count();
-  await expect(
-    navigation.getByRole("link", { name: "Aktionen" }),
-  ).toHaveCount(actionSections);
-  for (const link of await navigation.locator('a[href^="#"]').all()) {
-    const href = await link.getAttribute("href");
-    expect(href).not.toBeNull();
-    await expect(page.locator(href!)).toHaveCount(1);
-  }
+  await expect(navigation.locator('a[href^="#"]')).toHaveCount(0);
+  await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /WhatsApp/ }).first()).toHaveAttribute(
     "href",
     /wa\.me\/491752492386/,
@@ -74,7 +72,7 @@ test("offers exact navigation, contact, route, Instagram, NL, and legal links", 
   await expect(
     page.getByRole("link", { name: /Niederländisch|Grenzkunden/ }),
   ).toHaveAttribute("href", "/nl");
-  for (const href of ["/kontakt", "/impressum", "/datenschutz", "/agb"]) {
+  for (const href of ["/kontakt", "/impressum", "/datenschutz", "/agb", "/warenkorb", "/merkzettel"]) {
     await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);
   }
 });

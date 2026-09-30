@@ -21,7 +21,7 @@ export default function WishlistDrawer() {
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/30 z-50"
+        className="fixed inset-0 bg-black/30 z-[200]"
         onClick={() => setIsWishlistOpen(false)}
         aria-hidden="true"
       />
@@ -30,7 +30,7 @@ export default function WishlistDrawer() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="wishlist-drawer-title"
-        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
+        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -55,9 +55,6 @@ export default function WishlistDrawer() {
         <div className="flex-1 overflow-y-auto p-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-border mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
               <p className="text-muted font-medium">Dein Merkzettel ist leer</p>
               <p className="text-sm text-muted mt-1">Tippe auf das Herz bei einem Produkt</p>
             </div>
@@ -65,7 +62,7 @@ export default function WishlistDrawer() {
             <div className="space-y-3">
               {items.map((product) => (
                 <div key={product.id} className="flex gap-3 bg-light rounded-xl p-3">
-                  <Link
+                  {product.image && product.image !== "/images/home/brand-logo.webp" && <Link
                     href={`/produkte/${product.slug}`}
                     onClick={() => setIsWishlistOpen(false)}
                     className="flex-shrink-0 w-16 h-16 bg-white rounded-lg overflow-hidden relative"
@@ -77,7 +74,7 @@ export default function WishlistDrawer() {
                       sizes="64px"
                       className="object-contain p-1"
                     />
-                  </Link>
+                  </Link>}
                   <div className="flex-1 min-w-0">
                     <Link
                       href={`/produkte/${product.slug}`}

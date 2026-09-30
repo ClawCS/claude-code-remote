@@ -19,7 +19,7 @@ export default function PeopleSection(): React.JSX.Element {
       </div>
       <div className={styles.peopleGrid} data-people-story>
         {PEOPLE_STORY.map((person, index) => {
-          const desktopWidth = index === 0 || index === 3 ? "58vw" : "42vw";
+          const desktopWidth = index === 0 ? "100vw" : "50vw";
           const figureStyle = {
             "--editorial-image-max-width": `${person.image.width}px`,
           } as CSSProperties;
@@ -29,6 +29,7 @@ export default function PeopleSection(): React.JSX.Element {
               className={styles.figure}
               key={person.id}
               style={figureStyle}
+              data-people-group={index === 0 ? "" : undefined}
             >
               <Image
                 className={styles.image}

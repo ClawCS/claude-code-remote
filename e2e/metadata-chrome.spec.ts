@@ -52,12 +52,15 @@ const EXPECTED_LOCAL_BUSINESS = {
   sameAs: ["https://www.instagram.com/trinkgutjammers_goch/"],
 };
 
-const LEGACY_SENTINELS = {
+const RETIRED_CHROME_SENTINELS = {
   Header: "Warenkorb öffnen",
   Footer: "data-legacy-footer",
+  WhatsAppButton: "WhatsApp Chat",
+} as const;
+
+const DRAWER_SENTINELS = {
   CartDrawer: "Deine Anfrageliste ist leer.",
   WishlistDrawer: "Dein Merkzettel ist leer",
-  WhatsAppButton: "WhatsApp Chat",
 } as const;
 
 type ScriptObservation = {
@@ -188,6 +191,61 @@ async function newIsolatedContext(browser: Browser): Promise<BrowserContext> {
   await installCatalogCoverFixture(context);return context;
 }
 
+async function expectPublicChrome(page: Page): Promise<void> {
+  await expect(page.locator("[data-cinematic-header]")).toHaveCount(1);
+  await expect(page.getByRole("banner")).toHaveCount(1);
+  await expect(page.locator("main#main-content")).toHaveCount(1);
+  await expect(page.getByRole("contentinfo")).toHaveCount(1);
+  await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Warenkorb öffnen", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Chat öffnen", exact: true })).toHaveCount(0);
+  await expect(page.locator("footer#kontakt")).toContainText("Jurgenstr. 20");
+  await expect(page.locator("footer#kontakt")).toContainText("Mo–Sa 08:00–20:00 Uhr");
+  for (const [label, href] of [
+    ["Anfrageliste", "/warenkorb"],
+    ["Merkzettel", "/merkzettel"],
+    ["Cocktail-Rezepte", "/cocktails"],
+    ["Party planen", "/partyplaner"],
+  ]) {
+    await expect(page.locator("footer").getByRole("link", { name: label, exact: true })).toHaveAttribute("href", href);
+  }
+  const nav = page.getByRole("navigation", { name: "Hauptnavigation", includeHidden: true });
+  for (const [label, href] of [
+    ["Angebote", "/angebote"],
+    ["Sortiment", "/produkte"],
+    ["Party & Miete", "/vermietung"],
+    ["Eigenmarken", "/eigenmarke"],
+    ["Gewinnspiele", "/gewinnspiel"],
+    ["Team", "/galerie"],
+    ["Kontakt", "/kontakt"],
+  ]) {
+    await expect(nav.getByRole("link", { name: label, exact: true, includeHidden: true })).toHaveAttribute("href", href);
+  }
+  await expect(nav.locator('a[href^="#"]')).toHaveCount(0);
+}
+
+async function expectNaturalPeopleStory(page: Page): Promise<void> {
+  await expect(page.locator("#menschen figure")).toHaveCount(12);
+  await expect(page.locator("#menschen figcaption")).toHaveText([
+    "Team Jammers", "Niko · Inhaber", "Sven · Team Jammers",
+    "Jasmin · Team Jammers", "Gabriella · Team Jammers",
+    "Jan Niklas · Team Jammers", "Hanna · Team Jammers", "Nico · Team Jammers",
+    "Nils · Team Jammers", "Tim · Team Jammers", "Henri · Team Jammers", "Hannah · Team Jammers",
+  ]);
+  const photos = page.locator("#menschen figure img");
+  await expect(photos).toHaveCount(12);
+  for (const image of await photos.all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true);
+    await expect(image).toHaveCSS("object-fit", "contain");
+    const dimensions = await image.evaluate((element: HTMLImageElement) => ({
+      displayed: element.getBoundingClientRect().width / element.getBoundingClientRect().height,
+      natural: element.naturalWidth / element.naturalHeight,
+    }));
+    expect(dimensions.displayed).toBeCloseTo(dimensions.natural, 2);
+  }
+}
+
 test("[product-contract] binds exact homepage metadata and the local OG JPEG", async ({
   page,
   baseURL,
@@ -250,6 +308,7 @@ test("[product-contract] renders one final landmark tree and ordered server sect
     page.getByRole("heading", { level: 1, name: "Goch schenkt ein." }),
   ).toHaveCount(1);
   await expect(page.locator("main header, main footer")).toHaveCount(0);
+  await expectPublicChrome(page);
 
   const sectionOrder = await page
     .locator(
@@ -310,7 +369,7 @@ test("[product-contract] renders one final landmark tree and ordered server sect
   await expect(page.getByRole("heading", { name: "Menschen hinter Jammers" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Deine Party. Unser Service." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Drei mit Charakter." })).toBeVisible();
-  await expect(page.locator("#menschen figure")).toHaveCount(4);
+  await expectNaturalPeopleStory(page);
   await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
   await expect(page.locator("#eigenmarken figcaption")).toHaveText([
     /Pralle Kirsche/,
@@ -393,7 +452,8 @@ test("[product-contract] keeps the complete active homepage server-readable with
     ]) {
       await expect(page.getByText(exactText, { exact: true }).first()).toBeVisible();
     }
-    await expect(page.locator("#menschen figure")).toHaveCount(4);
+    await expectPublicChrome(page);
+    await expectNaturalPeopleStory(page);
     await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
     await expect(page.locator("iframe")).toHaveCount(0);
     await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
@@ -478,139 +538,173 @@ test("[product-contract] keeps homepage metadata off child routes and neutralize
   expect(runtimeIssues).toEqual([]);
 });
 
-test("[product-contract] loads all five active legacy chunks off-root and none on root", async ({
+test("[product-contract] excludes retired chrome chunks everywhere and keeps drawers off the homepage", async ({
   browser,
   baseURL,
 }) => {
-  const legacyContext = await newIsolatedContext(browser);
-  let legacyObservation: ScriptObservation | undefined;
+  test.setTimeout(60_000);
+  const drawerScriptUrls = new Set<string>();
 
-  try {
-    legacyObservation = await observeScripts(
-      legacyContext,
-      localUrl(baseURL, "/angebote"),
-    );
-    await expect
-      .poll(
-        () =>
-          Object.values(LEGACY_SENTINELS).filter(
-            (sentinel) =>
-              ![...legacyObservation!.bodies.values()].some((body) =>
-                containsSentinel(body, sentinel),
-              ),
-          ),
-        { timeout: 10_000 },
-      )
-      .toEqual([]);
-
-    const sentinelUrls = new Map<string, string>();
-    for (const [moduleName, sentinel] of Object.entries(LEGACY_SENTINELS)) {
-      const scriptUrl = [...legacyObservation.bodies.entries()].find(([, body]) =>
-        containsSentinel(body, sentinel),
-      )?.[0];
-      expect(scriptUrl, `${moduleName} chunk sentinel`).toBeTruthy();
-      sentinelUrls.set(moduleName, scriptUrl!);
-    }
-    expect(sentinelUrls.size).toBe(5);
-    expect(legacyObservation.runtimeIssues).toEqual([]);
-
-    const rootContext = await newIsolatedContext(browser);
+  for (const pathname of ["/angebote", "/vermietung", "/galerie", "/"]) {
+    const context = await newIsolatedContext(browser);
     try {
-      const rootObservation = await observeScripts(
-        rootContext,
-        localUrl(baseURL, "/"),
-      );
-      await expect(rootObservation.page.locator(".glass-header")).toHaveCount(0);
-      await expect(
-        rootObservation.page.getByRole("button", { name: "Warenkorb öffnen" }),
-      ).toHaveCount(0);
-      await expect(
-        rootObservation.page.getByRole("button", { name: "Merkzettel" }),
-      ).toHaveCount(0);
-      await expect(
-        rootObservation.page.getByRole("button", { name: "Chat öffnen" }),
-      ).toHaveCount(0);
-      await expect(rootObservation.page.getByRole("dialog")).toHaveCount(0);
+      const observation = await observeScripts(context, localUrl(baseURL, pathname));
+      await expectPublicChrome(observation.page);
+      await expect(observation.page.getByRole("dialog")).toHaveCount(0);
 
-      const rootInternalLinks = rootObservation.page.locator(
-        'a[href^="/"]:visible',
-      );
-      for (
-        let index = 0;
-        index < (await rootInternalLinks.count());
-        index += 1
-      ) {
-        await rootInternalLinks.nth(index).scrollIntoViewIfNeeded();
-        await rootObservation.page.evaluate(
-          () =>
-            new Promise<void>((resolve) =>
-              requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-            ),
-        );
+      // Entering the viewport must not eagerly prefetch retired chrome.
+      for (const link of await observation.page.locator('a[href^="/"]:visible').all()) {
+        await link.scrollIntoViewIfNeeded();
       }
-      await rootObservation.waitForIdle();
+      await observation.waitForIdle();
 
-      for (const [moduleName, sentinel] of Object.entries(LEGACY_SENTINELS)) {
+      expect(observation.requestedUrls.size).toBeGreaterThan(0);
+      for (const [moduleName, sentinel] of Object.entries(RETIRED_CHROME_SENTINELS)) {
         expect(
-          [...rootObservation.bodies.values()].some((body) =>
-            containsSentinel(body, sentinel),
-          ),
-          `${moduleName} sentinel leaked into a root script`,
+          [...observation.bodies.values()].some((body) => containsSentinel(body, sentinel)),
+          moduleName + " retired chunk leaked into " + pathname,
         ).toBe(false);
       }
-      for (const [moduleName, scriptUrl] of sentinelUrls) {
-        expect(
-          rootObservation.requestedUrls.has(scriptUrl),
-          `${moduleName} legacy script was requested by root`,
-        ).toBe(false);
+
+      for (const [moduleName, sentinel] of Object.entries(DRAWER_SENTINELS)) {
+        const scriptUrls = [...observation.bodies.entries()]
+          .filter(([, body]) => containsSentinel(body, sentinel))
+          .map(([url]) => url);
+        if (pathname === "/") {
+          expect(scriptUrls, moduleName + " should remain lazy off the homepage").toEqual([]);
+        } else {
+          expect(scriptUrls.length, moduleName + " remains available on " + pathname).toBeGreaterThan(0);
+          for (const url of scriptUrls) drawerScriptUrls.add(url);
+        }
       }
-      expect(rootObservation.runtimeIssues).toEqual([]);
+      if (pathname === "/") {
+        for (const url of drawerScriptUrls) {
+          expect(observation.requestedUrls.has(url), "homepage requested an off-root drawer chunk").toBe(false);
+        }
+      }
+      expect(observation.runtimeIssues).toEqual([]);
     } finally {
-      await rootContext.close();
+      await context.close();
     }
-  } finally {
-    await legacyContext.close();
   }
 });
 
-test("[product-contract] preserves the off-root legacy controls and named dialogs", async ({
+test("[product-contract] keeps the new chrome on direct routes and client navigation", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
   const runtimeIssues = collectRuntimeIssues(page);
-  const response = await page.goto("/angebote", {
-    waitUntil: "domcontentloaded",
-  });
+  for (const pathname of ["/", "/angebote", "/produkte", "/vermietung", "/gewinnspiel", "/galerie"]) {
+    const response = await page.goto(pathname, { waitUntil: "domcontentloaded" });
+    expect(response?.status()).toBe(200);
+    await page.waitForLoadState("networkidle");
+    await expectPublicChrome(page);
+  }
+
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  for (const [label, pathname] of [
+    ["Party & Miete", "/vermietung"],
+    ["Gewinnspiele", "/gewinnspiel"],
+    ["Team", "/galerie"],
+  ]) {
+    await page.getByRole("navigation", { name: "Hauptnavigation" })
+      .getByRole("link", { name: label, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(pathname + "$"));
+    await expectPublicChrome(page);
+    await expect(page.locator("main.public-subpage")).toHaveCount(1);
+  }
+  expect(runtimeIssues).toEqual([]);
+});
+
+test("[product-contract] reaches inquiry and wishlist pages and preserves individual and bulk controls", async ({
+  page,
+}) => {
+  const runtimeIssues = collectRuntimeIssues(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  const response = await page.goto("/angebote", { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
+  await page.waitForLoadState("networkidle");
+  await expectPublicChrome(page);
+  await expect(page.locator("footer").getByRole("link", { name: "WhatsApp", exact: true })).toBeVisible();
 
-  await expect(page.locator(".glass-header")).toBeVisible();
-  await expect(page.getByRole("contentinfo")).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Per WhatsApp schreiben" }),
-  ).toBeVisible();
-  await expect(page.getByRole("button", { name: "Chat öffnen" })).toHaveCount(0);
+  await page.locator("footer").getByRole("link", { name: "Anfrageliste", exact: true }).click();
+  await expect(page).toHaveURL(/\/warenkorb$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Deine Anfrageliste ist leer" })).toBeVisible();
+  await page.getByRole("link", { name: "Produkte entdecken" }).click();
+  await expect(page).toHaveURL(/\/produkte$/);
+  await expectPublicChrome(page);
 
-  const cartButton = page.getByRole("button", { name: "Warenkorb öffnen" });
-  await expect(cartButton).toBeVisible();
-  await cartButton.click();
-  const cartDialog = page.getByRole("dialog", { name: "Deine Anfrageliste" });
-  await expect(cartDialog).toBeVisible();
-  await cartDialog.getByRole("button", { name: "Schließen" }).click();
-  await expect(cartDialog).toHaveCount(0);
+  const card = page.locator("[data-product-card]").first();
+  const productName = (await card.getByRole("heading", { level: 3 }).textContent())!.trim();
+  const productHref = await card.locator('a[href^="/produkte/"]').first().getAttribute("href");
+  expect(productName.length).toBeGreaterThan(0);
+  expect(productHref).toMatch(/^\/produkte\/[\w-]+$/);
 
-  await page.getByRole("button", { name: "Merkzettel" }).click();
-  const wishlistDialog = page.getByRole("dialog", { name: /Merkzettel/ });
-  await expect(wishlistDialog).toBeVisible();
-  await wishlistDialog.getByRole("button", { name: "Schliessen" }).click();
-  await expect(wishlistDialog).toHaveCount(0);
+  await card.getByRole("button", { name: "Zum Merkzettel", exact: true }).click();
+  await expect(card.getByRole("button", { name: "Vom Merkzettel entfernen", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await card.getByRole("button", { name: "Anfragen", exact: true }).click();
+  const drawer = page.getByRole("dialog", { name: "Deine Anfrageliste", exact: true });
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toContainText(productName);
+  await drawer.getByRole("button", { name: "Schließen", exact: true }).click();
+  await expect(drawer).toHaveCount(0);
 
-  const menuButton = page.getByRole("button", { name: "Menü" });
-  await expect(menuButton).toBeVisible();
-  await menuButton.click();
-  const menuDialog = page.getByRole("dialog", { name: "Navigationsmenü" });
-  await expect(menuDialog).toBeVisible();
-  await menuDialog.getByRole("button", { name: "Schließen" }).click();
-  await expect(menuDialog).toHaveCount(0);
+  await page.locator("footer").getByRole("link", { name: "Anfrageliste", exact: true }).click();
+  await expect(page).toHaveURL(/\/warenkorb$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Deine Anfrageliste", exact: true })).toBeVisible();
+  await expect(page.locator("main").getByRole("link", { name: productName, exact: true })).toHaveAttribute("href", productHref!);
+  const increase = page.getByRole("button", { name: "Menge für " + productName + " erhöhen", exact: true });
+  const count = increase.locator("..").locator("span");
+  await expect(count).toHaveText("1");
+  await increase.click();
+  await expect(count).toHaveText("2");
+  await page.getByRole("button", { name: "Menge für " + productName + " verringern", exact: true }).click();
+  await expect(count).toHaveText("1");
+  await expect(page.getByRole("link", { name: "Unverbindlich anfragen", exact: true })).toHaveAttribute("href", "/checkout");
+  await page.getByRole("button", { name: "Entfernen", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Deine Anfrageliste ist leer" })).toBeVisible();
+
+  await page.locator("footer").getByRole("link", { name: "Merkzettel", exact: true }).click();
+  await expect(page).toHaveURL(/\/merkzettel$/);
+  await expectPublicChrome(page);
+  await expect(page.getByRole("heading", { level: 1, name: "Merkzettel", exact: true })).toBeVisible();
+  await expect(page.locator("[data-product-card]")).toHaveCount(1);
+  await expect(page.locator("[data-product-card]").getByRole("heading", { level: 3 })).toHaveText(productName);
+  await page.getByRole("button", { name: "Vom Merkzettel entfernen", exact: true }).click();
+  await expect(page.locator("[data-product-card]")).toHaveCount(0);
+  await expect(page.getByText("Noch keine Getränke vorgemerkt.", { exact: false })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Sortiment entdecken", exact: true })).toHaveAttribute("href", "/produkte");
+
+  await page.getByRole("link", { name: "Sortiment entdecken", exact: true }).click();
+  await expect(page).toHaveURL(/\/produkte$/);
+  await page.locator("[data-product-card]").first().getByRole("button", { name: "Zum Merkzettel", exact: true }).click();
+  await page.locator("footer").getByRole("link", { name: "Merkzettel", exact: true }).click();
+  await expect(page).toHaveURL(/\/merkzettel$/);
+  await page.getByRole("button", { name: "Alle zur Anfrageliste (1)", exact: true }).click();
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toContainText(productName);
+  await drawer.getByRole("button", { name: "Schließen", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("zur unverbindlichen Anfrageliste hinzugefügt");
+  await page.getByRole("button", { name: "Merkzettel leeren", exact: true }).click();
+  await expect(page.locator("[data-product-card]")).toHaveCount(0);
+  await expect(page.getByRole("status")).toHaveText("Dein Merkzettel wurde geleert.");
+  await page.locator("footer").getByRole("link", { name: "Anfrageliste", exact: true }).click();
+  await expect(page).toHaveURL(/\/warenkorb$/);
+  await expect(page.locator("main").getByRole("link", { name: productName, exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Liste leeren", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Deine Anfrageliste ist leer" })).toBeVisible();
+  expect(runtimeIssues).toEqual([]);
+});
+
+test("[product-contract] keeps all eleven portraits and the group photo natural on desktop and mobile", async ({ page }) => {
+  const runtimeIssues = collectRuntimeIssues(page);
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    const response = await page.goto("/", { waitUntil: "domcontentloaded" });
+    expect(response?.status()).toBe(200);
+    await page.waitForLoadState("networkidle");
+    await expectNaturalPeopleStory(page);
+  }
   expect(runtimeIssues).toEqual([]);
 });
 

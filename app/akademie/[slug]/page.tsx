@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { courses, type QuizQuestion } from "@/data/akademie";
 import { useState } from "react";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete: (score: number) => void }) {
   const [current, setCurrent] = useState(0);
@@ -89,7 +88,6 @@ export default function CoursePage() {
   if (!course) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <p className="text-5xl mb-4">😕</p>
         <h1 className="text-2xl font-bold text-secondary mb-2">Kurs nicht gefunden</h1>
         <Link href="/akademie" className="text-primary hover:underline">Zurück zur Akademie</Link>
       </div>
@@ -105,7 +103,7 @@ export default function CoursePage() {
     const passed = percent >= 70;
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <span className="text-6xl block mb-4">{passed ? "🎓" : "📚"}</span>
+        <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">Abschlussprüfung</p>
         <h1 className="text-3xl font-bold text-secondary mb-2">
           {passed ? "Bestanden!" : "Nicht bestanden"}
         </h1>
@@ -134,10 +132,9 @@ export default function CoursePage() {
   if (showFinalExam) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-        <div className={`bg-gradient-to-br ${course.color} rounded-2xl p-8 text-white mb-8 text-center`}>
-          <span className="text-5xl block mb-3">📝</span>
+        <div className="bg-[#fff8ee] border border-border rounded-2xl p-8 text-secondary mb-8 text-center">
           <h1 className="text-2xl font-bold">Abschlusstest: {course.title}</h1>
-          <p className="text-white/70 mt-1">{course.finalExam.length} Fragen — 70% zum Bestehen</p>
+          <p className="text-muted mt-1">{course.finalExam.length} Fragen — 70% zum Bestehen</p>
         </div>
         <Quiz questions={course.finalExam} onComplete={(s) => setExamScore(s)} />
       </div>
@@ -153,13 +150,11 @@ export default function CoursePage() {
       </nav>
 
       {/* Course Header */}
-      <div className={`bg-gradient-to-br ${course.color} rounded-2xl p-6 text-white mb-8 relative overflow-hidden`}>
-        <ShimmerParticles count={16} />
+      <div className="bg-[#fff8ee] border border-border rounded-2xl p-6 text-secondary mb-8 relative overflow-hidden">
         <div className="relative flex items-center gap-4 mb-4">
-          <span className="text-4xl">{course.icon}</span>
           <div>
             <h1 className="text-2xl font-extrabold">{course.title}</h1>
-            <div className="flex gap-3 mt-1 text-sm text-white/60">
+            <div className="flex gap-3 mt-1 text-sm text-muted flex-wrap">
               <span>{course.difficulty}</span>
               <span>·</span>
               <span>{course.duration}</span>
@@ -170,11 +165,11 @@ export default function CoursePage() {
         </div>
         <div className="flex gap-1.5">
           {course.lessons.map((_, i) => (
-            <button key={i} onClick={() => setActiveLesson(i)} className={`h-2 flex-1 rounded-full transition-colors ${i === activeLesson ? "bg-white" : lessonQuizDone[i] !== undefined ? "bg-white/60" : "bg-white/20"}`} />
+            <button key={i} onClick={() => setActiveLesson(i)} aria-label={`Lektion ${i + 1}: ${course.lessons[i].title}`} aria-current={i === activeLesson ? "step" : undefined} className={`h-2 flex-1 rounded-full transition-colors ${i === activeLesson ? "bg-primary" : lessonQuizDone[i] !== undefined ? "bg-primary/60" : "bg-primary/20"}`} />
           ))}
-          <div className={`h-2 w-8 rounded-full ${showFinalExam ? "bg-white" : "bg-white/20"}`} />
+          <div className={`h-2 w-8 rounded-full ${showFinalExam ? "bg-primary" : "bg-primary/20"}`} />
         </div>
-        <p className="text-xs text-white/40 mt-2">Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz bestanden</p>
+        <p className="text-xs text-muted mt-2">Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz bestanden</p>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-8">

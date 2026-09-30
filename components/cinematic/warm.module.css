@@ -8,6 +8,14 @@
 .categories a>span:last-child{font-size:var(--cinematic-typography-size-small);color:var(--cinematic-color-burgundy);font-weight:var(--cinematic-typography-weight-bold);}
 .categoryMark{display:none;}
 .rangeNote{font-size:var(--cinematic-typography-size-small);color:var(--cinematic-color-muted);margin:var(--cinematic-spacing-md) 0 0;}
+.discoveries{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:var(--cinematic-spacing-xl);margin-top:var(--cinematic-spacing-two-xl);align-items:start;}
+.discoveries article{max-width:26rem;min-width:0;}
+.discoveries figure{margin:0;max-width:20rem;}
+.discoveryImage{display:block;width:100%;height:auto;}
+.discoveries figcaption{margin-top:var(--cinematic-spacing-sm);color:var(--cinematic-color-muted);font-size:var(--cinematic-typography-size-label);}
+.discoveries h3{font-size:var(--cinematic-typography-size-lead);line-height:var(--cinematic-typography-line-height-heading);margin:var(--cinematic-spacing-lg) 0 var(--cinematic-spacing-sm);letter-spacing:var(--cinematic-typography-tracking-tight);}
+.discoveries p{font-size:var(--cinematic-typography-size-body);line-height:var(--cinematic-typography-line-height-body);max-width:42ch;color:var(--cinematic-color-muted);}
+.discoveries a{display:inline-flex;gap:var(--cinematic-spacing-md);margin-top:var(--cinematic-spacing-lg);color:var(--cinematic-color-burgundy);text-decoration:underline;text-underline-offset:.2em;font-weight:var(--cinematic-typography-weight-bold);}
 .grailbid{display:grid;gap:var(--cinematic-spacing-xl);border-top:1px solid var(--cinematic-color-line);background:var(--cinematic-color-sage);}
 .grailbid p:not(.eyebrow){max-width:45ch;line-height:var(--cinematic-typography-line-height-body);}
 .grailbid a{display:inline-flex;gap:var(--cinematic-spacing-xl);align-items:center;background:var(--cinematic-color-ink);color:var(--cinematic-color-white);padding:var(--cinematic-spacing-md) var(--cinematic-spacing-lg);font-weight:var(--cinematic-typography-weight-extra-bold);text-decoration:none;margin-top:var(--cinematic-spacing-md);}

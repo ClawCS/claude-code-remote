@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { eigenmarken } from "@/data/eigenmarken";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 export const metadata: Metadata = {
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
@@ -14,7 +13,6 @@ export default function EigenmarkePage() {
     <>
     {/* Red Hero Banner */}
     <div className="page-hero-banner py-16 md:py-24">
-      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Unsere Eigenmarken</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Unsere Eigenmarken</h1>
@@ -32,13 +30,13 @@ export default function EigenmarkePage() {
             id={likoer.slug}
             className="group relative bg-white border border-border rounded-2xl overflow-hidden card-hover scroll-mt-24"
           >
-            <div className="relative aspect-[707/1000] overflow-hidden">
+            <div className="relative aspect-[707/1000] bg-[#fff8ee]">
               <Image
                 src={likoer.image}
                 alt={`${likoer.name} — ${likoer.flavor}`}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                className="object-contain"
                 unoptimized
               />
             </div>
@@ -53,15 +51,14 @@ export default function EigenmarkePage() {
       </div>
 
       {/* Akademie Cross-Link */}
-      <div className="mt-12 bg-gradient-to-r from-secondary to-gray-800 rounded-2xl p-8 text-white text-center">
-        <span className="text-4xl block mb-3">🎓</span>
+      <div className="mt-12 bg-[#fff8ee] border border-border rounded-2xl p-8 text-secondary text-center">
         <h2 className="text-2xl font-bold mb-2">Werde zum Likör-Experten</h2>
-        <p className="text-white/80 max-w-lg mx-auto mb-5">
+        <p className="text-muted max-w-lg mx-auto mb-5">
           20 Lektionen, eine Abschlussprüfung — alles was du über Liköre wissen musst.
         </p>
         <Link
           href="/akademie/likoere"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-white text-secondary font-bold rounded-xl hover:bg-gray-100 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-colors"
         >
           Zum Likör-Kurs →
         </Link>

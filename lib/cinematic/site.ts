@@ -11,6 +11,7 @@ export const MARKET = Object.freeze({
   whatsappNumber: "491752492386",
   email: "jammers-goch@trinkgut.de",
   openingHours: "Mo–Sa 08:00–20:00 Uhr",
+  openingHoursNote: "Sonn- und Feiertage geschlossen",
 } as const);
 
 export const SITE_LINKS = Object.freeze({
@@ -24,14 +25,14 @@ export const SITE_LINKS = Object.freeze({
 } as const);
 
 export const CINEMATIC_NAV = Object.freeze([
-  { label: "Angebote", href: "#aktuell" },
+  { label: "Angebote", href: "/angebote" },
   { label: "Sortiment", href: "/produkte" },
-  { label: "Party & Miete", href: "#service" },
-  { label: "Eigenmarken", href: "#eigenmarken" },
-  { label: "Aktionen", href: "#aktionen" },
-  { label: "Team", href: "#menschen" },
-  { label: "TCG", href: "#grailbid" },
-  { label: "Kontakt", href: "#kontakt" },
+  { label: "Party & Miete", href: "/vermietung" },
+  { label: "Eigenmarken", href: "/eigenmarke" },
+  { label: "Gewinnspiele", href: "/gewinnspiel" },
+  { label: "Team", href: "/galerie" },
+  { label: "TCG", href: "https://grailbid.com" },
+  { label: "Kontakt", href: "/kontakt" },
 ] as const);
 
 export type MarketStatus = Readonly<{ isOpen: boolean; label: "Heute bis 20 Uhr" | "Heute geschlossen" }>;

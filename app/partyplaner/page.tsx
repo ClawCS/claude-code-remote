@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { type Product } from "@/lib/utils";
 import { assortmentProducts as products } from "@/lib/catalog";
-import ShimmerParticles from "@/components/ShimmerParticles";
 
 type PartyConfig = {
   guests: number;
@@ -110,7 +109,6 @@ export default function PartyplanerPage() {
   return (
     <>
     <div className="page-hero-banner py-16 md:py-24">
-      <ShimmerParticles />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyplaner</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyplaner</h1>
@@ -206,9 +204,9 @@ export default function PartyplanerPage() {
           <div className="space-y-4 mb-6">
             {recommendations.map((rec, i) => (
               <div key={i} className="flex items-center gap-4 p-4 bg-light rounded-lg">
-                <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
+                {rec.product.image && rec.product.image !== "/images/home/brand-logo.webp" && <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
                   <Image src={rec.product.image} alt={rec.product.name} fill sizes="64px" className="object-contain p-1" />
-                </div>
+                </div>}
                 <div className="flex-1">
                   <p className="font-semibold text-secondary">{rec.product.name}</p>
                   <p className="text-sm text-muted">{rec.reason}</p>

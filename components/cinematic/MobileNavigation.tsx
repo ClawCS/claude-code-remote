@@ -62,6 +62,7 @@ export default function MobileNavigation({
             <li key={item.href}>
               <a
                 href={item.href}
+                {...(item.href.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => {
                   if (detailsRef.current) detailsRef.current.open = false;
                 }}

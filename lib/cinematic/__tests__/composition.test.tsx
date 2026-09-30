@@ -109,11 +109,11 @@ const populatedContent: HomepageContent = {
   fallbackMessage: null,
 };
 
-function render(content: HomepageContent): string {
+function render(content: HomepageContent, nowIso = "2026-07-14T12:00:00.000Z"): string {
   return renderToStaticMarkup(
     <CinematicHome
       content={content}
-      nowIso="2026-07-14T12:00:00.000Z"
+      nowIso={nowIso}
     />,
   );
 }
@@ -163,6 +163,18 @@ function expectEveryFragmentResolvesOnce(html: string): void {
 }
 
 describe("cinematic homepage composition", () => {
+  test("shows sourced giveaways and a dedicated agenda without stale chances", () => {
+    const september = render(emptyContent, "2026-09-30T12:00:00.000Z");
+    expect(september).toContain("Veltins Helles Lager");
+    expect(september).toContain("Guinness Tasche");
+    expect(september).toContain('href="/gewinnspiel#jahresagenda"');
+    const october = render(emptyContent, "2026-10-01T12:00:00.000Z");
+    expect(october).not.toContain("Veltins Helles Lager");
+    expect(october).toContain("Guinness Tasche");
+    const after = render(emptyContent, "2026-10-04T12:00:00.000Z");
+    expect(after).not.toContain("Guinness Tasche");
+    expect(after).toContain('href="/gewinnspiel"');
+  });
   test("owns one semantic landmark tree and keeps the required section order", () => {
     const html = render(populatedContent);
 
@@ -198,12 +210,18 @@ describe("cinematic homepage composition", () => {
     const people = extractElement(html, "section", 'id="menschen"');
     const spotlight = extractElement(html, "section", 'id="eigenmarken"');
 
-    expect(count(people, /<figure\b/)).toBe(4);
+    expect(count(people, /<figure\b/)).toBe(12);
     const peopleOrder = [
       "Team Jammers",
       "Niko · Inhaber",
+      "Sven · Team Jammers",
       "Jasmin · Team Jammers",
       "Gabriella · Team Jammers",
+      "Jan Niklas · Team Jammers",
+      "Hanna · Team Jammers",
+      "Nico · Team Jammers",
+      "Nils · Team Jammers",
+      "Tim · Team Jammers",
     ].map((caption) => people.indexOf(caption));
     expect(peopleOrder.every((position) => position >= 0)).toBe(true);
     expect(peopleOrder).toEqual(
@@ -287,11 +305,12 @@ describe("cinematic homepage composition", () => {
     );
   });
 
-  test("keeps action navigation conditional in desktop and mobile markup", () => {
+  test("keeps giveaway subpages reachable even without an editorial event", () => {
     const html = render(populatedContent);
 
     expect(count(html, /\bid="aktionen"/)).toBe(1);
-    expect(count(html, /href="#aktionen"/)).toBe(2);
+    expect(count(html, /href="\/gewinnspiel"/)).toBeGreaterThanOrEqual(2);
+    expect(count(render(emptyContent), /href="\/gewinnspiel"/)).toBeGreaterThanOrEqual(2);
     expectEveryFragmentResolvesOnce(html);
   });
 
@@ -310,9 +329,12 @@ describe("cinematic homepage composition", () => {
 
     expect(html).toContain("Wir beraten dich persönlich");
     expect(count(html, /Termin &amp; Verfügbarkeit anfragen/)).toBe(5);
-    expect(html).not.toContain("150 €");
-    expect(html).not.toContain("Bestand laut Liste");
+    expect(html).toContain("150 €");
+    expect(html).toContain("Bestand laut Liste");
+    expect(html).toContain("01.01.2026");
+    expect(html).toContain("06.03.2026");
     expect(html).toContain("Mo–Sa 08:00–20:00 Uhr");
+    expect(html).toContain("Sonn- und Feiertage geschlossen");
     expect(html).toContain("Jurgenstr. 20");
     expect(html).toContain("47574 Goch");
 
@@ -350,7 +372,6 @@ describe("cinematic homepage composition", () => {
       const anchors = anchorTagsForHref(html, href);
       expect(anchors.length, `internal link ${href}`).toBeGreaterThan(0);
       for (const anchor of anchors) {
-        expect(anchor).toContain('data-prefetch="false"');
         expect(anchor).not.toContain('target="_blank"');
       }
     }
@@ -361,7 +382,6 @@ describe("cinematic homepage composition", () => {
     const internalEventLinks = anchorTagsForHref(internalHtml, "/kontakt");
     expect(internalEventLinks.length).toBeGreaterThan(0);
     for (const anchor of internalEventLinks) {
-      expect(anchor).toContain('data-prefetch="false"');
       expect(anchor).not.toContain('target="_blank"');
     }
     expectSafeExternalLink(

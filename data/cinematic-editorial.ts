@@ -1,4 +1,5 @@
 import type { StaticImageData } from "next/image";
+import { getRentalItem } from "@/data/rentals";
 
 import heroTeam from "@/public/images/home/cinematic/hero-team.webp";
 import posterCaramello from "@/public/images/home/cinematic/poster-caramello.webp";
@@ -8,6 +9,14 @@ import teamGabriella from "@/public/images/home/cinematic/team-gabriella.webp";
 import teamGroup from "@/public/images/home/cinematic/team-group.webp";
 import teamJasmin from "@/public/images/home/cinematic/team-jasmin.webp";
 import teamNiko from "@/public/images/home/cinematic/team-niko.webp";
+import teamSven from "@/public/images/home/cinematic/team-sven.webp";
+import teamJanNiklas from "@/public/images/home/cinematic/team-jan-niklas.webp";
+import teamHanna from "@/public/images/home/cinematic/team-hanna.webp";
+import teamNico from "@/public/images/home/cinematic/team-nico.webp";
+import teamNils from "@/public/images/home/cinematic/team-nils.webp";
+import teamTim from "@/public/images/home/cinematic/team-tim.webp";
+import teamHenri from "@/public/images/home/cinematic/team-henri.webp";
+import teamHannah from "@/public/images/home/cinematic/team-hannah.webp";
 
 function deepFreeze<T extends object>(value: T): T {
   for (const entry of Object.values(value)) {
@@ -28,7 +37,7 @@ type EditorialImage = Readonly<{
   alt: string;
   caption: string;
   reviewedAt: string;
-  releaseBasis: "user-approved-local-employee-pool-2026-07-14";
+  releaseBasis: "user-approved-canva-pool-2026-09-30";
 }>;
 
 export type InstagramSelectionItem = Readonly<{
@@ -48,48 +57,96 @@ export const EDITORIAL_IMAGES = deepFreeze({
     image: heroTeam,
     alt: "Sven und Niko von Trinkgut Jammers",
     caption: "Sven & Niko · vor Ort in Goch",
-    reviewedAt: "2026-07-14",
-    releaseBasis: "user-approved-local-employee-pool-2026-07-14",
+    reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
   group: {
     id: "team-group",
     image: teamGroup,
     alt: "Mitarbeiterinnen und Mitarbeiter von Trinkgut Jammers",
     caption: "Team Jammers",
-    reviewedAt: "2026-07-14",
-    releaseBasis: "user-approved-local-employee-pool-2026-07-14",
+    reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
   niko: {
     id: "team-niko",
     image: teamNiko,
     alt: "Nikolaos Jammers im Markt",
     caption: "Niko · Inhaber",
-    reviewedAt: "2026-07-14",
-    releaseBasis: "user-approved-local-employee-pool-2026-07-14",
+    reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
   jasmin: {
     id: "team-jasmin",
     image: teamJasmin,
     alt: "Jasmin von Trinkgut Jammers",
     caption: "Jasmin · Team Jammers",
-    reviewedAt: "2026-07-14",
-    releaseBasis: "user-approved-local-employee-pool-2026-07-14",
+    reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
   gabriella: {
     id: "team-gabriella",
     image: teamGabriella,
     alt: "Gabriella von Trinkgut Jammers",
     caption: "Gabriella · Team Jammers",
-    reviewedAt: "2026-07-14",
-    releaseBasis: "user-approved-local-employee-pool-2026-07-14",
+    reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  sven: {
+    id: "team-sven", image: teamSven, alt: "Sven von Trinkgut Jammers",
+    caption: "Sven · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  janNiklas: {
+    id: "team-jan-niklas", image: teamJanNiklas, alt: "Jan Niklas von Trinkgut Jammers",
+    caption: "Jan Niklas · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  hanna: {
+    id: "team-hanna", image: teamHanna, alt: "Hanna von Trinkgut Jammers",
+    caption: "Hanna · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  nico: {
+    id: "team-nico", image: teamNico, alt: "Nico von Trinkgut Jammers",
+    caption: "Nico · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  nils: {
+    id: "team-nils", image: teamNils, alt: "Nils von Trinkgut Jammers",
+    caption: "Nils · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  tim: {
+    id: "team-tim", image: teamTim, alt: "Tim von Trinkgut Jammers",
+    caption: "Tim · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  henri: {
+    id: "team-henri", image: teamHenri, alt: "Henri von Trinkgut Jammers",
+    caption: "Henri · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
+  },
+  hannah: {
+    id: "team-hannah", image: teamHannah, alt: "Hannah von Trinkgut Jammers",
+    caption: "Hannah · Team Jammers", reviewedAt: "2026-09-30",
+    releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
 } as const satisfies Readonly<Record<string, EditorialImage>>);
 
 export const PEOPLE_STORY = deepFreeze([
   EDITORIAL_IMAGES.group,
   EDITORIAL_IMAGES.niko,
+  EDITORIAL_IMAGES.sven,
   EDITORIAL_IMAGES.jasmin,
   EDITORIAL_IMAGES.gabriella,
+  EDITORIAL_IMAGES.janNiklas,
+  EDITORIAL_IMAGES.hanna,
+  EDITORIAL_IMAGES.nico,
+  EDITORIAL_IMAGES.nils,
+  EDITORIAL_IMAGES.tim,
+  EDITORIAL_IMAGES.henri,
+  EDITORIAL_IMAGES.hannah,
 ] as const);
 
 export const INSTAGRAM_SELECTION: readonly InstagramSelectionItem[] = deepFreeze(
@@ -147,13 +204,10 @@ export const SERVICE_ITEMS = deepFreeze([
   },
 ] as const);
 
-export const RENTAL_HIGHLIGHTS = deepFreeze([
-  { name: "Kühlanhänger", price: "150 €", stock: 3 },
-  { name: "Kühltruhe", price: "35 €", stock: 4 },
-  { name: "Stehtisch", price: "12 €", stock: 20 },
-  { name: "Zapfanlage", price: "25 €", stock: 3 },
-  { name: "Bierzeltgarnitur", price: "15 €", stock: 13 },
-] as const);
+export const RENTAL_HIGHLIGHTS = deepFreeze([20001,20002,20003,20004,20007].map(id => {
+  const item = getRentalItem(id)!;
+  return { name: item.name, price: item.price === null ? "Preis auf Anfrage" : `${new Intl.NumberFormat("de-DE").format(item.price)} €`, stock: item.physicalStock };
+}));
 
 export const RENTAL_SOURCES = deepFreeze({
   price: { label: "Leihartikel-Preisliste", asOf: "01.01.2026" },

@@ -1,0 +1,54 @@
+import { spawn } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { afterEach, describe, expect, it } from "vitest";
+
+const fixtures: string[] = [];
+afterEach(() => { for (const root of fixtures.splice(0)) rmSync(root, { recursive: true, force: true }); });
+
+async function prebuildFixture(failing?: "cinematic" | "market" | "missing-market") {
+  const root = mkdtempSync(join(tmpdir(), "jammers-prebuild-"));
+  fixtures.push(root);
+  mkdirSync(join(root, "scripts"), { recursive: true });
+  mkdirSync(join(root, "data/editorial/official-catalogs"), { recursive: true });
+  writeFileSync(join(root, "data/editorial/flyers.json"), "[]");
+  const marker = join(root, "completed-checks.txt");
+  for (const kind of ["cinematic", "market"] as const) {
+    if (kind === "market" && failing === "missing-market") continue;
+    writeFileSync(join(root, `scripts/build-${kind}-assets.mjs`), `import { appendFileSync } from "node:fs";\nconst args = process.argv.slice(2);\nappendFileSync(${JSON.stringify(marker)}, ${JSON.stringify(kind)} + ":" + args.join(",") + "\\n");\nif (JSON.stringify(args) !== '["--check"]') process.exit(7);\nprocess.exit(${failing === kind ? 1 : 0});\n`);
+  }
+  writeFileSync(join(root, "scripts/generate-handzettel-manifest.mjs"), `import { appendFileSync } from "node:fs"; appendFileSync(${JSON.stringify(marker)}, "manifest\\n");\n`);
+  const result = await new Promise<{ code: number | null; text: string }>(resolveResult => {
+    const child = spawn(process.execPath, [resolve("node_modules/tsx/dist/cli.mjs"), "--tsconfig", resolve("tsconfig.json"), resolve("scripts/validate-content-build.ts")], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
+    let text = "";
+    child.stdout.on("data", chunk => { text += chunk.toString(); });
+    child.stderr.on("data", chunk => { text += chunk.toString(); });
+    child.once("close", code => resolveResult({ code, text }));
+  });
+  const events = (() => { try { return readFileSync(marker, "utf8").trim().split("\n"); } catch { return []; } })();
+  return { ...result, events };
+}
+
+describe("prebuild asset publication guard", () => {
+  it("checks both public pipelines before producing content artifacts", async () => {
+    const result = await prebuildFixture();
+    expect(result.code, result.text).toBe(0);
+    expect(result.events).toEqual(["cinematic:--check", "market:--check", "manifest"]);
+  });
+  it("stops before content output if cinematic assets are invalid", async () => {
+    const result = await prebuildFixture("cinematic");
+    expect(result.code, result.text).toBe(1);
+    expect(result.events).toEqual(["cinematic:--check"]);
+  });
+  it("stops before content output if market assets are invalid", async () => {
+    const result = await prebuildFixture("market");
+    expect(result.code, result.text).toBe(1);
+    expect(result.events).toEqual(["cinematic:--check", "market:--check"]);
+  });
+  it("does not silently skip a missing market validator", async () => {
+    const result = await prebuildFixture("missing-market");
+    expect(result.code, result.text).toBe(1);
+    expect(result.events).toEqual(["cinematic:--check"]);
+  });
+});
