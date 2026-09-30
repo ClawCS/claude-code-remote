@@ -42,14 +42,6 @@ export default function VermietungPage() {
       </section>
 
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 md:py-14">
-        <section aria-labelledby="rental-conditions" className="border-b border-border pb-8 mb-8">
-          <h2 id="rental-conditions" className="text-2xl font-bold mb-3">Belegte Preise. Persönliche Bestätigung.</h2>
-          <p className="max-w-3xl leading-relaxed">Richtpreis laut Preisliste vom 01.01.2026. Die Preisliste nennt keinen bestätigten Mietzeitraum. Mietdauer und Endpreis bestätigen wir persönlich – aus deiner Auswahl entsteht kein Preisangebot.</p>
-          <p className="max-w-3xl leading-relaxed mt-3">Physischer Bestand laut Bestandsliste vom 06.03.2026, keine Live-Verfügbarkeit. Bereits angefragte Mengen für überlappende Zeiträume zählen gegen diese Obergrenze. Die tatsächliche Verfügbarkeit bestätigen wir für deinen Termin.</p>
-          <p className="text-sm mt-3">Bruchersatz ist nur bei eindeutig zugeordneten Gläsern ausgewiesen. Bei anderen Artikeln klären wir Preis und Bedingungen auf Anfrage.</p>
-          <p className="text-sm mt-3" data-shared-furniture>Garnituren, einzelne Tische und Bänke stammen aus demselben Bestand. Garnituren und Einzelmöbel können deshalb hier nicht gemeinsam für überlappende Zeiträume ausgewählt werden. Eine gemischte Zusammenstellung stimmen wir persönlich mit dir ab.</p>
-        </section>
-
         <section aria-labelledby="rental-dates" className="mb-10">
           <h2 id="rental-dates" className="text-2xl font-bold mb-4">Dein gewünschter Zeitraum</h2>
           <div className="grid sm:grid-cols-2 gap-5 max-w-2xl">

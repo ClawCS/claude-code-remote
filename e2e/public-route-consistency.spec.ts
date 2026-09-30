@@ -13,7 +13,9 @@ test("community has one shared main landmark without a nested legacy main", asyn
 test("shared furniture selection cannot reserve bundles and single items on overlapping dates", async ({ page }) => {
   await page.goto("/vermietung");
   await page.waitForLoadState("networkidle");
-  await expect(page.locator("[data-shared-furniture]")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Belegte Preise. Persönliche Bestätigung.", exact: true })).toHaveCount(0);
+  await expect(page.locator('[aria-labelledby="rental-conditions"]')).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Dein gewünschter Zeitraum", exact: true })).toBeVisible();
   await page.getByLabel("Gewünschte Abholung", { exact: true }).fill("2026-10-05");
   await page.getByLabel("Gewünschte Rückgabe", { exact: true }).fill("2026-10-07");
   const table = page.getByRole("spinbutton", { name: "Menge für Tisch einzeln", exact: true });
