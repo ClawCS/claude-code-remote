@@ -210,13 +210,15 @@ describe("cinematic homepage composition", () => {
     const people = extractElement(html, "section", 'id="menschen"');
     const spotlight = extractElement(html, "section", 'id="eigenmarken"');
 
-    expect(count(people, /<figure\b/)).toBe(12);
+    expect(count(people, /<figure\b/)).toBe(9);
     const peopleCaptions = [...people.matchAll(/<figcaption\b[^>]*>([^<]*)<\/figcaption>/g)]
       .map(([, caption]) => caption);
     expect(peopleCaptions).toEqual([
       "Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna",
-      "Nico", "Nils", "Tim", "Henri", "Hannah",
+      "Henri", "Hannah",
     ]);
+    expect(people).not.toMatch(/\b(?:Nils|Nico|Tim)\b/);
+    expect(people).not.toMatch(/team-(?:nils|nico|tim)\b/);
 
     expect(count(spotlight, /<figure\b/)).toBe(3);
     const posterOrder = [

@@ -19,10 +19,7 @@ export const galleryItems: readonly GalleryItem[] = [
   { id: 8, title: "Gabriella", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.gabriella.image, alt: EDITORIAL_IMAGES.gabriella.alt },
   { id: 9, title: "Jan Niklas", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.janNiklas.image, alt: EDITORIAL_IMAGES.janNiklas.alt },
   { id: 10, title: "Hanna", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.hanna.image, alt: EDITORIAL_IMAGES.hanna.alt },
-  { id: 11, title: "Nico", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.nico.image, alt: EDITORIAL_IMAGES.nico.alt },
-  { id: 12, title: "Nils", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.nils.image, alt: EDITORIAL_IMAGES.nils.alt },
   { id: 13, title: "Henri", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.henri.image, alt: EDITORIAL_IMAGES.henri.alt },
-  { id: 14, title: "Tim", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.tim.image, alt: EDITORIAL_IMAGES.tim.alt },
   { id: 15, title: "Hannah", description: "Team Jammers", category: "team", image: EDITORIAL_IMAGES.hannah.image, alt: EDITORIAL_IMAGES.hannah.alt },
 ];
 

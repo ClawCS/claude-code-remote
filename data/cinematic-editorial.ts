@@ -12,9 +12,6 @@ import teamNiko from "@/public/images/home/cinematic/team-niko.webp";
 import teamSven from "@/public/images/home/cinematic/team-sven.webp";
 import teamJanNiklas from "@/public/images/home/cinematic/team-jan-niklas.webp";
 import teamHanna from "@/public/images/home/cinematic/team-hanna.webp";
-import teamNico from "@/public/images/home/cinematic/team-nico.webp";
-import teamNils from "@/public/images/home/cinematic/team-nils.webp";
-import teamTim from "@/public/images/home/cinematic/team-tim.webp";
 import teamHenri from "@/public/images/home/cinematic/team-henri.webp";
 import teamHannah from "@/public/images/home/cinematic/team-hannah.webp";
 
@@ -107,21 +104,6 @@ export const EDITORIAL_IMAGES = deepFreeze({
     caption: "Hanna", reviewedAt: "2026-09-30",
     releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
-  nico: {
-    id: "team-nico", image: teamNico, alt: "Nico von Trinkgut Jammers",
-    caption: "Nico", reviewedAt: "2026-09-30",
-    releaseBasis: "user-approved-canva-pool-2026-09-30",
-  },
-  nils: {
-    id: "team-nils", image: teamNils, alt: "Nils von Trinkgut Jammers",
-    caption: "Nils", reviewedAt: "2026-09-30",
-    releaseBasis: "user-approved-canva-pool-2026-09-30",
-  },
-  tim: {
-    id: "team-tim", image: teamTim, alt: "Tim von Trinkgut Jammers",
-    caption: "Tim", reviewedAt: "2026-09-30",
-    releaseBasis: "user-approved-canva-pool-2026-09-30",
-  },
   henri: {
     id: "team-henri", image: teamHenri, alt: "Henri von Trinkgut Jammers",
     caption: "Henri", reviewedAt: "2026-09-30",
@@ -142,9 +124,6 @@ export const PEOPLE_STORY = deepFreeze([
   EDITORIAL_IMAGES.gabriella,
   EDITORIAL_IMAGES.janNiklas,
   EDITORIAL_IMAGES.hanna,
-  EDITORIAL_IMAGES.nico,
-  EDITORIAL_IMAGES.nils,
-  EDITORIAL_IMAGES.tim,
   EDITORIAL_IMAGES.henri,
   EDITORIAL_IMAGES.hannah,
 ] as const);
