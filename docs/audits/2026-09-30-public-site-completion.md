@@ -2,6 +2,8 @@
 
 Stand: 30.09.2026, Europe/Berlin. Branch: `codex/cinematic-production`. Lokale Produktionsvorschau: <http://127.0.0.1:3103/> und <http://127.0.0.1:3000/>. Ein Git-Push ersetzt keine bestätigte Bereitstellung auf einer öffentlichen Domain.
 
+Implementierungscommit `24d09cd` wurde auf diesem Branch gepusht und der Remote-Commit bestätigt. Der lokale Worktree und beide Vorschau-Server bleiben erhalten.
+
 ## Ergebnis
 
 Der warme Trinkgut-rote Auftritt gilt jetzt auch auf den Unterseiten. Fachnavigation und Warengruppen führen auf eigene URLs statt zurück zu Abschnitten der Startseite. Der alte Header/Footer, animierte Kategorieflächen und große Emoji-/Logo-Bildersatzflächen sind aus dem geprüften öffentlichen Auftritt entfernt. Funktionale kleine Bedienicons bleiben erhalten.

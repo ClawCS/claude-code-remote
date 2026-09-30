@@ -97,5 +97,5 @@
 - [x] Anfrageliste, Mietmengen, mobile Navigation, Tastaturbedienung, Rezeptdetails und Jahresagenda prüfen.
 - [x] Volle Unit-Suite (484 Tests), TypeScript, ESLint (0 Fehler, 20 bestehende Warnungen), Produktionsbuild und 85 Browsertests ausführen. 61 Kontrakttests mit fester Juli-Testuhr und 24 reale Produktionsprüfungen ohne Fixtures getrennt abgenommen.
 - [x] Unabhängiger Review; gemeinsame Möbelbestände, Wishlist-Bulkaktionen, verschachteltes Main und Agenda-Ziel korrigiert. Schlussreview fand außerdem doppelte Marken-Suffixe in drei neuen Seitentiteln; im realen Browser test-first reproduziert und korrigiert. Keine weiteren bestätigten Hochrisiko-Fehler im geprüften Umfang.
-- [ ] Reale Vorschau auf 3000 und 3103 aktualisieren, Screenshots speichern, genaue Dateien committen und pushen.
-- [ ] Abnahme mit belegten Ergebnissen und noch offenen Quellen-/Betreiberangaben übergeben; keine pauschale Behauptung vollständiger Rechtskonformität.
+- [x] Reale Vorschau auf 3000 und 3103 aktualisiert, 54 aktuelle Screenshots gespeichert und genaue Dateien mit Implementierungscommit `24d09cd` auf `codex/cinematic-production` gepusht. Remote-Commit bestätigt; Worktree erhalten.
+- [x] Prüfbericht unter `docs/audits/2026-09-30-public-site-completion.md` mit Ergebnissen und offenen Quellen-/Betreiberangaben bereitgestellt. Öffentliche Bereitstellung und rechtliche Endabnahme bleiben ausdrücklich offen; keine pauschale Rechtskonformitätsbehauptung.
