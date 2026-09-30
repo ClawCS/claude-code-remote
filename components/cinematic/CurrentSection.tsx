@@ -96,7 +96,7 @@ export default function CurrentSection({
               Quelle öffnen
             </a>
           </article>
-        ) : null}
+        ) : <aside className={styles.event}><p className={styles.eyebrow}>Alles für deinen Anlass</p><h3>Gute Getränke. Gute Gesellschaft.</h3><p>Vom Feierabend mit Freunden bis zum Vereinsfest: Finde deine Getränke, plane die Mengen und frag Leihartikel für deinen Termin an.</p><Link prefetch={false} href="/partyplaner">Party planen</Link><Link prefetch={false} href="/vermietung">Leihartikel entdecken</Link><p style={{ marginTop: "1.5rem" }}>Preise und Verfügbarkeit bestätigen wir persönlich. Die Wochenangebote findest du im datierten Handzettel.</p></aside>}
       </div>
     </section>
   );

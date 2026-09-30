@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
-import { formatPrice, calculateWorkdays, calculateRentalPrice, calculateRentalPeriods, type Product } from "@/lib/utils";
+import { calculateWorkdays, calculateRentalPrice, calculateRentalPeriods, type Product } from "@/lib/utils";
 import type { RentalInfo } from "@/context/CartContext";
 import ShimmerParticles from "@/components/ShimmerParticles";
 
@@ -209,12 +209,6 @@ export default function VermietungPage() {
 
   const getQty = (id: number) => bookings.find(b => b.item.id === id)?.quantity || 0;
 
-  const getItemRentalPrice = (item: RentalItem) => {
-    if (!dateFrom || !dateTo || workdays <= 0) return item.price;
-    return calculateRentalPrice(item.price, workdays);
-  };
-
-  const totalPrice = bookings.reduce((sum, b) => sum + getItemRentalPrice(b.item) * b.quantity, 0);
 
   const handleAddAllToCart = () => {
     if (!dateFrom || !dateTo || workdays <= 0) return;
@@ -300,7 +294,7 @@ export default function VermietungPage() {
               Nur Sonntag wird nicht mitgezählt.
             </p>
             <p className="text-sm text-amber-800 mt-1">
-              <strong>Beispiel:</strong> Zapfanlage {formatPrice(25)} für 3 Werktage. Bei 5 Werktagen = {formatPrice(50)} (2 Perioden). Bei 7 Werktagen = {formatPrice(75)} (3 Perioden).
+              Den aktuellen Gesamtpreis und die genauen Mietbedingungen bestätigen wir für deinen Termin persönlich.
             </p>
             <p className="text-xs text-amber-700 mt-2 font-medium">
               Formel: Anzahl Perioden (aufgerundet: Werktage / 3) x Grundgebühr
@@ -421,8 +415,6 @@ export default function VermietungPage() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {filtered.map((item) => {
           const qty = getQty(item.id);
-          const rentalPrice = getItemRentalPrice(item);
-          const showMultiplier = dateFrom && dateTo && workdays > 0 && periods > 1;
           return (
             <div key={item.id} className="bg-white border border-border rounded-2xl overflow-hidden card-hover">
               <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${item.gradient}`}>
@@ -439,17 +431,7 @@ export default function VermietungPage() {
                 <p className="text-xs text-muted mb-3">{item.description}</p>
               <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
                 <div>
-                  {showMultiplier ? (
-                    <>
-                      <span className="text-xl font-extrabold text-primary">{formatPrice(rentalPrice)}</span>
-                      <span className="text-xs text-muted block">{formatPrice(item.price)} x {periods} Perioden</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-xl font-extrabold text-primary">{formatPrice(item.price)}</span>
-                      <span className="text-xs text-muted block">{item.unit}</span>
-                    </>
-                  )}
+                  <span className="text-sm font-bold text-primary">Preis auf Anfrage</span><span className="text-xs text-muted block">Termin &amp; Verfügbarkeit nach Absprache</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {qty > 0 && <button onClick={() => updateBooking(item, qty - 1)} className="w-8 h-8 rounded-lg bg-light border border-border text-sm font-bold hover:border-primary transition-colors">-</button>}
@@ -466,7 +448,7 @@ export default function VermietungPage() {
       {/* Booking Summary */}
       {bookings.length > 0 && (
         <div className="bg-white border-2 border-primary rounded-2xl p-6 mb-8 sticky bottom-20 z-30 shadow-xl">
-          <h3 className="font-bold text-secondary mb-3">Deine Buchung</h3>
+          <h3 className="font-bold text-secondary mb-3">Dein Leihartikelwunsch</h3>
           {dateFrom && dateTo && workdays > 0 && (
             <div className="text-sm text-muted mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="flex items-center"><CalendarIcon /> {new Date(dateFrom).toLocaleDateString("de-DE")} – {new Date(dateTo).toLocaleDateString("de-DE")}</p>
@@ -475,26 +457,21 @@ export default function VermietungPage() {
           )}
           <div className="space-y-2 mb-4">
             {bookings.map(b => {
-              const rentalPrice = getItemRentalPrice(b.item);
               return (
                 <div key={b.item.id} className="flex justify-between text-sm">
                   <span className="text-muted">
                     {b.quantity}x {b.item.name}
-                    {dateFrom && dateTo && workdays > 0 && periods > 1 && (
-                      <span className="text-xs text-amber-600 ml-1">({formatPrice(b.item.price)} x {periods} Perioden)</span>
-                    )}
                   </span>
-                  <span className="font-medium text-secondary">{formatPrice(rentalPrice * b.quantity)}</span>
+                  <span className="font-medium text-secondary">Preis nach Bestätigung</span>
                 </div>
               );
             })}
           </div>
           <div className="border-t border-border pt-3 flex items-center justify-between">
             <div>
-              <span className="text-sm text-muted">Gesamt:</span>
-              <span className="text-2xl font-extrabold text-primary ml-2">{formatPrice(totalPrice)}</span>
+              <span className="text-sm text-muted">Unverbindliche Anfrage, noch keine Buchung.</span>
             </div>
-            <button onClick={handleAddAllToCart} disabled={!dateFrom || !dateTo || workdays <= 0} className={`px-6 py-3 font-bold rounded-xl transition-colors btn-hover ${!dateFrom || !dateTo || workdays <= 0 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-primary hover:bg-primary-dark text-white"}`}>In den Warenkorb</button>
+            <button onClick={handleAddAllToCart} disabled={!dateFrom || !dateTo || workdays <= 0} className={`px-6 py-3 font-bold rounded-xl transition-colors btn-hover ${!dateFrom || !dateTo || workdays <= 0 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-primary hover:bg-primary-dark text-white"}`}>Zur Anfrageliste</button>
           </div>
           {(!dateFrom || !dateTo) && <p className="text-xs text-amber-600 mt-2 flex items-center"><WarningIcon /> Bitte Abhol- und Rückgabedatum wählen, um fortzufahren.</p>}
           {dateFrom && dateTo && workdays <= 0 && <p className="text-xs text-red-600 mt-2 font-medium">Der gewählte Zeitraum enthält keine Werktage.</p>}

@@ -13,7 +13,7 @@ describe("verified market contract", () => {
       displayName: "Trinkgut Jammers",
       legalName: "Getränkesupermarkt Jammers e.K.",
       owner: "Nikolaos Jammers",
-      street: "Jurgensstraße 20",
+      street: "Jurgenstr. 20",
       postalCode: "47574",
       city: "Goch",
       phoneDisplay: "02823 418707",
@@ -25,13 +25,15 @@ describe("verified market contract", () => {
     expect(SITE_LINKS.whatsapp).toContain("491752492386");
   });
 
-  test("exposes the six approved homepage navigation labels in order", () => {
+  test("exposes useful market and GrailBid navigation destinations", () => {
     expect(CINEMATIC_NAV).toEqual([
       { label: "Angebote", href: "#aktuell" },
+      { label: "Sortiment", href: "/produkte" },
       { label: "Party & Miete", href: "#service" },
       { label: "Eigenmarken", href: "#eigenmarken" },
       { label: "Aktionen", href: "#aktionen" },
-      { label: "Über uns", href: "#menschen" },
+      { label: "Team", href: "#menschen" },
+      { label: "TCG", href: "#grailbid" },
       { label: "Kontakt", href: "#kontakt" },
     ]);
   });
@@ -42,6 +44,10 @@ describe("verified market contract", () => {
     ["2026-07-13T17:59:00.000Z", true, "Heute bis 20 Uhr"],
     ["2026-07-13T18:00:00.000Z", false, "Heute geschlossen"],
     ["2026-07-19T10:00:00.000Z", false, "Heute geschlossen"],
+    ["2026-10-03T10:00:00.000Z", false, "Heute geschlossen"],
+    ["2027-03-26T10:00:00.000Z", false, "Heute geschlossen"],
+    ["2027-03-29T10:00:00.000Z", false, "Heute geschlossen"],
+    ["2027-05-27T10:00:00.000Z", false, "Heute geschlossen"],
   ])("derives Berlin status at %s", (iso, isOpen, label) => {
     expect(getMarketStatus(new Date(iso))).toEqual({ isOpen, label });
   });

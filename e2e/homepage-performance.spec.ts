@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test-fixtures";
 
 type HomepageMetrics = Readonly<{
   cls: number;

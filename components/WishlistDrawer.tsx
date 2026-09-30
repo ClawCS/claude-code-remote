@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/lib/utils";
 import { useModalA11y } from "@/lib/useModalA11y";
 
 export default function WishlistDrawer() {
@@ -89,13 +88,13 @@ export default function WishlistDrawer() {
                     </Link>
                     <p className="text-xs text-muted mt-0.5">{product.unit}</p>
                     <div className="flex items-center justify-between mt-1.5">
-                      <span className="text-sm font-bold text-primary">{formatPrice(product.price)}</span>
+                      <span className="text-xs text-muted">Preis auf Anfrage</span>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => addToCart(product, 1)}
                           className="px-2 py-1 bg-primary text-white text-xs font-medium rounded-md hover:bg-primary-dark transition-colors"
                         >
-                          + Warenkorb
+                          + Anfrage
                         </button>
                         <button
                           onClick={() => removeItem(product.id)}
@@ -122,7 +121,7 @@ export default function WishlistDrawer() {
               onClick={addAllToCart}
               className="w-full py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors shadow-sm"
             >
-              Alle zum Warenkorb ({items.length})
+              Alle zur Anfrageliste ({items.length})
             </button>
             <button
               onClick={clearWishlist}

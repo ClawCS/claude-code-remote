@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/generate-handzettel-manifest.mjs",
+    "prebuild": "tsx scripts/validate-content-build.ts",
     "build": "next build",
     "start": "next start",
     "generate:handzettel": "node scripts/generate-handzettel-manifest.mjs",
+    "content:prepare": "tsx scripts/content-weekly.ts --prepare",
+    "content:check": "tsx scripts/content-weekly.ts --check",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -19,11 +21,12 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "gsap": "3.15.0",
-    "next": "16.2.10",
+    "next": "16.3.7",
+    "pdf-lib": "1.17.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "0.0.1",
-    "sharp": "0.34.5"
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",
@@ -33,10 +36,11 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "lighthouse": "13.4.0",
+    "eslint-config-next": "16.3.7",
+    "lighthouse": "13.5.0",
     "tailwindcss": "^4",
+    "tsx": "4.23.15",
     "typescript": "^5",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   }
 }

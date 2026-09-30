@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
 
 import JsonLdScript from "@/components/JsonLdScript";
-import productsData from "@/data/products.json";
-
-type Product = {
-  slug: string;
-  name: string;
-  description?: string;
-  category?: string;
-  price?: number;
-  image?: string;
-  inStock?: boolean;
-};
-
-const products = productsData as Product[];
+import { assortmentProducts as products } from "@/lib/catalog";
 const BASE = "https://trinkgut-jammers.de";
 
 // Nur existierende Produkt-Slugs sind gültig → alles andere liefert echtes 404
@@ -38,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: product.name,
       description: product.description || `${product.name} bei Trinkgut Jammers Goch.`,
-      images: product.image ? [{ url: `${BASE}${product.image}` }] : undefined,
+      images: product.image && product.image !== "/images/home/brand-logo.webp" ? [{ url: `${BASE}${product.image}` }] : undefined,
       type: "website",
     },
   };
@@ -59,15 +47,8 @@ export default async function Layout({
         "@type": "Product",
         name: product.name,
         description: product.description || `${product.name} bei Trinkgut Jammers Goch.`,
-        image: product.image ? `${BASE}${product.image}` : undefined,
+        image: product.image && product.image !== "/images/home/brand-logo.webp" ? `${BASE}${product.image}` : undefined,
         category: product.category,
-        offers: {
-          "@type": "Offer",
-          price: product.price,
-          priceCurrency: "EUR",
-          availability: product.inStock === false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-          url: `${BASE}/produkte/${product.slug}`,
-        },
       }
     : null;
 

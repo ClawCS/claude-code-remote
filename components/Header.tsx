@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
-import { useTranslation, LANG_KEY, LANG_CHANGE_EVENT, type Lang } from "@/lib/i18n";
+import { useTranslation, readStoredLanguage, writeStoredLanguage, LANG_CHANGE_EVENT, type Lang } from "@/lib/i18n";
 import { useModalA11y } from "@/lib/useModalA11y";
 
 type DropdownItem = { href: string; labelKey: string; icon: string };
@@ -142,7 +142,7 @@ function GewinnspielIcon() {
     <Link
       href="/gewinnspiel"
       className="relative flex flex-col items-center gap-0.5 group"
-      title="🎁 Monatsgewinnspiel — Jetzt mitmachen!"
+      title="Aktionen & Gewinnspiele auf Instagram"
     >
       {/* Animated glow ring */}
       <span className="absolute -inset-2 rounded-full bg-gradient-to-r from-red-400/30 via-pink-300/20 to-red-400/30 blur-sm animate-pulse group-hover:from-red-400/50 group-hover:via-pink-300/40 group-hover:to-red-400/50 transition-all" />
@@ -185,7 +185,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+    const stored = readStoredLanguage();
     if (stored && langLabels[stored]) setLang(stored);
   }, []);
 
@@ -199,7 +199,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
 
   const selectLang = (l: Lang) => {
     setLang(l);
-    localStorage.setItem(LANG_KEY, l);
+    writeStoredLanguage(l);
     setOpen(false);
     window.dispatchEvent(new Event("storage"));
     window.dispatchEvent(new Event(LANG_CHANGE_EVENT));
@@ -602,20 +602,20 @@ function MobileLangButton({ lang }: { lang: Lang }) {
   const [activeLang, setActiveLang] = useState<Lang>("de");
 
   useEffect(() => {
-    const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+    const stored = readStoredLanguage();
     if (stored && langLabels[stored]) setActiveLang(stored);
   }, []);
 
   const handleClick = () => {
     setActiveLang(lang);
-    localStorage.setItem(LANG_KEY, lang);
+    writeStoredLanguage(lang);
     window.dispatchEvent(new Event("storage"));
     window.dispatchEvent(new Event(LANG_CHANGE_EVENT));
   };
 
   useEffect(() => {
     const handler = () => {
-      const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+      const stored = readStoredLanguage();
       if (stored && langLabels[stored]) setActiveLang(stored);
     };
     window.addEventListener("storage", handler);

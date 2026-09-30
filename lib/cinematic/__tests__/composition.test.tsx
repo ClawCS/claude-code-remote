@@ -178,10 +178,12 @@ describe("cinematic homepage composition", () => {
     const orderedMarkers = [
       'data-hero="cinematic"',
       'id="aktuell"',
-      'id="menschen"',
+      'id="sortiment"',
       'id="service"',
       'id="eigenmarken"',
       'id="aktionen"',
+      'id="menschen"',
+      'id="grailbid"',
       'id="instagram"',
       'id="kontakt"',
     ];
@@ -196,10 +198,9 @@ describe("cinematic homepage composition", () => {
     const people = extractElement(html, "section", 'id="menschen"');
     const spotlight = extractElement(html, "section", 'id="eigenmarken"');
 
-    expect(count(people, /<figure\b/)).toBe(5);
+    expect(count(people, /<figure\b/)).toBe(4);
     const peopleOrder = [
       "Team Jammers",
-      "Sven &amp; Niko · vor Ort in Goch",
       "Niko · Inhaber",
       "Jasmin · Team Jammers",
       "Gabriella · Team Jammers",
@@ -242,8 +243,9 @@ describe("cinematic homepage composition", () => {
 
     expect(html).toContain("Der nächste Handzettel wird vorbereitet.");
     expect(html).not.toContain("Der nächste Handzettel wird vorbereitet</p>");
-    expect(html).not.toContain('id="aktionen"');
-    expect(html).not.toContain('href="#aktionen"');
+    expect(html).toContain('id="aktionen"');
+    expect(html).toContain("Die Bedingungen und Laufzeiten findest du beim jeweiligen Beitrag.");
+    expect(html).not.toContain("data-action-current");
     expect(html).not.toContain("Angebote der Woche");
     expect(html).not.toContain("Striker Ball Challenge");
     expect(html).not.toContain("Sommerfest im Markt");
@@ -297,7 +299,7 @@ describe("cinematic homepage composition", () => {
     const html = render(populatedContent);
     const instagram = extractElement(html, "section", 'id="instagram"');
 
-    expect(instagram).toContain("Neue Einblicke folgen");
+    expect(instagram).toContain("Marktleben, neue Produkte, Verkostungen und Gewinnspiele");
     expect(count(instagram, /<figure\b/)).toBe(0);
     expect(count(instagram, /<time\b/)).toBe(0);
     expect(instagram).not.toContain("reviewedAt");
@@ -306,14 +308,12 @@ describe("cinematic homepage composition", () => {
   test("renders only confirmed copy, evidence labels, and contact destinations", () => {
     const html = render(populatedContent);
 
-    expect(html).toContain(
-      "Persönliche Beratung, Partybedarf und Vermietung vor Ort.",
-    );
-    expect(count(html, /Preis laut Leihartikel-Preisliste · Stand 01\.01\.2026/)).toBe(5);
-    expect(count(html, /Bestand laut Liste · Stand 06\.03\.2026/)).toBe(5);
-    expect(count(html, /Bestand laut Liste\. Reservierung erforderlich\./)).toBe(5);
+    expect(html).toContain("Wir beraten dich persönlich");
+    expect(count(html, /Termin &amp; Verfügbarkeit anfragen/)).toBe(5);
+    expect(html).not.toContain("150 €");
+    expect(html).not.toContain("Bestand laut Liste");
     expect(html).toContain("Mo–Sa 08:00–20:00 Uhr");
-    expect(html).toContain("Jurgensstraße 20");
+    expect(html).toContain("Jurgenstr. 20");
     expect(html).toContain("47574 Goch");
 
     for (const forbidden of [
@@ -334,7 +334,8 @@ describe("cinematic homepage composition", () => {
     ).toBeGreaterThan(0);
     for (const href of [
       "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.",
-      "https://www.google.com/maps/dir/?api=1&destination=Jurgensstra%C3%9Fe+20%2C+47574+Goch",
+      "https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20%2C+47574+Goch",
+      "https://grailbid.com",
       "https://www.instagram.com/trinkgutjammers_goch/",
     ]) {
       expectSafeExternalLink(html, href);

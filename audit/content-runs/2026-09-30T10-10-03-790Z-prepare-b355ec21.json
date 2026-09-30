@@ -1,0 +1,30 @@
+{
+  "runId": "2026-09-30T10-10-03-790Z-prepare-b355ec21",
+  "mode": "prepare",
+  "startedAt": "2026-09-30T10:10:03.790Z",
+  "evaluatedAt": "2026-09-30T10:10:03.790Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-09-28",
+    "validTo": "2026-10-03"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "1384969",
+      "file": "data/editorial/official-catalogs/2026-09-28.json",
+      "validFrom": "2026-09-28",
+      "validTo": "2026-10-03",
+      "sha256": "8142872084ec2359091dd91aff854a5fd55209b06f0d6b0af3036a8f5e417d24",
+      "result": "verified"
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "Kein geprüfter NL-Flyer für die gesamte Zielwoche; offizielle DE-Werbung bleibt die Hauptquelle.",
+    "Öffentliche Bereitstellungs-URL fehlt; Live-Veröffentlichung noch nicht geprüft."
+  ],
+  "deploymentVerified": false,
+  "finishedAt": "2026-09-30T10:10:09.790Z",
+  "status": "degraded"
+}

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
 const description =
-  "Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers in der Jurgensstraße 20 in Goch.";
+  "Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers, Jurgenstr. 20 in Goch.";
 
 export const SITE_METADATA: Metadata = {
   metadataBase: new URL("https://trinkgut-jammers.de"),

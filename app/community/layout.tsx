@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Community — Stempelkarte & Belohnungen ",
-  description: "Sammle Stempel und sichere dir Vorteile bei Trinkgut Jammers Goch — Treue zahlt sich aus.",
+  title: "Community — Einblicke aus dem Markt",
+  description: "Team, Aktionen und Neuigkeiten von Trinkgut Jammers in Goch auf unserem Instagram-Kanal.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

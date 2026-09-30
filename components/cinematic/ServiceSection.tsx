@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import {
   RENTAL_HIGHLIGHTS,
-  RENTAL_SOURCES,
   SERVICE_ITEMS,
 } from "@/data/cinematic-editorial";
 
@@ -24,7 +23,6 @@ export default function ServiceSection(): React.JSX.Element {
       <ol className={styles.serviceWall} data-service-items>
         {SERVICE_ITEMS.map((service) => (
           <li className={styles.serviceRow} key={service.number}>
-            <p className={styles.serviceNumber}>{service.number}</p>
             <div className={styles.serviceCopy}>
               <h3>{service.title}</h3>
               <p>{service.text}</p>
@@ -40,17 +38,8 @@ export default function ServiceSection(): React.JSX.Element {
           <div key={rental.name}>
             <dt>
               {rental.name}
-              <span className={styles.rentalPrice}>{rental.price}</span>
             </dt>
-            <dd>
-              Preis laut {RENTAL_SOURCES.price.label} · Stand{" "}
-              {RENTAL_SOURCES.price.asOf}
-            </dd>
-            <dd>
-              {rental.stock} Stück · Bestand laut Liste · Stand{" "}
-              {RENTAL_SOURCES.inventory.asOf}
-            </dd>
-            <dd>Bestand laut Liste. Reservierung erforderlich.</dd>
+            <dd><Link href="/vermietung" prefetch={false}>Termin &amp; Verfügbarkeit anfragen ↗</Link></dd>
           </div>
         ))}
       </dl>

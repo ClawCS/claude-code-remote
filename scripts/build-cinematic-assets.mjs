@@ -49,12 +49,13 @@ const JOBS = deepFreeze([
     sourceHash:
       "c00d3e0e3b4b12b3a639322acf1cbfa653a08b59f4de3b8e7617f798ade3a908",
     sourceDimensions: { width: 1350, height: 1688 },
-    crop: { left: 217, top: 383, width: 915, height: 803 },
+    // Keep both heads inside the authentic photo, without the old Canva frame.
+    crop: { left: 217, top: 300, width: 915, height: 886 },
     output: {
       name: "hero-team.webp",
       format: "webp",
       width: 915,
-      height: 803,
+      height: 886,
       maxBytes: 100_000,
     },
   },

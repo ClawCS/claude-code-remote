@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  outputFileTracingIncludes: {
+    "/*": ["./data/editorial/**/*.json"],
+    "/{,nl,angebote,handzettel,api/content/current,api/content/flyers}": ["./public/handzettel/20*/**/*.pdf", "./public/images/content/**/*"],
+  },
   experimental: {
     inlineCss: true,
   },
@@ -47,6 +52,7 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
+          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'") + "; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' https://werbung.trinkgut.de; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -59,6 +65,14 @@ const nextConfig: NextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
         ],
+      },
+      ...["de", "nl", "extracted"].map(legacy => ({
+        source: `/handzettel/${legacy}/:path*`,
+        headers: [{key:"X-Robots-Tag",value:"noindex, noarchive"}],
+      })),
+      {
+        source:"/handzettel/manifest.json",
+        headers:[{key:"X-Robots-Tag",value:"noindex, noarchive"}],
       },
     ];
   },

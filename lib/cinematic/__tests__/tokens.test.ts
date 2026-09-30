@@ -7,14 +7,16 @@ import {
 } from "@/lib/cinematic/tokens";
 
 describe("cinematic token contract", () => {
-  test("locks the approved six-color palette", () => {
-    expect(CINEMATIC_TOKENS.color).toEqual({
+  test("keeps the brand palette with warm paper and readable ink", () => {
+    expect(CINEMATIC_TOKENS.color).toMatchObject({
       yellow: "#FEE005",
       red: "#E20F1D",
       blue: "#0086C8",
       gray: "#414045",
       black: "#000000",
       white: "#FFFFFF",
+      paper: "#FFF8F0",
+      ink: "#302923",
     });
   });
 

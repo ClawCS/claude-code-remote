@@ -3,11 +3,9 @@
 import { useState } from "react";
 import ProductGrid from "@/components/ProductGrid";
 import { type Product } from "@/lib/utils";
-import productsData from "@/data/products.json";
+import { assortmentProducts as products } from "@/lib/catalog";
 import Link from "next/link";
 import ShimmerParticles from "@/components/ShimmerParticles";
-
-const products = productsData as Product[];
 
 type FinderType = "bier" | "wein" | "wasser" | null;
 
@@ -31,11 +29,11 @@ const finderData: Record<string, { title: string; icon: string; questions: Quest
         ],
       },
       {
-        question: "Wie viel darf's kosten?",
+        question: "Wie möchtest du dein Bier genießen?",
         options: [
-          { label: "Günstig (unter 12€)", value: "cheap" },
-          { label: "Mittel (12-16€)", value: "mid" },
-          { label: "Premium (ab 16€)", value: "premium" },
+          { label: "Alkoholfrei", value: "alcohol-free" },
+          { label: "Klassisch", value: "classic" },
+          { label: "Keine Präferenz", value: "any" },
         ],
       },
       {
@@ -162,16 +160,10 @@ export default function FinderPage() {
           if (matched.length > 0) filtered = matched;
         }
       }
-      // Q2: Preis (cheap, mid, premium)
-      const preis = answers[1];
-      if (preis) {
-        const priceFiltered = filtered.filter((p) => {
-          if (preis === "cheap") return p.price < 12;
-          if (preis === "mid") return p.price >= 12 && p.price <= 16;
-          if (preis === "premium") return p.price > 16;
-          return true;
-        });
-        if (priceFiltered.length > 0) filtered = priceFiltered;
+      const preference = answers[1];
+      if (preference === "alcohol-free" || preference === "classic") {
+        const isAlcoholFree = (product: Product) => /alkoholfrei|0[,.]0\s*%/i.test(product.name);
+        filtered = filtered.filter(product => preference === "alcohol-free" ? isAlcoholFree(product) : !isAlcoholFree(product));
       }
     }
 
@@ -307,10 +299,10 @@ export default function FinderPage() {
         <div className="text-center mb-10">
           <span className="text-5xl mb-4 block">🎯</span>
           <h2 className="text-3xl font-bold text-secondary mb-2">Unsere Empfehlungen für dich!</h2>
-          <p className="text-muted">Basierend auf deinen Antworten haben wir folgende Produkte ausgewählt:</p>
+          <p className="text-muted">Unverbindliche Sortimentsideen – aktuelle Preise und Verfügbarkeit bestätigen wir persönlich.</p>
         </div>
 
-        <ProductGrid products={results} />
+        {results.length ? <ProductGrid products={results} /> : <p className="text-center text-muted">Für diese Auswahl ist kein passendes Sortimentsbeispiel hinterlegt. Frag unser Team nach einer Empfehlung.</p>}
 
         <div className="text-center mt-8 flex gap-4 justify-center">
           <button

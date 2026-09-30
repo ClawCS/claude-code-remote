@@ -3,11 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/lib/utils";
+import { cartLineKey } from "@/lib/cart-items";
 import { useModalA11y } from "@/lib/useModalA11y";
 
 export default function CartDrawer() {
-  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, totalPrice } = useCart();
+  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity } = useCart();
   const panelRef = useModalA11y(isCartOpen, () => setIsCartOpen(false));
 
   if (!isCartOpen) return null;
@@ -23,7 +23,7 @@ export default function CartDrawer() {
         className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 id="cart-drawer-title" className="text-lg font-bold text-secondary">Warenkorb</h2>
+          <h2 id="cart-drawer-title" className="text-lg font-bold text-secondary">Deine Anfrageliste</h2>
           <button onClick={() => setIsCartOpen(false)} className="p-1 text-muted hover:text-secondary transition-colors" aria-label="Schließen">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -35,17 +35,14 @@ export default function CartDrawer() {
           {items.length === 0 ? (
             <div className="text-center py-12 text-muted">
               <p className="text-4xl mb-3">🛒</p>
-              <p>Dein Warenkorb ist leer.</p>
+              <p>Deine Anfrageliste ist leer.</p>
             </div>
           ) : (
             <ul className="space-y-4">
               {items.map((item) => {
                 const isRental = !!item.rental;
-                const itemTotal = isRental
-                  ? item.rental!.totalRentalPrice * item.quantity
-                  : item.product.price * item.quantity;
                 return (
-                  <li key={item.product.id} className={`p-3 rounded-lg ${isRental ? "bg-amber-50 border border-amber-200" : "bg-light"}`}>
+                  <li key={cartLineKey(item)} className={`p-3 rounded-lg ${isRental ? "bg-amber-50 border border-amber-200" : "bg-light"}`}>
                     <div className="flex gap-3">
                       <div className="w-14 h-14 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
                         <Image src={item.product.image} alt={item.product.name} fill sizes="56px" className="object-contain p-1" />
@@ -54,19 +51,16 @@ export default function CartDrawer() {
                         <p className="font-medium text-sm text-secondary truncate">{item.product.name}</p>
                         <p className="text-xs text-muted">{item.product.unit}</p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-6 h-6 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">-</button>
+                          <button aria-label={`Menge für ${item.product.name} verringern`} onClick={() => updateQuantity(cartLineKey(item), item.quantity - 1)} className="w-8 h-8 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">-</button>
                           <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-6 h-6 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">+</button>
-                          <button onClick={() => removeItem(item.product.id)} className="ml-auto text-xs text-muted hover:text-primary transition-colors">Entfernen</button>
+                          <button aria-label={`Menge für ${item.product.name} erhöhen`} onClick={() => updateQuantity(cartLineKey(item), item.quantity + 1)} className="w-8 h-8 rounded bg-white border border-border text-xs font-bold hover:border-primary transition-colors">+</button>
+                          <button onClick={() => removeItem(cartLineKey(item))} className="ml-auto text-xs text-muted hover:text-primary transition-colors">Entfernen</button>
                         </div>
-                      </div>
-                      <div className="text-sm font-bold text-primary flex-shrink-0">
-                        {formatPrice(itemTotal)}
                       </div>
                     </div>
                     {isRental && (
                       <p className="text-xs text-amber-700 mt-2 ml-[4.25rem]">
-                        {new Date(item.rental!.startDate).toLocaleDateString("de-DE")} – {new Date(item.rental!.endDate).toLocaleDateString("de-DE")} | {formatPrice(item.rental!.basePrice)} x {item.rental!.periods} Per.
+                        {item.rental!.startDate} – {item.rental!.endDate}
                       </p>
                     )}
                   </li>
@@ -78,16 +72,13 @@ export default function CartDrawer() {
 
         {items.length > 0 && (
           <div className="p-4 border-t border-border space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-secondary">Gesamt:</span>
-              <span className="text-xl font-bold text-primary">{formatPrice(totalPrice)}</span>
-            </div>
+            <p className="text-sm text-muted">Unverbindlich: Preis, Pfand und Verfügbarkeit bestätigen wir persönlich.</p>
             <Link
               href="/warenkorb"
               onClick={() => setIsCartOpen(false)}
               className="block w-full text-center py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors"
             >
-              Zum Warenkorb
+              Anfrage vorbereiten
             </Link>
           </div>
         )}

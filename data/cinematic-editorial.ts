@@ -87,7 +87,6 @@ export const EDITORIAL_IMAGES = deepFreeze({
 
 export const PEOPLE_STORY = deepFreeze([
   EDITORIAL_IMAGES.group,
-  EDITORIAL_IMAGES.hero,
   EDITORIAL_IMAGES.niko,
   EDITORIAL_IMAGES.jasmin,
   EDITORIAL_IMAGES.gabriella,
@@ -131,19 +130,19 @@ export const SERVICE_ITEMS = deepFreeze([
   {
     number: "01",
     title: "Persönliche Beratung",
-    text: "Direkter Kontakt mit dem Team im Markt.",
+    text: "Ein guter Wein zum Essen? Etwas Neues für den Feierabend? Frag uns – wir nehmen uns Zeit für dich.",
     href: "/kontakt",
   },
   {
     number: "02",
     title: "Partybedarf",
-    text: "Partybedarf bei Trinkgut Jammers in Goch.",
+    text: "Geburtstag, Vereinsfest oder große Runde: Plane deine Getränkemengen und stimme die Auswahl mit uns ab.",
     href: "/partyplaner",
   },
   {
     number: "03",
     title: "Vermietung",
-    text: "Mietartikel anfragen und Verfügbarkeit bestätigen lassen.",
+    text: "Kühlanhänger, Zapfanlage, Tische und Gläser: Frag den passenden Leihartikel für deinen Termin an.",
     href: "/vermietung",
   },
 ] as const);

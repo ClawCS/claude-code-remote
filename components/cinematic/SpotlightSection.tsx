@@ -14,8 +14,8 @@ export default function SpotlightSection(): React.JSX.Element {
       aria-labelledby="eigenmarken-title"
     >
       <div className={styles.intro}>
-        <p>Jammers Originalposter</p>
-        <h2 id="eigenmarken-title">Drei Originale im Licht.</h2>
+        <p>Unsere Eigenmarken</p>
+        <h2 id="eigenmarken-title">Drei mit Charakter.</h2>
       </div>
       <div className={styles.railViewport}>
         <div className={styles.rail} data-rail="cinematic">
@@ -32,13 +32,11 @@ export default function SpotlightSection(): React.JSX.Element {
                   src={poster.image}
                   alt={poster.alt}
                   placeholder="blur"
-                  sizes="(max-width: 63.999rem) 100vw, min(64vw, 1054px)"
+                  sizes="(max-width: 47.999rem) 100vw, 33vw"
                 />
                 <figcaption className={styles.posterMeta}>
-                  <span className={styles.number}>{poster.number}</span>
                   <span className={styles.posterName}>{poster.name}</span>
-                  <span className={styles.posterLabel}>{poster.label}</span>
-                  <span className={styles.posterCopy}>{poster.copy}</span>
+                  <span className={styles.posterLabel}>Im Markt entdecken ↗</span>
                 </figcaption>
               </figure>
             </Link>

@@ -25,8 +25,8 @@ describe("cinematic editorial contract", () => {
   });
 
   test("keeps the approved people story local, unique, and release-gated", () => {
-    expect(PEOPLE_STORY).toHaveLength(5);
-    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(5);
+    expect(PEOPLE_STORY).toHaveLength(4);
+    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(4);
     for (const item of PEOPLE_STORY) {
       expect(item.alt.length).toBeGreaterThan(12);
       expect(item.reviewedAt).toBe("2026-07-14");
@@ -65,19 +65,19 @@ describe("cinematic editorial contract", () => {
       {
         number: "01",
         title: "Persönliche Beratung",
-        text: "Direkter Kontakt mit dem Team im Markt.",
+        text: "Ein guter Wein zum Essen? Etwas Neues für den Feierabend? Frag uns – wir nehmen uns Zeit für dich.",
         href: "/kontakt",
       },
       {
         number: "02",
         title: "Partybedarf",
-        text: "Partybedarf bei Trinkgut Jammers in Goch.",
+        text: "Geburtstag, Vereinsfest oder große Runde: Plane deine Getränkemengen und stimme die Auswahl mit uns ab.",
         href: "/partyplaner",
       },
       {
         number: "03",
         title: "Vermietung",
-        text: "Mietartikel anfragen und Verfügbarkeit bestätigen lassen.",
+        text: "Kühlanhänger, Zapfanlage, Tische und Gläser: Frag den passenden Leihartikel für deinen Termin an.",
         href: "/vermietung",
       },
     ]);

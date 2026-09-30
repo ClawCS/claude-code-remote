@@ -4,11 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { formatPrice, type Product } from "@/lib/utils";
-import productsData from "@/data/products.json";
+import { type Product } from "@/lib/utils";
+import { assortmentProducts as products } from "@/lib/catalog";
 import ShimmerParticles from "@/components/ShimmerParticles";
-
-const products = productsData as Product[];
 
 type PartyConfig = {
   guests: number;
@@ -104,7 +102,6 @@ export default function PartyplanerPage() {
 
   const needs = calculateNeeds(config);
   const recommendations = getRecommendations(needs);
-  const totalCost = recommendations.reduce((sum, r) => sum + r.product.price * r.quantity, 0);
 
   const handleAddAll = () => {
     recommendations.forEach((r) => addItem(r.product, r.quantity));
@@ -118,7 +115,7 @@ export default function PartyplanerPage() {
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyplaner</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyplaner</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
-          Plane deine Party perfekt! Gib die Details ein und wir berechnen, wie viel du brauchst.
+          Plane deine Getränke als unverbindliche Mengenhilfe. Die passende Auswahl und deinen Bedarf stimmen wir persönlich mit dir ab.
         </p>
       </div>
     </div>
@@ -217,8 +214,8 @@ export default function PartyplanerPage() {
                   <p className="text-sm text-muted">{rec.reason}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-muted">{rec.quantity}x {formatPrice(rec.product.price)}</p>
-                  <p className="font-bold text-primary">{formatPrice(rec.product.price * rec.quantity)}</p>
+                  <p className="font-bold text-primary">{rec.quantity} Packungen</p>
+                  <p className="text-xs text-muted">{rec.product.unit}</p>
                 </div>
               </div>
             ))}
@@ -226,14 +223,14 @@ export default function PartyplanerPage() {
 
           <div className="border-t border-border pt-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted">Geschätzter Gesamtpreis</p>
-              <p className="text-2xl font-bold text-primary">{formatPrice(totalCost)}</p>
+              <p className="font-semibold text-secondary">Preis und Verfügbarkeit auf Anfrage</p>
+              <p className="text-sm text-muted">Noch keine Bestellung oder Reservierung.</p>
             </div>
             <button
               onClick={handleAddAll}
               className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors"
             >
-              Alles in den Warenkorb
+              Alles zur Anfrageliste
             </button>
           </div>
 

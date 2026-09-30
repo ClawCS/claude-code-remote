@@ -5,11 +5,9 @@ import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductGrid from "@/components/ProductGrid";
 import SearchBar from "@/components/SearchBar";
-import { categories, type Product } from "@/lib/utils";
-import productsData from "@/data/products.json";
+import { categories } from "@/lib/utils";
+import { assortmentProducts as products } from "@/lib/catalog";
 import ShimmerParticles from "@/components/ShimmerParticles";
-
-const products = productsData as Product[];
 
 type Origin = "alle" | "DE" | "NL";
 

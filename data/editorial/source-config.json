@@ -1,0 +1,14 @@
+{
+  "timeZone": "Europe/Berlin",
+  "prepare": "Sunday 17:00",
+  "check": "Daily 06:15",
+  "official": {"storeId": "13027", "werbekreis": "3.6", "required": true},
+  "canvaDesigns": [
+    {"id": "DAHHqrttnew", "title": "Maasduinen HZ", "language": "nl", "required": false},
+    {"id": "DAG6Qo7UYXQ", "title": "Story HZ Instagram", "language": "de", "required": false},
+    {"id": "DAG_nBda110", "title": "Beiträge Instagram", "language": "de", "required": false},
+    {"id": "DAG_4R3ee0E", "title": "Beiträge Instagram 4er Carousel", "language": "de", "required": false}
+  ],
+  "instagram": "https://www.instagram.com/trinkgutjammers_goch/",
+  "publicUrl": null
+}

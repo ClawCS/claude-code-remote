@@ -21,7 +21,7 @@ import nextConfig from "../../../next.config";
 
 const output = resolve(process.cwd(), "public/images/home/cinematic");
 const expected = [
-  { name: "hero-team.webp", format: "webp", width: 915, height: 803, maxBytes: 100_000 },
+  { name: "hero-team.webp", format: "webp", width: 915, height: 886, maxBytes: 100_000 },
   { name: "team-group.webp", format: "webp", width: 950, height: 840, maxBytes: 100_000 },
   { name: "team-niko.webp", format: "webp", width: 745, height: 727, maxBytes: 60_000 },
   { name: "team-jasmin.webp", format: "webp", width: 756, height: 718, maxBytes: 90_000 },
@@ -119,7 +119,7 @@ async function waitForStagingDirectory(
 describe("cinematic image pipeline", () => {
   test("pins the deterministic Sharp toolchain and scripts", () => {
     const packageJson = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
-    expect(packageJson.dependencies.sharp).toBe("0.34.5");
+    expect(packageJson.dependencies.sharp).toBe("0.35.5");
     expect(packageJson.scripts["assets:cinematic"]).toBe(
       "node scripts/build-cinematic-assets.mjs",
     );

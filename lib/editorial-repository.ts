@@ -138,17 +138,17 @@ export function parseReviewQueue(value: unknown): readonly EditorialReviewItem[]
 }
 
 async function readJson(file: string): Promise<unknown> {
-  return JSON.parse(await readFile(path.join(process.cwd(), file), "utf8"));
+  return JSON.parse(await readFile(path.join(process.cwd(), "data", "editorial", file), "utf8"));
 }
 
 export async function loadApprovedCampaigns() {
-  return parseCampaigns(await readJson("data/editorial/campaigns.json"));
+  return parseCampaigns(await readJson("campaigns.json"));
 }
 
 export async function loadReviewQueue() {
-  return parseReviewQueue(await readJson("data/editorial/review-queue.json"));
+  return parseReviewQueue(await readJson("review-queue.json"));
 }
 
 export async function loadEditorialArchive(): Promise<readonly EditorialArchiveItem[]> {
-  return parseArchive(await readJson("data/editorial/archive.json"));
+  return parseArchive(await readJson("archive.json"));
 }

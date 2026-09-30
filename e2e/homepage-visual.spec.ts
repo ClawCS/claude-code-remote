@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "./test-fixtures";
+import type { Page } from "@playwright/test";
 
 const viewports = [
   { width: 360, height: 844 },
@@ -74,7 +75,7 @@ for (const viewport of viewports) {
       const h1 = await page.getByRole("heading", { level: 1 }).boundingBox();
       const cta = await page
         .locator('[data-hero="cinematic"]')
-        .getByRole("link", { name: /WhatsApp/ })
+        .getByRole("link", { name: /Wochenangebote/ })
         .boundingBox();
       const heroImage = await page
         .locator('[data-hero="cinematic"] img')
@@ -84,12 +85,12 @@ for (const viewport of viewports) {
       expect(heroImage && heroImage.y).toBeLessThan(viewport.height);
     }
     await settleReviewImages(page, viewport.height);
-    mkdirSync("audit/screenshots/cinematic-production", { recursive: true });
+    mkdirSync("audit/screenshots/relaunch-2026-09-30", { recursive: true });
     await page.screenshot({
       animations: "disabled",
       caret: "hide",
       fullPage: true,
-      path: `audit/screenshots/cinematic-production/home-${viewport.width}x${viewport.height}.png`,
+      path: `audit/screenshots/relaunch-2026-09-30/home-${viewport.width}x${viewport.height}.png`,
     });
   });
 }

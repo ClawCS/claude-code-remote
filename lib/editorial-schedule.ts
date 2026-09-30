@@ -73,14 +73,19 @@ function berlinWeekdayAndTime(now: Date) {
   return Object.fromEntries(parts.map(({ type, value }) => [type, value]));
 }
 
-export function getPublicationWeekRange(now = new Date()) {
+export function getCurrentWeekRange(now = new Date()) {
   const today = berlinDateKey(now);
   const day = new Date(`${today}T12:00:00.000Z`).getUTCDay();
   const daysSinceMonday = (day + 6) % 7;
-  let validFrom = addCalendarDays(today, -daysSinceMonday);
+  const validFrom = addCalendarDays(today, -daysSinceMonday);
+  return { validFrom, validTo: addCalendarDays(validFrom, 5) } as const;
+}
+
+export function getPublicationWeekRange(now = new Date()) {
+  let { validFrom } = getCurrentWeekRange(now);
   const clock = berlinWeekdayAndTime(now);
   const minutes = Number(clock.hour) * 60 + Number(clock.minute);
-  if (clock.weekday === "Sun" && minutes >= 16 * 60) {
+  if (clock.weekday === "Sun" && minutes >= 17 * 60) {
     validFrom = addCalendarDays(validFrom, 7);
   }
   return { validFrom, validTo: addCalendarDays(validFrom, 5) } as const;

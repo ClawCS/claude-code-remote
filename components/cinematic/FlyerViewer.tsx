@@ -10,14 +10,19 @@ import { useModalA11y } from "@/lib/useModalA11y";
 import styles from "./current.module.css";
 
 const VIEWER_TIMEOUT_MS = 8_000;
-const VIEWER_ERROR_COPY = "Der Handzettel konnte hier nicht geladen werden.";
+const COPY = {
+  de: {external:"Handzettel extern öffnen",pdf:"Handzettel als PDF öffnen",cover:"Titelseite",noCover:"Handzettel ohne Vorschaubild",view:"Handzettel ansehen",help:"Der externe Handzettel kann auch direkt geöffnet werden.",closeLabel:"Handzettel schließen",close:"Schließen",viewTitle:"ansehen",frame:"externer Handzettel",error:"Der Handzettel konnte hier nicht geladen werden."},
+  nl: {external:"Folder extern openen",pdf:"Folder als PDF openen",cover:"Voorpagina",noCover:"Folder zonder voorbeeldafbeelding",view:"Folder bekijken",help:"Je kunt de externe folder ook rechtstreeks openen.",closeLabel:"Folder sluiten",close:"Sluiten",viewTitle:"bekijken",frame:"externe folder",error:"De folder kon hier niet worden geladen."},
+} as const;
 
 type ViewerState = "loading" | "ready" | "error";
 
 function ExternalFlyerLinks({
   flyer,
+  locale = "de",
 }: {
   flyer: HomepageFlyer;
+  locale?: "de" | "nl";
 }): React.JSX.Element {
   return (
     <div className={styles.viewerLinks} data-flyer-fallback-links>
@@ -26,10 +31,10 @@ function ExternalFlyerLinks({
         target="_blank"
         rel="noopener noreferrer"
       >
-        Handzettel extern öffnen
+        {COPY[locale].external}
       </a>
       <a href={flyer.pdfUrl} target="_blank" rel="noopener noreferrer">
-        Handzettel als PDF öffnen
+        {COPY[locale].pdf}
       </a>
     </div>
   );
@@ -37,9 +42,12 @@ function ExternalFlyerLinks({
 
 export default function FlyerViewer({
   flyer,
+  locale = "de",
 }: {
   flyer: HomepageFlyer;
+  locale?: "de" | "nl";
 }): React.JSX.Element {
+  const copy = COPY[locale];
   const [open, setOpen] = useState(false);
   const [viewerState, setViewerState] = useState<ViewerState>("loading");
   const [viewerSession, setViewerSession] = useState(0);
@@ -107,13 +115,13 @@ export default function FlyerViewer({
         {canRenderCover ? (
           <Image
             src={flyer.coverUrl}
-            alt={`Titelseite: ${flyer.title}`}
+            alt={`${copy.cover}: ${flyer.title}`}
             fill
             sizes="(max-width: 47.999rem) 100vw, (max-width: 79.999rem) 50vw, 38rem"
             onError={() => setCoverFailed(true)}
           />
         ) : (
-          <p>Handzettel ohne Vorschaubild</p>
+          <p>{copy.noCover}</p>
         )}
       </div>
       <button
@@ -121,12 +129,12 @@ export default function FlyerViewer({
         type="button"
         onClick={openViewer}
       >
-        Handzettel ansehen
+        {copy.view}
       </button>
       <p className={styles.viewerHelp}>
-        Der externe Handzettel kann auch direkt geöffnet werden.
+        {copy.help}
       </p>
-      <ExternalFlyerLinks flyer={flyer} />
+      <ExternalFlyerLinks flyer={flyer} locale={locale} />
 
       {open ? (
         <div
@@ -147,20 +155,20 @@ export default function FlyerViewer({
           >
             <button
               type="button"
-              aria-label="Handzettel schließen"
+              aria-label={copy.closeLabel}
               onClick={closeViewer}
             >
-              Schließen
+              {copy.close}
             </button>
-            <h2 id={headingId}>{flyer.title} ansehen</h2>
+            <h2 id={headingId}>{flyer.title} {copy.viewTitle}</h2>
             {viewerState === "error" ? (
               <div
                 className={styles.viewerError}
                 role="status"
                 data-flyer-state="error"
               >
-                <p>{VIEWER_ERROR_COPY}</p>
-                <ExternalFlyerLinks flyer={flyer} />
+                <p>{copy.error}</p>
+                <ExternalFlyerLinks flyer={flyer} locale={locale} />
               </div>
             ) : (
               <>
@@ -168,12 +176,12 @@ export default function FlyerViewer({
                   className={styles.viewerFrame}
                   key={viewerSession}
                   src={flyer.viewerUrl}
-                  title={`${flyer.title} – externer Handzettel`}
+                  title={`${flyer.title} – ${copy.frame}`}
                   onLoad={() => markReady(viewerSession)}
                   onError={() => markError(viewerSession)}
                   referrerPolicy="strict-origin-when-cross-origin"
                 />
-                <ExternalFlyerLinks flyer={flyer} />
+                <ExternalFlyerLinks flyer={flyer} locale={locale} />
               </>
             )}
           </div>

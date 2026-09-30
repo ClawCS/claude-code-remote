@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Monatsgewinnspiel — Jetzt mitmachen ",
-  description: "Aktuelle Gewinnspiele bei Trinkgut Jammers in Goch. Tolle Preise, einfache Teilnahme.",
+  title: "Aktionen & Gewinnspiele",
+  description: "Originalbeiträge und Teilnahmebedingungen zu Aktionen von Trinkgut Jammers findest du auf unserem Instagram-Kanal.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

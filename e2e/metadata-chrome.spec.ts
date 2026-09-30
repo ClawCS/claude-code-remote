@@ -1,21 +1,21 @@
 import {
   expect,
-  test,
   type Browser,
   type BrowserContext,
   type Locator,
   type Page,
 } from "@playwright/test";
+import { test, installCatalogCoverFixture } from "./test-fixtures";
 
 const PRODUCTION_ORIGIN = "https://trinkgut-jammers.de";
 const HOME_TITLE = "Goch schenkt ein. | Trinkgut Jammers";
 const HOME_DESCRIPTION =
-  "Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers in der Jurgensstraße 20 in Goch.";
+  "Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers, Jurgenstr. 20 in Goch.";
 const HOME_OG_IMAGE =
   "https://trinkgut-jammers.de/images/home/cinematic/og-home.jpg";
 const NL_TITLE = "Informatie voor Nederlandse klanten | Trinkgut Jammers";
 const NL_DESCRIPTION =
-  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgensstraße 20 in Goch. Ma–za 08:00–20:00 uur.";
+  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgenstr. 20 in Goch. Ma–za 08:00–20:00 uur.";
 
 const EXPECTED_LOCAL_BUSINESS = {
   "@context": "https://schema.org",
@@ -29,7 +29,7 @@ const EXPECTED_LOCAL_BUSINESS = {
   owner: { "@type": "Person", name: "Nikolaos Jammers" },
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Jurgensstraße 20",
+    streetAddress: "Jurgenstr. 20",
     postalCode: "47574",
     addressLocality: "Goch",
     addressCountry: "DE",
@@ -54,11 +54,10 @@ const EXPECTED_LOCAL_BUSINESS = {
 
 const LEGACY_SENTINELS = {
   Header: "Warenkorb öffnen",
-  Footer: "Trinkgut Jammers Goch e.K.",
-  CartDrawer: "Dein Warenkorb ist leer.",
+  Footer: "data-legacy-footer",
+  CartDrawer: "Deine Anfrageliste ist leer.",
   WishlistDrawer: "Dein Merkzettel ist leer",
   WhatsAppButton: "WhatsApp Chat",
-  AIAssistant: "Jammers Assistent",
 } as const;
 
 type ScriptObservation = {
@@ -185,7 +184,8 @@ async function expectAbsoluteUrlAttribute(
 }
 
 async function newIsolatedContext(browser: Browser): Promise<BrowserContext> {
-  return browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const context=await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  await installCatalogCoverFixture(context);return context;
 }
 
 test("[product-contract] binds exact homepage metadata and the local OG JPEG", async ({
@@ -268,14 +268,16 @@ test("[product-contract] renders one final landmark tree and ordered server sect
   expect(sectionOrder).toEqual([
     "hero",
     "aktuell",
-    "menschen",
+    "sortiment",
     "service",
     "eigenmarken",
     "aktionen",
+    "menschen",
+    "grailbid",
     "instagram",
   ]);
 
-  await expect(page.getByText("Persönliche Beratung, Partybedarf und Vermietung vor Ort.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Für deinen Feierabend. Für die große Runde. Und für alles, was du zu feiern hast. Wir beraten dich persönlich und machen deine Party startklar.", { exact: true })).toBeVisible();
   await expect(page.getByText("Angebote der Woche", { exact: true })).toBeVisible();
   await expect(page.getByText("Gültig 13.–18.07.2026", { exact: true })).toBeVisible();
   await expect(page.getByText("10 Seiten", { exact: true })).toBeVisible();
@@ -307,16 +309,16 @@ test("[product-contract] renders one final landmark tree and ordered server sect
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Menschen hinter Jammers" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Deine Party. Unser Service." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Drei Originale im Licht." })).toBeVisible();
-  await expect(page.locator("#menschen figure")).toHaveCount(5);
+  await expect(page.getByRole("heading", { name: "Drei mit Charakter." })).toBeVisible();
+  await expect(page.locator("#menschen figure")).toHaveCount(4);
   await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
   await expect(page.locator("#eigenmarken figcaption")).toHaveText([
     /Pralle Kirsche/,
     /Schwarzer Teufel/,
     /Caramello/,
   ]);
-  await expect(page.getByText("Neue Einblicke folgen", { exact: true })).toBeVisible();
-  await expect(page.locator("footer#kontakt")).toContainText("Jurgensstraße 20");
+  await expect(page.getByText("Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.", { exact: true })).toBeVisible();
+  await expect(page.locator("footer#kontakt")).toContainText("Jurgenstr. 20");
   await expect(page.locator("footer#kontakt")).toContainText("Mo–Sa 08:00–20:00 Uhr");
   await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
 
@@ -366,15 +368,17 @@ test("[product-contract] keeps the complete active homepage server-readable with
     expect(sectionOrder).toEqual([
       "hero",
       "aktuell",
-      "menschen",
+      "sortiment",
       "service",
       "eigenmarken",
       "aktionen",
+      "menschen",
+      "grailbid",
       "instagram",
     ]);
 
     for (const exactText of [
-      "Persönliche Beratung, Partybedarf und Vermietung vor Ort.",
+      "Für deinen Feierabend. Für die große Runde. Und für alles, was du zu feiern hast. Wir beraten dich persönlich und machen deine Party startklar.",
       "Angebote der Woche",
       "Gültig 13.–18.07.2026",
       "10 Seiten",
@@ -383,13 +387,13 @@ test("[product-contract] keeps the complete active homepage server-readable with
       "Pralle Kirsche",
       "Schwarzer Teufel",
       "Caramello",
-      "Neue Einblicke folgen",
-      "Jurgensstraße 20",
+      "Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.",
+      "Jurgenstr. 20",
       "Mo–Sa 08:00–20:00 Uhr",
     ]) {
       await expect(page.getByText(exactText, { exact: true }).first()).toBeVisible();
     }
-    await expect(page.locator("#menschen figure")).toHaveCount(5);
+    await expect(page.locator("#menschen figure")).toHaveCount(4);
     await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
     await expect(page.locator("iframe")).toHaveCount(0);
     await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
@@ -474,7 +478,7 @@ test("[product-contract] keeps homepage metadata off child routes and neutralize
   expect(runtimeIssues).toEqual([]);
 });
 
-test("[product-contract] loads all six legacy chunks off-root and none on root", async ({
+test("[product-contract] loads all five active legacy chunks off-root and none on root", async ({
   browser,
   baseURL,
 }) => {
@@ -507,7 +511,7 @@ test("[product-contract] loads all six legacy chunks off-root and none on root",
       expect(scriptUrl, `${moduleName} chunk sentinel`).toBeTruthy();
       sentinelUrls.set(moduleName, scriptUrl!);
     }
-    expect(sentinelUrls.size).toBe(6);
+    expect(sentinelUrls.size).toBe(5);
     expect(legacyObservation.runtimeIssues).toEqual([]);
 
     const rootContext = await newIsolatedContext(browser);
@@ -584,12 +588,12 @@ test("[product-contract] preserves the off-root legacy controls and named dialog
   await expect(
     page.getByRole("link", { name: "Per WhatsApp schreiben" }),
   ).toBeVisible();
-  await expect(page.getByRole("button", { name: "Chat öffnen" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Chat öffnen" })).toHaveCount(0);
 
   const cartButton = page.getByRole("button", { name: "Warenkorb öffnen" });
   await expect(cartButton).toBeVisible();
   await cartButton.click();
-  const cartDialog = page.getByRole("dialog", { name: "Warenkorb" });
+  const cartDialog = page.getByRole("dialog", { name: "Deine Anfrageliste" });
   await expect(cartDialog).toBeVisible();
   await cartDialog.getByRole("button", { name: "Schließen" }).click();
   await expect(cartDialog).toHaveCount(0);
@@ -610,7 +614,7 @@ test("[product-contract] preserves the off-root legacy controls and named dialog
   expect(runtimeIssues).toEqual([]);
 });
 
-test("[product-contract] keeps cookie consent and runtime diagnostics on root and legacy routes", async ({
+test("[product-contract] avoids fake cookie consent and retains runtime diagnostics", async ({
   page,
 }) => {
   const runtimeIssues = collectRuntimeIssues(page);
@@ -622,7 +626,7 @@ test("[product-contract] keeps cookie consent and runtime diagnostics on root an
     expect(
       await page.evaluate(() => localStorage.getItem("cookie-consent")),
     ).toBeNull();
-    await expect(page.getByText("Wir nutzen Cookies", { exact: true })).toBeVisible();
+    await expect(page.getByText("Wir nutzen Cookies", { exact: true })).toHaveCount(0);
   }
   expect(runtimeIssues).toEqual([]);
 });

@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test-fixtures";
 
 test.beforeEach(async ({ page }) => {
   const messages: string[] = [];
@@ -27,7 +27,7 @@ test("renders exact landmarks, heading hierarchy, facts, and section order", asy
     page.getByRole("heading", { level: 1, name: "Goch schenkt ein." }),
   ).toHaveCount(1);
   await expect(
-    page.getByText("Jurgensstraße 20", { exact: true }).first(),
+    page.getByText("Jurgenstr. 20", { exact: true }).first(),
   ).toBeVisible();
   await expect(
     page.getByText("Mo–Sa 08:00–20:00 Uhr", { exact: true }).first(),
@@ -43,7 +43,7 @@ test("offers exact navigation, contact, route, Instagram, NL, and legal links", 
     "Angebote",
     "Party & Miete",
     "Eigenmarken",
-    "Über uns",
+    "Team",
     "Kontakt",
   ]) {
     await expect(navigation.getByRole("link", { name: label })).toBeVisible();
@@ -84,7 +84,7 @@ test("renders the audited Instagram fallback without fabricated posts or dates",
 }) => {
   const section = page.locator('section[aria-labelledby="instagram-title"]');
   await expect(
-    section.getByText("Neue Einblicke folgen", { exact: true }),
+    section.getByText("Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.", { exact: true }),
   ).toBeVisible();
   await expect(section.getByRole("link", { name: /Instagram/ })).toHaveAttribute(
     "href",
@@ -134,7 +134,7 @@ test("mobile details navigation works by keyboard and never covers the first her
   );
 });
 
-test("keeps the red hero gesture behind people at tablet widths", async ({
+test("keeps hero copy and real people clear of each other at tablet widths", async ({
   page,
 }) => {
   for (const viewport of [
@@ -143,19 +143,11 @@ test("keeps the red hero gesture behind people at tablet widths", async ({
   ]) {
     await page.setViewportSize(viewport);
     await page.reload();
-    const layers = await page.locator('[data-hero="cinematic"]').evaluate((hero) => {
-      const portrait = hero.querySelector("figure");
-      const gesture = hero.querySelector('[aria-hidden="true"]:last-of-type');
-      if (!(portrait instanceof HTMLElement) || !(gesture instanceof HTMLElement)) {
-        return null;
-      }
-      return {
-        portrait: Number.parseInt(getComputedStyle(portrait).zIndex, 10),
-        gesture: Number.parseInt(getComputedStyle(gesture).zIndex, 10),
-      };
-    });
-    expect(layers).not.toBeNull();
-    expect(layers!.gesture).toBeLessThan(layers!.portrait);
+    await page.evaluate(()=>document.fonts.ready);
+    const heading=await page.locator('[data-hero="cinematic"] h1').boundingBox();
+    const portrait=await page.locator('[data-hero="cinematic"] figure').boundingBox();
+    expect(heading).not.toBeNull();expect(portrait).not.toBeNull();
+    expect(heading!.x+heading!.width).toBeLessThanOrEqual(portrait!.x+1);
   }
 });
 

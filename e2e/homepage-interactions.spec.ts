@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "./test-fixtures";
+import type { Page } from "@playwright/test";
 
 const VIEWER_URL =
   "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest";
@@ -6,7 +7,7 @@ const PDF_URL =
   "https://werbung.trinkgut.de/frontend/catalogs/1335913/2/pdf/complete.pdf";
 const INSTAGRAM_ORIGIN = "https://www.instagram.com/";
 const ROUTE_URL =
-  "https://www.google.com/maps/dir/?api=1&destination=Jurgensstra%C3%9Fe+20%2C+47574+Goch";
+  "https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20%2C+47574+Goch";
 const TRIGGER_NAME = "Handzettel ansehen";
 const DIALOG_NAME = "Angebote der Woche ansehen";
 const CLOSE_NAME = "Handzettel schließen";
@@ -238,7 +239,7 @@ test("[product-contract] native mobile navigation remains usable without JavaScr
       "Party & Miete",
       "Eigenmarken",
       "Aktionen",
-      "Über uns",
+      "Team",
       "Kontakt",
     ]) {
       await expect(details.getByRole("link", { name: label })).toBeVisible();

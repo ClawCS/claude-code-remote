@@ -3,12 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
+import { MARKET } from "@/lib/cinematic/site";
 
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-[#1F2937] text-white mt-auto red-stripe-divider">
+    <footer data-legacy-footer className="bg-[#1F2937] text-white mt-auto red-stripe-divider">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
@@ -88,7 +89,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-700 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} Trinkgut Jammers Goch e.K.
+            &copy; {MARKET.legalName}
           </p>
           <div className="flex gap-4 text-sm text-gray-500">
             <Link href="/kontakt" className="hover:text-[#F59E0B] transition-colors">Kontakt</Link>

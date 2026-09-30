@@ -5,8 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
-import { formatPrice, type Product } from "@/lib/utils";
-import { useTranslation } from "@/lib/i18n";
+import { type Product } from "@/lib/utils";
 
 const categoryEmoji: Record<string, string> = {
   "Bier": "🍺",
@@ -20,7 +19,6 @@ const categoryEmoji: Record<string, string> = {
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
-  const { t } = useTranslation();
   const wishlisted = isInWishlist(product.id);
   const [imgSrc, setImgSrc] = useState(product.image);
   const [imgFailed, setImgFailed] = useState(false);
@@ -51,7 +49,7 @@ export default function ProductCard({ product }: { product: Product }) {
           ) : (
             <Image
               src={imgSrc}
-              alt={product.name}
+              alt={product.image === "/images/home/brand-logo.webp" ? "Trinkgut Jammers – neutrales Sortimentsbild" : product.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-contain p-3 group-hover:scale-[1.06] group-hover:rotate-[0.5deg] transition-transform duration-500"
@@ -79,14 +77,15 @@ export default function ProductCard({ product }: { product: Product }) {
           </h3>
         </Link>
         <p className="text-xs text-muted mt-1">{product.unit}</p>
+        {product.image === "/images/home/brand-logo.webp" && <p className="text-xs text-muted mt-1">Sortimentsbeispiel · Produktfoto folgt</p>}
 
         <div className="mt-auto pt-3 flex items-center justify-between">
-          <span className="text-xl font-extrabold gold-price tracking-tight">{formatPrice(product.price)}</span>
+          <span className="text-xs text-muted">Preis auf Anfrage</span>
           <button
             onClick={() => addItem(product)}
             className="px-3 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer btn-shimmer shadow-sm hover:shadow-md hover:shadow-red-500/20"
           >
-            {t("btn.warenkorb")}
+            Anfragen
           </button>
         </div>
       </div>

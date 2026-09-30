@@ -100,8 +100,9 @@ function calculateEcoStats(bottles: number, history?: LeergutHistoryEntry[]): Ec
 function loadLeergutHistory(): LeergutHistoryEntry[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(LEERGUT_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const raw = sessionStorage.getItem(LEERGUT_STORAGE_KEY);
+    const parsed:unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter(entry=>entry && entry.counts && Object.values(entry.counts).every(value=>typeof value === "number" && Number.isFinite(value) && value >= 0)).slice(0,100) : [];
   } catch {
     return [];
   }

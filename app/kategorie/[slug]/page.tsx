@@ -4,11 +4,9 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import ProductGrid from "@/components/ProductGrid";
 import CategoryBackground from "@/components/CategoryBackground";
-import { categories, type Product } from "@/lib/utils";
-import productsData from "@/data/products.json";
+import { categories } from "@/lib/utils";
+import { assortmentProducts as products } from "@/lib/catalog";
 import ShimmerParticles from "@/components/ShimmerParticles";
-
-const products = productsData as Product[];
 
 export default function KategoriePage() {
   const { slug } = useParams<{ slug: string }>();

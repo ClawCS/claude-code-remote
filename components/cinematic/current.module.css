@@ -1,32 +1,32 @@
 .section {
   position: relative;
   width: min(100%, var(--cinematic-layout-content-max));
-  margin: auto;
-  padding: var(--cinematic-spacing-section) var(--cinematic-spacing-gutter);
-  background: var(--cinematic-color-black);
-  color: var(--cinematic-color-white);
+  margin:auto;
+  padding:var(--cinematic-spacing-section) var(--cinematic-spacing-gutter);
+  background: var(--cinematic-color-paper);
+  color: var(--cinematic-color-ink);
 }
 
 .heading {
   display: grid;
   max-width: var(--cinematic-layout-text-measure);
-  margin-block-end: var(--cinematic-spacing-two-xl);
-  gap: var(--cinematic-spacing-sm);
+  margin-block-end:var(--cinematic-spacing-two-xl);
+  gap:var(--cinematic-spacing-sm);
 }
 
 .eyebrow,
 .validity {
-  margin: 0;
-  color: var(--cinematic-color-yellow);
+  margin:0;
+  color: var(--cinematic-color-red);
   font-size: var(--cinematic-typography-size-label);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
   letter-spacing: var(--cinematic-typography-tracking-wide);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .heading h2 {
-  margin: 0;
+  margin:0;
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-heading);
   font-weight: var(--cinematic-typography-weight-extra-bold);
@@ -37,7 +37,7 @@
 
 .stage {
   display: grid;
-  gap: var(--cinematic-spacing-xl);
+  gap:var(--cinematic-spacing-xl);
   align-items: start;
 }
 
@@ -45,20 +45,20 @@
 .event,
 .fallback {
   min-width: 0;
-  border: 1px solid var(--cinematic-color-gray);
-  background: var(--cinematic-color-black);
+  border: 1px solid var(--cinematic-color-line);
+  background: var(--cinematic-color-surface);
 }
 
 .flyer,
 .fallback {
-  padding: var(--cinematic-spacing-lg);
+  padding:var(--cinematic-spacing-lg);
 }
 
 .flyer > h3,
 .event > h3 {
-  margin: var(--cinematic-spacing-md) 0;
+  margin:var(--cinematic-spacing-md) 0;
   font-family: var(--cinematic-typography-family-display);
-  font-size: var(--cinematic-typography-size-heading);
+  font-size: var(--cinematic-typography-size-lead);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-heading);
 }
@@ -66,7 +66,7 @@
 .flyer > p:not(.validity),
 .event > p:not(.validity),
 .fallback p {
-  margin: 0 0 var(--cinematic-spacing-md);
+  margin:0 0 var(--cinematic-spacing-md);
   font-size: var(--cinematic-typography-size-body);
   line-height: var(--cinematic-typography-line-height-body);
 }
@@ -74,7 +74,7 @@
 .validity {
   display: inline-flex;
   min-height: var(--cinematic-spacing-target);
-  padding: var(--cinematic-spacing-sm) var(--cinematic-spacing-md);
+  padding:var(--cinematic-spacing-sm) var(--cinematic-spacing-md);
   align-items: center;
   background: var(--cinematic-color-yellow);
   color: var(--cinematic-color-black);
@@ -82,7 +82,7 @@
 
 .event {
   position: relative;
-  padding: var(--cinematic-spacing-lg);
+  padding:var(--cinematic-spacing-lg);
   border-block-start: var(--cinematic-spacing-xs) solid
     var(--cinematic-color-red);
 }
@@ -92,7 +92,7 @@
   width: 100%;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  margin-block-end: var(--cinematic-spacing-lg);
+  margin-block-end:var(--cinematic-spacing-lg);
   background: var(--cinematic-color-gray);
 }
 
@@ -104,11 +104,11 @@
 .fallback a {
   display: inline-flex;
   min-block-size: var(--cinematic-spacing-target);
-  margin-inline-end: var(--cinematic-spacing-sm);
-  padding: 0 var(--cinematic-spacing-md);
+  margin-inline-end:var(--cinematic-spacing-sm);
+  padding:0 var(--cinematic-spacing-md);
   align-items: center;
-  border: 1px solid var(--cinematic-color-white);
-  color: var(--cinematic-color-white);
+  border: 1px solid var(--cinematic-color-red);
+  color: var(--cinematic-color-red);
   font-size: var(--cinematic-typography-size-small);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
@@ -118,12 +118,12 @@
 
 .viewer {
   display: grid;
-  gap: var(--cinematic-spacing-md);
+  gap:var(--cinematic-spacing-md);
 }
 
 .cover {
   position: relative;
-  width: min(100%, 38rem);
+  width: min(100%, 21rem);
   overflow: hidden;
   aspect-ratio: 4 / 5;
   border: 1px solid var(--cinematic-color-white);
@@ -137,8 +137,8 @@
 .cover p {
   display: grid;
   min-height: 100%;
-  margin: 0;
-  padding: var(--cinematic-spacing-lg);
+  margin:0;
+  padding:var(--cinematic-spacing-lg);
   place-items: center;
   color: var(--cinematic-color-black);
 }
@@ -150,21 +150,21 @@
   min-block-size: var(--cinematic-spacing-target);
   align-items: center;
   justify-content: center;
-  padding: 0 var(--cinematic-spacing-md);
-  border: 1px solid var(--cinematic-color-yellow);
-  background: var(--cinematic-color-black);
-  color: var(--cinematic-color-yellow);
+  padding:0 var(--cinematic-spacing-md);
+  border: 1px solid var(--cinematic-color-red);
+  background: var(--cinematic-color-red);
+  color:var(--cinematic-color-white);
   font-size: var(--cinematic-typography-size-small);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
   text-decoration: none;
-  text-transform: uppercase;
+  text-transform: none;
   cursor: pointer;
 }
 
 .viewerHelp {
-  margin: 0;
-  color: var(--cinematic-color-white);
+  margin:0;
+  color: var(--cinematic-color-ink);
   font-size: var(--cinematic-typography-size-small);
   line-height: var(--cinematic-typography-line-height-body);
 }
@@ -172,7 +172,7 @@
 .viewerLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--cinematic-spacing-sm);
+  gap:var(--cinematic-spacing-sm);
 }
 
 .viewerBackdrop {
@@ -180,7 +180,7 @@
   z-index: 1000;
   inset: 0;
   display: grid;
-  padding: var(--cinematic-spacing-md);
+  padding:var(--cinematic-spacing-md);
   place-items: center;
   background: color-mix(
     in srgb,
@@ -194,15 +194,15 @@
   width: min(72rem, 100%);
   max-height: calc(100dvh - (2 * var(--cinematic-spacing-md)));
   overflow: auto;
-  padding: var(--cinematic-spacing-lg);
-  gap: var(--cinematic-spacing-md);
-  border: 1px solid var(--cinematic-color-yellow);
-  background: var(--cinematic-color-black);
-  color: var(--cinematic-color-white);
+  padding:var(--cinematic-spacing-lg);
+  gap:var(--cinematic-spacing-md);
+  border: 1px solid var(--cinematic-color-line);
+  background: var(--cinematic-color-surface);
+  color: var(--cinematic-color-ink);
 }
 
 .viewerDialog h2 {
-  margin: 0;
+  margin:0;
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-heading);
   font-weight: var(--cinematic-typography-weight-bold);
@@ -222,11 +222,11 @@
 
 .viewerError {
   display: grid;
-  gap: var(--cinematic-spacing-md);
+  gap:var(--cinematic-spacing-md);
 }
 
 .viewerError p {
-  margin: 0;
+  margin:0;
 }
 
 @media (min-width: 64rem) {

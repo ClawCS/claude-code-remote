@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
-import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
+import { MARKET } from "@/lib/cinematic/site";
 
 import styles from "./hero.module.css";
 
@@ -18,31 +18,26 @@ export default function HeroSection(): React.JSX.Element {
       <div className={styles.grid}>
         <span className={styles.lightAxis} aria-hidden="true" />
         <div className={styles.copy}>
-          <p className={styles.kicker}>Trinkgut Jammers · Goch</p>
+          <p className={styles.kicker}>Dein Getränkemarkt. Mitten in Goch.</p>
           <h1 className={styles.title} id="hero-title">
             <span>Goch</span>
-            <span className={styles.titleLight}>schenkt</span>
-            <span>ein.</span>
+            <span className={styles.titleLight}>schenkt ein.</span>
           </h1>
           <p className={styles.lead}>
-            Persönliche Beratung, Partybedarf und Vermietung vor Ort.
+            Für deinen Feierabend. Für die große Runde. Und für alles, was du zu feiern hast. Wir beraten dich persönlich und machen deine Party startklar.
           </p>
           <div className={styles.actions}>
             <a
               className={styles.primary}
-              href={SITE_LINKS.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#aktuell"
             >
-              Per WhatsApp schreiben
+              Wochenangebote ansehen
             </a>
             <a
               className={styles.secondary}
-              href={SITE_LINKS.route}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/partyplaner"
             >
-              Route planen
+              Party planen
             </a>
           </div>
         </div>

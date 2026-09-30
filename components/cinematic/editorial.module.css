@@ -2,32 +2,32 @@
 .actionsStage,
 .instagramSection {
   width: min(100%, var(--cinematic-layout-content-max));
-  margin: auto;
-  padding: var(--cinematic-spacing-section) var(--cinematic-spacing-gutter);
-  background: var(--cinematic-color-black);
-  color: var(--cinematic-color-white);
+  margin:auto;
+  padding:var(--cinematic-spacing-section) var(--cinematic-spacing-gutter);
+  background: var(--cinematic-color-paper);
+  color: var(--cinematic-color-ink);
 }
 
 .sectionHeading {
   display: grid;
   max-width: var(--cinematic-layout-text-measure);
-  margin-block-end: var(--cinematic-spacing-two-xl);
-  gap: var(--cinematic-spacing-sm);
+  margin-block-end:var(--cinematic-spacing-two-xl);
+  gap:var(--cinematic-spacing-sm);
 }
 
 .eyebrow {
-  margin: 0;
-  color: var(--cinematic-color-yellow);
+  margin:0;
+  color: var(--cinematic-color-red);
   font-size: var(--cinematic-typography-size-label);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
   letter-spacing: var(--cinematic-typography-tracking-wide);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .sectionHeading h2,
 .footer h2 {
-  margin: 0;
+  margin:0;
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-heading);
   font-weight: var(--cinematic-typography-weight-extra-bold);
@@ -38,16 +38,18 @@
 
 .peopleGrid {
   display: grid;
-  gap: var(--cinematic-spacing-lg);
+  gap:var(--cinematic-spacing-lg);
 }
+
+.sectionHeading > p:last-child:not(.eyebrow) { margin:0; line-height:var(--cinematic-typography-line-height-body); }
 
 .figure {
   display: grid;
   width: 100%;
   max-width: min(100%, var(--editorial-image-max-width));
   min-width: 0;
-  margin: 0;
-  gap: var(--cinematic-spacing-sm);
+  margin:0;
+  gap:var(--cinematic-spacing-sm);
 }
 
 .image {
@@ -56,32 +58,33 @@
   max-width: 100%;
   justify-self: start;
   object-fit: cover;
-  filter: saturate(0.82) contrast(1.06);
+  aspect-ratio: 4 / 5;
+  object-position: top;
 }
 
 .caption {
-  color: var(--cinematic-color-white);
+  color: var(--cinematic-color-ink);
   font-size: var(--cinematic-typography-size-small);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .serviceWall {
   display: grid;
-  border-block-start: 1px solid var(--cinematic-color-gray);
+  border-block-start: 1px solid var(--cinematic-color-line);
 }
 
 .serviceRow {
   display: grid;
-  padding: var(--cinematic-spacing-lg) 0;
-  gap: var(--cinematic-spacing-md);
-  border-block-end: 1px solid var(--cinematic-color-gray);
+  padding:var(--cinematic-spacing-lg) 0;
+  gap:var(--cinematic-spacing-md);
+  border-block-end: 1px solid var(--cinematic-color-line);
   align-items: center;
 }
 
 .serviceNumber {
-  margin: 0;
+  margin:0;
   color: var(--cinematic-color-yellow);
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-heading);
@@ -93,7 +96,7 @@
 .rentalStrip dt,
 .actionCard h3,
 .archive h3 {
-  margin: 0;
+  margin:0;
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-lead);
   font-weight: var(--cinematic-typography-weight-bold);
@@ -104,7 +107,7 @@
 .actionCard p,
 .archive p,
 .instagramFallback p {
-  margin: var(--cinematic-spacing-xs) 0 0;
+  margin:var(--cinematic-spacing-xs) 0 0;
   font-size: var(--cinematic-typography-size-body);
   line-height: var(--cinematic-typography-line-height-body);
 }
@@ -116,11 +119,11 @@
   display: inline-flex;
   min-block-size: var(--cinematic-spacing-target);
   align-items: center;
-  color: var(--cinematic-color-white);
+  color: var(--cinematic-color-red);
   font-size: var(--cinematic-typography-size-small);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
-  text-decoration-color: var(--cinematic-color-yellow);
+  text-decoration-color: currentColor;
   text-underline-offset: 0.3em;
 }
 
@@ -128,33 +131,34 @@
 .actionLinks a:hover,
 .instagramFallback a:hover,
 .footer a:hover {
-  color: var(--cinematic-color-yellow);
+  color: var(--cinematic-color-ink);
 }
 
 .rentalStrip {
   display: flex;
-  margin: var(--cinematic-spacing-two-xl) 0 0;
-  padding: 0;
-  gap: var(--cinematic-spacing-md);
+  margin:var(--cinematic-spacing-two-xl) 0 0;
+  padding:0;
+  gap:var(--cinematic-spacing-md);
   flex-wrap: wrap;
 }
 
 .rentalStrip > div {
   flex: 1 1 16rem;
   min-width: min(100%, 16rem);
-  padding: var(--cinematic-spacing-lg);
-  border: 1px solid var(--cinematic-color-gray);
+  padding:var(--cinematic-spacing-lg);
+  border: 1px solid var(--cinematic-color-line);
+  background: var(--cinematic-color-surface);
 }
 
 .rentalStrip dt {
-  color: var(--cinematic-color-yellow);
+  color: var(--cinematic-color-ink);
 }
 
 .rentalPrice,
 .rentalStrip dd {
   display: block;
-  margin: var(--cinematic-spacing-sm) 0 0;
-  color: var(--cinematic-color-white);
+  margin:var(--cinematic-spacing-sm) 0 0;
+  color: var(--cinematic-color-ink);
   font-size: var(--cinematic-typography-size-small);
   font-weight: var(--cinematic-typography-weight-medium);
   line-height: var(--cinematic-typography-line-height-body);
@@ -164,17 +168,23 @@
   position: relative;
   border-block-start: var(--cinematic-spacing-xs) solid
     var(--cinematic-color-red);
+  background: var(--cinematic-color-red);
+  color:var(--cinematic-color-white);
 }
+
+.actionsStage .eyebrow, .actionsStage a, .actionsStage .actionValidity, .actionsStage .archiveDate { color:var(--cinematic-color-white); }
+.actionsStage .actionCard, .actionsStage .archive article { border-color: var(--cinematic-color-translucent); }
+.actionsStage .actionCard:only-child { grid-column: 1 / -1; max-width: 50rem; }
 
 .actionLayout {
   display: grid;
-  gap: var(--cinematic-spacing-xl);
+  gap:var(--cinematic-spacing-xl);
 }
 
 .actionCard,
 .archive article {
   min-width: 0;
-  padding: var(--cinematic-spacing-lg);
+  padding:var(--cinematic-spacing-lg);
   border: 1px solid var(--cinematic-color-gray);
 }
 
@@ -184,7 +194,7 @@
   width: 100%;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  margin-block-end: var(--cinematic-spacing-lg);
+  margin-block-end:var(--cinematic-spacing-lg);
   background: var(--cinematic-color-gray);
 }
 
@@ -205,24 +215,24 @@
 
 .actionLinks {
   display: flex;
-  margin-block-start: var(--cinematic-spacing-md);
-  gap: var(--cinematic-spacing-md);
+  margin-block-start:var(--cinematic-spacing-md);
+  gap:var(--cinematic-spacing-md);
   flex-wrap: wrap;
 }
 
 .archive {
   display: grid;
-  gap: var(--cinematic-spacing-md);
+  gap:var(--cinematic-spacing-md);
 }
 
 .instagramGrid {
   display: grid;
-  gap: var(--cinematic-spacing-md);
+  gap:var(--cinematic-spacing-md);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .instagramGrid figure {
-  margin: 0;
+  margin:0;
 }
 
 .instagramGrid img {
@@ -233,9 +243,9 @@
 
 .instagramGrid figcaption {
   display: grid;
-  margin-block-start: var(--cinematic-spacing-sm);
-  gap: var(--cinematic-spacing-xs);
-  color: var(--cinematic-color-white);
+  margin-block-start:var(--cinematic-spacing-sm);
+  gap:var(--cinematic-spacing-xs);
+  color: var(--cinematic-color-ink);
   font-size: var(--cinematic-typography-size-small);
   line-height: var(--cinematic-typography-line-height-body);
 }
@@ -243,9 +253,10 @@
 .instagramFallback {
   display: grid;
   min-height: 16rem;
-  padding: var(--cinematic-spacing-two-xl);
-  border: 1px solid var(--cinematic-color-yellow);
-  gap: var(--cinematic-spacing-md);
+  padding:var(--cinematic-spacing-two-xl);
+  border: 1px solid var(--cinematic-color-line);
+  background: var(--cinematic-color-warm);
+  gap:var(--cinematic-spacing-md);
   align-content: center;
   justify-items: start;
 }
@@ -255,82 +266,87 @@
   font-size: var(--cinematic-typography-size-heading);
   font-weight: var(--cinematic-typography-weight-extra-bold);
   line-height: var(--cinematic-typography-line-height-heading);
-  text-transform: uppercase;
+  text-transform: none;
 }
+
+.instagramFallback a { color: var(--cinematic-color-burgundy); }
 
 .footer {
   display: grid;
   width: 100%;
-  padding: var(--cinematic-spacing-section) var(--cinematic-spacing-gutter)
+  padding:var(--cinematic-spacing-section) var(--cinematic-spacing-gutter)
     var(--cinematic-spacing-two-xl);
-  gap: var(--cinematic-spacing-xl);
-  border-block-start: 2px solid var(--cinematic-color-yellow);
-  background: var(--cinematic-color-yellow);
-  color: var(--cinematic-color-black);
+  gap:var(--cinematic-spacing-xl);
+  border-block-start: 4px solid var(--cinematic-color-red);
+  background: var(--cinematic-color-charcoal);
+  color:var(--cinematic-color-white);
 }
 
 .footer > * {
   width: min(100%, var(--cinematic-layout-content-max));
-  margin-inline: auto;
+  margin-inline:auto;
 }
 
 .footer .eyebrow,
 .footer a {
-  color: var(--cinematic-color-black);
+  color:var(--cinematic-color-white);
 }
 
 .footer a:hover {
-  color: var(--cinematic-color-gray);
+  color: var(--cinematic-color-yellow);
 }
 
 .footer.footer a:focus-visible {
-  outline: 3px solid var(--cinematic-color-black);
+  outline: 3px solid var(--cinematic-color-yellow);
   outline-offset: 3px;
 }
 
 .footer address {
   display: grid;
-  gap: var(--cinematic-spacing-xs);
+  gap:var(--cinematic-spacing-xs);
   font-style: normal;
 }
 
 .footerNav,
 .legal {
   display: flex;
-  gap: var(--cinematic-spacing-lg);
+  gap:var(--cinematic-spacing-lg);
   flex-wrap: wrap;
 }
 
 .footerFineprint {
-  margin-block: 0;
+  margin-block:0;
   font-size: var(--cinematic-typography-size-small);
   line-height: var(--cinematic-typography-line-height-body);
 }
 
 @media (min-width: 48rem) {
   .peopleGrid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .figure:nth-child(odd) {
-    grid-column: span 7;
+    grid-column: auto;
   }
 
   .figure:nth-child(even) {
-    grid-column: span 5;
+    grid-column: auto;
   }
 
   .figure:nth-child(3),
   .figure:nth-child(5) {
-    grid-column: span 5;
+    grid-column: auto;
   }
 
-  .figure:nth-child(4) {
-    grid-column: span 7;
+  .figure:first-child {
+    grid-column: 1 / -1;
+    max-width: none;
   }
+
+  .figure:first-child img { aspect-ratio: 21 / 9; }
 
   .serviceRow {
-    grid-template-columns: 7rem minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .actionLayout {

@@ -1,6 +1,5 @@
 import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 
-import CookieBanner from "@/components/CookieBanner";
 import DeChrome from "@/components/DeChrome";
 import JsonLdScript from "@/components/JsonLdScript";
 import RouteContent from "@/components/RouteContent";
@@ -51,7 +50,6 @@ export default function RootLayout({
             <DeChrome slot="footer" />
             <DeChrome slot="drawers" />
             <DeChrome slot="floating" />
-            <CookieBanner />
           </WishlistProvider>
         </CartProvider>
       </body>

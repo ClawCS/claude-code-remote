@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Meine Bestellungen — Bestellverlauf ",
-  description: "Übersicht deiner Bestellungen bei Trinkgut Jammers Goch.",
+  title: "Deine Reservierungsanfragen",
+  description: "Informationen zu unverbindlichen Anfragen bei Trinkgut Jammers.",
+  robots: {index: false, follow: true},
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

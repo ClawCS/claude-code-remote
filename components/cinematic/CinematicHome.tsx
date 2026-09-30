@@ -8,10 +8,11 @@ import CurrentSection from "./CurrentSection";
 import HeroSection from "./HeroSection";
 import InstagramSection from "./InstagramSection";
 import LocationFooter from "./LocationFooter";
-import MotionIsland from "./MotionIsland";
 import PeopleSection from "./PeopleSection";
 import ServiceSection from "./ServiceSection";
 import SpotlightSection from "./SpotlightSection";
+import GrailBidSection from "./GrailBidSection";
+import AssortmentSection from "./AssortmentSection";
 
 type CinematicHomeProps = Readonly<{
   content: HomepageContent;
@@ -22,7 +23,7 @@ export default function CinematicHome({
   content,
   nowIso,
 }: CinematicHomeProps): React.JSX.Element {
-  const hasActions = Boolean(content.event || content.archive.length);
+  const hasActions = true;
 
   return (
     <div
@@ -40,16 +41,17 @@ export default function CinematicHome({
       <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <CurrentSection content={content} />
-        <PeopleSection />
+        <AssortmentSection />
         <ServiceSection />
         <SpotlightSection />
         {hasActions ? (
           <ActionsSection archive={content.archive} event={content.event} />
         ) : null}
+        <PeopleSection />
+        <GrailBidSection />
         <InstagramSection />
       </main>
       <LocationFooter />
-      <MotionIsland />
     </div>
   );
 }

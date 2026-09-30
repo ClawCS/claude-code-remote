@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import brandLogo from "@/public/images/home/brand-logo.webp";
 
 import { CINEMATIC_NAV, SITE_LINKS } from "@/lib/cinematic/site";
 
@@ -28,13 +30,13 @@ export default function CinematicHeader({
           prefetch={false}
           aria-label="Trinkgut Jammers – Startseite"
         >
-          Trinkgut Jammers
+          <Image src={brandLogo} alt="Trinkgut Jammers" sizes="180px" priority />
         </Link>
         <nav className={styles.desktopNav} aria-label="Hauptnavigation">
           <ul className={styles.desktopNavList}>
             {items.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
+                <Link href={item.href} prefetch={false}>{item.label}</Link>
               </li>
             ))}
           </ul>

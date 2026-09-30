@@ -42,7 +42,7 @@ export default function InstagramSection(): React.JSX.Element {
         </div>
       ) : (
         <div className={styles.instagramFallback} data-instagram-fallback>
-          <p>Neue Einblicke folgen</p>
+          <p>Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.</p>
           <a
             href={SITE_LINKS.instagram}
             target="_blank"

@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
+import { removeLegacyPersonalData } from "@/lib/reservation-inquiry";
+import { addCartItem, cartLineKey, parseStoredCart } from "@/lib/cart-items";
 
 export type RentalInfo = {
   startDate: string;
@@ -21,8 +23,8 @@ export type CartItem = {
 type CartContextType = {
   items: CartItem[];
   addItem: (product: Product, quantity?: number, rental?: RentalInfo) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  removeItem: (lineKey: string) => void;
+  updateQuantity: (lineKey: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -38,48 +40,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("trinkgut-cart");
-    if (stored) {
-      try {
-        setItems(JSON.parse(stored));
-      } catch {}
-    }
-    setHydrated(true);
+    try {
+      removeLegacyPersonalData(localStorage);
+      const stored = sessionStorage.getItem("trinkgut-cart") ?? localStorage.getItem("trinkgut-cart");
+      const parsed: unknown = stored ? JSON.parse(stored) : [];
+      setItems(parseStoredCart(parsed));
+      localStorage.removeItem("trinkgut-cart");
+    } catch {
+      // Browser storage may be unavailable.
+    } finally { setHydrated(true); }
   }, []);
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem("trinkgut-cart", JSON.stringify(items));
+      try { if (items.length) sessionStorage.setItem("trinkgut-cart", JSON.stringify(items)); else sessionStorage.removeItem("trinkgut-cart"); } catch { /* Private browsing/storage quota. */ }
     }
   }, [items, hydrated]);
 
   const addItem = (product: Product, quantity = 1, rental?: RentalInfo) => {
-    setItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity, ...(rental ? { rental } : {}) }
-            : item
-        );
-      }
-      return [...prev, { product, quantity, ...(rental ? { rental } : {}) }];
-    });
+    if (!Number.isInteger(quantity) || quantity < 1) return;
+    setItems((prev) => addCartItem(prev,product,quantity,rental));
     setIsCartOpen(true);
   };
 
-  const removeItem = (productId: number) => {
-    setItems((prev) => prev.filter((item) => item.product.id !== productId));
+  const removeItem = (lineKey: string) => {
+    setItems((prev) => prev.filter((item) => cartLineKey(item) !== lineKey));
   };
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (lineKey: string, quantity: number) => {
+    if (!Number.isInteger(quantity)) return;
     if (quantity <= 0) {
-      removeItem(productId);
+      removeItem(lineKey);
       return;
     }
     setItems((prev) =>
       prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        cartLineKey(item) === lineKey ? { ...item, quantity: Math.min(999, quantity) } : item
       )
     );
   };

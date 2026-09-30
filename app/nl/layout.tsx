@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const description =
-  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgensstraße 20 in Goch. Ma–za 08:00–20:00 uur.";
+  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgenstr. 20 in Goch. Ma–za 08:00–20:00 uur.";
 
 export const metadata: Metadata = {
   title: {

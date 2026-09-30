@@ -17,7 +17,8 @@ export default defineConfig({
   webServer: externalBaseURL
     ? undefined
     : {
-        command: "npm run dev -- --hostname 127.0.0.1 --port 3101",
+        command: "npm run start -- --hostname 127.0.0.1 --port 3101",
+        env: {CINEMATIC_E2E:"1",CINEMATIC_TEST_NOW:"2026-07-14T12:00:00.000Z"},
         reuseExistingServer: false,
         url: baseURL,
       },

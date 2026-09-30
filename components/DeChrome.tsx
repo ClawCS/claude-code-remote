@@ -10,7 +10,6 @@ const Footer = dynamic(() => import("@/components/Footer"));
 const CartDrawer = dynamic(() => import("@/components/CartDrawer"));
 const WishlistDrawer = dynamic(() => import("@/components/WishlistDrawer"));
 const WhatsAppButton = dynamic(() => import("@/components/WhatsAppButton"));
-const AIAssistant = dynamic(() => import("@/components/AIAssistant"));
 
 type LegacySlot = "header" | "footer" | "drawers" | "floating";
 
@@ -30,7 +29,6 @@ export default function DeChrome({ slot }: { slot: LegacySlot }) {
   return (
     <>
       <WhatsAppButton />
-      <AIAssistant />
     </>
   );
 }

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { berlinDateKey, getPublicationWeekRange } from "@/lib/editorial-schedule";
+import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "@/lib/editorial-schedule";
 
 const HANDZETTEL_ORIGIN = "https://werbung.trinkgut.de";
 
@@ -610,6 +610,7 @@ export async function fetchOfficialCatalog(
   const viewerResponse = await fetchImpl(HANDZETTEL_VIEWER_URL, {
     method: "GET",
     redirect: "follow",
+    signal: AbortSignal.timeout(20_000),
     cache: "no-store",
     headers: {
       ...BROWSER_HEADERS,
@@ -635,6 +636,7 @@ export async function fetchOfficialCatalog(
   const manifestUrl = `${assetBase}/xml/catalog.xml`;
   const manifestResponse = await fetchImpl(manifestUrl, {
     method: "GET",
+    signal: AbortSignal.timeout(20_000),
     cache: "no-store",
     headers: {
       ...BROWSER_HEADERS,
@@ -658,12 +660,14 @@ export async function fetchOfficialCatalog(
     const thumbnailUrl = `${assetBase}/thumbnails/bk_${number}.jpg`;
     const imageResponse = await fetchImpl(imageUrl, {
       method: "HEAD",
+      signal: AbortSignal.timeout(20_000),
       cache: "no-store",
       headers: { ...BROWSER_HEADERS, Accept: "image/jpeg" },
     });
     assertResponse(imageResponse, ["image/jpeg"], `normal page ${number}`, imageUrl);
     const thumbnailResponse = await fetchImpl(thumbnailUrl, {
       method: "HEAD",
+      signal: AbortSignal.timeout(20_000),
       cache: "no-store",
       headers: { ...BROWSER_HEADERS, Accept: "image/jpeg" },
     });
@@ -680,6 +684,7 @@ export async function fetchOfficialCatalog(
     `${HANDZETTEL_ORIGIN}/frontend/catalogs/${info.catalogId}/${info.version}/pdf/complete.pdf`;
   const pdfResponse = await fetchImpl(pdfUrl, {
     method: "HEAD",
+    signal: AbortSignal.timeout(20_000),
     cache: "no-store",
     headers: { ...BROWSER_HEADERS, Accept: "application/pdf" },
   });
@@ -731,16 +736,26 @@ export function createHandzettelFallback(
 export async function loadValidatedHandzettelCache(
   now = new Date(),
 ): Promise<HandzettelCache | null> {
-  const targetRange = getPublicationWeekRange(now);
-  try {
-    const raw: unknown = JSON.parse(await readFile(cacheFilePath(), "utf8"));
-    validateCatalog(raw, targetRange);
-    const today = berlinDateKey(now);
-    if (today < raw.validFrom || today > raw.validTo) return null;
-    return raw;
-  } catch {
-    return null;
+  const targetRange = getCurrentWeekRange(now);
+  if (process.env.CINEMATIC_E2E === "1" && process.env.CINEMATIC_TEST_NOW) {
+    try {
+      const fixture:unknown = JSON.parse(await readFile(path.join(process.cwd(),"e2e/fixtures/handzettel-cache.json"),"utf8"));
+      validateCatalog(fixture,targetRange);
+      return berlinDateKey(now) <= fixture.validTo ? fixture : null;
+    } catch {return null;}
   }
+  for (const file of [CACHE_FILE_NAME, `editorial/official-catalogs/${targetRange.validFrom}.json`]) {
+    try {
+      const raw: unknown = JSON.parse(await readFile(path.join(process.cwd(), "data", file), "utf8"));
+      validateCatalog(raw, targetRange);
+      const today = berlinDateKey(now);
+      if (today < raw.validFrom || today > raw.validTo) return null;
+      return raw;
+    } catch {
+      // The mutable cache can contain next week's preload; try the versioned package.
+    }
+  }
+  return null;
 }
 
 export async function refreshHandzettelCache(

@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "playwright-report/**",
+    "test-results/**",
+    "audit/lighthouse/**",
   ]),
   // React 19 react-hooks/set-state-in-effect: too strict for our patterns
   // (legitimate state-syncs from MediaQueries, scroll listeners, etc.).

@@ -8,7 +8,7 @@ const legalLinks = [
   { href: "/kontakt", label: "Kontakt" },
   { href: "/impressum", label: "Impressum" },
   { href: "/datenschutz", label: "Datenschutz" },
-  { href: "/agb", label: "AGB" },
+  { href: "/agb", label: "Anfragehinweise" },
 ] as const;
 
 export default function LocationFooter(): React.JSX.Element {

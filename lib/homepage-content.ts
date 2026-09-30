@@ -14,6 +14,7 @@ import {
   isEditorialPublishable,
   type EditorialSource,
 } from "@/lib/editorial-schedule";
+import { loadFlyerPackages, selectActiveFlyerPackages, type FlyerPackage } from "@/lib/flyer-packages";
 
 export type HomepageFlyer = Readonly<{
   id: string;
@@ -60,6 +61,7 @@ export type HomepageContentSources = Readonly<{
   ) => Promise<HandzettelCache | null>;
   loadApprovedCampaigns: () => Promise<readonly EditorialCampaign[]>;
   loadEditorialArchive: () => Promise<readonly EditorialArchiveItem[]>;
+  loadFlyerPackages?: () => Promise<readonly FlyerPackage[]>;
 }>;
 
 type AggregateHomepageContentInput = Readonly<{
@@ -167,9 +169,9 @@ function isCurrentFlyer(flyer: HomepageFlyer, now: Date): boolean {
     !Number.isInteger(flyer.pageCount) ||
     flyer.pageCount < 1 ||
     flyer.pageCount > 60 ||
-    !isCredentialFreeHttpsUrl(flyer.viewerUrl) ||
-    !isCredentialFreeHttpsUrl(flyer.pdfUrl) ||
-    !isCredentialFreeHttpsUrl(flyer.coverUrl) ||
+    !(isCredentialFreeHttpsUrl(flyer.viewerUrl) || /^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(flyer.viewerUrl)) ||
+    !(isCredentialFreeHttpsUrl(flyer.pdfUrl) || /^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(flyer.pdfUrl)) ||
+    !isSafeImageUrl(flyer.coverUrl) ||
     !isCredentialFreeHttpsUrl(flyer.sourceUrl)
   ) {
     return false;
@@ -255,6 +257,14 @@ export function mapHandzettelCacheToFlyer(
   };
 }
 
+export function mapFlyerPackageToFlyer(item: FlyerPackage): HomepageFlyer {
+  return {
+    id: item.id, title: item.title, validFrom: item.validFrom, validTo: item.validTo,
+    viewerUrl: item.pdfPath, pdfUrl: item.pdfPath, coverUrl: item.coverPath,
+    pageCount: item.pageNumbers.length, sourceUrl: item.sourceUrl,
+  };
+}
+
 export function aggregateHomepageContent({
   now,
   flyer,
@@ -287,10 +297,11 @@ export function createHomepageContentLoader(
   sources: HomepageContentSources,
 ): (now?: Date) => Promise<HomepageContent> {
   return async (now = new Date()) => {
-    const [cacheResult, campaignsResult, archiveResult] = await Promise.allSettled([
+    const [cacheResult, campaignsResult, archiveResult, packagesResult] = await Promise.allSettled([
       Promise.resolve().then(() => sources.loadValidatedHandzettelCache(now)),
       Promise.resolve().then(() => sources.loadApprovedCampaigns()),
       Promise.resolve().then(() => sources.loadEditorialArchive()),
+      Promise.resolve().then(() => sources.loadFlyerPackages?.() ?? []),
     ]);
 
     let flyer: HomepageFlyer | null = null;
@@ -300,6 +311,11 @@ export function createHomepageContentLoader(
       } catch {
         flyer = null;
       }
+    }
+
+    if (!flyer && packagesResult.status === "fulfilled") {
+      const active = selectActiveFlyerPackages(packagesResult.value, now).find((item) => item.language === "de");
+      if (active) flyer = mapFlyerPackageToFlyer(active);
     }
 
     return aggregateHomepageContent({
@@ -316,4 +332,5 @@ export const getHomepageContent = createHomepageContentLoader({
   loadValidatedHandzettelCache,
   loadApprovedCampaigns,
   loadEditorialArchive,
+  loadFlyerPackages,
 });

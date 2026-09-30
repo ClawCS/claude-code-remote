@@ -15,6 +15,7 @@ export default function PeopleSection(): React.JSX.Element {
       <div className={styles.sectionHeading}>
         <p className={styles.eyebrow}>Unser Markt. Unser Team.</p>
         <h2 id="menschen-title">Menschen hinter Jammers</h2>
+        <p>Dein Lieblingsgetränk finden, eine Feier planen oder einfach kurz schnacken: Wir sind für dich da.</p>
       </div>
       <div className={styles.peopleGrid} data-people-story>
         {PEOPLE_STORY.map((person, index) => {

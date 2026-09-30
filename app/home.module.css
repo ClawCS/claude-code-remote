@@ -2,8 +2,8 @@
   min-height: 100%;
   isolation: isolate;
   overflow: clip;
-  background: var(--cinematic-color-black);
-  color: var(--cinematic-color-white);
+  background: var(--cinematic-color-paper);
+  color: var(--cinematic-color-ink);
   font-family: var(--cinematic-typography-family-sans);
   font-size: var(--cinematic-typography-size-body);
   line-height: var(--cinematic-typography-line-height-body);
@@ -44,6 +44,6 @@
 .home :global(a:focus-visible),
 .home :global(button:focus-visible),
 .home :global(summary:focus-visible) {
-  outline: 3px solid var(--cinematic-color-yellow);
+  outline: 3px solid var(--cinematic-color-blue);
   outline-offset: 3px;
 }

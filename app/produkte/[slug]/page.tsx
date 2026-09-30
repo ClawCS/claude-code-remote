@@ -4,12 +4,9 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { formatPrice, type Product } from "@/lib/utils";
-import productsData from "@/data/products.json";
+import { assortmentProducts as products } from "@/lib/catalog";
 import ProductGrid from "@/components/ProductGrid";
 import { useState } from "react";
-
-const products = productsData as Product[];
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -48,7 +45,7 @@ export default function ProductDetailPage() {
           ) : (
             <Image
               src={triedFallback && product.extractedImage ? product.extractedImage : product.image}
-              alt={product.name}
+              alt={product.image === "/images/home/brand-logo.webp" ? "Trinkgut Jammers – Produktfoto folgt" : product.name}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain p-8"
@@ -67,27 +64,24 @@ export default function ProductDetailPage() {
           <span className="inline-block px-3 py-1 bg-light text-muted text-xs font-medium rounded-full mb-3">{product.category}</span>
           <h1 className="text-3xl font-bold text-secondary mb-2">{product.name}</h1>
           {product.unit && <p className="text-muted mb-1">{product.unit}</p>}
+          {product.image === "/images/home/brand-logo.webp" && <p className="text-sm text-muted mb-3">Neutrales Sortimentsbild; die konkrete Produktabbildung folgt.</p>}
           {product.ean && <p className="text-xs text-muted mb-6">EAN: {product.ean}</p>}
           <p className="text-muted leading-relaxed mb-8">{product.description}</p>
 
-          <div className="text-3xl font-bold text-primary mb-6">{formatPrice(product.price)}</div>
+          <p className="text-sm text-muted mb-6">Sortimentsbeispiel. Aktuellen Preis und Verfügbarkeit bestätigen wir persönlich. Datierte Wochenangebote findest du im Handzettel.</p>
 
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center border border-border rounded-lg overflow-hidden">
-              <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 hover:bg-light transition-colors font-bold">-</button>
+              <button aria-label="Menge verringern" onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 hover:bg-light transition-colors font-bold">-</button>
               <span className="px-4 py-2 font-medium min-w-[3rem] text-center">{quantity}</span>
-              <button onClick={() => setQuantity(quantity + 1)} className="px-3 py-2 hover:bg-light transition-colors font-bold">+</button>
+              <button aria-label="Menge erhöhen" onClick={() => setQuantity(Math.min(999, quantity + 1))} className="px-3 py-2 hover:bg-light transition-colors font-bold">+</button>
             </div>
             <button onClick={() => addItem(product, quantity)} className="flex-1 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors text-lg">
-              In den Warenkorb
+              Zur Anfrageliste hinzufügen
             </button>
           </div>
 
-          {product.inStock ? (
-            <p className="text-sm text-green-600 font-medium">✓ Auf Lager</p>
-          ) : (
-            <p className="text-sm text-red-500 font-medium">Nicht verfügbar</p>
-          )}
+          <p className="text-sm text-muted">Noch keine Bestellung oder verbindliche Reservierung.</p>
         </div>
       </div>
 

@@ -5,6 +5,12 @@ import { useState, useEffect, useCallback } from "react";
 export type Lang = "de" | "en" | "nl";
 export const LANG_KEY = "trinkgut-lang";
 export const LANG_CHANGE_EVENT = "trinkgut-lang-change";
+export function readStoredLanguage(): Lang | null {
+  try {const value=localStorage.getItem(LANG_KEY);return value === "de" || value === "en" || value === "nl" ? value : null;} catch {return null;}
+}
+export function writeStoredLanguage(value: Lang): void {
+  try {localStorage.setItem(LANG_KEY,value);} catch { /* Language selection still works without persistence. */ }
+}
 
 const translations = {
   de: {
@@ -35,7 +41,7 @@ const translations = {
     "nav.cocktails": "65 Cocktail-Rezepte",
     "nav.galerie": "Fotogalerie",
     "nav.gewinnspiel": "Gewinnspiel",
-    "nav.bestellungen": "Meine Bestellungen",
+    "nav.bestellungen": "Meine Anfragen",
     "nav.leergut": "Leergut-Rechner",
     "nav.oekoTracker": "\u00d6ko-Tracker",
     "nav.kuehlschrank": "K\u00fchlschrank-Check",
@@ -51,7 +57,7 @@ const translations = {
     "hero.cta2": "\ud83c\udf89 Party planen",
 
     // Buttons
-    "btn.warenkorb": "+ Warenkorb",
+    "btn.warenkorb": "+ Anfrage",
     "btn.mehrErfahren": "Mehr erfahren",
     "btn.jetztEntdecken": "Jetzt entdecken",
     "btn.anmelden": "Anmelden",
@@ -80,7 +86,7 @@ const translations = {
     "home.services.label": "Services",
     "home.services.title": "Mehr als nur ein Getr\u00e4nkemarkt",
     "home.service.partyplaner": "Partyplaner",
-    "home.service.partyplaner.desc": "Mengen berechnen & direkt bestellen",
+    "home.service.partyplaner.desc": "Mengen berechnen & unverbindlich anfragen",
     "home.service.vermietung": "Vermietung",
     "home.service.vermietung.desc": "Zapfanlagen, Tische, Gl\u00e4ser & mehr",
     "home.service.finder": "Getr\u00e4nke-Finder",
@@ -93,7 +99,7 @@ const translations = {
     "home.community.gewinnspiele": "\ud83c\udfc6 Gewinnspiele",
     "home.cta.label": "Jetzt starten",
     "home.cta.title": "Artikel warten auf dich",
-    "home.cta.text": "Entdecke unser komplettes Sortiment und bestelle bequem online. Abholung oder Lieferung \u2014 du entscheidest.",
+    "home.cta.text": "Entdecke unsere Sortimentsauswahl und frage Verfügbarkeit und Preise persönlich an.",
 
     // Footer
     "footer.brand": "Mit Leidenschaft f\u00fcr Getr\u00e4nke! \u00dcber 7.000 Artikel im Markt \u2013 von Bier \u00fcber Wein bis Spirituosen und Softdrinks.",
@@ -168,7 +174,7 @@ const translations = {
     "nav.cocktails": "65 Cocktail Recipes",
     "nav.galerie": "Photo Gallery",
     "nav.gewinnspiel": "Sweepstakes",
-    "nav.bestellungen": "My Orders",
+    "nav.bestellungen": "My Enquiries",
     "nav.leergut": "Deposit Calculator",
     "nav.oekoTracker": "Eco Tracker",
     "nav.kuehlschrank": "Fridge Check",
@@ -184,7 +190,7 @@ const translations = {
     "hero.cta2": "\ud83c\udf89 Plan a Party",
 
     // Buttons
-    "btn.warenkorb": "+ Cart",
+    "btn.warenkorb": "+ Enquiry",
     "btn.mehrErfahren": "Learn More",
     "btn.jetztEntdecken": "Discover Now",
     "btn.anmelden": "Subscribe",
@@ -213,7 +219,7 @@ const translations = {
     "home.services.label": "Services",
     "home.services.title": "More Than Just a Beverage Store",
     "home.service.partyplaner": "Party Planner",
-    "home.service.partyplaner.desc": "Calculate quantities & order directly",
+    "home.service.partyplaner.desc": "Calculate quantities & request availability",
     "home.service.vermietung": "Rental",
     "home.service.vermietung.desc": "Tap systems, tables, glasses & more",
     "home.service.finder": "Beverage Finder",
@@ -226,7 +232,7 @@ const translations = {
     "home.community.gewinnspiele": "\ud83c\udfc6 Sweepstakes",
     "home.cta.label": "Get Started",
     "home.cta.title": "items are waiting for you",
-    "home.cta.text": "Discover our complete range and order conveniently online. Pickup or delivery \u2014 you decide.",
+    "home.cta.text": "Discover our product selection and ask our team to confirm availability and prices.",
 
     // Footer
     "footer.brand": "Passionate about beverages! Over 7,000 items in store \u2013 from beer to wine to spirits and soft drinks.",
@@ -301,7 +307,7 @@ const translations = {
     "nav.cocktails": "65 Cocktailrecepten",
     "nav.galerie": "Fotogalerij",
     "nav.gewinnspiel": "Winactie",
-    "nav.bestellungen": "Mijn Bestellingen",
+    "nav.bestellungen": "Mijn Aanvragen",
     "nav.leergut": "Statiegeld-Calculator",
     "nav.oekoTracker": "Eco-Tracker",
     "nav.kuehlschrank": "Koelkast-Check",
@@ -317,7 +323,7 @@ const translations = {
     "hero.cta2": "\ud83c\udf89 Feest plannen",
 
     // Buttons
-    "btn.warenkorb": "+ Winkelwagen",
+    "btn.warenkorb": "+ Aanvraag",
     "btn.mehrErfahren": "Meer informatie",
     "btn.jetztEntdecken": "Nu ontdekken",
     "btn.anmelden": "Aanmelden",
@@ -346,7 +352,7 @@ const translations = {
     "home.services.label": "Diensten",
     "home.services.title": "Meer Dan Alleen een Drankenmarkt",
     "home.service.partyplaner": "Feestplanner",
-    "home.service.partyplaner.desc": "Hoeveelheden berekenen & direct bestellen",
+    "home.service.partyplaner.desc": "Hoeveelheden berekenen & vrijblijvend aanvragen",
     "home.service.vermietung": "Verhuur",
     "home.service.vermietung.desc": "Tapinstallaties, tafels, glazen & meer",
     "home.service.finder": "Dranken-Finder",
@@ -359,7 +365,7 @@ const translations = {
     "home.community.gewinnspiele": "\ud83c\udfc6 Winacties",
     "home.cta.label": "Nu beginnen",
     "home.cta.title": "artikelen wachten op je",
-    "home.cta.text": "Ontdek ons complete assortiment en bestel gemakkelijk online. Ophalen of bezorgen \u2014 jij beslist.",
+    "home.cta.text": "Ontdek onze selectie en vraag ons team naar actuele prijzen en beschikbaarheid.",
 
     // Footer
     "footer.brand": "Met passie voor dranken! Meer dan 7.000 artikelen in de winkel \u2013 van bier tot wijn tot sterke drank en frisdrank.",
@@ -419,7 +425,7 @@ export function useTranslation() {
   const [lang, setLang] = useState<Lang>("de");
 
   useEffect(() => {
-    const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+    const stored = readStoredLanguage();
     if (stored && (stored === "de" || stored === "en" || stored === "nl")) {
       setLang(stored);
     }
@@ -427,7 +433,7 @@ export function useTranslation() {
 
   useEffect(() => {
     const handler = () => {
-      const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+      const stored = readStoredLanguage();
       if (stored && (stored === "de" || stored === "en" || stored === "nl")) {
         setLang(stored);
       }

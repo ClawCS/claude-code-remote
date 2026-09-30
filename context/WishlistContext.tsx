@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
+import { assortmentProducts as products } from "@/lib/catalog";
 
 type WishlistContextType = {
   items: Product[];
@@ -23,18 +24,18 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("trinkgut-wishlist");
-    if (stored) {
-      try {
-        setItems(JSON.parse(stored));
-      } catch {}
-    }
+    try {
+      const stored = sessionStorage.getItem("trinkgut-wishlist") ?? localStorage.getItem("trinkgut-wishlist");
+      const parsed:unknown = stored ? JSON.parse(stored) : [];
+      if (Array.isArray(parsed)) setItems(products.filter(product=>parsed.some(item=>item?.id === product.id)) as Product[]);
+      localStorage.removeItem("trinkgut-wishlist");
+    } catch { /* Browser storage is optional for using the list. */ }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem("trinkgut-wishlist", JSON.stringify(items));
+      try { if (items.length) sessionStorage.setItem("trinkgut-wishlist", JSON.stringify(items)); else sessionStorage.removeItem("trinkgut-wishlist"); } catch { /* Browser storage unavailable. */ }
     }
   }, [items, hydrated]);
 

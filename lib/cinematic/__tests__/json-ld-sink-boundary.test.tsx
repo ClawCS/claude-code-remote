@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "vitest";
 
 import ProductLayout from "@/app/produkte/[slug]/layout";
+import JsonLdScript from "@/components/JsonLdScript";
 
 function productionTsxFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -28,17 +29,26 @@ describe("JSON-LD production sink boundary", () => {
     ];
 
     expect(scripts).toHaveLength(1);
-    expect(scripts[0][1]).toContain("\\u003c0,5");
     expect(scripts[0][1]).not.toContain("<0,5");
     expect(JSON.parse(scripts[0][1])).toMatchObject({
       "@type": "Product",
       name: "Déjà-Vu",
       description:
-        "Déjà-Vu – Original oder Alkoholfrei 17% / <0,5% Vol. 0,7l Flasche",
+        "Déjà-Vu – 0,7l. Sortimentsbeispiel; Auswahl und Verfügbarkeit nach Absprache.",
     });
     expect(html).toContain(
       '<p data-review-child="preserved">Unverändertes Kind</p>',
     );
+  });
+
+  test("escapes markup at the production sink even for malicious product text", () => {
+    const description = "<0,5% </script><script>alert(1)</script>";
+    const html = renderToStaticMarkup(<JsonLdScript value={{description}} />);
+    const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+    expect(scripts).toHaveLength(1);
+    expect(scripts[0][1]).toContain("\\u003c0,5");
+    expect(scripts[0][1]).not.toContain("<script>");
+    expect(JSON.parse(scripts[0][1]).description).toBe(description);
   });
 
   test("allows exactly one JSON-LD script sink in production TSX", () => {

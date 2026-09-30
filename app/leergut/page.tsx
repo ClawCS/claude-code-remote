@@ -54,15 +54,16 @@ function formatEuro(val: number): string {
 function loadHistory(): HistoryEntry[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const parsed:unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter(entry=>entry && typeof entry.date === "string" && Number.isFinite(entry.total) && entry.counts && Object.values(entry.counts).every(value=>typeof value === "number" && Number.isFinite(value) && value >= 0)).slice(0,100) : [];
   } catch {
     return [];
   }
 }
 
 function saveHistory(entries: HistoryEntry[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  try {if (entries.length) sessionStorage.setItem(STORAGE_KEY,JSON.stringify(entries));else sessionStorage.removeItem(STORAGE_KEY);} catch { /* Calculator works without browser storage. */ }
 }
 
 // --- Components ---
@@ -232,7 +233,7 @@ export default function LeergutRechnerPage() {
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Leergut-Rechner</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Leergut-Rechner</h1>
         <p className="text-white/80 max-w-lg mx-auto text-lg">
-          Zähle dein Leergut manuell oder scanne es mit KI-Bilderkennung.
+          Zähle dein Leergut manuell. Der KI-Foto-Scan ist derzeit nicht verfügbar.
           Wir berechnen deinen Pfandwert sofort.
         </p>
       </div>
@@ -252,7 +253,8 @@ export default function LeergutRechnerPage() {
           {"\u270B"} Manuell z&auml;hlen
         </button>
         <button
-          onClick={() => setMode("photo")}
+          disabled
+          aria-label="Foto-Scan derzeit nicht verfügbar"
           className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
             mode === "photo"
               ? "bg-green-600 text-white shadow-lg shadow-green-200"

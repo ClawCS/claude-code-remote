@@ -4,6 +4,7 @@ import {
   berlinDateKey,
   deriveEditorialStatus,
   getPublicationWeekRange,
+  getCurrentWeekRange,
   isEditorialPublishable,
   type ScheduledEditorial,
 } from "@/lib/editorial-schedule";
@@ -40,30 +41,43 @@ describe("editorial schedule", () => {
   });
 
   it("keeps the current target week before the Sunday preload boundary", () => {
-    expect(getPublicationWeekRange(new Date("2026-07-19T13:59:59.000Z"))).toEqual({
+    expect(getPublicationWeekRange(new Date("2026-07-19T14:59:59.000Z"))).toEqual({
       validFrom: "2026-07-13",
       validTo: "2026-07-18",
     });
   });
 
-  it("targets the following week from Sunday 16:00 Berlin", () => {
-    expect(getPublicationWeekRange(new Date("2026-07-19T14:00:00.000Z"))).toEqual({
+  it("targets the following week from Sunday 17:00 Berlin", () => {
+    expect(getPublicationWeekRange(new Date("2026-07-19T15:00:00.000Z"))).toEqual({
       validFrom: "2026-07-20",
       validTo: "2026-07-25",
     });
   });
 
   it("crosses the publication-year boundary correctly", () => {
-    expect(getPublicationWeekRange(new Date("2027-01-03T15:00:00.000Z"))).toEqual({
+    expect(getPublicationWeekRange(new Date("2027-01-03T16:00:00.000Z"))).toEqual({
       validFrom: "2027-01-04",
       validTo: "2027-01-09",
     });
   });
 
-  it("uses the Berlin 16:00 boundary after the DST change", () => {
-    expect(getPublicationWeekRange(new Date("2026-03-29T14:00:00.000Z"))).toEqual({
+  it("uses the Berlin 17:00 boundary after the DST change", () => {
+    expect(getPublicationWeekRange(new Date("2026-03-29T15:00:00.000Z"))).toEqual({
       validFrom: "2026-03-30",
       validTo: "2026-04-04",
+    });
+  });
+
+  it("keeps active selection in the current week during Sunday preload", () => {
+    expect(getCurrentWeekRange(new Date("2026-07-19T15:00:00.000Z"))).toEqual({
+      validFrom: "2026-07-13",
+      validTo: "2026-07-18",
+    });
+  });
+
+  it("uses 17:00 Berlin in winter without adding to the week number", () => {
+    expect(getPublicationWeekRange(new Date("2027-01-03T15:59:59.000Z"))).toEqual({
+      validFrom: "2026-12-28", validTo: "2027-01-02",
     });
   });
 

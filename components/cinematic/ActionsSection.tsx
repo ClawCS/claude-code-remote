@@ -12,6 +12,7 @@ import {
 } from "@/lib/cinematic/presentation";
 
 import styles from "./editorial.module.css";
+import { SITE_LINKS } from "@/lib/cinematic/site";
 
 function EventLink({ event }: { event: HomepageEvent }): React.JSX.Element {
   if (event.href.startsWith("/") && !event.href.startsWith("//")) {
@@ -36,8 +37,6 @@ export default function ActionsSection({
   event: HomepageEvent | null;
   archive: readonly HomepageArchiveItem[];
 }): React.JSX.Element | null {
-  if (!event && archive.length === 0) return null;
-
   return (
     <section
       className={styles.actionsStage}
@@ -49,6 +48,7 @@ export default function ActionsSection({
         <h2 id="aktionen-title">Aktionen &amp; Rückblicke</h2>
       </div>
       <div className={styles.actionLayout}>
+        {!event && archive.length === 0 ? <article className={styles.actionCard}><h3>Bei Jammers ist immer etwas los.</h3><p>Verkostungen, Gewinnspiele und Einblicke aus dem Markt: Auf Instagram siehst du, was gerade ansteht. Die Bedingungen und Laufzeiten findest du beim jeweiligen Beitrag.</p><div className={styles.actionLinks}><a href={SITE_LINKS.instagram} target="_blank" rel="noopener noreferrer">Aktuelle Aktionen auf Instagram</a></div></article> : null}
         {event ? (
           <article className={styles.actionCard} data-action-current>
             {canRenderHomepageImage(event.image) ? (
