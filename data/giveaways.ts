@@ -4,6 +4,8 @@ type GiveawayBase = Readonly<{
   title: string;
   description: string;
   sourceURL: string;
+  /** Reviewed local export of this action's original Canva post; never cropped. */
+  cover?: Readonly<{ src: string; width: number; height: number; alt: string }>;
   /** Local Europe/Berlin date, inclusive through 23:59:59.999. */
   verifiedEndsDate: string;
 }>;
@@ -14,7 +16,7 @@ export type Giveaway = GiveawayBase & (
 );
 
 /** Original Instagram captions read on 30.09.2026. No publication dates or winner names inferred. */
-export const GIVEAWAYS_2026: readonly Giveaway[] = [
+const giveawayDetails: readonly Giveaway[] = [
   { id: "2026-01", kind: "monthly", year: 2026, month: 1, title: "Salitos SUP-Paket", description: "Ein Stand-up-Paddle-Board sowie je ein Salitos 4er-Pack Blue und Sunrise.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DT0ZAQEDOc9/", verifiedEndsDate: "2026-02-08" },
   { id: "2026-02", kind: "monthly", year: 2026, month: 2, title: "Ott Sports Sportpaket", description: "Ein Sportpaket für zu Hause von Ott Sports im Wert von 250 Euro.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DUQ-IgEjMMv/", verifiedEndsDate: "2026-02-28" },
   { id: "2026-03", kind: "monthly", year: 2026, month: 3, title: "Monster Energy Mini Cooler", description: "Ein Monster Energy Mini Cooler, gefüllt mit der Wunsch-Sorte.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DVWA1xvDN-J/", verifiedEndsDate: "2026-03-29" },
@@ -29,3 +31,21 @@ export const GIVEAWAYS_2026: readonly Giveaway[] = [
   { id: "2026-faxe", kind: "special", year: 2026, title: "Faxe Bollerwagen", description: "Zwei Faxe Bollerwagen für zwei Gewinner zum Vatertag.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DXuV2NMDO7e/", verifiedEndsDate: "2026-05-10", verifiedAt: "2026-09-30" },
   { id: "2026-wm", kind: "special", year: 2026, title: "WM-Tippspiel mit JBL", description: "JBL Tune 520BT, JBL Go 4 und JBL Clip 5: drei Gewinnchancen beim WM-Tippspiel.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DZc5M8LMmNG/", verifiedEndsDate: "2026-06-25", verifiedAt: "2026-09-30" },
 ];
+
+/** Complete original canvases, reviewed against the dated Instagram posts. */
+const verifiedCovers: Readonly<Partial<Record<string, NonNullable<Giveaway["cover"]>>>> = {
+  "2026-01": { src: "/images/editorial/canva/giveaway-2026-01.webp", width: 1320, height: 1642, alt: "Originalbeitragsbild: Salitos SUP-Paket mit Blue und Sunrise" },
+  "2026-02": { src: "/images/editorial/canva/giveaway-2026-02.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Ott Sports Sportpaket im Wert von 250 Euro" },
+  "2026-04": { src: "/images/editorial/canva/giveaway-2026-04.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Edifier MP230 und Ballantine’s Special Kiss" },
+  "2026-05": { src: "/images/editorial/canva/giveaway-2026-05.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Erdinger Sommer-Set mit Schirm, Dartspiel und Kiste" },
+  "2026-06": { src: "/images/editorial/canva/giveaway-2026-06.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Monster Energy BMX" },
+  "2026-07": { src: "/images/editorial/canva/giveaway-2026-07.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Enders E Urban Pro 2 Turbo Grill" },
+  "2026-easter": { src: "/images/editorial/canva/giveaway-2026-easter.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Oberdorfer Oster-Picknick-Paket mit Bollerwagen" },
+  "2026-faxe": { src: "/images/editorial/canva/giveaway-2026-faxe.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Zwei Faxe Bollerwagen zum Vatertag" },
+  "2026-wm": { src: "/images/editorial/canva/giveaway-2026-wm.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: WM-Tippspiel mit drei JBL-Gewinnen" },
+};
+
+export const GIVEAWAYS_2026: readonly Giveaway[] = giveawayDetails.map(giveaway => ({
+  ...giveaway,
+  cover: verifiedCovers[giveaway.id],
+}));

@@ -27,7 +27,7 @@ export default function GewinnspielPage() {
       </div>
       <section id="aktuell" className={styles.section} aria-labelledby="aktuell-heading">
         <div className={styles.sectionHeading}><h2 id="aktuell-heading">Jetzt mitmachen</h2><p>Direkt zu den Originalbeiträgen auf Instagram.</p></div>
-        {active.length ? <div className={styles.activeGrid}>{active.map((giveaway) => <GiveawayCard key={giveaway.id} giveaway={giveaway} status="active" label={giveaway.kind === "special" ? "Sondergewinnspiel" : "Monatsgewinnspiel 2026"} />)}</div> : <div className={styles.empty}><p>Aktuell ist kein belegtes Gewinnspiel offen.</p><p>Neue Ankündigungen findest du auf <a className={styles.sourceLink} href={SITE_LINKS.instagram} target="_blank" rel="noopener noreferrer">unserem Instagram-Kanal</a>.</p></div>}
+        {active.length ? <div className={styles.activeGrid}>{active.map((giveaway) => <GiveawayCard key={giveaway.id} giveaway={giveaway} status="active" layout="wide" label={giveaway.kind === "special" ? "Sondergewinnspiel" : "Monatsgewinnspiel 2026"} />)}</div> : <div className={styles.empty}><p>Aktuell ist kein belegtes Gewinnspiel offen.</p><p>Neue Ankündigungen findest du auf <a className={styles.sourceLink} href={SITE_LINKS.instagram} target="_blank" rel="noopener noreferrer">unserem Instagram-Kanal</a>.</p></div>}
       </section>
       <section id="jahresagenda" className={styles.section} aria-labelledby="agenda-heading">
         <div className={styles.sectionHeading}><h2 id="agenda-heading">Jahresagenda 2026</h2><p>Die Monatszuordnung ist eine Kalenderübersicht, kein Veröffentlichungsdatum.</p></div>

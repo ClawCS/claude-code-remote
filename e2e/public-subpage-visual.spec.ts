@@ -2,6 +2,14 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { installCatalogCoverFixture } from "./test-fixtures";
+
+// The default shared server uses the historical July test clock; its retired
+// upstream flyer needs the same isolated fixture as the existing contracts.
+// Explicit production-base runs remain entirely fixture-free.
+test.beforeEach(async ({ context }) => {
+  if (!process.env.PLAYWRIGHT_BASE_URL) await installCatalogCoverFixture(context);
+});
 
 const screenshotDirectory = "audit/screenshots/public-site-completion-2026-09-30";
 const viewports = [

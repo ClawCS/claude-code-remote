@@ -141,6 +141,213 @@
         "maxBytes": 100000,
         "sha256": "1a4616a7a39df0833daf1a3dc60adb0050334d4ab0dc742d201c0891dc2f1c04"
       }
+    },
+    {
+      "id": "giveaway-2026-01",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-01.png",
+      "sourceHash": "0f55f17e3a51fe46b16bb2321eaa797f128e5e87a80a4ed404c1241fc09d11f8",
+      "sourceDimensions": {
+        "width": 1320,
+        "height": 1642
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1320,
+        "height": 1642
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-01.webp",
+        "maxBytes": 300000,
+        "sha256": "2982d69954586479f4b7d8be398f9064c8a1d3186d6b7f1730e56eec2fa4fa17"
+      }
+    },
+    {
+      "id": "giveaway-2026-02",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-02.png",
+      "sourceHash": "50e5ea4336eb301cce1125904d232e519e46d59fced56819305dc39b0439dec1",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-02.webp",
+        "maxBytes": 300000,
+        "sha256": "7c84999f27db72cf0d568902824f66af747676e34e85465f1d67e2e23ec0e326"
+      }
+    },
+    {
+      "id": "giveaway-2026-04",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-04.png",
+      "sourceHash": "ac2e481082984619f2333949780384b39d841c6129524069bb2ed070b941a04e",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-04.webp",
+        "maxBytes": 300000,
+        "sha256": "b88f3a9e768d38bc9dab18cbd1c0f7324487e635de3715f466371e4fda1a6e48"
+      }
+    },
+    {
+      "id": "giveaway-2026-05",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-05.png",
+      "sourceHash": "793a124a993a9dea36591e363ffc50940f32f929019a28273fcc87cfd229bfce",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-05.webp",
+        "maxBytes": 300000,
+        "sha256": "a8ed3c71cdd2251fb5a5f523b0c97c55c8d7cb84ababb74dc64bc3731bb346c5"
+      }
+    },
+    {
+      "id": "giveaway-2026-06",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-06.png",
+      "sourceHash": "76bd472460daae97e5c751317f4cccccee2044debac56d80ef91fbf55dca3eab",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-06.webp",
+        "maxBytes": 300000,
+        "sha256": "41f977ddd090995d4f491a397556f9537f4303d640ffc1b2870c488569d8d753"
+      }
+    },
+    {
+      "id": "giveaway-2026-07",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-07.png",
+      "sourceHash": "cc04ecb1466575e78b779bda2e0feac77241ca1292a841ea0e286065c721ad86",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-07.webp",
+        "maxBytes": 300000,
+        "sha256": "899e202b80b62122d8df76a652faecf212ccd4a48081beb0cb174e1233a77fcd"
+      }
+    },
+    {
+      "id": "giveaway-2026-easter",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-easter.png",
+      "sourceHash": "b9a06295a686ae556f6eaefebb430c55eacbbffe5ae3c12c93a56894c842b887",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-easter.webp",
+        "maxBytes": 300000,
+        "sha256": "09e0d60236349e96b3b033fe94bbd2d0cb94e8cfb5e400a50d1be62a0362d935"
+      }
+    },
+    {
+      "id": "giveaway-2026-faxe",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-faxe.png",
+      "sourceHash": "096ee5de726dac753ccaaa441746f60bcd5405bca8f686646d790979553ad90d",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-faxe.webp",
+        "maxBytes": 300000,
+        "sha256": "31a1dd3a2fc0ac4e7066adf43ceab468ead6724f2968806037ce5f2ebfbd3b06"
+      }
+    },
+    {
+      "id": "giveaway-2026-wm",
+      "kind": "product-graphic",
+      "source": "giveaway-2026-wm.png",
+      "sourceHash": "5477133b5de326ccd4f264679964a531d5db1a663491c955fcc81dea6d7be12f",
+      "sourceDimensions": {
+        "width": 1080,
+        "height": 1440
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1080,
+        "height": 1440
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "gewinnspiele",
+      "output": {
+        "name": "giveaway-2026-wm.webp",
+        "maxBytes": 300000,
+        "sha256": "6c37948b24c28b7dcecdee839f963b7b2cce02fd651012fd2847e5db728467ae"
+      }
     }
   ]
 }

@@ -1,0 +1,4441 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-09-30T15:12:15.812Z",
+  "baseUrl": "http://127.0.0.1:3103",
+  "scope": "HTTP/SSR route, resource and rejection-contract audit; not a legal opinion or browser interaction/accessibility test",
+  "safety": {
+    "externalRequests": false,
+    "authorizationHeaders": false,
+    "persistedBodies": false,
+    "postBody": "empty object",
+    "authorizedRefresh": false
+  },
+  "summary": {
+    "passed": true,
+    "failureCount": 0,
+    "warningCount": 0,
+    "sitemapAndUtilityPages": 224,
+    "checkedPages": 224,
+    "checkedLocalAssets": 454,
+    "checkedUnknownPages": 5,
+    "checkedApiContracts": 13,
+    "externalLinksNotFetched": 1422
+  },
+  "pages": [
+    {
+      "path": "/",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/agb",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/bier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/likoere",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/rum",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/saft",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/schaumwein",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/wein",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/whiskey",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/akademie/zertifikate",
+      "source": "utility",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/angebote",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/bestellungen",
+      "source": "utility",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/bewerbung",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/checkout",
+      "source": "utility",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/americano",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/aperol-spritz",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/aviation",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/bahama-mama",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/batanga",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/bee-s-knees",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/bellini",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/black-russian",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/bloody-mary",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/boulevardier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/bramble",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/caipirinha",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/campari-spritz",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/cosmopolitan",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/cuba-libre",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/daiquiri",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/dark-n-stormy",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/el-diablo",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/espresso-martini",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/french-75",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/gimlet",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/gin-fizz",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/gin-tonic",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/highball",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/hugo",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/hurricane",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/irish-coffee",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/jack-coke",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kategorie/aperitif",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kategorie/gin",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kategorie/rum",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kategorie/tequila",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kategorie/vodka",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kategorie/whiskey",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/kir-royal",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/last-word",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/lemon-drop",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/lillet-vive",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/limoncello-spritz",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/lynchburg-lemonade",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mai-tai",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/manhattan",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/margarita",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mexican-mule",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mezcal-mule",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mezcal-negroni",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mimosa",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mint-julep",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/mojito",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/moscow-mule",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/negroni",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/old-fashioned",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/paloma",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/penicillin",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/pi-a-colada",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/planter-s-punch",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/ranch-water",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/rossini",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/rum-punch",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/sazerac",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/screwdriver",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/sex-on-the-beach",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/singapore-sling",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/tequila-sunrise",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/tom-collins",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/tommy-s-margarita",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/vodka-martini",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/vodka-sour",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/whiskey-sour",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/white-russian",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/cocktails/zombie",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/community",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/datenschutz",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/eigenmarke",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/finder",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/galerie",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/geschenkideen",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/gewinnspiel",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/gewinnspiel/archiv",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/handzettel",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/impressum",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kategorie/alkoholfrei",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kategorie/bier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kategorie/lebensmittel",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kategorie/sekt",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kategorie/spirituosen",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kategorie/wein",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kontakt",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/kuehlschrank",
+      "source": "utility",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/leergut",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/marktleben",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/merkzettel",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/nl",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/oeko-tracker",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/partyplaner",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/partyspiele",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/28-black-energy-drink",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/afri-cola-o-bluna",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/altenmuenster-urig-wuerzig",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/bacardi",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/bad-brambacher-garten-limonade",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/baileys",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/beck-s",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/berentzen-riem",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/bio-volvic-tee-o-vitamin",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/bitburger-pils",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/bolten-altbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/brut-dargent-ice-chardonnay-pinot-noir",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/budweiser-budvar-o-budvar-0-0",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/capri-sun",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/captain-morgan",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/carlsberg-elephant-extra-strong",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/chantr",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/chantr-brandewijn",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/chivas",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/cinzano-asti-spumante",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/coca-cola",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/coca-cola-fanta-o-sprite",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/cointreau-orangenlikoer",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/d-j-vu",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/desperados",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/don-papa-botucal",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/edeka-ice-tea",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/effect-energy-drink",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/elephant-bay",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/emsland-sonne-limonaden",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/erdinger-witbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/estrella-galicia",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/faxe-premium-lager",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/flensburger-pilsener-o-fruehlingsbock",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/frankenheim-alt-o-blue",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/franziskaner-weissbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/franziskaner-witbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/funny-frisch-spezialitaeten",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/fuze-tea",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/gerolsteiner-mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/goenrgy-energy-drink",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/gordon-s-london-dry-gin",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/grand-premier-cru-o-pfaffl",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/hawesta-heringsfilets",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/hb-witbier-muenchner-weisse",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/heren-handtas-xxl",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/hertog-jan",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/hofbraeu-maibock",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/hofbraeuhaus-muenchen-helles-vollbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/hohes-c",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/j-walker-red-label",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/jever-pilsener",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/jim-beam",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/johnnie-walker-red-label",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/jupiler-pils",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/kilbeggan-irish-whiskey",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/kloster-scheyern-kloster-gold-hell-oder-dunkel",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/koenig-pilsener-steinie",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/koestritzer-schwarzbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/krombacher",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/label-5-blended-scotch-whisky",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/landpark-bio-quelle-erfrischungsgetraenke",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/landpark-bio-quelle-mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/leikeim-premium-pils",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/leonardi",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/leonie-saft",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/lillet-l-ap-ritif",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/luebzer-pils",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/mamont-vodka",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/maybach",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/monster",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/nuerburg-quelle-o-purborn-mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/oberdorfer-helles",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/oberrotweiler-winzerverein",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/ouzo-12-o-12-gold-anis-liqueur",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/pepsi-cola-schwip-schwap-o-seven-up",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/pfanner-sparkling-eistee",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/ramazzotti",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/reuter-dusemund-ortega",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/reuter-dusemund-regent",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/roemerwall-mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/roku-gin",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/rot-kaeppchen",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/schneider-weisse-tap-7-witbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/soehnlein-brillant-sekt-o-white-ice",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/st-leonhards-quelle",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/stauder-blond-radler",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/thomas-henry-bitter-getraenke",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/three-sixty",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/toenissteiner-mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/toffifee",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/traugott-pils",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/traugott-simon-pilsener-o-landbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/traugott-simon-pilsener-steinie",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/tut-gut-malzbier",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/veltins",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/veltins-helles-puelleken-helles-puelleken-0-0-o-helles-zitronken",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/verpoorten-eierlikoer",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/vescovino-limoncello-spritz",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/vier-jahreszeiten",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/villa-massa-limoncello",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/vitrex",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/warburger-waldquell-mineralwasser",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/warsteiner-pils",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/warsteiner-pilsener",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/wein-genuss",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/produkte/zirndorfer",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/regionale-spirituosen",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/vermietung",
+      "source": "sitemap",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    },
+    {
+      "path": "/warenkorb",
+      "source": "utility",
+      "status": 200,
+      "landmarks": {
+        "h1": 1,
+        "main": 1,
+        "header": 1,
+        "footer": 1
+      }
+    }
+  ],
+  "unknownPages": [
+    {
+      "path": "/akademie/__audit_unknown__",
+      "status": 404
+    },
+    {
+      "path": "/cocktails/__audit_unknown__",
+      "status": 404
+    },
+    {
+      "path": "/cocktails/kategorie/__audit_unknown__",
+      "status": 404
+    },
+    {
+      "path": "/kategorie/__audit_unknown__",
+      "status": 404
+    },
+    {
+      "path": "/produkte/__audit_unknown__",
+      "status": 404
+    }
+  ],
+  "resources": [
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbrand-logo.0vgjtjgi4ieni.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-team.0e4i3e9agp3jm.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-caramello.18-xshcj2u7ye.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-pralle-kirsche.3iqsgi_4vae5g.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fposter-schwarzer-teufel.1l9go5b33m4gd.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-gabriella.34aza4rih9xr6.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-group.06p6d5_ud2sx0.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hanna.3foe3bsp3t40f.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-hannah.00h5e37vvhm75.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-henri.3n580biua7114.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jan-niklas.14gsz7z56zejs.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-jasmin.1gz2riboijubb.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nico.21atbultu26zu.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-niko.3pd8zutpww0qa.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-nils.08xlpuha5rvuk.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-sven.2n9uiz6zhyx1i.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fteam-tim.34g1xx47n6oht.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgift-basket.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-01.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-02.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-04.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-05.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-06.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-07.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-easter.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-faxe.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fgiveaway-2026-wm.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fniko-market-life.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-kaeffchen.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-schokolaedchen.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fregional-tante-dele.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=128&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=32&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=48&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=64&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Feditorial%2Fcanva%2Fsalitos-market.webp&w=96&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Fhome%2Fbrand-logo.webp&w=256&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=%2Fimages%2Fhome%2Fbrand-logo.webp&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=1024&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=1280&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=1440&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=1920&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=2560&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=360&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=390&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=512&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=640&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/image?url=https%3A%2F%2Fwerbung.trinkgut.de%2Ffrontend%2Fmvc%2Fapi%2Fcatalogs%2F1384969%2Fv4%2Fnormal%2Fbk_1.jpg&w=768&q=75",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/0-r4g9eh4wpjw.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/07vltw7uhd8fo.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/15uv7gcxa0u9y.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/19mx3mg6lkumu.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/1i86iqos207c7.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/1uo42m4nyqocy.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/1w--z7z46xds3.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/2--8lt28yek4a.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/2-rtuqsgzmno4.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/20jatwhewr_jd.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/21njm006shevl.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/2eirrs4o32ht_.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/2fxa7f0_5fwj5.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/2qao_io89jeg1.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/36rpgsonoqi8u.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/38rvgsix5439-.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/3d6tsxf6x5gkf.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/3izoc9d7hd_jh.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/3rthn35m34s7k.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/3s6nzrbk-8mnv.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/3xsfgzcibnk5i.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/3y54cdy363oq5.js",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/turbopack-0g77giitbzo3h.js",
+      "status": 200
+    },
+    {
+      "path": "/favicon.ico?favicon.2vob68tjqpejf.ico",
+      "status": 200
+    },
+    {
+      "path": "/images/eigenmarken/caramello.png",
+      "status": 200
+    },
+    {
+      "path": "/images/eigenmarken/dicke-nuesse.png",
+      "status": 200
+    },
+    {
+      "path": "/images/eigenmarken/pralle-kirsche.png",
+      "status": 200
+    },
+    {
+      "path": "/images/eigenmarken/schwarzer-teufel.png",
+      "status": 200
+    },
+    {
+      "path": "/images/eigenmarken/suesse-suende.png",
+      "status": 200
+    },
+    {
+      "path": "/images/eigenmarken/weisser-engel.png",
+      "status": 200
+    }
+  ],
+  "apis": [
+    {
+      "path": "/api/bewerbung",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        503
+      ]
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        503
+      ]
+    },
+    {
+      "path": "/api/community",
+      "method": "GET",
+      "status": 200,
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "path": "/api/community",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        503
+      ]
+    },
+    {
+      "path": "/api/content/current",
+      "method": "GET",
+      "status": 200,
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "path": "/api/content/flyers",
+      "method": "GET",
+      "status": 200,
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "path": "/api/handzettel/cron",
+      "method": "GET",
+      "status": 503,
+      "expectedStatuses": [
+        401,
+        503
+      ]
+    },
+    {
+      "path": "/api/handzettel/cron",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        401,
+        503
+      ]
+    },
+    {
+      "path": "/api/handzettel/fetch",
+      "method": "GET",
+      "status": 200,
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "path": "/api/handzettel/fetch",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        401,
+        503
+      ]
+    },
+    {
+      "path": "/api/handzettel/fetch?refresh=true",
+      "method": "GET",
+      "status": 503,
+      "expectedStatuses": [
+        401,
+        503
+      ]
+    },
+    {
+      "path": "/api/kuehlschrank",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        503
+      ]
+    },
+    {
+      "path": "/api/leergut-scan",
+      "method": "POST",
+      "status": 503,
+      "expectedStatuses": [
+        503
+      ]
+    }
+  ],
+  "findings": []
+}

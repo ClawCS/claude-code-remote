@@ -58,7 +58,7 @@ export default function ActionsSection({
         </div>
       </div>
       {giveaways.length > 0 && <div className={styles.giveawayWall} data-home-giveaways>
-        {giveaways.map((giveaway) => <GiveawayCard key={giveaway.id} giveaway={giveaway} status="active" label={giveaway.kind === "special" ? "Sondergewinnspiel" : "Monatsgewinnspiel"} />)}
+        {giveaways.map((giveaway) => <GiveawayCard key={giveaway.id} giveaway={giveaway} status="active" layout="wide" label={giveaway.kind === "special" ? "Sondergewinnspiel" : "Monatsgewinnspiel"} />)}
       </div>}
       <div className={styles.actionLayout}>
         {!event && archive.length === 0 ? <article className={styles.actionCard}><h3>Bei Jammers ist immer etwas los.</h3><p>Verkostungen, Gewinnspiele und Einblicke aus dem Markt: Auf Instagram siehst du, was gerade ansteht. Die Bedingungen und Laufzeiten findest du beim jeweiligen Beitrag.</p><div className={styles.actionLinks}><a href={SITE_LINKS.instagram} target="_blank" rel="noopener noreferrer">Aktuelle Aktionen auf Instagram</a></div></article> : null}

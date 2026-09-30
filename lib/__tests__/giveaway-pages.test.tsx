@@ -26,7 +26,12 @@ describe("giveaway public pages", () => {
     expect(html).toContain("https://www.instagram.com/trinkgutjammers_goch/p/DdQ8_8hsWYB/");
     expect(html).toContain("Noch nicht angekündigt");
     expect(html).toContain("Teilnahme ausschließlich im Originalbeitrag");
-    expect(html).not.toMatch(/<form|<img|<svg|<header|<footer|shimmer/i);
+    expect(html).not.toMatch(/<form|<iframe|<svg|<header|<footer|shimmer/i);
+    for (const id of ["2026-01", "2026-02", "2026-04", "2026-05", "2026-06", "2026-07"]) {
+      expect(html).toContain(`data-giveaway-cover="${id}"`);
+      expect(decodeURIComponent(html)).toContain(`/images/editorial/canva/giveaway-${id}.webp`);
+    }
+    expect(html).not.toMatch(/giveaway-2026-(?:10|11|12)\.webp/);
   });
 
   test("closes September at Berlin midnight while leaving the October special open", () => {
@@ -43,7 +48,10 @@ describe("giveaway public pages", () => {
     expect(html).toContain("Erdinger Sommer-Set");
     expect(html).not.toContain("Veltins Helles Lager");
     expect(html).not.toContain("Guinness");
-    expect(html).not.toMatch(/<form|<img|<header|<footer/);
+    expect(html).not.toMatch(/<form|<iframe|<header|<footer/);
+    for (const id of ["2026-01", "2026-02", "2026-04", "2026-05", "2026-06", "2026-07", "2026-easter", "2026-faxe", "2026-wm"]) {
+      expect(html).toContain(`data-giveaway-cover="${id}"`);
+    }
   });
 
   test("preserves the archive and shows no current action after the year changes", () => {

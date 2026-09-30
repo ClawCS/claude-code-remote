@@ -107,12 +107,21 @@ describe("verified Canva market-photo derivatives", () => {
       "regional-schokolaedchen.webp": "211414d28abf4a6bb1af657ed26d583ea29b8e92a9146001419ebfd65adf6118",
       "regional-kaeffchen.webp": "2b364a9797e549a983527093b8e04107908dc7923ae49d3a55c1862cea30babd",
       "niko-market-life.webp": "1a4616a7a39df0833daf1a3dc60adb0050334d4ab0dc742d201c0891dc2f1c04",
+      "giveaway-2026-01.webp": "2982d69954586479f4b7d8be398f9064c8a1d3186d6b7f1730e56eec2fa4fa17",
+      "giveaway-2026-02.webp": "7c84999f27db72cf0d568902824f66af747676e34e85465f1d67e2e23ec0e326",
+      "giveaway-2026-04.webp": "b88f3a9e768d38bc9dab18cbd1c0f7324487e635de3715f466371e4fda1a6e48",
+      "giveaway-2026-05.webp": "a8ed3c71cdd2251fb5a5f523b0c97c55c8d7cb84ababb74dc64bc3731bb346c5",
+      "giveaway-2026-06.webp": "41f977ddd090995d4f491a397556f9537f4303d640ffc1b2870c488569d8d753",
+      "giveaway-2026-07.webp": "899e202b80b62122d8df76a652faecf212ccd4a48081beb0cb174e1233a77fcd",
+      "giveaway-2026-easter.webp": "09e0d60236349e96b3b033fe94bbd2d0cb94e8cfb5e400a50d1be62a0362d935",
+      "giveaway-2026-faxe.webp": "31a1dd3a2fc0ac4e7066adf43ceab468ead6724f2968806037ce5f2ebfbd3b06",
+      "giveaway-2026-wm.webp": "6c37948b24c28b7dcecdee839f963b7b2cce02fd651012fd2847e5db728467ae",
     };
     expect(readdirSync(f.output).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, sha] of Object.entries(expected)) expect(hash(readFileSync(join(f.output, name)))).toBe(sha);
     const check = await f.run(["--check"]).completion;
     expect(check.code, check.text).toBe(0);
-  }, 15000);
+  }, 30000);
 
   it("allows the larger original-product-graphic budget without applying it to photos", async () => {
     const f = fixture();
