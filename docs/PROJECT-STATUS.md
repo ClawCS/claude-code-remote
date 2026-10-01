@@ -1,99 +1,73 @@
-# Trinkgut Jammers – Projektstand
+# Trinkgut Jammers Projektstand
 
-## Workspace
-`/Users/niko/Desktop/Claude Code/trinkgut-jammers/`
+Stand: 1. Oktober 2026. Diese Datei ersetzt die überholten Shop-, Team- und Importangaben der früheren Projektübersicht. Frühere Prüfberichte bleiben als datierte Historie erhalten.
 
-## Tech-Stack
-- Next.js 15 (App Router) + TypeScript + Tailwind CSS
-- Dev-Server: `npm run dev` (Port dynamisch)
+Der Betreiber hat ausdrücklich bestätigt: **Der öffentliche Server ist noch nicht online.** Lokal und GitHub sichern den Projektstand, nicht seine Veröffentlichung. `data/editorial/source-config.json` enthält weiterhin `publicUrl: null`.
 
-## Phasen-Status (aus Projektplan)
+## Verbindlicher Arbeitsort
 
-| Phase | Feature | Status |
-|-------|---------|--------|
-| 1 | Grundlagen (Next.js, Struktur) | ✅ Done |
-| 2 | Shop (143 Produkte, Warenkorb, Checkout) | ✅ Done |
-| 3 | EAN Bildsystem (Bilder von trinkgut.de) | ✅ Done |
-| 4 | Partyplaner (Mengenberechnung + Warenkorb) | ✅ Done |
-| 5 | Angebote (Star der Woche, Prospekt, Instagram-Rabatt) | ✅ Done |
-| 6 | Finder Tools (Bier/Wein/Wasser Quiz) | ✅ Done |
-| 7 | Gewinnspiele (Monster Cooler, HOTT Sport, Salitos) | ✅ Done |
-| 8 | Tippkick (Registrierung, Tipps, Rangliste) | ✅ Done |
-| 9 | Content & Kurse (65 Cocktail-Rezepte) | ✅ Done |
-| 10 | WhatsApp (Floating Button + Click-to-Chat) | ✅ Done |
-| 11 | Testing & UX-Optimierung | 🔄 In Progress |
-| 12 | Launch | ❌ Pending |
+- Arbeitsverzeichnis: `/Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production`
+- Branch: `codex/cinematic-production`
+- GitHub: `https://github.com/ClawCS/claude-code-remote`, derselbe Branch.
+- Der übergeordnete Checkout steht auf `codex/p1-design-directions` und ist nicht der aktuelle Produktionsarbeitsstand. Keine Branches oder Worktrees eigenmächtig wechseln oder überschreiben.
+- Der früher genannte Claude-Code-Pfad ist archiviert. Ein Pull erfolgt im aktiven Arbeitsverzeichnis.
+- Tech-Stack laut `package.json`: Next.js 16.3.7, React 19.2.4, TypeScript und Tailwind CSS 4.
 
-## Zusätzliche Features
-- Vermietung / Leihsortiment-Seite
-- Impressum (echte Daten von trinkgut.de/markt/jammers)
-- Datenschutzerklärung (DSGVO)
-- Cookie-Consent-Banner
-- SEO (Meta-Tags, Open Graph, Title Templates)
-- next/image Optimierung (Remote Patterns)
-- Mega-Menü Navigation (Desktop Dropdowns + Mobile Drawer)
-- CSS-Animationen (Scroll-Reveals, Stagger, Glassmorphism)
-- Skeleton Loading Components
+## Umsetzung und Grenzen
 
-## Datenquellen
-- **Produkte:** 143 Artikel gescraped von trinkgut.de/angebote (23.03.2026)
-- **Impressum:** trinkgut.de/markt/jammers
-- **Instagram-Content:** @trinkgutjammers_goch (Gewinnspiele, Aktionen)
-- **Logo:** Trinkgut SVG von trinkgut.de + "Jammers" Text
+| Bereich | Aktueller Stand |
+| --- | --- |
+| Gestaltung | Warmer, rot geprägter Marktauftritt; die frühere dunkle Inszenierung ist nicht die freigegebene Gestaltungsrichtung. |
+| Navigation | Eigene Sortiment-, Cocktail-, Marktleben-, Geschenkideen-, Spirituosen- und Aktionsseiten umgesetzt. Die September-Audits dokumentieren Routing-/Browserprüfungen, keinen heutigen Live-Nachweis. |
+| Team | Acht aktive Einzelprofile: Niko, Sven, Jasmin, Gabriella, Jan Niklas, Hanna, Henri und Hannah. Nur Namen als Beschriftung. Nils, Nico und Tim aus den aktiven Einzelprofilen entfernt; Gruppenfoto ausdrücklich behalten. |
+| Ausschlüsse | Harpe und Justin dürfen nicht in aktiven Motiven erscheinen. Unbeschriftete Bilder benötigen noch Betreiberzuordnung; keine Identifikation anhand von Gesichtern behaupten. Historische/private Quellen nicht gelöscht. |
+| Canva | Lesefunktion und authentifizierter Exportdialog am 1. Oktober geprüft. Originale bleiben unverändert. Neue Fotos benötigen belegte Canva-Herkunft und passende Rubrik; keine KI-/Stockersatzbilder. |
+| Gewinnspiele | Jahresagenda und Originalpost-Verweise vorhanden. Neun vollständige, unbeschnittene Cover eingebunden. März/grüne Monster-Version, August, September und Guinness warten auf exakte Canva-Originale oder begrenzte Instagram-Ausnahme. |
+| Marktleben | Passende Canva-Motive und eigene Themenunterseiten vorhanden. Komplette Account-Sichtung seit Oktober 2024 nicht als abgeschlossen behaupten. Weitere geeignete Rubrikbilder und Personenfreigaben offen. |
+| Cocktails | 65 Rezepte, sechs Kategorieeinstiege und sichtbarer Reiter. Passende Originalfotos fehlen; Datenbank-Foto-Anfrage versus spätere Canva-only-Regel noch klären. |
+| Vermietung | 20 Artikel, davon zwölf mit zugeordnetem Listenpreis und acht auf Anfrage. Plus/Minus, Direkteingabe, Bestandsgrenzen und Überschneidungsregeln umgesetzt. Keine marktweite Live-Verfügbarkeit. |
+| Warenkorb/Checkout | Unverbindliche Anfrageliste. E-Mail/WhatsApp öffnen selbst zu versendende Entwürfe. Keine verbindlichen Gesamtsummen, dauerhaften Mietbestellungen, Onlinezahlungen oder automatischen Belege. |
+| GrailBid | Externer Einstieg zu `https://grailbid.com`; kein neues Shopsystem und kein behaupteter Live-Nachweis des Zielshops. |
+| Recht/Daten | Riskante schreibende Community-/Bewerbungs- und KI-Endpunkte eingeschränkt. Betreiberangaben, Datenabläufe, Altbestände und Vertrags-/Belegtexte noch nicht endgültig fachlich abgenommen. |
+| Veröffentlichung | Nicht online. Domain, Hosting, Versanddienste und Veröffentlichungsablauf offen. GitHub und localhost sind kein öffentlicher HTTPS-Nachweis. |
 
-## Kontaktdaten (Impressum)
-- Trinkgut Jammers, Jammers e.K.
-- Inhaber: Nikolaos Jammers
-- Jurgenstr. 20, 47574 Goch
-- Tel: 02823-418707 | Fax: 02823-18680
-- E-Mail: jammers-goch@trinkgut.de
-- Mo-Sa 08:00-20:00 Uhr
-- HRA 5711 (AG Kleve) | USt-IdNr: DE369759343
+## Bestätigte Mietregeln
 
-## Seiten-Übersicht
-- `/` – Startseite (Hero, Kategorien, Highlights, Services, Instagram-CTA)
-- `/produkte` – 143 Produkte mit Suche + 6 Kategorie-Filter
-- `/produkte/[slug]` – Produktdetailseite
-- `/kategorie/[slug]` – Kategorie-Übersicht
-- `/angebote` – Star der Woche, Prospekt, Kategorie-Deals
-- `/partyplaner` – Mengenberechnung + Warenkorb-Integration
-- `/vermietung` – Leihsortiment (12 Artikel)
-- `/finder` – Bier/Wein/Wasser-Quiz
-- `/cocktails` – 65 Rezepte in 6 Kategorien
-- `/gewinnspiel` – 3 aktive Gewinnspiele + Instagram-CTA
-- `/tippkick` – Bundesliga-Tippspiel
-- `/warenkorb` – Warenkorb
-- `/checkout` – Checkout mit Abholung/Lieferung
-- `/impressum` – Rechtliche Angaben
-- `/datenschutz` – DSGVO-Datenschutzerklärung
+- Listenpreise inklusive Mehrwertsteuer je drei Werktage; konkreter Steuersatz noch offen.
+- Jeder angefangene Dreierblock vollständig: Kühlanhänger 150 € für 1–3, 300 € für 4–6 und 450 € für 7–9 berechnete Werktage.
+- Montag–Samstag ohne Sonntage und gesetzliche NRW-Feiertage. Abhol-/Rückgabetag jeweils vollständig, sofern Werktag; identisches Datum einmal. Kalender in Europe/Berlin maßgeblich.
+- Verbindliches Kundenangebot; Vertrag erst durch ausdrückliche Marktannahme nach Verfügbarkeitsprüfung. Automatische Eingangsbestätigung ist keine Annahme.
+- Gewünscht: Apple Pay, Kreditkarte, Online-Bankzahlung, Barzahlung sowie Rechnung und Lieferschein per E-Mail an Kunde und Markt. Neues Sammelpostfach angekündigt, Adresse noch offen.
 
-## Neue Features (Session 2)
-- Handzettel DE/NL (`/handzettel`) — Flaggen-Toggle, länderspezifische Texte und Farben
-- Getränkeakademie (`/akademie`) — 7 Kurse mit 33 Lektionen (Bier, Whisky, Wein, Mineralwasser, Saft, Schaumwein, Liköre)
-- 65 Cocktail-Rezepte (12 Rum, 11 Vodka, 11 Whiskey, 11 Gin, 10 Aperitif, 10 Tequila)
-- CSS-Animationen: fadeInUp, slideIn, stagger-children, card-hover, btn-hover
-- Glassmorphism (.glass, .glass-dark), Gradient-Text, Custom Scrollbar
-- Skeleton Loading Components
-- Cookie-Consent-Banner + Datenschutzseite
+Diese Regeln stehen im [Mietcheckout-Entwurf](superpowers/specs/2026-09-30-rental-order-design.md), **sind noch nicht als verbindlicher Bestellprozess aktiviert**. Der dokumentierte Zeitumstellungsfehler und die fehlende NRW-Feiertagszählung in der Mietfunktion bleiben zu reparieren. Feiertagsprüfung der Marktöffnungszeiten ist davon getrennt.
 
-## Geplanter Datenimport (wartet auf User)
-Der User wird einen Ordner bereitstellen mit:
-- **Fotos vom Laden** → für Hero, About-Section, Galerie
-- **Excel mit allen Artikeln + eigene UVPs** → ersetzt aktuelle products.json
-- **EAN-Codes** → für automatischen Produktbild-Lookup über APIs (Open Food Facts, UPCitemdb)
+## Wochenwerbung und Betrieb
 
-### Import-Workflow:
-1. Excel einlesen (xlsx-Skill)
-2. Artikel-Daten in products.json konvertieren
-3. Pro EAN: Produktbild über API suchen, lokal speichern
-4. Fallback: Bild von trinkgut.de oder Placeholder
-5. UVPs als Normalpreise, Werbepreise als Angebotspreise
+Vorgegeben: Sonntag 17:00 Europe/Berlin für die Folgewoche und täglich 06:15 zur Kontrolle. Die bisher dokumentierten Codex-Aufgaben laufen lokal und benötigen eingeschalteten Mac und laufende App. Keine unabhängige Serverautomatik eingerichtet; Umstellung noch offen.
 
-## TODO
-- [ ] Echtes Trinkgut Jammers Logo als Bilddatei einbinden (User muss von Instagram speichern)
-- [ ] Markt-Fotos einbinden (wartet auf User-Ordner)
-- [ ] Excel-Import der echten Artikeldaten (wartet auf User-Ordner)
-- [ ] EAN → Produktbild API Integration
-- [ ] Backend/API für Formulare (Checkout, Gewinnspiel, Tippkick)
-- [ ] Lighthouse Performance Audit
-- [ ] Launch-Vorbereitung (Domain, Hosting, SSL)
+Letzter dokumentierter Inhaltslauf am 1. Oktober:
+
+- DE KW40: offizielles Original **28.09.–02.10.2026** vorhanden und geprüft; nicht bis Samstag verlängern.
+- NL KW40: verpflichtender Canva-Einseiter fehlt. Gefundene Seite **05.–10.10.2026** ist KW41, kein Ersatz.
+- Lauf `failed`, `websiteVerified=false`, `deploymentVerified=false`. Gültige DE-Werbung bleibt unabhängig davon sichtbar.
+- Canva-Anmeldung laut diesem Lauf nicht der aktuelle Blocker; genaue NL-Quelle fehlt.
+
+Nachweise: [Tagesbericht](../audit/content-runs/2026-10-01-daily-evidence.json), [Runbook](CONTENT-UPDATE-RUNBOOK.md). Frühere lokale HTTP-Antworten beweisen keine jetzige Serververfügbarkeit.
+
+## Nächste Schritte in Reihenfolge
+
+1. Aktuellen Stand, private Originale und bestehende lokale Änderungen sichern.
+2. [Betreiberantworten](OFFENE-FRAGEN.md) einarbeiten; Empfehlungen nicht als Freigaben behandeln.
+3. Mietkalender reparieren und Zeitumstellung/NRW-Feiertage/Dreierblöcke testen; Geschäftsregeln nicht erfinden.
+4. Fehlende Originale zuordnen, geeignete Bilder kuratieren und Desktop/Mobil prüfen.
+5. Nach Klärung von Mietbedingungen, Anbieter, Postfach und Rechnungswesen konkreten Checkout-Implementierungsplan vorlegen und freigeben lassen.
+6. Bestell-/Zahlungs-/Belegprozess implementieren und Fehler-, Wiederholungs-, Sicherheits-, Versand- und Zahlungstests durchführen. Kostenpflichtige Dienste und Livezahlungen gesondert freigeben.
+7. Domain/Hosting und Serverautomatik vorbereiten. Erst nach fachlicher Abnahme und tatsächlicher HTTPS-Prüfung als online beziehungsweise fertig melden.
+
+## Dokumentation und Sicherung
+
+- [Offene Fragen](OFFENE-FRAGEN.md): nummerngleich mit den 30 Chatfragen; unbeantwortete Punkte bleiben offen.
+- [Nächste Arbeitsschritte](TODO-NAECHSTE-SESSION.md): aktuelle Checkliste.
+- [Synchronisationsbericht](audits/2026-10-01-project-sync.md): Sicherungsumfang und Verifikationsgrenzen.
+- GitHub sichert versionierte Projektdateien. Ignorierte Canva-Rohoriginale/private Herkunftsnachweise nur lokal sichern, nicht öffentlich hochladen.
+- Historische Prüfberichte nicht rückwirkend ändern oder als heutige Abnahme ausgeben.

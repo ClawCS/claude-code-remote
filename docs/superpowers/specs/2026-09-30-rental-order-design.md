@@ -2,6 +2,8 @@
 
 Stand: 1. Oktober 2026. Entwurf zur Prüfung durch den Betreiber, noch keine Freigabe zur Backend-Implementierung oder Veröffentlichung eines verbindlichen Checkouts.
 
+Der Betreiber hat am 1. Oktober bestätigt, dass der öffentliche Server noch nicht online ist. Lokal-/GitHub-Sicherung ist keine Veröffentlichungs-, Zahlungsanbieter- oder Checkout-Freigabe. Der Fragenkatalog steht in [OFFENE-FRAGEN.md](../../OFFENE-FRAGEN.md), der Gesamtstand in [PROJECT-STATUS.md](../../PROJECT-STATUS.md).
+
 ## Ziel und bestätigte Regeln
 
 Besucher wählen Leihartikel und Mengen mit Plus und Minus aus. Der Warenkorb soll Einzelpreise, Positionssummen und eine Gesamtsumme für den gewählten Zeitraum zeigen. Bestellungen und zugehörige Belege sollen an den Kunden und an ein neues Sammelpostfach des Marktes übermittelt werden. Der Betreiber wird dieses Postfach erstellen; seine Adresse ist noch nicht benannt. Die bisherige Marktemail `jammers-goch@trinkgut.de` ist damit nicht automatisch als endgültiges Empfängerpostfach des neuen Systems bestätigt.

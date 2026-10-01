@@ -1,6 +1,8 @@
 # Trinkgut Jammers Relaunch und Betriebsprüfung
 
-Stand 30. September 2026. Die bestehende Website erhält einen wärmeren lokalen Marktauftritt und einen überprüfbaren Wochenprozess. Die Vorschau läuft unter http://127.0.0.1:3000. Eine öffentliche Veröffentlichung und die rechtliche Abnahme sind noch nicht bestätigt. Dieser Bericht trennt umgesetzte Änderungen von den dafür noch benötigten Betreiberangaben.
+Historischer Prüfbericht vom 30. September 2026. Die damalige lokale Vorschau lief unter http://127.0.0.1:3000; daraus folgt keine aktuelle Serververfügbarkeit. Die bestehende Website erhält einen wärmeren lokalen Marktauftritt und überprüfbaren Wochenprozess. Eine öffentliche Veröffentlichung und rechtliche Abnahme sind nicht bestätigt.
+
+Aktualisierung vom 1. Oktober: Der Betreiber bestätigt, dass der öffentliche Server noch nicht online ist. Maßgeblich für den heutigen Gesamtstand sind [PROJECT-STATUS.md](PROJECT-STATUS.md) und [OFFENE-FRAGEN.md](OFFENE-FRAGEN.md). Canva-Lesezugang und authentifizierter Exportdialog sind inzwischen geprüft, die frühere Login-Lücke ist damit überholt. Aktuell acht Teamprofile, neun vollständige Gewinnspielcover und vier offene Cover. Der [Tageslauf](../audit/content-runs/2026-10-01-daily-evidence.json) meldet fehlendes NL KW40 und deshalb `failed`, `websiteVerified=false`, `deploymentVerified=false`. Frühere Testergebnisse und Freigabelisten unten sind datierte Historie, keine heutige Fertigmeldung.
 
 ## Reihenfolge des Auftrags
 

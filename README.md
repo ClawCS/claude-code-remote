@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trinkgut Jammers Goch
 
-## Getting Started
+Websiteprojekt mit lokalem Marktauftritt, Sortiment, Wochenwerbung, Marktleben, Gewinnspielen, Cocktailrezepten und unverbindlichen Leihanfragen.
 
-First, run the development server:
+Stand 1. Oktober 2026: **Der öffentliche Server ist noch nicht online.** GitHub sichert den Entwicklungsstand, nicht eine Live-Veröffentlichung. Onlinezahlung, verbindlicher Mietcheckout und automatischer Rechnungs-/Lieferscheinversand sind angefragt, aber noch nicht umgesetzt oder freigegeben.
 
-```bash
+## Aktueller Stand und Aufgaben
+
+- [Projektstand](docs/PROJECT-STATUS.md)
+- [30 offene Betreiberfragen](docs/OFFENE-FRAGEN.md)
+- [Nächste Arbeitsschritte](docs/TODO-NAECHSTE-SESSION.md)
+- [Wochenwerbung und Prüfprozess](docs/CONTENT-UPDATE-RUNBOOK.md)
+- [Mietcheckout-Entwurf](docs/superpowers/specs/2026-09-30-rental-order-design.md)
+- [Synchronisationsbericht vom 1. Oktober](docs/audits/2026-10-01-project-sync.md)
+
+Arbeitsverzeichnis: `/Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production`, Branch `codex/cinematic-production`. Der übergeordnete Checkout auf einem anderen Branch und der archivierte Claude-Code-Pfad sind nicht dieser Arbeitsstand.
+
+## Lokal entwickeln und prüfen
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Die lokale Standardadresse ist `http://localhost:3000`; ein tatsächlich laufender Prozess und freie Ports müssen geprüft werden. Nicht eigenmächtig fremde Server beenden.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm test
+npm run lint -- --quiet
+npx tsc --noEmit
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Ein Build prüft zusätzlich die lokalen Content-/Bildquellen. Zeitgesteuerte Werbung und vollständige Originalexporte nach dem Runbook prüfen; isolierte Browserfixtures sind kein Live-Nachweis.
 
-## Learn More
+## Quellen und Sicherung
 
-To learn more about Next.js, take a look at the following resources:
+Nur belegte Canva-Fotos verwenden; Canva und Instagram unverändert lassen. Fehlende Originale oder Freigaben nicht durch KI-/Stockmotive ersetzen. Private Originale/Herkunftsnachweise und Zugangsdaten nicht ins öffentliche Repository committen.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+GitHub versioniert freigegebene Projektdateien. Private Canva-Originale benötigen eine zusätzliche lokale Sicherung. Veröffentlichung, kostenpflichtige Anbieter und Livezahlungen erfolgen erst nach den jeweils konkreten Freigaben.

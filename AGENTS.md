@@ -10,17 +10,17 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Sync-Workflow (MANDATORY — Variante A)
 
-Niko arbeitet lokal auf seinem Mac (`/Users/niko/Desktop/Claude Code/trinkgut-jammers-v2`), Claude arbeitet in einer Remote-Sandbox (`/home/user/claude-code-remote`). Gemeinsamer Treffpunkt ist **GitHub (`origin`)**. Damit nie wieder verschiedene Versionen entstehen:
+Aktueller Stand, 1. Oktober 2026: Der freigegebene Arbeitsstand liegt lokal auf Nikos Mac unter `/Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production` im Branch `codex/cinematic-production`. Der frühere Claude-Code-Pfad ist archiviert; der übergeordnete Checkout auf `codex/p1-design-directions` ist nicht dieser Arbeitsstand. Gemeinsamer Treffpunkt ist **GitHub (`origin`)**. Der öffentliche Server ist noch nicht online. Damit nie wieder verschiedene Versionen entstehen:
 
 ## Vor JEDEM neuen Auftrag:
-1. **Claude zieht immer zuerst**: `git fetch origin && git merge origin/main --ff-only` (bzw. den aktiven Branch). Erst dann anfangen zu editieren.
-2. Falls `--ff-only` fehlschlaegt → Niko hat lokal committed aber nicht gepusht. Nachfragen, nicht einfach mergen.
+1. **Immer zuerst synchronisieren**: Im aktiven Arbeitsverzeichnis `git fetch origin && git merge origin/codex/cinematic-production --ff-only` ausführen. Bei Arbeit an einem anderen ausdrücklich gewählten Branch dessen passenden Remote-Branch verwenden. Erst dann editieren; keine eigenmächtigen Branchwechsel.
+2. Falls `--ff-only` fehlschlägt: Git-Zustand und Branch-Abweichung prüfen, nachfragen und keinen Merge erzwingen. Ein bloß lokal vorausliegender Branch beweist keine divergierte Historie.
 
 ## Nach JEDER Aenderung durch Claude:
 1. `git add` der geaenderten Dateien (keine `git add -A` wegen Secrets-Risiko)
 2. `git commit -m "..."` mit klarer Message
 3. `git push -u origin <branch>` — bei Network-Fehlern Retry mit Exponential Backoff (2s/4s/8s/16s)
-4. Am Ende dem User sagen: **"Pull jetzt: `cd ~/Desktop/Claude\\ Code/trinkgut-jammers-v2 && git pull`"**
+4. Am Ende bei externem oder zweitem Checkout den richtigen Pull nennen: **`cd /Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production && git pull --ff-only`**. Wenn direkt in dieser lokalen Worktree gearbeitet und ihr Commit gegen GitHub geprüft wurde, klar sagen, dass dieser Arbeitsstand bereits synchron ist; keinen Pull in den archivierten Pfad oder den anderen Branch empfehlen.
 
 ## Fuer Niko (Regel zum Einhalten):
 - **Keine parallelen Edits** auf dem Mac waehrend Claude arbeitet
