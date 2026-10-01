@@ -69,3 +69,9 @@ Rechtsquellen am 01.10.2026 ergänzend geprüft; dies ist eine technische Lücke
 Kein öffentlicher Server, kein realer Zahlungs-/Mailtest, keine pauschale Rechtskonformitäts- oder WCAG-Zertifizierung. Betreiber-/Registerdaten, Steuersatz, Postfach, Anbieter, Gebühren/Kaution, Vertrags-/Widerrufsinformationen, Aufbewahrung und Rechnungswesen bleiben gemäß `OFFENE-FRAGEN.md` abzustimmen. PDF ist keine strukturierte E-Rechnung. SQLite benötigt einen dauerhaften einzelnen Host samt getesteter Sicherung/Wiederherstellung; Provider-Abgleich, Proxy-Schutz und Token-Logbereinigung sind vor Livebetrieb zu prüfen.
 
 Offene Originalfotos/Cover und Personenfreigaben bleiben offen; keine erfundenen Ersatzbilder oder Gesichtszuordnung. Die neue zeitlich begrenzte Folgeprüfung darf bei unverändertem Befund still bleiben und keine künstlichen Änderungen erzeugen. Die regulären Wochen-/Tagesaufgaben bleiben bestehen.
+
+## Sicherung und Übergabe
+
+Reparaturcommit `7237236bc7bf9a396b7881bf97ec58414cea2853` enthält ausschließlich die 47 eigenen geprüften Code-/Test-/Berichtsdateien. Push erfolgreich; lokaler Hash und die direkt abgefragte GitHub-Branchreferenz `codex/cinematic-production` stimmen überein. Die 32 zuvor geänderten Screenshots und zwei vorbestehenden unversionierten Berichte sind weiterhin separat vorhanden, nicht mitcommittet. Dieser Abschlussnachweis wird als anschließender Dokumentationscommit gesichert.
+
+Eigene isolierte Testserver beendet; die bestehende Entwicklungsvorschau auf `http://localhost:3000/` bleibt erreichbar und Bestellungen bleiben dort deaktiviert. Keine öffentliche Bereitstellung, echte Mail oder Zahlung erfolgt. Die begrenzten Folgeprüfungen gelten bis 19:32 Europe/Berlin; Mac und App müssen dafür weiterlaufen. Bei unverändertem Zustand keine wiederholte Meldung oder künstliche Arbeit.

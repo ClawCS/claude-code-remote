@@ -20,8 +20,10 @@ Auftrag: während Nikos Abwesenheit sichere Arbeiten fortsetzen, technische Fehl
 - [x] Reproduzierte Fehler mit fehlgeschlagenem Regressionstest belegen, gezielt reparieren und erneut prüfen.
 - [x] Vollständige Unit-Tests, TypeScript, Lint, Build, Browserprüfungen und Routen-/Linkprüfung durchführen; Grenzen und erfolglosen zusätzlichen Lighthouse-Messversuch dokumentieren.
 - [x] Änderungen unabhängig nachprüfen, verbleibende Risiken und echte Betreiberentscheidungen dokumentieren.
-- [ ] Nur eigene geprüfte Änderungen lokal committen, auf GitHub pushen und Remote-Stand bestätigen.
+- [x] Nur eigene geprüfte Änderungen lokal committen, auf GitHub pushen und Remote-Stand bestätigen: Reparaturcommit `7237236bc7bf9a396b7881bf97ec58414cea2853` lokal und auf `origin/codex/cinematic-production` identisch nachgewiesen. Dieser Abschlussnachweis wird anschließend separat versioniert.
 
 ## Prüfnachweise
 
 Laufender Bericht: `docs/audits/2026-10-01-forensic-followup.md`. Arbeitsnachweise und neue Screenshots zunächst unter `.superpowers/forensic-*` (ignoriert); keine fremden Nachweise überschreiben. Jede Aussage zu bestanden/behoben erhält einen konkreten Test oder Befund. `localhost`, Push und Build sind kein Nachweis einer öffentlichen Bereitstellung.
+
+Der sichere technische Prüfpass ist abgeschlossen. Folgeaufträge dürfen nur neue, konkrete Befunde bearbeiten; keine abgeschlossenen Tests oder bekannte Quellensuchen ohne Anlass wiederholen. Betreiber-/Originalfreigaben, Zielhosting, echte Dienste und gültige Feldmessungen bleiben im Abschlussbericht als Grenzen dokumentiert.
