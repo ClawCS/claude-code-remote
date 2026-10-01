@@ -72,4 +72,23 @@ describe("rental runtime activation", () => {
     writeFileSync(file, JSON.stringify({ ...settings, marketEmail: "market[alias]@example.com" }));
     expect(loadRentalConfig(env).enabled).toBe(false);
   });
+  it.each([
+    ["SMTP_HOST", "smtp.example.com/path"],
+    ["SMTP_HOST", "smtp example.com"],
+    ["SMTP_USER", "mail\nuser"],
+    ["SMTP_PASS", "mail\npassword"],
+    ["SMTP_FROM", `${"x".repeat(245)}@example.com`],
+    ["MOLLIE_API_KEY", "live_bad key-value"],
+    ["MOLLIE_API_KEY", `live_${"x".repeat(201)}`],
+  ])("does not advertise ordering with %s rejected by its transport adapter", (name, value) => {
+    const { env } = fixture(); const config = loadRentalConfig({ ...env, [name]: value });
+    expect(config.enabled).toBe(false);
+    expect(publicRentalConfig(config).onlinePayment).toBe(false);
+    expect(JSON.stringify(config.issues)).not.toContain(value);
+  });
+  it("does not activate a market mailbox too long for its mail boundary", () => {
+    const { env, settings, file } = fixture();
+    writeFileSync(file, JSON.stringify({ ...settings, marketEmail: `${"x".repeat(245)}@example.com` }));
+    expect(loadRentalConfig(env).enabled).toBe(false);
+  });
 });

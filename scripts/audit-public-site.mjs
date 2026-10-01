@@ -3,7 +3,9 @@
  * Read-only publication audit for this repository.
  * GET/HEAD inspect public content. The only POST probes have an empty body and
  * no Authorization header: the reviewed paused handlers and protected flyer
- * handlers reject them before parsing input or executing a refresh.
+ * handlers reject them before executing a refresh. Rental probes carry no
+ * Origin, credentials, valid order ID or payment ID and cannot create an order,
+ * trigger a payment, or authorize a market action.
  * HTML, API bodies, cookies, external account URLs and credentials are never
  * included in the evidence file. External links/resources are not fetched.
  */
@@ -21,6 +23,19 @@ const API_CHECKS = [
   { path: "/api/handzettel/fetch?refresh=true", method: "GET", statuses: [401, 503] },
   ...["bewerbung", "community", "chat", "kuehlschrank", "leergut-scan"].map(route => ({ path: `/api/${route}`, method: "POST", statuses: [503] })),
   ...["/api/handzettel/cron", "/api/handzettel/fetch"].map(path => ({ path, method: "POST", statuses: [401, 503] })),
+  { path: "/api/rentals/config", method: "GET", statuses: [200] },
+  { path: "/api/rentals/quote", method: "POST", statuses: [403] },
+  { path: "/api/rentals/orders", method: "POST", statuses: [403, 503] },
+  { path: "/api/rentals/orders/__audit_unknown__", method: "GET", statuses: [404, 503] },
+  { path: "/api/rentals/orders/__audit_unknown__/documents/invoice", method: "GET", statuses: [404, 503] },
+  { path: "/api/rentals/orders/__audit_unknown__/test-payment", method: "POST", statuses: [404, 503] },
+  { path: "/api/rentals/webhook", method: "POST", statuses: [400, 404, 503] },
+  { path: "/api/rental-admin/session", method: "POST", statuses: [403, 503] },
+  { path: "/api/rental-admin/orders", method: "GET", statuses: [401, 503] },
+  { path: "/api/rental-admin/orders/__audit_unknown__", method: "POST", statuses: [401, 503] },
+  { path: "/api/rental-admin/orders/__audit_unknown__/documents/invoice", method: "GET", statuses: [401, 503] },
+  { path: "/api/rental-admin/outbox", method: "POST", statuses: [401, 503] },
+  { path: "/api/rental-admin/test-mails", method: "GET", statuses: [401, 503] },
 ];
 const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
 const ROOT_LANDMARK_CONTEXTS = new Set(["main", "article", "section", "aside", "nav"]);
@@ -173,7 +188,8 @@ async function main() {
   }
 
   function security(response, path) {
-    for (const [name, value] of [["x-content-type-options", "nosniff"], ["x-frame-options", "SAMEORIGIN"], ["referrer-policy", "strict-origin-when-cross-origin"]]) {
+    const referrer = /^\/api\/(?:rentals|rental-admin)(?:\/|$)/.test(path) ? "no-referrer" : "strict-origin-when-cross-origin";
+    for (const [name, value] of [["x-content-type-options", "nosniff"], ["x-frame-options", "SAMEORIGIN"], ["referrer-policy", referrer]]) {
       if (response.headers.get(name) !== value) fail("security-header", path, `${name} missing or incorrect`);
     }
     const policy = response.headers.get("content-security-policy") ?? "";

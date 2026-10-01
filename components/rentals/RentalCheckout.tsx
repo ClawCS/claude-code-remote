@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { rentalCartQuote } from "@/lib/rental-cart";
+import { forgetRentalSubmission, rentalSubmissionKey } from "@/lib/rental-submission";
 import type { RentalCustomer, RentalPaymentMethod, RentalPublicConfig } from "@/lib/rental-orders/types";
 import InquiryCheckout from "./InquiryCheckout";
 
@@ -30,7 +31,6 @@ export default function RentalCheckout() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const nonce = useRef<{ payload: string; key: string } | null>(null);
   useEffect(() => {
     let active = true;
     fetch("/api/rentals/config", { cache: "no-store" }).then(async response => {
@@ -45,15 +45,16 @@ export default function RentalCheckout() {
     if (busy || !config?.enabled || quote?.totalCents == null) return;
     setBusy(true); setError("");
     const payload = JSON.stringify({ items: selection, customer, paymentMethod: method, expectedTotalCents: quote.totalCents, termsVersion: config.termsVersion, acceptedTerms: terms });
-    if (!nonce.current || nonce.current.payload !== payload) nonce.current = { payload, key: crypto.randomUUID() };
     try {
-      const response = await fetch("/api/rentals/orders", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": nonce.current.key }, body: payload });
+      const submission = await rentalSubmissionKey(payload, window.sessionStorage);
+      const response = await fetch("/api/rentals/orders", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": submission.key }, body: payload });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Bestellung konnte nicht gespeichert werden.");
       const target = new URL(result.statusUrl, window.location.origin);
       if (target.origin !== window.location.origin) throw new Error("Bitte den Markt kontaktieren: Bestelladresse stimmt nicht überein.");
+      try { forgetRentalSubmission(submission, window.sessionStorage); } catch { /* A confirmed order must still open if storage becomes unavailable. */ }
       setCompleted(true); clearCart(); setIsCartOpen(false); window.location.assign(target.href);
-    } catch (cause) { setError(cause instanceof Error ? cause.message : "Verbindung unterbrochen. Bitte erneut versuchen; dieselbe Bestellung wird nicht doppelt angelegt."); }
+    } catch (cause) { setError(cause instanceof TypeError ? "Verbindung unterbrochen. Bitte in diesem Tab mit unveränderten Angaben erneut versuchen. Wenn du unsicher bist, kontaktiere den Markt vor einer neuen Bestellung." : cause instanceof Error ? cause.message : "Bestellung konnte nicht bestätigt werden. Bitte den Markt kontaktieren."); }
     finally { setBusy(false); }
   }
 

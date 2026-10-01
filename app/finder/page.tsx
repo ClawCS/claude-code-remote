@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProductGrid from "@/components/ProductGrid";
-import { type Product } from "@/lib/utils";
+import { filterFinderProducts, type FinderType } from "@/lib/finder-products";
 import { assortmentProducts as products } from "@/lib/catalog";
 import Link from "next/link";
-
-type FinderType = "bier" | "wein" | "wasser" | null;
 
 type Question = {
   question: string;
@@ -115,6 +113,14 @@ export default function FinderPage() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const stateHeading = useRef<HTMLHeadingElement>(null);
+  const hasInteracted = useRef(false);
+
+  useEffect(() => {
+    if (!activeFinder && !hasInteracted.current) return;
+    hasInteracted.current = true;
+    stateHeading.current?.focus();
+  }, [activeFinder, step, showResults]);
 
   const handleSelect = (value: string) => {
     const newAnswers = [...answers, value];
@@ -128,124 +134,7 @@ export default function FinderPage() {
     }
   };
 
-  const getResults = (): Product[] => {
-    if (!activeFinder) return [];
-
-    // Step 1: Filter by category
-    let filtered = products.filter((p) => {
-      if (activeFinder === "bier") return p.categorySlug === "bier";
-      if (activeFinder === "wein") return p.categorySlug === "wein" || p.categorySlug === "sekt";
-      if (activeFinder === "wasser") return p.categorySlug === "alkoholfrei";
-      return false;
-    });
-
-    // Step 2: Apply answer-based filtering
-    if (activeFinder === "bier") {
-      // Q1: Biertyp (pils, weizen, alt, lager)
-      const biertyp = answers[0];
-      if (biertyp) {
-        const keywords: Record<string, string[]> = {
-          pils: ["pils", "pilsener", "pilsner"],
-          weizen: ["weizen", "weiss", "weissbier", "hefe"],
-          alt: ["alt"],
-          lager: ["export", "lager", "hell"],
-        };
-        const terms = keywords[biertyp] || [];
-        if (terms.length > 0) {
-          const matched = filtered.filter((p) => {
-            const text = `${p.name} ${p.description}`.toLowerCase();
-            return terms.some((t) => text.includes(t));
-          });
-          if (matched.length > 0) filtered = matched;
-        }
-      }
-      const preference = answers[1];
-      if (preference === "alcohol-free" || preference === "classic") {
-        const isAlcoholFree = (product: Product) => /alkoholfrei|0[,.]0\s*%/i.test(product.name);
-        filtered = filtered.filter(product => preference === "alcohol-free" ? isAlcoholFree(product) : !isAlcoholFree(product));
-      }
-    }
-
-    if (activeFinder === "wein") {
-      // Q1: Weinart (rot, weiss, rose, sekt)
-      const weinart = answers[0];
-      if (weinart) {
-        if (weinart === "sekt") {
-          const matched = filtered.filter((p) => p.categorySlug === "sekt" || ["sekt", "prosecco", "champagner", "cremant"].some((t) => `${p.name} ${p.description}`.toLowerCase().includes(t)));
-          if (matched.length > 0) filtered = matched;
-        } else {
-          const keywords: Record<string, string[]> = {
-            rot: ["rotwein", "rot", "cabernet", "merlot", "pinot noir", "tempranillo", "rioja", "chianti"],
-            weiss: ["weisswein", "weißwein", "weiss", "riesling", "chardonnay", "sauvignon", "grauburgunder", "pinot grigio"],
-            rose: ["rosé", "rose"],
-          };
-          const terms = keywords[weinart] || [];
-          if (terms.length > 0) {
-            const matched = filtered.filter((p) => {
-              const text = `${p.name} ${p.description}`.toLowerCase();
-              return terms.some((t) => text.includes(t));
-            });
-            if (matched.length > 0) filtered = matched;
-          }
-        }
-      }
-      // Q2: Geschmack (trocken, halbtrocken, lieblich)
-      const geschmack = answers[1];
-      if (geschmack) {
-        const terms: Record<string, string[]> = {
-          trocken: ["trocken", "dry", "brut", "sec"],
-          halbtrocken: ["halbtrocken", "feinherb", "demi-sec"],
-          lieblich: ["lieblich", "süß", "sweet", "dolce"],
-        };
-        const kw = terms[geschmack] || [];
-        if (kw.length > 0) {
-          const matched = filtered.filter((p) => {
-            const text = `${p.name} ${p.description}`.toLowerCase();
-            return kw.some((t) => text.includes(t));
-          });
-          if (matched.length > 0) filtered = matched;
-        }
-      }
-    }
-
-    if (activeFinder === "wasser") {
-      // Q1: Kohlensäure (sprudel, medium, still)
-      const kohlensaeure = answers[0];
-      if (kohlensaeure) {
-        const keywords: Record<string, string[]> = {
-          sprudel: ["classic", "sprudel", "spritzig"],
-          medium: ["medium"],
-          still: ["still", "naturell"],
-        };
-        const terms = keywords[kohlensaeure] || [];
-        if (terms.length > 0) {
-          const matched = filtered.filter((p) => {
-            const text = `${p.name} ${p.description}`.toLowerCase();
-            return terms.some((t) => text.includes(t));
-          });
-          if (matched.length > 0) filtered = matched;
-        }
-      }
-      // Q2: Flaschentyp (glas, pet, egal)
-      const flasche = answers[1];
-      if (flasche && flasche !== "egal") {
-        const keywords: Record<string, string[]> = {
-          glas: ["glas", "mehrweg"],
-          pet: ["pet", "einweg"],
-        };
-        const terms = keywords[flasche] || [];
-        if (terms.length > 0) {
-          const matched = filtered.filter((p) => {
-            const text = `${p.name} ${p.description}`.toLowerCase();
-            return terms.some((t) => text.includes(t));
-          });
-          if (matched.length > 0) filtered = matched;
-        }
-      }
-    }
-
-    return filtered;
-  };
+  const getResults = () => filterFinderProducts(products, activeFinder, answers);
 
   const reset = () => {
     setActiveFinder(null);
@@ -261,9 +150,9 @@ export default function FinderPage() {
       <div className="page-hero-banner py-16 md:py-24">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Getränke-Finder</span></nav>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Finder</h1>
+          <h1 ref={stateHeading} tabIndex={-1} className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Finder</h1>
           <p className="text-white/80 max-w-xl mx-auto text-lg">
-            Du weißt nicht genau was du suchst? Beantworte ein paar Fragen und wir finden das perfekte Getränk für dich.
+            Beantworte ein paar Fragen für passende Sortimentsideen. Fehlen uns Angaben zu deiner Auswahl, berät dich unser Team gern persönlich.
           </p>
         </div>
       </div>
@@ -295,11 +184,11 @@ export default function FinderPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-secondary mb-2">Unsere Empfehlungen für dich!</h2>
+          <h1 ref={stateHeading} tabIndex={-1} className="text-3xl font-bold text-secondary mb-2">Unsere Empfehlungen für dich!</h1>
           <p className="text-muted">Unverbindliche Sortimentsideen – aktuelle Preise und Verfügbarkeit bestätigen wir persönlich.</p>
         </div>
 
-        {results.length ? <ProductGrid products={results} /> : <p className="text-center text-muted">Für diese Auswahl ist kein passendes Sortimentsbeispiel hinterlegt. Frag unser Team nach einer Empfehlung.</p>}
+        {results.length ? <ProductGrid products={results} headingLevel={2} /> : <p className="text-center text-muted">Für diese Auswahl ist kein passendes Sortimentsbeispiel hinterlegt. Frag unser Team nach einer Empfehlung.</p>}
 
         <div className="text-center mt-8 flex gap-4 justify-center">
           <button
@@ -341,7 +230,7 @@ export default function FinderPage() {
       </div>
 
       <div className="bg-white border border-border rounded-xl p-8">
-        <h2 className="text-xl font-bold text-secondary mb-6 text-center">
+        <h2 ref={stateHeading} tabIndex={-1} className="text-xl font-bold text-secondary mb-6 text-center">
           {currentQuestion.question}
         </h2>
         <div className="space-y-3">

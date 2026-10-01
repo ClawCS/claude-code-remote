@@ -4,7 +4,7 @@ import type { Product } from "@/lib/utils";
 import ProductCard from "./ProductCard";
 import { useTranslation } from "@/lib/i18n";
 
-export default function ProductGrid({ products }: { products: Product[] }) {
+export default function ProductGrid({ products, headingLevel = 3 }: { products: Product[]; headingLevel?: 2 | 3 }) {
   const { t } = useTranslation();
 
   if (products.length === 0) {
@@ -19,7 +19,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard key={product.id} product={product} headingLevel={headingLevel} />
       ))}
     </div>
   );

@@ -146,6 +146,44 @@ describe("durable rental order workflow", () => {
     expect(f.messages).toHaveLength(2); expect(new Set(f.messages.map(m => m.messageId)).size).toBe(2);
     expect(f.service.outbox(order.id).map(job => job.state)).toEqual(["sent", "sent"]);
   });
+  it("does not send a message after another worker reclaimed its expired rendering lease", async () => {
+    const f = fixture(); const other = new RentalOrderService(f.config, f.deps); cleanup.push(() => other.close());
+    const order = await f.service.submit(input({ paymentMethod: "cash" }), "mail-render-lease-race");
+    let release!: () => void; const gate = new Promise<void>(resolve => { release = resolve; }); let builds = 0;
+    const buildMessage = f.deps.buildMessage;
+    f.deps.buildMessage = async (...args) => { if (++builds === 1) await gate; return buildMessage(...args); };
+    const staleWorker = f.service.dispatchOutbox(1);
+    f.advance(6 / 60);
+    expect(await other.dispatchOutbox(1)).toEqual({ sent: 1, failed: 0 });
+    release();
+    expect(await staleWorker).toEqual({ sent: 0, failed: 0 });
+    await f.service.dispatchOutbox();
+    expect(f.messages.filter(message => message.to === customer.email)).toHaveLength(1);
+    expect(f.service.outbox(order.id).map(job => job.state)).toEqual(["sent", "sent"]);
+  });
+  it.each(["paid", "replaced"] as const)("does not send an obsolete checkout when payment is %s during accepted-mail rendering", async change => {
+    const f = fixture(); const order = await f.service.submit(input(), `mail-payment-race-${change}`);
+    await f.service.dispatchOutbox();
+    const accepted = await f.service.accept(order.id, order.version);
+    const old = f.provider.get(accepted.payment.id!)!;
+    let release!: () => void; const gate = new Promise<void>(resolve => { release = resolve; });
+    const buildMessage = f.deps.buildMessage;
+    f.deps.buildMessage = async (...args) => { await gate; return buildMessage(...args); };
+    const dispatching = f.service.dispatchOutbox(1);
+    f.provider.set(old.id, { ...old, status: change === "paid" ? "paid" : "expired", url: "" });
+    await f.service.syncPayment(old.id);
+    if (change === "replaced") await f.service.retryPayment(order.id);
+    release(); await dispatching;
+    await f.service.dispatchOutbox();
+    const acceptedMessages = f.messages.filter(message => message.subject === "accepted");
+    expect(acceptedMessages).toHaveLength(2);
+    for (const message of acceptedMessages) {
+      const payment = (JSON.parse(message.text) as RentalOrder).payment;
+      if (change === "paid") expect(payment.status).toBe("paid");
+      else { expect(payment.id).not.toBe(old.id); expect(payment.url).not.toBe(old.url); }
+    }
+    expect(f.service.outbox(order.id).every(job => job.state === "sent")).toBe(true);
+  });
   it("refuses accepting a persisted price that no longer matches the canonical quote", async () => {
     const f = fixture(); const order = await f.service.submit(input(), "immutable-price");
     const db = new DatabaseSync(join(f.dir, "rental-orders.sqlite"));
@@ -153,6 +191,23 @@ describe("durable rental order workflow", () => {
     db.prepare("UPDATE orders SET payload=? WHERE id=?").run(JSON.stringify(tampered), order.id); db.close();
     await expect(f.service.accept(order.id, order.version)).rejects.toThrow(/Mietpreis/);
     expect(f.service.get(order.id).invoice).toBeUndefined();
+  });
+  it("does not accept an aged request or allocate a payment after its pickup day has passed", async () => {
+    const f = fixture(); const order = await f.service.submit(input(), "expired-pickup-date");
+    f.advance(5 * 24);
+    await expect(f.service.accept(order.id, order.version)).rejects.toMatchObject({ status: 409 });
+    expect(f.service.get(order.id)).toEqual(order);
+    expect(f.keys).toEqual([]);
+    expect(f.service.outbox(order.id).map(job => job.event)).toEqual(["received", "received"]);
+    const later = await f.service.submit(input({ items: [{ id: 20012, quantity: 1, startDate: "2026-10-08", endDate: "2026-10-10" }] }), "future-after-expired");
+    expect((await f.service.accept(later.id, later.version)).invoice?.number).toBe("TEST-2026-000001");
+  });
+  it("rechecks the Berlin pickup day after asynchronous document preflight", async () => {
+    const f = fixture(); f.advance(4 * 24 + 9);
+    const order = await f.service.submit(input(), "pickup-midnight-race");
+    f.deps.preflightDocument = async () => { f.advance(1); };
+    await expect(f.service.accept(order.id, order.version)).rejects.toMatchObject({ status: 409 });
+    expect(f.service.get(order.id)).toEqual(order); expect(f.keys).toEqual([]);
   });
   it("does not leak test mode into live storage or send externally when disabled", () => {
     const f = fixture();

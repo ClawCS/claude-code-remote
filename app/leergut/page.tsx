@@ -85,6 +85,7 @@ function CounterCard({ type, count, onChange }: { type: PfandType; count: number
         </button>
         <input
           type="number"
+          aria-label={`Anzahl ${type.label}`}
           min={0}
           value={count}
           onChange={(e) => onChange(Math.max(0, parseInt(e.target.value) || 0))}
@@ -244,7 +245,7 @@ export default function LeergutRechnerPage() {
           onClick={() => setMode("manual")}
           className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
             mode === "manual"
-              ? "bg-green-600 text-white shadow-lg shadow-green-200"
+              ? "bg-green-700 text-white shadow-lg shadow-green-200"
               : "bg-light text-muted hover:bg-border"
           }`}
         >
@@ -255,7 +256,7 @@ export default function LeergutRechnerPage() {
           aria-label="Foto-Scan derzeit nicht verfügbar"
           className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
             mode === "photo"
-              ? "bg-green-600 text-white shadow-lg shadow-green-200"
+              ? "bg-green-700 text-white shadow-lg shadow-green-200"
               : "bg-light text-muted hover:bg-border"
           }`}
         >
@@ -377,10 +378,10 @@ export default function LeergutRechnerPage() {
 
       {/* CTA */}
       <div className="bg-red-50 border border-red-100 rounded-xl p-6 text-center mb-10">
-        <h3 className="text-lg font-bold text-secondary mb-2">
+        <h2 className="utility-heading text-lg font-bold text-secondary mb-2">
           Jetzt einl&ouml;sen bei Trinkgut Jammers!
-        </h3>
-        <p className="text-sm text-muted mb-4">
+        </h2>
+        <p className="text-sm text-secondary mb-4">
           Bring dein Leergut vorbei und erhalte sofort dein Pfandgeld.
           <br />
           Mo&ndash;Sa 08:00&ndash;20:00 Uhr | Jurgenstr. 20, 47574 Goch
@@ -398,7 +399,7 @@ export default function LeergutRechnerPage() {
       {/* Pfand Info Table */}
       <div className="bg-white border border-border rounded-xl overflow-hidden mb-10">
         <div className="bg-light px-6 py-3 border-b border-border">
-          <h3 className="font-bold text-secondary text-sm">{"\u2139\uFE0F"} Pfand-&Uuml;bersicht Deutschland</h3>
+          <h2 className="utility-heading font-bold text-secondary text-sm">{"\u2139\uFE0F"} Pfand-&Uuml;bersicht Deutschland</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -429,9 +430,9 @@ export default function LeergutRechnerPage() {
       {history.length > 0 && (
         <div className="bg-white border border-border rounded-xl overflow-hidden">
           <div className="bg-light px-6 py-3 border-b border-border flex items-center justify-between">
-            <h3 className="font-bold text-secondary text-sm">
+            <h2 className="utility-heading font-bold text-secondary text-sm">
               {"\uD83D\uDCCA"} Meine Leergut-Historie
-            </h3>
+            </h2>
             <div className="flex items-center gap-3">
               <span className="text-xs text-muted">
                 Gesamt: <strong className="text-green-700">{formatEuro(historyTotal)}</strong>

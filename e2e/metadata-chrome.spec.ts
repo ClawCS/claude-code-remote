@@ -53,7 +53,9 @@ const EXPECTED_LOCAL_BUSINESS = {
 };
 
 const RETIRED_CHROME_SENTINELS = {
-  Header: "Warenkorb öffnen",
+  // The rental page legitimately links to its cart using "Warenkorb öffnen".
+  // This marker identifies the retired header itself, not shared link copy.
+  Header: "glass-header",
   Footer: "data-legacy-footer",
   WhatsAppButton: "WhatsApp Chat",
 } as const;
@@ -633,7 +635,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   await expectPublicChrome(page);
 
   const card = page.locator("[data-product-card]").first();
-  const productName = (await card.getByRole("heading", { level: 3 }).textContent())!.trim();
+  const productName = (await card.getByRole("heading", { level: 2 }).textContent())!.trim();
   const productHref = await card.locator('a[href^="/produkte/"]').first().getAttribute("href");
   expect(productName.length).toBeGreaterThan(0);
   expect(productHref).toMatch(/^\/produkte\/[\w-]+$/);
@@ -667,7 +669,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   await expectPublicChrome(page);
   await expect(page.getByRole("heading", { level: 1, name: "Merkzettel", exact: true })).toBeVisible();
   await expect(page.locator("[data-product-card]")).toHaveCount(1);
-  await expect(page.locator("[data-product-card]").getByRole("heading", { level: 3 })).toHaveText(productName);
+  await expect(page.locator("[data-product-card]").getByRole("heading", { level: 2 })).toHaveText(productName);
   await page.getByRole("button", { name: "Vom Merkzettel entfernen", exact: true }).click();
   await expect(page.locator("[data-product-card]")).toHaveCount(0);
   await expect(page.getByText("Noch keine Getränke vorgemerkt.", { exact: false })).toBeVisible();

@@ -7,7 +7,8 @@ import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { type Product } from "@/lib/utils";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, headingLevel = 3 }: { product: Product; headingLevel?: 2 | 3 }) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
   const wishlisted = isInWishlist(product.id);
@@ -38,7 +39,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="p-5 flex flex-col flex-1">
         <span className="text-xs text-[#A51522] uppercase tracking-wide font-semibold w-fit pr-10">{product.category}</span>
         <Link href={`/produkte/${product.slug}`}>
-          <h3 className="font-semibold text-[#302923] mt-2 pr-8 group-hover:text-[#E20F1D] transition-colors">{product.name}</h3>
+          <Heading className="font-semibold text-[#302923] mt-2 pr-8 group-hover:text-[#E20F1D] transition-colors">{product.name}</Heading>
         </Link>
         <p className="text-sm text-muted mt-1">{product.unit}</p>
         {!hasPhoto && <p data-photo-missing className="text-xs text-muted mt-2">Sortimentsbeispiel · konkrete Abbildung folgt</p>}

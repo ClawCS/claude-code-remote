@@ -20,12 +20,12 @@ type GameMeta = {
 };
 
 const GAMES: GameMeta[] = [
-  { id: "roulette", name: "Trink-Roulette", icon: "\u{1F3B0}", players: "2-10", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#F59E0B]", description: "Digitales Rad mit Aufgaben. Namen eintragen, drehen, machen!" },
-  { id: "wahrheit", name: "Wahrheit oder Pflicht", icon: "\u{1F525}", players: "3-12", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#EF4444]", description: "Getränke-Edition mit lustigen Fragen und Aufgaben." },
-  { id: "bierpong", name: "Bier-Pong Scoreboard", icon: "\u{1F3C6}", players: "2 Teams", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#F59E0B]", description: "Digitaler Punktezahler mit Timer und Regeln." },
-  { id: "flunkyball", name: "Flunkyball Timer", icon: "\u{26BD}", players: "4-20", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#EF4444]", description: "Countdown & Scoreboard für Flunkyball-Turniere." },
-  { id: "kingscup", name: "Kings Cup", icon: "\u{1F0CF}", players: "3-10", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#EF4444]", description: "Ring of Fire — digitale Karten mit Regeln aufdecken." },
-  { id: "ichhabnochnie", name: "Ich hab noch nie...", icon: "\u{1F648}", players: "3-15", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#F59E0B]", description: "Zufällige Statements — wer es getan hat, trinkt!" },
+  { id: "roulette", name: "Trink-Roulette", icon: "\u{1F3B0}", players: "2-10", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#92400E]", description: "Digitales Rad mit Aufgaben. Namen eintragen, drehen, machen!" },
+  { id: "wahrheit", name: "Wahrheit oder Pflicht", icon: "\u{1F525}", players: "3-12", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#B91C1C]", description: "Getränke-Edition mit lustigen Fragen und Aufgaben." },
+  { id: "bierpong", name: "Bier-Pong Scoreboard", icon: "\u{1F3C6}", players: "2 Teams", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#92400E]", description: "Digitaler Punktezahler mit Timer und Regeln." },
+  { id: "flunkyball", name: "Flunkyball Timer", icon: "\u{26BD}", players: "4-20", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#B91C1C]", description: "Countdown & Scoreboard für Flunkyball-Turniere." },
+  { id: "kingscup", name: "Kings Cup", icon: "\u{1F0CF}", players: "3-10", difficulty: "Mittel", difficultyColor: "bg-orange-50 text-[#B91C1C]", description: "Ring of Fire — digitale Karten mit Regeln aufdecken." },
+  { id: "ichhabnochnie", name: "Ich hab noch nie...", icon: "\u{1F648}", players: "3-15", difficulty: "Leicht", difficultyColor: "bg-amber-50 text-[#92400E]", description: "Zufällige Statements — wer es getan hat, trinkt!" },
   { id: "cocktailquiz", name: "Cocktail-Quiz", icon: "\u{1F378}", players: "1-8", difficulty: "Schwer", difficultyColor: "bg-red-50 text-[#B91C1C]", description: "Multiple Choice über Cocktails. Timer, Punkte, Highscore." },
   { id: "tabu", name: "Getränke-Tabu", icon: "\u{1F910}", players: "4-12", difficulty: "Schwer", difficultyColor: "bg-red-50 text-[#B91C1C]", description: "Beschreibe ein Getränk ohne bestimmte Wörter!" },
 ];
@@ -960,7 +960,7 @@ export default function PartyspielePageContent() {
             className="group bg-white rounded-2xl border border-border hover:border-primary/30 transition-all overflow-hidden text-left p-5 card-hover-glow"
           >
             <span className="text-xs font-semibold uppercase tracking-wide text-primary">{game.difficulty}</span>
-            <h3 className="font-bold text-secondary mt-3 group-hover:text-primary transition-colors">{game.name}</h3>
+            <h2 className="utility-heading font-bold text-secondary mt-3 group-hover:text-primary transition-colors">{game.name}</h2>
             <p className="text-xs text-muted mt-1 line-clamp-2">{game.description}</p>
             <div className="flex items-center gap-2 mt-3">
               <span className="text-xs text-muted flex items-center gap-1">

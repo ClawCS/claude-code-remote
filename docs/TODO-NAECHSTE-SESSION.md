@@ -16,6 +16,8 @@ Der öffentliche Server ist laut Betreiber noch nicht online. Der Mietablauf wur
 
 ## Technische und redaktionelle Arbeit danach
 
+- [x] Forensische Folgeprüfung: Wiederholung nach Antwortverlust, veraltete Abholtermine, Versandkonkurrenz, Konfigurationsgrenzen, mobile Bedienung und API-Abweisungen prüfen und reparieren; siehe [Prüfbericht](audits/2026-10-01-forensic-followup.md).
+
 - [x] Mietkalender zeitzonenunabhängig reparieren und NRW-Feiertage integrieren; 23.–26.10.2026 ergibt drei Werktage.
 - [x] Dreierblöcke, Grenzfälle, Mengen und Cent-Rundung testen; Live-Aktivierung ohne vollständige Konfiguration sperren.
 - [x] Acht unbepreiste Artikel auf Anfrage lassen; gemischte Auswahl nicht als vollständig bepreist ausgeben.
@@ -24,6 +26,7 @@ Der öffentliche Server ist laut Betreiber noch nicht online. Der Mietablauf wur
 - [ ] Harpe-/Justin-Bildzuordnung abgleichen; keine Gesichtsidentifikation. Neue Personenmotive nur mit belegter Freigabe.
 - [ ] Passende Canva-Fotos für reale Leihartikel, Sortiment und Marktleben auswählen; Cocktails erst nach Klärung der Bildregel ergänzen.
 - [ ] Niederländische Texte muttersprachlich abnehmen lassen.
+- [ ] Konkrete Produktmerkmale für individuelle Finder-Empfehlungen belegen (Weinfarbe/Geschmack, Wasser/Kohlensäure/Flaschenart, Alkoholvariante). Bis dahin fehlende Kombinationen ehrlich ohne Treffer lassen; keine historischen Preis-/Werbetexte reaktivieren.
 
 ## Verbindlicher Checkout als eigener Ausbau
 
@@ -35,6 +38,7 @@ Der öffentliche Server ist laut Betreiber noch nicht online. Der Mietablauf wur
 - [ ] Echte Anbieter-/Versandtests nach Kontoeinrichtung und konkreter Freigabe durchführen.
 - [ ] Stornierung/Erstattung und Aufbewahrung mit dem Betreiber festlegen; keine automatische Erstattung implementiert.
 - [ ] Vertrags-, Datenschutz-, Widerrufs- und Rechnungsinformationen fachlich abnehmen lassen.
+- [ ] Elektronische Widerrufsfunktion nach konkretem Vertrags-/Kundengruppenabgleich vor Verbraucher-Livestart umsetzen; derzeit nicht vorhanden. PDF-Zustimmung und gegebenenfalls strukturiertes E-Rechnungsformat klären.
 
 ## Veröffentlichung zuletzt
 

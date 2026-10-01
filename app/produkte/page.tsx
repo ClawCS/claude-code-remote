@@ -57,7 +57,7 @@ function ProdukteContent() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       {/* DE / NL Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {([
           { key: "alle" as Origin, label: "Alle Artikel", icon: "🛒", count: products.length },
           { key: "DE" as Origin, label: "Deutschland", icon: "🇩🇪", count: deProducts.length },
@@ -75,7 +75,7 @@ function ProdukteContent() {
             <span className="text-lg">{tab.icon}</span>
             <span>{tab.label}</span>
             <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              origin === tab.key ? "bg-white/20" : "bg-[#F0D5CF]/60"
+              origin === tab.key ? "bg-black/10" : "bg-[#F0D5CF]/60"
             }`}>{tab.count}</span>
           </button>
         ))}
@@ -103,7 +103,7 @@ function ProdukteContent() {
 
       <p className="text-sm text-muted mb-4">{filtered.length} Produkte</p>
 
-      <ProductGrid products={filtered} />
+      <ProductGrid products={filtered} headingLevel={2} />
     </div>
     </>
   );

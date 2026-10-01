@@ -105,7 +105,7 @@ function OrderCard({ order, jobs, busy, act }: {
         </ul>
         <p className="mt-2 text-xs">Ein Mietblock umfasst bis zu drei Werktage. Alle Preise inklusive Umsatzsteuer.</p>
       </section>
-      <div className="mt-6 flex flex-wrap gap-3" aria-label={`Aktionen für Bestellung ${order.number}`} aria-busy={busy}>
+      <div role="group" className="mt-6 flex flex-wrap gap-3" aria-label={`Aktionen für Bestellung ${order.number}`} aria-busy={busy}>
         {order.status === "submitted" && <>
           <button type="button" disabled={busy} className={primaryClass} onClick={() => act(order, "accept")}>Termin bestätigen</button>
           <button type="button" disabled={busy} className={buttonClass} onClick={() => act(order, "decline")}>Ablehnen</button>
@@ -217,9 +217,9 @@ export default function RentalAdmin() {
   return (
     <div className="public-page min-h-[60vh] bg-light text-secondary">
       <section className="category-intro">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm uppercase tracking-widest">Trinkgut Jammers · Markt</p>
-          <h1>Leihbestellungen</h1>
+          <h1 className="break-words">Leihbestellungen</h1>
           <p>Verfügbarkeit bestätigen, Zahlung verfolgen und die tatsächliche Ausgabe dokumentieren.</p>
         </div>
       </section>

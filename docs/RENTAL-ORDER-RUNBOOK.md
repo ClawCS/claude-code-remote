@@ -31,6 +31,8 @@ Vorher `npm run build`. Alternativ eigener Entwicklungsserver mit freiem Port; k
 
 ## Live-Voraussetzungen (weiterhin offen)
 
+**Keine Live-Freigabe durch bloßes Eintragen von Zugangsdaten:** Die elektronische Widerrufsfunktion ist noch nicht implementiert. Vor Verbraucherbetrieb Anwendbarkeit auf die konkreten Mietverträge fachlich prüfen und die erforderliche Funktion samt Eingangsbestätigung umsetzen. PDF-Versand ist keine strukturierte E-Rechnung; Kundengruppen, zulässiges Rechnungsformat und Zustimmung müssen geklärt werden. Aktueller Quellenabgleich und Grenzen: [forensischer Bericht](audits/2026-10-01-forensic-followup.md#konkrete-rechtliche-freigabehürden).
+
 Öffentliche HTTPS-Domain, dauerhafter Server und privates Datenverzeichnis; freigegebene Miet-/Verbraucherinformationen (einschließlich gegebenenfalls Widerruf und elektronischer Widerrufsfunktion), Datenschutz/Aufbewahrung, bestätigter Aussteller samt Steuerangaben, Rechnungssystem/Nummernkreis und Steuersatz, Kaution/Zusatzkosten, Sammelpostfach/Absender sowie Zahlungsanbieter-Vertrag fehlen noch. PDFs sind keine strukturierte E-Rechnung; eine B2B-Anforderung ist gesondert zu lösen.
 
 Die aktuelle Buchungsvariante ist ausschließlich Selbstabholung ohne weitere Vorauszahlungen. Sie darf nur aktiviert werden, wenn diese beiden Geschäftsregeln ausdrücklich bestätigt sind. Andernfalls bleibt der Anfrageweg aktiv; zusätzliche Kosten werden nicht erfunden.
@@ -57,6 +59,10 @@ MOLLIE_API_KEY=<nur bei aktivierter Onlinezahlung>
 Keine Schlüssel oder echte Kundendaten in Git/Chat. Das aktuelle Adapterangebot ist Mollie; es wurde kein Händlerkonto eröffnet und keine kostenpflichtige Einrichtung vorgenommen. Im Händlerkonto freigeschaltete Zahlungsarten bestimmen die gehostete Zahlungsseite; Apple Pay, Karten oder Bankzahlung werden nicht ohne tatsächliche Anbieterfreischaltung zugesagt. Webhook: `/api/rentals/webhook`. Ein Browser-Rücksprung ist niemals Zahlungsnachweis; der Server fragt den Anbieterstatus und prüft Bestell-ID, Betrag und Währung.
 
 ## Versand, Ausfälle und Überwachung
+
+Der Checkout hält für noch unbestätigte Browserantworten einen technischen Wiederholungsschlüssel und einen SHA-256-Fingerabdruck der Anfrage im Sitzungsspeicher des jeweiligen Tabs. Keine Klartext-Kontaktdaten werden dafür gespeichert; Fingerabdrücke bleiben dennoch pseudonyme technische Metadaten. Bei verloren gegangener Antwort und Neuladen im selben Tab werden identische Angaben mit demselben Schlüssel übermittelt. Nach sicherer Rückmeldung wird nur dieser Eintrag entfernt. Geschlossener/geleerter Tab oder geänderte Angaben sind davon nicht abgedeckt; bei unklarem Bestellergebnis erst mit dem Markt abgleichen. Zehn offene Varianten oder unzugänglicher/defekter Sitzungsspeicher stoppen weitere Versuche sicher.
+
+Die Annahme prüft den Abholtermin erneut gegen den aktuellen Berliner Kalendertag – auch nach der asynchronen Belegprüfung. Alte, inzwischen überholte Anfragen erzeugen keinen neuen Vertrag/Zahlungslink. Vor dem Mailtransport wird kontrolliert, ob der Versandauftrag noch zur eigenen gültigen Bearbeitung gehört und ob ein Online-Zahlungslink während des Renderns bereits bezahlt oder ersetzt wurde; dann wird die Nachricht mit aktuellem Zahlungsstand neu vorbereitet.
 
 Bestellung/Statuswechsel und je zwei Empfängeraufträge werden zusammen dauerhaft gespeichert. Der Webrequest versucht den Versand; Fehler bleiben in der Marktansicht sichtbar. Ein eigener Server-Job soll mit denselben privaten Umgebungswerten regelmäßig `npm run rental:dispatch` ausführen; dieser lokale Ausbau richtet keinen Server oder Scheduler ein. Nach einem Neustart bleiben Bestellungen und Warteschlange erhalten.
 

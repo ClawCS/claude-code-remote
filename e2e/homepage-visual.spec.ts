@@ -1,7 +1,12 @@
 import { mkdirSync } from "node:fs";
+import { join } from "node:path";
 
 import { expect, test } from "./test-fixtures";
 import type { Page } from "@playwright/test";
+
+const screenshotDirectory = process.env.AUDIT_SCREENSHOT_DIR
+  ? join(process.env.AUDIT_SCREENSHOT_DIR, "relaunch")
+  : "audit/screenshots/relaunch-2026-09-30";
 
 const viewports = [
   { width: 360, height: 844 },
@@ -85,12 +90,12 @@ for (const viewport of viewports) {
       expect(heroImage && heroImage.y).toBeLessThan(viewport.height);
     }
     await settleReviewImages(page, viewport.height);
-    mkdirSync("audit/screenshots/relaunch-2026-09-30", { recursive: true });
+    mkdirSync(screenshotDirectory, { recursive: true });
     await page.screenshot({
       animations: "disabled",
       caret: "hide",
       fullPage: true,
-      path: `audit/screenshots/relaunch-2026-09-30/home-${viewport.width}x${viewport.height}.png`,
+      path: join(screenshotDirectory, `home-${viewport.width}x${viewport.height}.png`),
     });
   });
 }

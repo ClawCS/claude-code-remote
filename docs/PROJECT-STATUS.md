@@ -66,6 +66,8 @@ Nachweise: [Tagesbericht](../audit/content-runs/2026-10-01-daily-evidence.json),
 
 ## Dokumentation und Sicherung
 
+- [Forensische Folgeprüfung vom 1. Oktober](audits/2026-10-01-forensic-followup.md): konkrete Fehler bei Wiederholungen, Annahme, Versand, Konfigurationsfreigabe und öffentlicher Bedienung repariert; lokale Vollprüfung und bekannte Inhalts-/Live-Grenzen dokumentiert. Zeitlich begrenzte Folgeprüfungen während der Abwesenheit bis 19:32 Europe/Berlin eingerichtet; kein Serverbetrieb daraus abgeleitet.
+
 - [Offene Fragen](OFFENE-FRAGEN.md): nummerngleich mit den 30 Chatfragen; unbeantwortete Punkte bleiben offen.
 - [Nächste Arbeitsschritte](TODO-NAECHSTE-SESSION.md): aktuelle Checkliste.
 - [Synchronisationsbericht](audits/2026-10-01-project-sync.md): Sicherungsumfang und Verifikationsgrenzen.

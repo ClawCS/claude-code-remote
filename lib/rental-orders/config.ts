@@ -81,17 +81,17 @@ export function loadRentalConfig(env: Record<string, string | undefined> = proce
     if (!config.termsVersion || !config.termsText || !config.privacyText) issues.push("Freigegebene Mietbedingungen, Version und Datenschutzhinweis erforderlich.");
     if (settings.selfPickupOnly !== true || settings.noExtraUpfrontCharges !== true) issues.push("Selbstabholung ohne zusätzliche Vorauszahlungen muss ausdrücklich bestätigt sein; unbekannte Kautionen oder Gebühren verhindern die Aktivierung.");
     config.marketEmail = text(settings.marketEmail);
-    if (!email.test(config.marketEmail)) issues.push("Gültiges Marktpostfach erforderlich.");
+    if (config.marketEmail.length > 254 || !email.test(config.marketEmail)) issues.push("Gültiges Marktpostfach erforderlich.");
     config.publicOrigin = text(settings.publicOrigin);
     try { const url = new URL(config.publicOrigin); if (url.protocol !== "https:" || loopback(url.hostname) || url.username || url.password || url.pathname !== "/" || url.search || url.hash) throw new Error(); config.publicOrigin = url.origin; }
     catch { issues.push("Öffentlicher HTTPS-Ursprung erforderlich."); }
     if (config.adminSecret.length < 32 || config.sessionSecret.length < 32 || config.adminSecret === config.sessionSecret || /TEST-ONLY/i.test(config.adminSecret) || /TEST-ONLY/i.test(config.sessionSecret)) issues.push("Unterschiedliche private Admin- und Sitzungsschlüssel mit mindestens 32 Zeichen erforderlich; öffentliche Testschlüssel sind unzulässig.");
     config.smtp = { host: text(env.SMTP_HOST), port: Number(env.SMTP_PORT), secure: env.SMTP_SECURE === "true", user: text(env.SMTP_USER), pass: env.SMTP_PASS || "", from: text(env.SMTP_FROM) };
-    if (!config.smtp.host || !Number.isInteger(config.smtp.port) || config.smtp.port < 1 || config.smtp.port > 65535 || !["true", "false"].includes(env.SMTP_SECURE || "") || !config.smtp.user || !config.smtp.pass || !email.test(config.smtp.from)) issues.push("Vollständige SMTP-Konfiguration einschließlich Absender erforderlich.");
+    if (!config.smtp.host || config.smtp.host.length > 253 || !/^[A-Za-z0-9.:[\]-]+$/.test(config.smtp.host) || !Number.isInteger(config.smtp.port) || config.smtp.port < 1 || config.smtp.port > 65535 || !["true", "false"].includes(env.SMTP_SECURE || "") || !config.smtp.user || !config.smtp.pass || /[\u0000-\u001f\u007f]/.test(config.smtp.user + config.smtp.pass) || config.smtp.from.length > 254 || !email.test(config.smtp.from)) issues.push("Vollständige gültige SMTP-Konfiguration einschließlich Absender erforderlich.");
     config.onlinePayment = settings.onlinePayment === true;
     if (config.onlinePayment) {
       config.mollieApiKey = text(env.MOLLIE_API_KEY);
-      if (!config.mollieApiKey.startsWith("live_") || config.mollieApiKey.length < 12) issues.push("Live-Zahlungsschlüssel für Onlinezahlung erforderlich.");
+      if (!/^live_[A-Za-z0-9_-]{7,200}$/.test(config.mollieApiKey)) issues.push("Gültiger Live-Zahlungsschlüssel für Onlinezahlung erforderlich.");
     }
   }
   config.enabled = issues.length === 0;

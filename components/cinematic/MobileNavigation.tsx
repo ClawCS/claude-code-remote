@@ -27,6 +27,7 @@ export default function MobileNavigation({
       if (event.key === "Escape" && details.open) {
         event.preventDefault();
         close();
+        details.querySelector("summary")?.focus();
       }
     };
     const handlePointerDown = (event: PointerEvent) => {

@@ -17,7 +17,7 @@ export default function MerkzettelPage() {
         <button type="button" className="px-5 py-3 border border-border rounded-lg" onClick={() => { clearWishlist(); setMessage("Dein Merkzettel wurde geleert."); }}>Merkzettel leeren</button>
         <Link href="/warenkorb" className="px-5 py-3 text-primary underline">Anfrageliste öffnen</Link>
       </div>
-      <ProductGrid products={items} />
+      <ProductGrid products={items} headingLevel={2} />
     </> : <p className="text-muted mb-6">Noch keine Getränke vorgemerkt. Mit dem Herz am Produkt speicherst du deine Auswahl für diesen Besuch.</p>}
     <p role="status" aria-live="polite" className="my-5">{message}</p>
     <Link href="/produkte" className="text-primary underline">Sortiment entdecken</Link>

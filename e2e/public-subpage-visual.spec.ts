@@ -11,7 +11,9 @@ test.beforeEach(async ({ context }) => {
   if (!process.env.PLAYWRIGHT_BASE_URL) await installCatalogCoverFixture(context);
 });
 
-const screenshotDirectory = "audit/screenshots/public-site-completion-2026-09-30";
+const screenshotDirectory = process.env.AUDIT_SCREENSHOT_DIR
+  ? join(process.env.AUDIT_SCREENSHOT_DIR, "public-site-completion")
+  : "audit/screenshots/public-site-completion-2026-09-30";
 const viewports = [
   { width: 1440, height: 900 },
   { width: 390, height: 844 },

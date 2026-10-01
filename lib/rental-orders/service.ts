@@ -126,7 +126,8 @@ export class RentalOrderService {
       this.version(order, expectedVersion);
       if (order.status !== "submitted") return fail("Nur eingegangene Bestellungen können angenommen werden.", "conflict", 409);
       let canonical: RentalQuote;
-      try { canonical = quoteRentals(order.quote.lines); } catch { return fail("Der gespeicherte Mietpreis ist nicht mehr gültig.", "conflict", 409); }
+      try { canonical = quoteRentals(order.quote.lines, { requireFuture: true, today: berlinDay(this.now()) }); }
+      catch { return fail("Der gespeicherte Mietpreis oder Abholtermin ist nicht mehr gültig. Eine neue Bestellung ist erforderlich.", "conflict", 409); }
       if (JSON.stringify(canonical) !== JSON.stringify(order.quote)) fail("Der Mietpreis wurde geändert. Eine neue Bestellung ist erforderlich.", "conflict", 409);
       this.assertReservation(order);
       order.status = "accepted";
@@ -277,6 +278,13 @@ export class RentalOrderService {
         const message = await this.dependencies.buildMessage(order, job.event, job.recipient, { marketEmail: this.config.marketEmail, statusUrl: this.dependencies.statusUrl(order.id), termsText: order.termsText, privacyText: order.privacyText });
         const expectedRecipient = job.recipient === "customer" ? order.customer.email : this.config.marketEmail;
         if (message.to !== expectedRecipient) throw new Error("Recipient mismatch");
+        if (!this.store.mailClaimValid(job.id, token, this.now().toISOString())) continue;
+        // PDF generation yields: a checkout can be paid or superseded while the message is built.
+        // Rebuild from the current payment before handing a stale checkout to the mail transport.
+        if (job.event === "accepted" && order.paymentMethod === "online" && JSON.stringify(this.get(order.id).payment) !== JSON.stringify(order.payment)) {
+          this.store.deferMail(job.id, token, this.now().toISOString(), "Zahlungsstatus wurde während der Belegerstellung geändert; Nachricht wird aktualisiert.");
+          continue;
+        }
         await this.dependencies.sender.send({ ...message, messageId: `<rental-${job.id}@rental-orders.local>` });
         this.store.finishMail(job.id, token, this.now().toISOString()); sent++;
       } catch {

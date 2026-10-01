@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { RentalOrder, RentalSubmitInput } from "../types";
@@ -52,8 +52,62 @@ async function action(order: RentalOrder, name: string, cookie: string): Promise
   const response = await handlers.rentalAdminActionHandler(request(`/api/rental-admin/orders/${order.id}`, { body: { action: name, version: order.version }, cookie }), order.id);
   expect(response.status).toBe(200); return (await response.json()).order;
 }
+function syntheticLiveConfig(): string {
+  const file = join(dir, "settings.json"), dataDir = join(dir, "private");
+  writeFileSync(file, JSON.stringify({ issuer: { name: "Synthetic market", address: ["Test street 1"], taxNumber: "TEST TAX", vatRateBps: 1900, invoicePrefix: "RE" }, termsVersion: "v1", termsText: "Synthetic terms", privacyText: "Synthetic privacy", marketEmail: "market@example.invalid", publicOrigin: "https://rentals.example.invalid", selfPickupOnly: true, noExtraUpfrontCharges: true, onlinePayment: false }), { mode: 0o600 });
+  for (const [name, value] of Object.entries({ RENTAL_MODE: "live", RENTAL_DATA_DIR: dataDir, RENTAL_SETTINGS_FILE: file, RENTAL_ADMIN_SECRET: "a".repeat(40), RENTAL_SESSION_SECRET: "s".repeat(40), SMTP_HOST: "smtp.example.invalid", SMTP_PORT: "465", SMTP_SECURE: "true", SMTP_USER: "synthetic", SMTP_PASS: "synthetic-password", SMTP_FROM: "sender@example.invalid" })) vi.stubEnv(name, value);
+  return dataDir;
+}
 
 describe("rental handlers with real SQLite, captured mail and local test payments", () => {
+  const rejectionProbes = [
+    ["admin list", 401, () => handlers.rentalAdminListHandler(request("/api/rental-admin/orders"))],
+    ["admin action", 401, () => handlers.rentalAdminActionHandler(request("/api/rental-admin/orders/unknown", { body: {} }), "unknown")],
+    ["admin document", 401, () => handlers.rentalDocumentHandler(request("/api/rental-admin/orders/unknown/documents/invoice"), "unknown", "invoice", true)],
+    ["outbox", 401, () => handlers.rentalOutboxHandler(request("/api/rental-admin/outbox", { body: {} }))],
+    ["test inbox", 401, () => handlers.rentalTestMailsHandler(request("/api/rental-admin/test-mails"))],
+    ["customer status", 404, () => handlers.rentalStatusHandler(request("/api/rentals/orders/unknown"), "unknown")],
+    ["customer document", 404, () => handlers.rentalDocumentHandler(request("/api/rentals/orders/unknown/documents/invoice"), "unknown", "invoice")],
+    ["test payment", 404, () => handlers.rentalTestPayHandler(request("/api/rentals/orders/unknown/test-payment", { body: {} }), "unknown")],
+    ["missing submit origin", 403, () => handlers.rentalSubmitHandler(request("/api/rentals/orders", { body: payload(), origin: null, headers: { "Idempotency-Key": "no-origin-cold-runtime" } }))],
+    ["non-loopback test request", 403, () => handlers.rentalAdminListHandler(new Request("https://public.example/api/rental-admin/orders"))],
+    ["test-mode webhook", 404, () => handlers.rentalWebhookHandler(request("/api/rentals/webhook", { body: {} }))],
+  ] as const;
+  it.each(rejectionProbes)("rejects %s before creating private storage", async (_label, expectedStatus, probe) => {
+    expect(readdirSync(dir)).toEqual([]);
+    expect((await probe()).status).toBe(expectedStatus);
+    expect(readdirSync(dir)).toEqual([]);
+  });
+  it.each(rejectionProbes)("preserves disabled 503 for %s without creating private storage", async (_label, _expectedStatus, probe) => {
+    vi.stubEnv("RENTAL_MODE", "");
+    expect((await probe()).status).toBe(503);
+    expect(readdirSync(dir)).toEqual([]);
+  });
+  it.each([["missing ID", "{}", 400], ["invalid ID", "id=tr_bad%2Fid", 400], ["oversized body", "id=" + "x".repeat(2100), 413]] as const)("rejects malformed live webhook before creating private storage: %s", async (_label, body, expectedStatus) => {
+    const dataDir = syntheticLiveConfig();
+    expect(existsSync(dataDir)).toBe(false);
+    const response = await handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body }));
+    expect(response.status).toBe(expectedStatus);
+    expect(existsSync(dataDir)).toBe(false);
+  });
+  it("acknowledges a syntactically valid unknown webhook without creating orders or mail work", async () => {
+    syntheticLiveConfig();
+    const response = await handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: "id=tr_unknown123" }));
+    expect(response.status).toBe(200); expect(await response.json()).toEqual({ received: true });
+    expect(runtime.rentalRuntime().service.list()).toEqual([]);
+    expect(runtime.rentalRuntime().service.outbox()).toEqual([]);
+  });
+  it("rechecks the actual runtime session secret after request-body admission yields", async () => {
+    const cookie = await login();
+    let controller!: ReadableStreamDefaultController<Uint8Array>;
+    const body = new ReadableStream<Uint8Array>({ start(value) { controller = value; } });
+    const pending = handlers.rentalAdminActionHandler(new Request(`${origin}/api/rental-admin/orders/unknown`, { method: "POST", headers: { "Content-Type": "application/json", Origin: origin, Cookie: cookie }, body, duplex: "half" } as RequestInit), "unknown");
+    vi.stubEnv("RENTAL_SESSION_SECRET", "TEST-ONLY-rotated-api-session-secret-long");
+    controller.enqueue(new TextEncoder().encode(JSON.stringify({ action: "accept", version: 1 }))); controller.close();
+    expect((await pending).status).toBe(401);
+    expect(runtime.rentalRuntime().service.list()).toEqual([]);
+    expect(runtime.rentalRuntime().service.outbox()).toEqual([]);
+  });
   it("keeps ordering disabled by default without revealing secrets", async () => {
     vi.stubEnv("RENTAL_MODE", "");
     const config = await handlers.rentalConfigHandler(request("/api/rentals/config"));

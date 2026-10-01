@@ -205,7 +205,7 @@ function ShareCard({ stats }: { stats: EcoStats }) {
 
   return (
     <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 text-center">
-      <h3 className="font-bold text-secondary text-lg mb-2">{"\uD83C\uDF1F"} Teile deinen Impact!</h3>
+      <h2 className="utility-heading font-bold text-secondary text-lg mb-2">{"\uD83C\uDF1F"} Teile deinen Impact!</h2>
       <div className="bg-white rounded-xl p-5 mb-4 border border-green-100">
         <p className="text-2xl mb-1">{"\u267B\uFE0F\uD83D\uDC22"}</p>
         <p className="text-secondary font-bold text-sm">
@@ -309,7 +309,7 @@ export default function OekoTrackerPage() {
               onClick={() => setInputMode("history")}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                 inputMode === "history"
-                  ? "bg-green-600 text-white shadow-lg shadow-green-200"
+                  ? "bg-green-700 text-white shadow-lg shadow-green-200"
                   : "bg-light text-muted hover:bg-border"
               }`}
             >
@@ -320,7 +320,7 @@ export default function OekoTrackerPage() {
             onClick={() => setInputMode("manual")}
             className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
               inputMode === "manual"
-                ? "bg-green-600 text-white shadow-lg shadow-green-200"
+                ? "bg-green-700 text-white shadow-lg shadow-green-200"
                 : "bg-light text-muted hover:bg-border"
             }`}
           >
@@ -330,12 +330,13 @@ export default function OekoTrackerPage() {
 
         {inputMode === "manual" ? (
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">
+            <label id="returned-bottles-label" htmlFor="returned-bottles-count" className="block text-sm font-semibold text-secondary mb-2">
               Wie viele Flaschen/Dosen hast du dieses Jahr zur&uuml;ckgebracht?
             </label>
             <div className="flex items-center gap-3">
               <input
                 type="range"
+                aria-labelledby="returned-bottles-label"
                 min={0}
                 max={2000}
                 step={10}
@@ -344,6 +345,7 @@ export default function OekoTrackerPage() {
                 className="flex-1 accent-green-600"
               />
               <input
+                id="returned-bottles-count"
                 type="number"
                 min={0}
                 value={manualBottles}
@@ -430,7 +432,7 @@ export default function OekoTrackerPage() {
 
           {/* Fun Facts */}
           <div className="bg-white border border-border rounded-xl p-6 mb-8">
-            <h3 className="font-bold text-secondary text-sm mb-4">{"\uD83C\uDF1F"} Das bedeuten deine Zahlen</h3>
+            <h2 className="utility-heading font-bold text-secondary text-sm mb-4">{"\uD83C\uDF1F"} Das bedeuten deine Zahlen</h2>
             <div className="space-y-3 text-sm text-muted">
               {stats.co2Grams >= 1000 && (
                 <p>
@@ -485,15 +487,15 @@ export default function OekoTrackerPage() {
       {activeBottles === 0 && (
         <div className="text-center py-12 mb-8">
           <span className="text-6xl block mb-4">{"\uD83C\uDF0D"}</span>
-          <h3 className="text-lg font-bold text-secondary mb-2">
+          <h2 className="utility-heading text-lg font-bold text-secondary mb-2">
             Noch keine Daten vorhanden
-          </h3>
+          </h2>
           <p className="text-sm text-muted mb-4">
             Gib oben die Anzahl deiner zur&uuml;ckgegebenen Flaschen ein oder nutze den Leergut-Rechner.
           </p>
           <Link
             href="/leergut"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors text-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition-colors text-sm"
           >
             {"\u267B\uFE0F"} Zum Leergut-Rechner
           </Link>
@@ -502,9 +504,9 @@ export default function OekoTrackerPage() {
 
       {/* CTA Banner */}
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-6 text-center text-white">
-        <h3 className="text-lg font-bold mb-2">
+        <h2 className="utility-heading-inverse text-lg font-bold mb-2">
           Gemeinsam f&uuml;r die Umwelt!
-        </h3>
+        </h2>
         <p className="text-sm text-green-100 mb-4 max-w-md mx-auto">
           Bring dein Leergut zu Trinkgut Jammers und leiste deinen Beitrag.
           Jede Flasche z&auml;hlt &mdash; f&uuml;r dich und f&uuml;r unseren Planeten.

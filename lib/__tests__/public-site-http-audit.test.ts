@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 const cleanup: Array<() => Promise<void>> = [];
 afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await dispose(); });
 
-type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment"; streamed?: boolean };
+type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer"; streamed?: boolean };
 
 async function fixture(options: FixtureOptions = {}) {
   const requests: Array<{ path: string; method: string; authorization?: string }> = [];
@@ -29,6 +29,14 @@ async function fixture(options: FixtureOptions = {}) {
     if (url.pathname.startsWith("/api/")) {
       response.setHeader("Content-Type", "application/json");
       response.setHeader("Cache-Control", "no-store");
+      if (/^\/api\/(rentals|rental-admin)\//.test(url.pathname)) {
+        response.setHeader("Referrer-Policy", options.broken === "rental-referrer" ? "strict-origin-when-cross-origin" : "no-referrer");
+        if (url.pathname === "/api/rentals/config") response.statusCode = 200;
+        else if (url.pathname.startsWith("/api/rental-admin/")) response.statusCode = options.broken === "rental-auth" ? 200 : url.pathname.endsWith("/session") ? 403 : 401;
+        else if (url.pathname.includes("__audit_unknown__") || url.pathname.endsWith("/webhook")) response.statusCode = 404;
+        else response.statusCode = 403;
+        response.end(JSON.stringify({ error: "Not authorized" })); return;
+      }
       const paused = ["/api/chat", "/api/community", "/api/kuehlschrank", "/api/leergut-scan", "/api/bewerbung"];
       if (request.method === "POST" && paused.includes(url.pathname)) response.statusCode = options.broken === "api" ? 200 : 503;
       else if (url.pathname === "/api/handzettel/cron" || url.searchParams.get("refresh") === "true" || request.method === "POST") response.statusCode = 401;
@@ -79,7 +87,8 @@ describe("public HTTP forensic audit CLI", () => {
     expect(result.requests.some(request => request.path === "/produkte" && request.method === "GET")).toBe(true);
     expect(result.requests.some(request => request.path === "/photo.webp")).toBe(true);
     expect(result.requests.every(request => !request.authorization)).toBe(true);
-    expect(result.requests.filter(request => request.method === "POST").map(request => request.path).sort()).toEqual(["/api/bewerbung", "/api/chat", "/api/community", "/api/handzettel/cron", "/api/handzettel/fetch", "/api/kuehlschrank", "/api/leergut-scan"]);
+    expect(result.requests.filter(request => request.method === "POST").map(request => request.path).sort()).toEqual(["/api/bewerbung", "/api/chat", "/api/community", "/api/handzettel/cron", "/api/handzettel/fetch", "/api/kuehlschrank", "/api/leergut-scan", "/api/rental-admin/orders/__audit_unknown__", "/api/rental-admin/outbox", "/api/rental-admin/session", "/api/rentals/orders", "/api/rentals/orders/__audit_unknown__/test-payment", "/api/rentals/quote", "/api/rentals/webhook"]);
+    expect(result.requests.some(request => request.path === "/api/rental-admin/orders")).toBe(true);
     expect(JSON.stringify(result.report)).not.toContain("<h1>");
   });
 
@@ -92,6 +101,7 @@ describe("public HTTP forensic audit CLI", () => {
   it.each([
     ["link", "link-status"], ["asset", "asset-status"], ["heading", "landmark-h1"], ["legacy", "legacy-chrome"],
     ["redirect", "page-status"], ["api", "api-status"], ["security", "security-header"], ["fragment", "link-fragment"],
+    ["rental-auth", "api-status"], ["rental-referrer", "security-header"],
   ] as const)("fails visibly for %s defects", async (broken, code) => {
     const result = await fixture({ broken });
     expect(result.code, result.text).toBe(1);

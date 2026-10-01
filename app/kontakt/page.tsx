@@ -70,7 +70,7 @@ export default function KontaktPage() {
               href="https://wa.me/491752492386"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#1FB856] text-white rounded-xl font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#1FB856] text-[#17351F] rounded-xl font-medium transition-colors"
             >
               Schreib uns auf WhatsApp
             </a>

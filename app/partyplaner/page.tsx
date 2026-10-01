@@ -123,10 +123,11 @@ export default function PartyplanerPage() {
       <div className="bg-white border border-border rounded-xl p-6 mb-8">
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label htmlFor="party-guests" className="block text-sm font-medium text-secondary mb-2">
               Anzahl Gäste
             </label>
             <input
+              id="party-guests"
               type="range"
               min={5}
               max={200}
@@ -139,10 +140,11 @@ export default function PartyplanerPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label htmlFor="party-duration" className="block text-sm font-medium text-secondary mb-2">
               Dauer der Party
             </label>
             <input
+              id="party-duration"
               type="range"
               min={2}
               max={12}
@@ -156,17 +158,18 @@ export default function PartyplanerPage() {
 
         <hr className="my-6 border-border" />
 
-        <h3 className="font-semibold text-secondary mb-4">Was trinken deine Gäste? (Prozent-Verteilung)</h3>
+        <h2 className="utility-heading font-semibold text-secondary mb-4">Was trinken deine Gäste? (Prozent-Verteilung)</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { key: "beerDrinkers" as const, label: "🍺 Bier", color: "text-[#F59E0B]" },
+            { key: "beerDrinkers" as const, label: "🍺 Bier", color: "text-[#92400E]" },
             { key: "wineDrinkers" as const, label: "🍷 Wein", color: "text-[#7A1428]" },
             { key: "softDrinkers" as const, label: "🥤 Softdrinks", color: "text-[#DC2626]" },
             { key: "spiritDrinkers" as const, label: "🥃 Spirituosen", color: "text-[#B91C1C]" },
           ].map(({ key, label, color }) => (
             <div key={key} className="text-center">
-              <label className="block text-sm font-medium text-muted mb-1">{label}</label>
+              <label htmlFor={`party-${key}`} className="block text-sm font-medium text-muted mb-1">{label}</label>
               <input
+                id={`party-${key}`}
                 type="range"
                 min={0}
                 max={100}

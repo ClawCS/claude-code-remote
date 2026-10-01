@@ -14,7 +14,9 @@ if (!["july", "september"].includes(fixture)) throw new Error("Unknown giveaway 
 test.beforeEach(async ({ context }) => {
   if (fixture === "july") await installCatalogCoverFixture(context);
 });
-const screenshotDirectory = "audit/screenshots/giveaway-covers-2026-09-30";
+const screenshotDirectory = process.env.AUDIT_SCREENSHOT_DIR
+  ? join(process.env.AUDIT_SCREENSHOT_DIR, "giveaway-covers")
+  : "audit/screenshots/giveaway-covers-2026-09-30";
 const viewports = [{ width: 1440, height: 900 }, { width: 390, height: 844 }] as const;
 
 // Independent, source-checked contract: do not import production data to compute expectations.

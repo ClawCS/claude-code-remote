@@ -132,6 +132,10 @@ export class RentalOrderStore {
     this.db.prepare("UPDATE outbox SET state='sent', sent_at=?, lease_until=NULL, lease_token=NULL, error=NULL WHERE id=? AND lease_token=?").run(now, id, token);
   }
 
+  mailClaimValid(id: string, token: string, now: string): boolean {
+    return !!this.db.prepare("SELECT id FROM outbox WHERE id=? AND state='sending' AND lease_token=? AND lease_until>?").get(id, token, now);
+  }
+
   deferMail(id: string, token: string, next: string, error: string): void {
     this.db.prepare("UPDATE outbox SET state='pending', next_attempt_at=?, lease_until=NULL, lease_token=NULL, error=? WHERE id=? AND lease_token=?").run(next, error, id, token);
   }
