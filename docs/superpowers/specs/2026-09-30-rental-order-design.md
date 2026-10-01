@@ -1,6 +1,6 @@
 # Verbindliche Leihbestellungen für Trinkgut Jammers
 
-Stand: 30. September 2026. Entwurf zur Prüfung durch den Betreiber, noch keine Freigabe zur Backend-Implementierung oder Veröffentlichung eines verbindlichen Checkouts.
+Stand: 1. Oktober 2026. Entwurf zur Prüfung durch den Betreiber, noch keine Freigabe zur Backend-Implementierung oder Veröffentlichung eines verbindlichen Checkouts.
 
 ## Ziel und bestätigte Regeln
 
@@ -8,13 +8,16 @@ Besucher wählen Leihartikel und Mengen mit Plus und Minus aus. Der Warenkorb so
 
 Der Betreiber hat die Preisbasis aus der Leihartikelliste vom 01.01.2026 als **je drei Werktage** bestätigt. Er hat außerdem dem empfohlenen Ablauf zugestimmt: Der Kunde gibt ein verbindliches Vertragsangebot ab; ein Mietvertrag entsteht erst durch die ausdrückliche Annahme des Marktes nach Prüfung der tatsächlichen Verfügbarkeit. Eine automatische Eingangsbestätigung ist keine Annahme und keine Reservierungsbestätigung.
 
+Am 1. Oktober 2026 hat der Betreiber die Abrechnung zusätzlicher Werktage bestätigt: **Jeder angefangene Dreierblock wird vollständig berechnet.** Ab dem vierten berechneten Werktag fällt erneut der volle Mietpreis für einen Dreierblock an; eine anteilige Tagesberechnung findet nicht statt. Bei einer positiven berechneten Mietdauer ergibt sich die Zahl der Blöcke durch Aufrunden von `Werktage / 3`. Die Positionssumme beträgt `Menge × Preis je Dreierblock × Anzahl der Blöcke`.
+
+Für einen Kühlanhänger mit einem Listenpreis von 150 € je Dreierblock bedeutet dies: 1–3 berechnete Werktage kosten 150 €, 4–6 Werktage 300 € und 7–9 Werktage 450 €. Die Zuordnung eines Datumsbereichs zu berechneten Werktagen bleibt bis zur Bestätigung der unten genannten Kalenderregel offen. Diese bestätigte Blockregel ist im Konzept festgehalten, aber noch nicht im öffentlichen Warenkorb aktiviert.
+
 Der sichtbare Cocktail-Reiter, die Mengenbedienung und die Kennzeichnung der Preisbasis sind unabhängig davon umgesetzt. Der bestehende unverbindliche Anfrageprozess bleibt nutzbar, bis die Voraussetzungen für verbindliche Bestellungen erfüllt sind.
 
 ## Noch zu bestätigende Geschäftsregeln
 
 Diese Angaben dürfen nicht aus der bisherigen, ungenutzten Preisfunktion abgeleitet oder erfunden werden:
 
-- Abrechnung zusätzlicher Werktage: voller Preis je angefangenen Dreierblock oder anteilige Berechnung. Die Rückfrage an den Betreiber ist offen.
 - Definition der berechneten Werktage: Einschluss von Samstag, Feiertagen sowie Abhol- und Rückgabetag. Die bisherige Datumsfunktion zählt Montag bis Samstag einschließlich beider Randtage und berücksichtigt keine Feiertage; das ist keine bestätigte Preisregel.
 - Steuerstatus der Listenpreise, Zahlungsweise und Zahlungstermin.
 - Weitere verbindliche Kosten oder Bedingungen, insbesondere eine etwaige Kaution, Lieferung und Verspätung. Fehlende Angaben bedeuten nicht automatisch kostenlose Leistungen.
