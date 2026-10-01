@@ -10,7 +10,9 @@ Der Betreiber hat die Preisbasis aus der Leihartikelliste vom 01.01.2026 als **j
 
 Am 1. Oktober 2026 hat der Betreiber die Abrechnung zusätzlicher Werktage bestätigt: **Jeder angefangene Dreierblock wird vollständig berechnet.** Ab dem vierten berechneten Werktag fällt erneut der volle Mietpreis für einen Dreierblock an; eine anteilige Tagesberechnung findet nicht statt. Bei einer positiven berechneten Mietdauer ergibt sich die Zahl der Blöcke durch Aufrunden von `Werktage / 3`. Die Positionssumme beträgt `Menge × Preis je Dreierblock × Anzahl der Blöcke`.
 
-Für einen Kühlanhänger mit einem Listenpreis von 150 € je Dreierblock bedeutet dies: 1–3 berechnete Werktage kosten 150 €, 4–6 Werktage 300 € und 7–9 Werktage 450 €. Die Zuordnung eines Datumsbereichs zu berechneten Werktagen bleibt bis zur Bestätigung der unten genannten Kalenderregel offen. Diese bestätigte Blockregel ist im Konzept festgehalten, aber noch nicht im öffentlichen Warenkorb aktiviert.
+Für einen Kühlanhänger mit einem Listenpreis von 150 € je Dreierblock bedeutet dies: 1–3 berechnete Werktage kosten 150 €, 4–6 Werktage 300 € und 7–9 Werktage 450 €.
+
+Der Betreiber hat am selben Tag auch die Kalenderregel bestätigt: Montag bis Samstag zählen, Sonntage und gesetzliche NRW-Feiertage zählen nicht. Abhol- und Rückgabetag werden jeweils vollständig mitgezählt, sofern sie nach dieser Regel Werktage sind. Ein identischer Abhol- und Rückgabetag zählt nur einmal. Maßgeblich ist das lokale Kalenderdatum in Europe/Berlin; die Zählung darf weder von der Serverzeitzone noch von einer Zeitumstellung abhängen. Die bestätigten Regeln sind im Konzept festgehalten, aber noch nicht im öffentlichen Warenkorb aktiviert.
 
 Der sichtbare Cocktail-Reiter, die Mengenbedienung und die Kennzeichnung der Preisbasis sind unabhängig davon umgesetzt. Der bestehende unverbindliche Anfrageprozess bleibt nutzbar, bis die Voraussetzungen für verbindliche Bestellungen erfüllt sind.
 
@@ -18,12 +20,15 @@ Der sichtbare Cocktail-Reiter, die Mengenbedienung und die Kennzeichnung der Pre
 
 Diese Angaben dürfen nicht aus der bisherigen, ungenutzten Preisfunktion abgeleitet oder erfunden werden:
 
-- Definition der berechneten Werktage: Einschluss von Samstag, Feiertagen sowie Abhol- und Rückgabetag. Die bisherige Datumsfunktion zählt Montag bis Samstag einschließlich beider Randtage und berücksichtigt keine Feiertage; das ist keine bestätigte Preisregel.
 - Steuerstatus der Listenpreise, Zahlungsweise und Zahlungstermin.
 - Weitere verbindliche Kosten oder Bedingungen, insbesondere eine etwaige Kaution, Lieferung und Verspätung. Fehlende Angaben bedeuten nicht automatisch kostenlose Leistungen.
 - Einzelpreise für Theke, Spültheke, Weinglas klein, Altbierglas, Williglas, Kölschglas, Schnapsglas und Weißbierglas. Diese acht Artikel bleiben ausdrücklich „Preis auf Anfrage“, solange keine eindeutige Zuordnung bestätigt ist.
 
 Eine gemischte Auswahl aus bepreisten und unbepreisten Artikeln darf keinen angeblich vollständigen Gesamtpreis erhalten. Sie bleibt im unverbindlichen Anfrageweg. Der Kunde muss die Auswahl bearbeiten können, um ausschließlich vollständig bepreiste Artikel verbindlich zu bestellen; Artikel werden niemals stillschweigend entfernt.
+
+## Befund zur bestehenden Datumsfunktion
+
+Die bestehende Funktion `calculateWorkdays` in `lib/utils.ts` berücksichtigt keine Feiertage. Außerdem vermischt sie das Einlesen eines ISO-Datums als UTC-Zeitpunkt mit lokalen Tagesschritten. Der Bereich 23.10.2026–26.10.2026 liefert dadurch mit `TZ=Europe/Berlin` zwei Tage, mit `TZ=UTC` dagegen drei. Nach der bestätigten Regel müssen Freitag, Samstag und Montag unabhängig von der Laufzeitzeitzone zusammen drei Werktage ergeben. Dieser Befund wurde am 1. Oktober 2026 reproduziert; er ist noch nicht behoben. Vor Aktivierung der Preisberechnung sind eine zeitzonenunabhängige Kalenderzählung und der NRW-Feiertagskalender einschließlich Regressionstests erforderlich.
 
 ## Kundenablauf
 
