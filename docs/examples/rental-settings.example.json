@@ -1,0 +1,17 @@
+{
+  "publicOrigin": "https://IHRE-BESTAETIGTE-DOMAIN.invalid",
+  "marketEmail": "",
+  "issuer": {
+    "name": "",
+    "address": [],
+    "taxNumber": "",
+    "vatRateBps": null,
+    "invoicePrefix": ""
+  },
+  "termsVersion": "",
+  "termsText": "",
+  "privacyText": "",
+  "selfPickupOnly": false,
+  "noExtraUpfrontCharges": false,
+  "onlinePayment": false
+}

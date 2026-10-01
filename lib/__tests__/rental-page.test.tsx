@@ -17,11 +17,12 @@ describe("source-backed rental catalog", () => {
   });
   it("does not invent rental periods, source mappings, photos, or purchase rentals", () => {
     const result = html();
-    expect(result).toContain("Richtpreis laut Preisliste");
+    expect(result).toContain("01.01.2026");
     expect(result).toContain("Preis auf Anfrage");
     expect(result).toContain("Bruchersatz");
-    expect(result).toContain("Unverbindlich anfragen");
-    expect(result).toContain("Keine Reservierungsbestätigung und kein berechneter Mietgesamtpreis.");
+    expect(result).toContain("Deine Mietauswahl");
+    expect(result).not.toContain("kein berechneter Mietgesamtpreis");
+    expect(result).toContain("inkl. MwSt.");
     expect(result).not.toMatch(/Leihperiode|Kühlwagen|Entlüfter|Zapfhahn|<svg|<img/);
     expect(result).not.toContain("Kaution");
   });
@@ -39,7 +40,7 @@ describe("source-backed rental catalog", () => {
     const result = html();
     const trailer = result.split('data-rental-name="Kühlanhänger"')[1]?.split("</article>")[0];
     const counter = result.split('data-rental-name="Theke"')[1]?.split("</article>")[0];
-    expect(trailer).toContain("je 3 Werktage");
+    expect(trailer).toContain("3-Werktage-Block");
     expect(counter).toContain("Preis auf Anfrage");
     expect(counter).not.toContain("0,00");
   });

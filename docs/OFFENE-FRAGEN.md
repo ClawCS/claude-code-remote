@@ -16,7 +16,7 @@ Bereits bestätigt: volle angefangene Dreierblöcke, Montag–Samstag ohne Sonn-
 
 ## Mietbedingungen und Bestellablauf
 
-6. **Zahlungszeitpunkt:** Erst nach ausdrücklicher Marktannahme per Zahlungslink, wie empfohlen, oder beim Absenden mit geregeltem Ablehnungs-/Erstattungsverfahren?
+6. **Beantwortet am 1. Oktober:** Bestellung mit Preisübersicht → ausdrückliche Marktannahme → sicherer Zahlungslink oder Barzahlung bei Abholung → statusgerechte Rechnung/Lieferschein an beide Seiten. Umsetzung ausdrücklich beauftragt; nicht erneut nach dem Zahlungszeitpunkt fragen.
 7. **Zahlungsfrist:** Wie lange darf eine angenommene Bestellung unbezahlt bleiben, und was passiert anschließend: Erinnerung, Rückfrage oder Freigabe des Bestands?
 8. **Kaution:** Keine oder ja? Bei ja: Artikel, Höhe, Zahlungszeitpunkt und Rückzahlung nennen.
 9. **Lieferung:** Selbstabholung mit Lieferung nur nach Absprache oder direkt buchbare Lieferung? Bei direkter Buchung: Gebiet, Preise und Bedingungen nennen.
@@ -34,8 +34,8 @@ Bereits bestätigt: volle angefangene Dreierblöcke, Montag–Samstag ohne Sonn-
 18. **Rechnungswesen:** Kassen-/Buchhaltungssystem, Rechnungsnummern-Zuständigkeit und gewünschte Anbindung nennen. Anonymisierte Rechnung-/Lieferscheinvorlagen helfen; keine Kundendaten veröffentlichen.
 19. **Steuersatz:** Konkreten Satz je Mietartikel durch Buchhaltung bestätigen. „Inklusive MwSt.“ legt keinen Satz fest.
 20. **Kundengruppen:** Onlinevermietung an Privatkunden und Unternehmen oder nur Privatkunden?
-21. **Rechnungszeitpunkt:** Rechnung nach Annahme, Zahlung oder Abholung versenden? Bestehenden Barzahlungsablauf nennen.
-22. **Lieferschein:** Vorab Abholbeleg und nach tatsächlicher Übergabe endgültigen Lieferschein versenden oder vorhandenen anderen Ablauf übernehmen?
+21. **Umsetzungsstand:** Rechnung bei Annahme, Zahlungsstatus unter derselben Rechnungsnummer nach Zahlung aktualisiert. Vor Livebetrieb mit dem rechnungsführenden System/der Buchhaltung aus Frage 18 abstimmen.
+22. **Umsetzungsstand:** Endgültiger Lieferschein nach vom Markt erfasster tatsächlicher Übergabe. Statusgerechter Versand an beide Seiten ist freigegeben; kein vorab als erfolgt dargestellter Übergabevorgang.
 23. **Testempfänger:** Kunden-Testadresse privat benennen. Tatsächliche Testsendungen vorher konkret ankündigen und freigeben lassen; eine Adresse ist keine Sendefreigabe.
 
 ## Originalquellen und redaktionelle Abnahme
@@ -50,4 +50,4 @@ Bereits bestätigt: volle angefangene Dreierblöcke, Montag–Samstag ohne Sonn-
 
 ## Antworten übernehmen
 
-Gezielt in [PROJECT-STATUS.md](PROJECT-STATUS.md), [Mietcheckout-Entwurf](superpowers/specs/2026-09-30-rental-order-design.md) und den konkreten Arbeitsplan übernehmen. Entscheidungen von Wünschen trennen. Codefehler, Tests und Sicherheit sind Engineering-Aufgaben; ein noch nicht vorliegender Implementierungsplan gilt nicht vorab als genehmigt.
+Gezielt in [PROJECT-STATUS.md](PROJECT-STATUS.md), [Mietcheckout-Konzept](superpowers/specs/2026-09-30-rental-order-design.md) und den konkreten Arbeitsplan übernehmen. Entscheidungen von Wünschen trennen. Codefehler, Tests und Sicherheit sind Engineering-Aufgaben. Der Mietablauf ist inzwischen ausdrücklich zur Umsetzung freigegeben; offene Live-Betriebsdaten sind keine erneute allgemeine Implementierungsfreigabe.

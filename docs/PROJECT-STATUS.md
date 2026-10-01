@@ -26,7 +26,7 @@ Der Betreiber hat ausdrücklich bestätigt: **Der öffentliche Server ist noch n
 | Marktleben | Passende Canva-Motive und eigene Themenunterseiten vorhanden. Komplette Account-Sichtung seit Oktober 2024 nicht als abgeschlossen behaupten. Weitere geeignete Rubrikbilder und Personenfreigaben offen. |
 | Cocktails | 65 Rezepte, sechs Kategorieeinstiege und sichtbarer Reiter. Passende Originalfotos fehlen; Datenbank-Foto-Anfrage versus spätere Canva-only-Regel noch klären. |
 | Vermietung | 20 Artikel, davon zwölf mit zugeordnetem Listenpreis und acht auf Anfrage. Plus/Minus, Direkteingabe, Bestandsgrenzen und Überschneidungsregeln umgesetzt. Keine marktweite Live-Verfügbarkeit. |
-| Warenkorb/Checkout | Unverbindliche Anfrageliste. E-Mail/WhatsApp öffnen selbst zu versendende Entwürfe. Keine verbindlichen Gesamtsummen, dauerhaften Mietbestellungen, Onlinezahlungen oder automatischen Belege. |
+| Warenkorb/Checkout | Mietbestellprozess umgesetzt: kanonische Bruttosummen, dauerhafte SQLite-Bestellungen, geschützte Marktannahme, anschließender Zahlungslink oder Barzahlung, PDF-Rechnung/Lieferschein und getrennte Versandwarteschlange. Lokal testbar; Live-Aktivierung bleibt ohne vollständige Betreiber-/Dienstekonfiguration gesperrt. Gemischte/unbepreiste Auswahl bleibt Anfrage. |
 | GrailBid | Externer Einstieg zu `https://grailbid.com`; kein neues Shopsystem und kein behaupteter Live-Nachweis des Zielshops. |
 | Recht/Daten | Riskante schreibende Community-/Bewerbungs- und KI-Endpunkte eingeschränkt. Betreiberangaben, Datenabläufe, Altbestände und Vertrags-/Belegtexte noch nicht endgültig fachlich abgenommen. |
 | Veröffentlichung | Nicht online. Domain, Hosting, Versanddienste und Veröffentlichungsablauf offen. GitHub und localhost sind kein öffentlicher HTTPS-Nachweis. |
@@ -39,7 +39,7 @@ Der Betreiber hat ausdrücklich bestätigt: **Der öffentliche Server ist noch n
 - Verbindliches Kundenangebot; Vertrag erst durch ausdrückliche Marktannahme nach Verfügbarkeitsprüfung. Automatische Eingangsbestätigung ist keine Annahme.
 - Gewünscht: Apple Pay, Kreditkarte, Online-Bankzahlung, Barzahlung sowie Rechnung und Lieferschein per E-Mail an Kunde und Markt. Neues Sammelpostfach angekündigt, Adresse noch offen.
 
-Diese Regeln stehen im [Mietcheckout-Entwurf](superpowers/specs/2026-09-30-rental-order-design.md), **sind noch nicht als verbindlicher Bestellprozess aktiviert**. Der dokumentierte Zeitumstellungsfehler und die fehlende NRW-Feiertagszählung in der Mietfunktion bleiben zu reparieren. Feiertagsprüfung der Marktöffnungszeiten ist davon getrennt.
+Der Betreiber hat anschließend ausdrücklich die Umsetzung freigegeben: Bestellung → Marktannahme → Zahlungslink oder Barzahlung → statusgerechte Belege. Kalenderfehler und NRW-Feiertage sind im neuen zeitzonenunabhängigen Mietkalender mit Regressionstests behoben. Ablauf und Betriebsgrenzen stehen im [Miet-Runbook](RENTAL-ORDER-RUNBOOK.md). Es wurden keine echten Zahlungen ausgelöst oder E-Mails versendet. Postfach, Anbieterzugang, Steuersatz, Aussteller, Bedingungen und öffentlicher Server bleiben zu konfigurieren.
 
 ## Wochenwerbung und Betrieb
 
@@ -58,10 +58,10 @@ Nachweise: [Tagesbericht](../audit/content-runs/2026-10-01-daily-evidence.json),
 
 1. Aktuellen Stand, private Originale und bestehende lokale Änderungen sichern.
 2. [Betreiberantworten](OFFENE-FRAGEN.md) einarbeiten; Empfehlungen nicht als Freigaben behandeln.
-3. Mietkalender reparieren und Zeitumstellung/NRW-Feiertage/Dreierblöcke testen; Geschäftsregeln nicht erfinden.
+3. Den lokal implementierten Mietablauf gemeinsam abnehmen; bestätigte Kalender- und Dreierblockregeln sind umgesetzt.
 4. Fehlende Originale zuordnen, geeignete Bilder kuratieren und Desktop/Mobil prüfen.
-5. Nach Klärung von Mietbedingungen, Anbieter, Postfach und Rechnungswesen konkreten Checkout-Implementierungsplan vorlegen und freigeben lassen.
-6. Bestell-/Zahlungs-/Belegprozess implementieren und Fehler-, Wiederholungs-, Sicherheits-, Versand- und Zahlungstests durchführen. Kostenpflichtige Dienste und Livezahlungen gesondert freigeben.
+5. Mietbedingungen, Anbieter, Postfach, Steuer-/Rechnungswesen und Zusatzkosten klären; keine erneute allgemeine Implementierungsfreigabe nötig.
+6. Echte Anbieter- und Versandtests nach sicherer Konfiguration und konkreter Freigabe durchführen. Kostenpflichtige Dienste und Livezahlungen nicht aus der Codefreigabe ableiten.
 7. Domain/Hosting und Serverautomatik vorbereiten. Erst nach fachlicher Abnahme und tatsächlicher HTTPS-Prüfung als online beziehungsweise fertig melden.
 
 ## Dokumentation und Sicherung

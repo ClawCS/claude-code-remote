@@ -46,6 +46,11 @@ next-env.d.ts
 
 # Bewerbungen (private Personendaten + Datei-Uploads)
 /data/bewerbungen/
+/data/rental-orders/
+/.rental-local/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 
 # Laufzeitdaten & Build-Artefakte (werden zur Laufzeit/beim Build erzeugt — nicht versionieren, verhindert Merge-Konflikte)
 /data/community.json

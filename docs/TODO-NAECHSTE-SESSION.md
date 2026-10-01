@@ -2,22 +2,23 @@
 
 Stand: 1. Oktober 2026. Arbeitsort und bestätigte Vorgaben: [PROJECT-STATUS.md](PROJECT-STATUS.md). Diese Checkliste ersetzt die veralteten Teamzuordnungen, pauschalen Backend-Aufgaben und ungeprüften Importwünsche der alten Liste; historische Fassungen bleiben in Git.
 
-Der öffentliche Server ist laut Betreiber noch nicht online. Keine Veröffentlichung, kostenpflichtige Einrichtung oder Livezahlung aus dem Sicherungsauftrag ableiten.
+Der öffentliche Server ist laut Betreiber noch nicht online. Der Mietablauf wurde anschließend ausdrücklich zur Implementierung freigegeben. Keine Veröffentlichung, kostenpflichtige Einrichtung oder Livezahlung daraus ableiten. Einrichtung und Abnahme: [RENTAL-ORDER-RUNBOOK.md](RENTAL-ORDER-RUNBOOK.md).
 
 ## Betreiberantworten zuerst
 
 - [ ] [OFFENE-FRAGEN.md](OFFENE-FRAGEN.md) beantworten und Entscheidungen gezielt übernehmen.
 - [ ] Domain/Hosting und Betrieb bei ausgeschaltetem Mac klären.
 - [ ] Firmennachweise, fachliche Rechtsprüfung, Datenschutz-/Aufbewahrungsregeln und Altbestände abstimmen.
-- [ ] Zahlungszeitpunkt/-frist, Kaution, Lieferung, Zusatzkosten, Stornierung und Übergabezeiten klären.
+- [x] Zahlungszeitpunkt: nach Marktannahme per Link oder bar bei Abholung.
+- [ ] Zahlungsfrist, Kaution, Lieferung, Zusatzkosten, Stornierung und Übergabezeiten klären.
 - [ ] Anbieter, Kostenrahmen, Sammelpostfach, Versand und Rechnungswesen festlegen.
 - [ ] Steuersatz, Kundengruppen, Belegzeitpunkte und Marktberechtigungen bestätigen.
 
 ## Technische und redaktionelle Arbeit danach
 
-- [ ] Mietkalender zeitzonenunabhängig reparieren und NRW-Feiertage integrieren; 23.–26.10.2026 muss drei Werktage ergeben.
-- [ ] Dreierblöcke, Grenzfälle, Mengen und Cent-Rundung testen; keine verbindlichen Summen bei fehlenden Geschäftsregeln aktivieren.
-- [ ] Acht unbepreiste Artikel auf Anfrage lassen oder bestätigte Preise übernehmen; keine gemischte Auswahl als vollständig bepreist ausgeben.
+- [x] Mietkalender zeitzonenunabhängig reparieren und NRW-Feiertage integrieren; 23.–26.10.2026 ergibt drei Werktage.
+- [x] Dreierblöcke, Grenzfälle, Mengen und Cent-Rundung testen; Live-Aktivierung ohne vollständige Konfiguration sperren.
+- [x] Acht unbepreiste Artikel auf Anfrage lassen; gemischte Auswahl nicht als vollständig bepreist ausgeben.
 - [ ] Exakte NL-KW40-Seite beschaffen und Datum, Sprache, Einzelpage, Dateien und SHA-256 nach Runbook prüfen. KW41 nicht ersetzen lassen.
 - [ ] Vier fehlende Gewinnspielcover zuordnen oder begrenzte Ausnahmeentscheidung abwarten.
 - [ ] Harpe-/Justin-Bildzuordnung abgleichen; keine Gesichtsidentifikation. Neue Personenmotive nur mit belegter Freigabe.
@@ -26,11 +27,13 @@ Der öffentliche Server ist laut Betreiber noch nicht online. Keine Veröffentli
 
 ## Verbindlicher Checkout als eigener Ausbau
 
-- [ ] Mietcheckout-Entwurf vervollständigen; anschließend konkreten Implementierungsplan freigeben lassen.
-- [ ] Serverseitige Preis-/Bestandsprüfung, dauerhafte Bestellungen und Wiederholungsschutz umsetzen.
-- [ ] Zahlung, Marktannahme, Barzahlung und Erstattungen getrennt nachverfolgen.
-- [ ] Rechnungs-/Lieferscheinprozess und Versand an beide Empfänger ohne doppelte Nummern oder Bestellungen umsetzen.
-- [ ] Versandtests und Anbieter-Testzahlungen durchführen; tatsächliche Sendungen und Liveaktivierung gesondert freigeben lassen.
+- [x] Bestellablauf vom Betreiber freigegeben; Implementierungsplan angelegt und umgesetzt.
+- [x] Serverseitige Preis-/Bestandsprüfung, dauerhafte Bestellungen und Wiederholungsschutz umsetzen.
+- [x] Zahlung, Marktannahme, Barzahlung, Übergabe und Rückgabe getrennt nachverfolgen.
+- [x] Rechnungs-/Lieferscheinprozess und Versandwarteschlange an beide Empfänger ohne doppelte Nummern oder Bestellungen umsetzen.
+- [x] Lokale Zahlungssimulation und Mailaufzeichnung ohne externe Transaktionen integrieren.
+- [ ] Echte Anbieter-/Versandtests nach Kontoeinrichtung und konkreter Freigabe durchführen.
+- [ ] Stornierung/Erstattung und Aufbewahrung mit dem Betreiber festlegen; keine automatische Erstattung implementiert.
 - [ ] Vertrags-, Datenschutz-, Widerrufs- und Rechnungsinformationen fachlich abnehmen lassen.
 
 ## Veröffentlichung zuletzt

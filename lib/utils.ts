@@ -1,24 +1,8 @@
-/**
- * Berechnet die Anzahl der Werktage (Mo-Sa) zwischen zwei Daten (inklusive Start- und Endtag).
- * Samstag zählt als Werktag! Nur Sonntag ist frei.
- */
-export function calculateWorkdays(startDate: string, endDate: string): number {
-  if (!startDate || !endDate) return 0;
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  if (end < start) return 0;
+import { countRentalWorkdays } from "@/lib/rental-calendar";
 
-  let workdays = 0;
-  const current = new Date(start);
-  while (current <= end) {
-    const day = current.getDay();
-    // Nur Sonntag (0) ist KEIN Werktag. Mo-Sa (1-6) zählen.
-    if (day !== 0) {
-      workdays++;
-    }
-    current.setDate(current.getDate() + 1);
-  }
-  return workdays;
+/** Werktage (Mo–Sa) inklusive Abholung/Rückgabe, ohne NRW-Feiertage. */
+export function calculateWorkdays(startDate: string, endDate: string): number {
+  return countRentalWorkdays(startDate, endDate);
 }
 
 /**

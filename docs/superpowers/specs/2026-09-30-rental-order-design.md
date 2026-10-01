@@ -1,8 +1,8 @@
 # Verbindliche Leihbestellungen für Trinkgut Jammers
 
-Stand: 1. Oktober 2026. Entwurf zur Prüfung durch den Betreiber, noch keine Freigabe zur Backend-Implementierung oder Veröffentlichung eines verbindlichen Checkouts.
+Stand: 1. Oktober 2026. Der Betreiber hat den Ablauf Bestellung → Marktannahme → Zahlungslink/Barzahlung → statusgerechte Belege ausdrücklich zur Umsetzung freigegeben. Die lokale Implementierung liegt vor. Keine öffentliche Freischaltung ohne die weiterhin offenen Betriebs-/Rechts-/Steuerangaben.
 
-Der Betreiber hat am 1. Oktober bestätigt, dass der öffentliche Server noch nicht online ist. Lokal-/GitHub-Sicherung ist keine Veröffentlichungs-, Zahlungsanbieter- oder Checkout-Freigabe. Der Fragenkatalog steht in [OFFENE-FRAGEN.md](../../OFFENE-FRAGEN.md), der Gesamtstand in [PROJECT-STATUS.md](../../PROJECT-STATUS.md).
+Der öffentliche Server ist noch nicht online. Die neue Umsetzungsfreigabe ersetzt die frühere reine Sicherungsfreigabe, nicht aber die Einrichtung kostenpflichtiger Dienste oder Livezahlungen. Aktuelle Betriebsanleitung: [RENTAL-ORDER-RUNBOOK.md](../../RENTAL-ORDER-RUNBOOK.md). Offene Daten: [OFFENE-FRAGEN.md](../../OFFENE-FRAGEN.md).
 
 ## Ziel und bestätigte Regeln
 
@@ -26,7 +26,7 @@ Der sichtbare Cocktail-Reiter, die Mengenbedienung und die Kennzeichnung der Pre
 
 Diese Angaben dürfen nicht aus der bisherigen, ungenutzten Preisfunktion abgeleitet oder erfunden werden:
 
-- Zahlungszeitpunkt für Online-Zahlungen, Frist für die Zahlung nach Marktbestätigung und Behandlung nicht bezahlter Bestellungen. Die gewünschten Zahlungsarten sind oben festgehalten; die konkrete Anbieterwahl bleibt offen.
+- Frist für die Zahlung nach Marktbestätigung und Behandlung nicht bezahlter Bestellungen. Der Zahlungszeitpunkt nach Marktannahme ist bestätigt; konkrete Anbieterfreischaltung bleibt offen.
 - Weitere verbindliche Kosten oder Bedingungen, insbesondere eine etwaige Kaution, Lieferung und Verspätung. Fehlende Angaben bedeuten nicht automatisch kostenlose Leistungen.
 - Einzelpreise für Theke, Spültheke, Weinglas klein, Altbierglas, Williglas, Kölschglas, Schnapsglas und Weißbierglas. Diese acht Artikel bleiben ausdrücklich „Preis auf Anfrage“, solange keine eindeutige Zuordnung bestätigt ist.
 - Rechnungsführendes System des Marktes, Rechnungsnummernkreis, anzuwendende Steuersätze sowie Zeitpunkt und Format der Rechnungserstellung. Das neue Sammelpostfach und ein sicher eingerichteter Versandzugang sind ebenfalls noch festzulegen.
@@ -35,7 +35,7 @@ Eine gemischte Auswahl aus bepreisten und unbepreisten Artikeln darf keinen ange
 
 ## Befund zur bestehenden Datumsfunktion
 
-Die bestehende Funktion `calculateWorkdays` in `lib/utils.ts` berücksichtigt keine Feiertage. Außerdem vermischt sie das Einlesen eines ISO-Datums als UTC-Zeitpunkt mit lokalen Tagesschritten. Der Bereich 23.10.2026–26.10.2026 liefert dadurch mit `TZ=Europe/Berlin` zwei Tage, mit `TZ=UTC` dagegen drei. Nach der bestätigten Regel müssen Freitag, Samstag und Montag unabhängig von der Laufzeitzeitzone zusammen drei Werktage ergeben. Dieser Befund wurde am 1. Oktober 2026 reproduziert; er ist noch nicht behoben. Vor Aktivierung der Preisberechnung sind eine zeitzonenunabhängige Kalenderzählung und der NRW-Feiertagskalender einschließlich Regressionstests erforderlich.
+Der frühere UTC-/Lokalzeit-Mischfehler wurde am 1. Oktober reproduziert und im neuen `lib/rental-calendar.ts` behoben. `calculateWorkdays` delegiert an die date-only-Zählung einschließlich NRW-Feiertagen. 23.–26.10.2026 liefert in Berlin, UTC und Los Angeles dieselben drei Werktage. Kalender- und Dreierblock-Grenzen sind automatisiert abgesichert.
 
 ## Kundenablauf
 
@@ -53,9 +53,9 @@ WhatsApp darf weiterhin für Rückfragen und unverbindliche Anfragen angeboten w
 
 Die Dokumentationsprüfung vom 1. Oktober 2026 ergibt zwei mögliche Anbieter: Mollie unterstützt [Apple Pay mit aktivierter Kartenzahlung](https://docs.mollie.com/gu/docs/apple-pay) und [Pay by Bank für deutsche Kunden](https://docs.mollie.com/docs/pay-by-bank). Pay by Bank bleibt bis zum Geldeingang ausstehend; eine sofortige Bestätigung ist nicht für jede Bank garantiert. [Eigenständiges SOFORT wurde bei Mollie eingestellt](https://help.mollie.com/hc/de/articles/20904206772626-SOFORT-wird-eingestellt-30-September-2024). Stripe ist eine Alternative für Karten und Apple Pay, führt [Pay by Bank für deutsche Kunden aktuell aber als Private Preview](https://docs.stripe.com/payments/pay-by-bank). Mollie ist deshalb ein vorläufig bevorzugter Kandidat für den gewünschten Bankzahlungsweg, keine bereits freigegebene oder eingerichtete Integration. Ein vorhandenes Händlerkonto und die Zulässigkeit der Vermietung sowie die konkrete Methodenfreischaltung sind vor Auswahl zu prüfen.
 
-Als noch nicht freigegebener Ablauf wird empfohlen, die Online-Zahlung erst nach ausdrücklicher Marktannahme und Prüfung des Termins anzufordern. Ein bestellbezogener, sicherer Zahlungslink führt zu einem gehosteten Checkout des ausgewählten Zahlungsdienstes. Dort stehen die tatsächlich im Händlerkonto freigeschalteten und für den Kunden verfügbaren Verfahren bereit. Die Website speichert keine Kreditkartendaten. Barzahlung vor Ort bleibt ein getrennt nachverfolgter Zahlungsweg.
+Freigegeben und implementiert: Online-Zahlung erst nach ausdrücklicher Marktannahme und Prüfung des Termins. Ein bestellbezogener sicherer Zahlungslink führt zum gehosteten Checkout. Dort stehen die tatsächlich im Händlerkonto freigeschalteten Verfahren bereit. Ein Mollie-Adapter ist vorbereitet, aber kein Händlerkonto eingerichtet. Die Website speichert keine Kreditkartendaten. Barzahlung vor Ort bleibt ein getrennt nachverfolgter Zahlungsweg.
 
-Alternativ wäre eine sofortige Online-Zahlung vor Verfügbarkeitsprüfung möglich. Dafür müssten Rückerstattungen bei Ablehnung sowie die unterschiedlichen Möglichkeiten zur Autorisierung und Abbuchung je Zahlungsart ausdrücklich gestaltet und freigegeben werden. Dieser Ablauf wird nicht stillschweigend gewählt.
+Online-Zahlung vor Verfügbarkeitsprüfung wird nicht verwendet. Rückerstattungen und Vertragsstornierungen sind nicht automatisch implementiert; sie benötigen einen abgestimmten manuellen Betriebsprozess beziehungsweise späteren Ausbau.
 
 Eine Weiterleitung auf die Erfolgsseite ist kein Zahlungsnachweis. Die Zahlung wird serverseitig anhand verifizierter Anbieterereignisse und des beim Anbieter abgefragten Bestellbezugs, Betrags, Währungs- und Zahlungsstatus abgeglichen. Doppelte und verspätete Meldungen dürfen weder zweite Bestellungen noch zweite Rechnungen erzeugen. Eine noch ausstehende Bankzahlung wird nicht als bezahlt ausgegeben. Barzahlung gilt erst nach einer dazu berechtigten Marktbestätigung als eingegangen.
 
@@ -65,9 +65,9 @@ Die Belegerstellung und der Versandzeitpunkt sind vor Umsetzung festzulegen. Vor
 
 ## Technischer Entwurf
 
-Der aktuelle Checkout in `app/checkout/page.tsx` öffnet ausschließlich einen E-Mail- oder WhatsApp-Entwurf. Im geprüften Projekt sind noch keine Zahlungsanbindung, dauerhafte Mietbestellspeicherung, automatischer Belegversand oder Schnittstelle zur Rechnungssoftware umgesetzt. Die Prüfung belegt nicht, ob außerhalb des Projekts schon passende Anbieter- oder Buchhaltungskonten existieren. Die öffentliche Produktionsadresse ist ebenfalls noch nicht konfiguriert; `data/editorial/source-config.json` enthält `publicUrl: null`. Ein öffentlich erreichbarer HTTPS-Server mit geeigneter Speicherung und Zahlungsbenachrichtigungen bleibt vor Live-Betrieb zu bestätigen.
+Der Checkout in `app/checkout/page.tsx` unterscheidet jetzt freigeschaltete, vollständig bepreiste Mietbestellungen vom bisherigen Anfrageweg. SQLite-Bestellspeicherung, geschützte Marktverwaltung, Zahlungsadapter, PDF-Belege und SMTP-Warteschlange sind implementiert. Eine Schnittstelle zum bestehenden Rechnungssystem ist nicht vorhanden. Die öffentliche Produktionsadresse bleibt unkonfiguriert (`publicUrl: null`). Geeigneter dauerhafter HTTPS-Server und reale Anbieter-/Mailzugänge bleiben vor Live-Betrieb erforderlich.
 
-Der neue Bestellprozess wird als getrenntes Subsystem neben dem bestehenden Anfrageweg entworfen. Der erweiterte Zielumfang benötigt fünf Bausteine; ihre konkrete Umsetzung ist noch nicht freigegeben:
+Der neue Bestellprozess wurde als getrenntes Subsystem neben dem Anfrageweg umgesetzt. Der freigegebene Ausbau enthält die folgenden Bausteine; aktuelle konkrete Architektur und Grenzen sind im Runbook festgehalten:
 
 - Eine zentrale Preisberechnung mit versionierten, bestätigten Geschäftsregeln. Sie arbeitet mit Centbeträgen und einem festgelegten Kalender für Europe/Berlin. Der Server berechnet alle Preise erneut anhand der Artikel-IDs; vom Browser übermittelte Summen werden nicht übernommen.
 - Einen Bestellendpunkt mit serverseitiger Prüfung von Artikeln, Mengen, Datumsbereich und Pflichtfeldern. Eine vom Server kontrollierte Wiederholungssperre verhindert, dass Doppelklicks oder Netzwerkwiederholungen mehrere Bestellungen erzeugen. Die unveränderten Bestandsgrenzen werden geprüft; sie ersetzen keine marktweite Live-Verfügbarkeitsprüfung.
@@ -91,7 +91,7 @@ Die Rechnungsprüfung umfasst insbesondere die Pflichtangaben nach [§ 14 UStG](
 
 ## Abnahme und Freigaben
 
-Vor der Umsetzung müssen die Preisregeln vervollständigt und dieser schriftliche Entwurf geprüft werden. Anschließend wird ein gesonderter Implementierungsplan mit dem konkreten Hosting, Speicher, Mailversand und den Vertragsinformationen vorgelegt. Die Freigabe dieses Entwurfs ersetzt nicht die Freigabe des Implementierungsplans.
+Der Betreiber hat die Umsetzung inzwischen ausdrücklich beauftragt. Der [Implementierungsplan](../plans/2026-10-01-rental-order-workflow.md) ist ausgeführt. Die folgenden Punkte trennen lokale technische Abnahme von weiterhin erforderlicher Freigabe des tatsächlichen Live-Betriebs.
 
 Vor Aktivierung des verbindlichen Checkouts müssen folgende Prüfungen erfolgreich sein:
 

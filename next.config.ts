@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   outputFileTracingIncludes: {
     "/*": ["./data/editorial/**/*.json"],
+    "/api/{rentals,rental-admin}/**": ["./assets/fonts/rental-document/**/*"],
     "/{,nl,angebote,handzettel,api/content/current,api/content/flyers}": ["./public/handzettel/20*/**/*.pdf", "./public/images/content/**/*"],
   },
   experimental: {
@@ -71,6 +72,10 @@ const nextConfig: NextConfig = {
       ...["de", "nl", "extracted"].map(legacy => ({
         source: `/handzettel/${legacy}/:path*`,
         headers: [{key:"X-Robots-Tag",value:"noindex, noarchive"}],
+      })),
+      ...["mietbestellung", "markt", "api/rentals", "api/rental-admin"].map(section => ({
+        source: `/${section}/:path*`,
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }, { key: "Cache-Control", value: "private, no-store" }],
       })),
       {
         source:"/handzettel/manifest.json",

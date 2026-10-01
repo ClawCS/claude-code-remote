@@ -7,12 +7,12 @@ test("rental selection, repeated additions and cart updates respect overlapping 
   await page.getByLabel("Gewünschte Rückgabe").fill("2026-10-07");
   const trailer = page.getByRole("spinbutton",{name:"Menge für Kühlanhänger",exact:true});
   await trailer.fill("2");
-  await page.getByRole("button",{name:"Zur Anfrageliste",exact:true}).click();
+  await page.getByRole("button",{name:"In den Warenkorb",exact:true}).click();
   await page.getByRole("dialog").getByRole("button",{name:"Schließen",exact:true}).click();
   await expect(trailer).toHaveAttribute("max","1");
   await trailer.fill("999");
   await expect(trailer).toHaveValue("1");
-  await page.getByRole("button",{name:"Zur Anfrageliste",exact:true}).click();
+  await page.getByRole("button",{name:"In den Warenkorb",exact:true}).click();
   await page.getByRole("dialog").getByRole("button",{name:"Schließen",exact:true}).click();
   await expect(trailer).toHaveAttribute("max","0");
   await page.goto("/warenkorb");
@@ -24,11 +24,11 @@ test("rental selection, repeated additions and cart updates respect overlapping 
   await expect(trailer).toHaveAttribute("max","0");
   await trailer.fill("999");
   await expect(trailer).toHaveValue("0");
-  await expect(page.getByRole("button",{name:"Zur Anfrageliste",exact:true})).toBeDisabled();
+  await expect(page.getByRole("button",{name:"In den Warenkorb",exact:true})).toBeDisabled();
   await page.getByLabel("Gewünschte Abholung").fill("2026-10-08");
   await expect(trailer).toHaveAttribute("max","3");
   await trailer.fill("3");
-  await page.getByRole("button",{name:"Zur Anfrageliste",exact:true}).click();
+  await page.getByRole("button",{name:"In den Warenkorb",exact:true}).click();
   await page.getByRole("dialog").getByRole("button",{name:"Schließen",exact:true}).click();
   await page.goto("/checkout");
   await expect(page.getByRole("heading",{name:"Reservierung unverbindlich anfragen"})).toBeVisible();

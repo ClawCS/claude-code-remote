@@ -44,7 +44,7 @@ test("rental controls are usable on mobile and reflect existing cart capacity", 
   expect(box?.width).toBeGreaterThanOrEqual(44);
   expect(box?.height).toBeGreaterThanOrEqual(44);
   await trailer.getByRole("spinbutton").fill("3");
-  await page.getByRole("button", { name: "Zur Anfrageliste", exact: true }).click();
+  await page.getByRole("button", { name: "In den Warenkorb", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Schließen", exact: true }).click();
   await expect(trailer.getByRole("spinbutton")).toHaveValue("0");
   await expect(plus).toBeDisabled();

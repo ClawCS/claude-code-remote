@@ -40,8 +40,8 @@ test("shared furniture selection cannot reserve bundles and single items on over
   await expect(table).toHaveValue("13");
   await expect(bench).toHaveValue("44");
   await expect(set).toHaveValue("0");
-  await page.getByRole("button", { name: "Zur Anfrageliste", exact: true }).click();
-  const drawer = page.getByRole("dialog", { name: "Deine Anfrageliste", exact: true });
+  await page.getByRole("button", { name: "In den Warenkorb", exact: true }).click();
+  const drawer = page.getByRole("dialog", { name: "Dein Mietwarenkorb", exact: true });
   await expect(drawer).toBeVisible();
   await expect(drawer.locator("li")).toHaveCount(2);
   await expect(drawer).toContainText("Tisch einzeln");
@@ -52,18 +52,18 @@ test("shared furniture selection cannot reserve bundles and single items on over
   await expect(set).toHaveAttribute("max", "0");
   await set.fill("13");
   await expect(set).toHaveValue("0");
-  await expect(page.getByRole("button", { name: "Zur Anfrageliste", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "In den Warenkorb", exact: true })).toBeDisabled();
 
   // Non-overlapping dates release the same physical pool for a separate request.
   await page.getByLabel("Gewünschte Abholung", { exact: true }).fill("2026-10-08");
   await page.getByLabel("Gewünschte Rückgabe", { exact: true }).fill("2026-10-09");
   await expect(set).toHaveAttribute("max", "13");
   await set.fill("13");
-  await page.getByRole("button", { name: "Zur Anfrageliste", exact: true }).click();
+  await page.getByRole("button", { name: "In den Warenkorb", exact: true }).click();
   await expect(drawer).toBeVisible();
   await expect(drawer.locator("li")).toHaveCount(3);
   await expect(drawer).toContainText("Bierzeltgarnitur");
-  await expect(drawer).toContainText("2026-10-08 – 2026-10-09");
+  await expect(drawer).toContainText("08.10.2026 – 09.10.2026");
 });
 
 test("warengruppen behalten den neuen Rahmen bei direktem Aufruf und Navigation", async ({ page }) => {
