@@ -1,0 +1,19 @@
+{
+  "runId": "2026-10-02T22-00-00-000Z-check-14c591ef",
+  "mode": "check",
+  "startedAt": "2026-10-02T04:18:19.247Z",
+  "evaluatedAt": "2026-10-02T22:00:00.000Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-09-28",
+    "validTo": "2026-10-03"
+  },
+  "sources": [],
+  "errors": [],
+  "warnings": [
+    "Öffentliche Bereitstellungs-URL fehlt; Live-Veröffentlichung noch nicht geprüft."
+  ],
+  "deploymentVerified": false,
+  "finishedAt": "2026-10-02T04:18:19.252Z",
+  "status": "degraded"
+}
