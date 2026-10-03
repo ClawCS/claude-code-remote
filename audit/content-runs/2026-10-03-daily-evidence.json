@@ -1,0 +1,112 @@
+{
+  "automationId": "jammers-werbung-und-ver-ffentlichung-pr-fen",
+  "checkedAt": "2026-10-03T04:19:30Z",
+  "timeZone": "Europe/Berlin",
+  "branch": "codex/cinematic-production",
+  "baseCommit": "9fe8cfd754763b155d30aca5d3547590b3a98c48",
+  "status": "degraded",
+  "targetWeek": {"year": 2026, "isoWeek": 40, "monday": "2026-09-28", "saturday": "2026-10-03"},
+  "reports": [
+    "audit/content-runs/2026-10-03T04-17-13-236Z-check-5d9a80c2.json",
+    "audit/content-runs/2026-10-03T04-17-45-691Z-check-f44688a1.json"
+  ],
+  "classification": {
+    "currentAdvertisingWindow": "expired-under-documented-KW40-exception",
+    "activeSources": [],
+    "currentCheckErrors": [],
+    "remainingWarning": "Öffentliche HTTPS-Produktionsadresse nicht konfiguriert; Live-Bereitstellung unbestätigt.",
+    "historicalNlGapResolved": false,
+    "explanation": "Die belegte KW40-Ausnahme verlangt am 03.10. keine abgelaufene Ausgabe mehr. Der leere aktuelle Index ist deshalb kein neuer fehlender Handzettel. Dies heilt nicht die fehlende NL-Originalausgabe während des vorherigen Pflichtzeitraums."
+  },
+  "canva": {
+    "readConnectionVerified": true,
+    "authenticatedBrowserVerified": true,
+    "pdfDownloadDialogAccessible": true,
+    "singlePageSelectionVerified": true,
+    "singlePageDownloadControlEnabled": true,
+    "originalExportCompletedThisRun": false,
+    "accountOrDesignModified": false,
+    "readScope": "Metadaten und alle 14 Datumszeilen der konfigurierten Maasduinen-HZ-Sammlung; authentifizierter Chrome-PDF-Dialog mit vorhandener Einzelseitenauswahl 14.",
+    "latestPrintedPeriod": "05.10.2026 - 10.10.2026",
+    "currentWeekOriginalFoundInConfiguredCollection": false,
+    "additionalSearchPerformed": false,
+    "reasonNoSearchOrExport": "KW40 ist nach der ausdrücklichen Runbook-Ausnahme abgelaufen. Die bereits erfolglos gezielt gesuchte Originaldatei wurde nicht erneut kontoweit gesucht. KW41 ist keine Ersatzwoche und wird heute nicht veröffentlicht.",
+    "exportDialogClosedAfterCheck": true
+  },
+  "officialDe": {
+    "catalogId": "1384969",
+    "version": 4,
+    "storeId": "13027",
+    "werbekreis": "3.6",
+    "language": "de",
+    "pageCount": 18,
+    "storedValidFrom": "2026-09-28",
+    "storedValidTo": "2026-10-02",
+    "activeAtCheck": false,
+    "expiredAtBerlin": "2026-10-03T00:00:00+02:00",
+    "expiredAtUtc": "2026-10-02T22:00:00Z",
+    "originalReDownloadedThisRun": false,
+    "previousOriginalInspection": "audit/content-runs/2026-10-02-daily-evidence.json",
+    "previouslyVerifiedPdfSha256": "505508adfa8b1e91525ddbc29408c5864e1180b3b320edddbb2e67461c2eabc3",
+    "previouslyVerifiedPreviewSha256": "4ae96323ffe6572884471f6fc6d4a190c1067a0d7b6029bde0d082450eefec39",
+    "integrityEvidenceScope": "Originaldatum, Sprache, 18 Seiten und Dateihashes wurden am 02.10. an lokalen Downloads geprüft. Heute keine aktive Datei zum Veröffentlichen; keine neue Originaldatei- oder Hashprüfung behauptet.",
+    "prepareRetryRequired": false,
+    "prepareRetryReason": "Die DE-Ausgabe fehlt nicht, sondern ist regulär abgelaufen. Kein Importversuch zur Wiederbelebung alter Preise."
+  },
+  "nl": {
+    "requiredAtCheck": false,
+    "historicalKw40OriginalStillUnresolved": true,
+    "localPdfPresent": false,
+    "localPreviewPresent": false,
+    "pageCountVerified": false,
+    "printedDateVerified": false,
+    "languageVerified": false,
+    "sha256Verified": false,
+    "imported": false,
+    "replacementWeekPublished": false,
+    "oldPricesExtended": false
+  },
+  "delivery": {
+    "publicUrl": null,
+    "deploymentVerified": false,
+    "websiteVerified": true,
+    "checkedLocalOrigins": ["http://localhost:3000"],
+    "routesChecked": ["/", "/angebote", "/handzettel", "/nl", "/api/content/current", "/api/content/flyers"],
+    "allRouteHttpStatuses": 200,
+    "apiCurrent": {"flyer": null, "nlFlyer": null, "fallbackMessage": "Der nächste Handzettel wird vorbereitet."},
+    "apiFlyers": {"status": "ok", "issues": [], "flyers": [], "scheduled": []},
+    "realTimeExpiryVerified": true,
+    "testClockUsed": false,
+    "browserViewportWidths": [1440, 390],
+    "browserRouteViewportChecks": 8,
+    "expiredCoverOrPdfLinkVisible": false,
+    "otherWeekPublishedAsFallback": false,
+    "emptyStatesVisible": true,
+    "horizontalOverflowObserved": false,
+    "genericExternalLinkNote": "Die leeren Flyeransichten behalten einen allgemeinen Link zur offiziellen externen Katalogübersicht. Kein abgelaufenes PDF, Cover oder anderes Wochenpaket wird als aktuelles Website-Angebot eingebunden.",
+    "publicDeploymentConclusion": "Ausschließlich lokale tatsächliche Ablaufprüfung. Ohne konfigurierte öffentliche HTTPS-Adresse keine Live-Veröffentlichungsbestätigung."
+  },
+  "tests": {
+    "command": "npm test -- lib/__tests__/editorial-schedule.test.ts lib/__tests__/flyer-packages.test.ts lib/__tests__/official-catalog-packages.test.ts lib/__tests__/content-verification.test.ts lib/__tests__/homepage-content.test.ts lib/__tests__/handzettel-catalog.test.ts",
+    "passedFiles": 6,
+    "passedTests": 250,
+    "exitCode": 0,
+    "contentCheckExitCode": 0,
+    "localWebsiteCheckExitCode": 0
+  },
+  "mutations": {
+    "contentUpdated": false,
+    "canvaChanged": false,
+    "instagramChanged": false,
+    "hostingChanged": false,
+    "onlyOwnAuditReportsEligibleForCommit": true,
+    "unrelatedWorkingTreeChangesPreserved": true
+  },
+  "notification": {
+    "newFailure": false,
+    "fixedFailure": false,
+    "relevantChange": "Erster tatsächlicher lokaler Nachweis nach Ablauf der gedruckten KW40-Gültigkeit: keine abgelaufene Werbung mehr in vier Seiten und beiden Inhalts-APIs.",
+    "duplicateNeedsNotificationSuppressed": true,
+    "noHistoricalNlRecoveryClaim": true
+  }
+}
