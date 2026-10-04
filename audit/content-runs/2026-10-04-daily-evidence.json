@@ -1,0 +1,94 @@
+{
+  "automationId": "jammers-werbung-und-ver-ffentlichung-pr-fen",
+  "checkedAt": "2026-10-04T04:20:10Z",
+  "timeZone": "Europe/Berlin",
+  "branch": "codex/cinematic-production",
+  "baseCommit": "66b435709accc4afba8ab71422456bc5ea8dd1dc",
+  "status": "degraded",
+  "targetWeek": {"year": 2026, "isoWeek": 40, "monday": "2026-09-28", "saturday": "2026-10-03"},
+  "reports": [
+    "audit/content-runs/2026-10-04T04-18-23-171Z-check-948e7bad.json",
+    "audit/content-runs/2026-10-04T04-18-23-728Z-check-cd7cec88.json"
+  ],
+  "classification": {
+    "currentAdvertisingWindow": "sunday-outside-offer-period",
+    "activeSources": [],
+    "currentCheckErrors": [],
+    "remainingWarning": "Öffentliche HTTPS-Produktionsadresse nicht konfiguriert; Live-Bereitstellung unbestätigt.",
+    "historicalNlGapResolved": false,
+    "explanation": "Sonntag außerhalb des Angebotszeitraums: Ein leerer aktueller Index ist laut Runbook erwartet. Die DE-KW40-Ausgabe war bereits am gedruckten 02.10. abgelaufen. Keine Ausgabe wird wieder aktiviert und die historische NL-Quellenlücke bleibt ungelöst.",
+    "nextPreparationPerRunbook": {"atBerlin": "2026-10-04T17:00:00+02:00", "validFrom": "2026-10-05", "validTo": "2026-10-10", "requiredLanguages": ["de", "nl"]},
+    "nextWeekPreparationPerformedThisRun": false
+  },
+  "canva": {
+    "readConnectionVerified": true,
+    "authenticatedBrowserVerified": true,
+    "pdfDownloadDialogAccessible": true,
+    "singlePageSelectionVerified": true,
+    "singlePageDownloadControlEnabled": true,
+    "originalExportCompletedThisRun": false,
+    "accountOrDesignModified": false,
+    "readScope": "Metadaten der konfigurierten Maasduinen-HZ-Sammlung und Datumszeile auf Seite 14; authentifizierter Chrome-PDF-Dialog mit vorhandener Einzelseitenauswahl 14.",
+    "collectionPageCount": 14,
+    "lastPagePrintedPeriod": "05.10.2026 - 10.10.2026",
+    "additionalSearchPerformed": false,
+    "reasonNoSearchOrExport": "Heute Morgen ist keine Ausgabe aktiv erforderlich. Die bekannte erfolglose KW40-Suche wird nicht wiederholt. Die vorhandene KW41-Seite wird nicht vorzeitig als aktuelles Angebot veröffentlicht; ihr vollständiger Originalexport und die redaktionelle Prüfung gehören zum Vorbereitungslauf.",
+    "exportDialogClosedAfterCheck": true
+  },
+  "originalEvidence": {
+    "activePackagePdfAndPreviewRequiredAtCheck": false,
+    "originalsReDownloadedThisRun": false,
+    "hashesRecomputedThisRun": false,
+    "previousDeOriginalInspection": "audit/content-runs/2026-10-02-daily-evidence.json",
+    "previousActualExpiryVerification": "audit/content-runs/2026-10-03-daily-evidence.json",
+    "scope": "Der frühere DE-Originalnachweis umfasst gedrucktes Datum, Sprache, 18 Seiten und SHA-256 von PDF und Vorschau. Heute wird die fortdauernde Nichtanzeige geprüft; keine neue Originaldatei- oder Hashprüfung behauptet.",
+    "localNlPdfPresent": false,
+    "localNlPreviewPresent": false,
+    "nlPageCountDateLanguageAndHashesVerified": false,
+    "dePrepareRetryRequired": false,
+    "dePrepareRetryReason": "Regulär abgelaufene, nicht fehlende aktive DE-Ausgabe. Sonntagmorgen kein Pflichtimport für die Folgewoche."
+  },
+  "delivery": {
+    "publicUrl": null,
+    "deploymentVerified": false,
+    "websiteVerified": true,
+    "checkedLocalOrigins": ["http://localhost:3000"],
+    "routesChecked": ["/", "/angebote", "/handzettel", "/nl", "/api/content/current", "/api/content/flyers"],
+    "allRouteHttpStatuses": 200,
+    "apiCurrent": {"flyer": null, "nlFlyer": null, "fallbackMessage": "Der nächste Handzettel wird vorbereitet."},
+    "apiFlyers": {"status": "ok", "issues": [], "flyers": [], "scheduled": []},
+    "realClockUsed": true,
+    "browserViewports": [{"width": 1440, "height": 1000}, {"width": 390, "height": 844}],
+    "browserRouteViewportChecks": 8,
+    "expiredOrFutureWeekCoverOrPdfVisible": false,
+    "emptyStatesVisibleAndLocalized": true,
+    "horizontalOverflowObserved": false,
+    "genericExternalLinkNote": "Die leeren Flyeransichten behalten den allgemeinen Link zur offiziellen externen Katalogübersicht. Kein datiertes Ersatzpaket wird als aktuelles Website-Angebot eingebunden; der externe Viewer wurde nicht als öffentlich geprüfte Website ausgegeben.",
+    "publicDeploymentConclusion": "Ausschließlich lokale Prüfung. Ohne konfigurierte öffentliche HTTPS-Adresse keine Live-Veröffentlichungsbestätigung."
+  },
+  "tests": {
+    "command": "npm test -- lib/__tests__/editorial-schedule.test.ts lib/__tests__/flyer-packages.test.ts lib/__tests__/official-catalog-packages.test.ts lib/__tests__/content-verification.test.ts lib/__tests__/homepage-content.test.ts lib/__tests__/handzettel-catalog.test.ts",
+    "passedFiles": 6,
+    "passedTests": 250,
+    "exitCode": 0,
+    "contentCheckExitCode": 0,
+    "localWebsiteCheckExitCode": 0
+  },
+  "mutations": {
+    "contentUpdated": false,
+    "canvaChanged": false,
+    "instagramChanged": false,
+    "hostingChanged": false,
+    "replacementWeekPublished": false,
+    "oldPricesExtended": false,
+    "onlyOwnAuditReportsEligibleForCommit": true,
+    "unrelatedWorkingTreeChangesPreserved": true
+  },
+  "notification": {
+    "newFailure": false,
+    "fixedFailure": false,
+    "relevantContentChange": false,
+    "duplicateNeedsNotificationSuppressed": true,
+    "reason": "Unverändert erwarteter Zustand außerhalb des Angebotszeitraums; bekannte fehlende öffentliche URL nicht erneut angefordert. Die historische NL-Lücke wird nicht als behoben gemeldet."
+  }
+}

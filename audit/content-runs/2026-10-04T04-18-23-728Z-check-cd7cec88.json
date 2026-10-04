@@ -1,0 +1,21 @@
+{
+  "runId": "2026-10-04T04-18-23-728Z-check-cd7cec88",
+  "mode": "check",
+  "startedAt": "2026-10-04T04:18:23.729Z",
+  "evaluatedAt": "2026-10-04T04:18:23.728Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-09-28",
+    "validTo": "2026-10-03"
+  },
+  "sources": [],
+  "errors": [],
+  "warnings": [
+    "Keine bestätigte öffentliche Produktionsadresse geprüft; nur Website-/Vorschauprüfung."
+  ],
+  "deploymentVerified": false,
+  "websiteVerified": true,
+  "checkedUrl": "http://localhost:3000",
+  "finishedAt": "2026-10-04T04:18:24.000Z",
+  "status": "degraded"
+}
