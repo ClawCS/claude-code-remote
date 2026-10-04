@@ -1,0 +1,31 @@
+{
+  "runId": "2026-10-04T15-05-19-868Z-prepare-24661cb4",
+  "mode": "prepare",
+  "startedAt": "2026-10-04T15:05:19.868Z",
+  "evaluatedAt": "2026-10-04T15:05:19.868Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "1390117",
+      "file": "data/editorial/official-catalogs/2026-10-05.json",
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "sha256": "4d73c7652a97b23a35a37eaaebb0afd52fbee33c57af16bce66d7758be3fdcbf",
+      "result": "verified"
+    }
+  ],
+  "errors": [
+    "Pflicht-NL-Flyer fehlt: genau eine geprüfte Canva-Seite für die vollständige Zielwoche erforderlich."
+  ],
+  "warnings": [
+    "Öffentliche Bereitstellungs-URL fehlt; Live-Veröffentlichung noch nicht geprüft."
+  ],
+  "deploymentVerified": false,
+  "finishedAt": "2026-10-04T15:05:23.803Z",
+  "status": "failed"
+}
