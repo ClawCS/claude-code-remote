@@ -1,0 +1,120 @@
+{
+  "automationId": "jammers-werbung-und-ver-ffentlichung-pr-fen",
+  "triggeredAt": "2026-10-05T06:26:57.706Z",
+  "timeZone": "Europe/Berlin",
+  "target": { "validFrom": "2026-10-05", "validTo": "2026-10-10", "kw": 41, "year": 2026 },
+  "baselineCommit": "a9aabdf18c92dfb559ab68723e1407b5423579ba",
+  "status": "failed",
+  "reason": "The valid DE issue is active. The mandatory NL issue remains withheld for the same original price/condition conflicts reported on 2026-10-04; no complete weekly package.",
+  "previousEvidence": "audit/content-runs/2026-10-04-weekly-evidence.json",
+  "officialDe": {
+    "catalogId": "1390117",
+    "catalogVersion": "1",
+    "storeId": "13027",
+    "werbekreis": "3.6",
+    "language": "de",
+    "pageCount": 18,
+    "printedValidFrom": "2026-10-05",
+    "printedValidTo": "2026-10-10",
+    "dateExceptionApplied": false,
+    "originalVisualReview": "Complete title page and final PDF page reviewed on 2026-10-04. Fresh complete remote bytes and local original hashes today match that reviewed original exactly.",
+    "pdf": {
+      "url": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+      "httpStatus": 200,
+      "bytes": 11639099,
+      "freshFullGetElapsedMs": 3338,
+      "sha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+      "remoteAndPrivateLocalOriginalMatch": true
+    },
+    "cover": {
+      "url": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1390117/v1/normal/bk_1.jpg",
+      "httpStatus": 200,
+      "bytes": 161525,
+      "freshFullGetElapsedMs": 326,
+      "sha256": "a9ac782ae646c830ea71b4448fda2ceac8ba06d5b9c0ec93c69fb51828220a51",
+      "remoteAndPrivateLocalOriginalMatch": true
+    },
+    "prepareRetryNeeded": false,
+    "validDePreserved": true
+  },
+  "canvaNl": {
+    "designId": "DAHHqrttnew",
+    "title": "Maasduinen HZ",
+    "designPageCount": 14,
+    "designUpdatedAtReported": 1791126362,
+    "selectedOriginalPage": 14,
+    "printedValidFrom": "2026-10-05",
+    "printedValidTo": "2026-10-10",
+    "language": "nl",
+    "connectorReadVerified": true,
+    "targetedSourceCheck": "Read exact known KW41 page 14 and inspected the full current page in the authenticated editor. The five previously documented price contradictions and missing Krombacher quantity condition remain; an updated design timestamp is not treated as a correction.",
+    "authenticatedBrowserExportAccessVerified": true,
+    "exportDialog": { "type": "PDF", "preset": "Digital", "selectedPage": 14, "downloadButtonEnabled": true },
+    "newExportPerformed": false,
+    "reasonNoNewExport": "The unchanged erroneous original is not approved for publication. Existing authentic one-page export remains held privately; no redundant export or alternative-week search.",
+    "privatePdf": {
+      "path": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/nl-original-held.pdf",
+      "pageCount": 1,
+      "sha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "freshHashMatches": true
+    },
+    "privatePreview": {
+      "path": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/nl-preview-held.png",
+      "format": "png",
+      "width": 2600,
+      "height": 1860,
+      "sha256": "2b6e6be27cffdb6a979c62c17a4c1f2d0ee08489ddbdfaa21c4337afed64ac64",
+      "freshHashMatches": true
+    },
+    "publicationStatus": "withheld",
+    "flyersJsonRemainsEmpty": true,
+    "reviewQueueItem": "nl-weekly-2026-10-05-price-review",
+    "notificationKey": "kw41-nl-price-conflicts-65fedf4c7016dfd9",
+    "existingOperatorActionUnchanged": "Correct and approve the actual price/quantity/condition information on Canva page 14 before original re-export and publication.",
+    "canvaAndInstagramModified": false
+  },
+  "localWebsite": {
+    "url": "http://localhost:3000",
+    "realClock": true,
+    "testClockOrFixtureUsed": false,
+    "routes": ["/", "/angebote", "/handzettel", "/nl"],
+    "apiRoutes": ["/api/content/current", "/api/content/flyers"],
+    "allHttpStatus": 200,
+    "viewports": [{ "width": 1440, "height": 1000 }, { "width": 390, "height": 844 }],
+    "activeDe": "1390117 v1 / catalog-13027-41-2026 / 18 pages / 2026-10-05–2026-10-10",
+    "activeNl": null,
+    "flyerIndexStatus": "degraded",
+    "flyerIndexIssues": ["nl-flyer-missing"],
+    "scheduledFlyers": [],
+    "oldCatalogOrSubstituteWeekVisible": false,
+    "correctPdfAndCoverLinks": true,
+    "uncroppedCoverVerifiedAfterRecheck": true,
+    "horizontalOverflow": false,
+    "missingNlNoticesCorrectInBothLanguages": true,
+    "transientObservations": [
+      "Initial desktop /angebote and /handzettel rendered the cover-error fallback. A fresh targeted retry of both routes rendered the correct full cover. Fresh original and optimized image URLs responded HTTP 200. A persistent source-file or content regression was not established.",
+      "The mobile embedded viewer opened, then displayed its existing 8-second loading-error fallback. Correct external-viewer and original-PDF links remained available. A later complete original PDF fetch succeeded with the expected hash. The cause of the iframe timeout is unconfirmed; no unsupported code fix or timeout change was made."
+    ],
+    "consoleErrors": [],
+    "consoleAdvisories": "Two LCP eager-loading advisories; no runtime errors reported.",
+    "temporaryEvidenceDirectory": "/tmp/jammers-oct5-ui-SYKBi9",
+    "ownTabsClosedAndViewportReset": true,
+    "existingServerUnchanged": true
+  },
+  "checks": {
+    "sourceCheckReport": "audit/content-runs/2026-10-05T06-29-56-985Z-check-f2dc7e62.json",
+    "sourceCheckExitCode": 1,
+    "localWebsiteCheckReport": "audit/content-runs/2026-10-05T06-40-58-372Z-check-ac5fb942.json",
+    "localWebsiteCheckExitCode": 1,
+    "expectedFailures": ["Mandatory NL flyer absent because its original remains blocked", "Flyer index reports degraded for that same missing NL issue"],
+    "focusedTests": { "files": 6, "passed": 250, "failed": 0, "exitCode": 0 },
+    "contentOrCodeChanges": false,
+    "buildNotRepeated": "No content or code changed; this run verifies the existing checked deployment files, not a new build."
+  },
+  "publication": { "publicUrl": null, "websiteVerified": false, "deploymentVerified": false, "status": "Public deployment remains unconfirmed; localhost and GitHub are not live evidence." },
+  "notification": {
+    "repeatNlOrPublicUrlAlertSuppressed": true,
+    "reason": "The operator was already notified on 2026-10-04. No corrected source, new operator requirement or persistent content outage was established. Transient browser observations are retained in this audit, not presented as repaired bugs."
+  },
+  "preservation": { "preExistingDirtyScreenshotsAndTwoUntrackedReportsPreserved": true, "privateOriginalsNotStaged": true, "onlyOwnAuditFilesToCommit": true }
+}
