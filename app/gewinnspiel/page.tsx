@@ -4,6 +4,7 @@ import styles from "@/components/giveaways/giveaways.module.css";
 import { getActiveGiveaways, getMonthlyAgenda } from "@/lib/giveaways";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 import { SITE_LINKS } from "@/lib/cinematic/site";
+import { GIVEAWAYS_UPDATED_ON } from "@/data/giveaways";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,7 +33,7 @@ export default function GewinnspielPage() {
       <section id="jahresagenda" className={styles.section} aria-labelledby="agenda-heading">
         <div className={styles.sectionHeading}><h2 id="agenda-heading">Jahresagenda 2026</h2><p>Die Monatszuordnung ist eine Kalenderübersicht, kein Veröffentlichungsdatum.</p></div>
         <div className={styles.grid}>{agenda.map((slot) => slot.giveaway && slot.status !== "unannounced" ? <GiveawayCard key={slot.month} giveaway={slot.giveaway} status={slot.status} label={`${slot.monthName} ${slot.year}`} /> : <article key={slot.month} className={`${styles.card} ${styles.pending}`} data-month={slot.month}><p className={styles.eyebrow}>{slot.monthName} {slot.year}</p><h3>Noch nicht angekündigt</h3><p className={styles.description}>Für diesen Monat liegt noch kein belegtes Monatsgewinnspiel vor.</p></article>)}</div>
-        <p className={styles.note} style={{ marginTop: "1.5rem" }}>Stand der belegten Beiträge: 30.09.2026. Sondergewinnspiele stehen getrennt von der Monatsagenda. Beendete Aktionen sind keine aktuellen Gewinnchancen.</p>
+        <p className={styles.note} style={{ marginTop: "1.5rem" }}>Zuletzt aktualisiert: {GIVEAWAYS_UPDATED_ON}. Sondergewinnspiele stehen getrennt von der Monatsagenda. Beendete Aktionen sind keine aktuellen Gewinnchancen.</p>
       </section>
     </div>
   );

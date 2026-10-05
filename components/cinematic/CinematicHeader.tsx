@@ -6,6 +6,7 @@ import { CINEMATIC_NAV, SITE_LINKS } from "@/lib/cinematic/site";
 
 import LiveMarketStatus from "./LiveMarketStatus";
 import MobileNavigation from "./MobileNavigation";
+import NavigationDisclosure from "./NavigationDisclosure";
 import styles from "./chrome.module.css";
 
 type CinematicHeaderProps = Readonly<{
@@ -32,10 +33,10 @@ export default function CinematicHeader({
         <nav className={styles.desktopNav} aria-label="Hauptnavigation">
           <ul className={styles.desktopNavList}>
             {items.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} prefetch={false}
+              <li key={item.label}>
+                {"children" in item ? <NavigationDisclosure item={item} /> : <Link href={item.href} prefetch={false}
                   {...(item.href.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                >{item.label}</Link>
+                >{item.label}</Link>}
               </li>
             ))}
           </ul>

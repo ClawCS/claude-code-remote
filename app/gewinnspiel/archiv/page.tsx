@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import GiveawayCard from "@/components/giveaways/GiveawayCard";
 import styles from "@/components/giveaways/giveaways.module.css";
-import { GIVEAWAYS_2026 } from "@/data/giveaways";
+import { GIVEAWAYS_2026, GIVEAWAYS_UPDATED_ON } from "@/data/giveaways";
 import { getGiveawayStatus, getMonthlyAgenda } from "@/lib/giveaways";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 
@@ -28,7 +28,7 @@ export default function AktionenArchivPage() {
         {ended.length ? <div className={styles.grid}>{ended.map((slot) => <GiveawayCard key={slot.month} giveaway={slot.giveaway!} status="ended" label={`${slot.monthName} 2026`} />)}</div> : <p className={styles.empty}>Für diesen Kalenderstand ist noch kein belegtes Monatsgewinnspiel beendet.</p>}
       </section>
       {special.length > 0 && <section className={styles.section} aria-labelledby="sonderarchiv-heading"><div className={styles.sectionHeading}><h2 id="sonderarchiv-heading">Beendete Sondergewinnspiele</h2></div><div className={styles.grid}>{special.map((giveaway) => <GiveawayCard key={giveaway.id} giveaway={giveaway} status="ended" label="Sondergewinnspiel 2026" />)}</div></section>}
-      <p className={styles.note}>Die Jahresagenda bleibt als Rückblick auf 2026 erhalten. Die Originalbeiträge wurden am 30.09.2026 geprüft.</p>
+      <p className={styles.note}>Die Jahresagenda bleibt als Rückblick auf 2026 erhalten. Zuletzt aktualisiert: {GIVEAWAYS_UPDATED_ON}.</p>
     </div>
   );
 }

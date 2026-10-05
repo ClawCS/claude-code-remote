@@ -67,7 +67,7 @@ export default function LocationFooter(): React.JSX.Element {
       <p className={styles.footerFineprint}>
         <Link href="/cocktails" prefetch={false}>Cocktail-Rezepte</Link>{" · "}
         <Link href="/partyplaner" prefetch={false}>Party planen</Link>{" · "}
-        <Link href="/akademie" prefetch={false}>Getränkewissen</Link>{" · "}
+        <Link href="/akademie" prefetch={false}>Getränkeakademie</Link>{" · "}
         <Link href="/geschenkideen" prefetch={false}>Geschenkideen</Link>{" · "}
         <Link href="/marktleben" prefetch={false}>Marktleben</Link>{" · "}
         <Link href="/regionale-spirituosen" prefetch={false}>Regionale Spezialitäten</Link>{" · "}

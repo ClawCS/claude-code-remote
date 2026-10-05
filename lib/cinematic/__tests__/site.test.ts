@@ -29,7 +29,10 @@ describe("verified market contract", () => {
     expect(CINEMATIC_NAV).toEqual([
       { label: "Angebote", href: "/angebote" },
       { label: "Sortiment", href: "/produkte" },
-      { label: "Cocktail-Rezepte", href: "/cocktails" },
+      { label: "Rezepte & Wissen", children: [
+        { label: "Cocktail-Rezepte", href: "/cocktails" },
+        { label: "Getränkeakademie", href: "/akademie" },
+      ] },
       { label: "Party & Miete", href: "/vermietung" },
       { label: "Eigenmarken", href: "/eigenmarke" },
       { label: "Gewinnspiele", href: "/gewinnspiel" },

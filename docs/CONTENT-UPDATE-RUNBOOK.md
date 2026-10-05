@@ -10,6 +10,8 @@ Einzige belegte Datums-Ausnahme: KW40/2026. Die Original-PDFs und vollständigen
 
 ## Verbindliche Fotoregel
 
+Maßgeblich sind die rubrikbezogenen Ausnahmen in `AGENTS.md`: Seit 05.10.2026 sind für Cocktailrezepte ausdrücklich belegte externe Originalfotografien zugelassen. Diese Ausnahme gilt nicht für Wochenwerbung, Markt- oder Gewinnspielbilder. Die separate Monatsredaktion der Gewinnspiele folgt `GIVEAWAY-UPDATE-RUNBOOK.md`.
+
 Seit 30.09.2026 dürfen Homepage-Fotos ausschließlich aus Nikos Canva-Bestand stammen. Für jede neue Bildverwendung Canva-Design und Seite beziehungsweise Upload-Asset, originalen Export, SHA-256, Freigabe, Rubrik und motivabhängigen Ausschnitt belegen. Lokale Originale ohne diese Zuordnung sind nicht automatisch Canva-verifiziert. Keine externen Stock- oder KI-Ersatzfotos. Die konkrete Regel in `AGENTS.md` ist auch bei wöchentlichen Läufen einzuhalten.
 
 Zuordnung: Markt/Beratung zum Einstieg und Marktleben; Menschen zum Team; echte Leihartikel zu Party/Vermietung; Produkt- und Regalfotos zur jeweiligen Kategorie; Aktionen zu ihrem belegten Zeitraum. Keine beliebige Wiederholung derselben Fotos über unpassende Rubriken. Gruppenbilder natürlich/breit halten, Portraits motivabhängig rahmen, Beschriftungen und Gesichter in Desktop und Mobil vollständig berücksichtigen. Canva-Originale werden nicht verändert; Web-Derivate sind lokale Exporte, keine signierten Vorschaulinks.

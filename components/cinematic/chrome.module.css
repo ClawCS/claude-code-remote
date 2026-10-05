@@ -53,6 +53,7 @@
 }
 
 .desktopNav a,
+.navDisclosure summary,
 .mobilePanel a,
 .whatsapp,
 .mobileDetails summary {
@@ -68,6 +69,28 @@
   text-transform: none;
   white-space: nowrap;
 }
+
+.navDisclosure { position: relative; }
+.navDisclosure summary { gap: var(--cinematic-spacing-xs); cursor: pointer; list-style: none; }
+.navDisclosure summary::-webkit-details-marker { display: none; }
+.navDisclosure summary:hover, .navDisclosure[open] summary { color: var(--cinematic-color-red); }
+.navDisclosure summary:focus-visible { outline: 2px solid var(--cinematic-color-red); outline-offset: 3px; }
+.knowledgePanel {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  min-width: 13rem;
+  margin: 0;
+  padding: var(--cinematic-spacing-sm);
+  list-style: none;
+  border: 1px solid var(--cinematic-color-line);
+  border-block-start: 3px solid var(--cinematic-color-red);
+  background: var(--cinematic-color-surface);
+  box-shadow: 0 .75rem 1.5rem var(--cinematic-color-shadow);
+}
+.knowledgePanel a { width: 100%; justify-content: flex-start; padding-inline: var(--cinematic-spacing-sm); }
+.mobileGroupLabel { display: block; padding: var(--cinematic-spacing-sm); color: var(--cinematic-color-muted); font-size: var(--cinematic-typography-size-label); }
+.mobileChildren { margin: 0; padding: 0 0 0 var(--cinematic-spacing-sm); list-style: none; }
 
 .status {
   display: none;

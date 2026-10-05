@@ -11,6 +11,7 @@ const clientIslands = [
   "components/cinematic/LiveMarketStatus.tsx",
   "components/cinematic/MobileNavigation.tsx",
   "components/cinematic/MotionIsland.tsx",
+  "components/cinematic/NavigationDisclosure.tsx",
 ] as const;
 
 const serverSources = [
@@ -41,7 +42,7 @@ function startsWithClientDirective(value: string): boolean {
 }
 
 describe("cinematic homepage component boundaries", () => {
-  test("allows exactly the four planned page-local client islands", () => {
+  test("limits page-local interactivity to the planned client islands", () => {
     const actualClientIslands = existsSync(cinematicComponentsDirectory)
       ? readdirSync(cinematicComponentsDirectory)
           .filter((fileName) => fileName.endsWith(".tsx"))

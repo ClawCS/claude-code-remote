@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cocktailImages } from "@/data/cocktail-images";
+import { getCocktailPhoto } from "@/data/cocktail-images";
+import CocktailPhoto from "@/components/recipes/CocktailPhoto";
 import { RecipeIntro } from "@/components/recipes/RecipeCollection";
 import { cocktailCatalog, findCocktail } from "@/lib/cocktail-routes";
 
@@ -21,7 +21,7 @@ export default async function CocktailRecipePage({ params }: Props) {
   if (!recipe) notFound();
   const cocktail = recipe.cocktail;
   const category = cocktailCatalog.categories.find((item) => item.name === cocktail.category)!;
-  const image = cocktailImages[cocktail.name];
+  const photo = getCocktailPhoto(cocktail.name);
   return (
     <>
       <RecipeIntro title={cocktail.name} description={`${cocktail.category} · ${cocktail.difficulty} · ${cocktail.ingredients.length} Zutaten`} category={category} />
@@ -30,7 +30,7 @@ export default async function CocktailRecipePage({ params }: Props) {
           <Link href="/cocktails" className="text-primary underline underline-offset-4">Alle Cocktail-Rezepte</Link>
           <Link href={category.href} className="text-primary underline underline-offset-4">Kategorie: {category.name}</Link>
         </div>
-        {image && <div className="relative aspect-[4/3] mb-8 rounded-2xl overflow-hidden"><Image src={image} alt={cocktail.name} fill sizes="(max-width: 896px) 100vw, 896px" className="object-cover" /></div>}
+        {photo && <CocktailPhoto photo={photo} />}
         <div className="grid md:grid-cols-[1fr_1.4fr] gap-8 md:gap-12">
           <section aria-labelledby="recipe-ingredients" className="bg-white border border-border rounded-2xl p-6 md:p-8">
             <h2 id="recipe-ingredients" className="text-2xl font-bold text-secondary mb-5">Zutaten</h2>

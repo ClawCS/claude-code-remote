@@ -18,11 +18,16 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "audit/lighthouse/**",
+    // Private editorial evidence and one-off research helpers are not app code.
+    "assets/source/cocktails/**",
+    "assets/source/giveaways/**",
   ]),
   // React 19 react-hooks/set-state-in-effect: too strict for our patterns
   // (legitimate state-syncs from MediaQueries, scroll listeners, etc.).
   // We treat as warning instead of error.
   {
+    // Match the file scope in which eslint-config-next registers react-hooks.
+    files: ["**/*.{js,jsx,mjs,ts,tsx,mts,cts}"],
     rules: {
       "react-hooks/set-state-in-effect": "warn",
     },

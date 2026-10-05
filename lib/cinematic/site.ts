@@ -24,10 +24,16 @@ export const SITE_LINKS = Object.freeze({
   nl: "/nl",
 } as const);
 
-export const CINEMATIC_NAV = Object.freeze([
+export type NavLink = Readonly<{ label: string; href: string }>;
+export type NavItem = NavLink | Readonly<{ label: string; children: readonly NavLink[] }>;
+
+export const CINEMATIC_NAV: readonly NavItem[] = Object.freeze([
   { label: "Angebote", href: "/angebote" },
   { label: "Sortiment", href: "/produkte" },
-  { label: "Cocktail-Rezepte", href: "/cocktails" },
+  { label: "Rezepte & Wissen", children: [
+    { label: "Cocktail-Rezepte", href: "/cocktails" },
+    { label: "Getränkeakademie", href: "/akademie" },
+  ] },
   { label: "Party & Miete", href: "/vermietung" },
   { label: "Eigenmarken", href: "/eigenmarke" },
   { label: "Gewinnspiele", href: "/gewinnspiel" },

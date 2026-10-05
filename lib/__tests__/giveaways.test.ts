@@ -46,11 +46,12 @@ describe("source-backed giveaway calendar", () => {
     expect(getGiveawayStatus(special, instant("2026-10-03T22:00:00.000Z"))).toBe("ended");
   });
 
-  test("returns twelve agenda slots without invented October–December prizes", () => {
+  test("returns twelve agenda slots with the verified October prize but no invented November–December prizes", () => {
     const agenda = getMonthlyAgenda(2026, instant("2026-09-30T12:00:00.000Z"));
     expect(agenda).toHaveLength(12);
-    expect(agenda.slice(9).map(({ month, giveaway, status }) => ({ month, giveaway, status }))).toEqual([
-      { month: 10, giveaway: null, status: "unannounced" },
+    expect(agenda[9].giveaway?.sourceURL).toBe("https://www.instagram.com/trinkgutjammers_goch/p/Dd8boPORyPU/");
+    expect(agenda[9].status).toBe("later");
+    expect(agenda.slice(10).map(({ month, giveaway, status }) => ({ month, giveaway, status }))).toEqual([
       { month: 11, giveaway: null, status: "unannounced" },
       { month: 12, giveaway: null, status: "unannounced" },
     ]);
@@ -64,7 +65,30 @@ describe("source-backed giveaway calendar", () => {
       "https://www.instagram.com/trinkgutjammers_goch/p/DaSlTlAM1-y/",
       "https://www.instagram.com/trinkgutjammers_goch/p/DbRH2Tds4dc/",
       "https://www.instagram.com/trinkgutjammers_goch/p/DcsoYTBMQLJ/",
+      "https://www.instagram.com/trinkgutjammers_goch/p/Dd8boPORyPU/",
     ]);
+  });
+
+  test("shows both verified October actions without promoting the expired Guinness prize", () => {
+    expect(getActiveGiveaways(instant("2026-10-05T12:00:00.000Z")).map((entry) => entry.id)).toEqual(["2026-10", "2026-disaronno"]);
+    expect(find("2026-10").verifiedEndsDate).toBe("2026-10-31");
+    expect(find("2026-disaronno").verifiedEndsDate).toBe("2026-10-18");
+  });
+
+  test.each([
+    ["2026-10", "2026-10-01T08:04:12.999Z", "2026-10-01T08:04:13.000Z"],
+    ["2026-disaronno", "2026-10-04T09:08:11.999Z", "2026-10-04T09:08:12.000Z"],
+  ])("does not promote %s before its verified original publication", (id, before, published) => {
+    expect(getActiveGiveaways(instant(before)).map(entry => entry.id)).not.toContain(id);
+    expect(getActiveGiveaways(instant(published)).map(entry => entry.id)).toContain(id);
+  });
+
+  test.each([
+    ["2026-disaronno", "2026-10-18T21:59:59.999Z", "2026-10-18T22:00:00.000Z"],
+    ["2026-10", "2026-10-31T22:59:59.999Z", "2026-10-31T23:00:00.000Z"],
+  ])("ends %s at Berlin midnight, including the October timezone change", (id, open, closed) => {
+    expect(getGiveawayStatus(find(id), instant(open))).toBe("active");
+    expect(getGiveawayStatus(find(id), instant(closed))).toBe("ended");
   });
 
   test("retains the 2026 archive after the year changes without promoting old actions", () => {

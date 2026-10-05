@@ -9,7 +9,7 @@ vi.mock("@/public/images/home/brand-logo.webp", () => ({
 
 import CinematicHeader from "@/components/cinematic/CinematicHeader";
 
-describe("public header recipe navigation", () => {
+describe("public header recipes and knowledge navigation", () => {
   // Removing the recipe item or pointing it at a different route must break
   // both consumers, even if a recipe link remains elsewhere in the footer.
   test.each(["Hauptnavigation", "Mobile Navigation"])(
@@ -26,6 +26,14 @@ describe("public header recipe navigation", () => {
       expect(recipeLinks).toHaveLength(1);
       expect(recipeLinks[0][1]).toContain('href="/cocktails"');
       expect(recipeLinks[0][1]).not.toContain('target="_blank"');
+      const academyLinks = [...navigation![1].matchAll(/<a\b([^>]*)>Getränkeakademie<\/a>/g)];
+      expect(academyLinks).toHaveLength(1);
+      expect(academyLinks[0][1]).toContain('href="/akademie"');
+      if (navigationName === "Hauptnavigation") {
+        expect(navigation![1]).toMatch(/<summary\b[^>]*>Rezepte &amp; Wissen/);
+      } else {
+        expect(navigation![1]).not.toContain("<details");
+      }
     },
   );
 });

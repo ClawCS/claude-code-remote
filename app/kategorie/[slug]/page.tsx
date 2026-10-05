@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductGrid from "@/components/ProductGrid";
+import AcademyEntry from "@/components/AcademyEntry";
 import { categories } from "@/lib/utils";
 import { assortmentProducts } from "@/lib/catalog";
 
@@ -33,6 +34,7 @@ export default async function KategoriePage({ params }: { params: Promise<{ slug
       <p className="text-muted mb-6">{products.length} Sortimentsbeispiele</p>
       <ProductGrid products={products} headingLevel={2} />
       {slug === "spirituosen" && <Link href="/eigenmarke" className="inline-block text-primary underline mt-8">Unsere Jammers-Eigenmarken kennenlernen</Link>}
+      <AcademyEntry category={slug} />
     </div>
   </>;
 }

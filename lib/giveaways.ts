@@ -22,6 +22,7 @@ function berlinDate(now: Date): string {
 export function getGiveawayStatus(giveaway: Giveaway, now: Date): GiveawayStatus {
   const today = berlinDate(now);
   if (today > giveaway.verifiedEndsDate) return "ended";
+  if (giveaway.publishedAt) return now.getTime() < Date.parse(giveaway.publishedAt) ? "later" : "active";
   const knownFrom = giveaway.kind === "special" ? giveaway.verifiedAt : `${giveaway.year}-${String(giveaway.month).padStart(2, "0")}-01`;
   return today < knownFrom ? "later" : "active";
 }

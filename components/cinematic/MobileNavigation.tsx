@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { NavItem } from "@/lib/cinematic/site";
 
 import styles from "./chrome.module.css";
-
-export type NavItem = Readonly<{
-  label: string;
-  href: string;
-}>;
 
 export default function MobileNavigation({
   items,
@@ -60,7 +56,15 @@ export default function MobileNavigation({
       <nav className={styles.mobilePanel} aria-label="Mobile Navigation">
         <ul className={styles.mobileList}>
           {items.map((item) => (
-            <li key={item.href}>
+            <li key={item.label}>
+              {"children" in item ? <>
+                <span className={styles.mobileGroupLabel}>{item.label}</span>
+                <ul className={styles.mobileChildren}>
+                  {item.children.map(child => <li key={child.href}>
+                    <a href={child.href} onClick={() => { if (detailsRef.current) detailsRef.current.open = false; }}>{child.label}</a>
+                  </li>)}
+                </ul>
+              </> :
               <a
                 href={item.href}
                 {...(item.href.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
@@ -69,7 +73,7 @@ export default function MobileNavigation({
                 }}
               >
                 {item.label}
-              </a>
+              </a>}
             </li>
           ))}
         </ul>

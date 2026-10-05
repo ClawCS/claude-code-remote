@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { eigenmarken } from "@/data/eigenmarken";
+import AcademyEntry from "@/components/AcademyEntry";
 
 export const metadata: Metadata = {
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
@@ -50,19 +51,7 @@ export default function EigenmarkePage() {
         ))}
       </div>
 
-      {/* Akademie Cross-Link */}
-      <div className="mt-12 bg-[#fff8ee] border border-border rounded-2xl p-8 text-secondary text-center">
-        <h2 className="text-2xl font-bold mb-2">Werde zum Likör-Experten</h2>
-        <p className="text-muted max-w-lg mx-auto mb-5">
-          20 Lektionen, eine Abschlussprüfung — alles was du über Liköre wissen musst.
-        </p>
-        <Link
-          href="/akademie/likoere"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-colors"
-        >
-          Zum Likör-Kurs →
-        </Link>
-      </div>
+      <AcademyEntry category="eigenmarke" />
     </div>
     </>
   );

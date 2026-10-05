@@ -4,6 +4,8 @@ type GiveawayBase = Readonly<{
   title: string;
   description: string;
   sourceURL: string;
+  /** Exact original post timestamp when verified; older entries retain calendar classification. */
+  publishedAt?: string;
   /** Reviewed local export of this action's original Canva post; never cropped. */
   cover?: Readonly<{ src: string; width: number; height: number; alt: string }>;
   /** Local Europe/Berlin date, inclusive through 23:59:59.999. */
@@ -15,7 +17,9 @@ export type Giveaway = GiveawayBase & (
   | Readonly<{ kind: "special"; verifiedAt: string }>
 );
 
-/** Original Instagram captions read on 30.09.2026. No publication dates or winner names inferred. */
+export const GIVEAWAYS_UPDATED_ON = "05.10.2026";
+
+/** Original captions checked 30.09.2026; October additions checked 05.10.2026. No winner names inferred. */
 const giveawayDetails: readonly Giveaway[] = [
   { id: "2026-01", kind: "monthly", year: 2026, month: 1, title: "Salitos SUP-Paket", description: "Ein Stand-up-Paddle-Board sowie je ein Salitos 4er-Pack Blue und Sunrise.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DT0ZAQEDOc9/", verifiedEndsDate: "2026-02-08" },
   { id: "2026-02", kind: "monthly", year: 2026, month: 2, title: "Ott Sports Sportpaket", description: "Ein Sportpaket für zu Hause von Ott Sports im Wert von 250 Euro.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DUQ-IgEjMMv/", verifiedEndsDate: "2026-02-28" },
@@ -26,6 +30,8 @@ const giveawayDetails: readonly Giveaway[] = [
   { id: "2026-07", kind: "monthly", year: 2026, month: 7, title: "Enders E Urban Pro 2 Turbo", description: "Der Enders E Urban Pro 2 Turbo Grill.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DaSlTlAM1-y/", verifiedEndsDate: "2026-08-01" },
   { id: "2026-08", kind: "monthly", year: 2026, month: 8, title: "Salitos SUP Wood Edition", description: "Das Salitos SUP in der Wood Edition.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DbRH2Tds4dc/", verifiedEndsDate: "2026-08-30" },
   { id: "2026-09", kind: "monthly", year: 2026, month: 9, title: "Veltins Helles Lager", description: "Ein Mini Cooler und zwei Kisten Veltins Helles Lager.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DcsoYTBMQLJ/", verifiedEndsDate: "2026-09-30" },
+  { id: "2026-10", kind: "monthly", year: 2026, month: 10, title: "Everdure KILN R – Staropramen Edition", description: "Ein Everdure KILN R Pizzaofen in der Limited Edition Staropramen, laut Originalbeitrag im Wert von 799 Euro. Abholung bei uns im Markt in Goch.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/Dd8boPORyPU/", publishedAt: "2026-10-01T08:04:13.000Z", verifiedEndsDate: "2026-10-31" },
+  { id: "2026-disaronno", kind: "special", year: 2026, title: "Disaronno Liegestuhl + Flasche", description: "Ein Disaronno Liegestuhl inklusive einer Flasche Disaronno. Abholung bei uns im Markt in Goch.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DeERgI8xx-O/", publishedAt: "2026-10-04T09:08:12.000Z", verifiedEndsDate: "2026-10-18", verifiedAt: "2026-10-05" },
   { id: "2026-guinness", kind: "special", year: 2026, title: "Guinness Tasche + 4er-Pack", description: "Eine Guinness Tasche und ein 4er-Pack Guinness.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DdQ8_8hsWYB/", verifiedEndsDate: "2026-10-03", verifiedAt: "2026-09-30" },
   { id: "2026-easter", kind: "special", year: 2026, title: "Oberdorfer Oster-Picknick-Paket", description: "Ein Oberdorfer Bollerwagen mit Sitzkissen und vier Kisten Oberdorfer Helles.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DWenSq4DHsM/", verifiedEndsDate: "2026-04-04", verifiedAt: "2026-09-30" },
   { id: "2026-faxe", kind: "special", year: 2026, title: "Faxe Bollerwagen", description: "Zwei Faxe Bollerwagen für zwei Gewinner zum Vatertag.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DXuV2NMDO7e/", verifiedEndsDate: "2026-05-10", verifiedAt: "2026-09-30" },

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
-import { cocktailImages } from "@/data/cocktail-images";
+import { getCocktailPhoto } from "@/data/cocktail-images";
+import CocktailPhoto from "@/components/recipes/CocktailPhoto";
 import { cocktailCatalog, type CocktailRecipeRoute } from "@/lib/cocktail-routes";
 
 export function RecipeIntro({ title, description, category }: { title: string; description: string; category?: { name: string; href: string } }) {
@@ -39,11 +39,11 @@ export function RecipeGrid({ recipes }: { recipes: CocktailRecipeRoute[] }) {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {recipes.map(({ cocktail, slug, href }) => {
-        const image = cocktailImages[cocktail.name];
+        const photo = getCocktailPhoto(cocktail.name);
         const category = cocktailCatalog.categories.find((item) => item.name === cocktail.category)!;
         return (
           <article key={slug} className="bg-white border border-border/70 rounded-2xl overflow-hidden">
-            {image && <Link href={href} aria-label={`${cocktail.name} – Foto und Rezept`} tabIndex={-1} className="block relative aspect-[4/3]"><Image src={image} alt={cocktail.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" /></Link>}
+            {photo && <CocktailPhoto photo={photo} href={href} />}
             <div className="p-6 md:p-7">
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm mb-5">
                 <Link href={category.href} className="text-primary underline underline-offset-4">{cocktail.category}</Link>

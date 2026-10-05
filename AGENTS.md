@@ -42,6 +42,12 @@ Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Ausdrückliche Ausnahme für Cocktailrezepte — 05.10.2026
+
+Niko hat echte, rezeptgetreue Cocktailfotos aus dem Internet ausdrücklich beauftragt und die behutsame Umsetzung freigegeben. Für Cocktailrezepte sind daher einzeln belegte, kommerziell nutzbare Fotografien externer Quellen zulässig. Motiv, Rezeptvariante, Glas und Garnitur prüfen; keine KI-Ersatzbilder und keine Rezeptänderung, nur um ein Bild passend zu machen. Urheber, Originalquelle, konkrete Lizenz, Änderungen und lokale Dateihashes dokumentieren; erforderliche Bildnachweise öffentlich am Foto zugänglich halten. Originale und ausführliche Quellenbelege unter `assets/source/cocktails/` bleiben privat. Diese Ausnahme gilt nicht automatisch für andere Rubriken.
+
+## Grundregel für die übrigen Rubriken
+
 - Für die Homepage ausschließlich Fotos aus Nikos verbundenem Canva-Bestand verwenden. Eine lokale Datei oder frühere Fotofreigabe allein beweist diese Herkunft nicht. Keine KI-generierten Ersatzfotos oder externen Stockfotos einsetzen.
 - Vor Veröffentlichung jedes Foto einer belegten Canva-Design-/Seiten- oder Upload-Asset-Identität zuordnen; Originalexport, Dateihash, Freigabe und vorgesehene Rubrik dokumentieren. Ungeklärte Motive nicht als Canva-verifiziert ausgeben und keine neuen ungeklärten Motive einbauen. Bereits aktive, noch ungeklärte Bilder müssen vor der endgültigen Abnahme geklärt oder ersetzt werden.
 - Fotos redaktionell passend ordnen: Markt und Beratung zum Einstieg/Markt; Portraits und Gruppenbilder zum Team; tatsächliche Leihartikel zur Vermietung; Sortimentfotos zur passenden Getränkekategorie; Aktionsfotos nur zur belegten Aktion beziehungsweise zum datierten Rückblick. Kein Motiv als beliebige Dekoration über mehrere unpassende Rubriken verteilen.
