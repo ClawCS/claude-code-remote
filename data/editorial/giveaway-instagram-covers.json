@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "source": "instagram-own-account",
+  "account": "trinkgutjammers_goch",
+  "approvedOn": "2026-10-05",
+  "transformation": "WebP quality 92; no crop, no resize, no visual alterations; metadata stripped.",
+  "covers": [
+    {
+      "id": "2026-03",
+      "src": "/images/editorial/instagram/giveaway-2026-03.webp",
+      "width": 1440,
+      "height": 1920,
+      "originalWidth": 1440,
+      "originalHeight": 1920,
+      "originalSha256": "10141bec4b9a5927079498b4634c8acf6a10ade1067a6e1e9e3bf737b0470f62",
+      "sha256": "4e0e33fcfd383d8da6eff7a9bc72c589aa5e7d4eb6d99132af78177d36c59d01",
+      "bytes": 409686,
+      "status": "approved",
+      "sourceURL": "https://www.instagram.com/trinkgutjammers_goch/p/DVWA1xvDN-J/",
+      "alt": "Originalbeitragsbild: Grüner Monster Energy Mini Cooler mit Getränkedosen"
+    },
+    {
+      "id": "2026-08",
+      "src": "/images/editorial/instagram/giveaway-2026-08.webp",
+      "width": 1405,
+      "height": 1874,
+      "originalWidth": 1405,
+      "originalHeight": 1874,
+      "originalSha256": "95627937f66ad0f201aee1a76fa773ac173fd760b9e52a32208d63f7101f2f11",
+      "sha256": "8682703ed3ced6a3deb5f6cccfd18c8d4b111d7500f6b8c99fe5e43d32804f30",
+      "bytes": 455748,
+      "status": "approved",
+      "sourceURL": "https://www.instagram.com/trinkgutjammers_goch/p/DbRH2Tds4dc/",
+      "alt": "Originalbeitragsbild: Salitos Stand-up-Paddle-Board in der Wood Edition"
+    },
+    {
+      "id": "2026-09",
+      "src": "/images/editorial/instagram/giveaway-2026-09.webp",
+      "width": 1448,
+      "height": 1931,
+      "originalWidth": 1448,
+      "originalHeight": 1931,
+      "originalSha256": "542c5bc2d5657b39aeaed87f857962de3ed9ebab306f5007f865e5ea9a76c97f",
+      "sha256": "787a7eded98fea856b1a394f5788707b4643ad72758ef869b4f1fe6f82c5a1a0",
+      "bytes": 539708,
+      "status": "approved",
+      "sourceURL": "https://www.instagram.com/trinkgutjammers_goch/p/DcsoYTBMQLJ/",
+      "alt": "Originalbeitragsbild: Veltins Mini Cooler und zwei Kisten Helles Lager"
+    },
+    {
+      "id": "2026-guinness",
+      "src": "/images/editorial/instagram/giveaway-2026-guinness.webp",
+      "width": 1411,
+      "height": 1881,
+      "originalWidth": 1411,
+      "originalHeight": 1881,
+      "originalSha256": "a0e6e647fc26c83c0f5836bc01f28080ee6016938f7b3a908219be38ac9bbb90",
+      "sha256": "12263003023206b78b498227785a1ee3c52ebaa91a63be91fc7f1ba8ec3a1e9d",
+      "bytes": 425056,
+      "status": "approved",
+      "sourceURL": "https://www.instagram.com/trinkgutjammers_goch/p/DdQ8_8hsWYB/",
+      "alt": "Originalbeitragsbild: Guinness Sporttasche und vier Dosen Guinness"
+    },
+    {
+      "id": "2026-10",
+      "src": "/images/editorial/instagram/giveaway-2026-10.webp",
+      "width": 1411,
+      "height": 1881,
+      "originalWidth": 1411,
+      "originalHeight": 1881,
+      "originalSha256": "1fc31c06b8ca8f28569b057e70efbe3fc3f8e437b5fd22b2956edbd69c6e0aba",
+      "sha256": "ed9561d43dfa81c1d787a43448f47eff168af54496c00b4d44f373e36b7e141f",
+      "bytes": 432402,
+      "status": "approved",
+      "sourceURL": "https://www.instagram.com/trinkgutjammers_goch/p/Dd8boPORyPU/",
+      "alt": "Originalbeitragsbild: Everdure KILN R Pizzaofen in der Staropramen Edition"
+    },
+    {
+      "id": "2026-disaronno",
+      "src": "/images/editorial/instagram/giveaway-2026-disaronno.webp",
+      "width": 1411,
+      "height": 1881,
+      "originalWidth": 1411,
+      "originalHeight": 1881,
+      "originalSha256": "f16acbd394aa58da9810cb4a531021d325720a7f91f30007ebf4972d1038f02e",
+      "sha256": "6c2173c89fa6749c5a4dcee638fd4ad6304a546f4d900b9333fd5ec03430b5b8",
+      "bytes": 534350,
+      "status": "approved",
+      "sourceURL": "https://www.instagram.com/trinkgutjammers_goch/p/DeERgI8xx-O/",
+      "alt": "Originalbeitragsbild: Disaronno Liegestuhl und eine Flasche Disaronno"
+    }
+  ]
+}

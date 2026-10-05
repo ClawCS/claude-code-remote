@@ -31,7 +31,11 @@ describe("giveaway public pages", () => {
       expect(html).toContain(`data-giveaway-cover="${id}"`);
       expect(decodeURIComponent(html)).toContain(`/images/editorial/canva/giveaway-${id}.webp`);
     }
-    expect(html).not.toMatch(/giveaway-2026-(?:10|11|12)\.webp/);
+    expect(html).not.toMatch(/giveaway-2026-(?:11|12)\.webp/);
+    const currentActions = html.match(/<section id="aktuell"[\s\S]*?<\/section>/)?.[0];
+    expect(currentActions).toBeDefined();
+    expect(currentActions).not.toContain('data-giveaway-id="2026-10"');
+    expect(currentActions).not.toContain('data-giveaway-id="2026-disaronno"');
   });
 
   test("closes September at Berlin midnight while leaving the October special open", () => {
@@ -63,5 +67,24 @@ describe("giveaway public pages", () => {
     const archive = renderToStaticMarkup(<AktionenArchivPage />);
     expect(archive).toContain("Veltins Helles Lager");
     expect(archive).toContain("Guinness");
+  });
+
+  test("shows both October original covers as current and keeps the four older Instagram covers in the archive", () => {
+    vi.stubEnv("CINEMATIC_TEST_NOW", "2026-10-05T10:00:00.000Z");
+    const html = renderToStaticMarkup(<GewinnspielPage />);
+    const currentActions = html.match(/<section id="aktuell"[\s\S]*?<\/section>/)?.[0];
+    expect(currentActions).toBeDefined();
+    for (const id of ["2026-10", "2026-disaronno"]) {
+      expect(currentActions).toContain(`data-giveaway-id="${id}" data-status="active"`);
+      expect(currentActions).toContain(`data-giveaway-cover="${id}"`);
+    }
+    const archive = renderToStaticMarkup(<AktionenArchivPage />);
+    for (const id of ["2026-03", "2026-08", "2026-09", "2026-guinness"]) {
+      expect(currentActions).not.toContain(`data-giveaway-id="${id}"`);
+      expect(archive).toContain(`data-giveaway-id="${id}" data-status="ended"`);
+      expect(archive).toContain(`data-giveaway-cover="${id}"`);
+    }
+    expect(archive).not.toContain('data-giveaway-id="2026-10"');
+    expect(archive).not.toContain('data-giveaway-id="2026-disaronno"');
   });
 });

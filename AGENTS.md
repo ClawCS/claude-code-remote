@@ -46,6 +46,10 @@ Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen
 
 Niko hat echte, rezeptgetreue Cocktailfotos aus dem Internet ausdrücklich beauftragt und die behutsame Umsetzung freigegeben. Für Cocktailrezepte sind daher einzeln belegte, kommerziell nutzbare Fotografien externer Quellen zulässig. Motiv, Rezeptvariante, Glas und Garnitur prüfen; keine KI-Ersatzbilder und keine Rezeptänderung, nur um ein Bild passend zu machen. Urheber, Originalquelle, konkrete Lizenz, Änderungen und lokale Dateihashes dokumentieren; erforderliche Bildnachweise öffentlich am Foto zugänglich halten. Originale und ausführliche Quellenbelege unter `assets/source/cocktails/` bleiben privat. Diese Ausnahme gilt nicht automatisch für andere Rubriken.
 
+## Ausdrückliche Ausnahme für eigene Instagram-Gewinnspielcover — 05.10.2026
+
+Niko hat die Verwendung der eigenen Instagram-Originalbeitragsbilder ausdrücklich freigegeben: „freigabe instagram, hol sie aus insta und render diese“. Für Gewinnspielcover aus `@trinkgutjammers_goch` darf daher das genaue vollständige Originalmotiv direkt aus dem zugehörigen Instagram-Beitrag übernommen werden, wenn die exakte Canva-Quelle nicht zugeordnet ist. Das gilt auch beim beauftragten monatlichen Gewinnspielabgleich. Keine fremden Accounts, Teilnehmerbilder oder beliebigen Instagram-Fotos daraus ableiten. Beitrag, Motiv, Gewinn und Frist belegen; vollständig und unbeschnitten lokal optimieren, Herkunft und SHA-256 dokumentieren. Instagram-Exporte nicht als Canva-verifiziert kennzeichnen; keine signierten CDN-URLs einbetten. Die vorhandene Canva-Verbindung bleibt bestehen. Diese Freigabe hebt die frühere Wartestellung der sechs vorbereiteten Gewinnspielcover auf.
+
 ## Grundregel für die übrigen Rubriken
 
 - Für die Homepage ausschließlich Fotos aus Nikos verbundenem Canva-Bestand verwenden. Eine lokale Datei oder frühere Fotofreigabe allein beweist diese Herkunft nicht. Keine KI-generierten Ersatzfotos oder externen Stockfotos einsetzen.

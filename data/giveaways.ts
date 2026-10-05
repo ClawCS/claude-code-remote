@@ -1,3 +1,5 @@
+import instagramCovers from "@/data/editorial/giveaway-instagram-covers.json";
+
 type GiveawayBase = Readonly<{
   id: string;
   year: number;
@@ -6,7 +8,7 @@ type GiveawayBase = Readonly<{
   sourceURL: string;
   /** Exact original post timestamp when verified; older entries retain calendar classification. */
   publishedAt?: string;
-  /** Reviewed local export of this action's original Canva post; never cropped. */
+  /** Reviewed local original-post export from Canva or the approved own-Instagram source; never cropped. */
   cover?: Readonly<{ src: string; width: number; height: number; alt: string }>;
   /** Local Europe/Berlin date, inclusive through 23:59:59.999. */
   verifiedEndsDate: string;
@@ -38,8 +40,11 @@ const giveawayDetails: readonly Giveaway[] = [
   { id: "2026-wm", kind: "special", year: 2026, title: "WM-Tippspiel mit JBL", description: "JBL Tune 520BT, JBL Go 4 und JBL Clip 5: drei Gewinnchancen beim WM-Tippspiel.", sourceURL: "https://www.instagram.com/trinkgutjammers_goch/p/DZc5M8LMmNG/", verifiedEndsDate: "2026-06-25", verifiedAt: "2026-09-30" },
 ];
 
-/** Complete original canvases, reviewed against the dated Instagram posts. */
+/** Complete original artworks, reviewed against the dated Instagram posts. */
 const verifiedCovers: Readonly<Partial<Record<string, NonNullable<Giveaway["cover"]>>>> = {
+  ...Object.fromEntries(instagramCovers.covers
+    .filter(cover => cover.status === "approved")
+    .map(({ id, src, width, height, alt }) => [id, { src, width, height, alt }])),
   "2026-01": { src: "/images/editorial/canva/giveaway-2026-01.webp", width: 1320, height: 1642, alt: "Originalbeitragsbild: Salitos SUP-Paket mit Blue und Sunrise" },
   "2026-02": { src: "/images/editorial/canva/giveaway-2026-02.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Ott Sports Sportpaket im Wert von 250 Euro" },
   "2026-04": { src: "/images/editorial/canva/giveaway-2026-04.webp", width: 1080, height: 1440, alt: "Originalbeitragsbild: Edifier MP230 und Ballantine’s Special Kiss" },

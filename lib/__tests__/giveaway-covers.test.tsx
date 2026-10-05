@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import sharp from "sharp";
 
 import GiveawayCard from "@/components/giveaways/GiveawayCard";
@@ -20,6 +20,38 @@ const approvedOriginals = [
 ] as const;
 
 describe("giveaway original-post covers", () => {
+  test.each(["2026-03", "2026-08", "2026-09", "2026-guinness", "2026-10", "2026-disaronno"])("renders the approved own-Instagram original for %s instead of leaving its cover blank", (id) => {
+    const giveaway = GIVEAWAYS_2026.find(entry => entry.id === id)!;
+    const html = renderToStaticMarkup(<GiveawayCard giveaway={giveaway} status="ended" label="Originalbeitrag" />);
+    expect(html).toContain(`data-giveaway-cover="${id}"`);
+    expect(decodeURIComponent(html)).toContain(`/images/editorial/instagram/giveaway-${id}.webp`);
+    expect(html).toContain(`href="${giveaway.sourceURL}"`);
+    expect(html).not.toMatch(/<iframe|scontent\.|cdninstagram/);
+  });
+
+  test("serves all approved Instagram covers with verified hashes, full dimensions and no private metadata", async () => {
+    const path = "data/editorial/giveaway-instagram-covers.json";
+    expect(existsSync(path)).toBe(true);
+    const manifest = JSON.parse(readFileSync(path, "utf8"));
+    expect(manifest.covers.map((cover: { id: string }) => cover.id).sort()).toEqual(["2026-03", "2026-08", "2026-09", "2026-10", "2026-disaronno", "2026-guinness"]);
+    for (const cover of manifest.covers) {
+      const giveaway = GIVEAWAYS_2026.find(entry => entry.id === cover.id)!;
+      expect(cover.sourceURL).toBe(giveaway.sourceURL);
+      expect(cover.originalSha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(cover.status).toBe("approved");
+      expect(giveaway.cover).toMatchObject({ src: cover.src, width: cover.width, height: cover.height });
+      const bytes = readFileSync(`public${cover.src}`);
+      expect(createHash("sha256").update(bytes).digest("hex")).toBe(cover.sha256);
+      const metadata = await sharp(bytes).metadata();
+      expect(metadata).toMatchObject({ format: "webp", width: cover.width, height: cover.height });
+      expect(metadata.exif).toBeUndefined();
+      expect(metadata.xmp).toBeUndefined();
+      expect(metadata.icc).toBeUndefined();
+      expect(cover.width).toBe(cover.originalWidth);
+      expect(cover.height).toBe(cover.originalHeight);
+    }
+  });
+
   test.each(approvedOriginals)("locks the complete, metadata-free original source for %s", async (id, sourceHash, width, height) => {
     const bytes = readFileSync(`assets/source/market-photos/giveaway-${id}.png`);
     expect(createHash("sha256").update(bytes).digest("hex")).toBe(sourceHash);
