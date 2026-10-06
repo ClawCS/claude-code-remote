@@ -1,0 +1,32 @@
+{
+  "runId": "2026-10-06T04-19-04-923Z-check-2493afa2",
+  "mode": "check",
+  "startedAt": "2026-10-06T04:19:04.923Z",
+  "evaluatedAt": "2026-10-06T04:19:04.923Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "1390117",
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "result": "active"
+    }
+  ],
+  "errors": [
+    "Pflicht-NL-Flyer fehlt: genau eine geprüfte Canva-Seite für die vollständige Zielwoche erforderlich.",
+    "Veröffentlichter Flyerindex meldet einen Integritätsfehler."
+  ],
+  "warnings": [
+    "Keine bestätigte öffentliche Produktionsadresse geprüft; nur Website-/Vorschauprüfung."
+  ],
+  "deploymentVerified": false,
+  "websiteVerified": false,
+  "checkedUrl": "http://localhost:3000",
+  "finishedAt": "2026-10-06T04:19:08.222Z",
+  "status": "failed"
+}
