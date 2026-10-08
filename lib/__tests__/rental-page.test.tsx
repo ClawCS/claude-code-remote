@@ -65,6 +65,15 @@ describe("source-backed rental catalog", () => {
     expect(result).not.toContain("Bruchersatz ist nur bei eindeutig zugeordneten Gläsern");
     expect(result).not.toContain("Garnituren und Einzelmöbel können deshalb hier nicht gemeinsam");
   });
+  it("describes the pre-checkout selection as an inquiry rather than an order or reservation", () => {
+    const result = html();
+    const intro = result.split("data-rental-intro")[1]?.split("</section>")[0];
+    const selection = result.split('aria-labelledby="rental-request"')[1]?.split("</section>")[0];
+    expect(intro).toContain("Termin und Verfügbarkeit bestätigen wir persönlich.");
+    expect(intro).not.toContain("nach deiner Bestellung");
+    expect(selection).toContain("Deine Auswahl reserviert noch keine Artikel. Verbindliche Absprachen treffen wir persönlich.");
+    expect(selection).not.toContain("Die Bestellung wird erst");
+  });
   it("shows only clearly matched prices from the price sheet", () => {
     const result=html();
     const expectations=[

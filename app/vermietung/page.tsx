@@ -63,7 +63,7 @@ export default function VermietungPage() {
         <div>
           <p className="text-sm uppercase tracking-widest mb-4">Trinkgut Jammers · Party &amp; Miete</p>
           <h1 className="text-4xl md:text-6xl font-bold mb-5">Deine Feier. Unser Leihsortiment.</h1>
-          <p className="text-lg max-w-2xl leading-relaxed">Kühlung, Ausschank, Mobiliar und Gläser: Wähle Menge und Zeitraum und sieh deinen Mietpreis. Die Verfügbarkeit bestätigen wir nach deiner Bestellung.</p>
+          <p className="text-lg max-w-2xl leading-relaxed">Kühlung, Ausschank, Mobiliar und Gläser: Wähle Menge und Zeitraum und sieh deinen Mietpreis. Termin und Verfügbarkeit bestätigen wir persönlich.</p>
         </div>
       </section>
 
@@ -115,7 +115,7 @@ export default function VermietungPage() {
 
         <section aria-labelledby="rental-request" className="border-t border-border pt-8">
           <h2 id="rental-request" className="text-2xl font-bold mb-3">Deine Mietauswahl</h2>
-          <p className="mb-4">{selectedCount ? `${selectedCount} Stück ausgewählt.` : "Wähle Artikelmengen und deinen gewünschten Zeitraum aus."} Die Bestellung wird erst mit der Terminbestätigung des Markts verbindlich.</p>
+          <p className="mb-4">{selectedCount ? `${selectedCount} Stück ausgewählt.` : "Wähle Artikelmengen und deinen gewünschten Zeitraum aus."} Deine Auswahl reserviert noch keine Artikel. Verbindliche Absprachen treffen wir persönlich.</p>
           {quoteError && <p role="alert" className="mb-4 text-primary">{quoteError}</p>}
           {selectedQuote && (selectedQuote.allPriced ? <p className="mb-5 text-2xl font-bold">Mietgesamtpreis: {money(selectedQuote.totalCents)} <span className="text-sm font-normal">inkl. MwSt.</span></p> : <div className="mb-5">
             <p className="font-semibold">Kein vollständiger Mietgesamtpreis: Mindestens ein Artikel hat einen Preis auf Anfrage.</p>

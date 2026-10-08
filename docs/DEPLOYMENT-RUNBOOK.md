@@ -136,6 +136,7 @@ node --version
 npm ci --include=dev
 npm test
 npm run lint -- --quiet
+npx next typegen
 npx tsc --noEmit
 npm run offers:check
 npm run build
