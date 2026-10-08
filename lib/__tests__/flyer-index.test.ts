@@ -38,6 +38,7 @@ describe("flyer index reports runtime integrity failures",()=>{
     mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([nl]);
     const index=await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
     expect(index.status).toBe("ok");expect(index.flyers.map(f=>[f.language,f.pageCount,f.coverUrl])).toEqual([["de",10,official.pages[0].imageUrl],["nl",1,"/images/content/nl.webp"]]);
+    expect(index.flyers.find(f=>f.language==="nl")?.pdfSha256).toBe(nl.pdfSha256);
   });
   it("does not accept two NL pages as one complete weekly issue",async()=>{
     mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([nl,{...nl,id:"another-nl"}]);

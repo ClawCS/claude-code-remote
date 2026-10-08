@@ -1,0 +1,578 @@
+[
+  {
+    "id": "de-2026-41-gerri",
+    "name": "Gerri Limonaden",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-gerri.webp",
+    "sourcePage": 1,
+    "rect": [
+      609,
+      989,
+      480,
+      420
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      482,
+      782,
+      380,
+      332
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "85042d8d8f486f42be8f2763154ced57f7e8f67dc1c07cbafa5ccfc4ba4005fd",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "de-2026-41-rheinfels",
+    "name": "Rheinfels Quelle · 2 Kästen",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-rheinfels.webp",
+    "sourcePage": 1,
+    "rect": [
+      1121,
+      989,
+      481,
+      420
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      887,
+      782,
+      381,
+      332
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "0e037234f3cc482e67213db39a05e6f5c2a66af1ad8715cba5a69fdd935063c6",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "de-2026-41-ramazzotti",
+    "name": "Ramazzotti",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-ramazzotti.webp",
+    "sourcePage": 1,
+    "rect": [
+      96,
+      1439,
+      481,
+      420
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      76,
+      1138,
+      381,
+      332
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "55f7ffc6b8bc1b85cdd8d09c574f2489248a8c565740efc4db91a31b755f4ab6",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "de-2026-41-vilsa",
+    "name": "Vilsa Mineralwasser",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-vilsa.webp",
+    "sourcePage": 1,
+    "rect": [
+      609,
+      1439,
+      480,
+      420
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      482,
+      1138,
+      380,
+      332
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "9d6377e8924ef7b1aff23e93cc1e38913978981133b53fa2779b79e535e91810",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "de-2026-41-burgwallbronn",
+    "name": "Burgwallbronn Mineralwasser",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-burgwallbronn.webp",
+    "sourcePage": 1,
+    "rect": [
+      1121,
+      1439,
+      481,
+      420
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      887,
+      1138,
+      381,
+      332
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "f68def040866309c7a5d1c8254f85935843649fe741d6553468453526ec51cf9",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "de-2026-41-schloesser",
+    "name": "Schlösser Alt",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-schloesser.webp",
+    "sourcePage": 1,
+    "rect": [
+      609,
+      1889,
+      480,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      482,
+      1494,
+      380,
+      331
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "03aab99f4e9e823404bf3d773ac6683fe889f6d79356d2ebf989b8509a79139f",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "de-2026-41-bayreuther",
+    "name": "Bayreuther Hell",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-de-bayreuther.webp",
+    "sourcePage": 1,
+    "rect": [
+      1121,
+      1889,
+      481,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "cropReferenceRect": [
+      887,
+      1494,
+      381,
+      331
+    ],
+    "cropReferenceDimensions": [
+      1312,
+      1898
+    ],
+    "imageSha256": "2d1743c2ee35552d4972c353f1bc8f76a888a3d2c43c5cf208dd8d47706b4e41",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-tamnavulin",
+    "name": "Tamnavulin",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-tamnavulin.webp",
+    "sourcePage": 14,
+    "rect": [
+      1186,
+      40,
+      458,
+      414
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      857,
+      29,
+      331,
+      299
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "a5e73f8e73ba2dc6d3869716f9a3a28e1a44178dea8f7bd6ac3b6aa0c53f731d",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-kilbeggan",
+    "name": "Kilbeggan",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-kilbeggan.webp",
+    "sourcePage": 14,
+    "rect": [
+      1645,
+      40,
+      309,
+      414
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      1188,
+      29,
+      223,
+      299
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "ede927c560cc301e870b94dfce95fd3469e98259d30c98d47863138396dd22b7",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-jim-beam",
+    "name": "Jim Beam",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-jim-beam.webp",
+    "sourcePage": 14,
+    "rect": [
+      1953,
+      40,
+      307,
+      414
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      1411,
+      29,
+      222,
+      299
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "1a34620b72a9b4ee5cf5d7656d833377aceb0f507658985ccdae3ded930c5949",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-pilavas",
+    "name": "Pilavas Ouzo",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-pilavas.webp",
+    "sourcePage": 14,
+    "rect": [
+      645,
+      476,
+      325,
+      412
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      466,
+      344,
+      235,
+      298
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "29534226b58646a2e4e66c2d018677eb28defe83833290993d6b8c9a0af9c97d",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-brut-dargent",
+    "name": "Brut Dargent",
+    "categorySlug": "sekt",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-brut-dargent.webp",
+    "sourcePage": 14,
+    "rect": [
+      408,
+      916,
+      266,
+      410
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      295,
+      662,
+      192,
+      296
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "c7300217ead17b7261dd7e9aabdeca9b78c6f5a0d89e0077bd5145b3ea4832e4",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-fuze-tea",
+    "name": "Fuze Tea",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-fuze-tea.webp",
+    "sourcePage": 14,
+    "rect": [
+      1109,
+      916,
+      346,
+      410
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      801,
+      662,
+      250,
+      296
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "fcf35ee823982a80c9d8ea077d076c1da09bb543fd8de067c40b0d7d8ec26d4f",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-schneider-weisse",
+    "name": "Schneider Weisse",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-schneider-weisse.webp",
+    "sourcePage": 14,
+    "rect": [
+      900,
+      1353,
+      415,
+      410
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      650,
+      978,
+      300,
+      296
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "ec7530eac05aa509ef447cdc7c792e30fcf87a5f679d13ba727db69e414f762a",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-veltins-vplus",
+    "name": "Veltins V+",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-veltins-vplus.webp",
+    "sourcePage": 14,
+    "rect": [
+      1315,
+      1353,
+      468,
+      410
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      950,
+      978,
+      338,
+      296
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "ffb16c555b0d88e89ccb2e20a8e2b6b1d4793b568c55aab968ae983578a91c09",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  },
+  {
+    "id": "nl-2026-41-bree",
+    "name": "Bree wijn",
+    "categorySlug": "wein",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/2026-41-nl-bree.webp",
+    "sourcePage": 14,
+    "rect": [
+      54,
+      913,
+      349,
+      412
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "cropReferenceRect": [
+      39,
+      660,
+      252,
+      298
+    ],
+    "cropReferenceDimensions": [
+      1878,
+      1344
+    ],
+    "imageSha256": "ac3ca75729808450f120d6b725badbc8ca7c3f4b235c4c2c210eb0627e9d051e",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08"
+  }
+]

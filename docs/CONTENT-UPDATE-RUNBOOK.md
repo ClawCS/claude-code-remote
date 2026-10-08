@@ -1,5 +1,15 @@
 # Wochenredaktion Trinkgut Jammers
 
+## Betreiberänderung vom 08.10.2026 (hat Vorrang vor älteren Prüfständen)
+
+Niko hat nach Erläuterung der KW41-Grundpreis-/Mengenabweichungen die unveränderte Übernahme des passenden NL-Originaleinseiters freigegeben. Datumsrichtige, belegte NL-Originale künftig auch bei dokumentierten Preis-, Pfand- oder Bedingungsabweichungen anzeigen; solche Abweichungen sind redaktionelle Warnungen, kein automatischer Veröffentlichungshalt. Keine Originalpreise eigenmächtig korrigieren. Die Freigabe bedeutet nicht, dass die Rechnungen oder Bedingungen im Original geprüft korrekt sind. KW41 wird anhand des authentischen Originalexports vom 04.10. aktiviert; die damaligen Tagesberichte bleiben unveränderte historische Nachweise.
+
+Unverändert blockierend: falscher/unklarer Zeitraum, fehlende Herkunft/Freigabe, defekte Datei, mehrseitiges NL-PDF oder andere Woche. Das jeweilige Originalstart-/Enddatum bleibt zwingend. DE links und NL rechts gleichwertig unter Angebote darstellen, mobil untereinander. Vorbereitungs-/Kontrollläufe überprüfen weiterhin beide Ausgaben, die lokale Vorschau und die beiden APIs. PublicUrl bleibt bis zur tatsächlichen Inbetriebnahme unbestätigt.
+
+Die Sortimentsseiten enthalten nur datierte Einzelangebote aus den aktiven Originalhandzetteln, keine historischen 107 Beispielprodukte. Einzelangebote nur mit eindeutig belegten Angaben und Originalverweis kuratieren; Originalabweichungen nicht durch erfundene Ersatzpreise auflösen. Neue Wochen können ohne neu kuratierte Einzelangebote starten: dann auf ihre vollständigen aktuellen Handzettel verweisen, niemals die alte Auswahl verlängern.
+
+Bildausnahmen: Akademie-Themenbilder und deklarierte Leihartikel-Beispielbilder dürfen seit 08.10.2026 auf Betreiberwunsch mit Image erzeugt werden; siehe AGENTS.md. Die Regeln für echte Cocktailfotos und übrige Canva-Rubriken bleiben bestehen.
+
 Zeitzone: Europe/Berlin. Vorbereiten sonntags 17:00, Statuskontrolle täglich 06:15. Niko hat Lesen/Exportieren in Canva, Lesen in Instagram sowie Website-Updates und Push autorisiert. Designs und Social-Accounts werden nicht verändert.
 
 Aktueller Betriebsstand, 1. Oktober 2026: **Der öffentliche Server ist laut Betreiber noch nicht online.** `publicUrl` bleibt `null`; Git-Push ist keine Veröffentlichung. Siehe [PROJECT-STATUS.md](PROJECT-STATUS.md) und [OFFENE-FRAGEN.md](OFFENE-FRAGEN.md). Der [Tagesnachweis vom 1. Oktober](../audit/content-runs/2026-10-01-daily-evidence.json) belegt Canva-Lesezugang und authentifizierten Exportdialog, aber weiterhin keinen passenden NL-KW40-Export: `failed`, `websiteVerified=false`, `deploymentVerified=false`.

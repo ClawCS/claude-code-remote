@@ -9,6 +9,8 @@ import ProduktePage from "@/app/produkte/page";
 import AkademiePage from "@/app/akademie/page";
 import AssortmentSection from "@/components/cinematic/AssortmentSection";
 import LocationFooter from "@/components/cinematic/LocationFooter";
+vi.mock("server-only",()=>({}));
+vi.mock("@/lib/flyer-index",()=>({getFlyerIndex:async()=>({status:"ok",issues:[],generatedAt:"2026-10-08T12:00:00Z",flyers:[],scheduled:[]})}));
 
 vi.mock("next/navigation", async (importOriginal) => ({
   ...await importOriginal<typeof import("next/navigation")>(),
@@ -49,10 +51,10 @@ describe("academy discovery in the existing assortment", () => {
   });
 
   test.each([
-    ["homepage assortment", <AssortmentSection key="home" />],
-    ["product overview", <ProduktePage key="products" />],
-  ])("adds a compact academy destination to %s", (_label, element) => {
-    const html = markup(element);
+    ["homepage assortment", async () => <AssortmentSection key="home" />],
+    ["product overview", async () => await ProduktePage()],
+  ])("adds a compact academy destination to %s", async (_label, element) => {
+    const html = markup(await element());
     expect(html).toMatch(/href="\/akademie"[^>]*>[^<]*Getränkeakademie/);
     expect(html).toContain(`${courses.length} Kurse`);
   });

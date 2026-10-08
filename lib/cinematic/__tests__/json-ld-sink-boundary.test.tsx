@@ -16,7 +16,7 @@ function productionTsxFiles(directory: string): string[] {
 }
 
 describe("JSON-LD production sink boundary", () => {
-  test("serializes the real d-j-vu Product payload and preserves children", async () => {
+  test("does not emit a retired Product payload and preserves the redirect child", async () => {
     const element = await ProductLayout({
       params: Promise.resolve({ slug: "d-j-vu" }),
       children: <p data-review-child="preserved">Unverändertes Kind</p>,
@@ -28,14 +28,7 @@ describe("JSON-LD production sink boundary", () => {
       ),
     ];
 
-    expect(scripts).toHaveLength(1);
-    expect(scripts[0][1]).not.toContain("<0,5");
-    expect(JSON.parse(scripts[0][1])).toMatchObject({
-      "@type": "Product",
-      name: "Déjà-Vu",
-      description:
-        "Déjà-Vu – 0,7l. Sortimentsbeispiel; Auswahl und Verfügbarkeit nach Absprache.",
-    });
+    expect(scripts).toHaveLength(0);
     expect(html).toContain(
       '<p data-review-child="preserved">Unverändertes Kind</p>',
     );

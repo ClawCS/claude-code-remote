@@ -67,3 +67,5 @@ next-env.d.ts
 /assets/source/giveaways/
 /assets/source/cocktails/
 /.market-pipeline-test-*/
+# Private full-resolution AI originals; optimized derivatives and manifest are tracked.
+assets/source/generated-visuals/

@@ -580,7 +580,8 @@ describe("current content route", () => {
   });
 
   it("returns 200 JSON with an exact no-store cache policy", async () => {
-    vi.useFakeTimers();
+    // PDF parsing yields through real timers; only the business clock is fixed.
+    vi.useFakeTimers({toFake:["Date"]});
     vi.setSystemTime(NOW);
     const response = await currentContentRoute.GET();
     expect(response.status).toBe(200);

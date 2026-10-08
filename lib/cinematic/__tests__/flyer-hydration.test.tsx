@@ -17,6 +17,11 @@ const flyer: HomepageFlyer = {
 };
 
 describe("flyer viewer before client hydration", () => {
+  it("renders a single-page original at natural aspect ratio and full card width", () => {
+    const html=renderToStaticMarkup(<FlyerViewer flyer={{...flyer,pageCount:1}}/>);
+    expect(html).toContain('data-single-page="true"');
+    expect(html).not.toContain('data-nimg="fill"');
+  });
   it.each([
     ["de", "Handzettel ansehen"],
     ["nl", "Folder bekijken"],

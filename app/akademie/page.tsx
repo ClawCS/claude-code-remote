@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AcademyCover from "@/components/AcademyCover";
 import { courses } from "@/data/akademie";
 import type { Metadata } from "next";
 
@@ -27,6 +28,7 @@ export default function AkademiePage() {
             href={`/akademie/${course.slug}`}
             className="group relative bg-white border border-border rounded-2xl overflow-hidden card-hover"
           >
+            <AcademyCover slug={course.slug} />
             <div className="p-6 border-b border-border bg-[#fff8ee]">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">{course.difficulty} · {course.duration}</p>
               <h2 className="text-xl font-bold text-secondary">{course.title}</h2>
@@ -42,6 +44,7 @@ export default function AkademiePage() {
         ))}
       </div>
 
+      <p className="mt-5 text-xs text-muted">KI-generierte Themenbilder zur Illustration der Kursinhalte.</p>
       {/* Zertifikate CTA */}
       <div className="mt-12 bg-[#fff8ee] border border-border rounded-2xl p-8 text-secondary text-center">
         <h2 className="text-2xl font-bold mb-2">Professionelle Zertifikatskurse</h2>

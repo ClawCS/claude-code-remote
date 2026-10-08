@@ -26,7 +26,7 @@ export type RentalQuote = {
   pricingVersion: string;
 };
 
-const PRICING_VERSION = "nrw-3-workdays-v1-prices-2026-01-01-stock-2026-03-06";
+const PRICING_VERSION = "nrw-3-workdays-v2-prices-2026-10-08-stock-2026-03-06";
 
 function berlinToday(): string {
   const parts = new Intl.DateTimeFormat("en-CA", {

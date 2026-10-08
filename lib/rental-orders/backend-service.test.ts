@@ -55,7 +55,7 @@ describe("durable rental order workflow", () => {
     ["old terms", { termsVersion: "other" }], ["malformed email", { customer: { ...customer, email: "x\r\nBcc: victim@example.com" } }],
     ["multiple recipient separator", { customer: { ...customer, email: "other,kunde@example.invalid" } }],
     ["unknown item", { items: [{ id: 999, quantity: 1, startDate: "2026-10-05", endDate: "2026-10-07" }] }],
-    ["unpriced item", { items: [{ id: 20008, quantity: 1, startDate: "2026-10-05", endDate: "2026-10-07" }] }],
+    ["retired item", { items: [{ id: 20014, quantity: 1, startDate: "2026-10-05", endDate: "2026-10-07" }] }],
     ["past date", { items: [{ id: 20012, quantity: 1, startDate: "2026-09-01", endDate: "2026-09-02" }] }],
   ])("rejects %s without storing a request", async (_label, patch) => {
     const { service } = fixture(); await expect(service.submit(input(patch), "validation-nonce")).rejects.toThrow(); expect(service.list()).toEqual([]);

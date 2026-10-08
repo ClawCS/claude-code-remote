@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "nl-2026-10-05",
+    "language": "nl",
+    "title": "Nederlandse weekaanbiedingen · KW 41",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "designId": "DAHHqrttnew",
+    "pageNumbers": [14],
+    "rightsStatus": "approved",
+    "exportedAt": "2026-10-04T15:08:16Z",
+    "pdfPath": "/handzettel/2026/nl-2026-10-05.pdf",
+    "coverPath": "/images/content/nl-2026-10-05.webp",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "coverSha256": "a64e80d7087932e064b2d1c9686442bf3a4efc2ce230ac1a18dc1a2b21b0eeb2"
+  }
+]

@@ -35,9 +35,10 @@ describe("public side-page presentation", () => {
     }
   });
 
-  it("keeps every academy title and course destination visible without unverified photos", () => {
+  it("pairs every course destination with its approved illustrative cover and visible disclosure", () => {
     const html = renderToStaticMarkup(<AkademiePage />);
-    expect(html).not.toContain("<img");
+    expect([...html.matchAll(/<img\b/g)]).toHaveLength(8);
+    expect(html).toContain("KI-generierte Themenbilder");
     const titles = [...html.matchAll(/<h2\b[^>]*>([^<]+)<\/h2>/g)].map(([, title]) => title.replaceAll("&amp;", "&"));
     for (const course of courses) {
       expect(html).toContain(`href="/akademie/${course.slug}"`);

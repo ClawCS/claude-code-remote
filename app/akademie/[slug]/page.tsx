@@ -1,4 +1,5 @@
 "use client";
+import AcademyCover from "@/components/AcademyCover";
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -150,6 +151,10 @@ export default function CoursePage() {
       </nav>
 
       {/* Course Header */}
+      <figure className="rounded-2xl overflow-hidden border border-border mb-6 max-w-2xl">
+        <AcademyCover slug={course.slug} />
+        <figcaption className="px-4 py-2 text-xs text-muted bg-white">KI-generiertes Themenbild zur Illustration des Kursinhalts.</figcaption>
+      </figure>
       <div className="bg-[#fff8ee] border border-border rounded-2xl p-6 text-secondary mb-8 relative overflow-hidden">
         <div className="relative flex items-center gap-4 mb-4">
           <div>

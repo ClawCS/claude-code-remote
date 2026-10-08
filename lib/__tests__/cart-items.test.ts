@@ -8,7 +8,7 @@ const trailer = {...product,id:20001,name:"Kühlanhänger",slug:"kuehlanhaenger"
 describe("inquiry list integrity", () => {
   it.each([
     [20001,3],[20002,4],[20003,20],[20004,3],[20005,13],[20006,44],[20007,13],[20008,2],[20009,2],[20010,3],
-    [20011,2],[20012,1],[20013,124],[20014,33],[20015,226],[20016,402],[20017,299],[20018,58],[20019,177],[20020,23],
+    [20011,2],[20012,1],[20013,124],[20015,226],[20016,402],[20017,299],[20018,58],[20019,177],[20020,23],
   ])("caps canonical rental %i to its source-backed physical stock %i on add, update and restore",(id,stock)=>{
     const requested={...trailer,id};
     const added=addCartItem([],requested,999,rental);

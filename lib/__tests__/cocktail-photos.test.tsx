@@ -11,6 +11,39 @@ import path from "node:path";
 import sharp from "sharp";
 
 describe("licensed cocktail photography", () => {
+  test("shows the individually licensed Lillet Vive brand photograph and its primary CC BY 3.0 credit", () => {
+    const recipe = cocktailCatalog.recipes.find(({ cocktail }) => cocktail.name === "Lillet Vive")!;
+    const html = renderToStaticMarkup(<RecipeGrid recipes={[recipe]} />);
+    expect(html).toContain('data-cocktail-photo="Lillet Vive"');
+    expect(html).toContain("mynewsdesk.com/de/pernod-ricard-deutschland/images/lillet-vive-792978");
+    expect(html).toContain("Pernod Ricard Deutschland");
+    expect(html).toContain("CC BY 3.0");
+    expect(html).toContain("creativecommons.org/licenses/by/3.0");
+  });
+
+  test.each(["Gin Fizz", "Bramble", "Aviation", "French 75", "Bee's Knees", "Hugo", "Campari Spritz", "Bellini", "Kir Royal", "Rossini", "Americano", "Limoncello Spritz", "Margarita", "Paloma", "Tequila Sunrise"])("renders the newly reviewed %s photo with source and license on its recipe card", (name) => {
+    const recipe = cocktailCatalog.recipes.find(({ cocktail }) => cocktail.name === name)!;
+    const html = renderToStaticMarkup(<RecipeGrid recipes={[recipe]} />);
+    expect(html).toContain(`data-cocktail-photo="${name.replace(/'/g, "&#x27;")}"`);
+    expect(html).toContain("commons.wikimedia.org/wiki/");
+    expect(html).toMatch(/CC BY|CC0|Public domain/);
+    expect(html).toContain("Foto &amp; Lizenz");
+  });
+
+  test("does not publish an unsupported Zombie variation without the recipe's grenadine presentation", () => {
+    expect(getCocktailPhoto("Zombie")).toBeUndefined();
+    expect(catalogue.unresolved.find(photo => photo.name === "Zombie")?.reason).toContain("grenadine");
+  });
+
+  test("does not substitute the rejected mineral-water bottle photograph for the Ranch Water recipe", () => {
+    const recipe = cocktailCatalog.recipes.find(({ cocktail }) => cocktail.name === "Ranch Water")!;
+    const html = renderToStaticMarkup(<RecipeGrid recipes={[recipe]} />);
+    expect(getCocktailPhoto("Ranch Water")).toBeUndefined();
+    expect(html).not.toContain('data-cocktail-photo="Ranch Water"');
+    expect(html).toContain('href="/cocktails/ranch-water"');
+    expect(catalogue.unresolved.find(photo => photo.name === "Ranch Water")?.reason).toContain("bottle");
+  });
+
   test("shows the Daiquiri photograph with creator, original source and reusable license instead of an empty card", () => {
     const recipe = cocktailCatalog.recipes.find(({ cocktail }) => cocktail.name === "Daiquiri")!;
     const html = renderToStaticMarkup(<RecipeGrid recipes={[recipe]} />);

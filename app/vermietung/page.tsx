@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { rentalCategories, rentalItems, rentalToProduct } from "@/data/rentals";
 import { useCart, type RentalInfo } from "@/context/CartContext";
@@ -87,9 +88,10 @@ export default function VermietungPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {rentalItems.filter(item=>item.category === category).map(item=>(
                 <article key={item.id} data-rental-name={item.name} data-physical-stock={item.physicalStock} className="bg-white border border-border rounded-xl p-5 flex flex-col">
+                  <figure className="mb-4"><Image src={item.image} alt={`Beispielabbildung: ${item.name}`} width={960} height={640} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="w-full aspect-[3/2] object-contain rounded-lg bg-[#f8f5f0]" /><figcaption className="text-xs text-muted mt-2">KI-Beispielbild · Modell und Ausführung können abweichen.</figcaption></figure>
                   <h3 className="text-xl font-bold mb-3">{item.name}</h3>
                   <p className="text-primary font-bold text-lg">{item.price === null ? "Preis auf Anfrage" : formatPrice(item.price)}</p>
-                  {item.price !== null && <p className="text-xs mt-1">je Stück / angefangenem 3-Werktage-Block · inkl. MwSt. · 01.01.2026</p>}
+                  {item.price !== null && <p className="text-xs mt-1">je Stück / angefangenem 3-Werktage-Block · inkl. MwSt.</p>}
                   <p className="text-sm mt-3">Physischer Bestand: {item.physicalStock} Stück</p>
                   {item.breakagePrice !== null && <p className="text-sm mt-1">Bruchersatz: {formatPrice(item.breakagePrice)} je Stück</p>}
                   <div className="mt-auto pt-5">

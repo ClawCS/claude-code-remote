@@ -9,21 +9,25 @@ describe("source-backed rental catalog", () => {
   const html = () => renderToStaticMarkup(<CartProvider><RentalPage /></CartProvider>);
   it("renders every physical source item with its stock limit", () => {
     const result = html();
-    for (const [name,stock] of [["Kühlanhänger",3],["Kühltruhe",4],["Stehtisch",20],["Zapfanlage",3],["Tisch einzeln",13],["Bank einzeln",44],["Bierzeltgarnitur",13],["Theke",2],["Spültheke",2],["Tablett",3],["Glühweinkocher",2],["Bierpongtisch",1],["Weinglas",124],["Weinglas klein",33],["Sektglas",226],["Altbierglas",402],["Williglas",299],["Kölschglas",58],["Schnapsglas",177],["Weißbierglas",23]] as const) {
+    for (const [name,stock] of [["Kühlanhänger",3],["Kühltruhe",4],["Stehtisch",20],["Zapfanlage",3],["Tisch einzeln",13],["Bank einzeln",44],["Bierzeltgarnitur",13],["Theke",2],["Spültheke",2],["Tablett",3],["Glühweinkocher",2],["Bierpongtisch",1],["Weinglas",124],["Sektglas",226],["Altbierglas",402],["Williglas",299],["Kölschglas",58],["Schnapsglas",177],["Weizenglas",23]] as const) {
       expect(result).toContain(`aria-label="Menge für ${name}"`);
       expect(result).toContain(`data-rental-name="${name}" data-physical-stock="${stock}"`);
     }
-    expect(result).toContain("01.01.2026");
+    expect(result).not.toContain("01.01.2026");
+    expect(result).not.toContain("Weinglas klein");
   });
-  it("does not invent rental periods, source mappings, photos, or purchase rentals", () => {
+  it("shows confirmed periods and labelled examples without inventing deposit or purchase rentals", () => {
     const result = html();
-    expect(result).toContain("01.01.2026");
-    expect(result).toContain("Preis auf Anfrage");
+    expect(result).not.toContain("01.01.2026");
+    expect(result).not.toContain("Weinglas klein");
+    expect(result).not.toContain("Preis auf Anfrage");
+    expect([...result.matchAll(/<img\b/g)]).toHaveLength(19);
+    expect(result).toContain("KI-Beispielbild");
     expect(result).toContain("Bruchersatz");
     expect(result).toContain("Deine Mietauswahl");
     expect(result).not.toContain("kein berechneter Mietgesamtpreis");
     expect(result).toContain("inkl. MwSt.");
-    expect(result).not.toMatch(/Leihperiode|Kühlwagen|Entlüfter|Zapfhahn|<svg|<img/);
+    expect(result).not.toMatch(/Leihperiode|Kühlwagen|Entlüfter|Zapfhahn|<svg/);
     expect(result).not.toContain("Kaution");
   });
   it("offers bounded plus/minus controls alongside direct quantity entry for every item", () => {
@@ -36,12 +40,12 @@ describe("source-backed rental catalog", () => {
       expect(article).toMatch(/aria-label="Menge für [^"]+ verringern"[^>]*disabled/);
     }
   });
-  it("shows the operator-confirmed three-workday price unit without pricing unmatched items", () => {
+  it("shows the operator-confirmed three-workday price unit and counter price", () => {
     const result = html();
     const trailer = result.split('data-rental-name="Kühlanhänger"')[1]?.split("</article>")[0];
     const counter = result.split('data-rental-name="Theke"')[1]?.split("</article>")[0];
     expect(trailer).toContain("3-Werktage-Block");
-    expect(counter).toContain("Preis auf Anfrage");
+    expect(counter).toContain("35,00");
     expect(counter).not.toContain("0,00");
   });
   it("shows the same confirmed price unit in the homepage rental section", () => {
@@ -67,9 +71,9 @@ describe("source-backed rental catalog", () => {
       ["Kühlanhänger","150,00"],["Kühltruhe","35,00"],["Stehtisch","12,00"],["Zapfanlage","25,00"],
       ["Tisch einzeln","7,00"],["Bank einzeln","4,00"],["Bierzeltgarnitur","15,00"],["Tablett","5,00"],
       ["Glühweinkocher","10,00"],["Bierpongtisch","30,00"],["Weinglas","0,40"],["Sektglas","0,40"],
-      ["Theke","Preis auf Anfrage"],["Spültheke","Preis auf Anfrage"],["Weinglas klein","Preis auf Anfrage"],
-      ["Altbierglas","Preis auf Anfrage"],["Williglas","Preis auf Anfrage"],["Kölschglas","Preis auf Anfrage"],
-      ["Schnapsglas","Preis auf Anfrage"],["Weißbierglas","Preis auf Anfrage"],
+      ["Theke","35,00"],["Spültheke","50,00"],
+      ["Altbierglas","0,20"],["Williglas","0,20"],["Kölschglas","0,20"],
+      ["Schnapsglas","0,40"],["Weizenglas","0,80"],
     ];
     for (const [name,price] of expectations) {
       const article=result.split(`data-rental-name="${name}"`)[1]?.split("</article>")[0];

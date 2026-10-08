@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": ["./data/editorial/**/*.json"],
     "/api/{rentals,rental-admin}/**": ["./assets/fonts/rental-document/**/*"],
-    "/{,nl,angebote,handzettel,api/content/current,api/content/flyers}": ["./public/handzettel/20*/**/*.pdf", "./public/images/content/**/*"],
+    "/{,nl,angebote,handzettel,produkte,kategorie/*,api/content/current,api/content/flyers}": ["./public/handzettel/20*/**/*.pdf", "./public/images/content/**/*"],
   },
   experimental: {
     inlineCss: true,

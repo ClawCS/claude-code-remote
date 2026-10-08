@@ -36,7 +36,7 @@ export default function WarenkorbPage() {
             <div key={cartLineKey(item)} className={`p-4 bg-white border rounded-xl ${isRental ? "border-amber-300" : "border-border"}`}>
               <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 {item.product.image && item.product.image !== "/images/home/brand-logo.webp" && <div className="w-16 h-16 bg-light rounded-lg overflow-hidden flex-shrink-0 relative">
-                  <Image src={item.product.image} alt={item.product.name} fill sizes="64px" className="object-contain p-1" />
+                  <Image src={item.product.image} alt={isRental ? `KI-Beispielbild: ${item.product.name}` : item.product.name} fill sizes="64px" className="object-contain p-1" />
                 </div>}
                 <div className="flex-1 min-w-0">
                   {isRental ? (
@@ -45,6 +45,7 @@ export default function WarenkorbPage() {
                     <Link href={`/produkte/${item.product.slug}`} className="font-semibold text-secondary hover:text-primary transition-colors">{item.product.name}</Link>
                   )}
                   {!isRental && <p className="text-sm text-muted">{item.product.unit}</p>}
+                  {isRental && <p className="text-xs text-muted">KI-Beispielbild · Modell und Ausführung können abweichen.</p>}
                 </div>
                 <div className="flex items-center border border-border rounded-lg overflow-hidden">
                   <button aria-label={`Menge für ${item.product.name} verringern`} onClick={() => updateQuantity(cartLineKey(item), item.quantity - 1)} className="px-2.5 py-1.5 hover:bg-light transition-colors font-bold text-sm">-</button>

@@ -9,11 +9,11 @@ describe("server product layout", () => {
       .rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");
   });
 
-  it("keeps a known product's structured data and children", async () => {
+  it("preserves the redirect child without publishing a retired Product entity", async () => {
     const product = assortmentProducts[0];
     const html = renderToStaticMarkup(await Layout({ params: Promise.resolve({ slug: product.slug }), children: <p>Product content</p> }));
     expect(html).toContain("Product content");
-    expect(html).toContain('"@type":"Product"');
+    expect(html).not.toContain('"@type":"Product"');
     expect(html).not.toContain("brand-logo.webp");
   });
 });

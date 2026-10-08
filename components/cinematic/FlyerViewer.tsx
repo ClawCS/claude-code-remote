@@ -121,12 +121,12 @@ export default function FlyerViewer({
 
   return (
     <div className={styles.viewer} data-flyer-viewer>
-      <div className={styles.cover} data-flyer-cover>
+      <div className={`${styles.cover} ${flyer.pageCount === 1 ? styles.singlePageCover : ""}`} data-flyer-cover data-single-page={flyer.pageCount === 1 || undefined}>
         {canRenderCover ? (
           <Image
             src={flyer.coverUrl}
             alt={`${copy.cover}: ${flyer.title}`}
-            fill
+            {...(flyer.pageCount === 1 ? {width: 1600, height: 1200} : {fill: true})}
             sizes="(max-width: 47.999rem) 100vw, (max-width: 79.999rem) 50vw, 38rem"
             onError={() => setCoverFailed(true)}
           />

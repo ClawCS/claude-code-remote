@@ -45,7 +45,7 @@ export default function ServiceSection(): React.JSX.Element {
           </div>
         ))}
       </dl>
-      <p className={styles.rentalNote}>Preisstand {RENTAL_SOURCES.price.asOf} · Bestandsstand {RENTAL_SOURCES.inventory.asOf}. Referenzpreise je 3 Werktage. Verfügbarkeit und Konditionen klären wir persönlich.</p>
+      <p className={styles.rentalNote}>Bestandsstand {RENTAL_SOURCES.inventory.asOf}. Referenzpreise je 3 Werktage. Verfügbarkeit und Konditionen klären wir persönlich.</p>
     </section>
   );
 }

@@ -34,11 +34,12 @@ describe("canonical rental quotes", () => {
     expect(items.map(item => item.quantity)).toEqual([2, 3]);
   });
 
-  it("keeps unknown prices unknown while showing the known subtotal", () => {
-    const result = quote([line(), line({ id: 20008, quantity: 2 })]);
-    expect(result).toMatchObject({ totalCents: null, knownSubtotalCents: 1200, allPriced: false,
-      lines: [{ lineTotalCents: 1200 }, { name: "Theke", unitPriceCents: null, lineTotalCents: null }] });
-    expect(quote([line({ id: 20014 })])).toMatchObject({ totalCents: null, knownSubtotalCents: 0, allPriced: false });
+  it.each([[20008,3500],[20009,5000],[20016,20],[20017,20],[20018,20],[20019,40],[20020,80]])("quotes operator-confirmed item %i for one and two started blocks", (id,cents) => {
+    expect(quote([line({id,quantity:2})]).totalCents).toBe(cents*2);
+    expect(quote([line({id,quantity:2,endDate:"2026-10-08"})]).totalCents).toBe(cents*4);
+  });
+  it("rejects the retired small wine glass even in an old saved selection", () => {
+    expect(() => quote([line({id:20014})])).toThrow(/Leihartikel/);
   });
 
   it("uses inclusive dates and NRW holidays in the canonical quote", () => {
@@ -103,7 +104,7 @@ describe("quote validation", () => {
 describe("physical inventory across inclusive rental ranges", () => {
   it.each([
     [20001, 3], [20002, 4], [20003, 20], [20004, 3], [20005, 13], [20006, 44], [20007, 13],
-    [20008, 2], [20009, 2], [20010, 3], [20011, 2], [20012, 1], [20013, 124], [20014, 33],
+    [20008, 2], [20009, 2], [20010, 3], [20011, 2], [20012, 1], [20013, 124],
     [20015, 226], [20016, 402], [20017, 299], [20018, 58], [20019, 177], [20020, 23],
   ])("enforces canonical stock %i at %i", (id, quantity) => {
     expect(quote([line({ id, quantity })]).lines[0].quantity).toBe(quantity);

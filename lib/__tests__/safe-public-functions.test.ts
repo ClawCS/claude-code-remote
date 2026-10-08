@@ -31,14 +31,14 @@ describe("unsafe legacy publication paths are closed", () => {
   it("does not publish unverified catalog prices or stock in product structured data", async () => {
     const tree = await ProductLayout({children: null, params: Promise.resolve({slug: products[0].slug})});
     const html = renderToStaticMarkup(tree);
-    expect(html).toContain('"@type":"Product"');
+    expect(html).not.toContain('"@type":"Product"');
     expect(html).not.toContain('"offers"');
     expect(html).not.toContain("schema.org/InStock");
   });
   it("does not recycle historical action clauses into product metadata", async () => {
     for (const product of products.filter(p => /€|gratis|zugabe|im angebot|trinkgut app/i.test(p.unit))) {
       const params = Promise.resolve({slug: product.slug});
-      const metadata = await generateMetadata({params});
+      const metadata = await generateMetadata();
       const markup = renderToStaticMarkup(await ProductLayout({children:null, params}));
       expect(`${metadata.description} ${markup}`).not.toMatch(/€|gratis|zugabe|im angebot|trinkgut app/i);
     }

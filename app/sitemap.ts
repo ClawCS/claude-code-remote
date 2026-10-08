@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import products from "@/data/products.json";
 import { courses } from "@/data/akademie";
 import { categories } from "@/lib/utils";
 import { cocktailCatalog } from "@/lib/cocktail-routes";
@@ -39,7 +38,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const detailRoutes = [
-    ...products.map(product => ({ path: `/produkte/${product.slug}`, priority: 0.7, changeFrequency: "monthly" as const })),
     ...categories.map(category => ({ path: `/kategorie/${category.slug}`, priority: 0.8, changeFrequency: "monthly" as const })),
     ...courses.map(course => ({ path: `/akademie/${course.slug}`, priority: 0.6, changeFrequency: "monthly" as const })),
     ...cocktailCatalog.recipes.map(recipe => ({ path: recipe.href, priority: 0.7, changeFrequency: "monthly" as const })),

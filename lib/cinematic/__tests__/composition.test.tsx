@@ -329,7 +329,7 @@ describe("cinematic homepage composition", () => {
     expect(count(html, /Termin &amp; Verfügbarkeit anfragen/)).toBe(5);
     expect(html).toContain("150 €");
     expect(html).toContain("Bestand laut Liste");
-    expect(html).toContain("01.01.2026");
+    expect(html).not.toContain("01.01.2026");
     expect(html).toContain("06.03.2026");
     expect(html).toContain("Mo–Sa 08:00–20:00 Uhr");
     expect(html).toContain("Sonn- und Feiertage geschlossen");

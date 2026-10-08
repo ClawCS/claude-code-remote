@@ -23,8 +23,8 @@ describe("canonical cart rental quote", () => {
     expect(quote([rental(), goods])).toMatchObject({ onlyRentals: false, error: "", quote: { totalCents: 4800 } });
     expect(quote([rental(), goods]).selection).toHaveLength(1);
   });
-  it("retains unknown prices instead of presenting a zero-price rental", () => {
-    expect(quote([rental(), rental(20008, 1)])).toMatchObject({ onlyRentals: true, error: "", quote: { totalCents: null, knownSubtotalCents: 4800, allPriced: false } });
+  it("includes the confirmed counter price in the complete cart total", () => {
+    expect(quote([rental(), rental(20008, 1)])).toMatchObject({ onlyRentals: true, error: "", quote: { totalCents: 11800, knownSubtotalCents: 11800, allPriced: true } });
   });
   it("catches invalid rental dates with a customer-readable error", () => {
     const item = rental(); item.rental!.endDate = "2026-02-30";

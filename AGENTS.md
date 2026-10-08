@@ -42,6 +42,14 @@ Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Ausdrückliche Ausnahme für Akademie und Leihartikel — 08.10.2026
+
+Niko hat passende KI-generierte Themenbilder für alle Akademiekurse über Image sowie natürliche Beispielbilder für die Leihartikel ausdrücklich beauftragt und den Kurzdesign-Abgleich freigegeben. Diese Bilder lokal optimieren und in einem getrennten Herkunftsmanifest mit Prompt, Generator, Freigabedatum und SHA-256 dokumentieren. Akademiemotive als KI-generierte Themenbilder kenntlich machen; Leihbilder mit „KI-Beispielbild · Modell und Ausführung können abweichen“ kennzeichnen. Keine nicht belegten konkreten Modelle, Abmessungen oder Eigenschaften als zugesichert ausgeben. Diese Ausnahme gilt nicht für Cocktails, Marktfotos, Mitarbeiter, Werbung oder Gewinnspieloriginale. Vorhandene Canva-Verbindung bleibt unverändert.
+
+## NL-Werbung: Betreiberfreigabe — 08.10.2026
+
+Die datumsrichtige, vollständige NL-Originalseite darf auf ausdrückliche Betreiberanweisung trotz dokumentierter rechnerischer Preis-/Grundpreisabweichungen unverändert übernommen werden. Der Betreiber wurde über die KW41-Abweichungen einschließlich Krombacher-Mindestmenge informiert und hat anschließend die Umsetzung bestätigt. Preis-/Pfand-/Bedingungsabweichungen als redaktionelle Warnung melden und dokumentieren; nicht eigenmächtig korrigieren und nicht als rechnerisch fehlerfrei deklarieren. Falsche Woche, unklare Herkunft, fehlendes/defektes Original oder mehrseitige NL-PDF bleiben blockierend. Einzelangebote außerhalb des Originalflyers nur bei vollständig eindeutig belegten Angaben übernehmen; andernfalls auf den Originalhandzettel verweisen.
+
 ## Ausdrückliche Ausnahme für Cocktailrezepte — 05.10.2026
 
 Niko hat echte, rezeptgetreue Cocktailfotos aus dem Internet ausdrücklich beauftragt und die behutsame Umsetzung freigegeben. Für Cocktailrezepte sind daher einzeln belegte, kommerziell nutzbare Fotografien externer Quellen zulässig. Motiv, Rezeptvariante, Glas und Garnitur prüfen; keine KI-Ersatzbilder und keine Rezeptänderung, nur um ein Bild passend zu machen. Urheber, Originalquelle, konkrete Lizenz, Änderungen und lokale Dateihashes dokumentieren; erforderliche Bildnachweise öffentlich am Foto zugänglich halten. Originale und ausführliche Quellenbelege unter `assets/source/cocktails/` bleiben privat. Diese Ausnahme gilt nicht automatisch für andere Rubriken.

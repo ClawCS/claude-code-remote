@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-05T07:50:17.448Z",
+  "generatedAt": "2026-10-08T06:56:13.954Z",
   "photos": [
     {
       "name": "Mint Julep",
@@ -781,6 +781,326 @@
       "objectPosition": "50% 50%",
       "status": "approved",
       "fidelityNotes": "Reviewed cropped derivative: pale green-cloudy cocktail served up in Martini glass, whole glass/stem preserved and unrelated background person excluded. Primary source explicitly lists gin, lime, green Chartreuse and maraschino with real maraschino cherry. No Scotch-substitution variant used; exact amounts not asserted."
+    },
+    {
+      "name": "Gin Fizz",
+      "slug": "gin-fizz",
+      "src": "/images/cocktails/gin-fizz.webp",
+      "alt": "Gin Fizz",
+      "width": 802,
+      "height": 1200,
+      "sha256": "687e2aa62d2482d39b6e34b84c9d6767722a0a3313809a0578267aed450033d3",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0032.jpg",
+      "sourceTitle": "15-09-26-RalfR-WLC-0032.jpg",
+      "creator": "Ralf Roletschek",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "credit": "15-09-26-RalfR-WLC-0032.jpg — Ralf Roletschek; CC BY-SA 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed real photograph: pale carbonated Gin Fizz without serving ice, lemon twist, narrow stemmed tall glass. Source names Gin Fizz; stem is a vessel-style variance. Exact spirit/lemon/syrup/soda measures not inferred."
+    },
+    {
+      "name": "Bramble",
+      "slug": "bramble",
+      "src": "/images/cocktails/bramble.webp",
+      "alt": "Bramble",
+      "width": 931,
+      "height": 1200,
+      "sha256": "dc7cb6971917b20a285a10c5f6d77c49eb9a415bc491d78e0df880a158b90df3",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bramble_Cocktail1.jpg",
+      "sourceTitle": "Bramble Cocktail1.jpg",
+      "creator": "Erich Wagner (www.eventografie.de)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "credit": "Bramble Cocktail1.jpg — Erich Wagner (www.eventografie.de); CC BY-SA 4.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: crushed-ice rocks glass with dark blackberry-liqueur layer and lemon wheel. Source explicitly documents gin, lemon, sugar and creme de mure. No blackberry garnish visible, minor garnish variance. Exact quantities not inferred."
+    },
+    {
+      "name": "Aviation",
+      "slug": "aviation",
+      "src": "/images/cocktails/aviation.webp",
+      "alt": "Aviation",
+      "width": 954,
+      "height": 1200,
+      "sha256": "955bed71382d9ecf60d3c10acf819bbb97354f28426151d6ef8ec96c5e48295a",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aviation_Cocktail1.jpg",
+      "sourceTitle": "Aviation Cocktail1.jpg",
+      "creator": "Erich Wagner (www.eventografie.de)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "credit": "Aviation Cocktail1.jpg — Erich Wagner (www.eventografie.de); CC BY-SA 4.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: pale violet Aviation served up, no ice, in stemmed cocktail goblet. Named source photograph; no conflicting dominant ingredient documented. Cherry garnish not visible, minor garnish variance. Exact measures not inferred."
+    },
+    {
+      "name": "French 75",
+      "slug": "french-75",
+      "src": "/images/cocktails/french-75.webp",
+      "alt": "French 75",
+      "width": 716,
+      "height": 1200,
+      "sha256": "c63508a81f27b0d25b2ee224507ccfe43e1035fed307f820ab242e167cf4eb64",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0310.jpg",
+      "sourceTitle": "15-09-26-RalfR-WLC-0310.jpg",
+      "creator": "Ralf Roletschek",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "credit": "15-09-26-RalfR-WLC-0310.jpg — Ralf Roletschek; CC BY-SA 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: named French 75 in narrow stemmed champagne vessel with lemon twist. Vessel is silver metal rather than clear glass, a styling variance. No altered flavor variant documented; exact gin/lemon/syrup/champagne quantities not inferred."
+    },
+    {
+      "name": "Bee's Knees",
+      "slug": "bee-s-knees",
+      "src": "/images/cocktails/bee-s-knees.webp",
+      "alt": "Bee's Knees",
+      "width": 1200,
+      "height": 1200,
+      "sha256": "c0538f9868143f87a642e465cca9bba1585bdd980df41c95d746b1b1fe53c95a",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bee%27s_Knees.jpg",
+      "sourceTitle": "Bee's Knees.jpg",
+      "creator": "Will Shenton",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "credit": "Bee's Knees.jpg — Will Shenton; CC BY-SA 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: golden cocktail served up in coupe, lemon twist, honey and lemon in background. Source explicitly names Bee's Knees. No serving ice or conflicting flavor variant; exact gin/lemon/honey measures not inferred."
+    },
+    {
+      "name": "Hugo",
+      "slug": "hugo",
+      "src": "/images/cocktails/hugo.webp",
+      "alt": "Hugo",
+      "width": 687,
+      "height": 1200,
+      "sha256": "425cece9ac0a5d1ac218d979a4129c71892510b9a58d7ba349520bd26d0c2853",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0063.jpg",
+      "sourceTitle": "15-09-26-RalfR-WLC-0063.jpg",
+      "creator": "Ralf Roletschek",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "credit": "15-09-26-RalfR-WLC-0063.jpg — Ralf Roletschek; CC BY-SA 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: pale bubbly Hugo in wine glass over ice with mint. Named source; lime not clearly visible, minor garnish variance. Exact elderflower/prosecco/soda quantities not inferred."
+    },
+    {
+      "name": "Bellini",
+      "slug": "bellini",
+      "src": "/images/cocktails/bellini.webp",
+      "alt": "Bellini",
+      "width": 600,
+      "height": 800,
+      "sha256": "ea5649b2cb51a6c4de04d30c5652e6a4468e206c4b555f6eaf5f2cab8eb2ad9d",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bellini-Cocktail.jpg",
+      "sourceTitle": "Bellini-Cocktail.jpg",
+      "creator": "Charles Clavadetscher",
+      "license": "Public domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File:Bellini-Cocktail.jpg#Licensing",
+      "credit": "Bellini-Cocktail.jpg — Charles Clavadetscher; Public domain.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: pale peach colored Bellini with visible puree, served up in stemmed coupe. Source names Bellini; coupe rather than flute is a vessel styling variance. No altered fruit variant documented; exact prosecco/peach quantities not inferred."
+    },
+    {
+      "name": "Kir Royal",
+      "slug": "kir-royal",
+      "src": "/images/cocktails/kir-royal.webp",
+      "alt": "Kir Royal",
+      "width": 699,
+      "height": 1200,
+      "sha256": "a72b48ed6634ee6d8a4e5dac8c27f955d83c8584ab6d05319196c7a6ee8373bb",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0299.jpg",
+      "sourceTitle": "15-09-26-RalfR-WLC-0299.jpg",
+      "creator": "Ralf Roletschek",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "credit": "15-09-26-RalfR-WLC-0299.jpg — Ralf Roletschek; CC BY-SA 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: red cassis-colored Kir Royal served without ice in slender flute. Named source photograph, no conflicting variant documented. Exact sparkling wine/cassis quantities not inferred."
+    },
+    {
+      "name": "Rossini",
+      "slug": "rossini",
+      "src": "/images/cocktails/rossini.webp",
+      "alt": "Rossini",
+      "width": 900,
+      "height": 1200,
+      "sha256": "97b2394f132f7d2006981c9594baa3af76b3d77bfa726998a90f92cbc21dc221",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Un_Rossini,_grazie_(467053126).jpg",
+      "sourceTitle": "Un Rossini, grazie (467053126).jpg",
+      "creator": "Luca Conti from Senigallia, Italy",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "credit": "Un Rossini, grazie (467053126).jpg — Luca Conti from Senigallia, Italy; CC BY 2.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: red/pink strawberry-colored named Rossini in stemmed wine glass, puree foam on top. Wide glass and straw rather than flute are serving-style variances; photograph includes a book in background. No altered fruit variant documented. Exact quantities not inferred."
+    },
+    {
+      "name": "Americano",
+      "slug": "americano",
+      "src": "/images/cocktails/americano.webp",
+      "alt": "Americano",
+      "width": 612,
+      "height": 612,
+      "sha256": "5093be6b88edbba5922ed5edcab2896f412f8c52d32dc2db5f4110ee77185797",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Americano_cocktail_with_bottles.jpg",
+      "sourceTitle": "Americano cocktail with bottles.jpg",
+      "creator": "Butterbean from Baton Rouge, Louisana, USA",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "credit": "Americano cocktail with bottles.jpg — Butterbean from Baton Rouge, Louisana, USA; CC BY 2.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: red iced Americano beside Campari and sweet red vermouth bottles. Source documents equal sweet vermouth and Campari on ice; no conflicting spirit variant. Rocks glass rather than longdrink glass and absent orange garnish are styling variances. Soda and exact quantities cannot be established visually."
+    },
+    {
+      "name": "Limoncello Spritz",
+      "slug": "limoncello-spritz",
+      "src": "/images/cocktails/limoncello-spritz.webp",
+      "alt": "Limoncello Spritz",
+      "width": 1200,
+      "height": 673,
+      "sha256": "af9a6a8b683512b9e9faac367120c8c21086f8d1d210e76099cf8e42dffe6f7a",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Limoncello_Spritz_mit_Prosecco.jpg",
+      "sourceTitle": "Limoncello Spritz mit Prosecco.jpg",
+      "creator": "Burkhard Mücke",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "credit": "Limoncello Spritz mit Prosecco.jpg — Burkhard Mücke; CC BY-SA 4.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: source explicitly names Limoncello Spritz with Prosecco. Pale yellow drinks in stemmed wine glasses with lemon slices; prepared party batch, no other flavor variant documented. Ice and mint not clearly visible, serving/garnish variance; exact quantities not inferred."
+    },
+    {
+      "name": "Paloma",
+      "slug": "paloma",
+      "src": "/images/cocktails/paloma.webp",
+      "alt": "Paloma",
+      "width": 958,
+      "height": 1200,
+      "sha256": "fe91b9261cc7a00332e61009d03031ad2edca28b5ea88f3647994e58a498d3b5",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:TequilaPaloma.JPG",
+      "sourceTitle": "TequilaPaloma.JPG",
+      "creator": "Antonio Cavallo",
+      "license": "Public domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File:TequilaPaloma.JPG#Licensing",
+      "credit": "TequilaPaloma.JPG — Antonio Cavallo; Public domain.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: pale cloudy carbonated Paloma in tall tumbler over ice with lime wedge. Source expressly identifies tequila, lime and grapefruit soda. No conflicting flavor variant; exact measures not inferred."
+    },
+    {
+      "name": "Campari Spritz",
+      "slug": "campari-spritz",
+      "src": "/images/cocktails/campari-spritz.webp",
+      "alt": "Campari Spritz",
+      "width": 435,
+      "height": 1200,
+      "sha256": "45de93b36482864303cd5115675362ae40b72af08895a7eac80bafdfedb0fced",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:20120704_170702_venezia_1584.jpg",
+      "sourceTitle": "20120704 170702 venezia 1584.jpg",
+      "creator": "Gunther H.G. Geick",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "credit": "20120704 170702 venezia 1584.jpg — Gunther H.G. Geick; CC BY-SA 4.0.",
+      "changes": "Bildausschnitt zur Konzentration auf den benannten Drink, Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed source and cropped derivative. Photographer explicitly identifies Aperol on LEFT, Campari on RIGHT. Crop preserves entire right red iced wine glass and orange slice and excludes Aperol glass. Named Campari Spritz; exact proportions not inferred."
+    },
+    {
+      "name": "Lillet Vive",
+      "slug": "lillet-vive",
+      "src": "/images/cocktails/lillet-vive.webp",
+      "alt": "Lillet Vive",
+      "width": 901,
+      "height": 1200,
+      "sha256": "c0dc90da8b367c9b6577453397f9af3d92359467a16263fec91794c46c0f83e7",
+      "sourceUrl": "https://www.mynewsdesk.com/de/pernod-ricard-deutschland/images/lillet-vive-792978",
+      "sourceTitle": "Lillet Vive",
+      "creator": "Pernod Ricard Deutschland",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "credit": "Lillet Vive — Pernod Ricard Deutschland; CC BY 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed primary brand photograph published 2017 under CC BY 3.0, verified in photo-specific structured metadata and visible license. Pale carbonated iced Lillet Vive in stemmed wine glass with cucumber slice, strawberry and fresh mint; exactly site's dominant ingredients and garnish. Original white-background brand photograph retained; no AI or flavor substitution. Exact measures not inferred."
+    },
+    {
+      "name": "Tequila Sunrise",
+      "slug": "tequila-sunrise",
+      "src": "/images/cocktails/tequila-sunrise.webp",
+      "alt": "Tequila Sunrise",
+      "width": 800,
+      "height": 1200,
+      "sha256": "59e361ee9ab081b062a25afe6e8f37811d13b6a4d4492c16c0c5371016ff6608",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tequila_Sunrise_2013.JPG",
+      "sourceTitle": "Tequila Sunrise 2013.JPG",
+      "creator": "stavros1",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "credit": "Tequila Sunrise 2013.JPG — stavros1; CC BY 3.0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed: orange-juice-colored iced Tequila Sunrise with visibly red grenadine base and orange wheel. Photographer explicitly documents tequila, orange juice and grenadine. Curved stemmed longdrink glass is a vessel-style variance; no altered flavor variant. Exact measures not inferred."
+    },
+    {
+      "name": "Margarita",
+      "slug": "margarita",
+      "src": "/images/cocktails/margarita.webp",
+      "alt": "Margarita",
+      "width": 1005,
+      "height": 1200,
+      "sha256": "589f05c40d14f1eb099a6e45f04657cb778a53fef78b3dffc8e0e6889caf9356",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sonoritas_DTLA_-_Margarita_(cocktail)_July_2022.jpg",
+      "sourceTitle": "Sonoritas DTLA - Margarita (cocktail) July 2022.jpg",
+      "creator": "Benoît Prieur",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "credit": "Sonoritas DTLA - Margarita (cocktail) July 2022.jpg — Benoît Prieur; CC0.",
+      "changes": "Größenanpassung und WebP-Konvertierung; kein künstlich verändertes Motiv.",
+      "fit": "contain",
+      "objectPosition": "50% 50%",
+      "status": "approved",
+      "fidelityNotes": "Individually reviewed named real Margarita photograph: pale golden citrus cocktail over ice in rocks glass with dried citrus and berry garnish. Rocks glass and dried rather than fresh garnish are styling differences. Photographer names Margarita; no conflicting flavored recipe documented. Exact tequila/triple-sec/lime measures not inferred."
     }
   ],
   "unresolved": [
@@ -792,7 +1112,7 @@
     },
     {
       "name": "Zombie",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
+      "reason": "Licensed named source acquired but final visual review shows amber/orange longdrink with cinnamon/mint, no visible red grenadine base and no source evidence of site's three-rum/apricot/pineapple/lime variant. Recipe requires grenadine sinking in Tiki glass. Unsupported variant held privately, no recipe change or substitute published.",
       "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Zombie_Cocktail.jpg",
       "candidateLicense": "CC BY-SA 4.0"
     },
@@ -802,17 +1122,11 @@
     },
     {
       "name": "Bahama Mama",
-      "reason": "No commercially reusable photograph of the site's rum/coconut/coffee-liqueur/pineapple/orange version verified. Commons results are ships/illustrations; identified Applebee's photo is CC BY-NC and depicts banana-liqueur variant. All-rights-reserved Flickr images not used."
+      "reason": "No commercially reusable photograph of the site's rum/coconut/coffee-liqueur/pineapple/orange version verified. Commons results are ships/illustrations; identified Applebee's photo is CC BY-NC and depicts banana-liqueur variant. Additional Benjamin Thompson CC BY 2.0 editorial credit leads to primary Flickr 4679425429 returning HTTP 404; original photo identity/license cannot be verified. All-rights-reserved Flickr images not used."
     },
     {
       "name": "Vodka Sour",
       "reason": "No individually licensed photograph of plain vodka/lemon/sugar sour verified. Available cherry or orange vodka-sour variations and whiskey-sour photos were not substituted."
-    },
-    {
-      "name": "Gin Fizz",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0032.jpg",
-      "candidateLicense": "CC BY-SA 3.0"
     },
     {
       "name": "Gimlet",
@@ -821,108 +1135,20 @@
       "candidateLicense": "CC BY-SA 2.0"
     },
     {
-      "name": "Bramble",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Bramble_Cocktail1.jpg",
-      "candidateLicense": "CC BY-SA 4.0"
-    },
-    {
-      "name": "Aviation",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Aviation_Cocktail1.jpg",
-      "candidateLicense": "CC BY-SA 4.0"
-    },
-    {
-      "name": "French 75",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0310.jpg",
-      "candidateLicense": "CC BY-SA 3.0"
-    },
-    {
-      "name": "Bee's Knees",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Bee%27s_Knees.jpg",
-      "candidateLicense": "CC BY-SA 3.0"
-    },
-    {
-      "name": "Hugo",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0063.jpg",
-      "candidateLicense": "CC BY-SA 3.0"
-    },
-    {
-      "name": "Campari Spritz",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:20120704_170702_venezia_1584.jpg",
-      "candidateLicense": "CC BY-SA 4.0"
-    },
-    {
-      "name": "Bellini",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Bellini-Cocktail.jpg",
-      "candidateLicense": "Public domain"
-    },
-    {
-      "name": "Kir Royal",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:15-09-26-RalfR-WLC-0299.jpg",
-      "candidateLicense": "CC BY-SA 3.0"
-    },
-    {
-      "name": "Rossini",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Un_Rossini,_grazie_(467053126).jpg",
-      "candidateLicense": "CC BY 2.0"
-    },
-    {
-      "name": "Lillet Vive",
-      "reason": "No individually licensed photograph of Lillet Blanc/tonic/cucumber/strawberry/mint version verified. Generic Lillet product/advertising photography does not establish commercial photo reuse rights."
-    },
-    {
-      "name": "Americano",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Americano_cocktail_with_bottles.jpg",
-      "candidateLicense": "CC BY 2.0"
-    },
-    {
-      "name": "Limoncello Spritz",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Limoncello_Spritz_mit_Prosecco.jpg",
-      "candidateLicense": "CC BY-SA 4.0"
-    },
-    {
-      "name": "Margarita",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Sonoritas_DTLA_-_Margarita_(cocktail)_July_2022.jpg",
-      "candidateLicense": "CC0"
-    },
-    {
-      "name": "Paloma",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:TequilaPaloma.JPG",
-      "candidateLicense": "Public domain"
-    },
-    {
-      "name": "Tequila Sunrise",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
-      "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Tequila_Sunrise_2013.JPG",
-      "candidateLicense": "CC BY 3.0"
-    },
-    {
       "name": "Mezcal Mule",
       "reason": "No individually licensed real photograph of the named mezcal/ginger-beer/lime version verified. Vodka and tequila Mule photos not substituted; located Flickr sources are all-rights-reserved or unsupported variants."
     },
     {
       "name": "Mezcal Negroni",
-      "reason": "No individually licensed real photograph of mezcal/Campari/red-vermouth version verified. Gin Negroni photos and copyrighted celebrity-video stills not substituted."
+      "reason": "No individually licensed matching real photograph of plain mezcal/Campari/red-vermouth version verified. Located Commons CC BY 3.0 celebrity video names a Smoked Mezcal Negroni variant, not a matching standalone photograph; Flickr tequila/mezcal mixes and grapefruit-enhanced variants differ. Gin Negroni photos and paid stock not substituted."
     },
     {
       "name": "Batanga",
-      "reason": "No free individually verified commercial-reuse photograph acquired. Identified photographer/brand images are purchased stock, restricted basic downloads or lack an applicable open reuse license. Cuba Libre photos not substituted."
+      "reason": "No free individually verified commercial-reuse photograph acquired. Additional primary Flickr Batanga by mixnfix Mixer (54445774545), documenting tequila/lime/cola, explicitly states All rights reserved. Identified photographer/brand images are purchased stock, restricted basic downloads or lack an applicable open reuse license. Cuba Libre photos not substituted."
     },
     {
       "name": "Ranch Water",
-      "reason": "Named individually licensed candidate was researched but no derivative published: acquisition batch stopped on source HTTP 429 with Retry-After 600 seconds (2026-10-05T07:44:42Z). Candidate still requires visual review.",
+      "reason": "Licensed named candidate acquired and visually reviewed, but photo shows a Topo Chico mineral-water bottle with citrus and empty shot glass, no matching finished tequila/lime/water highball over ice. Derivative held privately; water bottle not substituted for cocktail recipe.",
       "candidateSourceUrl": "https://commons.wikimedia.org/wiki/File:Ranch_water.jpg",
       "candidateLicense": "CC BY 4.0"
     }

@@ -8,7 +8,7 @@ export type FlyerIndex = Readonly<{
   status: "ok" | "degraded";
   issues: readonly string[];
   generatedAt: string;
-  flyers: readonly (HomepageFlyer & {language: "de" | "nl"})[];
+  flyers: readonly (HomepageFlyer & {language: "de" | "nl"; pdfSha256?: string})[];
   scheduled: readonly {id: string; title: string; language: "de" | "nl"; validFrom: string; validTo: string}[];
 }>;
 
@@ -26,12 +26,12 @@ export async function getFlyerIndex(now = new Date()): Promise<FlyerIndex> {
   const offersRequired = today <= getOfferDemandRange(range).validTo;
   if (!official && offersRequired) issues.push("official-flyer-missing");
   if (!nlFlyer && offersRequired) issues.push("nl-flyer-missing");
-  const flyers: (HomepageFlyer & {language:"de" | "nl"})[] = [];
+  const flyers: (HomepageFlyer & {language:"de" | "nl"; pdfSha256?: string})[] = [];
   if (official) flyers.push({...mapHandzettelCacheToFlyer(official),language:"de"});
   for (const item of activePackages) {
     if (item.language === "de" && official) continue;
     if (item.language === "nl" && item.id !== nlFlyer?.id) continue;
-    flyers.push({...mapFlyerPackageToFlyer(item),language:item.language});
+    flyers.push({...mapFlyerPackageToFlyer(item),language:item.language,pdfSha256:item.pdfSha256});
   }
   return {status:issues.length ? "degraded" : "ok",issues,generatedAt:now.toISOString(),flyers,scheduled: packages.filter((p)=>p.validFrom>today).map(({id,title,language,validFrom,validTo})=>({id,title,language,validFrom,validTo}))};
 }

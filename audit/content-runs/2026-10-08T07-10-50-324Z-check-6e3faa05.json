@@ -1,0 +1,42 @@
+{
+  "runId": "2026-10-08T07-10-50-324Z-check-6e3faa05",
+  "mode": "check",
+  "startedAt": "2026-10-08T07:10:50.324Z",
+  "evaluatedAt": "2026-10-08T07:10:50.324Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "1390117",
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "result": "active"
+    },
+    {
+      "source": "canva",
+      "id": "nl-2026-10-05",
+      "designId": "DAHHqrttnew",
+      "pageNumbers": [
+        14
+      ],
+      "language": "nl",
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "result": "active-and-verified"
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "Keine bestätigte öffentliche Produktionsadresse geprüft; nur Website-/Vorschauprüfung."
+  ],
+  "deploymentVerified": false,
+  "websiteVerified": true,
+  "checkedUrl": "http://localhost:3000",
+  "finishedAt": "2026-10-08T07:10:56.884Z",
+  "status": "degraded"
+}
