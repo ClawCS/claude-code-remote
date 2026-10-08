@@ -8,13 +8,15 @@ import { afterEach, describe, expect, it } from "vitest";
 const cleanup: Array<() => Promise<void>> = [];
 afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await dispose(); });
 
-type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string };
+type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string; malformedRow?: { collection: "offers" | "flyers" | "indexFlyers"; value: unknown } };
 
 async function fixture(options: FixtureOptions = {}) {
-  const requests: Array<{ path: string; method: string; authorization?: string }> = [];
+  const requests: Array<{ path: string; method: string; authorization?: string; origin?: string; body: string }> = [];
   const server = createServer((request: IncomingMessage, response: ServerResponse) => {
     const url = new URL(request.url ?? "/", "http://fixture.invalid");
-    requests.push({ path: `${url.pathname}${url.search}`, method: request.method ?? "GET", authorization: request.headers.authorization });
+    const entry = { path: `${url.pathname}${url.search}`, method: request.method ?? "GET", authorization: request.headers.authorization, origin: request.headers.origin, body: "" };
+    requests.push(entry);
+    request.on("data", chunk => { entry.body += chunk.toString(); });
     if (options.broken !== "security") {
       response.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'self'");
       response.setHeader("X-Content-Type-Options", "nosniff");
@@ -32,6 +34,10 @@ async function fixture(options: FixtureOptions = {}) {
       if (url.pathname.startsWith("/api/content/")) {
         if (request.method==="POST") {response.statusCode=options.broken==="content-post"?200:405;response.end();return;}
         const empty={status:"ok",issues:[],generatedAt:"2026-10-11T12:00:00Z",flyers:[],offers:[]};
+        if (options.malformedRow && url.pathname === (options.malformedRow.collection === "indexFlyers" ? "/api/content/flyers" : "/api/content/offers")) {
+          const collection = options.malformedRow.collection === "indexFlyers" ? "flyers" : options.malformedRow.collection;
+          response.end(JSON.stringify({ ...empty, [collection]: [options.malformedRow.value] })); return;
+        }
         response.end(JSON.stringify(url.pathname.endsWith("current")?{flyer:null,nlFlyer:null}:url.pathname.endsWith("offers")&&options.broken==="offers"?{...empty,offers:[{id:"unbound"}]}:empty));return;
       }
       if (url.pathname==="/api/handzettel/fetch"&&request.method==="GET"&&!url.search) {
@@ -89,6 +95,22 @@ async function fixture(options: FixtureOptions = {}) {
 }
 
 describe("public HTTP forensic audit CLI", () => {
+  it.each(
+    (["offers", "flyers", "indexFlyers"] as const).flatMap(collection =>
+      [null, false, 0, "https://provider.invalid/private-row", []].map(value => ({ collection, value }))),
+  )("saves structured contract failure for malformed $collection row $value", async malformedRow => {
+    const result = await fixture({ malformedRow });
+    expect(result.code, result.text).toBe(1);
+    expect(result.report, result.text).not.toBeNull();
+    expect(result.report.summary).toMatchObject({ passed: false });
+    expect(result.report.findings).toContainEqual(expect.objectContaining({
+      severity: "error", code: "api-weekly-contract", path: "/api/content/offers",
+    }));
+    expect(result.requests.every(request => !request.authorization)).toBe(true);
+    expect(result.requests.filter(request => request.method === "POST").every(request => request.body === "{}" && !request.origin)).toBe(true);
+    expect(result.requests.some(request => request.path.includes("private-row"))).toBe(false);
+    expect(JSON.stringify(result.report)).not.toContain("provider.invalid");
+  });
   it("does not count content hidden after a quoted greater-than attribute",async()=>{
     const result=await fixture({hiddenQuotedAttribute:true});
     expect(result.code).toBe(1);

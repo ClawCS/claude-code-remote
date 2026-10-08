@@ -236,16 +236,18 @@ async function main() {
   const sameFlyer=(a,b)=>Boolean(a&&b&&fields.every(key=>a[key]===b[key]));
   const safePdf=value=>typeof value==="string"&&/^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(value)&&!value.includes("//");
   const safeImage=(value,folder)=>typeof value==="string"&&new RegExp(`^/images/${folder}/[a-zA-Z0-9/_-]+\\.(?:webp|avif|png|jpe?g)$`).test(value)&&!value.includes("//");
+  const rowObject=value=>value!==null&&typeof value==="object"&&!Array.isArray(value);
   const flyers=offers?.flyers;
   const valid=Array.isArray(flyers)&&Array.isArray(offers?.offers)&&["ok","degraded"].includes(offers.status)&&Array.isArray(offers.issues)
-    && Array.isArray(index?.flyers)&&index.flyers.length===flyers.length&&index.flyers.every(f=>flyers.some(o=>sameFlyer(f,o)))
+    && flyers.every(rowObject)&&offers.offers.every(rowObject)
+    && Array.isArray(index?.flyers)&&index.flyers.every(rowObject)&&index.flyers.length===flyers.length&&index.flyers.every(f=>flyers.some(o=>sameFlyer(f,o)))
     && index.status===offers.status&&isDeepStrictEqual(index.issues,offers.issues)
     && new Set(flyers.map(f=>f.id)).size===flyers.length&&new Set(offers.offers.map(o=>o.id)).size===offers.offers.length
     && flyers.every(f=>safePdf(f.pdfUrl)&&f.viewerUrl===f.pdfUrl&&f.sourceUrl===f.pdfUrl&&safeImage(f.coverUrl,"content")&&/^[a-f0-9]{64}$/.test(f.pdfSha256))
     && ["de","nl"].every(language=>{const f=flyers.find(f=>f.language===language),slot=current?.[language==="de"?"flyer":"nlFlyer"];return f?sameFlyer(f,slot):slot===null;})
     && offers.offers.every(o=>safeImage(o.image,"offers")&&Number.isSafeInteger(o.sourcePage)&&o.sourcePage>0&&flyers.some(f=>f.id===o.flyerId&&f.language===o.language&&f.pdfUrl===o.sourceUrl&&f.pdfSha256===o.pdfSha256&&f.validFrom===o.validFrom&&f.validTo===o.validTo&&f.pageCount>=o.sourcePage));
   if (!valid) fail("api-weekly-contract","/api/content/offers","Current, flyer and offer APIs do not expose the same locally bound package");
-  const de=Array.isArray(flyers)?flyers.find(f=>f.language==="de"):null;
+  const de=Array.isArray(flyers)?flyers.find(f=>rowObject(f)&&f.language==="de"):null;
   if (!(de ? sameFlyer(de,legacy)&&legacy.status==="ok"&&isDeepStrictEqual(legacy.pages,[{number:1,imageUrl:de.coverUrl,thumbnailUrl:de.coverUrl}])
     : legacy?.status==="fallback"&&legacy.pageCount===0&&legacy.pdfUrl===null&&legacy.viewerUrl===null&&isDeepStrictEqual(legacy.pages,[]))) fail("api-weekly-contract","/api/handzettel/fetch","Legacy GET must expose only the bound local PDF and its verified cover, or the truthful empty fallback");
 
