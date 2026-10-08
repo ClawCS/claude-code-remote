@@ -121,7 +121,9 @@ describe("verified Canva market-photo derivatives", () => {
     for (const [name, sha] of Object.entries(expected)) expect(hash(readFileSync(join(f.output, name)))).toBe(sha);
     const check = await f.run(["--check"]).completion;
     expect(check.code, check.text).toBe(0);
-  }, 30000);
+  // Re-encodes the complete photographic set twice; small production VMs have
+  // slower CPUs than the development Mac. Byte/hash assertions stay unchanged.
+  }, 120000);
 
   it("allows the larger original-product-graphic budget without applying it to photos", async () => {
     const f = fixture();

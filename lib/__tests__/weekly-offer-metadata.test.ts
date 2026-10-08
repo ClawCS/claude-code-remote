@@ -5,6 +5,9 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
+import publicOffers from "@/data/weekly-offers.json";
+import approvedFlyers from "@/data/editorial/flyers.json";
+import { buildPublicOfferMetadata } from "@/lib/weekly-offer-metadata";
 
 const repo = process.cwd();
 const expectedMetadata = {
@@ -21,6 +24,7 @@ const expectedMetadata = {
 async function runFixture(options: {
   build?: boolean;
   plain?: boolean;
+  nl?: boolean;
   mutate?: (row: Record<string, unknown>) => void;
 } = {}) {
   const root = await mkdtemp(path.join(tmpdir(), "weekly-offer-metadata-"));
@@ -31,6 +35,10 @@ async function runFixture(options: {
     const crop = await sharp(source).extract({ left: 1, top: 1, width: 4, height: 3 }).webp({ lossless: true }).toBuffer();
     await writeFile(path.join(root, "source.png"), source);
     await writeFile(path.join(root, "source.pdf"), "reviewed-pdf");
+    if (options.nl) {
+      await mkdir(path.join(root, "public/handzettel/2026"), { recursive: true });
+      await writeFile(path.join(root, "public/handzettel/2026/nl-test.pdf"), "reviewed-pdf");
+    }
     await writeFile(path.join(root, "public/images/offers/de-test.webp"), crop);
     // The alias has identical bytes, so a forged image path must fail on metadata, not on its hash.
     await writeFile(path.join(root, "public/images/offers/alias.webp"), crop);
@@ -38,13 +46,15 @@ async function runFixture(options: {
       rect: [1, 1, 4, 3], sourceDimensions: [8, 6], conditions: "2 cases; deposit extra",
       ...(!options.plain ? { sourceRegions: [[1, 1, 4, 3]], sourceWarning: "Printed source warning" } : {}) };
     await writeFile(path.join(root, "data/weekly-offer-layout.json"), JSON.stringify({ sources: [{
-      language: "de", flyerId: "de-week-41", sourceUrl: "https://example.com/reviewed.pdf",
-      pdfSha256: expectedMetadata.pdfSha256, privatePdf: "source.pdf", pageCount: 1,
+      language: options.nl ? "nl" : "de", flyerId: "de-week-41",
+      sourceUrl: options.nl ? "https://www.canva.com/design/private-source/view" : "https://example.com/reviewed.pdf",
+      pdfSha256: expectedMetadata.pdfSha256, privatePdf: options.nl ? "public/handzettel/2026/nl-test.pdf" : "source.pdf", pageCount: 1,
       validFrom: "2026-10-05", validTo: "2026-10-10", reviewedAt: "2026-10-08T12:00:00Z", rightsStatus: "approved",
       pages: [{ page: 1, sourceImage: "source.png", expectedOffers: 1, offers: [offer] }],
     }] }));
     const row: Record<string, unknown> = { ...structuredClone(expectedMetadata),
       imageSha256: createHash("sha256").update(crop).digest("hex") };
+    if (options.nl) Object.assign(row, {language: "nl", sourceUrl: "/handzettel/2026/nl-test.pdf"});
     if (options.plain) { delete row.sourceRegions; delete row.sourceWarning; }
     options.mutate?.(row);
     await writeFile(path.join(root, "data/weekly-offers.json"), JSON.stringify([row]));
@@ -57,11 +67,29 @@ async function runFixture(options: {
       child.on("error", reject);
       child.on("close", code => resolve({ code, stderr }));
     });
-    return { ...result, rows: JSON.parse(await readFile(path.join(root, "data/weekly-offers.json"), "utf8")) };
+    return { ...result,
+      rows: JSON.parse(await readFile(path.join(root, "data/weekly-offers.json"), "utf8")),
+      layout: JSON.parse(await readFile(path.join(root, "data/weekly-offer-layout.json"), "utf8")),
+    };
   } finally { await rm(root, { recursive: true, force: true }); }
 }
 
 describe("weekly offer CLI public metadata binding", () => {
+  it("builds NL public records from the local original while keeping Canva provenance internal", async () => {
+    const result = await runFixture({build: true, nl: true});
+    expect(result.code).toBe(0);
+    expect(result.rows[0]).toMatchObject({language: "nl", sourceUrl: "/handzettel/2026/nl-test.pdf"});
+    expect(JSON.stringify(result.rows)).not.toMatch(/canva\.com|private-source|privatePdf/);
+    expect(result.layout.sources[0].sourceUrl).toBe("https://www.canva.com/design/private-source/view");
+  });
+  it("accepts an NL public record bound to the verified local PDF", async () => {
+    expect((await runFixture({nl: true})).code).toBe(0);
+  });
+  it("rejects an NL public record that exposes the internal Canva source", async () => {
+    const result = await runFixture({nl: true, mutate: row => {row.sourceUrl = "https://www.canva.com/design/private-source/view";}});
+    expect(result.code).toBe(1);
+    expect(result.stderr).toMatch(/differs from reviewed source/);
+  });
   it("accepts a complete reviewed public record", async () => {
     expect((await runFixture()).code).toBe(0);
   });
@@ -101,5 +129,30 @@ describe("weekly offer CLI public metadata binding", () => {
     const { imageSha256, ...metadata } = result.rows[0];
     expect(metadata).toEqual(expectedMetadata);
     expect(imageSha256).toMatch(/^[a-f0-9]{64}$/);
+  });
+});
+
+describe("generated weekly data imported by the public client", () => {
+  it.each([
+    undefined,
+    "assets/source/private.pdf",
+    "public/handzettel/../private.pdf",
+    "https://www.canva.com/design/private-source/view",
+  ])("refuses to publish an NL source without a safe local original: %s", privatePdf => {
+    expect(() => buildPublicOfferMetadata({
+      ...expectedMetadata, language: "nl", privatePdf,
+    }, 1, expectedMetadata)).toThrow(/local published PDF/);
+  });
+  it("ships only local published PDF sources for NL offers, never internal Canva provenance", () => {
+    const nlOffers = publicOffers.filter(offer => offer.language === "nl");
+    expect(nlOffers.length).toBeGreaterThan(0);
+    expect(publicOffers.filter(offer => /canva\.com|assets\/source\/|privatePdf|designId/.test(JSON.stringify(offer)))
+      .map(offer => offer.id)).toEqual([]);
+    for (const offer of nlOffers) {
+      const flyer = approvedFlyers.find(item => item.id === offer.flyerId);
+      expect(flyer).toBeDefined();
+      expect(offer.sourceUrl).toBe(flyer!.pdfPath);
+      expect(offer.pdfSha256).toBe(flyer!.pdfSha256);
+    }
   });
 });

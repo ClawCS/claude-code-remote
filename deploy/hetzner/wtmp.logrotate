@@ -1,0 +1,10 @@
+# Replace /etc/logrotate.d/wtmp; do not add a second definition for this file.
+# SSH/system login accounting, not website request logging.
+/var/log/wtmp {
+    daily
+    rotate 7
+    maxage 7
+    missingok
+    notifempty
+    create 0664 root utmp
+}

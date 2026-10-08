@@ -13,12 +13,17 @@ Der Betreiber hat Informationsbetrieb und Impressumsangaben bestätigt. `RENTAL_
 | Repositorydatei unter `deploy/hetzner/` | Installationsziel |
 | --- | --- |
 | `Caddyfile` | `/etc/caddy/Caddyfile` |
+| `caddy-hardening.conf` | `/etc/systemd/system/caddy.service.d/hardening.conf` |
 | `trinkgut-jammers.service` | `/etc/systemd/system/trinkgut-jammers.service` |
 | `00-jammers-hardening.conf` | `/etc/ssh/sshd_config.d/00-jammers-hardening.conf` |
 | `journald-jammers.conf` | `/etc/systemd/journald.conf.d/zz-jammers.conf` |
 | `fail2ban-jammers.local` | `/etc/fail2ban/jail.d/jammers.local` |
 | `fail2ban-daemon.local` | `/etc/fail2ban/fail2ban.local` |
 | `fail2ban-journal.conf` | `/etc/systemd/system/fail2ban.service.d/journal.conf` |
+| `99-jammers-coredumps.conf` | `/etc/sysctl.d/99-jammers-coredumps.conf` |
+| `apport.default` | `/etc/default/apport` (vorhandene lokale Einstellungen prüfen) |
+| `wtmp.logrotate` | `/etc/logrotate.d/wtmp` (vorhandene Regel ersetzen) |
+| `btmp.logrotate` | `/etc/logrotate.d/btmp` (vorhandene Regel ersetzen) |
 
 `bootstrap.sh` gehört ausschließlich auf diesen neuen, bestätigten Host und ist kein regelmäßig laufendes Release-Skript. Vor einem erneuten Aufruf den bereits erreichten Zustand prüfen. Es aktualisiert Ubuntu, installiert die Basispakete, Node 22 aus der offiziellen Distribution mit SHA-256-Prüfung und Caddy aus dessen offizieller Paketquelle. `/opt/node` zeigt auf die versionierte Installation. Die tatsächlich installierte Node-Version und Archivprüfsumme dokumentieren; `latest-v22.x` ist kein unveränderlicher Versionspin für spätere Wiederholungen. Für reproduzierbare Folgeinstallationen dieselbe dokumentierte Versions-URL und Prüfsumme verwenden, Sicherheitsupdates separat testen.
 
@@ -39,7 +44,7 @@ UFW lässt zunächst nur `22/tcp` zu. Erst nach erfolgreicher interner App-/Prox
 
 Es gibt **keine regulären Caddy-Zugriffslogs**. Technische Fehler können dennoch IP-/URL-Angaben enthalten. Caddy-Fehler, App-Betrieb, SSH und Fail2ban gehen ins flüchtige Journal unter `/run/log/journal`: Ziel maximal sieben Tage und maximal 128 MiB. `MaxRetentionSec=6day` und stündliche Dateirotation lassen einen Puffer unter der Sieben-Tage-Grenze. Platzdruck oder Neustart können früher löschen; das ist keine Zusage einer sieben Tage langen Verfügbarkeit. `/run` ist kein Bestandteil persistenter VM-Datenträgerbackups. Fail2bans zusätzliche Sicherheitsdatenbank liegt ebenfalls flüchtig unter `/run/fail2ban/fail2ban.sqlite3`, mit Löschalter 24 Stunden und ohne gespeicherte Treffertexte. Ein Dienst-/Hostneustart kann Sperren vergessen; dieser begrenzte Schutz ist für den schlüsselbasierten SSH-Zugang bewusst akzeptiert.
 
-**Vor jeder Aussage zur tatsächlichen Aufbewahrung:** Die neue VM hatte `rsyslog` aktiv. Auf diesem dedizierten Host nach Prüfung deaktivieren (`systemctl disable --now rsyslog`), damit keine parallelen dauerhaften Besucher-/Sicherheitslogkopien entstehen. Alte Bootstrap-Logs erhalten; keine pauschale Löschung von `/var/log`. Das Journal-Drop-in muss als `zz-jammers.conf` installiert werden: die vorhandene Distributionsdatei `/usr/lib/systemd/journald.conf.d/syslog.conf` sortiert nach einem numerischen Präfix und würde dessen `ForwardToSyslog=no` wieder überschreiben. Nach jeder Paket-/Konfigurationsänderung die zusammengeführte Konfiguration prüfen. `ForwardToSyslog=no` allein verhindert nicht alle unabhängig konfigurierten Logleser. Bestehende `/var/log/journal`-, `/var/log/auth.log`-, `/var/log/syslog`-, Fail2ban-Dateien, Cloud-init-/Journal-Remote-/Agent-Konfigurationen und Backups separat inventarisieren. Keine Behauptung, alte Kopien seien durch die neue Einstellung gelöscht.
+**Vor jeder Aussage zur tatsächlichen Aufbewahrung:** Die neue VM hatte `rsyslog` aktiv. Auf diesem dedizierten Host nach Prüfung deaktivieren (`systemctl disable --now rsyslog`), damit rsyslog keine parallelen dauerhaften Kopien dieser Journale erzeugt. Die unten erläuterte SSH-Anmeldebuchführung ist davon unabhängig. Alte Bootstrap-Logs erhalten; keine pauschale Löschung von `/var/log`. Das Journal-Drop-in muss als `zz-jammers.conf` installiert werden: die vorhandene Distributionsdatei `/usr/lib/systemd/journald.conf.d/syslog.conf` sortiert nach einem numerischen Präfix und würde dessen `ForwardToSyslog=no` wieder überschreiben. Nach jeder Paket-/Konfigurationsänderung die zusammengeführte Konfiguration prüfen. `ForwardToSyslog=no` allein verhindert nicht alle unabhängig konfigurierten Logleser. Bestehende `/var/log/journal`-, `/var/log/auth.log`-, `/var/log/syslog`-, Fail2ban-Dateien, Cloud-init-/Journal-Remote-/Agent-Konfigurationen und Backups separat inventarisieren. Keine Behauptung, alte Kopien seien durch die neue Einstellung gelöscht.
 
 ```sh
 systemd-analyze cat-config systemd/journald.conf
@@ -50,6 +55,52 @@ fail2ban-client -t
 ```
 
 Nach Installation der Drop-ins `systemctl daemon-reload`, Journal und Fail2ban kontrolliert neu starten. `fail2ban-client status sshd` muss das Journal-Backend zeigen; der Dienst muss im Vordergrund laufen und STDOUT ins Journal leiten, nicht in `/var/log/fail2ban.log`. Mit `journalctl -u ssh -u fail2ban -u caddy -u trinkgut-jammers --since -10min` ausschließlich notwendige technische Informationen prüfen; keine vollständigen Journale mit IPs/Schlüsselinhalten in Git oder Chat kopieren. `journalctl --disk-usage` und die aufgelöste Konfiguration dokumentieren. UFW-Kernelmeldungen unterliegen ebenfalls dieser Journalpolitik.
+
+### Getrennte SSH-/Betriebssystem-Anmeldebuchführung
+
+Die flüchtige Journalpolitik bedeutet **nicht**, dass alle Betriebssystemdaten flüchtig sind. `/var/log/wtmp` enthält System-/SSH-Anmeldungen, `/var/log/btmp` fehlgeschlagene Anmeldeversuche einschließlich fremder SSH-Quelladressen und `/var/log/lastlog` den letzten Login pro Systemkonto. Diese bereits auf der VM vorhandenen persistenten Dateien sind keine Website-Zugriffslogs; insbesondere `btmp` kann trotz gesperrter SSH-Passwörter weiter wachsen.
+
+Für `wtmp` und `btmp` die bisherigen Regeln inventarisieren und durch die beiden mitgelieferten Regeln ersetzen: täglich, sieben Rotationsdateien, `maxage 7`, fehlende/leere Dateien ohne Fehler bzw. ohne unnötige Rotation. **Keine doppelte Definition** in einer zusätzlichen Jammers-Datei anlegen. Root/Gruppe `utmp` und die angegebenen Dateirechte erhalten. Vor Übernahme alte Konfiguration außerhalb von `/etc/logrotate.d` sichern; dort liegende Sicherungskopien könnten sonst erneut eingelesen werden. Danach:
+
+```sh
+logrotate --debug /etc/logrotate.conf
+systemctl is-enabled logrotate.timer
+systemctl list-timers logrotate.timer
+```
+
+`--debug` verändert keine Dateien. Erst bei fehlerfreier Gesamtkonfiguration den täglich laufenden Timer sicherstellen. `rotate 7` bezeichnet sieben Archivdateien **zusätzlich zur aktiven Datei**, keine exakte Löschfrist pro Datensatz. `maxage` wird bei einer Rotation ausgewertet; wegen `notifempty`, Dateigrenzen oder ausgefallener Timer ist dies keine garantierte Sieben-Tage-Löschung. `lastlog` wird nicht als gewöhnliche Textlogdatei rotiert und bleibt eine getrennte kontoabhängige Verwaltungsaufzeichnung. Bestehende Bootstrapdateien nicht pauschal löschen.
+
+Datenträgerbackups können diese Verwaltungsdateien länger enthalten: Beispielsweise können sieben tägliche Wiederherstellungspunkte die historische Reichweite bereits etwa zwei Wochen oder länger ausdehnen; der tatsächliche Sicherungsplan und die Dateigrenzen entscheiden. Für SSH-Administration/Backups eine eigene Aufbewahrung dokumentieren, nicht die Sieben-Tage-Aussage des Website-Betriebsjournals übernehmen. Details zu Rotation und `maxage`: [Logrotate-Dokumentation](https://github.com/logrotate/logrotate/blob/main/logrotate.8.in).
+
+### Keine Speicherabbilder der Website-Prozesse
+
+Die Serverprüfung fand Apport als aktiven, über `kernel.core_pattern` aufgerufenen Crashsammler und `LimitCORE=infinity` im Caddy-Paketdienst. Solche Speicherabbilder könnten HTTP-Inhalte oder andere Prozessdaten dauerhaft ablegen. `LimitCORE=0` allein reicht bei einem mit `|` beginnenden Kernel-Crashhandler nicht, weil dessen Pipe die übliche Kerngrößengrenze umgeht. Deshalb werden **beide** Wege geschlossen: Next und Caddy bekommen das harte/weiche Core-Limit null; Apport wird deaktiviert, und das Kernelmuster wird auf eine gewöhnliche Datei zurückgestellt. Siehe [Linux-Core-Dokumentation](https://man7.org/linux/man-pages/man5/core.5.html) und [Kernel-Parameter](https://www.kernel.org/doc/html/latest/admin-guide/sysctl/kernel.html#core-pattern).
+
+Als root ausschließlich auf der bestätigten neuen VM: den aktualisierten Next-Dienst sowie das Caddy-Drop-in installieren. In `/etc/default/apport` den vorhandenen Wert auf **`enabled=0`** setzen (kleingeschrieben, andere lokale Einstellungen erhalten). Das entspricht der [Ubuntu-Apport-Konfiguration](https://help.ubuntu.com/community/ReportingBugs). Danach den vorhandenen Dienst stoppen/deaktivieren und gegen erneutes Starten maskieren; **erst anschließend** die Kernelwerte anwenden, damit ein Apport-Stopskript sie nicht zurücksetzt:
+
+```sh
+systemctl disable --now apport.service
+systemctl mask apport.service
+sysctl --load /etc/sysctl.d/99-jammers-coredumps.conf
+systemctl daemon-reload
+systemctl restart trinkgut-jammers caddy
+sysctl kernel.core_pattern fs.suid_dumpable
+systemctl is-enabled apport.service
+systemctl is-active apport.service
+systemctl show trinkgut-jammers caddy -p LimitCORE -p LimitCORESoft
+```
+
+Erwartet: `kernel.core_pattern = core` (kein `|...apport` oder anderer Sammler), `fs.suid_dumpable = 0`, Apport `masked`/`inactive`, beide Core-Limits `0`. Zusätzlich für die tatsächlich gestarteten Prozesse prüfen, nicht nur die Unit-Dateien:
+
+```sh
+for unit in trinkgut-jammers caddy; do
+  pid=$(systemctl show "$unit" -p MainPID --value)
+  test "$pid" -gt 0 || exit 1
+  awk '/Max core file size/ {found=1; print; if ($5 != 0 || $6 != 0) exit 1} END {if (!found) exit 1}' "/proc/$pid/limits" || exit 1
+done
+```
+
+Nach Reboot, Apport-/systemd-/Caddy-Updates und jeder Änderung an Crashdiensten erneut prüfen; andere Drop-ins, `/etc/sysctl.conf` oder startende Dienste können Kernelwerte überschreiben. Vorhandene `apport*`-/`whoopsie*`-Dienste und Timer auf automatische Berichtserfassung/-übermittlung prüfen und vor einer Aussage über deren Abschaltung gezielt behandeln. Das Kernelmuster `core` deaktiviert nicht pauschal Core-Dateien beliebiger anderer Programme; die Aussage gilt für die beiden geprüften Website-Dienste mit Limit null. Vorhandene `/var/crash`-, `/var/lib/apport`- oder Core-Dateien separat inventarisieren, nicht hochladen oder unbesehen löschen. Keinen absichtlichen Absturz des laufenden Webdienstes als Test auslösen. Nach den Neustarts die üblichen lokalen und öffentlichen Erreichbarkeitsprüfungen wiederholen.
 
 ## Sicheres Release-Paket
 
@@ -120,10 +171,16 @@ systemctl daemon-reload
 systemctl enable trinkgut-jammers
 systemctl restart trinkgut-jammers
 systemctl is-active trinkgut-jammers
-curl --fail --show-error --silent http://127.0.0.1:3000/api/rentals/config
-curl --fail --show-error --silent http://127.0.0.1:3000/api/content/flyers
+curl --fail --show-error --silent \
+  --retry 10 --retry-connrefused --retry-delay 2 --retry-max-time 45 \
+  --connect-timeout 2 --max-time 5 \
+  http://127.0.0.1:3000/api/rentals/config
+curl --fail --show-error --silent --connect-timeout 2 --max-time 20 \
+  http://127.0.0.1:3000/api/content/flyers
 ss -ltnp
 ```
+
+Bei `Type=simple` bestätigt `systemctl is-active` nur den gestarteten Prozess, nicht die HTTP-Bereitschaft. Erst die erfolgreiche HTTP-Probe erlaubt den nächsten Prüfschritt. Sie wiederholt höchstens zehnmal, startet nach 45 Sekunden keinen weiteren Versuch und begrenzt jeden Versuch auf fünf Sekunden (insgesamt höchstens etwa 50 Sekunden). Bei einem Fehlercode abbrechen und den vorherigen geprüften Release wieder aktivieren; keine endlose Warteschleife. Dieselbe Bereitschaftsprobe nach Rollback und weiteren Dienstneustarts ausführen.
 
 Erwartet: App nur `127.0.0.1:3000`; Mietkonfiguration `enabled:false`, `testMode:false`, `onlinePayment:false`. Flyerindex während des belegten Angebotszeitraums nicht `degraded`. Fehlgeschlagenen Start nicht als veröffentlicht melden: direkt vorherigen geprüften Release wieder aktivieren.
 

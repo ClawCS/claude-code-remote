@@ -1,0 +1,4 @@
+# /etc/default/apport — merge with any unrelated existing local settings.
+# Lowercase "enabled" is the Ubuntu Apport setting.
+# Also disable/mask apport.service and remove its kernel pipe configuration.
+enabled=0

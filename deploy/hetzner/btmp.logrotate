@@ -1,0 +1,10 @@
+# Replace /etc/logrotate.d/btmp; do not add a second definition for this file.
+# Failed SSH/system login accounting, not website request logging.
+/var/log/btmp {
+    daily
+    rotate 7
+    maxage 7
+    missingok
+    notifempty
+    create 0660 root utmp
+}
