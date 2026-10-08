@@ -228,12 +228,13 @@ describe("multi-week offer generation", () => {
     const before=await readFile(path.join(current.root,"data/weekly-offers.json"));
     expect((await generator(current.root,["--week","2026-10-12"])).code).toBe(0);
     expect(await readFile(path.join(current.root,"data/weekly-offers.json"))).toEqual(before);
-    expect((await generator(current.root,["--check"])).code).toBe(0);
+    expect((await generator(current.root,["--check"])).code).toBe(1); // generated rows alone are not a publication binding
     await current.write("data/editorial/official-catalogs/2026-10-12.json",JSON.stringify(next.catalog));
     await current.write("data/editorial/flyers.json",JSON.stringify([current.flyer,...(!missingNl?[next.flyer]:[])]));
     const manifestBefore=await readFile(path.join(current.root,"data/editorial/weekly-publications/2026-10-05.json"));
     const publication=await importer.assembleWeeklyPublication("2026-10-12",current.root);
     expect(publication.editions.map(edition=>edition.language)).toEqual(missingNl?["de"]:["de","nl"]);
+    expect((await generator(current.root,["--check"])).code).toBe(0);
     expect(await readFile(path.join(current.root,"data/editorial/weekly-publications/2026-10-05.json"))).toEqual(manifestBefore);
   });
   it("rejects missing original-page coverage without changing any existing rows", async () => {
@@ -253,6 +254,7 @@ describe("multi-week offer generation", () => {
   it("retains explicit zero-priced-offer pages in the full page census",async()=>{
     const f=await fixture(); f.sources[0].pages[1].offers=[];f.sources[0].pages[1].expectedOffers=0;f.offers.splice(1,1);await f.save();
     expect((await generator(f.root,["--week","2026-10-05"])).code).toBe(0);
+    await importer.assembleWeeklyPublication("2026-10-05",f.root);
     expect((await generator(f.root,["--check"])).code).toBe(0);
   });
   it("blocks a multi-page NL original even when layout and local PDF page count agree",async()=>{

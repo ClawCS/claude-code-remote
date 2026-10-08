@@ -6,8 +6,8 @@ import { validatePublicationPdf } from "../lib/publication-pdf";
 import sharp from "sharp";
 import { renderOfferCrop } from "../lib/weekly-offer-crops";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "../lib/weekly-offer-metadata";
-import { parseWeeklyPublication } from "../lib/weekly-publication";
-import type { PublishedOffer } from "../lib/weekly-publication-types";
+import { parseWeeklyPublication, verifyWeeklyEdition } from "../lib/weekly-publication";
+import type { PublishedOffer, WeeklyEdition } from "../lib/weekly-publication-types";
 import { getCurrentWeekRange } from "../lib/editorial-schedule";
 import { getAcceptedNlOfferRanges, getOfficialOfferRange } from "../lib/offer-validity";
 import { withWeeklyPublicationTransaction } from "../lib/weekly-publication-transaction";
@@ -81,7 +81,17 @@ export async function buildWeeklyOffers(root:string,args:readonly string[]) {
       if (!accepted.some(item=>item.validFrom===source.validFrom && item.validTo===source.validTo)) throw new Error("Invalid reviewed printed validity range");
       if (source.printedValidFrom!==source.validFrom || source.printedValidTo!==source.validTo || !/^[a-f0-9]{64}$/.test(source.coverSha256) || !source.reviewedAt) throw new Error("Missing original/date/cover review");
       if (!Number.isSafeInteger(source.pageCount) || source.pageCount<1 || source.pageCount>60 || (source.language==="nl" && source.pageCount!==1) || !Array.isArray(source.pages) || source.pages.length!==source.pageCount || source.pages.some((p,i)=>p.page!==i+1)) throw new Error(`${source.language}: incomplete or invalid original-page coverage`);
-      const pdf=await safeRead(root,source.privatePdf);
+      let boundEdition:WeeklyEdition|undefined;
+      if (check) {
+        const publication=parseWeeklyPublication(JSON.parse((await safeRead(root,`data/editorial/weekly-publications/${source.validFrom}.json`)).toString()));
+        if (publication.week!==source.validFrom) throw new Error("Publication filename/date mismatch");
+        const bound=publication.editions.filter(edition=>edition.id===source.flyerId&&edition.language===source.language);
+        if (bound.length!==1) throw new Error(`${source.language}: reviewed source is not bound to a weekly publication`);
+        boundEdition=bound[0];
+      }
+      // An archive checks its immutable bound public original. New generation still
+      // requires the strictly validated private input and its original page images.
+      const pdf=await safeRead(root,check?`public${source.publishedPdfPath}`:source.privatePdf);
       if (hash(pdf)!==source.pdfSha256) throw new Error(`${source.language}: original PDF changed`);
       await validatePublicationPdf(pdf,source.pageCount);
       for (const page of source.pages) {
@@ -109,6 +119,7 @@ export async function buildWeeklyOffers(root:string,args:readonly string[]) {
           await imageIntegrity(bytes,offer,imageSha256); assets.push({imagePath,bytes}); rows.push({...metadata,imageSha256});
         }
       }
+      if (boundEdition) await verifyWeeklyEdition(boundEdition,root);
     }
     if (check) {
       const selected=existing.filter(row=>!week || row.validFrom===week);

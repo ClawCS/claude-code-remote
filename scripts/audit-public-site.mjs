@@ -11,12 +11,15 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { isDeepStrictEqual } from "node:util";
 
 const EXTRA_PAGES = ["/warenkorb", "/checkout", "/bestellungen", "/kuehlschrank", "/akademie/zertifikate"];
 const UNKNOWN_PAGES = ["/produkte/__audit_unknown__", "/kategorie/__audit_unknown__", "/cocktails/__audit_unknown__", "/cocktails/kategorie/__audit_unknown__", "/akademie/__audit_unknown__"];
 const API_CHECKS = [
   { path: "/api/content/current", method: "GET", statuses: [200] },
   { path: "/api/content/flyers", method: "GET", statuses: [200] },
+  { path: "/api/content/offers", method: "GET", statuses: [200] },
+  ...["current","flyers","offers"].map(name=>({path:`/api/content/${name}`,method:"POST",statuses:[405],frameworkRejection:true})),
   { path: "/api/community", method: "GET", statuses: [200], unavailable: true },
   { path: "/api/handzettel/fetch", method: "GET", statuses: [200] },
   { path: "/api/handzettel/cron", method: "GET", statuses: [401, 503] },
@@ -293,18 +296,39 @@ async function main() {
     await response?.body?.cancel();
   });
 
+  const weeklyResponses=new Map();
   for (const contract of API_CHECKS) {
     const response = await fetchLocal(contract.path, contract.method);
     report.apis.push({ path: contract.path, method: contract.method, status: response?.status ?? null, expectedStatuses: contract.statuses });
     if (!response) continue;
     security(response, contract.path);
     if (!contract.statuses.includes(response.status)) fail("api-status", contract.path, `${contract.method}: expected ${contract.statuses.join(" or ")}; received ${response.status}`);
+    if (contract.frameworkRejection) { await response.body?.cancel();continue; }
     if (!response.headers.get("cache-control")?.includes("no-store")) fail("api-cache", contract.path, "Response must be no-store");
     try {
       const value = await response.json();
+      if (contract.method==="GET" && ["/api/content/current","/api/content/flyers","/api/content/offers","/api/handzettel/fetch"].includes(contract.path)) weeklyResponses.set(contract.path,value);
       if (contract.unavailable && value.available !== false) fail("api-disabled-state", contract.path, "Public community API must disclose unavailable state");
     } catch { fail("api-json", contract.path, "API response is not valid JSON"); }
   }
+
+  const current=weeklyResponses.get("/api/content/current"),index=weeklyResponses.get("/api/content/flyers"),offers=weeklyResponses.get("/api/content/offers"),legacy=weeklyResponses.get("/api/handzettel/fetch");
+  const fields=["id","title","language","validFrom","validTo","viewerUrl","pdfUrl","sourceUrl","coverUrl","pageCount","pdfSha256"];
+  const sameFlyer=(a,b)=>Boolean(a&&b&&fields.every(key=>a[key]===b[key]));
+  const safePdf=value=>typeof value==="string"&&/^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(value)&&!value.includes("//");
+  const safeImage=(value,folder)=>typeof value==="string"&&new RegExp(`^/images/${folder}/[a-zA-Z0-9/_-]+\\.(?:webp|avif|png|jpe?g)$`).test(value)&&!value.includes("//");
+  const flyers=offers?.flyers;
+  const valid=Array.isArray(flyers)&&Array.isArray(offers?.offers)&&["ok","degraded"].includes(offers.status)&&Array.isArray(offers.issues)
+    && Array.isArray(index?.flyers)&&index.flyers.length===flyers.length&&index.flyers.every(f=>flyers.some(o=>sameFlyer(f,o)))
+    && index.status===offers.status&&isDeepStrictEqual(index.issues,offers.issues)
+    && new Set(flyers.map(f=>f.id)).size===flyers.length&&new Set(offers.offers.map(o=>o.id)).size===offers.offers.length
+    && flyers.every(f=>safePdf(f.pdfUrl)&&f.viewerUrl===f.pdfUrl&&f.sourceUrl===f.pdfUrl&&safeImage(f.coverUrl,"content")&&/^[a-f0-9]{64}$/.test(f.pdfSha256))
+    && ["de","nl"].every(language=>{const f=flyers.find(f=>f.language===language),slot=current?.[language==="de"?"flyer":"nlFlyer"];return f?sameFlyer(f,slot):slot===null;})
+    && offers.offers.every(o=>safeImage(o.image,"offers")&&Number.isSafeInteger(o.sourcePage)&&o.sourcePage>0&&flyers.some(f=>f.id===o.flyerId&&f.language===o.language&&f.pdfUrl===o.sourceUrl&&f.pdfSha256===o.pdfSha256&&f.validFrom===o.validFrom&&f.validTo===o.validTo&&f.pageCount>=o.sourcePage));
+  if (!valid) fail("api-weekly-contract","/api/content/offers","Current, flyer and offer APIs do not expose the same locally bound package");
+  const de=Array.isArray(flyers)?flyers.find(f=>f.language==="de"):null;
+  if (!(de ? sameFlyer(de,legacy)&&legacy.status==="ok"&&isDeepStrictEqual(legacy.pages,[{number:1,imageUrl:de.coverUrl,thumbnailUrl:de.coverUrl}])
+    : legacy?.status==="fallback"&&legacy.pageCount===0&&legacy.pdfUrl===null&&legacy.viewerUrl===null&&isDeepStrictEqual(legacy.pages,[]))) fail("api-weekly-contract","/api/handzettel/fetch","Legacy GET must expose only the bound local PDF and its verified cover, or the truthful empty fallback");
 
   for (const name of ["pages", "unknownPages", "resources", "apis"]) report[name].sort((a, b) => a.path.localeCompare(b.path) || (a.method ?? "").localeCompare(b.method ?? ""));
   findings.sort((a, b) => a.path.localeCompare(b.path) || a.code.localeCompare(b.code));

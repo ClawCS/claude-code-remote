@@ -1,15 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, open, realpath, stat, unlink } from "node:fs/promises";
+import { mkdir, open, realpath, unlink } from "node:fs/promises";
 import path from "node:path";
 
 const lockRelative = "data/editorial/.weekly-offers.lock";
 const interrupted = () => new Error("Weekly publication transaction is active or interrupted; inspect and recover it before retrying");
 
-export async function assertWeeklyPublicationIdle(root: string): Promise<void> {
-  try { await stat(path.join(root,lockRelative)); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return; throw error; }
-  throw interrupted();
-}
+export { assertWeeklyPublicationIdle } from "./weekly-publication-idle";
 
 export type WeeklyPublicationTransaction = { beginBinding(): Promise<void>; commit(): Promise<void> };
 

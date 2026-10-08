@@ -1,10 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup } from "@/lib/content-verification";
+import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, verifyPublishedOfferContent, verifyPublishedOfferMarkup } from "@/lib/content-verification";
+import { weeklyOfferFixtureContent } from "@/lib/cinematic/weekly-offer-fixture";
 
 const flyer = {id:"catalog-1384969-v4",title:"Wochenangebote",language:"de" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"https://werbung.trinkgut.de/viewer/1384969",pdfUrl:"https://werbung.trinkgut.de/pdf/1384969-v4.pdf",coverUrl:"https://werbung.trinkgut.de/cover.jpg",pageCount:18,sourceUrl:"https://werbung.trinkgut.de/viewer/1384969"};
 const nlFlyer = {id:"maasduinen-2026-09-28-v2",title:"Weekaanbiedingen",language:"nl" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"/flyers/2026-09-28/nl-v2.pdf",pdfUrl:"/flyers/2026-09-28/nl-v2.pdf",coverUrl:"/flyers/2026-09-28/nl-v2.jpg",pageCount:1,sourceUrl:"/nl"};
 
 describe("weekly publishing verification", () => {
+  it("rejects an expired local PDF rendered on a regular empty Sunday",()=>{
+    expect(verifyPublishedFlyerMarkup([], '<a href="/handzettel/2026-10-05/de.pdf">Expired</a>', "/angebote")).not.toEqual([]);
+  });
+  it("rejects otherwise complete offer markup beneath a hidden ancestor",()=>{
+    const {offers}=weeklyOfferFixtureContent("monday"),o=offers[0];
+    const card=`<article data-offer-id="${o.id}"><h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`;
+    expect(verifyPublishedOfferMarkup(offers,card,"/produkte")).toEqual([]);
+    expect(verifyPublishedOfferMarkup(offers,`<div hidden>${card}</div>`,"/produkte")).not.toEqual([]);
+  });
+  it("rejects a missing offer from an otherwise exact published package",()=>{
+    const expected=weeklyOfferFixtureContent("monday");
+    expect(verifyPublishedOfferContent(expected,{...expected,offers:[]})).not.toEqual([]);
+  });
+  it("rejects a changed original hash in the offers API",()=>{
+    const expected=weeklyOfferFixtureContent("monday");
+    expect(verifyPublishedOfferContent(expected,{...expected,offers:[{...expected.offers[0],pdfSha256:"b".repeat(64)}]})).not.toEqual([]);
+  });
+  it("accepts exact offers regardless of response generation time",()=>{
+    const expected=weeklyOfferFixtureContent("monday");
+    expect(verifyPublishedOfferContent(expected,{...expected,generatedAt:"2026-10-13T12:01:00Z"})).toEqual([]);
+  });
   it("rejects an empty official flyer index", () => expect(comparePublishedFlyers([flyer], [], flyer)).not.toEqual([]));
   it("rejects the right ID with the wrong published files", () => expect(comparePublishedFlyers([flyer], [{...flyer,pdfUrl:"/wrong.pdf"}], flyer)).not.toEqual([]));
   it("rejects a wrong home flyer version in the same week", () => expect(comparePublishedFlyers([flyer], [flyer], {...flyer,id:"catalog-1384969-v3"})).not.toEqual([]));

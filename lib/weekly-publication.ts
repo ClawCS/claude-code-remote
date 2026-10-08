@@ -10,7 +10,7 @@ import { validateCatalog } from "./handzettel-catalog";
 import { getAcceptedNlOfferRanges, getOfficialOfferRange } from "./offer-validity";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
 import type { LoadedWeeklyPublications, LocalAsset, PublishedOffer, VerifiedWeeklyEdition, WeeklyEdition, WeeklyPublication, WeeklyPublicationIssue } from "./weekly-publication-types";
-import { assertWeeklyPublicationIdle } from "./weekly-publication-transaction";
+import { assertWeeklyPublicationIdle } from "./weekly-publication-idle";
 
 const MAX_BYTES = 50 * 1024 * 1024;
 const HASH = /^[a-f0-9]{64}$/;

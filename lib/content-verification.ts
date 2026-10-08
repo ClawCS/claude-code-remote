@@ -1,7 +1,69 @@
 import type { HomepageFlyer } from "./homepage-content";
+import { isDeepStrictEqual } from "node:util";
+import { parseWeeklyOfferContent } from "./weekly-offer-refresh";
+import type { WeeklyOfferContent } from "./weekly-publication-types";
 
-export type PublishedFlyer = HomepageFlyer & {language: "de" | "nl"};
-const fields = ["id","title","validFrom","validTo","viewerUrl","pdfUrl","coverUrl","pageCount","sourceUrl"] as const;
+export function verifyPublishedOfferContent(expected: WeeklyOfferContent, actual: unknown): string[] {
+  let content:WeeklyOfferContent;
+  try { content=parseWeeklyOfferContent(actual); }
+  catch { return ["Veröffentlichtes Angebotspaket ist ungültig."]; }
+  const sort=(items:readonly {id:string}[])=>items.toSorted((a,b)=>a.id.localeCompare(b.id));
+  return isDeepStrictEqual(sort(expected.flyers),sort(content.flyers)) && isDeepStrictEqual(sort(expected.offers),sort(content.offers))
+    && content.status===expected.status && isDeepStrictEqual([...content.issues].sort(),[...expected.issues].sort())
+    ? [] : ["Veröffentlichtes Angebotspaket stimmt nicht vollständig mit der geprüften Wochenbindung überein."];
+}
+
+export function verifyLegacyPublishedFlyer(expected: PublishedFlyer | undefined, actual: unknown): string[] {
+  if (!actual || typeof actual!=="object") return ["Legacy-GET liefert keinen gültigen Handzettel."];
+  const value=actual as Record<string,unknown>;
+  const valid=expected
+    ? value.status==="ok" && [...fields,"pdfSha256"].every(key=>value[key]===expected[key as keyof PublishedFlyer])
+      && isDeepStrictEqual(value.pages,[{number:1,imageUrl:expected.coverUrl,thumbnailUrl:expected.coverUrl}])
+    : value.status==="fallback" && value.pdfUrl===null && value.viewerUrl===null && value.pageCount===0 && isDeepStrictEqual(value.pages,[]);
+  return valid?[]:["Legacy-GET stimmt nicht mit dem geprüften lokalen Original und seiner einzigen belegten Vorschauseite überein."];
+}
+
+function visibleMarkup(html:string):string {
+  const source=html.replace(/<!--[\s\S]*?-->/g,"").replace(/<(script|textarea|style|title|iframe|noscript|xmp|noembed|noframes)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,"").replace(/<plaintext\b[\s\S]*$/gi,"");
+  const stack:{tag:string;hidden:boolean}[]=[];
+  const voidTags=new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
+  let result="",cursor=0;
+  for (const match of source.matchAll(/<\/?([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi)) {
+    if (!stack.at(-1)?.hidden) result+=source.slice(cursor,match.index);
+    const tag=match[1].toLowerCase();
+    if (match[0].startsWith("</")) {
+      if (!stack.at(-1)?.hidden) result+=match[0];
+      const index=stack.findLastIndex(item=>item.tag===tag);if(index>=0)stack.length=index;
+    } else {
+      const hidden=!!stack.at(-1)?.hidden||tag==="template"||/\s(?:hidden|aria-hidden\s*=\s*["']true["'])(?:\s|=|>|\/)/i.test(match[0]);
+      if (!hidden) result+=match[0];
+      if (!voidTags.has(tag)) stack.push({tag,hidden});
+    }
+    cursor=match.index+match[0].length;
+  }
+  if (!stack.at(-1)?.hidden) result+=source.slice(cursor);
+  return result;
+}
+
+export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"], html:string, route:string):string[] {
+  const errors:string[]=[];
+  const visible=visibleMarkup(html);
+  const cards=Array.from(visible.matchAll(/<article\b([^>]*)>([\s\S]*?)<\/article\s*>/gi)).filter(match=>/\bdata-offer-id\s*=/.test(match[1]));
+  const id=(attributes:string)=>/\bdata-offer-id\s*=\s*["']([^"']+)["']/.exec(attributes)?.[1];
+  if (cards.length!==expected.length || cards.some(card=>!expected.some(offer=>offer.id===id(card[1])))) errors.push(`Angebotskacheln auf ${route} sind nicht die vollständige geprüfte Auswahl.`);
+  const escaped=(value:string)=>value.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#x27;");
+  for (const offer of expected) {
+    const matches=cards.filter(card=>id(card[1])===offer.id);
+    if (matches.length!==1 || /\bhidden(?:\s|=|$)/i.test(matches[0]?.[1]??"")) {errors.push(`Geprüfte Angebotskachel fehlt auf ${route}: ${offer.id}`);continue;}
+    const markup=matches[0][2];
+    errors.push(...verifyPublishedFlyerMarkup([{id:offer.id,language:offer.language as "de"|"nl",title:offer.name,validFrom:offer.validFrom,validTo:offer.validTo,pdfUrl:`${offer.sourceUrl}#page=${offer.sourcePage}`,viewerUrl:offer.sourceUrl,sourceUrl:offer.sourceUrl,coverUrl:offer.image,pageCount:1}],markup,route));
+    for (const text of [offer.name,offer.conditions,offer.sourceWarning??""]) if (text && !markup.replace(/<[^>]*>/g," ").includes(escaped(text))) errors.push(`Geprüfter Angebotstext fehlt auf ${route}: ${offer.id}`);
+  }
+  return errors;
+}
+
+export type PublishedFlyer = HomepageFlyer & {language: "de" | "nl"; pdfSha256?:string};
+const fields = ["id","title","validFrom","validTo","viewerUrl","pdfUrl","coverUrl","pageCount","sourceUrl","pdfSha256"] as const;
 
 export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actual: unknown, home: unknown, nlHome: unknown = null): string[] {
   const errors: string[] = [];
@@ -57,6 +119,7 @@ export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], 
     });
     if (!hasCover) errors.push(`Geprüftes ${flyer.language.toUpperCase()}-Flyer-Vorschaubild fehlt auf ${route}: ${flyer.id}`);
   }
+  if (links.some(link=>/^\/handzettel\/.*\.pdf(?:#.*)?$/.test(link)&&!expected.some(flyer=>flyer.pdfUrl.split("#")[0]===link.split("#")[0]))) errors.push(`Nicht freigegebener oder abgelaufener lokaler Wochenflyer auf ${route}.`);
   return errors;
 }
 

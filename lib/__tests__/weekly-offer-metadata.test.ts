@@ -1,7 +1,6 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { PDFDocument } from "pdf-lib";
@@ -9,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import publicOffers from "@/data/weekly-offers.json";
 import approvedFlyers from "@/data/editorial/flyers.json";
 import { buildPublicOfferMetadata } from "@/lib/weekly-offer-metadata";
+import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
 
 const repo = process.cwd();
 const doc = await PDFDocument.create(); doc.addPage([100,100]);
@@ -31,9 +31,9 @@ async function runFixture(options: {
   legacyDe?: boolean;
   mutate?: (row: Record<string, unknown>) => void;
 } = {}) {
-  const root = await mkdtemp(path.join(tmpdir(), "weekly-offer-metadata-"));
+  const f=await weeklyPublicationFixture();const root=f.root;
   try {
-    await mkdir(path.join(root, "data"));
+    await mkdir(path.join(root, "data"),{recursive:true});
     await mkdir(path.join(root, "public/images/offers"), { recursive: true });
     const source = await sharp({ create: { width: 8, height: 6, channels: 3, background: "red" } }).png().toBuffer();
     const crop = await sharp(source).extract({ left: 1, top: 1, width: 4, height: 3 }).webp({ lossless: true }).toBuffer();
@@ -51,10 +51,10 @@ async function runFixture(options: {
       ...(!options.plain ? { sourceRegions: [[1, 1, 4, 3]], sourceWarning: "Printed source warning" } : {}) };
     await writeFile(path.join(root, "data/weekly-offer-layout.json"), JSON.stringify({ sources: [{
       language: options.nl ? "nl" : "de", flyerId: "de-week-41",
-      sourceUrl: options.nl ? "https://www.canva.com/design/private-source/view" : "https://example.com/reviewed.pdf",
+      sourceUrl: options.nl ? "https://www.canva.com/design/private-source/view" : options.build ? "https://example.com/reviewed.pdf" : f.catalog.pdfUrl,
       pdfSha256: expectedMetadata.pdfSha256, privatePdf: options.nl ? "public/handzettel/2026/nl-test.pdf" : "source.pdf", pageCount: 1,
       publishedPdfPath: options.nl ? "/handzettel/2026/nl-test.pdf" : "/handzettel/2026/de-test.pdf",
-      printedValidFrom: "2026-10-05", printedValidTo: "2026-10-10", coverSha256: "a".repeat(64),
+      printedValidFrom: "2026-10-05", printedValidTo: "2026-10-10", coverSha256: createHash("sha256").update(source).digest("hex"),
       validFrom: "2026-10-05", validTo: "2026-10-10", reviewedAt: "2026-10-08T12:00:00Z", rightsStatus: "approved",
       pages: [{ page: 1, sourceImage: "source.png", expectedOffers: 1, offers: [{...offer,imagePath:"/images/offers/de-test.webp"}] }],
     }] }));
@@ -63,6 +63,19 @@ async function runFixture(options: {
     if (options.nl) Object.assign(row, {language: "nl", sourceUrl: "/handzettel/2026/nl-test.pdf"});
     if (options.legacyDe) row.sourceUrl="https://example.com/reviewed.pdf";
     if (options.plain) { delete row.sourceRegions; delete row.sourceWarning; }
+    const canonical=structuredClone(row);
+    const pdfPath=options.nl?"/handzettel/2026/nl-test.pdf":"/handzettel/2026/de-test.pdf";
+    const coverPath="/images/content/de-test.png";
+    await f.write(`public${pdfPath}`,pdfBytes);await f.write(`public${coverPath}`,source);
+    const catalog=JSON.stringify({...f.catalog,pageCount:1,pages:f.catalog.pages.slice(0,1)});
+    await f.write("data/editorial/official-catalogs/2026-10-05.json",catalog);
+    await f.write("data/editorial/flyers.json",JSON.stringify(options.nl?[{...f.flyer,id:"de-week-41",designId:"private-source",title:"Synthetic original",sourceUrl:"https://www.canva.com/design/private-source/view",pdfPath,coverPath,pdfSha256:expectedMetadata.pdfSha256,coverSha256:createHash("sha256").update(source).digest("hex"),exportedAt:expectedMetadata.reviewedAt}]:[]));
+    await f.write("data/editorial/weekly-publications/2026-10-05.json",JSON.stringify({schemaVersion:1,week:"2026-10-05",editions:[{
+      id:"de-week-41",language:options.nl?"nl":"de",title:"Synthetic original",validFrom:"2026-10-05",validTo:"2026-10-10",
+      source:options.nl?{kind:"canva",flyerId:"de-week-41"}:{kind:"trinkgut-official",catalogId:f.catalog.catalogId,catalogVersion:f.catalog.catalogVersion,metadataSha256:createHash("sha256").update(catalog).digest("hex")},
+      pdf:{path:pdfPath,sha256:expectedMetadata.pdfSha256,bytes:pdfBytes.length},cover:{path:coverPath,sha256:createHash("sha256").update(source).digest("hex"),bytes:source.length},pageCount:1,
+      review:{reviewedAt:expectedMetadata.reviewedAt,printedValidFrom:"2026-10-05",printedValidTo:"2026-10-10",pageOfferCounts:[1]},offerIds:["de-test"],offersSha256:createHash("sha256").update(JSON.stringify([canonical])).digest("hex"),
+    }]}));
     options.mutate?.(row);
     await writeFile(path.join(root, "data/weekly-offers.json"), JSON.stringify([row]));
     const result = await new Promise<{ code: number | null; stderr: string }>((resolve, reject) => {
@@ -99,7 +112,7 @@ describe("weekly offer CLI public metadata binding", () => {
     expect(result.layout.sources[0].sourceUrl).toBe("https://www.canva.com/design/private-source/view");
   });
   it("accepts an NL public record bound to the verified local PDF", async () => {
-    expect((await runFixture({nl: true})).code).toBe(0);
+    const result=await runFixture({nl:true});expect(result.code,result.stderr).toBe(0);
   });
   it("rejects an NL public record that exposes the internal Canva source", async () => {
     const result = await runFixture({nl: true, mutate: row => {row.sourceUrl = "https://www.canva.com/design/private-source/view";}});

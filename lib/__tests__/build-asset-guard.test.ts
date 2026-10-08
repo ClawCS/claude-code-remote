@@ -1,18 +1,17 @@
 import { spawn } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
 
 const fixtures: string[] = [];
 afterEach(() => { for (const root of fixtures.splice(0)) rmSync(root, { recursive: true, force: true }); });
 
 async function prebuildFixture(failing?: "cinematic" | "market" | "missing-market" | "google-market" | "missing-google-market") {
-  const root = mkdtempSync(join(tmpdir(), "jammers-prebuild-"));
+  const {root} = await weeklyPublicationFixture();
   fixtures.push(root);
   mkdirSync(join(root, "scripts"), { recursive: true });
   mkdirSync(join(root, "data/editorial/official-catalogs"), { recursive: true });
-  writeFileSync(join(root, "data/editorial/flyers.json"), "[]");
   const marker = join(root, "completed-checks.txt");
   for (const kind of ["cinematic", "market", "google-market"] as const) {
     if (kind === "market" && failing === "missing-market") continue;

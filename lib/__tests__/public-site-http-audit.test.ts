@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 const cleanup: Array<() => Promise<void>> = [];
 afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await dispose(); });
 
-type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer"; streamed?: boolean };
+type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean };
 
 async function fixture(options: FixtureOptions = {}) {
   const requests: Array<{ path: string; method: string; authorization?: string }> = [];
@@ -29,6 +29,14 @@ async function fixture(options: FixtureOptions = {}) {
     if (url.pathname.startsWith("/api/")) {
       response.setHeader("Content-Type", "application/json");
       response.setHeader("Cache-Control", "no-store");
+      if (url.pathname.startsWith("/api/content/")) {
+        if (request.method==="POST") {response.statusCode=options.broken==="content-post"?200:405;response.end();return;}
+        const empty={status:"ok",issues:[],generatedAt:"2026-10-11T12:00:00Z",flyers:[],offers:[]};
+        response.end(JSON.stringify(url.pathname.endsWith("current")?{flyer:null,nlFlyer:null}:url.pathname.endsWith("offers")&&options.broken==="offers"?{...empty,offers:[{id:"unbound"}]}:empty));return;
+      }
+      if (url.pathname==="/api/handzettel/fetch"&&request.method==="GET"&&!url.search) {
+        response.end(JSON.stringify({status:"fallback",pageCount:0,pages:options.broken==="legacy-get"?[{number:1,imageUrl:"https://provider.invalid/image.jpg"}]:[],viewerUrl:null,pdfUrl:null}));return;
+      }
       if (/^\/api\/(rentals|rental-admin)\//.test(url.pathname)) {
         response.setHeader("Referrer-Policy", options.broken === "rental-referrer" ? "strict-origin-when-cross-origin" : "no-referrer");
         if (url.pathname === "/api/rentals/config") response.statusCode = 200;
@@ -87,7 +95,7 @@ describe("public HTTP forensic audit CLI", () => {
     expect(result.requests.some(request => request.path === "/produkte" && request.method === "GET")).toBe(true);
     expect(result.requests.some(request => request.path === "/photo.webp")).toBe(true);
     expect(result.requests.every(request => !request.authorization)).toBe(true);
-    expect(result.requests.filter(request => request.method === "POST").map(request => request.path).sort()).toEqual(["/api/bewerbung", "/api/chat", "/api/community", "/api/handzettel/cron", "/api/handzettel/fetch", "/api/kuehlschrank", "/api/leergut-scan", "/api/rental-admin/orders/__audit_unknown__", "/api/rental-admin/outbox", "/api/rental-admin/session", "/api/rentals/orders", "/api/rentals/orders/__audit_unknown__/test-payment", "/api/rentals/quote", "/api/rentals/webhook"]);
+    expect(result.requests.filter(request => request.method === "POST").map(request => request.path).sort()).toEqual(["/api/bewerbung", "/api/chat", "/api/community", "/api/content/current", "/api/content/flyers", "/api/content/offers", "/api/handzettel/cron", "/api/handzettel/fetch", "/api/kuehlschrank", "/api/leergut-scan", "/api/rental-admin/orders/__audit_unknown__", "/api/rental-admin/outbox", "/api/rental-admin/session", "/api/rentals/orders", "/api/rentals/orders/__audit_unknown__/test-payment", "/api/rentals/quote", "/api/rentals/webhook"]);
     expect(result.requests.some(request => request.path === "/api/rental-admin/orders")).toBe(true);
     expect(JSON.stringify(result.report)).not.toContain("<h1>");
   });
@@ -102,6 +110,7 @@ describe("public HTTP forensic audit CLI", () => {
     ["link", "link-status"], ["asset", "asset-status"], ["heading", "landmark-h1"], ["legacy", "legacy-chrome"],
     ["redirect", "page-status"], ["api", "api-status"], ["security", "security-header"], ["fragment", "link-fragment"],
     ["rental-auth", "api-status"], ["rental-referrer", "security-header"],
+    ["offers","api-weekly-contract"], ["legacy-get","api-weekly-contract"], ["content-post","api-status"],
   ] as const)("fails visibly for %s defects", async (broken, code) => {
     const result = await fixture({ broken });
     expect(result.code, result.text).toBe(1);
