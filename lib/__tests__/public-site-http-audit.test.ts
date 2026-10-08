@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 const cleanup: Array<() => Promise<void>> = [];
 afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await dispose(); });
 
-type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean };
+type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string };
 
 async function fixture(options: FixtureOptions = {}) {
   const requests: Array<{ path: string; method: string; authorization?: string }> = [];
@@ -64,9 +64,10 @@ async function fixture(options: FixtureOptions = {}) {
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     const header = '<header data-cinematic-header="true"><a href="/produkte">Sortiment</a></header>';
     const content = `<h1>Title</h1>${options.broken === "heading" ? "<h1>Duplicate</h1>" : ""}<p id="details">Content</p><img src="/photo.webp" srcset="/photo.webp 640w, /photo.webp 1280w" alt="Market"/><a href="/galerie#${options.broken === "fragment" ? "absent" : "details"}">Team</a>${options.broken === "link" ? '<a href="/missing-page">Broken</a>' : ""}`;
+    const visibleContent=options.hiddenQuotedAttribute?`<div title="x > y" hidden>${content}</div>`:content;
     const main = options.streamed
-      ? `<main><!--$?--><template id="B:0"></template><h1>Fallback</h1><!--/$--></main><div hidden id="S:0">${content}</div><script>$RC("B:0","S:0")</script>`
-      : `<main>${content}</main>`;
+      ? `<main><!--$?--><template id="B:0"></template>${options.completionAttrs?"<p>Fallback</p>":"<h1>Fallback</h1>"}<!--/$--></main><div hidden id="S:0">${visibleContent}</div><script ${options.completionAttrs??""}>$RC("B:0","S:0")</script>`
+      : `<main>${visibleContent}</main>`;
     response.end(`<!doctype html><html><head><link rel="stylesheet" href="/site.css"/><script src="/site.js"></script></head><body>${header}${main}<footer${options.broken === "legacy" ? " data-legacy-footer" : ""}>Footer</footer><script>const sample = "<h1>Not DOM</h1>";</script></body></html>`);
   });
   await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
@@ -88,6 +89,18 @@ async function fixture(options: FixtureOptions = {}) {
 }
 
 describe("public HTTP forensic audit CLI", () => {
+  it("does not count content hidden after a quoted greater-than attribute",async()=>{
+    const result=await fixture({hiddenQuotedAttribute:true});
+    expect(result.code).toBe(1);
+    expect(result.report.findings.some((finding:{code:string})=>finding.code==="landmark-h1")).toBe(true);
+    expect(result.requests.some(request=>request.path==="/photo.webp")).toBe(false);
+  });
+  it.each(['src=""',"nomodule"])("does not resolve SSR from a nonexecuting inline script: %s",async completionAttrs=>{
+    const result=await fixture({streamed:true,completionAttrs});
+    expect(result.code).toBe(1);
+    expect(result.report.findings.some((finding:{code:string})=>finding.code==="landmark-h1")).toBe(true);
+    expect(result.requests.some(request=>request.path==="/photo.webp")).toBe(false);
+  });
   it("passes valid routes and assets without external or authorized requests", async () => {
     const result = await fixture();
     expect(result.code, result.text).toBe(0);

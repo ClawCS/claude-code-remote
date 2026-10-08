@@ -22,6 +22,19 @@ describe("weekly publishing verification", () => {
     const html=await streamReactMarkup(createElement("div",{hidden:true},createElement(WeeklyOfferGrid,{content})));
     expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).not.toEqual([]);
   });
+  it.each(['title="x > y"',"title='x > y'"])("preserves hidden after a quoted greater-than attribute: %s",attribute=>{
+    const content=weeklyOfferFixtureContent("monday");
+    const cards=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
+    expect(verifyPublishedOfferMarkup(content.offers,`<div ${attribute}>${cards}</div>`,"/produkte")).toEqual([]);
+    expect(verifyPublishedOfferMarkup(content.offers,`<div ${attribute} hidden>${cards}</div>`,"/produkte")).not.toEqual([]);
+  });
+  it.each(['src=""',"src","nomodule",'nomodule=""','type="application/json"','title="x > y" src=""',"title='x > y' nomodule"])("rejects completion in a nonexecuting inline script: %s",attribute=>{
+    const content=weeklyOfferFixtureContent("monday");
+    const cards=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
+    const html='<main><!--$?--><template id="B:0"></template><p>Loading</p><!--/$--></main>'
+      +`<div hidden id="S:0">${cards}</div><script ${attribute}>$RC("B:0","S:0")</script>`;
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).not.toEqual([]);
+  });
   it("resolves nested SSR boundaries while removing the complete nested fallback",()=>{
     const content=weeklyOfferFixtureContent("monday");
     const cards=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
