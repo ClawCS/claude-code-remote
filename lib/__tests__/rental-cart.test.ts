@@ -38,7 +38,7 @@ describe("canonical cart rental quote", () => {
   });
   it("rejects an unknown rental identity and stock overbooking", () => {
     expect(quote([{ ...rental(), product: { ...rental().product, id: 1001 } }]).error).toMatch(/Leihartikel/);
-    expect(quote([rental(20001, 4)]).error).toMatch(/Bestand/);
+    expect(quote([rental(20001, 4)]).error).toBe("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("formats integer cents and preserves unknown prices in the display helper", () => {
     expect(money(40)).toContain("0,40");

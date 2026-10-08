@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import SocialLink from "@/components/SocialLink";
 import { PEOPLE_STORY, EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
 import FlyerIndexView from "@/components/FlyerIndexView";
 import { getFlyerIndex } from "@/lib/flyer-index";
@@ -88,7 +89,7 @@ export default async function NederlandsPage() {
           <div><p className={styles.eyebrow}>Vragen? We zijn er voor je.</p><h2 id="contact-title">Tot ziens in Goch.</h2><p>Wil je iets weten over een product of de beschikbaarheid? Bel ons of stuur een WhatsApp-bericht voordat je langskomt.</p></div>
           <div className={styles.contactLinks}>
             <a href={MARKET.phoneHref}>+49 2823 418707 <span aria-hidden="true">↗</span></a>
-            <a href={SITE_LINKS.whatsappNl} target="_blank" rel="noopener noreferrer">Stuur een WhatsApp-bericht <span aria-hidden="true">↗</span></a>
+            <SocialLink platform="whatsapp" href={SITE_LINKS.whatsappNl} label="Stuur een WhatsApp-bericht" className={styles.socialContact} />
             <a href={"mailto:" + MARKET.email}>{MARKET.email} <span aria-hidden="true">↗</span></a>
           </div>
         </section>

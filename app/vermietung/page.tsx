@@ -10,17 +10,21 @@ import { calculateWorkdays, formatPrice } from "@/lib/utils";
 import { quoteRentals, type RentalQuote } from "@/lib/rental-pricing";
 import { money } from "@/lib/rental-cart";
 import { MARKET } from "@/lib/cinematic/site";
+import { RENTAL_QUANTITY_UNAVAILABLE } from "@/lib/rental-messages";
 
 export default function VermietungPage() {
   const { items, addItem } = useCart();
   const [quantities, setQuantities] = useState<Record<number,number>>({});
+  const [quantityErrors, setQuantityErrors] = useState<Record<number,string>>({});
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [message, setMessage] = useState("");
   const range = {startDate,endDate};
   const datesValid = validRentalRange(range);
   const capacity = (id: number) => maxRentalQuantity(items,id,datesValid ? range : undefined);
-  const quantity = (id: number) => Math.min(quantities[id] ?? 0,capacity(id));
+  const quantity = (id: number) => quantities[id] ?? 0;
+  const quantityError = (id: number) => quantity(id) > capacity(id) ? RENTAL_QUANTITY_UNAVAILABLE : quantityErrors[id];
+  const hasInvalidQuantity = rentalItems.some(item => quantity(item.id) > capacity(item.id));
   const selectedCount = rentalItems.reduce((sum,item) => sum + quantity(item.id),0);
   let selectedQuote: RentalQuote | null = null;
   let quoteError = "";
@@ -33,9 +37,17 @@ export default function VermietungPage() {
   }
 
   function selectQuantity(id: number, value: number) {
-    if (!Number.isInteger(value)) return;
+    if (!Number.isInteger(value) || value < 0) {
+      setQuantityErrors(previous => ({...previous, [id]: "Bitte eine ganze Menge ab 0 auswählen."}));
+      return;
+    }
+    if (value > capacity(id) && value >= quantity(id)) {
+      setQuantityErrors(previous => ({...previous, [id]: RENTAL_QUANTITY_UNAVAILABLE}));
+      return;
+    }
+    setQuantityErrors(previous => ({...previous, [id]: ""}));
     setQuantities(previous => {
-      const next = {...previous, [id]: Math.max(0, Math.min(value, capacity(id)))};
+      const next = {...previous, [id]: value};
       if (next[id] > 0) {
         for (const other of rentalItems) {
           if (rentalFurnitureConflict(id, other.id)) next[other.id] = 0;
@@ -47,13 +59,14 @@ export default function VermietungPage() {
   }
 
   function addSelected() {
-    if (!datesValid || !selectedCount || !selectedQuote) return;
+    if (!datesValid || !selectedCount || !selectedQuote || hasInvalidQuantity) return;
     const rental: RentalInfo = {...range,workdays:calculateWorkdays(startDate,endDate),periods:0,basePrice:0,totalRentalPrice:0,priceStatus:"personal-confirmation-required"};
     for (const item of rentalItems) {
       const count = quantity(item.id);
       if (count) addItem(rentalToProduct(item),count,rental);
     }
     setQuantities({});
+    setQuantityErrors({});
     setMessage("Deine Auswahl wurde zur Liste hinzugefügt. Noch keine Reservierung – ein Vertrag entsteht erst, wenn der Markt deinen Termin bestätigt.");
   }
 
@@ -87,22 +100,21 @@ export default function VermietungPage() {
             <h2 id={`rental-${category === "Gläser" ? "glass" : category === "Kühlung & Ausschank" ? "cooling" : "furniture"}`} className="text-2xl font-bold mb-5">{category}</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {rentalItems.filter(item=>item.category === category).map(item=>(
-                <article key={item.id} data-rental-name={item.name} data-physical-stock={item.physicalStock} className="bg-white border border-border rounded-xl p-5 flex flex-col">
+                <article key={item.id} data-rental-name={item.name} className="bg-white border border-border rounded-xl p-5 flex flex-col">
                   <figure className="mb-4"><Image src={item.image} alt={`Beispielabbildung: ${item.name}`} width={960} height={640} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="w-full aspect-[3/2] object-contain rounded-lg bg-[#f8f5f0]" /><figcaption className="text-xs text-muted mt-2">KI-Beispielbild · Modell und Ausführung können abweichen.</figcaption></figure>
                   <h3 className="text-xl font-bold mb-3">{item.name}</h3>
                   <p className="text-primary font-bold text-lg">{item.price === null ? "Preis auf Anfrage" : formatPrice(item.price)}</p>
                   {item.price !== null && <p className="text-xs mt-1">je Stück / angefangenem 3-Werktage-Block · inkl. MwSt.</p>}
-                  <p className="text-sm mt-3">Physischer Bestand: {item.physicalStock} Stück</p>
                   {item.breakagePrice !== null && <p className="text-sm mt-1">Bruchersatz: {formatPrice(item.breakagePrice)} je Stück</p>}
                   <div className="mt-auto pt-5">
                     <label htmlFor={`rental-quantity-${item.id}`} className="block text-sm font-medium">Gewünschte Menge</label>
                     <div className="flex items-stretch mt-2 rounded-lg border border-border overflow-hidden">
                       <button type="button" aria-label={`Menge für ${item.name} verringern`} disabled={quantity(item.id) === 0} onClick={() => selectQuantity(item.id, quantity(item.id) - 1)} className="w-12 min-h-12 shrink-0 bg-light font-bold text-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-50">−</button>
-                      <input id={`rental-quantity-${item.id}`} type="number" inputMode="numeric" aria-label={`Menge für ${item.name}`} min={0} max={capacity(item.id)} step={1} value={quantity(item.id)} onChange={event => selectQuantity(item.id, Number(event.target.value))} className="min-w-0 w-full min-h-12 border-x border-border px-2 text-center text-secondary font-semibold" />
-                      <button type="button" aria-label={`Menge für ${item.name} erhöhen`} disabled={quantity(item.id) >= capacity(item.id)} onClick={() => selectQuantity(item.id, quantity(item.id) + 1)} className="w-12 min-h-12 shrink-0 bg-light font-bold text-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-50">+</button>
+                      <input id={`rental-quantity-${item.id}`} type="number" inputMode="numeric" aria-label={`Menge für ${item.name}`} aria-invalid={Boolean(quantityError(item.id))} aria-describedby={quantityError(item.id) ? `rental-quantity-error-${item.id}` : undefined} min={0} max={capacity(item.id)} step={1} value={quantity(item.id)} onChange={event => selectQuantity(item.id, Number(event.target.value))} className="min-w-0 w-full min-h-12 border-x border-border px-2 text-center text-secondary font-semibold" />
+                      <button type="button" aria-label={`Menge für ${item.name} erhöhen`} onClick={() => selectQuantity(item.id, quantity(item.id) + 1)} className="w-12 min-h-12 shrink-0 bg-light font-bold text-xl hover:bg-red-50">+</button>
                     </div>
+                    {quantityError(item.id) && <p id={`rental-quantity-error-${item.id}`} role="alert" className="text-sm text-primary mt-2">{quantityError(item.id)}</p>}
                   </div>
-                  {datesValid && capacity(item.id) < item.physicalStock && <p className="text-xs mt-2">Für diesen Zeitraum noch höchstens {capacity(item.id)} Stück zusätzlich in deiner Anfrageliste.</p>}
                   {selectedQuote?.lines.filter(line => line.id === item.id).map(line => <div key={line.id} className="mt-4 rounded-lg bg-light p-3 text-sm">
                     <p>{line.workdays} Werktage · {line.periods} {line.periods === 1 ? "Mietblock" : "Mietblöcke"} · {line.quantity} Stück</p>
                     <p className="mt-1 font-bold">Positionssumme: {money(line.lineTotalCents)}</p>
@@ -122,7 +134,7 @@ export default function VermietungPage() {
             <p>Bekannte Mietpositionen: {money(selectedQuote.knownSubtotalCents)} inkl. MwSt. (nur Teilsumme). Bitte unverbindlich anfragen.</p>
           </div>)}
           <div className="flex flex-wrap gap-3">
-            <button type="button" onClick={addSelected} disabled={!datesValid || !selectedCount || !selectedQuote} className="min-h-12 px-6 py-3 rounded-lg bg-primary text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed">In den Warenkorb</button>
+            <button type="button" onClick={addSelected} disabled={!datesValid || !selectedCount || !selectedQuote || hasInvalidQuantity} className="min-h-12 px-6 py-3 rounded-lg bg-primary text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed">In den Warenkorb</button>
             <Link href="/warenkorb" className="min-h-12 px-6 py-3 rounded-lg border border-border font-medium">Warenkorb öffnen</Link>
             <a href={MARKET.phoneHref} className="min-h-12 px-6 py-3 underline">Persönlich beraten lassen</a>
           </div>

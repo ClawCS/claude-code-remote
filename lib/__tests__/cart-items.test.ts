@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import products from "@/data/products.json";
 import type { Product } from "@/lib/utils";
-import { addCartItem, cartLineKey, parseStoredCart, updateCartQuantity, maxRentalQuantity } from "@/lib/cart-items";
+import { addCartItem, assertRentalStock, cartLineKey, parseStoredCart, updateCartQuantity, maxRentalQuantity } from "@/lib/cart-items";
 const product = products[0] as Product;
 const rental = {startDate:"2026-10-05",endDate:"2026-10-07",workdays:3,periods:1,basePrice:0,totalRentalPrice:0};
 const trailer = {...product,id:20001,name:"Kühlanhänger",slug:"kuehlanhaenger",category:"Vermietung",categorySlug:"vermietung",price:150};
 describe("inquiry list integrity", () => {
+  it("explains excessive requested quantities without publishing internal inventory", () => {
+    expect(() => assertRentalStock([{product:trailer,quantity:4,rental}])).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
+  });
   it.each([
     [20001,3],[20002,4],[20003,20],[20004,3],[20005,13],[20006,44],[20007,13],[20008,2],[20009,2],[20010,3],
     [20011,2],[20012,1],[20013,124],[20015,226],[20016,402],[20017,299],[20018,58],[20019,177],[20020,23],

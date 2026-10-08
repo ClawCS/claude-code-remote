@@ -8,7 +8,7 @@ import { useModalA11y } from "@/lib/useModalA11y";
 import { rentalCartQuote, money } from "@/lib/rental-cart";
 
 export default function CartDrawer() {
-  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity } = useCart();
+  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, quantityError } = useCart();
   const panelRef = useModalA11y(isCartOpen, () => setIsCartOpen(false));
   const rentalQuote = rentalCartQuote(items);
   const canOrder = rentalQuote.onlyRentals && rentalQuote.quote?.allPriced && !rentalQuote.error;
@@ -35,6 +35,7 @@ export default function CartDrawer() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
+          {quantityError && <p role="alert" className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-primary">{quantityError}</p>}
           {items.length === 0 ? (
             <div className="text-center py-12 text-muted">
               <p>Deine Anfrageliste ist leer.</p>
@@ -85,13 +86,13 @@ export default function CartDrawer() {
               <p className="font-semibold">Gesamtpreis offen · unverbindliche Anfrage</p>
               <p>Bekannte Mietpositionen: {money(rentalQuote.quote.knownSubtotalCents)} inkl. MwSt. (nur Teilsumme).</p>
             </div>)}
-            <p className="text-sm text-muted">{canOrder ? "Vertrag erst nach Terminbestätigung des Markts. Zahlung erst danach." : "Unverbindliche Anfrage: Für Waren und offene Mietpreise gibt es noch keinen zahlbaren Gesamtpreis."}</p>
+            <p className="text-sm text-muted">{canOrder ? "Unverbindliche Anfrage. Termin und Verfügbarkeit bestätigen wir persönlich. Zahlung bei Abholung." : "Unverbindliche Anfrage: Für Waren und offene Mietpreise gibt es noch keinen zahlbaren Gesamtpreis."}</p>
             <Link
               href={canOrder ? "/checkout" : "/warenkorb"}
               onClick={() => setIsCartOpen(false)}
               className="block w-full text-center py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors"
             >
-              {canOrder ? "Zur Bestellung" : "Anfrage vorbereiten"}
+              {canOrder ? "Unverbindlich anfragen" : "Anfrage vorbereiten"}
             </Link>
             {canOrder && <Link href="/warenkorb" onClick={() => setIsCartOpen(false)} className="block py-2 text-center text-sm underline">Liste prüfen</Link>}
           </div>

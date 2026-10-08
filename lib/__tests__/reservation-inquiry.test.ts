@@ -32,10 +32,10 @@ describe("non-binding inquiry", () => {
     expect(() => buildInquiryText([{...item,rental}], contact)).toThrow();
   });
   it("rejects a rental quantity above physical stock", () => {
-    expect(()=>buildInquiryText([{product:trailer,quantity:4,rental}],contact)).toThrow(/Bestand/);
+    expect(()=>buildInquiryText([{product:trailer,quantity:4,rental}],contact)).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("rejects overlapping requests above the same physical stock", () => {
-    expect(()=>buildInquiryText([{product:trailer,quantity:2,rental},{product:trailer,quantity:2,rental:{...rental,startDate:"2026-10-07",endDate:"2026-10-10"}}],contact)).toThrow(/Bestand/);
+    expect(()=>buildInquiryText([{product:trailer,quantity:2,rental},{product:trailer,quantity:2,rental:{...rental,startDate:"2026-10-07",endDate:"2026-10-10"}}],contact)).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("accepts non-overlapping full-stock requests without quoting source prices", () => {
     const text=buildInquiryText([{product:trailer,quantity:3,rental},{product:trailer,quantity:3,rental:{...rental,startDate:"2026-10-08",endDate:"2026-10-10"}}],contact);
@@ -49,7 +49,7 @@ describe("non-binding inquiry", () => {
   });
   it("rejects duplicated references instead of allowing a forged stock bypass", () => {
     const repeated = {product:trailer,quantity:2,rental};
-    expect(()=>buildInquiryText([repeated,repeated],contact)).toThrow(/Bestand/);
+    expect(()=>buildInquiryText([repeated,repeated],contact)).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("uses the physical catalog name rather than an untrusted supplied rental label", () => {
     const text=buildInquiryText([{product:{...trailer,name:"Kühlwagen (mit Getränken)"},quantity:1,rental}],contact);

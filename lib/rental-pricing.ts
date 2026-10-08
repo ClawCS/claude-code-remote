@@ -1,5 +1,6 @@
 import { getRentalItem } from "@/data/rentals";
 import { countRentalWorkdays, parseRentalDate } from "@/lib/rental-calendar";
+import { RENTAL_QUANTITY_UNAVAILABLE } from "@/lib/rental-messages";
 
 export type RentalSelection = {
   id: number;
@@ -62,7 +63,7 @@ function assertInventory(lines: readonly RentalQuoteLine[]): void {
     for (const [, change] of [...events].sort(([first], [second]) => first - second)) {
       occupied += change;
       if (occupied > item.physicalStock) {
-        throw new Error(`Der physische Bestand für ${item.name} (${item.physicalStock}) wird im gewünschten Zeitraum überschritten.`);
+        throw new Error(RENTAL_QUANTITY_UNAVAILABLE);
       }
     }
   }
@@ -95,7 +96,7 @@ export function quoteRentals(
     const key = `${entry.id}:${entry.startDate}:${entry.endDate}`;
     const quantity = (aggregate.get(key)?.quantity ?? 0) + entry.quantity;
     if (!Number.isSafeInteger(quantity) || quantity > item.physicalStock) {
-      throw new Error(`Der physische Bestand für ${item.name} (${item.physicalStock}) wird im gewünschten Zeitraum überschritten.`);
+      throw new Error(RENTAL_QUANTITY_UNAVAILABLE);
     }
     aggregate.set(key, { id: item.id, quantity, startDate: entry.startDate, endDate: entry.endDate });
   }

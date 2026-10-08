@@ -1,4 +1,5 @@
 import Image from "next/image";
+import SocialLink from "@/components/SocialLink";
 
 import { INSTAGRAM_SELECTION } from "@/data/cinematic-editorial";
 import { formatDate } from "@/lib/cinematic/presentation";
@@ -43,13 +44,11 @@ export default function InstagramSection(): React.JSX.Element {
       ) : (
         <div className={styles.instagramFallback} data-instagram-fallback>
           <p>Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.</p>
-          <a
+          <SocialLink
+            platform="instagram"
             href={SITE_LINKS.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Instagram-Profil öffnen
-          </a>
+            label="Instagram-Profil von Trinkgut Jammers öffnen"
+          />
         </div>
       )}
     </section>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import brandLogo from "@/public/images/home/brand-logo.webp";
+import SocialLink from "@/components/SocialLink";
 
 import { CINEMATIC_NAV, SITE_LINKS } from "@/lib/cinematic/site";
 
@@ -56,14 +57,12 @@ export default function CinematicHeader({
           </ul>
         </nav>
         <LiveMarketStatus initialNowIso={nowIso} />
-        <a
+        <SocialLink
           className={styles.whatsapp}
+          platform="whatsapp"
           href={SITE_LINKS.whatsapp}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Per WhatsApp schreiben
-        </a>
+          label="Per WhatsApp schreiben"
+        />
         <MobileNavigation items={items} />
       </div>
     </header>

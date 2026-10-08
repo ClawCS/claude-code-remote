@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 
 import type { HomepageContent, HomepageEvent } from "@/lib/homepage-content";
 import {
@@ -60,13 +61,11 @@ export default function CurrentSection({
         ) : (
           <div className={styles.fallback} data-current-fallback>
             {view.fallbackMessage ? <p>{view.fallbackMessage}</p> : null}
-            <a
+            <SocialLink
+              platform="whatsapp"
               href={SITE_LINKS.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Per WhatsApp nachfragen
-            </a>
+              label="Per WhatsApp nachfragen"
+            />
           </div>
         )}
 

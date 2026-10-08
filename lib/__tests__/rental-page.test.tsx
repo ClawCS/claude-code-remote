@@ -11,10 +11,18 @@ describe("source-backed rental catalog", () => {
     const result = html();
     for (const [name,stock] of [["Kühlanhänger",3],["Kühltruhe",4],["Stehtisch",20],["Zapfanlage",3],["Tisch einzeln",13],["Bank einzeln",44],["Bierzeltgarnitur",13],["Theke",2],["Spültheke",2],["Tablett",3],["Glühweinkocher",2],["Bierpongtisch",1],["Weinglas",124],["Sektglas",226],["Altbierglas",402],["Williglas",299],["Kölschglas",58],["Schnapsglas",177],["Weizenglas",23]] as const) {
       expect(result).toContain(`aria-label="Menge für ${name}"`);
-      expect(result).toContain(`data-rental-name="${name}" data-physical-stock="${stock}"`);
+      const article = result.split(`data-rental-name="${name}"`)[1]?.split("</article>")[0];
+      expect(article).toContain(`max="${stock}"`);
     }
     expect(result).not.toContain("01.01.2026");
     expect(result).not.toContain("Weinglas klein");
+  });
+  it("keeps stock limits internal while asking the market to confirm availability", () => {
+    const result = html();
+    expect(result).not.toMatch(/Physischer Bestand|Bestand (?:laut|nach) Liste|Bestandsstand|noch höchstens/);
+    expect(result).not.toContain("data-physical-stock");
+    expect(result).toContain("Termin und Verfügbarkeit bestätigen wir persönlich.");
+    expect(result).toContain('max="3"');
   });
   it("shows confirmed periods and labelled examples without inventing deposit or purchase rentals", () => {
     const result = html();

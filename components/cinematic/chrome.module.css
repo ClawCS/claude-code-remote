@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: center;
   border-block-end: 1px solid var(--cinematic-color-line);
-  background: color-mix(in srgb, var(--cinematic-color-nl-accent) 8%, var(--cinematic-color-surface));
+  background: var(--cinematic-color-nl-accent);
 }
 
 .dutchEntry {
@@ -41,7 +41,7 @@
   outline-offset: -2px;
 }
 
-.dutchArrow { color: var(--cinematic-color-nl-accent); }
+.dutchArrow { color: var(--cinematic-color-ink); }
 
 .headerInner {
   position: relative;
@@ -153,10 +153,10 @@
   background: var(--cinematic-color-gray);
 }
 
-.whatsapp {
+.headerInner .whatsapp {
   display: none;
   grid-row: 1;
-  padding:0 var(--cinematic-spacing-md);
+  padding:0;
   border: 1px solid var(--cinematic-color-red);
   color: var(--cinematic-color-red);
   transition: color var(--cinematic-motion-duration-fast)
@@ -275,7 +275,7 @@
     gap:var(--cinematic-spacing-md);
   }
 
-  .whatsapp {
+  .headerInner .whatsapp {
     display: inline-flex;
   }
 

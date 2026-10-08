@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
 import { removeLegacyPersonalData } from "@/lib/reservation-inquiry";
-import { addCartItem, cartLineKey, parseStoredCart, updateCartQuantity } from "@/lib/cart-items";
+import { addCartItem, assertRentalStock, cartLineKey, parseStoredCart, updateCartQuantity } from "@/lib/cart-items";
 
 export type RentalInfo = {
   startDate: string;
@@ -32,6 +32,7 @@ type CartContextType = {
   totalPrice: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
+  quantityError: string;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -40,6 +41,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [quantityError, setQuantityError] = useState("");
 
   useEffect(() => {
     try {
@@ -61,11 +63,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addItem = (product: Product, quantity = 1, rental?: RentalInfo) => {
     if (!Number.isInteger(quantity) || quantity < 1) return;
+    try { assertRentalStock([...items, {product, quantity, rental}]); }
+    catch (cause) {
+      setQuantityError(cause instanceof Error ? cause.message : "Bitte die gewünschte Menge prüfen.");
+      setIsCartOpen(true);
+      return;
+    }
+    setQuantityError("");
     setItems((prev) => addCartItem(prev,product,quantity,rental));
     setIsCartOpen(true);
   };
 
   const removeItem = (lineKey: string) => {
+    setQuantityError("");
     setItems((prev) => prev.filter((item) => cartLineKey(item) !== lineKey));
   };
 
@@ -75,10 +85,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem(lineKey);
       return;
     }
+    try { assertRentalStock(items.map(item => cartLineKey(item) === lineKey ? {...item, quantity} : item)); }
+    catch (cause) {
+      setQuantityError(cause instanceof Error ? cause.message : "Bitte die gewünschte Menge prüfen.");
+      return;
+    }
+    setQuantityError("");
     setItems((prev) => updateCartQuantity(prev,lineKey,quantity));
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => { setItems([]); setQuantityError(""); };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce(
@@ -103,6 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         totalPrice,
         isCartOpen,
         setIsCartOpen,
+        quantityError,
       }}
     >
       {children}

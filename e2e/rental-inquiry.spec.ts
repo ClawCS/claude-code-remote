@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("rental selection, repeated additions and cart updates respect overlapping physical stock", async ({page}) => {
   await page.goto("/vermietung");
-  await expect(page.locator("article[data-physical-stock]")).toHaveCount(20);
+  await expect(page.locator("article[data-rental-name]")).toHaveCount(19);
   await page.getByLabel("Gewünschte Abholung").fill("2026-10-05");
   await page.getByLabel("Gewünschte Rückgabe").fill("2026-10-07");
   const trailer = page.getByRole("spinbutton",{name:"Menge für Kühlanhänger",exact:true});
@@ -11,6 +11,9 @@ test("rental selection, repeated additions and cart updates respect overlapping 
   await page.getByRole("dialog").getByRole("button",{name:"Schließen",exact:true}).click();
   await expect(trailer).toHaveAttribute("max","1");
   await trailer.fill("999");
+  await expect(trailer).toHaveValue("0");
+  await expect(page.locator('article[data-rental-name="Kühlanhänger"]').getByRole("alert")).toHaveText("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
+  await trailer.fill("1");
   await expect(trailer).toHaveValue("1");
   await page.getByRole("button",{name:"In den Warenkorb",exact:true}).click();
   await page.getByRole("dialog").getByRole("button",{name:"Schließen",exact:true}).click();

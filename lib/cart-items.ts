@@ -2,6 +2,7 @@ import { assortmentProducts as products } from "@/lib/catalog";
 import { getRentalItem, rentalToProduct } from "@/data/rentals";
 import type { Product } from "@/lib/utils";
 import type { CartItem, RentalInfo } from "@/context/CartContext";
+import { RENTAL_QUANTITY_UNAVAILABLE } from "@/lib/rental-messages";
 
 export const validRentalDate = (value: unknown): value is string => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10) === value;
 type RentalRange = Pick<RentalInfo,"startDate" | "endDate">;
@@ -70,7 +71,7 @@ export function assertRentalStock(items: readonly CartItem[]): void {
     }
     if (!item.rental || !validRentalRange(item.rental)) throw new Error("Bitte einen gültigen Leihzeitraum auswählen.");
     const others = items.filter((_,otherIndex) => otherIndex !== index);
-    if (item.quantity > maxRentalQuantity(others,item.product.id,item.rental)) throw new Error(`Der physische Bestand für ${catalogItem.name} wird im gewünschten Zeitraum überschritten.`);
+    if (item.quantity > maxRentalQuantity(others,item.product.id,item.rental)) throw new Error(RENTAL_QUANTITY_UNAVAILABLE);
   }
 }
 

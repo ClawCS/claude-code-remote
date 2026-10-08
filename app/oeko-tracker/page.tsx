@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 
 // --- Constants ---
 
@@ -518,14 +519,12 @@ export default function OekoTrackerPage() {
           >
             {"\u267B\uFE0F"} Leergut-Rechner
           </Link>
-          <a
+          <SocialLink
+            platform="whatsapp"
             href="https://wa.me/491752492386"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2.5 bg-green-500/30 text-white font-semibold rounded-xl hover:bg-green-500/50 transition-colors text-sm"
-          >
-            {"\uD83D\uDCF1"} WhatsApp
-          </a>
+            label="Trinkgut Jammers per WhatsApp kontaktieren"
+            className="bg-green-500/30 text-white hover:bg-green-500/50 transition-colors"
+          />
         </div>
       </div>
     </div>

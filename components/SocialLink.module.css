@@ -1,0 +1,28 @@
+.link {
+  box-sizing: border-box;
+  display: inline-flex;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  justify-self: start;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: .5rem;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+.link:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+.icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: none;
+}

@@ -22,7 +22,7 @@ test.describe("local-only rental ordering", () => {
     await page.getByRole("button", { name: "In den Warenkorb", exact: true }).click();
     await page.goto("/warenkorb");
     await expect(page.getByText("300,00", { exact: false }).first()).toBeVisible();
-    await page.getByRole("link", { name: "Zur Bestellung", exact: true }).click();
+    await page.getByRole("link", { name: "Unverbindlich anfragen", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Deine Mietbestellung" })).toBeVisible();
     await page.getByLabel("Vor- und Nachname").fill(`Testkunde ${method}`);
     await page.getByLabel("E-Mail-Adresse", { exact: true }).fill(`test-${method}@example.invalid`);

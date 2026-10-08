@@ -127,6 +127,11 @@
   gap:var(--cinematic-spacing-md);
 }
 
+.fallback a {
+  padding: 0;
+  justify-content: center;
+}
+
 .cover {
   position: relative;
   width: min(100%, 21rem);

@@ -7,89 +7,85 @@ Stand: 8. Oktober 2026. Abgleich aus ausdrücklichen Betreiberantworten, AGENTS.
 - Domain `trinkgut-jammers.de`, eigener bestätigter Hetzner-Host, HTTPS, Impressumsdaten und Hosting-AV-Vertrag sind freigegeben; Informationsseite ist live. Das ist keine unabhängige juristische Gesamtprüfung.
 - Aktueller Mietbetrieb: ausschließlich unverbindliche Anfrage an `jammers-goch@trinkgut.de` oder WhatsApp, vom Kunden selbst abgesendet. `RENTAL_MODE=disabled`; kein automatischer Mailversand und keine echten Onlinezahlungen.
 - Mietpreisberechnung: Bruttolistenpreise je angefangene drei Werktage; Mo–Sa ohne Sonn-/NRW-Feiertage; Abhol-/Rückgabetag zählen vollständig. Glas-/Thekenpreise vom 8. Oktober sind bestätigt, „Weinglas klein“ entfernt. Konkreter Steuersatz für Rechnungen ist davon nicht umfasst.
-- Später gewünschter Bestellablauf: Kundenbestellung → ausdrückliche Marktannahme/Verfügbarkeitsprüfung → sicherer Zahlungslink oder bar bei Abholung → statusgerechte Rechnung/Lieferschein an beide Seiten. Implementierungsauftrag besteht; Live-Aktivierung ist nicht freigegeben.
+- Aktuell bestätigte Abwicklung: Anfrage → persönliche Termin-/Verfügbarkeitsbestätigung durch den Markt → Zahlung unmittelbar bei tatsächlicher Abholung. Onlinezahlungen, automatische Rechnungen/Lieferscheine und verbindlicher Web-Bestellbetrieb sind bis zur späteren eigenen WWS-API-Anbindung zurückgestellt. Der frühere Zahlungslink-Entwurf bleibt Historie, keine aktuelle Aktivierungsfreigabe.
 - Wochenwerbung: Sonntag 17:00 Vorbereitung, täglich 06:15 Kontrolle, Europe/Berlin. Der am 8. Oktober freigegebene Wochenpaket-Entwurf erhält die Mac-/App-Abhängigkeit. Ein unabhängiger Server-Canva-Import ist kein noch offener Blocker dieses Auftrags, sondern ein gesonderter Ausbau.
 - Gewinnspielkontrolle monatlich; vollständige unbeschnittene Cover und eigene Instagram-Originale ausdrücklich freigegeben. Quellenregeln für reale lizenzierte Cocktailfotos, Google-Inhaberfotos sowie deklarierte KI-Akademie-/Leihartikelmotive stehen in AGENTS.md und sind entschieden.
 - Team-/Fotoausschlüsse und das Behalten des Gruppenfotos sind entschieden; das ausdrücklich ausgeschlossene Staplerfoto bleibt ausgeschlossen. Die letzte Einzelprofilentfernung ist bereits live, kein erneuter Personalabgleich erforderlich.
-- NL-Landingpage mit Oranje-Akzenten ist umgesetzt. Die Farbe der zusätzlichen gemeinsamen NL-Hinweisleiste ist ein getrennter Punkt unten.
-- Newsletter ist beauftragt: Sonntag 19:00 Europe/Berlin, Handzettel der Folgewoche. Dieser Zeitplan muss nicht erneut entschieden werden.
-- Bewerbungsportal mit Anschreiben/Bewerbung, Lebenslauf, Portrait und Zeugnissen ist beauftragt. Umfang nicht nochmals als Grundsatzfrage behandeln; Zugriffs-/Betriebsdaten fehlen. Im Entwurf bleibt das Portrait freiwillig.
+- NL-Landingpage mit Oranje-Akzenten ist umgesetzt. Auch die warme orange gemeinsame NL-Hinweisleiste ist nun ausdrücklich freigegeben; Logo und Hauptnavigation bleiben unverändert.
+- Newsletter ist beauftragt: Anmeldung per E-Mail mit Bestätigung, Sonntag 19:00 Europe/Berlin, digitale Downloadlinks zu beiden Handzetteln der Folgewoche. Absender `info@trinkgut-jammers.de`; Postfach existiert laut Betreiber. Öffentlicher MX-Abgleich am 8. Oktober zeigt `mx00.ionos.de`/`mx01.ionos.de`; das belegt den Empfangsweg, nicht SMTP-Zugriff oder erlaubten Massenversand. Kein vorhandener Newsletter-Dienst. Kein zusätzliches Kundenkonto erforderlich.
+- Bewerbungsportal mit Anschreiben/Bewerbung, Lebenslauf, Portrait und Zeugnissen ist beauftragt; Zieladresse für Bewerbung und Unterlagen ist `jammers-goch@trinkgut.de`. Portrait im Entwurf freiwillig. Konkrete Stellen und berechtigter Empfängerkreis bleiben offen.
 
-## A. Aktuelle Fragen, die der Betreiber gesammelt beantworten kann
+## A. Antworten vom 8. Oktober und verbleibender Bedarf
 
 ### A1 – Wochenpaket: Implementierungsplan und Ausführung
 
-Der [technische Entwurf](superpowers/specs/2026-10-08-weekly-publication-packages-design.md) ist freigegeben. Der daraus erstellte [Implementierungsplan](superpowers/plans/2026-10-08-weekly-publication-packages.md) ist noch zu prüfen. Passt er, und welche Ausführung ist gewünscht?
+Der [technische Entwurf](superpowers/specs/2026-10-08-weekly-publication-packages-design.md) ist bereits freigegeben. Der Betreiber fragt nun nach einer verständlichen Erklärung; das ist keine neue Ablehnung und keine Bestätigung einer bereits erfolgten Umsetzung. Der [Implementierungsplan](superpowers/plans/2026-10-08-weekly-publication-packages.md) ist noch nicht ausgeführt.
 
-- Empfehlung: Native – zusammenhängende Umsetzung in diesem Chat, anschließend unabhängiges Gesamtreview.
-- Alternative: Subagent-Ausführung – Implementierung und unabhängiges Review je Teilaufgabe; mehr Prüfaufwand.
+Erklärung im Chat: Originalhandzettel DE/NL, Vorschaubilder und die zugehörigen Angebotskacheln werden geprüft als zusammengehöriges Wochenpaket auf dem eigenen Hetzner-Server bereitgestellt. So sind Downloads nicht von später ausfallenden Anbieterlinks abhängig. Die Datumssteuerung zeigt die richtige Woche und entfernt abgelaufene Preise. Kein grundlegender Designumbau, keine Ersatzwoche und keine Korrektur von Originalpreisen. Native/Subagent-Ausführung ist eine interne Arbeitsentscheidung, keine erneute Betreiberfrage.
 
-Andere Fragen dieser Liste blockieren das Wochenpaket nicht. Der bekannte deutsche Handzettel-Linkfehler ist bis zur tatsächlichen geprüften Bereitstellung weiterhin offen.
+Die A2-Umsetzung unten behebt den bekannten externen DE-Handzettel-404 nicht. Bis zum gesonderten geprüften Wochenpaket-Release bleibt dieser Fehler ausdrücklich offen.
 
 ### A2 – Kleine UI-Änderungen
 
-Die folgenden Kurzdesigns wurden vorgeschlagen; ihre Umsetzung ist noch nicht bestätigt:
+Alle drei Kurzdesigns sind ausdrücklich freigegeben. Umsetzung und Prüfung laufen im Auftrag dieser Antworten; daraus noch keinen Live-Nachweis ableiten:
 
 1. WhatsApp-/Instagram-Weiterleitungen als erkennbare Icons mit ausreichend großer Klickfläche, verständlicher zugänglicher Beschriftung und unverändertem Ziel. Erklärende Texte müssen nicht sämtliche Dienstnamen verlieren.
 2. Sichtbare Hinweise „Bestand nach Liste“, Bestandsdatum und interne Bestandszahlen entfernen; Mengengrenzen intern erhalten. Bei Überschreitung unmittelbar „Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.“ anzeigen. Ohne zentrales Reservierungsregister ist das kein Nachweis marktweiter Terminverfügbarkeit.
 3. Nur die NL-Hinweisleiste im gemeinsamen Kopf warm orange mit dunkler lesbarer Schrift gestalten; Logo, Hauptnavigation und übriger deutscher Auftritt unverändert.
 
-Alle drei zusammen freigeben oder einzelne Nummern ausnehmen?
+Keine weitere Grundsatzfreigabe erforderlich. Mengenfehler dürfen keine internen Bestandszahlen ausgeben; die Website kennt ohne Anbindung der Mietdatei keine marktweite Terminverfügbarkeit.
 
-### A3 – Newsletter-Dienst und Zusatzkosten
+### A3 – Newsletter-Ablauf und notwendige Versandtechnik
 
-Besteht bereits ein Newsletter-Anbieter/Konto? Wenn ja, welcher? Andernfalls zunächst einen geeigneten Dienst mit konkreten Kosten und Vertragsbedingungen zur Auswahl vorbereiten? Welcher zusätzliche monatliche Kostenrahmen ist akzeptabel?
+Antwort: kein bestehender Newsletter-Anbieter. Gewünscht ist ausschließlich die einfache Kundenfunktion E-Mail anmelden → bestätigen → sonntags um 19:00 digitale Downloadlinks für die Folgewoche. Ein technischer Versanddienst ist eine mögliche interne Umsetzung, kein vom Kunden benötigtes Konto. Nicht erneut nach einem vorhandenen Newsletter-Konto fragen.
 
-Keine Registrierung, kein kostenpflichtiger Vertrag und keine echten Sendungen aus einer allgemeinen Funktionsfreigabe ableiten. Anmeldung mit Bestätigung, Abmeldung und ein nachweisbarer sicherer Versandablauf gehören zum Konzept; Sonntag 19:00 und beide kommenden Handzettel sind bereits entschieden.
+Das Info-Postfach existiert; DNS zeigt IONOS als Empfangsanbieter. Die Versandfähigkeit und konkrete Kontokonfiguration sind noch zu prüfen. Erst danach eine konkrete sichere Versandlösung mit gegebenenfalls anfallenden Kosten und Verträgen benennen; keine pauschale Dienstebuchung, Kontoerstellung oder echte Sendung ableiten. Anmeldung mit Bestätigung, einfache Abmeldung, nachweisbarer Versand und Datenschutz gehören zur Vorbereitung. Die Sonntagszeit ist bereits entschieden.
 
 ### A4 – Bewerbungszugriff und ausgeschriebene Stellen
 
-Wer darf Unterlagen einsehen: nur der Inhaber oder namentlich festgelegte weitere Verantwortliche? Sollen zunächst Initiativbewerbungen angenommen werden, oder welche aktuellen Stellen und Beschäftigungsarten dürfen konkret ausgeschrieben werden?
+Antwort: Bewerbung und Unterlagen an `jammers-goch@trinkgut.de`. Der Betreiber nennt zwei aktuell im Markt aushängende Stellenanzeigen als verbindliche Inhaltsgrundlage und überlässt die professionelle Darstellung Codex. Die Anhänge sind bisher weder in der Nachricht noch in den verfügbaren Task-Anhängen angekommen; erneutes Hochladen ist angefragt. Keine Initiativbewerbung als Ersatz für die noch unbekannten konkreten Stellen erfinden. Offen und erneut getrennt gefragt: Dürfen alle Zugriffsberechtigten des Marktpostfachs Bewerbungsunterlagen einsehen?
 
-Empfehlung zum Entwurf: „Team & Jobs“ als gebündelter Einstieg; Bewerbung ohne Kundenkonto, sicherer nicht öffentlicher Dokumentenspeicher, optionales Portrait, Eingangsbestätigung und Marktbenachrichtigung ohne sensible Anhänge. Keine erfundenen offenen Stellen, Gehälter oder Benefits. Technisches Schutzkonzept und dessen Freigabe folgen auf diese Antworten; noch kein Uploadbetrieb.
+Entwurf: „Team & Jobs“ als gebündelter Einstieg; Bewerbung ohne Kundenkonto, sichere nicht öffentliche Verarbeitung, optionales Portrait. Der ausdrücklich gewünschte Versand der Unterlagen an die Marktadresse wird nicht stillschweigend durch eine reine Benachrichtigung ersetzt. Anhänge benötigen eine geprüfte sichere Übermittlung; ein geschützter Downloadlink bleibt gegebenenfalls eine begründet vorzuschlagende Alternative. Keine erfundenen Stellen, Gehälter oder Benefits; noch kein Uploadbetrieb.
 
 ### A5 – Postfächer und Absender
 
-Welche Adressen sollen Newsletter-Absender/Antwortadresse und Bewerbungsbenachrichtigungen verwenden? Bleibt dafür zunächst die bestätigte Marktadresse, oder wird das angekündigte Sammelpostfach eingerichtet? Falls neu: genaue Adresse und Mailanbieter nennen. Eine Adresse ersetzt keine sichere Absenderkonfiguration und keine Sendefreigabe.
+Bestätigt: Bewerbungen und Unterlagen an `jammers-goch@trinkgut.de`; Newsletter von `info@trinkgut-jammers.de`; Info-Postfach vorhanden. Empfangs-MX zeigt IONOS. Technische Absenderprüfung, sichere Konfiguration und Versandgrenzen folgen; Zugangsdaten nicht im Chat oder öffentlichen Repository abfragen. Keine neue Adresse erfinden. Die gesonderte Newsletter-Antwortadresse ist noch nicht technisch festgelegt.
 
 Der aktuelle Miet-Anfrageempfänger `jammers-goch@trinkgut.de` ist bereits entschieden und wird dadurch nicht ungefragt geändert. Zugangsdaten ausschließlich später im geeigneten sicheren Verfahren, nie hier oder im öffentlichen Repository.
 
 ### A6 – Aufbewahrung und fachliche Abnahme
 
-Gibt es bereits verbindliche Speicher-/Löschvorgaben oder geprüfte Texte für Bewerbungen, Newsletter, Anfragen und ältere Datenbestände? Falls nein: gesondertes Konzept einschließlich Backup-/Löschverfahren vorbereiten, ohne Altbestände zu löschen. Wer übernimmt die fachliche Datenschutz-/Rechtsprüfung bei Bedarf?
+Antwort: Keine vorhandenen Texte/Vorgaben; eigenständige Vorbereitung ist ausdrücklich beauftragt. Siehe [Datenschutz- und Löschkonzept, Entwurf](privacy/2026-10-08-datenschutz-loeschkonzept-entwurf.md). Vorgeschlagene Fristen sind als Vorschläge zu kennzeichnen, nicht als bereits geltende Löschregeln. Keine tatsächlichen Löschungen oder Veröffentlichung von Angaben zu noch nicht aktiven Diensten.
 
 Die Betreiberbestätigung des Impressums bleibt gültig. Neue Datenerhebung oder verbindliche Mietverträge sind davon nicht pauschal abgedeckt. Keine bestimmte Aufbewahrungsfrist oder rechtliche Eignung als schon bestätigt darstellen.
 
 ### A7 – Niederländische Endredaktion
 
-Gibt es eine niederländische Muttersprachlerin/einen Muttersprachler für die abschließende Sprachabnahme? Alternativ zunächst redaktionell überarbeiten und die fehlende externe Sprachabnahme dokumentieren. Das hält datumsrichtige, freigegebene Originalhandzettel nicht zurück.
+Antwort: keine externe niederländische Sprachprüfung vorhanden; Codex soll die redaktionelle Betreuung weiterführen. Kein erneuter externer Freigabe-Blocker. Eine unabhängige muttersprachliche Abnahme wird nicht behauptet. Freigegebene Originalhandzettel bleiben unverändert.
 
 ## B. Nur für einen späteren verbindlichen Mietbetrieb
 
-Diese Entscheidungen sind noch offen, aber kein Hindernis für die Informationsseite, aktuelle Anfragen, Wochenpakete oder die oben genannten UI-Änderungen. Der bereits bestätigte Annahme-/Zahlungsablauf wird nicht nochmals zur Abstimmung gestellt.
+Die folgenden Betriebsangaben wurden beantwortet. Sie werden dokumentiert, aktivieren aber weder verbindliche Onlinebestellungen noch automatischen Zahlungs-/Belegversand. Der gegenwärtige Anfrageweg bleibt erhalten.
 
 ### B1 – Mietbedingungen
 
-- Welche Zahlungsfrist gilt nach Annahme, und was geschieht bei ausbleibender Zahlung: Erinnerung, Rückfrage oder Freigabe der Reservierung?
-- Kaution: keine oder welche Artikel/Beträge, wann zahlen und wann zurückzahlen?
-- Nur Selbstabholung/Lieferung nach Absprache oder online buchbare Lieferung? Für Letzteres Gebiet, Preise und Bedingungen nennen.
-- Welche Regeln gelten für verspätete Rückgabe, Reinigung, Beschädigung, Verlust, Stornierung und Erstattung?
-- Gelten Abholung/Rückgabe ausschließlich Mo–Sa 08–20 Uhr, oder andere Zeiten?
+- Zahlung unmittelbar bei tatsächlicher Abholung; keine Vorauszahlung.
+- Keine Kaution, ausschließlich Selbstabholung.
+- Abholung am vereinbarten Tag zwischen 09:00 und 19:00 Uhr. Rückgabe-Uhrzeiten sind dadurch noch nicht ausdrücklich festgelegt.
+- Stornierung telefonisch. Da erst bei tatsächlicher Abholung bezahlt wird, ist kein Rückzahlungsprozess für vorausbezahlte Stornierungen vorgesehen. Daraus keinen pauschalen Ausschluss gesetzlicher Rechte ableiten.
+- Verspätete Rückgabe: ausdrücklich bestätigtes Kühlanhänger-Beispiel 150 € bis Tag 3, 200 € an Tag 4, 250 € an Tag 5, 300 € an Tag 6. Auf Rückfrage bestätigt: **nur bei verspäteter Rückgabe**, nicht bei regulär so gebuchten Mietzeiten. Reguläre Vier-Tage-Buchungen bleiben daher 300 € (zwei angefangene Dreierblöcke). Anteilsbasis ist in diesem Beispiel 150 €/3 = 50 €; die bestätigte Werktagszählung bleibt unverändert. Kein automatischer Nachberechnungsbetrieb aktiviert; weitere Sonderfälle, etwa Verspätung nach einem bereits gebuchten zweiten Block, sind vor einer späteren Abrechnungsimplementierung präzise abzugleichen.
+- Reinigung, Schaden und Verlust sind nicht neu beantwortet. Bereits belegte Bruchersatzwerte bleiben erhalten; keine neuen Pauschalen erfinden.
 
 ### B2 – Bestand und Mitarbeiterrechte
 
-- Wo werden auch telefonische und persönliche Vermietungen verbindlich erfasst, damit die Website wirklich terminbezogene Restmengen kennen kann?
-- Wer darf Bestellungen annehmen/ablehnen, Übergaben/Rückgaben erfassen, Barzahlungen verbuchen und Erstattungen auslösen?
-- Nur bei gewünschter gemischter Möbelauswahl: tatsächliche Zusammensetzung des gemeinsamen Garnituren-/Tisch-/Bankbestands bestätigen. Bis dahin bleibt die bestehende Überschneidungssperre erhalten.
+- Alle Vermietungen werden vor Ort in der Mietdatei erfasst. Der jeweils für die E-Mail-Anfrage verantwortliche Mitarbeiter trägt die Reservierung ein.
+- Diese Datei ist nicht an die Website angebunden. Interne physische Mengengrenzen sind daher keine Anzeige freier Mengen für einen Termin; persönliche Bestätigung bleibt erforderlich.
+- Für den deaktivierten Web-Bestellbetrieb werden jetzt keine erfundenen Mitarbeiterkonten oder Zugriffsrechte eingerichtet. Bei einer späteren Anbindung ist die tatsächliche Mietdatei gesondert technisch abzugleichen.
+- Gemeinsame Garnituren-/Tisch-/Bankbestände bleiben unter der bestehenden Überschneidungssperre; keine neue Mischfreigabe aus dieser Antwort ableiten.
 
 ### B3 – Zahlungsanbieter, Rechnung und Versand
 
-- Besteht ein Händlerkonto, und bei welchem Anbieter? Sonst einen konkreten Kosten-/Leistungsvergleich vorbereiten; keine neuen Verträge aus einer Budgetangabe ableiten.
-- Welches Kassen-/Buchhaltungssystem führt die Rechnung, wer vergibt Rechnungsnummern, und gibt es eine anonymisierte Vorlage?
-- Welcher konkrete Umsatzsteuersatz gilt pro Mietartikel laut Buchhaltung? „Inklusive MwSt.“ beantwortet das nicht.
-- Soll verbindlich an Privatkunden, Unternehmen oder beide vermietet werden? Rechnungsformat und steuer-/vertragliche Vorgaben danach fachlich abstimmen.
-- Welcher bestätigte Absender/Maildienst und welche sichere Testadresse sollen für automatische Belege verwendet werden? Echte Testsendungen und Anbietertransaktionen erst bei konkretem Testplan gesondert freigeben.
-- Wie hoch darf der zusätzliche Betriebsaufwand für Zahlung, Versand und gegebenenfalls Rechnungssoftware sein?
+Antwort: später, sobald eine eigene WWS-API-Anbindung besteht. Bis dahin keine Zahlungsanbieter registrieren, keine Onlinezahlungen, keine automatische Rechnungserstellung und kein Belegversand aktivieren. Anbieter-, Rechnungsnummern-, Steuer-, Versand- und Kostenfragen erst im konkret aufgenommenen WWS-Projekt wieder öffnen; sie blockieren die Informationsseite und den manuellen Anfrageprozess nicht.
 
 Vertrags-, Widerrufs-, Datenschutz-/Aufbewahrungs- und Rechnungsprozess müssen vor Aktivierung separat fachlich und technisch abgenommen sein. Keine unabhängige rechtliche Freigabe aus dieser Fragenliste ableiten. Endgültige Anbieterbedingungen, Kosten, Tests und Live-Aktivierung sind spätere konkrete Freigabepunkte, keine jetzt sinnvoll erteilbare Blankovollmacht.
 

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 
 import type {
   HomepageArchiveItem,
@@ -61,7 +62,7 @@ export default function ActionsSection({
         {giveaways.map((giveaway) => <GiveawayCard key={giveaway.id} giveaway={giveaway} status="active" layout="wide" label={giveaway.kind === "special" ? "Sondergewinnspiel" : "Monatsgewinnspiel"} />)}
       </div>}
       <div className={styles.actionLayout}>
-        {!event && archive.length === 0 ? <article className={styles.actionCard}><h3>Bei Jammers ist immer etwas los.</h3><p>Verkostungen, Gewinnspiele und Einblicke aus dem Markt: Auf Instagram siehst du, was gerade ansteht. Die Bedingungen und Laufzeiten findest du beim jeweiligen Beitrag.</p><div className={styles.actionLinks}><a href={SITE_LINKS.instagram} target="_blank" rel="noopener noreferrer">Aktuelle Aktionen auf Instagram</a></div></article> : null}
+        {!event && archive.length === 0 ? <article className={styles.actionCard}><h3>Bei Jammers ist immer etwas los.</h3><p>Verkostungen, Gewinnspiele und Einblicke aus dem Markt: Auf Instagram siehst du, was gerade ansteht. Die Bedingungen und Laufzeiten findest du beim jeweiligen Beitrag.</p><div className={styles.actionLinks}><SocialLink platform="instagram" href={SITE_LINKS.instagram} label="Aktuelle Aktionen auf Instagram ansehen" /></div></article> : null}
         {event ? (
           <article className={styles.actionCard} data-action-current>
             {canRenderHomepageImage(event.image) ? (

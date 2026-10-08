@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
@@ -39,20 +40,16 @@ export default function LocationFooter(): React.JSX.Element {
         >
           Route planen
         </a>
-        <a
+        <SocialLink
+          platform="whatsapp"
           href={SITE_LINKS.whatsapp}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          WhatsApp
-        </a>
-        <a
+          label="Per WhatsApp schreiben"
+        />
+        <SocialLink
+          platform="instagram"
           href={SITE_LINKS.instagram}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Instagram
-        </a>
+          label="Instagram-Profil von Trinkgut Jammers öffnen"
+        />
         <Link href={SITE_LINKS.nl} prefetch={false}>
           Für Grenzkunden: Nederlands
         </Link>

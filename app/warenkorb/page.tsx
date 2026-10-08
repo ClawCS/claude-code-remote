@@ -7,7 +7,7 @@ import { cartLineKey } from "@/lib/cart-items";
 import { rentalCartQuote, money } from "@/lib/rental-cart";
 
 export default function WarenkorbPage() {
-  const { items, removeItem, updateQuantity, clearCart } = useCart();
+  const { items, removeItem, updateQuantity, clearCart, quantityError } = useCart();
   const rentalQuote = rentalCartQuote(items);
   const canOrder = rentalQuote.onlyRentals && rentalQuote.quote?.allPriced && !rentalQuote.error;
 
@@ -26,8 +26,9 @@ export default function WarenkorbPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="text-3xl font-bold text-secondary mb-4">{canOrder ? "Deine Mietauswahl" : "Deine Anfrageliste"}</h1>
-      <p className="text-muted mb-8">{canOrder ? "Der Mietpreis ist berechnet. Ein Vertrag entsteht erst durch die Terminbestätigung des Markts; bezahlt wird erst danach." : "Diese Liste bleibt eine unverbindliche Anfrage. Gemischte Listen oder Artikel mit offenem Preis haben keinen vollständigen Bestellgesamtpreis."}</p>
+      <p className="text-muted mb-8">{canOrder ? "Der Mietpreis ist berechnet. Deine Auswahl bleibt eine unverbindliche Anfrage. Termin und Verfügbarkeit bestätigen wir persönlich." : "Diese Liste bleibt eine unverbindliche Anfrage. Gemischte Listen oder Artikel mit offenem Preis haben keinen vollständigen Bestellgesamtpreis."}</p>
       {rentalQuote.error && <p role="alert" className="mb-5 rounded-lg border border-red-300 bg-red-50 p-4 text-primary">{rentalQuote.error} Bitte Leihzeitraum und Mengen prüfen.</p>}
+      {quantityError && <p role="alert" className="mb-5 rounded-lg border border-red-300 bg-red-50 p-4 text-primary">{quantityError}</p>}
       <div className="space-y-4 mb-8">
         {items.map((item) => {
           const isRental = !!item.rental;
@@ -80,13 +81,13 @@ export default function WarenkorbPage() {
           <p className="font-semibold">Kein vollständiger Gesamtpreis: Mindestens ein Mietpreis ist offen.</p>
           <p className="text-sm">Bekannte Mietpositionen: {money(rentalQuote.quote.knownSubtotalCents)} inkl. MwSt. (nur Teilsumme).</p>
         </div>)}
-        <p className="text-sm text-muted mb-4">{canOrder ? "Die Verfügbarkeit bestätigt der Markt. Erst danach wird die Onlinezahlung angefordert oder Barzahlung bei Abholung vereinbart." : "Keine zahlbare Bestellung: Preise und weitere Konditionen klären wir bei deiner unverbindlichen Anfrage persönlich."}</p>
+        <p className="text-sm text-muted mb-4">{canOrder ? "Nur Abholung im Markt von 9–19 Uhr. Zahlung bei Abholung, keine Kaution." : "Keine zahlbare Bestellung: Preise und weitere Konditionen klären wir bei deiner unverbindlichen Anfrage persönlich."}</p>
         <div className="flex flex-wrap gap-3">
           <button onClick={clearCart} className="px-4 py-3 border border-border text-muted hover:border-primary hover:text-primary rounded-lg transition-colors text-sm font-medium">
             Liste leeren
           </button>
           <Link href="/checkout" className="flex-1 text-center py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors text-lg">
-            {canOrder ? "Zur Bestellung" : "Unverbindlich anfragen"}
+            Unverbindlich anfragen
           </Link>
         </div>
       </div>

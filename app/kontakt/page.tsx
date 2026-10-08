@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
 export const metadata: Metadata = {
@@ -67,14 +68,12 @@ export default function KontaktPage() {
             <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
               <span aria-hidden="true">💬</span> WhatsApp
             </h2>
-            <a
+            <SocialLink
+              platform="whatsapp"
               href="https://wa.me/491752492386"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#1FB856] text-[#17351F] rounded-xl font-medium transition-colors"
-            >
-              Schreib uns auf WhatsApp
-            </a>
+              label="Schreib uns auf WhatsApp"
+              className="bg-[#25D366] hover:bg-[#1FB856] text-[#17351F] transition-colors"
+            />
 
             <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
               <span aria-hidden="true">✉️</span> E-Mail
@@ -88,14 +87,12 @@ export default function KontaktPage() {
             <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
               <span aria-hidden="true">📸</span> Instagram
             </h2>
-            <a
+            <SocialLink
+              platform="instagram"
               href="https://www.instagram.com/trinkgutjammers_goch/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              @trinkgutjammers_goch
-            </a>
+              label="Instagram-Profil @trinkgutjammers_goch öffnen"
+              className="text-primary"
+            />
           </div>
         </div>
 

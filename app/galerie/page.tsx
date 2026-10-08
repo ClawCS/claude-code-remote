@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 
 import { EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
 import { galleryItems } from "@/data/gallery";
@@ -36,7 +37,7 @@ export default function GaleriePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-current/20" aria-labelledby="gallery-instagram-title">
         <h2 id="gallery-instagram-title" className="text-2xl font-bold">Weitere Einblicke aus dem Markt</h2>
         <p className="my-4">Unsere Bilder und Geschichten auf Instagram.</p>
-        <a href="https://www.instagram.com/trinkgutjammers_goch/" target="_blank" rel="noopener noreferrer" className="inline-flex px-6 py-3 bg-primary text-white font-bold rounded-xl">@trinkgutjammers_goch</a>
+        <SocialLink platform="instagram" href="https://www.instagram.com/trinkgutjammers_goch/" label="Instagram-Profil @trinkgutjammers_goch öffnen" className="bg-primary text-white" />
       </section>
     </div>
   );

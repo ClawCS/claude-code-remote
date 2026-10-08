@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 import { MARKET_PHOTOS } from "@/data/market-photos";
 import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
 import { SITE_LINKS } from "@/lib/cinematic/site";
@@ -30,7 +31,7 @@ export default function GeschenkideenPage() {
     <section className="max-w-4xl mx-auto px-6 py-12" aria-labelledby="gift-advice"><h2 id="gift-advice" className="text-3xl font-bold mb-4">Für wen darf es sein?</h2>
       <p className="mb-4">Sag uns, für welchen Anlass du etwas suchst, welche Getränke die Person gerne mag und welches Budget du im Blick hast. Inhalt, Verpackung, Preis und Verfügbarkeit stimmen wir persönlich mit dir ab.</p>
       <p className="mb-8">Die Abbildung zeigt einen Geschenkkorb aus dem Markt. Die aktuell möglichen Produkte und Zusammenstellungen können davon abweichen.</p>
-      <div className="flex flex-wrap gap-4"><Link href="/kontakt" className="underline font-bold text-primary">Im Markt beraten lassen</Link><a href={SITE_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" className="underline font-bold text-primary">Geschenkidee per WhatsApp besprechen</a></div>
+      <div className="flex flex-wrap items-center gap-4"><Link href="/kontakt" className="underline font-bold text-primary">Im Markt beraten lassen</Link><SocialLink platform="whatsapp" href={SITE_LINKS.whatsapp} label="Geschenkidee per WhatsApp besprechen" className="text-primary" /></div>
     </section>
   </>;
 }

@@ -108,13 +108,13 @@ describe("physical inventory across inclusive rental ranges", () => {
     [20015, 226], [20016, 402], [20017, 299], [20018, 58], [20019, 177], [20020, 23],
   ])("enforces canonical stock %i at %i", (id, quantity) => {
     expect(quote([line({ id, quantity })]).lines[0].quantity).toBe(quantity);
-    expect(() => quote([line({ id, quantity: quantity + 1 })])).toThrow(/Bestand/);
+    expect(() => quote([line({ id, quantity: quantity + 1 })])).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("rejects excess stock hidden in duplicate lines", () => {
-    expect(() => quote([line({ id: 20001, quantity: 2 }), line({ id: 20001, quantity: 2 })])).toThrow(/Bestand/);
+    expect(() => quote([line({ id: 20001, quantity: 2 }), line({ id: 20001, quantity: 2 })])).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("rejects overlap on the shared pickup/return boundary", () => {
-    expect(() => quote([line({ id: 20001, quantity: 2 }), line({ id: 20001, quantity: 2, startDate: "2026-10-07", endDate: "2026-10-10" })])).toThrow(/Bestand/);
+    expect(() => quote([line({ id: 20001, quantity: 2 }), line({ id: 20001, quantity: 2, startDate: "2026-10-07", endDate: "2026-10-10" })])).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it("allows full stock on disjoint dates", () => {
     expect(quote([line({ id: 20001, quantity: 3 }), line({ id: 20001, quantity: 3, startDate: "2026-10-08", endDate: "2026-10-10" })]).lines).toHaveLength(2);
@@ -123,7 +123,7 @@ describe("physical inventory across inclusive rental ranges", () => {
     const items = [line({ id: 20001 }), line({ id: 20001, startDate: "2026-10-08", endDate: "2026-10-10" }),
       line({ id: 20001, quantity: 2, startDate: "2026-10-06", endDate: "2026-10-09" })];
     expect(quote(items).lines).toHaveLength(3);
-    expect(() => quote([...items, line({ id: 20001, startDate: "2026-10-08", endDate: "2026-10-08" })])).toThrow(/Bestand/);
+    expect(() => quote([...items, line({ id: 20001, startDate: "2026-10-08", endDate: "2026-10-08" })])).toThrow("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   });
   it.each([20005, 20006])("does not combine set 20007 and single furniture %i on overlapping dates", id => {
     expect(() => quote([line({ id: 20007 }), line({ id })])).toThrow(/garnitur/i);
