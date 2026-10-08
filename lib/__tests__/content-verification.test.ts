@@ -1,11 +1,62 @@
 import { describe, expect, it } from "vitest";
 import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, verifyPublishedOfferContent, verifyPublishedOfferMarkup } from "@/lib/content-verification";
 import { weeklyOfferFixtureContent } from "@/lib/cinematic/weekly-offer-fixture";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
+import { streamReactMarkup } from "./fixtures/streamed-markup";
 
 const flyer = {id:"catalog-1384969-v4",title:"Wochenangebote",language:"de" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"https://werbung.trinkgut.de/viewer/1384969",pdfUrl:"https://werbung.trinkgut.de/pdf/1384969-v4.pdf",coverUrl:"https://werbung.trinkgut.de/cover.jpg",pageCount:18,sourceUrl:"https://werbung.trinkgut.de/viewer/1384969"};
 const nlFlyer = {id:"maasduinen-2026-09-28-v2",title:"Weekaanbiedingen",language:"nl" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"/flyers/2026-09-28/nl-v2.pdf",pdfUrl:"/flyers/2026-09-28/nl-v2.pdf",coverUrl:"/flyers/2026-09-28/nl-v2.jpg",pageCount:1,sourceUrl:"/nl"};
 
 describe("weekly publishing verification", () => {
+  it("verifies the actual offer grid after a real React SSR segment completes", async()=>{
+    const content=weeklyOfferFixtureContent("monday");
+    const html=await streamReactMarkup(createElement(WeeklyOfferGrid,{content}));
+    expect(html).toContain('hidden id="S:0"');
+    expect(html).toContain('$RC("B:0","S:0")');
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).toEqual([]);
+  });
+  it("keeps a resolved grid's genuinely hidden children unavailable", async()=>{
+    const content=weeklyOfferFixtureContent("monday");
+    const html=await streamReactMarkup(createElement("div",{hidden:true},createElement(WeeklyOfferGrid,{content})));
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).not.toEqual([]);
+  });
+  it("resolves nested SSR boundaries while removing the complete nested fallback",()=>{
+    const content=weeklyOfferFixtureContent("monday");
+    const cards=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
+    const html='<main><!--$?--><template id="B:0"></template><!--$?--><template id="B:f"></template><p>Nested fallback</p><!--/$--><!--/$--></main>'
+      +'<div hidden id="S:0"><section><!--$?--><template id="B:1"></template><p>Loading</p><!--/$--></section></div>'
+      +`<div hidden id="S:1">${cards}</div><script>$RC("B:0","S:0");$RC("B:1","S:1")</script>`;
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).toEqual([]);
+    expect(verifyPublishedOfferMarkup(content.offers,html.replace('<main>','<main hidden>'),"/produkte")).not.toEqual([]);
+  });
+  it.each(["hidden","template","script"])("keeps apparent cards in %s unavailable after segment completion",async kind=>{
+    const content=weeklyOfferFixtureContent("monday");
+    const cards=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
+    const tag=kind==="hidden"?"div":kind;
+    const html=await streamReactMarkup(createElement("section",{dangerouslySetInnerHTML:{__html:`<${tag}${kind==="hidden"?" hidden":""}>${cards}</${tag}>`}}));
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).not.toEqual([]);
+  });
+  it.each(["missing-call","missing-segment","missing-close","wrong-boundary","string-call","comment-call","function-call","regex-call","conditional-call","dynamic-args","wrong-pair","duplicate-id","template-call"])("rejects unproven SSR completion: %s",async variant=>{
+    const content=weeklyOfferFixtureContent("monday");
+    let html=await streamReactMarkup(createElement(WeeklyOfferGrid,{content}));
+    const call='$RC("B:0","S:0")';
+    if(variant==="missing-call") html=html.replace(call,"");
+    if(variant==="missing-segment") html=html.replace('id="S:0"','id="missing"');
+    if(variant==="missing-close") html=html.replace('<!--/$-->',"");
+    if(variant==="wrong-boundary") html=html.replace('<template id="B:0"></template>','<div id="B:0"></div>');
+    if(variant==="string-call") html=html.replace(call,`'${call}'`);
+    if(variant==="comment-call") html=html.replace(call,`/*${call}*/`);
+    if(variant==="function-call") html=html.replace(call,`function unused(){${call}}`);
+    if(variant==="regex-call") html=html.replace(call,`const unused=/;${call};/`);
+    if(variant==="conditional-call") html=html.replace(call,`if(false)${call}`);
+    if(variant==="dynamic-args") html=html.replace(call,'$RC("B:"+"0","S:0")');
+    if(variant==="wrong-pair") html=html.replace(call,'$RC("B:0","S:1")');
+    if(variant==="duplicate-id") html+='<div hidden id="S:0"></div>';
+    if(variant==="template-call") html=html.replace(call,"")+`<template><script>${call}</script></template>`;
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).not.toEqual([]);
+  });
   it("rejects an expired local PDF rendered on a regular empty Sunday",()=>{
     expect(verifyPublishedFlyerMarkup([], '<a href="/handzettel/2026-10-05/de.pdf">Expired</a>', "/angebote")).not.toEqual([]);
   });
@@ -25,6 +76,7 @@ describe("weekly publishing verification", () => {
     const card=`<article data-offer-id="${o.id}"><h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`;
     expect(verifyPublishedOfferMarkup(offers,card,"/produkte")).toEqual([]);
     expect(verifyPublishedOfferMarkup(offers,`<div hidden>${card}</div>`,"/produkte")).not.toEqual([]);
+    expect(verifyPublishedOfferMarkup(offers,card.replace('<article ','<article hidden '),"/produkte")).not.toEqual([]);
   });
   it("rejects a missing offer from an otherwise exact published package",()=>{
     const expected=weeklyOfferFixtureContent("monday");

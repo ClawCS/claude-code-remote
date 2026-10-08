@@ -12,6 +12,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
+import { decode, renderedTree, walk } from "../lib/rendered-html.mjs";
 
 const EXTRA_PAGES = ["/warenkorb", "/checkout", "/bestellungen", "/kuehlschrank", "/akademie/zertifikate"];
 const UNKNOWN_PAGES = ["/produkte/__audit_unknown__", "/kategorie/__audit_unknown__", "/cocktails/__audit_unknown__", "/cocktails/kategorie/__audit_unknown__", "/akademie/__audit_unknown__"];
@@ -40,89 +41,7 @@ const API_CHECKS = [
   { path: "/api/rental-admin/outbox", method: "POST", statuses: [401, 503] },
   { path: "/api/rental-admin/test-mails", method: "GET", statuses: [401, 503] },
 ];
-const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
 const ROOT_LANDMARK_CONTEXTS = new Set(["main", "article", "section", "aside", "nav"]);
-
-function decode(value) {
-  return value.replace(/&(?:amp|quot|apos|lt|gt|#\d+|#x[0-9a-f]+);/gi, entity => {
-    const named = { "&amp;": "&", "&quot;": '"', "&apos;": "'", "&lt;": "<", "&gt;": ">" };
-    if (named[entity.toLowerCase()]) return named[entity.toLowerCase()];
-    const code = entity.slice(2, -1);
-    return String.fromCodePoint(code[0].toLowerCase() === "x" ? parseInt(code.slice(1), 16) : parseInt(code, 10));
-  });
-}
-
-function attributes(tag) {
-  const result = {};
-  const body = tag.replace(/^<\/?[\w:-]+/, "").replace(/\/?\s*>$/, "");
-  for (const match of body.matchAll(/([^\s=<>/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g)) {
-    result[match[1].toLowerCase()] = decode(match[2] ?? match[3] ?? match[4] ?? "");
-  }
-  return result;
-}
-
-function renderedTree(html) {
-  const root = { tag: "#document", children: [], parent: null, attrs: {} };
-  const stack = [root];
-  const byId = new Map();
-  const replacements = [];
-  const tokens = html.match(/<script\b[^>]*>[\s\S]*?<\/script\s*>|<style\b[^>]*>[\s\S]*?<\/style\s*>|<!--[\s\S]*?-->|<![^>]*>|<\/?[a-z][^>"']*(?:(?:"[^"]*"|'[^']*')[^>"']*)*>|[^<]+|</gi) ?? [];
-  for (const token of tokens) {
-    if (token.startsWith("<!--")) {
-      stack.at(-1).children.push({ tag: "#comment", value: token.slice(4, -3), parent: stack.at(-1), children: [], attrs: {} });
-      continue;
-    }
-    if (!token.startsWith("<") || token.startsWith("<!")) continue;
-    const close = token.match(/^<\/([\w:-]+)/);
-    if (close) {
-      const index = stack.findLastIndex(node => node.tag === close[1].toLowerCase());
-      if (index > 0) stack.length = index;
-      continue;
-    }
-    const opening = token.match(/^<([\w:-]+)\b[^>]*>/);
-    if (!opening) continue;
-    const tag = opening[1].toLowerCase();
-    const node = { tag, attrs: attributes(opening[0]), children: [], parent: stack.at(-1) };
-    node.parent.children.push(node);
-    if (node.attrs.id) byId.set(node.attrs.id, node);
-    if (tag === "script") {
-      for (const match of token.matchAll(/\$RC\(\s*["']([^"']+)["']\s*,\s*["']([^"']+)["']\s*\)/g)) replacements.push([match[1], match[2]]);
-      continue;
-    }
-    if (tag !== "style" && !VOID_TAGS.has(tag) && !opening[0].endsWith("/>")) stack.push(node);
-  }
-  // Next/React streams resolved Suspense content outside the original <main>.
-  // Apply only the explicit server completion operations, never execute JS.
-  for (const [boundaryId, segmentId] of replacements) {
-    const boundary = byId.get(boundaryId);
-    const segment = byId.get(segmentId);
-    if (!boundary?.parent || !segment?.parent) continue;
-    const siblings = boundary.parent.children;
-    const boundaryIndex = siblings.indexOf(boundary);
-    let start = boundaryIndex;
-    if (siblings[start - 1]?.tag === "#comment" && /^\$[?!]?$/.test(siblings[start - 1].value)) start--;
-    let end = boundaryIndex + 1;
-    let nesting = 0;
-    for (; end < siblings.length; end++) {
-      const sibling = siblings[end];
-      if (sibling.tag !== "#comment") continue;
-      if (/^\$[?!]?$/.test(sibling.value)) nesting++;
-      if (sibling.value === "/$") { if (nesting === 0) break; nesting--; }
-    }
-    if (end === siblings.length) continue;
-    for (const child of segment.children) child.parent = boundary.parent;
-    siblings.splice(start, end - start + 1, ...segment.children);
-    segment.parent.children = segment.parent.children.filter(child => child !== segment);
-  }
-  return root;
-}
-
-function walk(root, callback, hidden = false, ancestors = []) {
-  const unavailable = hidden || root.tag === "template" || Object.hasOwn(root.attrs, "hidden");
-  if (!unavailable && root.tag !== "#comment") callback(root, ancestors);
-  if (["script", "style", "template"].includes(root.tag)) return;
-  for (const child of root.children) walk(child, callback, unavailable, [...ancestors, root.tag]);
-}
 
 function inspectHtml(html) {
   const landmarks = { h1: 0, main: 0, header: 0, footer: 0 };

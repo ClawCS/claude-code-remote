@@ -2,6 +2,7 @@ import type { HomepageFlyer } from "./homepage-content";
 import { isDeepStrictEqual } from "node:util";
 import { parseWeeklyOfferContent } from "./weekly-offer-refresh";
 import type { WeeklyOfferContent } from "./weekly-publication-types";
+import { renderedTree, visibleRenderedMarkup, walk } from "./rendered-html.mjs";
 
 export function verifyPublishedOfferContent(expected: WeeklyOfferContent, actual: unknown): string[] {
   let content:WeeklyOfferContent;
@@ -23,38 +24,16 @@ export function verifyLegacyPublishedFlyer(expected: PublishedFlyer | undefined,
   return valid?[]:["Legacy-GET stimmt nicht mit dem geprüften lokalen Original und seiner einzigen belegten Vorschauseite überein."];
 }
 
-function visibleMarkup(html:string):string {
-  const source=html.replace(/<!--[\s\S]*?-->/g,"").replace(/<(script|textarea|style|title|iframe|noscript|xmp|noembed|noframes)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,"").replace(/<plaintext\b[\s\S]*$/gi,"");
-  const stack:{tag:string;hidden:boolean}[]=[];
-  const voidTags=new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
-  let result="",cursor=0;
-  for (const match of source.matchAll(/<\/?([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi)) {
-    if (!stack.at(-1)?.hidden) result+=source.slice(cursor,match.index);
-    const tag=match[1].toLowerCase();
-    if (match[0].startsWith("</")) {
-      if (!stack.at(-1)?.hidden) result+=match[0];
-      const index=stack.findLastIndex(item=>item.tag===tag);if(index>=0)stack.length=index;
-    } else {
-      const hidden=!!stack.at(-1)?.hidden||tag==="template"||/\s(?:hidden|aria-hidden\s*=\s*["']true["'])(?:\s|=|>|\/)/i.test(match[0]);
-      if (!hidden) result+=match[0];
-      if (!voidTags.has(tag)) stack.push({tag,hidden});
-    }
-    cursor=match.index+match[0].length;
-  }
-  if (!stack.at(-1)?.hidden) result+=source.slice(cursor);
-  return result;
-}
-
 export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"], html:string, route:string):string[] {
   const errors:string[]=[];
-  const visible=visibleMarkup(html);
+  const visible=visibleRenderedMarkup(html);
   const cards=Array.from(visible.matchAll(/<article\b([^>]*)>([\s\S]*?)<\/article\s*>/gi)).filter(match=>/\bdata-offer-id\s*=/.test(match[1]));
   const id=(attributes:string)=>/\bdata-offer-id\s*=\s*["']([^"']+)["']/.exec(attributes)?.[1];
   if (cards.length!==expected.length || cards.some(card=>!expected.some(offer=>offer.id===id(card[1])))) errors.push(`Angebotskacheln auf ${route} sind nicht die vollständige geprüfte Auswahl.`);
   const escaped=(value:string)=>value.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#x27;");
   for (const offer of expected) {
     const matches=cards.filter(card=>id(card[1])===offer.id);
-    if (matches.length!==1 || /\bhidden(?:\s|=|$)/i.test(matches[0]?.[1]??"")) {errors.push(`Geprüfte Angebotskachel fehlt auf ${route}: ${offer.id}`);continue;}
+    if (matches.length!==1) {errors.push(`Geprüfte Angebotskachel fehlt auf ${route}: ${offer.id}`);continue;}
     const markup=matches[0][2];
     errors.push(...verifyPublishedFlyerMarkup([{id:offer.id,language:offer.language as "de"|"nl",title:offer.name,validFrom:offer.validFrom,validTo:offer.validTo,pdfUrl:`${offer.sourceUrl}#page=${offer.sourcePage}`,viewerUrl:offer.sourceUrl,sourceUrl:offer.sourceUrl,coverUrl:offer.image,pageCount:1}],markup,route));
     for (const text of [offer.name,offer.conditions,offer.sourceWarning??""]) if (text && !markup.replace(/<[^>]*>/g," ").includes(escaped(text))) errors.push(`Geprüfter Angebotstext fehlt auf ${route}: ${offer.id}`);
@@ -83,31 +62,11 @@ export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actu
 
 export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], html: string, route: string, checkedOrigin = "https://markup.invalid"): string[] {
   const errors: string[] = [];
-  const renderedHtml = html.replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/<(script|textarea|style|title|iframe|noscript|xmp|noembed|noframes)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "")
-    .replace(/<plaintext\b[\s\S]*$/gi, "");
-  const links: string[] = [];
-  const images: string[] = [];
-  const stack: {tag: string; hidden: boolean}[] = [];
-  const voidTags = new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
-  // Track inert/hidden ancestors, including nested templates. This verifies the
-  // server markup; actual CSS visibility still belongs to browser acceptance.
-  for (const match of renderedHtml.matchAll(/<\/?([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi)) {
-    const tag = match[1].toLowerCase();
-    if (match[0].startsWith("</")) {
-      const index = stack.findLastIndex(item => item.tag === tag);
-      if (index >= 0) stack.length = index;
-      continue;
-    }
-    const attributes = Array.from(match[0].matchAll(/\s([a-z_:][\w:.-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/gi));
-    const hidden = Boolean(stack.at(-1)?.hidden || tag === "template" || attributes.some(item => item[1].toLowerCase() === "hidden"));
-    if (!hidden && (tag === "a" || tag === "img")) {
-      const attribute = tag === "a" ? "href" : "src";
-      const value = attributes.find(item => item[1].toLowerCase() === attribute);
-      if (value) (attribute === "href" ? links : images).push((value[2] ?? value[3] ?? value[4] ?? "").replaceAll("&amp;", "&"));
-    }
-    if (!voidTags.has(tag)) stack.push({tag, hidden});
-  }
+  const links: string[] = [], images: string[] = [];
+  walk(renderedTree(html), (node: {tag:string;attrs:Record<string,string>}) => {
+    if (node.tag === "a" && node.attrs.href) links.push(node.attrs.href);
+    if (node.tag === "img" && node.attrs.src) images.push(node.attrs.src);
+  });
   for (const flyer of expected) {
     if (!links.includes(flyer.pdfUrl)) errors.push(`Geprüfter ${flyer.language.toUpperCase()}-Flyer-PDF-Link fehlt auf ${route}: ${flyer.id}`);
     const hasCover = images.some(src => {
