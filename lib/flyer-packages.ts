@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { PDFDocument } from "pdf-lib";
+import { validatePublicationPdf } from "./publication-pdf";
 import sharp from "sharp";
 
 import { berlinDateKey } from "@/lib/editorial-schedule";
@@ -100,9 +100,7 @@ export async function verifyFlyerFiles(item: FlyerPackage, root = process.cwd())
     if (createHash("sha256").update(bytes).digest("hex") !== expected) throw new Error(`Prüfsumme stimmt nicht: ${file}`);
     if (bytes.length > 50*1024*1024) throw new Error(`Datei zu groß: ${file}`);
     if (file === item.pdfPath) {
-      if (bytes.subarray(0, 5).toString() !== "%PDF-") throw new Error(`Keine PDF-Datei: ${file}`);
-      const pdf = await PDFDocument.load(bytes);
-      if (pdf.getPageCount() !== item.pageNumbers.length) throw new Error(`PDF-Seitenzahl entspricht nicht dem Canva-Export: ${file}`);
+      await validatePublicationPdf(bytes,item.pageNumbers.length);
     } else {
       const image = await sharp(bytes,{limitInputPixels:50_000_000}).metadata();
       if (!image.width || !image.height || !["jpeg","png","webp","avif","heif"].includes(image.format ?? "")) throw new Error(`Ungültiges Flyer-Vorschaubild: ${file}`);

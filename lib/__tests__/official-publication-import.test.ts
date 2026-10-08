@@ -1,17 +1,29 @@
 import { readFile, rm, unlink } from "node:fs/promises";
+import * as fs from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import sharp from "sharp";
 import { PDFDocument } from "pdf-lib";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { buildWeeklyOffers } from "../../scripts/build-weekly-offers";
 import * as importer from "../official-publication-import";
 import type { HandzettelCache } from "../handzettel-catalog";
-import { loadWeeklyPublications } from "../weekly-publication";
+import { loadWeeklyPublications, verifyWeeklyEdition } from "../weekly-publication";
 import { sha256, weeklyPublicationFixture } from "./fixtures/weekly-publication";
 
+// Keep real file operations; configurable exports allow deterministic pauses/failures at I/O boundaries.
+vi.mock("node:fs/promises",async importOriginal=>({...await importOriginal<typeof import("node:fs/promises")>()}));
+
 const roots: string[] = [];
-afterEach(async () => { await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
+afterEach(async () => { vi.restoreAllMocks();vi.unstubAllEnvs();await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
 async function fixture() { const f = await weeklyPublicationFixture(); roots.push(f.root); return f; }
+async function truncatedReviewedFixture() {
+  const f = await fixture(); const bytes = f.pdfs[0].subarray(0,-5), checksum=sha256(bytes);
+  f.sources[0].pdfSha256=checksum;f.editions[0].pdf.sha256=checksum;f.editions[0].pdf.bytes=bytes.length;
+  for(const row of f.offers)if(row.language==="de")row.pdfSha256=checksum;
+  f.editions[0].offersSha256=sha256(JSON.stringify(f.offers.filter(row=>row.language==="de").sort((a,b)=>a.id.localeCompare(b.id))));
+  await f.write(`public${f.editions[0].pdf.path}`,bytes);await f.save();return f;
+}
 describe("official original import", () => {
   it("keeps complete immutable bytes privately and exposes only future content-addressed paths", async () => {
     const f = await fixture();
@@ -44,6 +56,14 @@ describe("official original import", () => {
 });
 
 describe("weekly assembly", () => {
+  it("rejects saved reviewed PDF bytes missing their terminal EOF despite a matching hash and page count",async()=>{
+    const f=await truncatedReviewedFixture();const manifest=path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json"),before=await readFile(manifest);
+    await expect(importer.assembleWeeklyPublication("2026-10-05",f.root)).rejects.toMatchObject({issues:[expect.objectContaining({language:"de",message:expect.stringMatching(/completeness/)})],bound:false});
+    expect(await readFile(manifest)).toEqual(before);
+  });
+  it("runtime rejects an incomplete saved original even when all reviewed hashes are resealed",async()=>{
+    const f=await truncatedReviewedFixture();await expect(verifyWeeklyEdition(f.editions[0],f.root)).rejects.toThrow(/completeness/);
+  });
   it("verifies both complete language packages and repeats without changing manifest bytes", async () => {
     const f = await fixture();
     const first = await importer.assembleWeeklyPublication("2026-10-05", f.root);
@@ -121,6 +141,61 @@ describe("weekly assembly", () => {
 });
 
 const repo = process.cwd();
+function deferred() { let resolve!:()=>void;const promise=new Promise<void>(ready=>{resolve=ready;});return {promise,resolve}; }
+function pauseOneRead(file:string) {
+  const entered=deferred(),release=deferred();const original=fs.readFile;let first=true;
+  vi.spyOn(fs,"readFile").mockImplementation((async (target,options)=>{
+    const bytes=await original(target,options);
+    if(String(target)===file && first){first=false;entered.resolve();await release.promise;}
+    return bytes;
+  }) as typeof fs.readFile);
+  return {entered,release};
+}
+describe("weekly transaction ownership",()=>{
+  it("excludes another-week generation while the first operation is reading its mutable row snapshot",async()=>{
+    const f=await fixture();const next=await weeklyPublicationFixture("2026-10-12","2026-10-17","1399999");roots.push(next.root);
+    for(const source of next.sources)for(const page of source.pages)for(const offer of page.offers)delete (offer as {imagePath?:string}).imagePath;
+    for(const edition of next.editions)for(const asset of [edition.pdf,edition.cover])await f.write(`public${asset.path}`,await readFile(path.join(next.root,`public${asset.path}`)));
+    await f.write("data/weekly-offer-layout.json",JSON.stringify({sources:[...f.sources,...next.sources]}));
+    const barrier=pauseOneRead(path.join(await fs.realpath(f.root),"data/weekly-offers.json"));
+    const first=buildWeeklyOffers(f.root,["--week","2026-10-05"]);let competing:{busy:boolean;error?:unknown};
+    try { await barrier.entered.promise;competing=await buildWeeklyOffers(f.root,["--week","2026-10-12"]).then(()=>({busy:false}),error=>({busy:true,error})); }
+    finally {barrier.release.resolve();await first;}
+    expect(competing!.busy).toBe(true);
+    await buildWeeklyOffers(f.root,["--week","2026-10-12"]);
+    const rows=JSON.parse((await readFile(path.join(f.root,"data/weekly-offers.json"))).toString());
+    expect(rows.filter((row:{validFrom:string})=>row.validFrom==="2026-10-05")).toEqual(f.offers);
+    expect(rows.filter((row:{validFrom:string})=>row.validFrom==="2026-10-12")).toHaveLength(3);
+  });
+  it("assembly excludes offer checking for its entire read-to-binding transaction",async()=>{
+    const f=await fixture();const barrier=pauseOneRead(path.join(await fs.realpath(f.root),"data/weekly-offer-layout.json"));
+    const assembly=importer.assembleWeeklyPublication("2026-10-05",f.root);let check:{busy:boolean};
+    try {await barrier.entered.promise;check=await buildWeeklyOffers(f.root,["--check"]).then(()=>({busy:false}),()=>({busy:true}));}
+    finally {barrier.release.resolve();await assembly;}
+    expect(check!.busy).toBe(true);expect((await buildWeeklyOffers(f.root,["--check"])).count).toBe(3);
+  });
+  it("does not publish a runtime snapshot when preparation starts during verification",async()=>{
+    const f=await fixture();const barrier=pauseOneRead(path.join(await fs.realpath(f.root),"data/editorial/weekly-publications/2026-10-05.json"));
+    const loading=loadWeeklyPublications(f.root);
+    try {await barrier.entered.promise;await f.write("data/editorial/.weekly-offers.lock","interrupted binding");}
+    finally {barrier.release.resolve();}
+    const loaded=await loading;expect(loaded.editions).toEqual([]);expect(loaded.issues).toContainEqual({week:null,code:"preparation-incomplete"});
+  });
+  it("retains a durable failure marker after displaced catalog metadata and blocks checks, builds and cached publication",async()=>{
+    const f=await fixture();vi.stubEnv("NODE_ENV","production");expect((await loadWeeklyPublications(f.root)).editions).toHaveLength(2);
+    const catalog={...f.catalog,catalogVersion:"2",pdfUrl:f.catalog.pdfUrl.replace("/1/pdf/","/2/pdf/"),pages:f.catalog.pages.map(page=>({...page,imageUrl:page.imageUrl.replace("/v1/","/v2/"),thumbnailUrl:page.thumbnailUrl.replace("/v1/","/v2/")}))} as HandzettelCache;
+    const cover=await sharp(f.image).jpeg().toBuffer();const staged=await importer.importOfficialPublication(catalog,{root:f.root,fetchImpl:async url=>new Response(String(url).endsWith(".pdf")?f.pdfs[0]:cover,{headers:{"content-type":String(url).endsWith(".pdf")?"application/pdf":"image/jpeg"}})});
+    Object.assign(f.sources[0],{sourceUrl:catalog.pdfUrl,privatePdf:path.relative(f.root,path.join(staged.stagingDirectory,"original.pdf")),publishedPdfPath:staged.pdf.path,coverSha256:staged.cover.sha256});for(const row of f.offers)if(row.language==="de")row.sourceUrl=staged.pdf.path;await f.save();
+    const manifest=path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json"),before=await readFile(manifest);const rename=fs.rename;
+    vi.spyOn(fs,"rename").mockImplementation(async (source,target)=>{if(String(target)===manifest)throw new Error("Injected manifest binding failure");await rename(source,target);});
+    await expect(importer.assembleWeeklyPublication("2026-10-05",f.root)).rejects.toThrow("Injected manifest binding failure");vi.restoreAllMocks();
+    expect(await readFile(manifest)).toEqual(before);expect(JSON.parse((await readFile(path.join(f.root,"data/editorial/official-catalogs/2026-10-05.json"))).toString()).catalogVersion).toBe("2");
+    await expect(fs.stat(path.join(f.root,"data/editorial/.weekly-offers.lock"))).resolves.toBeDefined();
+    await expect(buildWeeklyOffers(f.root,["--check"])).rejects.toThrow(/transaction|preparation/i);await expect(buildWeeklyOffers(f.root,["--week","2026-10-05"])).rejects.toThrow(/transaction|preparation/i);
+    await expect(importer.assembleWeeklyPublication("2026-10-05",f.root)).rejects.toThrow(/transaction|preparation/i);
+    const loaded=await loadWeeklyPublications(f.root);expect(loaded.editions).toEqual([]);expect(loaded.issues).toContainEqual({week:null,code:"preparation-incomplete"});
+  });
+});
 async function generator(root: string, args: string[]) {
   return new Promise<{code:number|null; stderr:string}>((resolve,reject) => {
     const child = spawn(process.execPath, ["--import", path.join(repo,"node_modules/tsx/dist/loader.mjs"), path.join(repo,"scripts/build-weekly-offers.ts"), ...args], {cwd:root,env:{...process.env,TSX_TSCONFIG_PATH:path.join(repo,"tsconfig.json")}});
@@ -128,6 +203,10 @@ async function generator(root: string, args: string[]) {
   });
 }
 describe("multi-week offer generation", () => {
+  it("rejects incomplete saved originals before replacing public rows",async()=>{
+    const f=await truncatedReviewedFixture();const before=await readFile(path.join(f.root,"data/weekly-offers.json"));
+    const result=await generator(f.root,["--week","2026-10-05"]);expect(result.code).toBe(1);expect(result.stderr).toMatch(/completeness/);expect(await readFile(path.join(f.root,"data/weekly-offers.json"))).toEqual(before);
+  });
   it.each([{args:["--week","2026-10-05","--week","2026-10-12"]},{args:["--week","2026-10-06"]},{args:["--week","2026-02-30"]},{args:["--force"]}])("rejects invalid options before replacing rows: %j", async ({args}) => {
     const f = await fixture(); const before = await readFile(path.join(f.root,"data/weekly-offers.json"));
     expect((await generator(f.root,args)).code).toBe(1);

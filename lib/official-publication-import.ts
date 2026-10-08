@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, realpath, rename, rm, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { PDFDocument } from "pdf-lib";
+import { validatePublicationPdf } from "./publication-pdf";
 import sharp from "sharp";
 import { getCurrentWeekRange } from "./editorial-schedule";
 import { parseFlyerPackages, selectWeeklyNlFlyer } from "./flyer-packages";
@@ -10,6 +10,7 @@ import { validateCatalog, type HandzettelCache } from "./handzettel-catalog";
 import { parseWeeklyPublication, verifyWeeklyEdition } from "./weekly-publication";
 import type { LocalAsset, PublishedOffer, WeeklyEdition, WeeklyPublication } from "./weekly-publication-types";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
+import { withWeeklyPublicationTransaction } from "./weekly-publication-transaction";
 
 const MAX_BYTES = 50 * 1024 * 1024;
 const hash = (bytes: string | Uint8Array) => createHash("sha256").update(bytes).digest("hex");
@@ -94,7 +95,7 @@ export async function importOfficialPublication(catalog: HandzettelCache, option
   validateCatalog(catalog, getCurrentWeekRange(new Date(`${catalog.validFrom}T12:00:00Z`)));
   const fetchImpl = options.fetchImpl ?? fetch;
   const pdfBytes = await download(catalog.pdfUrl, "application/pdf", fetchImpl);
-  if (pdfBytes.subarray(0, 5).toString() !== "%PDF-" || !/%%EOF\s*$/.test(pdfBytes.subarray(-1024).toString("latin1")) || (await PDFDocument.load(pdfBytes)).getPageCount() !== catalog.pageCount) throw new Error("Original PDF completeness or page count mismatch");
+  await validatePublicationPdf(pdfBytes, catalog.pageCount);
   const coverBytes = await download(catalog.pages[0].imageUrl, "image/jpeg", fetchImpl);
   if ((await decodedImage(coverBytes)).format !== "jpeg") throw new Error("Original cover must be JPEG");
   const pdf = { path: `/handzettel/${catalog.year}/de-${catalog.validFrom}-${hash(pdfBytes)}.pdf`, sha256: hash(pdfBytes), bytes: pdfBytes.length };
@@ -121,8 +122,7 @@ export class WeeklyPreparationError extends Error {
 /** Bind only a complete, reviewed local offer set. Missing languages produce an explicit partial package. */
 export async function assembleWeeklyPublication(week: string, root: string): Promise<WeeklyPublication> {
   parseWeeklyPublication({ schemaVersion: 1, week, editions: [] });
-  try { await stat(path.join(root, "data/editorial/.weekly-offers.lock")); throw new Error("Interrupted offer preparation blocks assembly"); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+  return withWeeklyPublicationTransaction(root,async transaction=>{
   const layout = JSON.parse((await localBytes(root, "data/weekly-offer-layout.json")).toString()) as { sources: LayoutSource[] };
   if (!Array.isArray(layout.sources)) throw new Error("Missing reviewed layout");
   const sources = layout.sources.filter(source => source.validFrom === week);
@@ -149,6 +149,7 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
       if (source.printedValidFrom !== source.validFrom || source.printedValidTo !== source.validTo || !/^[a-f0-9]{64}$/.test(source.coverSha256)) throw new Error("Missing original/date/cover review");
       const pdfBytes = await localBytes(root, source.privatePdf);
       if (hash(pdfBytes) !== source.pdfSha256) throw new Error("Reviewed PDF changed");
+      await validatePublicationPdf(pdfBytes, source.pageCount);
       let coverPath: string, coverFile: string, editionSource: WeeklyEdition["source"];
       if (source.language === "nl") {
         const flyers = parseFlyerPackages(flyerRows.filter(row => row && typeof row === "object" && row.language === "nl" && (row.id === source.flyerId || (row.validFrom <= source.validTo && row.validTo >= week))));
@@ -212,12 +213,15 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
       catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
     }
     for (const { asset, bytes } of assets) await immutableAsset(root, asset, bytes);
+    await transaction.beginBinding();
     if (catalogBytes) { await directory(root, "data/editorial/official-catalogs"); await atomicBytes(path.join(root, `data/editorial/official-catalogs/${week}.json`), catalogBytes); }
     // Verify again against actual copied bytes immediately before the atomic binding.
     for (const edition of editions) await verifyWeeklyEdition(edition, root);
     await directory(root, "data/editorial/weekly-publications");
     if (!previous || JSON.stringify(previous) !== JSON.stringify(publication)) await atomicBytes(path.join(root, manifestFile), `${JSON.stringify(publication, null, 2)}\n`);
+    await transaction.commit();
     if (issues.length) throw new WeeklyPreparationError(publication, issues, true);
     return publication;
   } finally { await rm(candidate, { recursive: true, force: true }); }
+  });
 }

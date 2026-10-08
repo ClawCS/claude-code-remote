@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { PDFDocument } from "pdf-lib";
+import { validatePublicationPdf } from "../lib/publication-pdf";
 import sharp from "sharp";
 import { renderOfferCrop } from "../lib/weekly-offer-crops";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "../lib/weekly-offer-metadata";
@@ -10,6 +10,7 @@ import { parseWeeklyPublication } from "../lib/weekly-publication";
 import type { PublishedOffer } from "../lib/weekly-publication-types";
 import { getCurrentWeekRange } from "../lib/editorial-schedule";
 import { getAcceptedNlOfferRanges, getOfficialOfferRange } from "../lib/offer-validity";
+import { withWeeklyPublicationTransaction } from "../lib/weekly-publication-transaction";
 
 type Page = { page: number; sourceImage: string; expectedOffers: number; offers: ReviewedWeeklyOffer[] };
 type Source = WeeklyOfferPublicSource & { privatePdf: string; printedValidFrom: string; printedValidTo: string; coverSha256: string; pageCount: number; pages: Page[] };
@@ -59,6 +60,7 @@ async function atomicRows(root:string,rows:readonly PublishedOffer[]) {
 
 export async function buildWeeklyOffers(root:string,args:readonly string[]) {
   const {check,week}=parseOfferArguments(args);
+  return withWeeklyPublicationTransaction(root,async transaction=>{
   const layout=JSON.parse((await safeRead(root,"data/weekly-offer-layout.json")).toString()) as {sources:Source[]};
   if (!Array.isArray(layout.sources) || !layout.sources.length) throw new Error("Missing reviewed sources");
   const sources=layout.sources.filter(source=>!week || source.validFrom===week);
@@ -67,10 +69,6 @@ export async function buildWeeklyOffers(root:string,args:readonly string[]) {
   try { existing=JSON.parse((await safeRead(root,"data/weekly-offers.json")).toString()); }
   catch(error) { if (check || (error as NodeJS.ErrnoException).code!=="ENOENT") throw error; }
   if (!Array.isArray(existing) || new Set(existing.map(row=>row.id)).size!==existing.length) throw new Error("Duplicate or invalid published offers");
-  const lock=path.join(root,"data/editorial/.weekly-offers.lock"); let locked=false;
-  if (!check) { await mkdir(path.dirname(lock),{recursive:true}); await writeFile(lock,JSON.stringify({week:week??null,startedAt:new Date().toISOString()}),{flag:"wx"}); locked=true; }
-  else { try { await stat(lock); throw new Error("Interrupted offer preparation blocks publication"); } catch(error) { if ((error as NodeJS.ErrnoException).code!=="ENOENT") throw error; } }
-  try {
     const rows:PublishedOffer[]=[]; const ids=new Set<string>(); const sourceKeys=new Set<string>();
     const assets:{imagePath:string;bytes:Buffer}[]=[];
     for (const source of sources) {
@@ -84,7 +82,8 @@ export async function buildWeeklyOffers(root:string,args:readonly string[]) {
       if (source.printedValidFrom!==source.validFrom || source.printedValidTo!==source.validTo || !/^[a-f0-9]{64}$/.test(source.coverSha256) || !source.reviewedAt) throw new Error("Missing original/date/cover review");
       if (!Number.isSafeInteger(source.pageCount) || source.pageCount<1 || source.pageCount>60 || (source.language==="nl" && source.pageCount!==1) || !Array.isArray(source.pages) || source.pages.length!==source.pageCount || source.pages.some((p,i)=>p.page!==i+1)) throw new Error(`${source.language}: incomplete or invalid original-page coverage`);
       const pdf=await safeRead(root,source.privatePdf);
-      if (hash(pdf)!==source.pdfSha256 || pdf.subarray(0,5).toString()!=="%PDF-" || (await PDFDocument.load(pdf)).getPageCount()!==source.pageCount) throw new Error(`${source.language}: original PDF changed`);
+      if (hash(pdf)!==source.pdfSha256) throw new Error(`${source.language}: original PDF changed`);
+      await validatePublicationPdf(pdf,source.pageCount);
       for (const page of source.pages) {
         if (!Array.isArray(page.offers) || !Number.isSafeInteger(page.expectedOffers) || page.expectedOffers!==page.offers.length) throw new Error(`${source.language} page ${page.page}: incomplete offer coverage`);
         const image=check?undefined:await safeRead(root,page.sourceImage);
@@ -129,8 +128,9 @@ export async function buildWeeklyOffers(root:string,args:readonly string[]) {
       try { await writeFile(path.join(root,`public${asset.imagePath}`),asset.bytes,{flag:"wx"}); }
       catch(error) { if ((error as NodeJS.ErrnoException).code!=="EEXIST" || !(await safeRead(root,`public${asset.imagePath}`)).equals(asset.bytes)) throw error; }
     }
-    await atomicRows(root,[...preserved,...rows]); return {count:rows.length,check};
-  } finally { if (locked) await unlink(lock); }
+    await transaction.beginBinding();
+    await atomicRows(root,[...preserved,...rows]);await transaction.commit();return {count:rows.length,check};
+  });
 }
 
 if (process.argv[1] && path.resolve(process.argv[1])===path.resolve(import.meta.filename)) {

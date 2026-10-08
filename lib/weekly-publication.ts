@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile, readdir, realpath, stat } from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { PDFDocument } from "pdf-lib";
+import { validatePublicationPdf } from "./publication-pdf";
 import sharp from "sharp";
 import { berlinDateKey, getCurrentWeekRange } from "./editorial-schedule";
 import { parseFlyerPackages, verifyFlyerFiles } from "./flyer-packages";
@@ -10,6 +10,7 @@ import { validateCatalog } from "./handzettel-catalog";
 import { getAcceptedNlOfferRanges, getOfficialOfferRange } from "./offer-validity";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
 import type { LoadedWeeklyPublications, LocalAsset, PublishedOffer, VerifiedWeeklyEdition, WeeklyEdition, WeeklyPublication, WeeklyPublicationIssue } from "./weekly-publication-types";
+import { assertWeeklyPublicationIdle } from "./weekly-publication-transaction";
 
 const MAX_BYTES = 50 * 1024 * 1024;
 const HASH = /^[a-f0-9]{64}$/;
@@ -145,7 +146,7 @@ type LayoutSource = WeeklyOfferPublicSource & { printedValidFrom: string; printe
 export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string): Promise<VerifiedWeeklyEdition> {
   edition = parseWeeklyEdition(edition, edition.validFrom);
   const pdf = await verifyAsset(edition.pdf, root);
-  if (pdf.subarray(0, 5).toString() !== "%PDF-" || (await PDFDocument.load(pdf)).getPageCount() !== edition.pageCount) throw new Error("Original PDF page count mismatch");
+  await validatePublicationPdf(pdf,edition.pageCount);
   await decodeImage(await verifyAsset(edition.cover, root));
   let originUrl: string;
   let flyerId = edition.id;
@@ -272,12 +273,21 @@ async function load(root: string): Promise<LoadedWeeklyPublications> {
   return { editions, issues };
 }
 const production = new Map<string, Promise<LoadedWeeklyPublications>>();
-export function loadWeeklyPublications(root = process.cwd()): Promise<LoadedWeeklyPublications> {
+export async function loadWeeklyPublications(root = process.cwd()): Promise<LoadedWeeklyPublications> {
   root = path.resolve(root);
-  if (process.env.NODE_ENV !== "production") return load(root);
-  let result = production.get(root);
-  if (!result) { result = load(root); production.set(root, result); }
-  return result;
+  try { await assertWeeklyPublicationIdle(root); }
+  catch { return {editions:[],issues:[{week:null,code:"preparation-incomplete"}]}; }
+  let result: Promise<LoadedWeeklyPublications>;
+  if (process.env.NODE_ENV !== "production") result = load(root);
+  else {
+    result = production.get(root) ?? load(root);
+    production.set(root, result);
+  }
+  const loaded = await result;
+  // Preparation can begin while asynchronous verification is in flight.
+  try { await assertWeeklyPublicationIdle(root); }
+  catch { return {editions:[],issues:[{week:null,code:"preparation-incomplete"}]}; }
+  return loaded;
 }
 
 /** Time selection is deliberately not cached; missing/invalid languages never hide a valid sibling. */
