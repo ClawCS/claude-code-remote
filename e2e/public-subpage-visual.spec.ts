@@ -134,13 +134,12 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
     "/kategorie/alkoholfrei": 0,
     "/geschenkideen": 3,
     "/regionale-spirituosen": 3,
-    "/marktleben": 7,
+    "/marktleben": 6,
     "/eigenmarke": 1,
   };
   const originalDimensions: Record<string, readonly [number, number]> = {
     "salitos-market.webp": [696, 975],
     "gift-basket.webp": [666, 910],
-    "niko-market-life.webp": [705, 940],
     "regional-tante-dele.webp": [1080, 1440],
     "regional-schokolaedchen.webp": [1080, 1440],
     "regional-kaeffchen.webp": [1080, 1440],
@@ -155,6 +154,9 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
   };
   const images = page.locator("[data-market-discoveries] img, .category-photo img, .regional-specialties img");
   await expect(images).toHaveCount(expectedCounts[path] ?? 0);
+  await expect(page.locator("[data-market-discoveries] figcaption, .category-photo figcaption, .regional-specialties figcaption")).toHaveCount(0);
+  await expect(page.getByRole("img", { name: /Reinigungshandschuh|Sprühflasche/i })).toHaveCount(0);
+  await expect(page.getByText("Mit Herz. Und mit anpacken.", { exact: true })).toHaveCount(0);
   for (const image of await images.all()) {
     const ratios = await image.evaluate((element: HTMLImageElement) => ({
       natural: element.naturalWidth / element.naturalHeight,

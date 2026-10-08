@@ -20,7 +20,7 @@ export default function RegionaleSpirituosenPage() {
     </div>
     <section className="regional-specialties" aria-label="Brüdergeist-Spezialitäten">
       {REGIONAL_SPECIALTIES.map(item => <article key={item.name}>
-        <figure><Image src={item.src} width={item.width} height={item.height} alt={item.alt} sizes="(max-width: 768px) 90vw, 360px" /><figcaption>Originale Canva-Produktgrafik · Sortimentsbeispiel</figcaption></figure>
+        <figure><Image src={item.src} width={item.width} height={item.height} alt={item.alt} sizes="(max-width: 768px) 90vw, 360px" /></figure>
         <h2>{item.name}</h2><p>{item.description}</p>
       </article>)}
     </section>

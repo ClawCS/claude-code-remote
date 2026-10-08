@@ -15,15 +15,15 @@ export default function GeschenkideenPage() {
         <p>Eine kleine Geste. Ein besonderer Anlass.</p><h1>Freude schenken. Mit Jammers.</h1>
         <p>Ein Mitbringsel für die Einladung, ein Geburtstagsgruß oder ein Dankeschön: Wir helfen dir, eine passende Getränke-Geschenkidee zu finden.</p>
       </div>
-      <figure className="category-photo"><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 768px) 90vw, 320px" /><figcaption>Geschenkkorb aus unserem Markt. Beispiel einer Zusammenstellung, kein festes Angebot.</figcaption></figure>
+      <figure className="category-photo"><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 768px) 90vw, 320px" /></figure>
     </div>
     <section className="max-w-7xl mx-auto pt-12" aria-labelledby="gift-cards">
       <div className="px-6"><h2 id="gift-cards" className="text-3xl font-bold mb-4">Kleine Grüße. Große Wirkung.</h2>
-        <p className="max-w-2xl">Eine persönliche Karte macht das Mitbringsel noch persönlicher. Zwei Rückblicke aus 2025 zeigen Grußkarten aus unserem Markt – die aktuelle Auswahl besprechen wir gerne mit dir.</p>
+        <p className="max-w-2xl">Eine persönliche Karte macht das Mitbringsel noch persönlicher. Die aktuelle Auswahl besprechen wir gerne mit dir.</p>
       </div>
       <div className="regional-specialties">
         {[GOOGLE_MARKET_PHOTOS.greetingCards, GOOGLE_MARKET_PHOTOS.characterCards].map(card => <article key={card.src}>
-          <figure><Image src={card.src} width={card.width} height={card.height} alt={card.alt} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /><figcaption>{card.caption}</figcaption></figure>
+          <figure><Image src={card.src} width={card.width} height={card.height} alt={card.alt} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></figure>
         </article>)}
       </div>
     </section>

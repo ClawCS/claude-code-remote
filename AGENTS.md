@@ -42,6 +42,10 @@ Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Marktbild-Beschriftungen — 08.10.2026
+
+Auf erneute Betreiberanweisung keine dekorativen Bildunterschriften wie „Rückblick 2025“ unter Markt-/Entdeckungsfotos rendern. Das Niko-Foto mit Reinigungshandschuhen und Sprühflasche sowie seine Karte „Mit Herz. Und mit anpacken.“ sind aus der sichtbaren Website entfernt; nicht erneut verwenden. Quelldateien und Herkunftsnachweise bleiben erhalten. Diese Anweisung ersetzt die frühere sichtbare Rückblick-Kennzeichnung der Google-Marktfotos; der allgemeine Hinweis zu nicht aktuellen Fotopreisen bleibt. Mitarbeiternamen, notwendige Bildnachweise, KI-Beispielkennzeichnungen und datierte Angebote/Gewinnspiele bleiben unverändert.
+
 ## Einzelprofil-Auswahl — 08.10.2026
 
 Gabriellas Einzelportrait ist auf Betreiberanweisung aus der sichtbaren Teamdarstellung entfernt: Startseite, Galerie/Team und NL-Landingpage. Nicht aus historischen Quelldateien automatisch wieder aufnehmen. Gruppenfoto, übrige freigegebene Portraits und vorhandene Originaldateien bleiben unverändert; dies ist keine Löschung des Quellenarchivs.

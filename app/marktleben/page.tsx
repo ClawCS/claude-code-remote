@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default function MarktlebenPage() {
   const groups = [
     { id: "menschen-marktmomente", title: "Menschen & Marktmomente", photos: [
-      { photo: MARKET_PHOTOS.behindScenes, title: "Mit Herz. Und mit anpacken.", text: "Ein kleiner Blick hinter die Kulissen mit Niko. Nahbar, persönlich und mitten im Marktalltag." },
       { photo: GOOGLE_MARKET_PHOTOS.tasting, title: "Gemeinsam entdecken.", text: "Eine Verkostung mit unseren Eigenmarken: ein Moment zum Probieren und Austauschen.", href: "/eigenmarke", link: "Unsere Eigenmarken entdecken" },
     ] },
     { id: "aufbauten-entdeckungen", title: "Aufbauten & Entdeckungen", photos: [
@@ -22,7 +21,7 @@ export default function MarktlebenPage() {
       { photo: GOOGLE_MARKET_PHOTOS.baileys, title: "Mitten im Aufbau.", text: "Ein Baileys-Zimtschnecken-Aufbau bringt eine weitere Genussidee ins Bild." },
     ] },
     { id: "mehr-als-getraenke", title: "Mehr als Getränke", photos: [
-      { photo: GOOGLE_MARKET_PHOTOS.regional, title: "Ein Stück Bauernhof im Markt.", text: "Äpfel, Eier und Gläser im Holzaufbau: auch solche Entdeckungen gehören zu unseren Rückblicken." },
+      { photo: GOOGLE_MARKET_PHOTOS.regional, title: "Ein Stück Bauernhof im Markt.", text: "Äpfel, Eier und Gläser im Holzaufbau." },
       { photo: GOOGLE_MARKET_PHOTOS.grill, title: "Begleiter für den Grillabend.", text: "Ein Blick in die Kühlung mit Wurstwaren und Dips – passend zu geselligen Runden." },
     ] },
   ];
@@ -32,13 +31,13 @@ export default function MarktlebenPage() {
       <p>Jammers in Goch. Mit Menschen dahinter.</p>
       <h1>Unser Markt. Nah dran.</h1>
       <p>Bei uns geht es um Getränke – und um die Menschen, die den Markt jeden Tag mit Leben füllen. Echte Einblicke zeigen, wie unterschiedlich Marktalltag aussehen kann.</p>
-      <p className="text-sm">Einblicke aus unserem Markt, darunter Rückblicke aus 2025. Auf den Fotos sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen.</p>
+      <p className="text-sm">Auf den Fotos sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen.</p>
     </div>
     {groups.map(group => <section key={group.id} className="max-w-7xl mx-auto pt-12" aria-labelledby={group.id}>
       <h2 id={group.id} className="text-3xl font-bold px-6">{group.title}</h2>
       <div className="regional-specialties">
         {group.photos.map(item => <article key={item.photo.src}>
-          <figure><Image src={item.photo.src} width={item.photo.width} height={item.photo.height} alt={item.photo.alt} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /><figcaption>{item.photo.caption}</figcaption></figure>
+          <figure><Image src={item.photo.src} width={item.photo.width} height={item.photo.height} alt={item.photo.alt} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></figure>
           <h3 className="text-2xl font-bold mt-6 mb-3">{item.title}</h3>
           <p>{item.text}</p>
           {"href" in item && item.href && <Link href={item.href} className="inline-block mt-4 underline font-bold text-primary">{item.link}</Link>}

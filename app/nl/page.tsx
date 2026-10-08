@@ -48,7 +48,7 @@ export default async function NederlandsPage() {
           </div>
           <figure className={styles.heroPhoto}>
             <Image src={EDITORIAL_IMAGES.hero.image} alt="Sven en Niko bij de drankkratten in de winkel van Trinkgut Jammers" sizes="(max-width: 760px) 100vw, 50vw" priority />
-            <figcaption><strong>Sven & Niko</strong><span>Een vertrouwd gezicht. Persoonlijk advies.</span></figcaption>
+            <figcaption><strong>Sven & Niko</strong></figcaption>
           </figure>
         </section>
 

@@ -29,7 +29,7 @@ export default function EigenmarkePage() {
         <div><h2 id="own-brand-bottles" className="text-3xl font-bold mb-4">Sechs eigene Charaktere.</h2>
           <p className="max-w-xl">Unsere Eigenmarken zusammen im Bild. Von Kirsche und Haselnuss bis zu Lakritz und Anis: Unter dem Foto findest du die sechs Liköre mit ihren originalen Motiven.</p>
         </div>
-        <figure className="category-photo"><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 768px) 90vw, 320px" loading="lazy" /><figcaption>{photo.caption}</figcaption></figure>
+        <figure className="category-photo"><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 768px) 90vw, 320px" loading="lazy" /></figure>
       </section>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">

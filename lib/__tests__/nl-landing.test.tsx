@@ -27,6 +27,13 @@ const index: FlyerIndex = {
 beforeEach(() => source.getFlyerIndex.mockResolvedValue(index));
 
 describe("Dutch visitor landing page", () => {
+  it("keeps the hero names without a decorative photo tagline", async () => {
+    const html = renderToStaticMarkup(await NederlandsPage());
+    const hero = html.match(/<section\b[\s\S]*?<\/section>/)?.[0] ?? "";
+    const caption = hero.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/)?.[1] ?? "";
+    expect(caption.replace(/<[^>]*>/g, "")).toBe("Sven &amp; Niko");
+  });
+
   it("omits Gabriella's withdrawn portrait while preserving the group and remaining team", async () => {
     const html = renderToStaticMarkup(await NederlandsPage());
     const team = html.match(/<section[^>]*aria-label="Ons team"[\s\S]*?<\/section>/)?.[0] ?? "";

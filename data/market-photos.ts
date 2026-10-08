@@ -6,7 +6,6 @@ export type MarketPhoto = Readonly<{ src: string; width: number; height: number;
 /** Public rendering data only. Original exports and source identities remain private. */
 export const MARKET_PHOTOS = {
   market: { src: "/images/editorial/canva/salitos-market.webp", width: 696, height: 975, alt: "Salitos-Getränkeaufbau im Markt von Trinkgut Jammers", caption: "Marktleben · ein Blick auf einen Getränkeaufbau" },
-  behindScenes: { src: "/images/editorial/canva/niko-market-life.webp", width: 705, height: 940, alt: "Niko im roten Jammers-Pullover mit gelben Reinigungshandschuhen und Sprühflasche", caption: "Hinter den Kulissen · Niko im Marktalltag" },
   gifts: { src: "/images/editorial/canva/gift-basket.webp", width: 666, height: 910, alt: "In Folie verpackter Geschenkkorb mit Getränken bei Trinkgut Jammers", caption: "Geschenkideen · mit Liebe zusammengestellt" },
 } as const satisfies Record<string, MarketPhoto>;
 
