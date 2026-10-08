@@ -445,6 +445,47 @@ describe("homepage content", () => {
 });
 
 describe("homepage content loader", () => {
+  it.each(["rejected", "synchronous"] as const)("retains campaigns and archive when the weekly source is %s", async mode => {
+    const content = await createHomepageContentLoader({
+      loadWeeklyPublications: () => {
+        if (mode === "synchronous") throw new Error("Weekly source unavailable");
+        return Promise.reject(new Error("Weekly source unavailable"));
+      },
+      loadApprovedCampaigns: async () => [makeCampaign()],
+      loadEditorialArchive: async () => [makeArchive()],
+    })(NOW);
+    expect(content.flyer).toBeNull();
+    expect(content.nlFlyer).toBeNull();
+    expect(content.fallbackMessage).toBe("Der nächste Handzettel wird vorbereitet.");
+    expect(content.event?.id).toBe("strikerball-2026-07-24");
+    expect(content.archive.map(item => item.id)).toEqual(["archive-item"]);
+  });
+
+  it.each([
+    ["campaigns", "rejected"], ["campaigns", "synchronous"],
+    ["archive", "rejected"], ["archive", "synchronous"],
+  ] as const)("retains verified flyers when the %s source is %s", async (source, mode) => {
+    const f = await weeklyPublicationFixture("2026-07-13", "2026-07-18", "1335913", "2");
+    const unavailable = () => {
+      if (mode === "synchronous") throw new Error("Editorial source unavailable");
+      return Promise.reject(new Error("Editorial source unavailable"));
+    };
+    try {
+      const content = await createHomepageContentLoader({
+        loadWeeklyPublications: () => loadWeeklyPublications(f.root),
+        loadApprovedCampaigns: source === "campaigns" ? unavailable : async () => [makeCampaign()],
+        loadEditorialArchive: source === "archive" ? unavailable : async () => [makeArchive()],
+      })(NOW);
+      expect(content.flyer?.pdfUrl).toBe("/handzettel/2026-07-13/de.pdf");
+      expect(content.nlFlyer?.pdfUrl).toBe("/handzettel/2026-07-13/nl.pdf");
+      expect(content.fallbackMessage).toBeNull();
+      expect(content.event?.id ?? null).toBe(source === "campaigns" ? null : "strikerball-2026-07-24");
+      expect(content.archive.map(item => item.id)).toEqual(source === "archive" ? [] : ["archive-item"]);
+    } finally {
+      await rm(f.root, { recursive: true, force: true });
+    }
+  });
+
   it("loads the production sources without writing a missing cache", async () => {
     const cachePath = path.join(process.cwd(), "data/handzettel-cache.json");
     await expect(access(cachePath)).rejects.toThrow();

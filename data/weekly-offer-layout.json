@@ -13,6 +13,12 @@
       "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
       "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
       "privatePdf": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/de-original-verified.pdf",
+      "privateCover": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/de-cover-verified.jpg",
+      "title": "Angebote der Woche",
+      "publishedPdfPath": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
+      "printedValidFrom": "2026-10-05",
+      "printedValidTo": "2026-10-10",
+      "coverSha256": "a9ac782ae646c830ea71b4448fda2ceac8ba06d5b9c0ec93c69fb51828220a51",
       "pageCount": 18,
       "pages": [
         {
@@ -49,7 +55,8 @@
                 1658,
                 2400
               ],
-              "conditions": "1 Kasten König Pilsener 11,99 €; 2 Dosen König Pilsener 0,5 l gratis, zzgl. Pfand; entspricht rechnerisch 10,01 € je Kasten."
+              "conditions": "1 Kasten König Pilsener 11,99 €; 2 Dosen König Pilsener 0,5 l gratis, zzgl. Pfand; entspricht rechnerisch 10,01 € je Kasten.",
+              "imagePath": "/images/offers/de-2026-41-p01-koenig-pilsener.webp"
             },
             {
               "id": "de-2026-41-p01-bree-weine",
@@ -65,7 +72,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis 2,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "APP-Preis 2,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p01-bree-weine.webp"
             },
             {
               "id": "de-2026-41-p01-gerri",
@@ -81,7 +89,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p01-gerri.webp"
             },
             {
               "id": "de-2026-41-p01-rheinfels-quelle",
@@ -97,7 +106,8 @@
                 1658,
                 2400
               ],
-              "conditions": "2 Kästen à 12 x 1 l PET für 10,99 €; zzgl. 3,30 € Pfand je Kasten."
+              "conditions": "2 Kästen à 12 x 1 l PET für 10,99 €; zzgl. 3,30 € Pfand je Kasten.",
+              "imagePath": "/images/offers/de-2026-41-p01-rheinfels-quelle.webp"
             },
             {
               "id": "de-2026-41-p01-ramazzotti",
@@ -113,7 +123,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p01-ramazzotti.webp"
             },
             {
               "id": "de-2026-41-p01-vilsa",
@@ -129,7 +140,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p01-vilsa.webp"
             },
             {
               "id": "de-2026-41-p01-burgwallbronn",
@@ -145,7 +157,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p01-burgwallbronn.webp"
             },
             {
               "id": "de-2026-41-p01-havana-club",
@@ -161,7 +174,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis 9,99 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "APP-Preis 9,99 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p01-havana-club.webp"
             },
             {
               "id": "de-2026-41-p01-schloesser-alt",
@@ -177,7 +191,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p01-schloesser-alt.webp"
             },
             {
               "id": "de-2026-41-p01-bayreuther-hell",
@@ -193,7 +208,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p01-bayreuther-hell.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-01.png",
@@ -219,7 +235,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-coca-cola.webp"
             },
             {
               "id": "de-2026-41-p02-effect",
@@ -235,7 +252,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-effect.webp"
             },
             {
               "id": "de-2026-41-p02-gerolsteiner-erfrischung",
@@ -251,7 +269,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-gerolsteiner-erfrischung.webp"
             },
             {
               "id": "de-2026-41-p02-landpark-limonaden",
@@ -267,7 +286,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-landpark-limonaden.webp"
             },
             {
               "id": "de-2026-41-p02-uludag",
@@ -283,7 +303,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis 0,67 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "APP-Preis 0,67 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p02-uludag.webp"
             },
             {
               "id": "de-2026-41-p02-vita-cola",
@@ -299,7 +320,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-vita-cola.webp"
             },
             {
               "id": "de-2026-41-p02-mio-mio",
@@ -315,7 +337,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-mio-mio.webp"
             },
             {
               "id": "de-2026-41-p02-fuze-tea",
@@ -345,7 +368,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-fuze-tea.webp"
             },
             {
               "id": "de-2026-41-p02-spacy",
@@ -361,7 +385,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-spacy.webp"
             },
             {
               "id": "de-2026-41-p02-schwarzwald",
@@ -391,7 +416,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p02-schwarzwald.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-02.png",
@@ -417,7 +443,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Anmelden in der trinkgut APP, Aktionskasten kaufen, digitale Stempel in der APP erhalten. Nach 5 Stempeln erhältst Du automatisch einen Coupon für Deinen Gratis-Kasten; in der App aktivieren und einlösen. Gratis-Kasten zzgl. Pfand. Teilnahmebedingungen und Datenschutz in der trinkgut APP und unter trinkgut.de/datenschutz."
+              "conditions": "Anmelden in der trinkgut APP, Aktionskasten kaufen, digitale Stempel in der APP erhalten. Nach 5 Stempeln erhältst Du automatisch einen Coupon für Deinen Gratis-Kasten; in der App aktivieren und einlösen. Gratis-Kasten zzgl. Pfand. Teilnahmebedingungen und Datenschutz in der trinkgut APP und unter trinkgut.de/datenschutz.",
+              "imagePath": "/images/offers/de-2026-41-p03-schloss-quelle.webp"
             },
             {
               "id": "de-2026-41-p03-mona",
@@ -433,7 +460,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p03-mona.webp"
             },
             {
               "id": "de-2026-41-p03-bergische-waldquelle",
@@ -449,7 +477,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p03-bergische-waldquelle.webp"
             },
             {
               "id": "de-2026-41-p03-pepsi",
@@ -465,7 +494,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis 0,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "APP-Preis 0,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p03-pepsi.webp"
             },
             {
               "id": "de-2026-41-p03-forstetal",
@@ -481,7 +511,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p03-forstetal.webp"
             },
             {
               "id": "de-2026-41-p03-bad-meinberger",
@@ -497,7 +528,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p03-bad-meinberger.webp"
             },
             {
               "id": "de-2026-41-p03-active-o2",
@@ -513,7 +545,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis 0,89 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "APP-Preis 0,89 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p03-active-o2.webp"
             },
             {
               "id": "de-2026-41-p03-eau-la-la",
@@ -529,7 +562,8 @@
                 1658,
                 2400
               ],
-              "conditions": "3 Kästen à 12 x 1 l PET für 9,99 €; zzgl. 3,30 € Pfand je Kasten."
+              "conditions": "3 Kästen à 12 x 1 l PET für 9,99 €; zzgl. 3,30 € Pfand je Kasten.",
+              "imagePath": "/images/offers/de-2026-41-p03-eau-la-la.webp"
             },
             {
               "id": "de-2026-41-p03-valensina",
@@ -559,7 +593,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p03-valensina.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-03.png",
@@ -599,7 +634,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-duckstein.webp"
             },
             {
               "id": "de-2026-41-p04-wickueler",
@@ -629,7 +665,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-wickueler.webp"
             },
             {
               "id": "de-2026-41-p04-augustiner",
@@ -659,7 +696,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-augustiner.webp"
             },
             {
               "id": "de-2026-41-p04-krombacher-dose",
@@ -675,7 +713,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-krombacher-dose.webp"
             },
             {
               "id": "de-2026-41-p04-faxe",
@@ -691,7 +730,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-faxe.webp"
             },
             {
               "id": "de-2026-41-p04-diebels",
@@ -707,7 +747,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-diebels.webp"
             },
             {
               "id": "de-2026-41-p04-becks",
@@ -737,7 +778,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-becks.webp"
             },
             {
               "id": "de-2026-41-p04-veltins-sixpack",
@@ -753,7 +795,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-veltins-sixpack.webp"
             },
             {
               "id": "de-2026-41-p04-estrella",
@@ -783,7 +826,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p04-estrella.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-04.png",
@@ -809,7 +853,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-lausitzer-porter.webp"
             },
             {
               "id": "de-2026-41-p05-altenmuenster",
@@ -825,7 +870,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-altenmuenster.webp"
             },
             {
               "id": "de-2026-41-p05-jever",
@@ -841,7 +887,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-jever.webp"
             },
             {
               "id": "de-2026-41-p05-veltins-kasten",
@@ -857,7 +904,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-veltins-kasten.webp"
             },
             {
               "id": "de-2026-41-p05-karamalz",
@@ -873,7 +921,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-karamalz.webp"
             },
             {
               "id": "de-2026-41-p05-potts",
@@ -889,7 +938,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-potts.webp"
             },
             {
               "id": "de-2026-41-p05-kapuziner",
@@ -905,7 +955,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-kapuziner.webp"
             },
             {
               "id": "de-2026-41-p05-koestritzer",
@@ -921,7 +972,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-koestritzer.webp"
             },
             {
               "id": "de-2026-41-p05-pilsner-urquell",
@@ -937,7 +989,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-pilsner-urquell.webp"
             },
             {
               "id": "de-2026-41-p05-schneider",
@@ -967,7 +1020,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p05-schneider.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-05.png",
@@ -1002,7 +1056,8 @@
                 1657,
                 2400
               ],
-              "conditions": "Nur mit der trinkgut App: Vom 24.08.2026 bis 17.10.2026 pro 5 EUR Einkaufswert einen LEGO FunPack-Treuepunkt sammeln. Mit 5 Treuepunkten ein LEGO FunPack für 5,99 EUR (UVP). Einlösen direkt an der Kasse bis 31.10.2026. Ohne Abgabe der trinkgut APP Treuepunkte ein LEGO FunPack für 11,99 EUR (UVP). Nur solange der Vorrat reicht."
+              "conditions": "Nur mit der trinkgut App: Vom 24.08.2026 bis 17.10.2026 pro 5 EUR Einkaufswert einen LEGO FunPack-Treuepunkt sammeln. Mit 5 Treuepunkten ein LEGO FunPack für 5,99 EUR (UVP). Einlösen direkt an der Kasse bis 31.10.2026. Ohne Abgabe der trinkgut APP Treuepunkte ein LEGO FunPack für 11,99 EUR (UVP). Nur solange der Vorrat reicht.",
+              "imagePath": "/images/offers/de-2026-41-p07-lego-funpack.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-07.png",
@@ -1028,7 +1083,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p08-berentzen-minis.webp"
             },
             {
               "id": "de-2026-41-p08-pilavas",
@@ -1044,7 +1100,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p08-pilavas.webp"
             },
             {
               "id": "de-2026-41-p08-jaegermeister",
@@ -1060,7 +1117,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Winter Edition nur für kurze Zeit erhältlich."
+              "conditions": "Winter Edition nur für kurze Zeit erhältlich.",
+              "imagePath": "/images/offers/de-2026-41-p08-jaegermeister.webp"
             },
             {
               "id": "de-2026-41-p08-monkey-shoulder",
@@ -1076,7 +1134,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis nur mit der trinkgut App: 19,99 EUR; regulärer Originalpreis 22,99 EUR."
+              "conditions": "APP-Preis nur mit der trinkgut App: 19,99 EUR; regulärer Originalpreis 22,99 EUR.",
+              "imagePath": "/images/offers/de-2026-41-p08-monkey-shoulder.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-08.png",
@@ -1102,7 +1161,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Mit LED-Beleuchtung im Flaschenboden."
+              "conditions": "Mit LED-Beleuchtung im Flaschenboden.",
+              "imagePath": "/images/offers/de-2026-41-p09-9mile.webp"
             },
             {
               "id": "de-2026-41-p09-jim-beam",
@@ -1118,7 +1178,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Nur mit der APP: Eine Flasche Jim Beam 0,7 l kaufen und eine Flasche Coca-Cola 1,25 l im Wert von 1,59 EUR gratis dazu; zzgl. Pfand. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "Nur mit der APP: Eine Flasche Jim Beam 0,7 l kaufen und eine Flasche Coca-Cola 1,25 l im Wert von 1,59 EUR gratis dazu; zzgl. Pfand. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p09-jim-beam.webp"
             },
             {
               "id": "de-2026-41-p09-kilbeggan",
@@ -1134,7 +1195,8 @@
                 1658,
                 2400
               ],
-              "conditions": "200 PAYBACK Extra-Punkte = 2,00 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+              "conditions": "200 PAYBACK Extra-Punkte = 2,00 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+              "imagePath": "/images/offers/de-2026-41-p09-kilbeggan.webp"
             },
             {
               "id": "de-2026-41-p09-fuerst-bismarck",
@@ -1150,7 +1212,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p09-fuerst-bismarck.webp"
             },
             {
               "id": "de-2026-41-p09-moskovskaya",
@@ -1166,7 +1229,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p09-moskovskaya.webp"
             },
             {
               "id": "de-2026-41-p09-baileys",
@@ -1182,7 +1246,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p09-baileys.webp"
             },
             {
               "id": "de-2026-41-p09-kettenfett",
@@ -1198,7 +1263,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p09-kettenfett.webp"
             },
             {
               "id": "de-2026-41-p09-sarti-rosa",
@@ -1214,7 +1280,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p09-sarti-rosa.webp"
             },
             {
               "id": "de-2026-41-p09-tamnavulin",
@@ -1230,7 +1297,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p09-tamnavulin.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-09.png",
@@ -1256,7 +1324,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-brut-dargent.webp"
             },
             {
               "id": "de-2026-41-p10-reserve-marande",
@@ -1272,7 +1341,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Wein des Monats 05.10.-31.10.: Einzelpreis 4,99 EUR; ab 6 Flaschen je 4,49 EUR. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Wein des Monats 05.10.-31.10.: Einzelpreis 4,99 EUR; ab 6 Flaschen je 4,49 EUR. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-reserve-marande.webp"
             },
             {
               "id": "de-2026-41-p10-1112-weine",
@@ -1288,7 +1358,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-1112-weine.webp"
             },
             {
               "id": "de-2026-41-p10-chateau",
@@ -1304,7 +1375,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-chateau.webp"
             },
             {
               "id": "de-2026-41-p10-grand-sud",
@@ -1320,7 +1392,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-grand-sud.webp"
             },
             {
               "id": "de-2026-41-p10-chipsfrisch",
@@ -1336,7 +1409,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, funny-frisch 1,19 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, funny-frisch 1,19 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-chipsfrisch.webp"
             },
             {
               "id": "de-2026-41-p10-den-gamle",
@@ -1352,7 +1426,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, Den Gamle 2,49 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, Den Gamle 2,49 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-den-gamle.webp"
             },
             {
               "id": "de-2026-41-p10-melitta",
@@ -1368,7 +1443,8 @@
                 1658,
                 2400
               ],
-              "conditions": "APP-Preis 5,99 EUR; regulärer Originalpreis 6,49 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+              "conditions": "APP-Preis 5,99 EUR; regulärer Originalpreis 6,49 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+              "imagePath": "/images/offers/de-2026-41-p10-melitta.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-10.png",
@@ -1394,7 +1470,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+              "imagePath": "/images/offers/de-2026-41-p11-moet-chandon.webp"
             },
             {
               "id": "de-2026-41-p11-pfaffl",
@@ -1410,7 +1487,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+              "imagePath": "/images/offers/de-2026-41-p11-pfaffl.webp"
             },
             {
               "id": "de-2026-41-p11-remy-martin",
@@ -1426,7 +1504,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+              "imagePath": "/images/offers/de-2026-41-p11-remy-martin.webp"
             },
             {
               "id": "de-2026-41-p11-chivas-regal",
@@ -1442,7 +1521,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+              "imagePath": "/images/offers/de-2026-41-p11-chivas-regal.webp"
             },
             {
               "id": "de-2026-41-p11-don-papa",
@@ -1458,7 +1538,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+              "imagePath": "/images/offers/de-2026-41-p11-don-papa.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-11.png",
@@ -1484,7 +1565,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p12-tyrconnell.webp"
             },
             {
               "id": "de-2026-41-p12-scarabus",
@@ -1500,7 +1582,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p12-scarabus.webp"
             },
             {
               "id": "de-2026-41-p12-connemara",
@@ -1516,7 +1599,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p12-connemara.webp"
             },
             {
               "id": "de-2026-41-p12-johnnie-walker",
@@ -1532,7 +1616,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p12-johnnie-walker.webp"
             },
             {
               "id": "de-2026-41-p12-glenmorangie",
@@ -1548,7 +1633,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p12-glenmorangie.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-12.png",
@@ -1575,7 +1661,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p13-glenfarclas.webp"
             },
             {
               "id": "de-2026-41-p13-kilchoman-sanaig",
@@ -1591,7 +1678,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p13-kilchoman-sanaig.webp"
             },
             {
               "id": "de-2026-41-p13-glenfiddich",
@@ -1607,7 +1695,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p13-glenfiddich.webp"
             },
             {
               "id": "de-2026-41-p13-laphroaig",
@@ -1623,7 +1712,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p13-laphroaig.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-13.png",
@@ -1650,7 +1740,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p14-raunikar.webp"
             },
             {
               "id": "de-2026-41-p14-roku-gin",
@@ -1666,7 +1757,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p14-roku-gin.webp"
             },
             {
               "id": "de-2026-41-p14-havana-club",
@@ -1682,7 +1774,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p14-havana-club.webp"
             },
             {
               "id": "de-2026-41-p14-bumbu",
@@ -1698,7 +1791,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p14-bumbu.webp"
             },
             {
               "id": "de-2026-41-p14-ron-zacapa",
@@ -1714,7 +1808,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p14-ron-zacapa.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-14.png",
@@ -1742,7 +1837,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Mit gratis Glas! Jetzt mit Tumbler-Glas gratis."
+              "conditions": "Mit gratis Glas! Jetzt mit Tumbler-Glas gratis.",
+              "imagePath": "/images/offers/de-2026-41-p15-jaegermeister-manifest.webp"
             },
             {
               "id": "de-2026-41-p15-cardenal-mendoza",
@@ -1778,7 +1874,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Mit gratis Glas!"
+              "conditions": "Mit gratis Glas!",
+              "imagePath": "/images/offers/de-2026-41-p15-cardenal-mendoza.webp"
             },
             {
               "id": "de-2026-41-p15-metaxa",
@@ -1814,7 +1911,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Mit gratis Beanie!"
+              "conditions": "Mit gratis Beanie!",
+              "imagePath": "/images/offers/de-2026-41-p15-metaxa.webp"
             },
             {
               "id": "de-2026-41-p15-grey-goose",
@@ -1830,7 +1928,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p15-grey-goose.webp"
             },
             {
               "id": "de-2026-41-p15-belvedere",
@@ -1846,7 +1945,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p15-belvedere.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-15.png",
@@ -1874,7 +1974,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p16-mucho-mas-borgo.webp"
             },
             {
               "id": "de-2026-41-p16-el-cortez-xo",
@@ -1890,7 +1991,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p16-el-cortez-xo.webp"
             },
             {
               "id": "de-2026-41-p16-markus-molitor",
@@ -1920,7 +2022,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p16-markus-molitor.webp"
             },
             {
               "id": "de-2026-41-p16-antico-monastero",
@@ -1936,7 +2039,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p16-antico-monastero.webp"
             },
             {
               "id": "de-2026-41-p16-mayschoss",
@@ -1952,7 +2056,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p16-mayschoss.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-16.png",
@@ -1980,7 +2085,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p17-fantazzy.webp"
             },
             {
               "id": "de-2026-41-p17-barbanera",
@@ -1996,7 +2102,8 @@
                 1658,
                 2400
               ],
-              "conditions": "*für den 2023er"
+              "conditions": "*für den 2023er",
+              "imagePath": "/images/offers/de-2026-41-p17-barbanera.webp"
             },
             {
               "id": "de-2026-41-p17-cremant",
@@ -2012,7 +2119,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p17-cremant.webp"
             },
             {
               "id": "de-2026-41-p17-valdo",
@@ -2028,7 +2136,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p17-valdo.webp"
             },
             {
               "id": "de-2026-41-p17-sancerre",
@@ -2044,7 +2153,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p17-sancerre.webp"
             },
             {
               "id": "de-2026-41-p17-chateauneuf",
@@ -2060,7 +2170,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p17-chateauneuf.webp"
             },
             {
               "id": "de-2026-41-p17-barahonda",
@@ -2076,7 +2187,8 @@
                 1658,
                 2400
               ],
-              "conditions": ""
+              "conditions": "",
+              "imagePath": "/images/offers/de-2026-41-p17-barahonda.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-17.png",
@@ -2104,7 +2216,8 @@
                 1658,
                 2400
               ],
-              "conditions": "Stelle Dir Deinen Karton selbst zusammen. Einzelpreis 8.99 (1 l = € 11.99), durchgestrichener Vergleichspreis 9.99 €¹; ab 3 Flaschen je 7.99 (1 l = € 10.65); ab 6 Flaschen je 6.99 (1 l = € 9.32). Je 0,75 l Flasche. ¹ Niedrigster Gesamtpreis der letzten 30 Tage. Saint-Émilion Grand Cru*: *nach Abverkauf liefern wir Château Vieux Pressoir. Auszeichnungen: Scarànto für den 2024er; Empirio für den 2022er; Rioja Vega für den 2021er. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht."
+              "conditions": "Stelle Dir Deinen Karton selbst zusammen. Einzelpreis 8.99 (1 l = € 11.99), durchgestrichener Vergleichspreis 9.99 €¹; ab 3 Flaschen je 7.99 (1 l = € 10.65); ab 6 Flaschen je 6.99 (1 l = € 9.32). Je 0,75 l Flasche. ¹ Niedrigster Gesamtpreis der letzten 30 Tage. Saint-Émilion Grand Cru*: *nach Abverkauf liefern wir Château Vieux Pressoir. Auszeichnungen: Scarànto für den 2024er; Empirio für den 2022er; Rioja Vega für den 2021er. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht.",
+              "imagePath": "/images/offers/de-2026-41-p18-wein-mehrkauf.webp"
             }
           ],
           "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-18.png",
@@ -2122,6 +2235,11 @@
       "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
       "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
       "privatePdf": "public/handzettel/2026/nl-2026-10-05.pdf",
+      "title": "Nederlandse weekaanbiedingen · KW 41",
+      "publishedPdfPath": "/handzettel/2026/nl-2026-10-05.pdf",
+      "printedValidFrom": "2026-10-05",
+      "printedValidTo": "2026-10-10",
+      "coverSha256": "a64e80d7087932e064b2d1c9686442bf3a4efc2ce230ac1a18dc1a2b21b0eeb2",
       "pageCount": 1,
       "pages": [
         {
@@ -2146,7 +2264,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-tamnavulin.webp"
             },
             {
               "id": "nl-2026-41-kilbeggan",
@@ -2162,7 +2281,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-kilbeggan.webp"
             },
             {
               "id": "nl-2026-41-jim-beam",
@@ -2178,7 +2298,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-jim-beam.webp"
             },
             {
               "id": "nl-2026-41-label-5",
@@ -2208,7 +2329,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-label-5.webp"
             },
             {
               "id": "nl-2026-41-baileys",
@@ -2225,7 +2347,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Im Original stehen 0,5- und 0,7-Liter-Gebinde mit demselben Grundpreis. Gebinde und Grundpreis bitte im Markt bestätigen."
+              "sourceWarning": "Im Original stehen 0,5- und 0,7-Liter-Gebinde mit demselben Grundpreis. Gebinde und Grundpreis bitte im Markt bestätigen.",
+              "imagePath": "/images/offers/nl-2026-41-baileys.webp"
             },
             {
               "id": "nl-2026-41-ramazzotti",
@@ -2241,7 +2364,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-ramazzotti.webp"
             },
             {
               "id": "nl-2026-41-pilavas",
@@ -2257,7 +2381,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-pilavas.webp"
             },
             {
               "id": "nl-2026-41-jaegermeister",
@@ -2274,7 +2399,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+              "imagePath": "/images/offers/nl-2026-41-jaegermeister.webp"
             },
             {
               "id": "nl-2026-41-havana-club",
@@ -2291,7 +2417,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+              "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis.",
+              "imagePath": "/images/offers/nl-2026-41-havana-club.webp"
             },
             {
               "id": "nl-2026-41-bree",
@@ -2307,7 +2434,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-bree.webp"
             },
             {
               "id": "nl-2026-41-brut-dargent",
@@ -2323,7 +2451,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-brut-dargent.webp"
             },
             {
               "id": "nl-2026-41-grand-sud",
@@ -2340,7 +2469,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+              "imagePath": "/images/offers/nl-2026-41-grand-sud.webp"
             },
             {
               "id": "nl-2026-41-fuze-tea",
@@ -2356,7 +2486,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-fuze-tea.webp"
             },
             {
               "id": "nl-2026-41-pepsi",
@@ -2373,7 +2504,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+              "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis.",
+              "imagePath": "/images/offers/nl-2026-41-pepsi.webp"
             },
             {
               "id": "nl-2026-41-active-o2",
@@ -2389,7 +2521,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-active-o2.webp"
             },
             {
               "id": "nl-2026-41-chipsfrisch",
@@ -2406,7 +2539,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+              "imagePath": "/images/offers/nl-2026-41-chipsfrisch.webp"
             },
             {
               "id": "nl-2026-41-hertog-jan",
@@ -2437,7 +2571,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Im Original ist nicht eindeutig, ob das genannte Pfand je Kasten oder für das Doppelpack gilt. Bitte im Markt bestätigen."
+              "sourceWarning": "Im Original ist nicht eindeutig, ob das genannte Pfand je Kasten oder für das Doppelpack gilt. Bitte im Markt bestätigen.",
+              "imagePath": "/images/offers/nl-2026-41-hertog-jan.webp"
             },
             {
               "id": "nl-2026-41-krombacher",
@@ -2468,7 +2603,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Die Monatsaktion auf Instagram nennt mindestens drei Kästen für diesen Preis je Kasten. Im Wochenhandzettel fehlt diese Mengenbedingung; bitte vor dem Kauf im Markt klären."
+              "sourceWarning": "Die Monatsaktion auf Instagram nennt mindestens drei Kästen für diesen Preis je Kasten. Im Wochenhandzettel fehlt diese Mengenbedingung; bitte vor dem Kauf im Markt klären.",
+              "imagePath": "/images/offers/nl-2026-41-krombacher.webp"
             },
             {
               "id": "nl-2026-41-schneider-weisse",
@@ -2484,7 +2620,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-schneider-weisse.webp"
             },
             {
               "id": "nl-2026-41-veltins-vplus",
@@ -2500,7 +2637,8 @@
               "sourceDimensions": [
                 2600,
                 1860
-              ]
+              ],
+              "imagePath": "/images/offers/nl-2026-41-veltins-vplus.webp"
             },
             {
               "id": "nl-2026-41-coca-cola",
@@ -2517,7 +2655,8 @@
                 2600,
                 1860
               ],
-              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+              "imagePath": "/images/offers/nl-2026-41-coca-cola.webp"
             }
           ],
           "sourceImage": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/nl-preview-held.png",

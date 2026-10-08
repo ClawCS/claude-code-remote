@@ -3,15 +3,39 @@ import {selectWeeklyOffers as select} from "@/lib/catalog";
 import offers from "@/data/weekly-offers.json";
 import {createHash} from "node:crypto";
 import {readFileSync} from "node:fs";
+import { loadWeeklyPublications } from "@/lib/weekly-publication";
+import { selectWeeklyOfferContent } from "@/lib/weekly-offer-selection";
+
+const LOCAL_DE_PDF = "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf";
 
 describe("current flyer-only assortment", () => {
+  it("publishes the complete reviewed KW41 through verified local originals", async () => {
+    const loaded = await loadWeeklyPublications();
+    expect(loaded.issues).toEqual([]);
+    const content = selectWeeklyOfferContent(loaded, new Date("2026-10-08T12:00:00Z"));
+    expect(content.offers.filter(offer => offer.language === "de")).toHaveLength(107);
+    expect(content.offers.filter(offer => offer.language === "nl")).toHaveLength(21);
+    expect(content.flyers).toHaveLength(2);
+    expect(content.flyers.every(flyer => flyer.pdfUrl.startsWith("/handzettel/"))).toBe(true);
+    expect(content.flyers.map(flyer => [flyer.language, flyer.title, flyer.pageCount])).toEqual([
+      ["de", "Angebote der Woche", 18],
+      ["nl", "Nederlandse weekaanbiedingen · KW 41", 1],
+    ]);
+    for (const [category, de, nl] of [
+      ["bier", 21, 4], ["wein", 16, 2], ["alkoholfrei", 25, 4],
+      ["spirituosen", 37, 9], ["lebensmittel", 4, 1], ["sekt", 4, 1],
+    ] as const) {
+      expect(content.offers.filter(offer => offer.categorySlug === category && offer.language === "de")).toHaveLength(de);
+      expect(content.offers.filter(offer => offer.categorySlug === category && offer.language === "nl")).toHaveLength(nl);
+    }
+  });
   it.each(["de", "nl"])("binds %s crops to the original hash even with an unchanged URL and ID", language => {
     const flyer = {id:"same", language, validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:"/handzettel/same.pdf",pdfSha256:"new"};
     const crop = {flyerId:"same",language,validFrom:flyer.validFrom,validTo:flyer.validTo,categorySlug:"bier",sourceUrl:flyer.pdfUrl,pdfSha256:"old"};
     expect(select([crop],[flyer],new Date("2026-10-08T12:00:00Z"))).toEqual([]);
   });
   it("covers every priced panel on all 18 pages of the reviewed DE original", () => {
-    const actual = select(offers, [{id:"catalog-13027-41-2026",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:"https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",pdfSha256:"be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a"}], new Date("2026-10-08T12:00:00Z"));
+    const actual = select(offers, [{id:"catalog-13027-41-2026",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:LOCAL_DE_PDF,pdfSha256:"be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a"}], new Date("2026-10-08T12:00:00Z"));
     // Independent visual page census; page 6 has no individually priced product panel.
     const counts = Array.from({length:18}, (_, index) => actual.filter(offer => offer.sourcePage === index + 1).length);
     expect(counts).toEqual([10,10,9,9,10,0,1,4,9,8,5,5,4,5,5,5,7,1]);

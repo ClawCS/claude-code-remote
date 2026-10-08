@@ -33,12 +33,12 @@
         13
       ]
     ],
-    "imageSha256": "a225c58806e69ab7e9cac668ee2931464816fca1e187406a4756373ca7859cb3",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "1 Kasten König Pilsener 11,99 €; 2 Dosen König Pilsener 0,5 l gratis, zzgl. Pfand; entspricht rechnerisch 10,01 € je Kasten."
+    "conditions": "1 Kasten König Pilsener 11,99 €; 2 Dosen König Pilsener 0,5 l gratis, zzgl. Pfand; entspricht rechnerisch 10,01 € je Kasten.",
+    "imageSha256": "a225c58806e69ab7e9cac668ee2931464816fca1e187406a4756373ca7859cb3"
   },
   {
     "id": "de-2026-41-p01-bree-weine",
@@ -60,12 +60,12 @@
       1658,
       2400
     ],
-    "imageSha256": "9e92307334e4fd6a079e923250942231cde0745d9f706c06654fd5acee914fc6",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis 2,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "APP-Preis 2,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "9e92307334e4fd6a079e923250942231cde0745d9f706c06654fd5acee914fc6"
   },
   {
     "id": "de-2026-41-p01-gerri",
@@ -87,12 +87,12 @@
       1658,
       2400
     ],
-    "imageSha256": "669e6f68cd2eaf2f3a7023611c13453050ddff4a2760b0b7b8b39c4d5a754f87",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "669e6f68cd2eaf2f3a7023611c13453050ddff4a2760b0b7b8b39c4d5a754f87"
   },
   {
     "id": "de-2026-41-p01-rheinfels-quelle",
@@ -114,12 +114,12 @@
       1658,
       2400
     ],
-    "imageSha256": "34a291cdc167e459eb041b8a90801525358ade62fcfbb4070048b405206e2bb0",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "2 Kästen à 12 x 1 l PET für 10,99 €; zzgl. 3,30 € Pfand je Kasten."
+    "conditions": "2 Kästen à 12 x 1 l PET für 10,99 €; zzgl. 3,30 € Pfand je Kasten.",
+    "imageSha256": "34a291cdc167e459eb041b8a90801525358ade62fcfbb4070048b405206e2bb0"
   },
   {
     "id": "de-2026-41-p01-ramazzotti",
@@ -141,12 +141,12 @@
       1658,
       2400
     ],
-    "imageSha256": "1580c449b6cae83274b076301677bd5152aee9363fce12278da705c84e2dc04e",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "1580c449b6cae83274b076301677bd5152aee9363fce12278da705c84e2dc04e"
   },
   {
     "id": "de-2026-41-p01-vilsa",
@@ -168,12 +168,12 @@
       1658,
       2400
     ],
-    "imageSha256": "7efc50a51ddd45ad8d333d32894c614f2536ba6ee1b756d889672b4fe7a7a30d",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "7efc50a51ddd45ad8d333d32894c614f2536ba6ee1b756d889672b4fe7a7a30d"
   },
   {
     "id": "de-2026-41-p01-burgwallbronn",
@@ -195,12 +195,12 @@
       1658,
       2400
     ],
-    "imageSha256": "07dbf43f72502b71801c130669df28fa7b4897c7bbc8365014db8250367877d0",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "07dbf43f72502b71801c130669df28fa7b4897c7bbc8365014db8250367877d0"
   },
   {
     "id": "de-2026-41-p01-havana-club",
@@ -222,12 +222,12 @@
       1658,
       2400
     ],
-    "imageSha256": "8764ed4eadbcc8266d7e92a2c39a9ee80117fab54d6bb697c06c1fb02a52428a",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis 9,99 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "APP-Preis 9,99 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "8764ed4eadbcc8266d7e92a2c39a9ee80117fab54d6bb697c06c1fb02a52428a"
   },
   {
     "id": "de-2026-41-p01-schloesser-alt",
@@ -249,12 +249,12 @@
       1658,
       2400
     ],
-    "imageSha256": "4d88ec02a53368b49e1a702f9e8f269442a0f48e4171cfb51cb0cca6e24e8fad",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "4d88ec02a53368b49e1a702f9e8f269442a0f48e4171cfb51cb0cca6e24e8fad"
   },
   {
     "id": "de-2026-41-p01-bayreuther-hell",
@@ -276,12 +276,12 @@
       1658,
       2400
     ],
-    "imageSha256": "8762822de6861ca12c496942cee9c62cc9085bd4ec28e87069afff014608e587",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "8762822de6861ca12c496942cee9c62cc9085bd4ec28e87069afff014608e587"
   },
   {
     "id": "de-2026-41-p02-coca-cola",
@@ -303,12 +303,12 @@
       1658,
       2400
     ],
-    "imageSha256": "9726f6e04d393de46c74394d3e1d27711c3343664cdc566543511fe157532197",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "9726f6e04d393de46c74394d3e1d27711c3343664cdc566543511fe157532197"
   },
   {
     "id": "de-2026-41-p02-effect",
@@ -330,12 +330,12 @@
       1658,
       2400
     ],
-    "imageSha256": "4fd9463fa7b6582601e572f71445601b6810e7f0ac22e910def41c7d1d1aa43f",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "4fd9463fa7b6582601e572f71445601b6810e7f0ac22e910def41c7d1d1aa43f"
   },
   {
     "id": "de-2026-41-p02-gerolsteiner-erfrischung",
@@ -357,12 +357,12 @@
       1658,
       2400
     ],
-    "imageSha256": "84e02b0bd5a8e3d521e894b79f0a3346a0332d5cec751ae6dec05d21213390ae",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "84e02b0bd5a8e3d521e894b79f0a3346a0332d5cec751ae6dec05d21213390ae"
   },
   {
     "id": "de-2026-41-p02-landpark-limonaden",
@@ -384,12 +384,12 @@
       1658,
       2400
     ],
-    "imageSha256": "f005cc0c95cbe2affcd0703e429122540f2c6dca75062293db72af374c2c9353",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "f005cc0c95cbe2affcd0703e429122540f2c6dca75062293db72af374c2c9353"
   },
   {
     "id": "de-2026-41-p02-uludag",
@@ -411,12 +411,12 @@
       1658,
       2400
     ],
-    "imageSha256": "c055806e21dbaecb65229796617d0a6a267f7ee1e17b6fe7ad4fd28459dcb3fd",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis 0,67 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "APP-Preis 0,67 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "c055806e21dbaecb65229796617d0a6a267f7ee1e17b6fe7ad4fd28459dcb3fd"
   },
   {
     "id": "de-2026-41-p02-vita-cola",
@@ -438,12 +438,12 @@
       1658,
       2400
     ],
-    "imageSha256": "5ce39915741da432afc730daa7b8c02092d687993b627808eca811d6985e6a39",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "5ce39915741da432afc730daa7b8c02092d687993b627808eca811d6985e6a39"
   },
   {
     "id": "de-2026-41-p02-mio-mio",
@@ -465,12 +465,12 @@
       1658,
       2400
     ],
-    "imageSha256": "da7ced2bb52db0512c296232d0e63ad3867a684f39e676bc9f3350f06fa42e3c",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "da7ced2bb52db0512c296232d0e63ad3867a684f39e676bc9f3350f06fa42e3c"
   },
   {
     "id": "de-2026-41-p02-fuze-tea",
@@ -506,12 +506,12 @@
         21
       ]
     ],
-    "imageSha256": "303ec6bd07f2db857a10214f49723d0a7c805cf6e2ba75d8c8c5af7d283dbbbb",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "303ec6bd07f2db857a10214f49723d0a7c805cf6e2ba75d8c8c5af7d283dbbbb"
   },
   {
     "id": "de-2026-41-p02-spacy",
@@ -533,12 +533,12 @@
       1658,
       2400
     ],
-    "imageSha256": "2fef76ba430bd99194ecd2d20cea770eb364f5bd63cf152ebae1a46e3d1880d4",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "2fef76ba430bd99194ecd2d20cea770eb364f5bd63cf152ebae1a46e3d1880d4"
   },
   {
     "id": "de-2026-41-p02-schwarzwald",
@@ -574,12 +574,12 @@
         17
       ]
     ],
-    "imageSha256": "5979d7a086e7d10afff7337b680fbfc0fe908e823d18246cf6a316fe56fe40e8",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "5979d7a086e7d10afff7337b680fbfc0fe908e823d18246cf6a316fe56fe40e8"
   },
   {
     "id": "de-2026-41-p03-schloss-quelle",
@@ -601,12 +601,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ae99d520ab311eda924ecb94d60bb28a834dff77859722e1df81aa0d2609f3a6",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Anmelden in der trinkgut APP, Aktionskasten kaufen, digitale Stempel in der APP erhalten. Nach 5 Stempeln erhältst Du automatisch einen Coupon für Deinen Gratis-Kasten; in der App aktivieren und einlösen. Gratis-Kasten zzgl. Pfand. Teilnahmebedingungen und Datenschutz in der trinkgut APP und unter trinkgut.de/datenschutz."
+    "conditions": "Anmelden in der trinkgut APP, Aktionskasten kaufen, digitale Stempel in der APP erhalten. Nach 5 Stempeln erhältst Du automatisch einen Coupon für Deinen Gratis-Kasten; in der App aktivieren und einlösen. Gratis-Kasten zzgl. Pfand. Teilnahmebedingungen und Datenschutz in der trinkgut APP und unter trinkgut.de/datenschutz.",
+    "imageSha256": "ae99d520ab311eda924ecb94d60bb28a834dff77859722e1df81aa0d2609f3a6"
   },
   {
     "id": "de-2026-41-p03-mona",
@@ -628,12 +628,12 @@
       1658,
       2400
     ],
-    "imageSha256": "c7d21c8af8407eda1898a600a21660c980d932ff550484d69e2c792a91eedd38",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "c7d21c8af8407eda1898a600a21660c980d932ff550484d69e2c792a91eedd38"
   },
   {
     "id": "de-2026-41-p03-bergische-waldquelle",
@@ -655,12 +655,12 @@
       1658,
       2400
     ],
-    "imageSha256": "4729ac6d11c039d6feb00a51aa39fe988b681e4f6cdf3391078883d9a9a5da69",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "4729ac6d11c039d6feb00a51aa39fe988b681e4f6cdf3391078883d9a9a5da69"
   },
   {
     "id": "de-2026-41-p03-pepsi",
@@ -682,12 +682,12 @@
       1658,
       2400
     ],
-    "imageSha256": "434bfd861b0c8ea623156728681ac20a6d618e626811887b4827040bf99ed395",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis 0,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "APP-Preis 0,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "434bfd861b0c8ea623156728681ac20a6d618e626811887b4827040bf99ed395"
   },
   {
     "id": "de-2026-41-p03-forstetal",
@@ -709,12 +709,12 @@
       1658,
       2400
     ],
-    "imageSha256": "84cf260b4e3a0a61d9e9fc4df12e9cfa89c1216de8b0eac750e1186a54686dc5",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "84cf260b4e3a0a61d9e9fc4df12e9cfa89c1216de8b0eac750e1186a54686dc5"
   },
   {
     "id": "de-2026-41-p03-bad-meinberger",
@@ -736,12 +736,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ce9a541c5de7d834817248453e3d2832e1714b61d4e3423f8481f05f7522061d",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "ce9a541c5de7d834817248453e3d2832e1714b61d4e3423f8481f05f7522061d"
   },
   {
     "id": "de-2026-41-p03-active-o2",
@@ -763,12 +763,12 @@
       1658,
       2400
     ],
-    "imageSha256": "064ae54fca5645964b800ba75a9edaae3d5eff5bf3d862c1efd8a70f3f646fcd",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis 0,89 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "APP-Preis 0,89 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "064ae54fca5645964b800ba75a9edaae3d5eff5bf3d862c1efd8a70f3f646fcd"
   },
   {
     "id": "de-2026-41-p03-eau-la-la",
@@ -790,12 +790,12 @@
       1658,
       2400
     ],
-    "imageSha256": "616f7613f8f8c928ea09ddcf3b06f1d8b53d36e1acb76ac810ba21c1f7662ae2",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "3 Kästen à 12 x 1 l PET für 9,99 €; zzgl. 3,30 € Pfand je Kasten."
+    "conditions": "3 Kästen à 12 x 1 l PET für 9,99 €; zzgl. 3,30 € Pfand je Kasten.",
+    "imageSha256": "616f7613f8f8c928ea09ddcf3b06f1d8b53d36e1acb76ac810ba21c1f7662ae2"
   },
   {
     "id": "de-2026-41-p03-valensina",
@@ -831,12 +831,12 @@
         17
       ]
     ],
-    "imageSha256": "8eb8e2175675c01e865b5ec950d7f160f1f3ed72da224353be7264cdc25a1372",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "8eb8e2175675c01e865b5ec950d7f160f1f3ed72da224353be7264cdc25a1372"
   },
   {
     "id": "de-2026-41-p04-duckstein",
@@ -872,12 +872,12 @@
         168
       ]
     ],
-    "imageSha256": "a87ec06659dadf38d5ea322a47e9ff6fa9673dc3d11d0c7cc0989ed4ea36dac7",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "a87ec06659dadf38d5ea322a47e9ff6fa9673dc3d11d0c7cc0989ed4ea36dac7"
   },
   {
     "id": "de-2026-41-p04-wickueler",
@@ -913,12 +913,12 @@
         128
       ]
     ],
-    "imageSha256": "2f74a98e77a01571367654aeba8aa85b648c3eb1968291575956c0e55c82a228",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "2f74a98e77a01571367654aeba8aa85b648c3eb1968291575956c0e55c82a228"
   },
   {
     "id": "de-2026-41-p04-augustiner",
@@ -954,12 +954,12 @@
         208
       ]
     ],
-    "imageSha256": "fb89f732df46e831bd5cb7017057b31f8907f3a667fb6493d53f6926f97667a1",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "fb89f732df46e831bd5cb7017057b31f8907f3a667fb6493d53f6926f97667a1"
   },
   {
     "id": "de-2026-41-p04-krombacher-dose",
@@ -981,12 +981,12 @@
       1658,
       2400
     ],
-    "imageSha256": "f5499c6af8847f389b58b4ec118d2e1b9e7908d36abc6c56164361e551c7c34f",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "f5499c6af8847f389b58b4ec118d2e1b9e7908d36abc6c56164361e551c7c34f"
   },
   {
     "id": "de-2026-41-p04-faxe",
@@ -1008,12 +1008,12 @@
       1658,
       2400
     ],
-    "imageSha256": "b166df2d04a27d0932704ca987ba3218ddba0917865d4a119115494845aefbe6",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "b166df2d04a27d0932704ca987ba3218ddba0917865d4a119115494845aefbe6"
   },
   {
     "id": "de-2026-41-p04-diebels",
@@ -1035,12 +1035,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ebeaf54fcd2ce8b848be615fec5342fbb26078a845939a7da3dcc6810037fd21",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "ebeaf54fcd2ce8b848be615fec5342fbb26078a845939a7da3dcc6810037fd21"
   },
   {
     "id": "de-2026-41-p04-becks",
@@ -1076,12 +1076,12 @@
         18
       ]
     ],
-    "imageSha256": "bbe30b9c5f0c0730f8b03999e0f38810f62c2eb37b28451b15cc217401ed5498",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "bbe30b9c5f0c0730f8b03999e0f38810f62c2eb37b28451b15cc217401ed5498"
   },
   {
     "id": "de-2026-41-p04-veltins-sixpack",
@@ -1103,12 +1103,12 @@
       1658,
       2400
     ],
-    "imageSha256": "fef61ab629ff5571bbc147c87c26398670be7d3c578b7f83927309152040ace1",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "fef61ab629ff5571bbc147c87c26398670be7d3c578b7f83927309152040ace1"
   },
   {
     "id": "de-2026-41-p04-estrella",
@@ -1144,12 +1144,12 @@
         17
       ]
     ],
-    "imageSha256": "92a6974cca0f3e4023a69996a5704105da139345a02d9f3434e596e06613f4e1",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "92a6974cca0f3e4023a69996a5704105da139345a02d9f3434e596e06613f4e1"
   },
   {
     "id": "de-2026-41-p05-lausitzer-porter",
@@ -1171,12 +1171,12 @@
       1658,
       2400
     ],
-    "imageSha256": "e8ed962e09c41d6f1e60e82502be7f8b2c861b8302a53cf615b8163adb8cd51e",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "e8ed962e09c41d6f1e60e82502be7f8b2c861b8302a53cf615b8163adb8cd51e"
   },
   {
     "id": "de-2026-41-p05-altenmuenster",
@@ -1198,12 +1198,12 @@
       1658,
       2400
     ],
-    "imageSha256": "5a21dbbbda80fb6fcd87c84bced170bbc9a2c414dd31d96a7af09c28684c2f8e",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "5a21dbbbda80fb6fcd87c84bced170bbc9a2c414dd31d96a7af09c28684c2f8e"
   },
   {
     "id": "de-2026-41-p05-jever",
@@ -1225,12 +1225,12 @@
       1658,
       2400
     ],
-    "imageSha256": "6ba5b3d43a0358b6206b878552440848b2360df328baa5e7a2a6f619b5eac69b",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "6ba5b3d43a0358b6206b878552440848b2360df328baa5e7a2a6f619b5eac69b"
   },
   {
     "id": "de-2026-41-p05-veltins-kasten",
@@ -1252,12 +1252,12 @@
       1658,
       2400
     ],
-    "imageSha256": "cea647484f2a0d91019c0406c00d7300ba36ce5a260142b648298e3bb1eb8c30",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "cea647484f2a0d91019c0406c00d7300ba36ce5a260142b648298e3bb1eb8c30"
   },
   {
     "id": "de-2026-41-p05-karamalz",
@@ -1279,12 +1279,12 @@
       1658,
       2400
     ],
-    "imageSha256": "867daf3f60872c44ec829d14e6ea303de66503c5494d1b34b5149b723c0a5d11",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "867daf3f60872c44ec829d14e6ea303de66503c5494d1b34b5149b723c0a5d11"
   },
   {
     "id": "de-2026-41-p05-potts",
@@ -1306,12 +1306,12 @@
       1658,
       2400
     ],
-    "imageSha256": "094fd7428be147e68b657a5b8bc7ae14cea612bbc04d4b414b22a8d16fb3376c",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "094fd7428be147e68b657a5b8bc7ae14cea612bbc04d4b414b22a8d16fb3376c"
   },
   {
     "id": "de-2026-41-p05-kapuziner",
@@ -1333,12 +1333,12 @@
       1658,
       2400
     ],
-    "imageSha256": "a73eb0df87b110e80f123d47dfff5f77678cd18defc906b885e8ef50d4754c95",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "a73eb0df87b110e80f123d47dfff5f77678cd18defc906b885e8ef50d4754c95"
   },
   {
     "id": "de-2026-41-p05-koestritzer",
@@ -1360,12 +1360,12 @@
       1658,
       2400
     ],
-    "imageSha256": "d9a3912b4218aa648c84313e186854e3d4750f28a2fdd30cf1e40bfc8276d37b",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "d9a3912b4218aa648c84313e186854e3d4750f28a2fdd30cf1e40bfc8276d37b"
   },
   {
     "id": "de-2026-41-p05-pilsner-urquell",
@@ -1387,12 +1387,12 @@
       1658,
       2400
     ],
-    "imageSha256": "56f40ca16cf3cc8c295f40e5fb040e64dc66d0f9aecfac1449efa35adc7eca83",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "56f40ca16cf3cc8c295f40e5fb040e64dc66d0f9aecfac1449efa35adc7eca83"
   },
   {
     "id": "de-2026-41-p05-schneider",
@@ -1428,12 +1428,12 @@
         17
       ]
     ],
-    "imageSha256": "64281f0f32ebb7e0e22b950bc2ff1058bc3dddf5ca796bd42fdb2f5522a9d66f",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "64281f0f32ebb7e0e22b950bc2ff1058bc3dddf5ca796bd42fdb2f5522a9d66f"
   },
   {
     "id": "de-2026-41-p07-lego-funpack",
@@ -1455,12 +1455,12 @@
       1657,
       2400
     ],
-    "imageSha256": "d9e47d029575c6f91f7c47ba0d79949cc6a391f7db40bf952f95a5ca8f972791",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Nur mit der trinkgut App: Vom 24.08.2026 bis 17.10.2026 pro 5 EUR Einkaufswert einen LEGO FunPack-Treuepunkt sammeln. Mit 5 Treuepunkten ein LEGO FunPack für 5,99 EUR (UVP). Einlösen direkt an der Kasse bis 31.10.2026. Ohne Abgabe der trinkgut APP Treuepunkte ein LEGO FunPack für 11,99 EUR (UVP). Nur solange der Vorrat reicht."
+    "conditions": "Nur mit der trinkgut App: Vom 24.08.2026 bis 17.10.2026 pro 5 EUR Einkaufswert einen LEGO FunPack-Treuepunkt sammeln. Mit 5 Treuepunkten ein LEGO FunPack für 5,99 EUR (UVP). Einlösen direkt an der Kasse bis 31.10.2026. Ohne Abgabe der trinkgut APP Treuepunkte ein LEGO FunPack für 11,99 EUR (UVP). Nur solange der Vorrat reicht.",
+    "imageSha256": "d9e47d029575c6f91f7c47ba0d79949cc6a391f7db40bf952f95a5ca8f972791"
   },
   {
     "id": "de-2026-41-p08-berentzen-minis",
@@ -1482,12 +1482,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ee178215a194c133384418057004bbf38edf4e5f4232c95c920022355d23e0ce",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "ee178215a194c133384418057004bbf38edf4e5f4232c95c920022355d23e0ce"
   },
   {
     "id": "de-2026-41-p08-pilavas",
@@ -1509,12 +1509,12 @@
       1658,
       2400
     ],
-    "imageSha256": "f0e618654c5a5eba888daa81bb18a68b7af501f2db78c9d4772d07487484d0bc",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "f0e618654c5a5eba888daa81bb18a68b7af501f2db78c9d4772d07487484d0bc"
   },
   {
     "id": "de-2026-41-p08-jaegermeister",
@@ -1536,12 +1536,12 @@
       1658,
       2400
     ],
-    "imageSha256": "eefc9d526526c4fb3489e147ae4008860d1afb61cc5a89018e2c71a859d141bb",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Winter Edition nur für kurze Zeit erhältlich."
+    "conditions": "Winter Edition nur für kurze Zeit erhältlich.",
+    "imageSha256": "eefc9d526526c4fb3489e147ae4008860d1afb61cc5a89018e2c71a859d141bb"
   },
   {
     "id": "de-2026-41-p08-monkey-shoulder",
@@ -1563,12 +1563,12 @@
       1658,
       2400
     ],
-    "imageSha256": "0613e61389f356bfac500a0828516649b1bb4a65d9dec4aa0479351f172ff782",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis nur mit der trinkgut App: 19,99 EUR; regulärer Originalpreis 22,99 EUR."
+    "conditions": "APP-Preis nur mit der trinkgut App: 19,99 EUR; regulärer Originalpreis 22,99 EUR.",
+    "imageSha256": "0613e61389f356bfac500a0828516649b1bb4a65d9dec4aa0479351f172ff782"
   },
   {
     "id": "de-2026-41-p09-9mile",
@@ -1590,12 +1590,12 @@
       1658,
       2400
     ],
-    "imageSha256": "52001d300bc1ee48fecfb2299cd5dd5cbfafb60ecc5bfa3191f83c8066db398b",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Mit LED-Beleuchtung im Flaschenboden."
+    "conditions": "Mit LED-Beleuchtung im Flaschenboden.",
+    "imageSha256": "52001d300bc1ee48fecfb2299cd5dd5cbfafb60ecc5bfa3191f83c8066db398b"
   },
   {
     "id": "de-2026-41-p09-jim-beam",
@@ -1617,12 +1617,12 @@
       1658,
       2400
     ],
-    "imageSha256": "f606885a63580adbf8a524c8cf68585e668cc4d10f2123464945ae6e39fcbe1b",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Nur mit der APP: Eine Flasche Jim Beam 0,7 l kaufen und eine Flasche Coca-Cola 1,25 l im Wert von 1,59 EUR gratis dazu; zzgl. Pfand. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "Nur mit der APP: Eine Flasche Jim Beam 0,7 l kaufen und eine Flasche Coca-Cola 1,25 l im Wert von 1,59 EUR gratis dazu; zzgl. Pfand. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "f606885a63580adbf8a524c8cf68585e668cc4d10f2123464945ae6e39fcbe1b"
   },
   {
     "id": "de-2026-41-p09-kilbeggan",
@@ -1644,12 +1644,12 @@
       1658,
       2400
     ],
-    "imageSha256": "eab4664869153c1b11712c198af67f3c72847a952b590f90306cbb1934dbd649",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "200 PAYBACK Extra-Punkte = 2,00 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+    "conditions": "200 PAYBACK Extra-Punkte = 2,00 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten.",
+    "imageSha256": "eab4664869153c1b11712c198af67f3c72847a952b590f90306cbb1934dbd649"
   },
   {
     "id": "de-2026-41-p09-fuerst-bismarck",
@@ -1671,12 +1671,12 @@
       1658,
       2400
     ],
-    "imageSha256": "030d04dd8a80ea7d8794e53d9ac7a64a8637b5fb8e47ff92de0b40d1c5dbabec",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "030d04dd8a80ea7d8794e53d9ac7a64a8637b5fb8e47ff92de0b40d1c5dbabec"
   },
   {
     "id": "de-2026-41-p09-moskovskaya",
@@ -1698,12 +1698,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ed89ea461e93a2b4dd4ec6216e4502655cd3627afbf1ca8edc8cbc778f17da97",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "ed89ea461e93a2b4dd4ec6216e4502655cd3627afbf1ca8edc8cbc778f17da97"
   },
   {
     "id": "de-2026-41-p09-baileys",
@@ -1725,12 +1725,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ecb75bb1faa68ae9d2199e692d079e5a0d32756a85a80a03068ccd1ab78f3c08",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "ecb75bb1faa68ae9d2199e692d079e5a0d32756a85a80a03068ccd1ab78f3c08"
   },
   {
     "id": "de-2026-41-p09-kettenfett",
@@ -1752,12 +1752,12 @@
       1658,
       2400
     ],
-    "imageSha256": "8d69fb97c19482c47216abb950eff612533b0152417c184b17b30d7fb1395cc4",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "8d69fb97c19482c47216abb950eff612533b0152417c184b17b30d7fb1395cc4"
   },
   {
     "id": "de-2026-41-p09-sarti-rosa",
@@ -1779,12 +1779,12 @@
       1658,
       2400
     ],
-    "imageSha256": "3af8effb7ea0a65ce6e753386736e71666dd1f8879ea2e2e4011383f2d4b1d26",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "3af8effb7ea0a65ce6e753386736e71666dd1f8879ea2e2e4011383f2d4b1d26"
   },
   {
     "id": "de-2026-41-p09-tamnavulin",
@@ -1806,12 +1806,12 @@
       1658,
       2400
     ],
-    "imageSha256": "553ea37a62b56603872ab73caaa4f4af92a332c96901eb5fbbc5adb44ba52386",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "553ea37a62b56603872ab73caaa4f4af92a332c96901eb5fbbc5adb44ba52386"
   },
   {
     "id": "de-2026-41-p10-brut-dargent",
@@ -1833,12 +1833,12 @@
       1658,
       2400
     ],
-    "imageSha256": "45f3fd1febf4160148de48082e5c4b48826a422f3477737dcb6d061e9cef7bfa",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "45f3fd1febf4160148de48082e5c4b48826a422f3477737dcb6d061e9cef7bfa"
   },
   {
     "id": "de-2026-41-p10-reserve-marande",
@@ -1860,12 +1860,12 @@
       1658,
       2400
     ],
-    "imageSha256": "dc6e8163ab8fffe63e167fe10fc9f32b9c71737630f14e80aaac1495269bff51",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Wein des Monats 05.10.-31.10.: Einzelpreis 4,99 EUR; ab 6 Flaschen je 4,49 EUR. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Wein des Monats 05.10.-31.10.: Einzelpreis 4,99 EUR; ab 6 Flaschen je 4,49 EUR. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "dc6e8163ab8fffe63e167fe10fc9f32b9c71737630f14e80aaac1495269bff51"
   },
   {
     "id": "de-2026-41-p10-1112-weine",
@@ -1887,12 +1887,12 @@
       1658,
       2400
     ],
-    "imageSha256": "3b4dc1f26862e5e150664a75a01a6f33c04ca704527f337942c387dc3e46bed4",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "3b4dc1f26862e5e150664a75a01a6f33c04ca704527f337942c387dc3e46bed4"
   },
   {
     "id": "de-2026-41-p10-chateau",
@@ -1914,12 +1914,12 @@
       1658,
       2400
     ],
-    "imageSha256": "a4ca0a38eb8080d7da7373875dea580e58f41a55b74b401d9fa1a84c605038a2",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "a4ca0a38eb8080d7da7373875dea580e58f41a55b74b401d9fa1a84c605038a2"
   },
   {
     "id": "de-2026-41-p10-grand-sud",
@@ -1941,12 +1941,12 @@
       1658,
       2400
     ],
-    "imageSha256": "e82927eebc61f814b26ce1ea143a15e274a588acf6f4559c75575110129fe919",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "e82927eebc61f814b26ce1ea143a15e274a588acf6f4559c75575110129fe919"
   },
   {
     "id": "de-2026-41-p10-chipsfrisch",
@@ -1968,12 +1968,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ea629619d64120898727fad9a40adf99a0634d6c5efa37b5336626b064bd6461",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, funny-frisch 1,19 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, funny-frisch 1,19 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "ea629619d64120898727fad9a40adf99a0634d6c5efa37b5336626b064bd6461"
   },
   {
     "id": "de-2026-41-p10-den-gamle",
@@ -1995,12 +1995,12 @@
       1658,
       2400
     ],
-    "imageSha256": "8b15de77488d6f2321fce60e8ac9967335979adb120631991b2d2c4c43eb1c8a",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, Den Gamle 2,49 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, Den Gamle 2,49 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "8b15de77488d6f2321fce60e8ac9967335979adb120631991b2d2c4c43eb1c8a"
   },
   {
     "id": "de-2026-41-p10-melitta",
@@ -2022,12 +2022,12 @@
       1658,
       2400
     ],
-    "imageSha256": "8f05487503ffd2c811fe41116e80dbc304476bd77a212e74fe6fac7a5fc597a0",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "APP-Preis 5,99 EUR; regulärer Originalpreis 6,49 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+    "conditions": "APP-Preis 5,99 EUR; regulärer Originalpreis 6,49 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen.",
+    "imageSha256": "8f05487503ffd2c811fe41116e80dbc304476bd77a212e74fe6fac7a5fc597a0"
   },
   {
     "id": "de-2026-41-p11-moet-chandon",
@@ -2049,12 +2049,12 @@
       1658,
       2400
     ],
-    "imageSha256": "b0bfb50980839792ee56d46fad7aec5dd1c2d18f4a2250e060a34994a2e4a531",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+    "imageSha256": "b0bfb50980839792ee56d46fad7aec5dd1c2d18f4a2250e060a34994a2e4a531"
   },
   {
     "id": "de-2026-41-p11-pfaffl",
@@ -2076,12 +2076,12 @@
       1658,
       2400
     ],
-    "imageSha256": "2540af38f61ca623d8a7958e3c02eee2a696bccdde7f5074991180b586626b1c",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+    "imageSha256": "2540af38f61ca623d8a7958e3c02eee2a696bccdde7f5074991180b586626b1c"
   },
   {
     "id": "de-2026-41-p11-remy-martin",
@@ -2103,12 +2103,12 @@
       1658,
       2400
     ],
-    "imageSha256": "03768343c04a4d155fba20815a9ef847fb58ec6e15d750b37c9a8a784c772501",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+    "imageSha256": "03768343c04a4d155fba20815a9ef847fb58ec6e15d750b37c9a8a784c772501"
   },
   {
     "id": "de-2026-41-p11-chivas-regal",
@@ -2130,12 +2130,12 @@
       1658,
       2400
     ],
-    "imageSha256": "9064d85dd79cf54523ea7600a3c3023055dc927e7a77d8fab94a4a1f283852c6",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+    "imageSha256": "9064d85dd79cf54523ea7600a3c3023055dc927e7a77d8fab94a4a1f283852c6"
   },
   {
     "id": "de-2026-41-p11-don-papa",
@@ -2157,12 +2157,12 @@
       1658,
       2400
     ],
-    "imageSha256": "ae795fed3203859a035be235290d5e9f605f599e708877a8bb4a2ed5c6f4ffdf",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage.",
+    "imageSha256": "ae795fed3203859a035be235290d5e9f605f599e708877a8bb4a2ed5c6f4ffdf"
   },
   {
     "id": "de-2026-41-p12-tyrconnell",
@@ -2184,12 +2184,12 @@
       1658,
       2400
     ],
-    "imageSha256": "e261e466f07a22dd644775479cd8b5bde2206d1078efb7e9438ac6a390ae776f",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "e261e466f07a22dd644775479cd8b5bde2206d1078efb7e9438ac6a390ae776f"
   },
   {
     "id": "de-2026-41-p12-scarabus",
@@ -2211,12 +2211,12 @@
       1658,
       2400
     ],
-    "imageSha256": "0fb761e2e63e1e4d113470e287ee7b747484bedd698e03696b75da2f2caea523",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "0fb761e2e63e1e4d113470e287ee7b747484bedd698e03696b75da2f2caea523"
   },
   {
     "id": "de-2026-41-p12-connemara",
@@ -2238,12 +2238,12 @@
       1658,
       2400
     ],
-    "imageSha256": "6b910ac4559bc44224ad51a27f8a9cd39eefc3fa5edc8609c00daadc8c9502fc",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "6b910ac4559bc44224ad51a27f8a9cd39eefc3fa5edc8609c00daadc8c9502fc"
   },
   {
     "id": "de-2026-41-p12-johnnie-walker",
@@ -2265,12 +2265,12 @@
       1658,
       2400
     ],
-    "imageSha256": "8b73990955fb138571ff35729e37ab4a899f28e153f0a8e5ffc010552e7e6cd7",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "8b73990955fb138571ff35729e37ab4a899f28e153f0a8e5ffc010552e7e6cd7"
   },
   {
     "id": "de-2026-41-p12-glenmorangie",
@@ -2292,12 +2292,12 @@
       1658,
       2400
     ],
-    "imageSha256": "22aad2872e6c5188c4bc045fcda58da3b570720695e39a69a52cb06c024acf99",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "22aad2872e6c5188c4bc045fcda58da3b570720695e39a69a52cb06c024acf99"
   },
   {
     "id": "de-2026-41-p13-glenfarclas",
@@ -2319,12 +2319,12 @@
       1658,
       2400
     ],
-    "imageSha256": "1b110c566237a96ac228d46d4cc716bf96ff12f7b1d9905075cbf4694de9a7fb",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "1b110c566237a96ac228d46d4cc716bf96ff12f7b1d9905075cbf4694de9a7fb"
   },
   {
     "id": "de-2026-41-p13-kilchoman-sanaig",
@@ -2346,12 +2346,12 @@
       1658,
       2400
     ],
-    "imageSha256": "a427db515cb3b63ae2ef8770d36f80043e1080222da1300a90fddb83fda9b0ff",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "a427db515cb3b63ae2ef8770d36f80043e1080222da1300a90fddb83fda9b0ff"
   },
   {
     "id": "de-2026-41-p13-glenfiddich",
@@ -2373,12 +2373,12 @@
       1658,
       2400
     ],
-    "imageSha256": "36315e6a4356a6c48af792e52bc0fbf4645aab6c2fba212aad896615cf753de7",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "36315e6a4356a6c48af792e52bc0fbf4645aab6c2fba212aad896615cf753de7"
   },
   {
     "id": "de-2026-41-p13-laphroaig",
@@ -2400,12 +2400,12 @@
       1658,
       2400
     ],
-    "imageSha256": "3db2b8d2f09fb73d31f8ebc8e236d29b09dc2b3b1b0f01112d8923f7803db6d2",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "3db2b8d2f09fb73d31f8ebc8e236d29b09dc2b3b1b0f01112d8923f7803db6d2"
   },
   {
     "id": "de-2026-41-p14-raunikar",
@@ -2427,12 +2427,12 @@
       1658,
       2400
     ],
-    "imageSha256": "9a886700491bc3794b64b044665fd4ff00aed5b49d259990804605e437793920",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "9a886700491bc3794b64b044665fd4ff00aed5b49d259990804605e437793920"
   },
   {
     "id": "de-2026-41-p14-roku-gin",
@@ -2454,12 +2454,12 @@
       1658,
       2400
     ],
-    "imageSha256": "b34412c245f056bb090557981778d1cbb1cb81012457a2519c667a9c4564f11d",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "b34412c245f056bb090557981778d1cbb1cb81012457a2519c667a9c4564f11d"
   },
   {
     "id": "de-2026-41-p14-havana-club",
@@ -2481,12 +2481,12 @@
       1658,
       2400
     ],
-    "imageSha256": "05032dbf5fd4ef028f16b40265beae52045bdc3b6fb86875558ae91ee6ceaad0",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "05032dbf5fd4ef028f16b40265beae52045bdc3b6fb86875558ae91ee6ceaad0"
   },
   {
     "id": "de-2026-41-p14-bumbu",
@@ -2508,12 +2508,12 @@
       1658,
       2400
     ],
-    "imageSha256": "fc7b384a89814afc4d1150a867702827dfc7f303e16c58654c2454f2de0ad0a1",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "fc7b384a89814afc4d1150a867702827dfc7f303e16c58654c2454f2de0ad0a1"
   },
   {
     "id": "de-2026-41-p14-ron-zacapa",
@@ -2535,12 +2535,12 @@
       1658,
       2400
     ],
-    "imageSha256": "4fea20185a52f3d032cea12d7d400fa0628cdf9578d217d05630b0ec2dcef9fc",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "4fea20185a52f3d032cea12d7d400fa0628cdf9578d217d05630b0ec2dcef9fc"
   },
   {
     "id": "de-2026-41-p15-jaegermeister-manifest",
@@ -2562,12 +2562,12 @@
       1658,
       2400
     ],
-    "imageSha256": "118b669fffdef6ae671397fdd852853508db86efed702720f015c98263a9f060",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Mit gratis Glas! Jetzt mit Tumbler-Glas gratis."
+    "conditions": "Mit gratis Glas! Jetzt mit Tumbler-Glas gratis.",
+    "imageSha256": "118b669fffdef6ae671397fdd852853508db86efed702720f015c98263a9f060"
   },
   {
     "id": "de-2026-41-p15-cardenal-mendoza",
@@ -2609,12 +2609,12 @@
         128
       ]
     ],
-    "imageSha256": "58a5795ac386cb383cda9cc4a1e3d36360b78959a20668203812c7dd3830a7b5",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Mit gratis Glas!"
+    "conditions": "Mit gratis Glas!",
+    "imageSha256": "58a5795ac386cb383cda9cc4a1e3d36360b78959a20668203812c7dd3830a7b5"
   },
   {
     "id": "de-2026-41-p15-metaxa",
@@ -2656,12 +2656,12 @@
         128
       ]
     ],
-    "imageSha256": "d87c11748a9cdb468c657da76b6a5e665e29c0ed57d98fe7f46307654f631501",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Mit gratis Beanie!"
+    "conditions": "Mit gratis Beanie!",
+    "imageSha256": "d87c11748a9cdb468c657da76b6a5e665e29c0ed57d98fe7f46307654f631501"
   },
   {
     "id": "de-2026-41-p15-grey-goose",
@@ -2683,12 +2683,12 @@
       1658,
       2400
     ],
-    "imageSha256": "dfac558b2e26a6c60441c940ee54fbcb5f54c8b37b2f1cf773c44136a5945183",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "dfac558b2e26a6c60441c940ee54fbcb5f54c8b37b2f1cf773c44136a5945183"
   },
   {
     "id": "de-2026-41-p15-belvedere",
@@ -2710,12 +2710,12 @@
       1658,
       2400
     ],
-    "imageSha256": "7123ee82ac2dfabc9a74069d838ae2144c316cfd8e2e39f508fc54d7664195b3",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "7123ee82ac2dfabc9a74069d838ae2144c316cfd8e2e39f508fc54d7664195b3"
   },
   {
     "id": "de-2026-41-p16-mucho-mas-borgo",
@@ -2737,12 +2737,12 @@
       1658,
       2400
     ],
-    "imageSha256": "25e274ef2fb213ce263b10882deb13b35cd3e935fa375d63b0d950efb08a200f",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "25e274ef2fb213ce263b10882deb13b35cd3e935fa375d63b0d950efb08a200f"
   },
   {
     "id": "de-2026-41-p16-el-cortez-xo",
@@ -2764,12 +2764,12 @@
       1658,
       2400
     ],
-    "imageSha256": "6b7336fa92847cd80d7e6f0e78ce765adf7993c8512f9d907bec8f1f25d10ec5",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "6b7336fa92847cd80d7e6f0e78ce765adf7993c8512f9d907bec8f1f25d10ec5"
   },
   {
     "id": "de-2026-41-p16-markus-molitor",
@@ -2805,12 +2805,12 @@
         21
       ]
     ],
-    "imageSha256": "2d4e9be7de5e3d87ec38cc0c6bd91dd339ca219689e2840141881e0161bd138a",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "2d4e9be7de5e3d87ec38cc0c6bd91dd339ca219689e2840141881e0161bd138a"
   },
   {
     "id": "de-2026-41-p16-antico-monastero",
@@ -2832,12 +2832,12 @@
       1658,
       2400
     ],
-    "imageSha256": "de95d14ec18af4efd3cd6d8b3b798102cae0e0060bded47a148968d03c03a3b2",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "de95d14ec18af4efd3cd6d8b3b798102cae0e0060bded47a148968d03c03a3b2"
   },
   {
     "id": "de-2026-41-p16-mayschoss",
@@ -2859,12 +2859,12 @@
       1658,
       2400
     ],
-    "imageSha256": "460ea8a5c943144d7b0762c6b75b811c995e50cb5a3638ab138abda6ff06c669",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "460ea8a5c943144d7b0762c6b75b811c995e50cb5a3638ab138abda6ff06c669"
   },
   {
     "id": "de-2026-41-p17-fantazzy",
@@ -2886,12 +2886,12 @@
       1658,
       2400
     ],
-    "imageSha256": "b1b5cf2363f3d839720fc530551f25459688a3b3880d339f095a80193747e267",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "b1b5cf2363f3d839720fc530551f25459688a3b3880d339f095a80193747e267"
   },
   {
     "id": "de-2026-41-p17-barbanera",
@@ -2913,12 +2913,12 @@
       1658,
       2400
     ],
-    "imageSha256": "31dc24bed80651baf1263f0ee0f367194cc3235e09cd16f9d394f6c989cb23ec",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "*für den 2023er"
+    "conditions": "*für den 2023er",
+    "imageSha256": "31dc24bed80651baf1263f0ee0f367194cc3235e09cd16f9d394f6c989cb23ec"
   },
   {
     "id": "de-2026-41-p17-cremant",
@@ -2940,12 +2940,12 @@
       1658,
       2400
     ],
-    "imageSha256": "336115eb3bf9c36fd4ade8e82ec52f1f21a25694820b22219e99efaa03bf92d5",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "336115eb3bf9c36fd4ade8e82ec52f1f21a25694820b22219e99efaa03bf92d5"
   },
   {
     "id": "de-2026-41-p17-valdo",
@@ -2967,12 +2967,12 @@
       1658,
       2400
     ],
-    "imageSha256": "eebe7baaecba13b772b6a2dd28e5d6ea53004c0a7f47f2425c25cf57104b8a6c",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "eebe7baaecba13b772b6a2dd28e5d6ea53004c0a7f47f2425c25cf57104b8a6c"
   },
   {
     "id": "de-2026-41-p17-sancerre",
@@ -2994,12 +2994,12 @@
       1658,
       2400
     ],
-    "imageSha256": "017a90ca67c34be68d34cb142ee31b404a56c1a9d769dbab1f0463bbb3113c8c",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "017a90ca67c34be68d34cb142ee31b404a56c1a9d769dbab1f0463bbb3113c8c"
   },
   {
     "id": "de-2026-41-p17-chateauneuf",
@@ -3021,12 +3021,12 @@
       1658,
       2400
     ],
-    "imageSha256": "b5cc30997bfa7320c40c481ccd2f278b2e2fec4a18934a8e599cd0bdd0ca9fad",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "b5cc30997bfa7320c40c481ccd2f278b2e2fec4a18934a8e599cd0bdd0ca9fad"
   },
   {
     "id": "de-2026-41-p17-barahonda",
@@ -3048,12 +3048,12 @@
       1658,
       2400
     ],
-    "imageSha256": "845690c77a15ba24478e6f0d15f08f2e7899a2a5d09f04a884836029d333f6a2",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "845690c77a15ba24478e6f0d15f08f2e7899a2a5d09f04a884836029d333f6a2"
   },
   {
     "id": "de-2026-41-p18-wein-mehrkauf",
@@ -3075,12 +3075,12 @@
       1658,
       2400
     ],
-    "imageSha256": "26f07ee0f9da6bfaafd9b0bea425b5c1cea8e82707c181652210cf8f004578a2",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
-    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "sourceUrl": "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Stelle Dir Deinen Karton selbst zusammen. Einzelpreis 8.99 (1 l = € 11.99), durchgestrichener Vergleichspreis 9.99 €¹; ab 3 Flaschen je 7.99 (1 l = € 10.65); ab 6 Flaschen je 6.99 (1 l = € 9.32). Je 0,75 l Flasche. ¹ Niedrigster Gesamtpreis der letzten 30 Tage. Saint-Émilion Grand Cru*: *nach Abverkauf liefern wir Château Vieux Pressoir. Auszeichnungen: Scarànto für den 2024er; Empirio für den 2022er; Rioja Vega für den 2021er. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht."
+    "conditions": "Stelle Dir Deinen Karton selbst zusammen. Einzelpreis 8.99 (1 l = € 11.99), durchgestrichener Vergleichspreis 9.99 €¹; ab 3 Flaschen je 7.99 (1 l = € 10.65); ab 6 Flaschen je 6.99 (1 l = € 9.32). Je 0,75 l Flasche. ¹ Niedrigster Gesamtpreis der letzten 30 Tage. Saint-Émilion Grand Cru*: *nach Abverkauf liefern wir Château Vieux Pressoir. Auszeichnungen: Scarànto für den 2024er; Empirio für den 2022er; Rioja Vega für den 2021er. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht.",
+    "imageSha256": "26f07ee0f9da6bfaafd9b0bea425b5c1cea8e82707c181652210cf8f004578a2"
   },
   {
     "id": "nl-2026-41-tamnavulin",
@@ -3102,12 +3102,12 @@
       2600,
       1860
     ],
-    "imageSha256": "733ebb6e9a61895b22c8d56eef92f1bae7a6ec6ffcfdc450147c5eb8d709a317",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "733ebb6e9a61895b22c8d56eef92f1bae7a6ec6ffcfdc450147c5eb8d709a317"
   },
   {
     "id": "nl-2026-41-kilbeggan",
@@ -3129,12 +3129,12 @@
       2600,
       1860
     ],
-    "imageSha256": "c2ea1e2d994fd9440228b4ccebecbf1aee101815bbcba2223094f3d02c76d114",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "c2ea1e2d994fd9440228b4ccebecbf1aee101815bbcba2223094f3d02c76d114"
   },
   {
     "id": "nl-2026-41-jim-beam",
@@ -3156,12 +3156,12 @@
       2600,
       1860
     ],
-    "imageSha256": "5c031a18344ce733e8e8acd1a9636a0440e3f3d1666ff5fe59a85ef52949aaa4",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "5c031a18344ce733e8e8acd1a9636a0440e3f3d1666ff5fe59a85ef52949aaa4"
   },
   {
     "id": "nl-2026-41-label-5",
@@ -3197,12 +3197,12 @@
         421
       ]
     ],
-    "imageSha256": "275fab1826295be40f406f0aa625441a9853c59b779d68024c1518859997a2cd",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "1-Liter-Flasche laut Originalangebot. Die zugehörige Rezeptidee bleibt im Originalausschnitt sichtbar."
+    "conditions": "1-Liter-Flasche laut Originalangebot. Die zugehörige Rezeptidee bleibt im Originalausschnitt sichtbar.",
+    "imageSha256": "275fab1826295be40f406f0aa625441a9853c59b779d68024c1518859997a2cd"
   },
   {
     "id": "nl-2026-41-baileys",
@@ -3224,13 +3224,13 @@
       2600,
       1860
     ],
-    "imageSha256": "75789a10e66f3c49bd3f131bd5def6b38ba12536f1289930088f1e11ba531dcc",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "",
-    "sourceWarning": "Im Original stehen 0,5- und 0,7-Liter-Gebinde mit demselben Grundpreis. Gebinde und Grundpreis bitte im Markt bestätigen."
+    "sourceWarning": "Im Original stehen 0,5- und 0,7-Liter-Gebinde mit demselben Grundpreis. Gebinde und Grundpreis bitte im Markt bestätigen.",
+    "imageSha256": "75789a10e66f3c49bd3f131bd5def6b38ba12536f1289930088f1e11ba531dcc"
   },
   {
     "id": "nl-2026-41-ramazzotti",
@@ -3252,12 +3252,12 @@
       2600,
       1860
     ],
-    "imageSha256": "009fdec1747d15dae9bf0a26d8e39ffbbfa4fa4affa1de019a6f36c6a859293d",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "009fdec1747d15dae9bf0a26d8e39ffbbfa4fa4affa1de019a6f36c6a859293d"
   },
   {
     "id": "nl-2026-41-pilavas",
@@ -3279,12 +3279,12 @@
       2600,
       1860
     ],
-    "imageSha256": "75de5121ed3aa97e6e45462d7cc73d6c8771ee9081644eb79f7f353cb5c6275f",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "75de5121ed3aa97e6e45462d7cc73d6c8771ee9081644eb79f7f353cb5c6275f"
   },
   {
     "id": "nl-2026-41-jaegermeister",
@@ -3306,13 +3306,13 @@
       2600,
       1860
     ],
-    "imageSha256": "c93b20ceb4aeb88102f4af443126eaf206e3ecc734df15bfdda446d6e8fdf568",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "",
-    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+    "imageSha256": "c93b20ceb4aeb88102f4af443126eaf206e3ecc734df15bfdda446d6e8fdf568"
   },
   {
     "id": "nl-2026-41-havana-club",
@@ -3334,13 +3334,13 @@
       2600,
       1860
     ],
-    "imageSha256": "2be0ce7d5e6ec0f5ed119a64c5b1b2eef243df83e428981b2bc140ad99f27eec",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
-    "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+    "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis.",
+    "imageSha256": "2be0ce7d5e6ec0f5ed119a64c5b1b2eef243df83e428981b2bc140ad99f27eec"
   },
   {
     "id": "nl-2026-41-bree",
@@ -3362,12 +3362,12 @@
       2600,
       1860
     ],
-    "imageSha256": "113e6a2ca302aef80669cc3cace0a360527283ea5f64b03443a8e95eda416956",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app)."
+    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+    "imageSha256": "113e6a2ca302aef80669cc3cace0a360527283ea5f64b03443a8e95eda416956"
   },
   {
     "id": "nl-2026-41-brut-dargent",
@@ -3389,12 +3389,12 @@
       2600,
       1860
     ],
-    "imageSha256": "c72fce33ba68aec801c61cb5b831fd61a9c2ad120299a6d56ebb083f828c8fff",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "c72fce33ba68aec801c61cb5b831fd61a9c2ad120299a6d56ebb083f828c8fff"
   },
   {
     "id": "nl-2026-41-grand-sud",
@@ -3416,13 +3416,13 @@
       2600,
       1860
     ],
-    "imageSha256": "fc2e8b3b9a332cf80caa21c84d7ef1e0e057eb7a8c1b097d9183a98ec2801173",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "",
-    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+    "imageSha256": "fc2e8b3b9a332cf80caa21c84d7ef1e0e057eb7a8c1b097d9183a98ec2801173"
   },
   {
     "id": "nl-2026-41-fuze-tea",
@@ -3444,12 +3444,12 @@
       2600,
       1860
     ],
-    "imageSha256": "d2fcd10bd6449327199e48d85bc6f4276388a817a03e2995f533608d70ef5741",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "d2fcd10bd6449327199e48d85bc6f4276388a817a03e2995f533608d70ef5741"
   },
   {
     "id": "nl-2026-41-pepsi",
@@ -3471,13 +3471,13 @@
       2600,
       1860
     ],
-    "imageSha256": "ee5f55ee19a4d9c538af57bbe7094a34477c48d9f4aaaf3725fc52a4f7860076",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
-    "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+    "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis.",
+    "imageSha256": "ee5f55ee19a4d9c538af57bbe7094a34477c48d9f4aaaf3725fc52a4f7860076"
   },
   {
     "id": "nl-2026-41-active-o2",
@@ -3499,12 +3499,12 @@
       2600,
       1860
     ],
-    "imageSha256": "c5d300681167c05f2999433c3cf751931e0d4aa69baa1a2cc92680281e9072a2",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app)."
+    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+    "imageSha256": "c5d300681167c05f2999433c3cf751931e0d4aa69baa1a2cc92680281e9072a2"
   },
   {
     "id": "nl-2026-41-chipsfrisch",
@@ -3526,13 +3526,13 @@
       2600,
       1860
     ],
-    "imageSha256": "1b589b32f22bd9a593db4d474893fb4dac6d65a09e43cb5efa5f2f1e13c08cfd",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "",
-    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+    "imageSha256": "1b589b32f22bd9a593db4d474893fb4dac6d65a09e43cb5efa5f2f1e13c08cfd"
   },
   {
     "id": "nl-2026-41-hertog-jan",
@@ -3568,13 +3568,13 @@
         261
       ]
     ],
-    "imageSha256": "4b01c02ec59e32cfd3f032cd83be5dad0aedf73c58c16c3d1d828c1fd99d8505",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "Doppelpack: 2 Kästen laut Original. Die Pfandangabe ist im unveränderten Originalausschnitt enthalten.",
-    "sourceWarning": "Im Original ist nicht eindeutig, ob das genannte Pfand je Kasten oder für das Doppelpack gilt. Bitte im Markt bestätigen."
+    "sourceWarning": "Im Original ist nicht eindeutig, ob das genannte Pfand je Kasten oder für das Doppelpack gilt. Bitte im Markt bestätigen.",
+    "imageSha256": "4b01c02ec59e32cfd3f032cd83be5dad0aedf73c58c16c3d1d828c1fd99d8505"
   },
   {
     "id": "nl-2026-41-krombacher",
@@ -3610,13 +3610,13 @@
         251
       ]
     ],
-    "imageSha256": "3d332e2435a7249131947b9ed9afa9a69a5a2150b032268f1e3833b006f9d1ac",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "Im Handzettel als Bier des Monats gekennzeichnet. Bitte die Mengenbedingungen des Monatsangebots beim Markt bestätigen lassen.",
-    "sourceWarning": "Die Monatsaktion auf Instagram nennt mindestens drei Kästen für diesen Preis je Kasten. Im Wochenhandzettel fehlt diese Mengenbedingung; bitte vor dem Kauf im Markt klären."
+    "sourceWarning": "Die Monatsaktion auf Instagram nennt mindestens drei Kästen für diesen Preis je Kasten. Im Wochenhandzettel fehlt diese Mengenbedingung; bitte vor dem Kauf im Markt klären.",
+    "imageSha256": "3d332e2435a7249131947b9ed9afa9a69a5a2150b032268f1e3833b006f9d1ac"
   },
   {
     "id": "nl-2026-41-schneider-weisse",
@@ -3638,12 +3638,12 @@
       2600,
       1860
     ],
-    "imageSha256": "af3d5b0e02f9ce1815926bc471fad3ddabb22753474ee1a8f158d76b3a04e78e",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "af3d5b0e02f9ce1815926bc471fad3ddabb22753474ee1a8f158d76b3a04e78e"
   },
   {
     "id": "nl-2026-41-veltins-vplus",
@@ -3665,12 +3665,12 @@
       2600,
       1860
     ],
-    "imageSha256": "51a371ab1bd3408c04c7c5c7d3dc8635e6dd60f2b5e6dbb851765b1f9b314a81",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
-    "conditions": ""
+    "conditions": "",
+    "imageSha256": "51a371ab1bd3408c04c7c5c7d3dc8635e6dd60f2b5e6dbb851765b1f9b314a81"
   },
   {
     "id": "nl-2026-41-coca-cola",
@@ -3692,12 +3692,12 @@
       2600,
       1860
     ],
-    "imageSha256": "a43b19e103aed1287928ca46b759dd4aba5ea1d63bf6aa0790efebcffe214b83",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "/handzettel/2026/nl-2026-10-05.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-08",
     "conditions": "24 × 0,33 Liter laut Original. Teilweise koffeinhaltig.",
-    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
+    "imageSha256": "a43b19e103aed1287928ca46b759dd4aba5ea1d63bf6aa0790efebcffe214b83"
   }
 ]
