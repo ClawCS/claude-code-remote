@@ -9,6 +9,17 @@ describe("weekly publishing verification", () => {
   it("rejects an expired local PDF rendered on a regular empty Sunday",()=>{
     expect(verifyPublishedFlyerMarkup([], '<a href="/handzettel/2026-10-05/de.pdf">Expired</a>', "/angebote")).not.toEqual([]);
   });
+  it.each([
+    "/handzettel/2026-10-05/de.pdf?download=1",
+    "https://trinkgut-jammers.de/handzettel/2026-10-05/de.pdf",
+    "https://trinkgut-jammers.de/handzettel/2026-10-05/de.pdf?download=1#page=2",
+  ])("rejects normalized expired same-origin Sunday links: %s",link=>{
+    expect(verifyPublishedFlyerMarkup([],`<a href="${link}">Expired</a>`,"/angebote","https://trinkgut-jammers.de")).not.toEqual([]);
+  });
+  it("does not let an unrelated origin satisfy the approved local PDF link",()=>{
+    const local={...flyer,pdfUrl:"/handzettel/2026-10-05/de.pdf"};
+    expect(verifyPublishedFlyerMarkup([local],`<a href="https://unrelated.example/handzettel/2026-10-05/de.pdf">PDF</a><img src="${local.coverUrl}">`,"/angebote","https://trinkgut-jammers.de")).not.toEqual([]);
+  });
   it("rejects otherwise complete offer markup beneath a hidden ancestor",()=>{
     const {offers}=weeklyOfferFixtureContent("monday"),o=offers[0];
     const card=`<article data-offer-id="${o.id}"><h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`;

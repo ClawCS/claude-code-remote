@@ -117,7 +117,7 @@ try {
       const page=await request(route);const html=await page.text();
       if (!page.headers.get("content-type")?.startsWith("text/html")) errors.push(`Wochenflyerseite liefert kein HTML: ${route}`);
       if (route==="/"&&!html.includes('id="aktuell"')) errors.push("Homepage oder Angebotsbereich nicht erreichbar.");
-      errors.push(...verifyPublishedFlyerMarkup(expectedFlyers,html,route));
+      errors.push(...verifyPublishedFlyerMarkup(expectedFlyers,html,route,origin.origin));
     }
     for (const route of ["/produkte",...new Set(expectedOffers.offers.map(offer=>`/kategorie/${offer.categorySlug}`))]) {
       const page=await request(route);const html=await page.text();

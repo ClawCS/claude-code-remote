@@ -81,7 +81,7 @@ export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actu
   return errors;
 }
 
-export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], html: string, route: string): string[] {
+export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], html: string, route: string, checkedOrigin = "https://markup.invalid"): string[] {
   const errors: string[] = [];
   const renderedHtml = html.replace(/<!--[\s\S]*?-->/g, "")
     .replace(/<(script|textarea|style|title|iframe|noscript|xmp|noembed|noframes)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "")
@@ -119,7 +119,13 @@ export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], 
     });
     if (!hasCover) errors.push(`Geprüftes ${flyer.language.toUpperCase()}-Flyer-Vorschaubild fehlt auf ${route}: ${flyer.id}`);
   }
-  if (links.some(link=>/^\/handzettel\/.*\.pdf(?:#.*)?$/.test(link)&&!expected.some(flyer=>flyer.pdfUrl.split("#")[0]===link.split("#")[0]))) errors.push(`Nicht freigegebener oder abgelaufener lokaler Wochenflyer auf ${route}.`);
+  const origin=new URL(checkedOrigin).origin;
+  const localPath=(value:string)=>{
+    try { const url=new URL(value,new URL(route,origin));return url.origin===origin?url.pathname:null; }
+    catch { return null; }
+  };
+  const approvedPaths=new Set(expected.map(flyer=>localPath(flyer.pdfUrl)).filter(value=>value!==null));
+  if (links.some(link=>{const pathname=localPath(link);return pathname!==null&&/^\/handzettel\/.*\.pdf$/.test(pathname)&&!approvedPaths.has(pathname);})) errors.push(`Nicht freigegebener oder abgelaufener lokaler Wochenflyer auf ${route}.`);
   return errors;
 }
 

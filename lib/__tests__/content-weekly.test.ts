@@ -49,7 +49,7 @@ describe("reviewed local preparation",()=>{
     const result=await prepareReviewed({corruptNl:true});expect(result.code).toBe(1);expect(result.report.errors.some(message=>/NL/.test(message))).toBe(true);expect(result.report.sources.some(source=>source.language==="de"&&source.result==="verified-partial-package")).toBe(true);expect(result.manifestAfter).toEqual(result.manifestBefore);
   });
 });
-async function runBoundCheck(options:{now?:string;missingNl?:boolean;empty?:boolean;sourceOnly?:boolean;corrupt?:string;missingOffer?:boolean;wrongHash?:boolean;badLegacy?:boolean;missingCard?:boolean;missingLink?:boolean;badType?:boolean;prepare?:boolean;week?:string}={}) {
+async function runBoundCheck(options:{now?:string;missingNl?:boolean;empty?:boolean;sourceOnly?:boolean;corrupt?:string;missingOffer?:boolean;wrongHash?:boolean;badLegacy?:boolean;missingCard?:boolean;missingLink?:boolean;badType?:boolean;prepare?:boolean;week?:string;staleLink?:string}={}) {
   const f=await weeklyPublicationFixture();
   try {
     if(options.missingNl) { f.publication.editions.splice(1);f.sources.splice(1);f.offers.splice(2);await f.save(); }
@@ -64,6 +64,7 @@ async function runBoundCheck(options:{now?:string;missingNl?:boolean;empty?:bool
     const flyerHtml=flyers.map(e=>`<a href="${e.pdfUrl}">PDF</a><img src="${e.coverUrl}">`).join("");
     const cards=offers.map(o=>`<article data-offer-id="${o.id}"><h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`).join("");
     const pages={"/":'<section id="aktuell">'+flyerHtml+"</section>","/angebote":flyerHtml,"/handzettel":flyerHtml,"/nl":flyerHtml,"/produkte":options.missingCard?"":cards,"/kategorie/alkoholfrei":options.missingLink?cards.replaceAll(/#page=\d+/g,""):cards};
+    if (options.staleLink) pages["/angebote"]+=`<a href="${options.staleLink}">Expired</a>`;
     const legacy=flyer?{...flyer,status:"ok",pages:[{number:1,imageUrl:flyer.coverUrl,thumbnailUrl:flyer.coverUrl}]}:{status:"fallback",pageCount:0,pages:[],viewerUrl:null,pdfUrl:null};
     await f.write("test-published.json",JSON.stringify({current:{flyer,nlFlyer},index:{status:content.status,issues:content.issues,flyers},offers:{...content,offers:options.missingOffer?offers.slice(1):options.wrongHash?offers.map(o=>({...o,pdfSha256:"b".repeat(64)})):offers},legacy:options.badLegacy?{...legacy,pages:[{number:2,imageUrl:"/wrong.webp",thumbnailUrl:"/wrong.webp"}]}:legacy,pages,corruptPath:options.corrupt,badType:options.badType}));
     await f.write("data/editorial/source-config.json",JSON.stringify({publicUrl:"https://trinkgut-jammers.de"}));
@@ -94,6 +95,13 @@ describe("bound weekly CLI completeness",()=>{
   });
   it("accepts the regular empty Sunday state",async()=>{
     const result=await runBoundCheck({now:"2026-10-11T12:00:00Z",empty:true});expect(result.code).toBe(0);expect(result.report.errors).toEqual([]);expect(result.report.websiteVerified).toBe(true);
+  });
+  it.each([
+    "/handzettel/2026-10-05/de.pdf?download=1",
+    "http://127.0.0.1:39001/handzettel/2026-10-05/de.pdf",
+  ])("passes the actual checked origin into expired Sunday link verification: %s",async staleLink=>{
+    const result=await runBoundCheck({now:"2026-10-11T12:00:00Z",empty:true,staleLink});
+    expect(result.code).toBe(1);expect(result.report.websiteVerified).toBe(false);expect(result.report.errors.some(e=>/abgelaufener lokaler Wochenflyer/.test(e))).toBe(true);
   });
   it("demands the complete following week for Sunday preparation",async()=>{
     const result=await runBoundCheck({now:"2026-10-11T15:00:00Z",prepare:true});expect(result.code).toBe(1);expect(result.report.target.validFrom).toBe("2026-10-12");
