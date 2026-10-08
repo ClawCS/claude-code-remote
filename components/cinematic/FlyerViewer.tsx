@@ -14,8 +14,8 @@ const subscribeToHydration = () => () => undefined;
 const getClientHydrationSnapshot = () => true;
 const getServerHydrationSnapshot = () => false;
 const COPY = {
-  de: {external:"Handzettel extern öffnen",pdf:"Handzettel als PDF öffnen",cover:"Titelseite",noCover:"Handzettel ohne Vorschaubild",view:"Handzettel ansehen",help:"Der externe Handzettel kann auch direkt geöffnet werden.",closeLabel:"Handzettel schließen",close:"Schließen",viewTitle:"ansehen",frame:"externer Handzettel",error:"Der Handzettel konnte hier nicht geladen werden."},
-  nl: {external:"Folder extern openen",pdf:"Folder als PDF openen",cover:"Voorpagina",noCover:"Folder zonder voorbeeldafbeelding",view:"Folder bekijken",help:"Je kunt de externe folder ook rechtstreeks openen.",closeLabel:"Folder sluiten",close:"Sluiten",viewTitle:"bekijken",frame:"externe folder",error:"De folder kon hier niet worden geladen."},
+  de: {external:"Handzettel direkt öffnen",pdf:"Handzettel als PDF öffnen",cover:"Titelseite",noCover:"Handzettel ohne Vorschaubild",view:"Handzettel ansehen",help:"Der Handzettel kann auch direkt geöffnet werden.",closeLabel:"Handzettel schließen",close:"Schließen",viewTitle:"ansehen",frame:"Handzettel",error:"Der Handzettel konnte hier nicht geladen werden."},
+  nl: {external:"Folder direct openen",pdf:"Folder als PDF openen",cover:"Voorpagina",noCover:"Folder zonder voorbeeldafbeelding",view:"Folder bekijken",help:"Je kunt de folder ook rechtstreeks openen.",closeLabel:"Folder sluiten",close:"Sluiten",viewTitle:"bekijken",frame:"folder",error:"De folder kon hier niet worden geladen."},
 } as const;
 
 type ViewerState = "loading" | "ready" | "error";

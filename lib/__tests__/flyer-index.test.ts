@@ -1,78 +1,43 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import official from "@/e2e/fixtures/handzettel-cache.json";
-const mocks=vi.hoisted(()=>({official:vi.fn(),packages:vi.fn()}));
-vi.mock("@/lib/handzettel-catalog",async importOriginal=>({...await importOriginal<typeof import("@/lib/handzettel-catalog")>(),loadValidatedHandzettelCache:mocks.official}));
-vi.mock("@/lib/flyer-packages",async importOriginal=>({...await importOriginal<typeof import("@/lib/flyer-packages")>(),loadFlyerPackages:mocks.packages}));
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { rm } from "node:fs/promises";
+vi.mock("server-only",()=>({}));
+const boundary=vi.hoisted(()=>({load:vi.fn()}));
+vi.mock("@/lib/weekly-publication",async original=>({...await original<typeof import("@/lib/weekly-publication")>(),loadWeeklyPublications:boundary.load}));
+import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
 import { getFlyerIndex } from "@/lib/flyer-index";
-const nl={id:"nl-2026-07-13",language:"nl" as const,title:"Aanbiedingen",validFrom:"2026-07-13",validTo:"2026-07-18",sourceUrl:"https://www.canva.com/design/test/view",designId:"test",pageNumbers:[1],rightsStatus:"approved" as const,exportedAt:"2026-07-12T15:00:00Z",pdfPath:"/handzettel/2026/nl.pdf",coverPath:"/images/content/nl.webp",pdfSha256:"a".repeat(64),coverSha256:"b".repeat(64)};
-afterEach(()=>vi.restoreAllMocks());
-describe("flyer index reports runtime integrity failures",()=>{
-  it("does not demand expired offers on the reviewed KW40 holiday Saturday",async()=>{
-    mocks.official.mockResolvedValue(null);mocks.packages.mockResolvedValue([]);
-    const index=await getFlyerIndex(new Date("2026-10-03T12:00:00Z"));
-    expect(index.status).toBe("ok");expect(index.issues).toEqual([]);expect(index.flyers).toEqual([]);
+const roots:string[]=[];
+beforeEach(()=>{boundary.load.mockResolvedValue({editions:[],issues:[]});});
+afterEach(async()=>{for(const root of roots.splice(0)) await rm(root,{recursive:true,force:true});});
+async function loaded() {
+  const f=await weeklyPublicationFixture();roots.push(f.root);
+  const real=await vi.importActual<typeof import("@/lib/weekly-publication")>("@/lib/weekly-publication");
+  return real.loadWeeklyPublications(f.root);
+}
+describe("shared verified flyer selection",()=>{
+  it("fails closed with a sanitized issue if package loading unexpectedly rejects",async()=>{
+    boundary.load.mockRejectedValue(new Error("private/path"));
+    const index=await getFlyerIndex(new Date("2026-10-08T12:00:00Z"));
+    expect(index).toMatchObject({status:"degraded",flyers:[],scheduled:[]});
+    expect(index.issues).toContain("week-invalid");expect(JSON.stringify(index)).not.toContain("private/path");
   });
-  it("continues demanding both weekly sources on an ordinary Saturday",async()=>{
-    mocks.official.mockResolvedValue(null);mocks.packages.mockResolvedValue([]);
-    const index=await getFlyerIndex(new Date("2026-10-10T12:00:00Z"));
-    expect(index.status).toBe("degraded");expect(index.issues).toEqual(["official-flyer-missing","nl-flyer-missing"]);
+  it.each(["2026-10-03T12:00:00Z","2026-10-04T12:00:00Z"])("does not demand expired offers on holiday Saturday or Sunday: %s",async instant=>{
+    expect(await getFlyerIndex(new Date(instant))).toMatchObject({status:"ok",issues:[],flyers:[]});
   });
-  it("allows a valid empty selection on Sunday outside the weekly offer period",async()=>{
-    mocks.official.mockResolvedValue(null);mocks.packages.mockResolvedValue([]);
-    const index=await getFlyerIndex(new Date("2026-10-04T12:00:00Z"));
-    expect(index.status).toBe("ok");expect(index.issues).toEqual([]);
+  it("demands both languages on an ordinary Saturday",async()=>{
+    expect(await getFlyerIndex(new Date("2026-10-10T12:00:00Z"))).toMatchObject({status:"degraded",issues:["official-flyer-missing","nl-flyer-missing"]});
   });
-  it("reports a missing mandatory official flyer during the active week",async()=>{
-    mocks.official.mockResolvedValue(null);mocks.packages.mockResolvedValue([]);
-    const index=await getFlyerIndex(new Date("2026-09-30T12:00:00Z"));
-    expect(index.status).toBe("degraded");expect(index.issues).toEqual(["official-flyer-missing","nl-flyer-missing"]);
-    expect(index.flyers).toEqual([]);
+  it("keeps valid DE when NL fails; all links are verified local originals",async()=>{
+    const data=await loaded();boundary.load.mockResolvedValue({editions:data.editions.filter(x=>x.edition.language==="de"),issues:[{week:"2026-10-05",language:"nl",code:"edition-invalid"}]});
+    const index=await getFlyerIndex(new Date("2026-10-08T12:00:00Z"));
+    expect(index).toMatchObject({status:"degraded",issues:["nl-edition-invalid","nl-flyer-missing"]});
+    expect(index.flyers.map(f=>f.language)).toEqual(["de"]);expect(index.flyers[0].pdfUrl).toBe("/handzettel/2026-10-05/de.pdf");
+    expect(JSON.stringify(index)).not.toMatch(/canva\.com|designId|reviewedAt|privatePdf/);
   });
-  it("retains the official DE flyer while reporting the missing mandatory NL issue",async()=>{
-    mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([]);
-    const index=await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
-    expect(index.status).toBe("degraded");expect(index.issues).toEqual(["nl-flyer-missing"]);
-    expect(index.flyers.map(f=>f.language)).toEqual(["de"]);
-  });
-  it("publishes one complete current NL page alongside DE",async()=>{
-    mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([nl]);
-    const index=await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
-    expect(index.status).toBe("ok");expect(index.flyers.map(f=>[f.language,f.pageCount,f.coverUrl])).toEqual([["de",10,official.pages[0].imageUrl],["nl",1,"/images/content/nl.webp"]]);
-    expect(index.flyers.find(f=>f.language==="nl")?.pdfSha256).toBe(nl.pdfSha256);
-  });
-  it("keeps Canva identities out of the public index while retaining the original PDF fingerprint", async () => {
-    mocks.official.mockResolvedValue(official); mocks.packages.mockResolvedValue([nl]);
-    const index = await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
-    expect(index.flyers.find(flyer => flyer.language === "nl")).toEqual({
-      id: "nl-2026-07-13", title: "Aanbiedingen", language: "nl",
-      validFrom: "2026-07-13", validTo: "2026-07-18", pageCount: 1,
-      viewerUrl: "/handzettel/2026/nl.pdf", pdfUrl: "/handzettel/2026/nl.pdf",
-      coverUrl: "/images/content/nl.webp", sourceUrl: "/handzettel/2026/nl.pdf",
-      pdfSha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    });
-    expect(JSON.stringify(index)).not.toMatch(/canva\.com|designId|pageNumbers|exportedAt|rightsStatus/);
-  });
-  it("does not accept two NL pages as one complete weekly issue",async()=>{
-    mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([nl,{...nl,id:"another-nl"}]);
-    const index=await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
-    expect(index.issues).toEqual(["nl-flyer-missing"]);expect(index.flyers.map(f=>f.language)).toEqual(["de"]);
-  });
-  it.each([
-    {validFrom:"2026-07-06",validTo:"2026-07-11"},
-    {validFrom:"2026-07-20",validTo:"2026-07-25"},
-    {validFrom:"2026-07-14",validTo:"2026-07-18"},
-    {validFrom:"2026-07-13",validTo:"2026-07-17"},
-    {validFrom:"2026-07-06",validTo:"2026-07-18"},
-  ])("withholds a wrong or partial-week NL issue: %j",async dates=>{
-    mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([{...nl,...dates}]);
-    const index=await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
-    expect(index.issues).toContain("nl-flyer-missing");expect(index.flyers.map(f=>f.language)).toEqual(["de"]);
-  });
-  it("withholds corrupted packages but exposes degraded status and logs no private details",async()=>{
-    mocks.official.mockResolvedValue(null);mocks.packages.mockRejectedValue(new Error("private/path/details"));
-    const log=vi.spyOn(console,"error").mockImplementation(()=>{});
-    const index=await getFlyerIndex(new Date("2026-10-04T12:00:00Z"));
-    expect(index.status).toBe("degraded");expect(index.issues).toEqual(["local-flyer-integrity"]);expect(index.flyers).toEqual([]);
-    expect(log).toHaveBeenCalledTimes(1);expect(JSON.stringify(log.mock.calls)).not.toContain("private/path/details");
+  it("lists only verified future metadata without publishing its crops or original early",async()=>{
+    boundary.load.mockResolvedValue(await loaded());
+    const sunday=await getFlyerIndex(new Date("2026-10-04T12:00:00Z"));
+    expect(sunday.flyers).toEqual([]);expect(sunday.scheduled.map(x=>x.id)).toEqual(["de-2026-10-05","nl-2026-10-05"]);
+    const monday=await getFlyerIndex(new Date("2026-10-04T22:00:00Z"));
+    expect(monday.flyers.map(x=>x.id)).toEqual(["de-2026-10-05","nl-2026-10-05"]);expect(monday.scheduled).toEqual([]);
   });
 });

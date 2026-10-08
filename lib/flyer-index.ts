@@ -1,37 +1,19 @@
-import { loadFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer } from "@/lib/flyer-packages";
-import { loadValidatedHandzettelCache } from "@/lib/handzettel-catalog";
-import { mapFlyerPackageToFlyer, mapHandzettelCacheToFlyer, type HomepageFlyer } from "@/lib/homepage-content";
-import { berlinDateKey, getCurrentWeekRange } from "@/lib/editorial-schedule";
-import { getOfferDemandRange } from "@/lib/offer-validity";
-
+import { loadWeeklyPublications } from "./weekly-publication";
+import { createWeeklyOfferContentLoader } from "./weekly-offer-content";
+import type { PublicFlyer } from "./weekly-publication-types";
+import type { LoadedWeeklyPublications } from "./weekly-publication-types";
+import { berlinDateKey } from "./editorial-schedule";
 export type FlyerIndex = Readonly<{
-  status: "ok" | "degraded";
-  issues: readonly string[];
-  generatedAt: string;
-  flyers: readonly (HomepageFlyer & {language: "de" | "nl"; pdfSha256?: string})[];
-  scheduled: readonly {id: string; title: string; language: "de" | "nl"; validFrom: string; validTo: string}[];
+  status: "ok" | "degraded"; issues: readonly string[]; generatedAt: string;
+  flyers: readonly PublicFlyer[];
+  scheduled: readonly {id:string; title:string; language:"de"|"nl"; validFrom:string; validTo:string}[];
 }>;
-
 export async function getFlyerIndex(now = new Date()): Promise<FlyerIndex> {
-  const issues:string[]=[];
-  const [official, packages] = await Promise.all([loadValidatedHandzettelCache(now), loadFlyerPackages().catch(() => {
-    issues.push("local-flyer-integrity");
-    console.error("Lokale Flyerpakete konnten nicht validiert werden; betroffene Inhalte bleiben zurückgehalten.");
-    return [];
-  })]);
+  const loaded:LoadedWeeklyPublications = await loadWeeklyPublications().catch(() => ({editions:[],issues:[{week:null,code:"week-invalid"}]}));
+  const content = await createWeeklyOfferContentLoader(async () => loaded)(now);
   const today = berlinDateKey(now);
-  const range = getCurrentWeekRange(now);
-  const activePackages = selectActiveFlyerPackages(packages, now);
-  const nlFlyer = selectWeeklyNlFlyer(activePackages, range);
-  const offersRequired = today <= getOfferDemandRange(range).validTo;
-  if (!official && offersRequired) issues.push("official-flyer-missing");
-  if (!nlFlyer && offersRequired) issues.push("nl-flyer-missing");
-  const flyers: (HomepageFlyer & {language:"de" | "nl"; pdfSha256?: string})[] = [];
-  if (official) flyers.push({...mapHandzettelCacheToFlyer(official),language:"de"});
-  for (const item of activePackages) {
-    if (item.language === "de" && official) continue;
-    if (item.language === "nl" && item.id !== nlFlyer?.id) continue;
-    flyers.push({...mapFlyerPackageToFlyer(item),language:item.language,pdfSha256:item.pdfSha256});
-  }
-  return {status:issues.length ? "degraded" : "ok",issues,generatedAt:now.toISOString(),flyers,scheduled: packages.filter((p)=>p.validFrom>today).map(({id,title,language,validFrom,validTo})=>({id,title,language,validFrom,validTo}))};
+  const scheduled = loaded.issues.some(issue => issue.week === null) ? [] : loaded.editions
+    .filter(({edition}) => edition.validFrom > today && !loaded.issues.some(issue => issue.week === edition.validFrom && (!issue.language || issue.language === edition.language)))
+    .map(({edition:{id,title,language,validFrom,validTo}}) => ({id,title,language,validFrom,validTo}));
+  return {status:content.status,issues:content.issues,generatedAt:content.generatedAt,flyers:content.flyers,scheduled};
 }

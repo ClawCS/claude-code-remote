@@ -5,7 +5,7 @@ import {
   type Locator,
   type Page,
 } from "@playwright/test";
-import { test, installCatalogCoverFixture } from "./test-fixtures";
+import { test } from "./test-fixtures";
 
 const PRODUCTION_ORIGIN = "https://trinkgut-jammers.de";
 const HOME_TITLE = "Goch schenkt ein. | Trinkgut Jammers";
@@ -190,7 +190,7 @@ async function expectAbsoluteUrlAttribute(
 
 async function newIsolatedContext(browser: Browser): Promise<BrowserContext> {
   const context=await browser.newContext({ viewport: { width: 1280, height: 900 } });
-  await installCatalogCoverFixture(context);return context;
+  return context;
 }
 
 async function expectPublicChrome(page: Page): Promise<void> {

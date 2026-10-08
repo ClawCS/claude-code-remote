@@ -5,6 +5,11 @@ import {createHash} from "node:crypto";
 import {readFileSync} from "node:fs";
 
 describe("current flyer-only assortment", () => {
+  it.each(["de", "nl"])("binds %s crops to the original hash even with an unchanged URL and ID", language => {
+    const flyer = {id:"same", language, validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:"/handzettel/same.pdf",pdfSha256:"new"};
+    const crop = {flyerId:"same",language,validFrom:flyer.validFrom,validTo:flyer.validTo,categorySlug:"bier",sourceUrl:flyer.pdfUrl,pdfSha256:"old"};
+    expect(select([crop],[flyer],new Date("2026-10-08T12:00:00Z"))).toEqual([]);
+  });
   it("covers every priced panel on all 18 pages of the reviewed DE original", () => {
     const actual = select(offers, [{id:"catalog-13027-41-2026",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:"https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",pdfSha256:"be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a"}], new Date("2026-10-08T12:00:00Z"));
     // Independent visual page census; page 6 has no individually priced product panel.
@@ -21,12 +26,13 @@ describe("current flyer-only assortment", () => {
     }
   });
   it("selects only entries whose exact source is active, in the requested category", () => {
-    const rows=[{id:"a",flyerId:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"bier",sourceUrl:"https://example.com/v1.pdf"},{id:"b",flyerId:"nl-41",language:"nl",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"wein",pdfSha256:"a"}];
-    expect(select(rows,[{id:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:"https://example.com/v1.pdf"}],new Date("2026-10-08T12:00:00Z"),"bier").map(x=>x.id)).toEqual(["a"]);
+    const rows=[{id:"a",flyerId:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"bier",pdfSha256:"a"},{id:"b",flyerId:"nl-41",language:"nl",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"wein",pdfSha256:"a"}];
+    expect(select(rows,[{id:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfSha256:"a"}],new Date("2026-10-08T12:00:00Z"),"bier").map(x=>x.id)).toEqual(["a"]);
   });
   it("hides expired and not-yet-started offer crops at Berlin boundaries", () => {
-    const rows=[{id:"a",flyerId:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"bier",sourceUrl:"https://example.com/v1.pdf"}];
-    const flyers=[{id:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfUrl:"https://example.com/v1.pdf"}];
+    const rows=[{id:"a",flyerId:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"bier",pdfSha256:"a"}];
+    const flyers=[{id:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfSha256:"a"}];
+    expect(select(rows,flyers,new Date("2026-10-10T21:59:59Z")).map(x=>x.id)).toEqual(["a"]);
     expect(select(rows,flyers,new Date("2026-10-04T21:59:59Z"))).toEqual([]);
     expect(select(rows,flyers,new Date("2026-10-10T22:00:00Z"))).toEqual([]);
     expect(select(rows,[],new Date("2026-10-08T12:00:00Z"))).toEqual([]);

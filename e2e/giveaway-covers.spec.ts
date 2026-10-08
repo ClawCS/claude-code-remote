@@ -3,7 +3,6 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Locator, type Page, type TestInfo } from "@playwright/test";
-import { installCatalogCoverFixture } from "./test-fixtures";
 
 // Default: the July fixture configured by playwright.config.ts. For the separate
 // September server set GIVEAWAY_COVERS_FIXTURE=september and PLAYWRIGHT_BASE_URL;
@@ -11,9 +10,6 @@ import { installCatalogCoverFixture } from "./test-fixtures";
 // Expectations never depend on the visitor's system clock.
 const fixture = process.env.GIVEAWAY_COVERS_FIXTURE ?? "july";
 if (!["july", "september"].includes(fixture)) throw new Error("Unknown giveaway cover fixture");
-test.beforeEach(async ({ context }) => {
-  if (fixture === "july") await installCatalogCoverFixture(context);
-});
 const screenshotDirectory = process.env.AUDIT_SCREENSHOT_DIR
   ? join(process.env.AUDIT_SCREENSHOT_DIR, "giveaway-covers")
   : "audit/screenshots/giveaway-covers-2026-09-30";

@@ -1,17 +1,15 @@
 import { expect, test } from "./test-fixtures";
 import type { Page } from "@playwright/test";
 
-const VIEWER_URL =
-  "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest";
-const PDF_URL =
-  "https://werbung.trinkgut.de/frontend/catalogs/1335913/2/pdf/complete.pdf";
+const VIEWER_URL = "/handzettel/weekly-fixture.pdf";
+const PDF_URL = VIEWER_URL;
 const INSTAGRAM_ORIGIN = "https://www.instagram.com/";
 const ROUTE_URL =
   "https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20%2C+47574+Goch";
 const TRIGGER_NAME = "Handzettel ansehen";
-const DIALOG_NAME = "Angebote der Woche ansehen";
+const DIALOG_NAME = "Synthetischer Testhandzettel ansehen";
 const CLOSE_NAME = "Handzettel schließen";
-const IFRAME_TITLE = "Angebote der Woche – externer Handzettel";
+const IFRAME_TITLE = "Synthetischer Testhandzettel – Handzettel";
 const ERROR_COPY = "Der Handzettel konnte hier nicht geladen werden.";
 
 function collectRuntimeIssues(page: Page): string[] {
@@ -60,7 +58,7 @@ test("[product-contract] first load is passive and exposes the validated flyer f
   const runtimeIssues = collectRuntimeIssues(page);
   page.on("request", (request) => requestedUrls.push(request.url()));
 
-  const response = await page.goto("/", { waitUntil: "domcontentloaded" });
+  const response = await page.goto("/test-fixtures/weekly-flyer", { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
   await expect(page.locator("[data-cinematic-root]")).toBeVisible();
   await expect(page.getByRole("button", { name: TRIGGER_NAME })).toBeEnabled();
@@ -71,17 +69,16 @@ test("[product-contract] first load is passive and exposes the validated flyer f
       ),
   );
 
-  await expect(page.getByText("Angebote der Woche", { exact: true })).toBeVisible();
-  await expect(page.getByText("Gültig 13.–18.07.2026", { exact: true })).toBeVisible();
-  await expect(page.getByText("10 Seiten", { exact: true })).toBeVisible();
+  await expect(page.getByText("Synthetischer Testhandzettel", { exact: true })).toBeVisible();
+  await expect(page.getByText("Gültig 12.–17.10.2026", { exact: true })).toBeVisible();
+  await expect(page.getByText("1 Seite", { exact: true })).toBeVisible();
   await expect(page.locator("iframe")).toHaveCount(0);
   await expectSafeExternalAnchor(page, VIEWER_URL);
   await expectSafeExternalAnchor(page, PDF_URL);
 
   const forbiddenPassiveRequests = requestedUrls.filter(
     (url) =>
-      url === VIEWER_URL ||
-      url === PDF_URL ||
+      new URL(url).pathname === PDF_URL ||
       url.startsWith(INSTAGRAM_ORIGIN) ||
       url === ROUTE_URL,
   );
@@ -93,8 +90,8 @@ test("[product-contract] flyer dialog is named, focus-trapped, lazy, and restore
   page,
 }) => {
   const runtimeIssues = collectRuntimeIssues(page);
-  await page.clock.install({ time: new Date("2026-07-14T12:00:00.000Z") });
-  await page.route(VIEWER_URL, async (route) => {
+  await page.clock.install({ time: new Date("2026-10-12T12:00:00.000Z") });
+  await page.route("**/handzettel/weekly-fixture.pdf", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "text/html",
@@ -102,7 +99,7 @@ test("[product-contract] flyer dialog is named, focus-trapped, lazy, and restore
     });
   });
 
-  const response = await page.goto("/", { waitUntil: "domcontentloaded" });
+  const response = await page.goto("/test-fixtures/weekly-flyer", { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
   const trigger = page.getByRole("button", { name: TRIGGER_NAME });
   await expect(trigger).toBeEnabled();
@@ -144,14 +141,14 @@ test("[product-contract] flyer timeout is deterministic and resets on every reop
   page,
 }) => {
   const runtimeIssues = collectRuntimeIssues(page);
-  await page.clock.install({ time: new Date("2026-07-14T12:00:00.000Z") });
-  await page.route(VIEWER_URL, async () => {
+  await page.clock.install({ time: new Date("2026-10-12T12:00:00.000Z") });
+  await page.route("**/handzettel/weekly-fixture.pdf", async () => {
     // Keep every iframe navigation genuinely pending. Returning from a route
     // handler without resolving it lets Chromium abort a later reopen.
     await new Promise<void>(() => undefined);
   });
 
-  const response = await page.goto("/", { waitUntil: "domcontentloaded" });
+  const response = await page.goto("/test-fixtures/weekly-flyer", { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
   const trigger = page.getByRole("button", { name: TRIGGER_NAME });
   await expect(trigger).toBeEnabled();

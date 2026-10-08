@@ -23,3 +23,6 @@ export type WeeklyPublication = Readonly<{ schemaVersion: 1; week: string; editi
 export type VerifiedWeeklyEdition = Readonly<{ edition: WeeklyEdition; offers: readonly PublishedOffer[] }>;
 export type WeeklyPublicationIssue = Readonly<{ week: string | null; language?: "de" | "nl"; code: string }>;
 export type LoadedWeeklyPublications = Readonly<{ editions: readonly VerifiedWeeklyEdition[]; issues: readonly WeeklyPublicationIssue[] }>;
+export type PublicFlyer = import("./homepage-content").HomepageFlyer & Readonly<{language: "de" | "nl"; pdfSha256: string}>;
+export type PublicOfferView = Readonly<Pick<PublishedOffer, "id" | "name" | "categorySlug" | "language" | "flyerId" | "validFrom" | "validTo" | "image" | "sourcePage" | "rect" | "pdfSha256" | "sourceUrl" | "conditions" | "sourceWarning">>;
+export type WeeklyOfferContent = Readonly<{ status: "ok" | "degraded"; issues: readonly string[]; generatedAt: string; flyers: readonly PublicFlyer[]; offers: readonly PublicOfferView[] }>;

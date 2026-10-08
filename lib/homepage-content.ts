@@ -5,8 +5,6 @@ import {
   type EditorialCampaign,
 } from "@/lib/editorial-repository";
 import {
-  loadValidatedHandzettelCache,
-  validateCatalog,
   type HandzettelCache,
 } from "@/lib/handzettel-catalog";
 import {
@@ -15,8 +13,11 @@ import {
   isEditorialPublishable,
   type EditorialSource,
 } from "@/lib/editorial-schedule";
-import { loadFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer, type FlyerPackage } from "@/lib/flyer-packages";
+import type { FlyerPackage } from "@/lib/flyer-packages";
 import { getAcceptedNlOfferRanges } from "@/lib/offer-validity";
+import { loadWeeklyPublications } from "./weekly-publication";
+import { createWeeklyOfferContentLoader } from "./weekly-offer-content";
+import type { LoadedWeeklyPublications } from "./weekly-publication-types";
 
 export type HomepageFlyer = Readonly<{
   id: string;
@@ -60,7 +61,9 @@ export type HomepageContent = Readonly<{
 }>;
 
 export type HomepageContentSources = Readonly<{
-  loadValidatedHandzettelCache: (
+  loadWeeklyPublications?: () => Promise<LoadedWeeklyPublications>;
+  /** Legacy test/import tooling only; never a public fallback. */
+  loadValidatedHandzettelCache?: (
     now: Date,
   ) => Promise<HandzettelCache | null>;
   loadApprovedCampaigns: () => Promise<readonly EditorialCampaign[]>;
@@ -241,35 +244,7 @@ function selectArchive(
     .map(({ id, title, date, image, kind }) => ({ id, title, date, image, kind }));
 }
 
-export function mapHandzettelCacheToFlyer(
-  cache: HandzettelCache,
-): HomepageFlyer {
-  validateCatalog(cache, {
-    validFrom: cache.validFrom,
-    validTo: cache.validTo,
-  });
-  const cover = cache.pages[0];
-  if (!cover) throw new TypeError("validated catalog has no cover page");
-  return {
-    id: `catalog-${cache.storeId}-${cache.kw}-${cache.year}`,
-    title: "Angebote der Woche",
-    validFrom: cache.validFrom,
-    validTo: cache.validTo,
-    viewerUrl: cache.viewerUrl,
-    pdfUrl: cache.pdfUrl,
-    pageCount: cache.pageCount,
-    coverUrl: cover.imageUrl,
-    sourceUrl: cache.viewerUrl,
-  };
-}
-
-export function mapFlyerPackageToFlyer(item: FlyerPackage): HomepageFlyer {
-  return {
-    id: item.id, title: item.title, validFrom: item.validFrom, validTo: item.validTo,
-    viewerUrl: item.pdfPath, pdfUrl: item.pdfPath, coverUrl: item.coverPath,
-    pageCount: item.pageNumbers.length, sourceUrl: item.pdfPath,
-  };
-}
+export { mapHandzettelCacheToFlyer, mapFlyerPackageToFlyer } from "./legacy-flyer-content";
 
 export function aggregateHomepageContent({
   now,
@@ -307,33 +282,17 @@ export function createHomepageContentLoader(
   sources: HomepageContentSources,
 ): (now?: Date) => Promise<HomepageContent> {
   return async (now = new Date()) => {
-    const [cacheResult, campaignsResult, archiveResult, packagesResult] = await Promise.allSettled([
-      Promise.resolve().then(() => sources.loadValidatedHandzettelCache(now)),
+    const [weeklyResult, campaignsResult, archiveResult] = await Promise.allSettled([
+      createWeeklyOfferContentLoader(sources.loadWeeklyPublications ?? loadWeeklyPublications)(now),
       Promise.resolve().then(() => sources.loadApprovedCampaigns()),
       Promise.resolve().then(() => sources.loadEditorialArchive()),
-      Promise.resolve().then(() => sources.loadFlyerPackages?.() ?? []),
     ]);
-
-    let flyer: HomepageFlyer | null = null;
-    if (cacheResult.status === "fulfilled" && cacheResult.value) {
-      try {
-        flyer = mapHandzettelCacheToFlyer(cacheResult.value);
-      } catch {
-        flyer = null;
-      }
-    }
-
-    if (!flyer && packagesResult.status === "fulfilled") {
-      const active = selectActiveFlyerPackages(packagesResult.value, now).find((item) => item.language === "de");
-      if (active) flyer = mapFlyerPackageToFlyer(active);
-    }
-
-    const nlPackage = packagesResult.status === "fulfilled" ? selectWeeklyNlFlyer(selectActiveFlyerPackages(packagesResult.value, now), getCurrentWeekRange(now)) : null;
+    const flyers = weeklyResult.status === "fulfilled" ? weeklyResult.value.flyers : [];
 
     return aggregateHomepageContent({
       now,
-      flyer,
-      nlFlyer: nlPackage ? mapFlyerPackageToFlyer(nlPackage) : null,
+      flyer: flyers.find(flyer => flyer.language === "de") ?? null,
+      nlFlyer: flyers.find(flyer => flyer.language === "nl") ?? null,
       campaigns:
         campaignsResult.status === "fulfilled" ? campaignsResult.value : [],
       archive: archiveResult.status === "fulfilled" ? archiveResult.value : [],
@@ -342,8 +301,7 @@ export function createHomepageContentLoader(
 }
 
 export const getHomepageContent = createHomepageContentLoader({
-  loadValidatedHandzettelCache,
+  loadWeeklyPublications,
   loadApprovedCampaigns,
   loadEditorialArchive,
-  loadFlyerPackages,
 });

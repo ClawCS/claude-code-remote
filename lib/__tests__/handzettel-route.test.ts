@@ -2,6 +2,7 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+vi.mock("server-only",()=>({}));
 
 const ORIGINAL_CRON_SECRET = process.env.CRON_SECRET;
 const CACHE_FILE = path.join(process.cwd(), "data", "handzettel-cache.json");
@@ -370,7 +371,7 @@ describe("production handzettel cron route", () => {
     expect(catalog.fetchOfficialCatalog).toBeTypeOf("function");
   });
 
-  it("exports only GET and POST, calls the internal refresh once per method, and never self-fetches", async () => {
+  it("blocks authenticated production cron GET and POST without single-file refresh or self-fetch", async () => {
     process.env.CRON_SECRET = SECRET;
     const refreshHandzettelCache = vi
       .fn()
@@ -388,24 +389,15 @@ describe("production handzettel cron route", () => {
 
     expect(Object.keys(route).sort()).toEqual(["GET", "POST"]);
     const getResponse = await route.GET(bearerRequest(SECRET, "GET"));
-    expect(refreshHandzettelCache).toHaveBeenCalledOnce();
     const postResponse = await route.POST(bearerRequest(SECRET, "POST"));
 
-    expect(getResponse.status).toBe(200);
-    expect(postResponse.status).toBe(200);
+    expect(getResponse.status).toBe(409);
+    expect(postResponse.status).toBe(409);
     expect(getResponse.headers.get("cache-control")).toBe("no-store");
     expect(postResponse.headers.get("cache-control")).toBe("no-store");
-    expect(await getResponse.json()).toEqual({
-      success: true,
-      status: "ok",
-      pageCount: 10,
-    });
-    expect(await postResponse.json()).toEqual({
-      success: true,
-      status: "ok",
-      pageCount: 10,
-    });
-    expect(refreshHandzettelCache.mock.calls).toEqual([[], []]);
+    expect(await getResponse.json()).toMatchObject({error:"weekly-publication-required"});
+    expect(await postResponse.json()).toMatchObject({error:"weekly-publication-required"});
+    expect(refreshHandzettelCache).not.toHaveBeenCalled();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 

@@ -12,8 +12,7 @@ export function selectWeeklyOffers<T extends DatedOffer>(offers: readonly T[], f
     && offer.validFrom <= today && today <= offer.validTo
     && flyers.some(flyer => flyer.id === offer.flyerId && flyer.language === offer.language
       && flyer.validFrom === offer.validFrom && flyer.validTo === offer.validTo
-      && ((offer.language === "de" && Boolean(offer.sourceUrl) && flyer.pdfUrl === offer.sourceUrl)
-        || (offer.language === "nl" && Boolean(offer.pdfSha256) && flyer.pdfSha256 === offer.pdfSha256))
+      && Boolean(offer.pdfSha256) && flyer.pdfSha256 === offer.pdfSha256
       && flyer.validFrom <= today && today <= flyer.validTo));
 }
 

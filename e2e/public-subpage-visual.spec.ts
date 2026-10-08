@@ -2,14 +2,9 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { installCatalogCoverFixture } from "./test-fixtures";
 
-// The default shared server uses the historical July test clock; its retired
-// upstream flyer needs the same isolated fixture as the existing contracts.
-// Explicit production-base runs remain entirely fixture-free.
-test.beforeEach(async ({ context }) => {
-  if (!process.env.PLAYWRIGHT_BASE_URL) await installCatalogCoverFixture(context);
-});
+// Development tests use a marked clock; public flyer absence remains truthful.
+// Production-base runs always use the real clock and verified local packages.
 
 const screenshotDirectory = process.env.AUDIT_SCREENSHOT_DIR
   ? join(process.env.AUDIT_SCREENSHOT_DIR, "public-site-completion")

@@ -20,7 +20,7 @@ const index: FlyerIndex = {
     id: `test-${language}`, language: language as "de" | "nl", title: `Original ${language}`,
     validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: language === "nl" ? 1 : 8,
     viewerUrl: `/handzettel/2026/test-${language}.pdf`, pdfUrl: `/handzettel/2026/test-${language}.pdf`,
-    coverUrl: `/images/content/test-${language}.webp`, sourceUrl: "https://www.canva.com/design/test/view",
+    coverUrl: `/images/content/test-${language}.webp`, sourceUrl: `/handzettel/2026/test-${language}.pdf`,pdfSha256:"a".repeat(64),
   })),
 };
 

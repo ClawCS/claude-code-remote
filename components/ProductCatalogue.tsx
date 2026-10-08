@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import SearchBar from "@/components/SearchBar";
 import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import { categories } from "@/lib/utils";
-import type { FlyerIndex } from "@/lib/flyer-index";
-function Catalogue({children,index}:{children:React.ReactNode;index:FlyerIndex}) {
+import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
+function Catalogue({children,content}:{children:React.ReactNode;content:WeeklyOfferContent}) {
   const params=useSearchParams();
   const searchFromUrl=params.get("search") || "";
   const [search,setSearch]=useState(searchFromUrl);
@@ -24,11 +24,11 @@ function Catalogue({children,index}:{children:React.ReactNode;index:FlyerIndex})
       <div className="flex flex-wrap items-center gap-4 mb-8"><div className="max-w-full sm:w-80"><SearchBar value={search} onChange={setSearch}/></div>
         <div className="flex flex-wrap gap-2" aria-label="Handzettel-Sprache">{[["alle","Alle Angebote"],["de","Deutsch"],["nl","Nederlands"]].map(([value,label])=><button key={value} type="button" aria-pressed={value===language} onClick={()=>setLanguage(value)} className={`rounded-full px-4 py-2 border border-border font-semibold ${language===value?"bg-primary text-white":"bg-white text-secondary"}`}>{label}</button>)}</div>
       </div>
-      <WeeklyOfferGrid index={index} search={search} language={language}/>
+      <WeeklyOfferGrid content={content} search={search} language={language}/>
       {children}
     </div>
   </>;
 }
-export default function ProductCatalogue(props:{children:React.ReactNode;index:FlyerIndex}) {
+export default function ProductCatalogue(props:{children:React.ReactNode;content:WeeklyOfferContent}) {
   return <Suspense fallback={<p className="p-8">Wochenangebote werden geladen …</p>}><Catalogue {...props}/></Suspense>;
 }

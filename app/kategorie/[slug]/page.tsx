@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import AcademyEntry from "@/components/AcademyEntry";
 import { categories } from "@/lib/utils";
-import { getFlyerIndex } from "@/lib/flyer-index";
+import { getWeeklyOfferContent } from "@/lib/weekly-offer-content";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,7 @@ export default async function KategoriePage({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const category = categories.find(item => item.slug === slug);
   if (!category) notFound();
-  const index = await getFlyerIndex(resolveHomepageNow());
+  const content = await getWeeklyOfferContent(resolveHomepageNow());
   return <>
     <div className="category-intro" data-category-intro>
       <div>
@@ -33,7 +33,7 @@ export default async function KategoriePage({ params }: { params: Promise<{ slug
     <div className="max-w-7xl mx-auto px-6 py-10">
       <nav className="category-links" aria-label="Warengruppen">{categories.map(item => <Link key={item.slug} href={`/kategorie/${item.slug}`} aria-current={slug === item.slug ? "page" : undefined}>{item.name}</Link>)}</nav>
       {slug === "spirituosen" && <p className="mb-8"><Link href="/regionale-spirituosen" className="text-primary underline font-bold">Regionale Spezialitäten vom Niederrhein entdecken</Link></p>}
-      <WeeklyOfferGrid index={index} category={slug} />
+      <WeeklyOfferGrid content={content} category={slug} />
       {slug === "spirituosen" && <Link href="/eigenmarke" className="inline-block text-primary underline mt-8">Unsere Jammers-Eigenmarken kennenlernen</Link>}
       <AcademyEntry category={slug} />
     </div>

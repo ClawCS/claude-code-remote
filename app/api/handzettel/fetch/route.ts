@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { isAuthorizedBearer } from "@/lib/cron-auth";
-import {
-  createHandzettelFallback,
-  loadValidatedHandzettelCache,
-  refreshHandzettelCache,
-} from "@/lib/handzettel-catalog";
+import { getWeeklyOfferContent } from "@/lib/weekly-offer-content";
+import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" } as const;
 
@@ -22,18 +19,7 @@ function authorizeRefresh(request: Request): NextResponse | null {
 }
 
 async function refresh(): Promise<NextResponse> {
-  const now = new Date();
-  try {
-    return json(await refreshHandzettelCache(now));
-  } catch {
-    return json(
-      createHandzettelFallback(
-        now,
-        "Der offizielle Handzettel konnte nicht sicher aktualisiert werden.",
-      ),
-      502,
-    );
-  }
+  return json({error:"weekly-publication-required",message:"Handzettel werden ausschließlich als vollständig geprüftes lokales Wochenpaket veröffentlicht."},409);
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -45,9 +31,11 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
   const shouldRefresh = new URL(request.url).searchParams.get("refresh") === "true";
   if (!shouldRefresh) {
-    const now = new Date();
-    const cache = await loadValidatedHandzettelCache(now);
-    return json(cache ?? createHandzettelFallback(now));
+    const content = await getWeeklyOfferContent(resolveHomepageNow());
+    const flyer = content.flyers.find(item=>item.language==="de");
+    if (!flyer) return json({status:"fallback",pageCount:0,pages:[],viewerUrl:null,pdfUrl:null,generatedAt:content.generatedAt,message:"Der nächste Handzettel wird vorbereitet."});
+    // Only the cover is a verified page image. Never invent images for other pages.
+    return json({...flyer,status:"ok",fetchedAt:content.generatedAt,pages:[{number:1,imageUrl:flyer.coverUrl,thumbnailUrl:flyer.coverUrl}]});
   }
 
   const denied = authorizeRefresh(request);

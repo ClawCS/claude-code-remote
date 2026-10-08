@@ -18,6 +18,8 @@ export function resolveHomepageNow({
   env = process.env,
   realNow = () => new Date(),
 }: ClockOptions = {}): Date {
+  // A production release always uses real time, even if test flags leak into its environment.
+  if (env.NODE_ENV === "production") return realNow();
   const fixed = env.CINEMATIC_TEST_NOW;
   if (fixed === undefined) return realNow();
   if (env.CINEMATIC_E2E !== "1") {

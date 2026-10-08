@@ -9,7 +9,6 @@ import type {
   EditorialCampaign,
 } from "@/lib/editorial-repository";
 import type { HandzettelCache } from "@/lib/handzettel-catalog";
-import type { FlyerPackage } from "@/lib/flyer-packages";
 import {
   aggregateHomepageContent,
   createHomepageContentLoader,
@@ -18,13 +17,15 @@ import {
   type HomepageFlyer,
 } from "@/lib/homepage-content";
 import * as currentContentRoute from "@/app/api/content/current/route";
+import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
+import { loadWeeklyPublications } from "@/lib/weekly-publication";
+import { rm } from "node:fs/promises";
 
 const NOW = new Date("2026-07-14T12:00:00.000Z");
 const VIEWER_URL =
   "https://werbung.trinkgut.de/frontend/mvc/catalog/by-name/13027/newest";
 const ASSET_BASE =
   "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1335913/v2";
-const nlPackage:FlyerPackage={id:"nl-2026-07-13",language:"nl",title:"Aanbiedingen",validFrom:"2026-07-13",validTo:"2026-07-18",sourceUrl:"https://www.canva.com/design/test/view",designId:"test",pageNumbers:[14],rightsStatus:"approved",exportedAt:"2026-07-12T15:00:00Z",pdfPath:"/handzettel/2026/nl.pdf",coverPath:"/images/content/nl.webp",pdfSha256:"a".repeat(64),coverSha256:"b".repeat(64)};
 
 function makeCache(): HandzettelCache {
   return {
@@ -114,63 +115,22 @@ function aggregate(overrides: {
 }
 
 describe("homepage content", () => {
+  it("uses verified local editions even when an external cache would take priority", async () => {
+    const f = await weeklyPublicationFixture("2026-07-13", "2026-07-18", "1335913", "2");
+    try {
+      const content = await createHomepageContentLoader({loadWeeklyPublications: () => loadWeeklyPublications(f.root),loadValidatedHandzettelCache: async () => makeCache(),loadApprovedCampaigns:async()=>[makeCampaign()],loadEditorialArchive:async()=>[makeArchive()]})(NOW);
+      expect(content.flyer?.pdfUrl).toBe("/handzettel/2026-07-13/de.pdf");
+      expect(content.nlFlyer?.pdfUrl).toBe("/handzettel/2026-07-13/nl.pdf");
+      expect(content.event?.id).toBe("strikerball-2026-07-24");
+      expect(content.archive[0]?.id).toBe("archive-item");
+    } finally { await rm(f.root,{recursive:true,force:true}); }
+  });
   it("retains a source-approved Friday-ending KW40 NL page on Friday only",()=>{
     const nlFlyer=makeFlyer({id:"nl-kw40",validFrom:"2026-09-28",validTo:"2026-10-02",pageCount:1,viewerUrl:"/handzettel/2026/nl.pdf",pdfUrl:"/handzettel/2026/nl.pdf",coverUrl:"/images/content/nl.webp",sourceUrl:"https://www.canva.com/design/test/view"});
     const friday=aggregateHomepageContent({now:new Date("2026-10-02T12:00:00Z"),flyer:null,nlFlyer,campaigns:[],archive:[]});
     expect(friday.nlFlyer?.validTo).toBe("2026-10-02");
     const saturday=aggregateHomepageContent({now:new Date("2026-10-02T22:00:00Z"),flyer:null,nlFlyer,campaigns:[],archive:[]});
     expect(saturday.nlFlyer).toBeNull();
-  });
-  it("adds the current one-page NL flyer without replacing official DE or the event",async()=>{
-    const load=createHomepageContentLoader({loadValidatedHandzettelCache:async()=>makeCache(),loadApprovedCampaigns:async()=>[makeCampaign()],loadEditorialArchive:async()=>[],loadFlyerPackages:async()=>[nlPackage]});
-    const content=await load(NOW);
-    expect(content.flyer?.id).toBe("catalog-13027-29-2026");
-    expect(content.nlFlyer).toMatchObject({id:"nl-2026-07-13",pageCount:1,coverUrl:"/images/content/nl.webp",pdfUrl:"/handzettel/2026/nl.pdf"});
-    expect(content.event?.id).toBe("strikerball-2026-07-24");
-  });
-  it("publishes the verified local NL original without exposing internal Canva provenance", async () => {
-    const load = createHomepageContentLoader({
-      loadValidatedHandzettelCache: async () => makeCache(),
-      loadApprovedCampaigns: async () => [],
-      loadEditorialArchive: async () => [],
-      loadFlyerPackages: async () => [nlPackage],
-    });
-    const content = await load(NOW);
-    expect(content.nlFlyer).toEqual({
-      id: "nl-2026-07-13", title: "Aanbiedingen",
-      validFrom: "2026-07-13", validTo: "2026-07-18", pageCount: 1,
-      viewerUrl: "/handzettel/2026/nl.pdf", pdfUrl: "/handzettel/2026/nl.pdf",
-      coverUrl: "/images/content/nl.webp", sourceUrl: "/handzettel/2026/nl.pdf",
-    });
-    expect(JSON.stringify(content)).not.toMatch(/canva\.com|designId|pageNumbers|exportedAt|rightsStatus/);
-    expect(nlPackage.sourceUrl).toBe("https://www.canva.com/design/test/view");
-  });
-  it.each([
-    "/handzettel/2026/unrelated.pdf",
-    "/assets/source/nl.pdf",
-    "/api/content/current",
-    "/handzettel/2026/../private.pdf",
-  ])("rejects a local flyer source that is not its public PDF: %s", sourceUrl => {
-    const flyer = makeFlyer({
-      viewerUrl: "/handzettel/2026/nl.pdf", pdfUrl: "/handzettel/2026/nl.pdf",
-      sourceUrl,
-    });
-    expect(aggregate({flyer}).flyer).toBeNull();
-  });
-  it.each([
-    {validFrom:"2026-07-06",validTo:"2026-07-11"},
-    {validFrom:"2026-07-20",validTo:"2026-07-25"},
-    {validFrom:"2026-07-14",validTo:"2026-07-18"},
-    {validFrom:"2026-07-13",validTo:"2026-07-17"},
-  ])("keeps expired, future or partial-week NL content off the homepage: %j",async dates=>{
-    const load=createHomepageContentLoader({loadValidatedHandzettelCache:async()=>makeCache(),loadApprovedCampaigns:async()=>[],loadEditorialArchive:async()=>[],loadFlyerPackages:async()=>[{...nlPackage,...dates}]});
-    expect((await load(NOW)).nlFlyer).toBeNull();
-  });
-  it("activates the preloaded NL page at Berlin Monday and removes it after Saturday",async()=>{
-    const load=createHomepageContentLoader({loadValidatedHandzettelCache:async()=>null,loadApprovedCampaigns:async()=>[],loadEditorialArchive:async()=>[],loadFlyerPackages:async()=>[nlPackage]});
-    expect((await load(new Date("2026-07-12T15:00:00Z"))).nlFlyer).toBeNull();
-    expect((await load(new Date("2026-07-12T22:00:00Z"))).nlFlyer?.id).toBe("nl-2026-07-13");
-    expect((await load(new Date("2026-07-18T22:00:00Z"))).nlFlyer).toBeNull();
   });
   it("returns the current flyer and official event", () => {
     const content = aggregateHomepageContent({
@@ -485,94 +445,6 @@ describe("homepage content", () => {
 });
 
 describe("homepage content loader", () => {
-  const workingSources = {
-    loadValidatedHandzettelCache: async () => makeCache(),
-    loadApprovedCampaigns: async () => [makeCampaign()],
-    loadEditorialArchive: async () => [makeArchive()],
-  };
-
-  it("isolates a rejected cache while preserving event and archive", async () => {
-    const load = createHomepageContentLoader({
-      ...workingSources,
-      loadValidatedHandzettelCache: async () => {
-        throw new Error("bad cache");
-      },
-    });
-    const content = await load(NOW);
-    expect(content.flyer).toBeNull();
-    expect(content.event?.id).toBe("strikerball-2026-07-24");
-    expect(content.archive.map(({ id }) => id)).toEqual(["archive-item"]);
-  });
-
-  it("isolates a synchronous source throw before settling all sources", async () => {
-    const load = createHomepageContentLoader({
-      ...workingSources,
-      loadValidatedHandzettelCache: (() => {
-        throw new Error("synchronous cache failure");
-      }) as typeof workingSources.loadValidatedHandzettelCache,
-    });
-    await expect(load(NOW)).resolves.toMatchObject({
-      flyer: null,
-      event: { id: "strikerball-2026-07-24" },
-      archive: [{ id: "archive-item" }],
-    });
-  });
-
-  it("never accepts a fallback object as a flyer", async () => {
-    const load = createHomepageContentLoader({
-      ...workingSources,
-      loadValidatedHandzettelCache: async () =>
-        ({
-          ...makeCache(),
-          status: "fallback",
-          pages: [],
-          pageCount: 0,
-        }) as unknown as HandzettelCache,
-    });
-    const content = await load(NOW);
-    expect(content.flyer).toBeNull();
-    expect(content.event?.id).toBe("strikerball-2026-07-24");
-  });
-
-  it("isolates rejected campaigns while preserving flyer and archive", async () => {
-    const load = createHomepageContentLoader({
-      ...workingSources,
-      loadApprovedCampaigns: async () => {
-        throw new Error("bad campaigns");
-      },
-    });
-    const content = await load(NOW);
-    expect(content.flyer?.id).toBe("catalog-13027-29-2026");
-    expect(content.event).toBeNull();
-    expect(content.archive.map(({ id }) => id)).toEqual(["archive-item"]);
-  });
-
-  it("isolates a rejected archive while preserving flyer and event", async () => {
-    const load = createHomepageContentLoader({
-      ...workingSources,
-      loadEditorialArchive: async () => {
-        throw new Error("bad archive");
-      },
-    });
-    const content = await load(NOW);
-    expect(content.flyer?.id).toBe("catalog-13027-29-2026");
-    expect(content.event?.id).toBe("strikerball-2026-07-24");
-    expect(content.archive).toEqual([]);
-  });
-
-  it("degrades a resolved invalid cache without rejecting the request", async () => {
-    const load = createHomepageContentLoader({
-      ...workingSources,
-      loadValidatedHandzettelCache: async () =>
-        ({ ...makeCache(), pages: [] }) as HandzettelCache,
-    });
-    await expect(load(NOW)).resolves.toMatchObject({
-      flyer: null,
-      event: { id: "strikerball-2026-07-24" },
-      archive: [{ id: "archive-item" }],
-    });
-  });
-
   it("loads the production sources without writing a missing cache", async () => {
     const cachePath = path.join(process.cwd(), "data/handzettel-cache.json");
     await expect(access(cachePath)).rejects.toThrow();

@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+vi.mock("server-only",()=>({}));
 
 import { GET, POST } from "@/app/api/handzettel/fetch/route";
 import {
@@ -756,7 +757,7 @@ describe("leaflet refresh route", () => {
     expect(await readdir(path.dirname(cacheFile))).toEqual(["handzettel-cache.json"]);
   });
 
-  it("serves only a validated active cache without network access", async () => {
+  it("does not treat a validated external cache as a published local package", async () => {
     await mkdir(path.join(sandbox, "data"), { recursive: true });
     await writeFile(
       path.join(sandbox, "data", "handzettel-cache.json"),
@@ -772,12 +773,12 @@ describe("leaflet refresh route", () => {
 
     expect(result.status).toBe(200);
     expect(result.headers.get("cache-control")).toBe("no-store");
-    expect(await result.json()).toEqual(validCache());
+    expect(await result.json()).toMatchObject({status:"fallback",pageCount:0,pages:[]});
     expect(network).not.toHaveBeenCalled();
   });
 
   it.each([
-    { now: "2026-10-02T21:59:59.000Z", expectedStatus: "ok" },
+    { now: "2026-10-02T21:59:59.000Z", expectedStatus: "fallback" },
     { now: "2026-10-02T22:00:00.000Z", expectedStatus: "fallback" },
   ])("serves reviewed offers only through printed Friday at $now", async ({ now, expectedStatus }) => {
     vi.setSystemTime(new Date(now));
@@ -862,7 +863,7 @@ describe("leaflet refresh route", () => {
     expect(network).not.toHaveBeenCalled();
   });
 
-  it("atomically persists only a validated successful refresh", async () => {
+  it("blocks an authenticated single-file refresh before downloading or writing", async () => {
     process.env.CRON_SECRET = "correct-secret";
     const stub = createFetchStub();
     vi.stubGlobal("fetch", stub.fetchImpl);
@@ -874,15 +875,14 @@ describe("leaflet refresh route", () => {
       }),
     );
 
-    expect(result.status).toBe(200);
+    expect(result.status).toBe(409);
     expect(result.headers.get("cache-control")).toBe("no-store");
-    expect(await result.json()).toEqual(validCache());
-    const cacheFile = path.join(sandbox, "data", "handzettel-cache.json");
-    expect(JSON.parse(await readFile(cacheFile, "utf8"))).toEqual(validCache());
-    expect(await readdir(path.dirname(cacheFile))).toEqual(["handzettel-cache.json"]);
+    expect(await result.json()).toMatchObject({error:"weekly-publication-required"});
+    expect(stub.fetchImpl).not.toHaveBeenCalled();
+    await expect(readdir(path.join(sandbox,"data"))).rejects.toThrow();
   });
 
-  it("returns 502 fallback and preserves the previous cache after refresh failure", async () => {
+  it("keeps an existing cache unchanged when autonomous refresh is blocked", async () => {
     process.env.CRON_SECRET = "correct-secret";
     const cacheFile = path.join(sandbox, "data", "handzettel-cache.json");
     await mkdir(path.dirname(cacheFile), { recursive: true });
@@ -902,13 +902,10 @@ describe("leaflet refresh route", () => {
       }),
     );
 
-    expect(result.status).toBe(502);
+    expect(result.status).toBe(409);
     expect(result.headers.get("cache-control")).toBe("no-store");
-    expect(await result.json()).toMatchObject({
-      status: "fallback",
-      pageCount: 0,
-      pages: [],
-    });
+    expect(await result.json()).toMatchObject({error:"weekly-publication-required"});
+    expect(stub.fetchImpl).not.toHaveBeenCalled();
     expect(await readFile(cacheFile, "utf8")).toBe(previous);
     expect(await readdir(path.dirname(cacheFile))).toEqual(["handzettel-cache.json"]);
   });

@@ -14,6 +14,10 @@ afterEach(() => {
 });
 
 describe("cinematic homepage server clock", () => {
+  test("uses the real clock in production even when both test flags are set",()=>{
+    const realDate=new Date("2026-10-08T12:00:00.000Z");
+    expect(resolveHomepageNow({env:{NODE_ENV:"production",CINEMATIC_E2E:"1",CINEMATIC_TEST_NOW:guardedInstant},realNow:()=>realDate})).toBe(realDate);
+  });
   test("uses the injected real clock when no override is supplied", () => {
     const realDate = new Date("2026-07-14T08:30:00.000Z");
     const realNow = vi.fn(() => realDate);

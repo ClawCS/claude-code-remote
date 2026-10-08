@@ -6,7 +6,7 @@ import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "../
 import { fetchOfficialCatalog, loadValidatedHandzettelCache, validateCatalog } from "../lib/handzettel-catalog";
 import { loadFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer, verifyFlyerFiles } from "../lib/flyer-packages";
 import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, type PublishedFlyer } from "../lib/content-verification";
-import { mapFlyerPackageToFlyer, mapHandzettelCacheToFlyer } from "../lib/homepage-content";
+import { mapFlyerPackageToFlyer, mapHandzettelCacheToFlyer } from "../lib/legacy-flyer-content";
 import { getOfferDemandRange, getOfficialOfferRange } from "../lib/offer-validity";
 import { assembleWeeklyPublication, importOfficialPublication, WeeklyPreparationError } from "../lib/official-publication-import";
 import { buildWeeklyOffers } from "./build-weekly-offers";
