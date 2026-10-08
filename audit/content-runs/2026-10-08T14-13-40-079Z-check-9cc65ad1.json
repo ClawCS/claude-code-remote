@@ -1,0 +1,47 @@
+{
+  "runId": "2026-10-08T14-13-40-079Z-check-9cc65ad1",
+  "mode": "check",
+  "startedAt": "2026-10-08T14:13:40.079Z",
+  "evaluatedAt": "2026-10-08T14:13:40.079Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "1390117",
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "result": "active"
+    },
+    {
+      "source": "canva",
+      "id": "nl-2026-10-05",
+      "designId": "DAHHqrttnew",
+      "pageNumbers": [
+        14
+      ],
+      "language": "nl",
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "result": "active-and-verified"
+    }
+  ],
+  "errors": [
+    "Offizielle Datei nicht erreichbar: https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "Offizielle Datei nicht erreichbar: https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1390117/v1/normal/bk_1.jpg",
+    "Veröffentlichte Handzetteldatei fehlt: https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "Veröffentlichte Handzetteldatei fehlt: https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1390117/v1/normal/bk_1.jpg"
+  ],
+  "warnings": [
+    "Keine bestätigte öffentliche Produktionsadresse geprüft; nur Website-/Vorschauprüfung."
+  ],
+  "deploymentVerified": false,
+  "websiteVerified": false,
+  "checkedUrl": "https://trinkgut-jammers.de",
+  "finishedAt": "2026-10-08T14:13:43.417Z",
+  "status": "failed"
+}
