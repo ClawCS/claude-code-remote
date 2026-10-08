@@ -8,6 +8,14 @@ Unverändert blockierend: falscher/unklarer Zeitraum, fehlende Herkunft/Freigabe
 
 Die Sortimentsseiten enthalten nur datierte Einzelangebote aus den aktiven Originalhandzetteln, keine historischen 107 Beispielprodukte. Einzelangebote nur mit eindeutig belegten Angaben und Originalverweis kuratieren; Originalabweichungen nicht durch erfundene Ersatzpreise auflösen. Neue Wochen können ohne neu kuratierte Einzelangebote starten: dann auf ihre vollständigen aktuellen Handzettel verweisen, niemals die alte Auswahl verlängern.
 
+### Vollständige Originalangebote für KW41
+
+Nach ausdrücklicher Freigabe am 08.10.2026 sind alle 107 DE- und 21 NL-Angebotsblöcke der Woche 05.–10.10.2026 übernommen. Gemeinsam beworbene Varianten, Gratiszugaben und Mengenstaffeln bleiben zusammen. Unbepreiste Image-, Gewinnspiel- und Rezeptflächen werden nicht als zusätzliche Produkte gezählt. Bekannte NL-Widersprüche bleiben im Original sichtbar und sind an den betreffenden Kacheln gekennzeichnet; es werden keine korrigierten Einzelpreise erfunden.
+
+`data/weekly-offer-layout.json` führt die vollständige Seitenzählung, geprüfte Ausschnitte, Quellenhashes und Bedingungen. `npm run offers:build` erzeugt daraus `data/weekly-offers.json` und die lokalen verlustfreien WebP-Ausschnitte. Es benötigt die privaten Original-PDFs und Seitenrender unter den im Layout genannten Pfaden. Regionen bei ineinandergreifender Gestaltung bleiben an ihren Originalpositionen; außerhalb liegende Nachbarangebote werden nicht übernommen. `npm run offers:check` prüft die veröffentlichten Metadaten und Bildhashes ohne private Originale. Vor Freigabe zusätzlich den Originalabgleich, die Zählung aller Seiten sowie Desktop/Mobil prüfen. Private Seitenrender und Zwischenstände unter `assets/source/weekly-offers/` nicht committen.
+
+Diese Ergänzung vervollständigt KW41, ist aber noch kein automatischer Artikelimport für unbekannte zukünftige Layouts. Neue Wochen benötigen eine vollständige neue Sichtprüfung und ein neues Layout samt aktualisiertem Abdeckungstest. Ein neuer Handzettel allein erzeugt keine Artikelkacheln. Die vorhandene Datums- und Quellenbindung entfernt alte Kacheln weiterhin automatisch; keine alte Auswahl als neue Woche ausgeben.
+
 Bildausnahmen: Akademie-Themenbilder und deklarierte Leihartikel-Beispielbilder dürfen seit 08.10.2026 auf Betreiberwunsch mit Image erzeugt werden; siehe AGENTS.md. Die Regeln für echte Cocktailfotos und übrige Canva-Rubriken bleiben bestehen.
 
 Zeitzone: Europe/Berlin. Vorbereiten sonntags 17:00, Statuskontrolle täglich 06:15. Niko hat Lesen/Exportieren in Canva, Lesen in Instagram sowie Website-Updates und Push autorisiert. Designs und Social-Accounts werden nicht verändert.

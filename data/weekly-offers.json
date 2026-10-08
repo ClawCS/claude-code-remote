@@ -1,233 +1,653 @@
 [
   {
-    "id": "de-2026-41-gerri",
+    "id": "de-2026-41-p01-koenig-pilsener",
+    "name": "König Pilsener",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p01-koenig-pilsener.webp",
+    "sourcePage": 1,
+    "rect": [
+      95,
+      444,
+      1506,
+      530
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        95,
+        444,
+        1506,
+        517
+      ],
+      [
+        550,
+        961,
+        1051,
+        13
+      ]
+    ],
+    "imageSha256": "a225c58806e69ab7e9cac668ee2931464816fca1e187406a4756373ca7859cb3",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "1 Kasten König Pilsener 11,99 €; 2 Dosen König Pilsener 0,5 l gratis, zzgl. Pfand; entspricht rechnerisch 10,01 € je Kasten."
+  },
+  {
+    "id": "de-2026-41-p01-bree-weine",
+    "name": "Bree Weine, auch alkoholfrei",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p01-bree-weine.webp",
+    "sourcePage": 1,
+    "rect": [
+      95,
+      958,
+      483,
+      449
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "9e92307334e4fd6a079e923250942231cde0745d9f706c06654fd5acee914fc6",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis 2,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p01-gerri",
     "name": "Gerri Limonaden",
     "categorySlug": "alkoholfrei",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-gerri.webp",
+    "image": "/images/offers/de-2026-41-p01-gerri.webp",
     "sourcePage": 1,
     "rect": [
       609,
-      989,
-      480,
-      420
+      988,
+      481,
+      419
     ],
     "sourceDimensions": [
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      482,
-      782,
-      380,
-      332
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "85042d8d8f486f42be8f2763154ced57f7e8f67dc1c07cbafa5ccfc4ba4005fd",
+    "imageSha256": "669e6f68cd2eaf2f3a7023611c13453050ddff4a2760b0b7b8b39c4d5a754f87",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
-    "id": "de-2026-41-rheinfels",
-    "name": "Rheinfels Quelle · 2 Kästen",
+    "id": "de-2026-41-p01-rheinfels-quelle",
+    "name": "Rheinfels Quelle Mineralwasser – 2 Kästen",
     "categorySlug": "alkoholfrei",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-rheinfels.webp",
+    "image": "/images/offers/de-2026-41-p01-rheinfels-quelle.webp",
     "sourcePage": 1,
     "rect": [
-      1121,
-      989,
+      1120,
+      988,
       481,
-      420
+      419
     ],
     "sourceDimensions": [
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      887,
-      782,
-      381,
-      332
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "0e037234f3cc482e67213db39a05e6f5c2a66af1ad8715cba5a69fdd935063c6",
+    "imageSha256": "34a291cdc167e459eb041b8a90801525358ade62fcfbb4070048b405206e2bb0",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": "2 Kästen à 12 x 1 l PET für 10,99 €; zzgl. 3,30 € Pfand je Kasten."
   },
   {
-    "id": "de-2026-41-ramazzotti",
-    "name": "Ramazzotti",
+    "id": "de-2026-41-p01-ramazzotti",
+    "name": "Ramazzotti, auch alkoholfrei",
     "categorySlug": "spirituosen",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-ramazzotti.webp",
+    "image": "/images/offers/de-2026-41-p01-ramazzotti.webp",
     "sourcePage": 1,
     "rect": [
-      96,
-      1439,
-      481,
-      420
+      95,
+      1438,
+      483,
+      419
     ],
     "sourceDimensions": [
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      76,
-      1138,
-      381,
-      332
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "55f7ffc6b8bc1b85cdd8d09c574f2489248a8c565740efc4db91a31b755f4ab6",
+    "imageSha256": "1580c449b6cae83274b076301677bd5152aee9363fce12278da705c84e2dc04e",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
-    "id": "de-2026-41-vilsa",
+    "id": "de-2026-41-p01-vilsa",
     "name": "Vilsa Mineralwasser",
     "categorySlug": "alkoholfrei",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-vilsa.webp",
+    "image": "/images/offers/de-2026-41-p01-vilsa.webp",
     "sourcePage": 1,
     "rect": [
       609,
-      1439,
-      480,
-      420
+      1438,
+      481,
+      419
     ],
     "sourceDimensions": [
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      482,
-      1138,
-      380,
-      332
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "9d6377e8924ef7b1aff23e93cc1e38913978981133b53fa2779b79e535e91810",
+    "imageSha256": "7efc50a51ddd45ad8d333d32894c614f2536ba6ee1b756d889672b4fe7a7a30d",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
-    "id": "de-2026-41-burgwallbronn",
+    "id": "de-2026-41-p01-burgwallbronn",
     "name": "Burgwallbronn Mineralwasser",
     "categorySlug": "alkoholfrei",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-burgwallbronn.webp",
+    "image": "/images/offers/de-2026-41-p01-burgwallbronn.webp",
     "sourcePage": 1,
     "rect": [
-      1121,
-      1439,
+      1120,
+      1438,
       481,
-      420
+      419
     ],
     "sourceDimensions": [
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      887,
-      1138,
-      381,
-      332
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "f68def040866309c7a5d1c8254f85935843649fe741d6553468453526ec51cf9",
+    "imageSha256": "07dbf43f72502b71801c130669df28fa7b4897c7bbc8365014db8250367877d0",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
-    "id": "de-2026-41-schloesser",
+    "id": "de-2026-41-p01-havana-club",
+    "name": "Havana Club Original oder Especial, auch Mango Lime",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p01-havana-club.webp",
+    "sourcePage": 1,
+    "rect": [
+      95,
+      1863,
+      483,
+      442
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "8764ed4eadbcc8266d7e92a2c39a9ee80117fab54d6bb697c06c1fb02a52428a",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis 9,99 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p01-schloesser-alt",
     "name": "Schlösser Alt",
     "categorySlug": "bier",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-schloesser.webp",
+    "image": "/images/offers/de-2026-41-p01-schloesser-alt.webp",
     "sourcePage": 1,
     "rect": [
       609,
-      1889,
-      480,
-      419
+      1888,
+      481,
+      417
     ],
     "sourceDimensions": [
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      482,
-      1494,
-      380,
-      331
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "03aab99f4e9e823404bf3d773ac6683fe889f6d79356d2ebf989b8509a79139f",
+    "imageSha256": "4d88ec02a53368b49e1a702f9e8f269442a0f48e4171cfb51cb0cca6e24e8fad",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
-    "id": "de-2026-41-bayreuther",
+    "id": "de-2026-41-p01-bayreuther-hell",
     "name": "Bayreuther Hell",
     "categorySlug": "bier",
     "language": "de",
     "flyerId": "catalog-13027-41-2026",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-de-bayreuther.webp",
+    "image": "/images/offers/de-2026-41-p01-bayreuther-hell.webp",
     "sourcePage": 1,
     "rect": [
-      1121,
-      1889,
+      1120,
+      1888,
+      481,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "8762822de6861ca12c496942cee9c62cc9085bd4ec28e87069afff014608e587",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-coca-cola",
+    "name": "Coca-Cola, Fanta oder Sprite",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-coca-cola.webp",
+    "sourcePage": 2,
+    "rect": [
+      465,
+      490,
+      1120,
+      487
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "9726f6e04d393de46c74394d3e1d27711c3343664cdc566543511fe157532197",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-effect",
+    "name": "effect Energy Drink",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-effect.webp",
+    "sourcePage": 2,
+    "rect": [
+      55,
+      988,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "4fd9463fa7b6582601e572f71445601b6810e7f0ac22e910def41c7d1d1aa43f",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-gerolsteiner-erfrischung",
+    "name": "Gerolsteiner Erfrischungsgetränke",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-gerolsteiner-erfrischung.webp",
+    "sourcePage": 2,
+    "rect": [
+      568,
+      988,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "84e02b0bd5a8e3d521e894b79f0a3346a0332d5cec751ae6dec05d21213390ae",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-landpark-limonaden",
+    "name": "Landpark Bio-Quelle Limonaden",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-landpark-limonaden.webp",
+    "sourcePage": 2,
+    "rect": [
+      1080,
+      988,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "f005cc0c95cbe2affcd0703e429122540f2c6dca75062293db72af374c2c9353",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-uludag",
+    "name": "Uludag Gazoz",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-uludag.webp",
+    "sourcePage": 2,
+    "rect": [
+      55,
+      1421,
+      486,
+      438
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "c055806e21dbaecb65229796617d0a6a267f7ee1e17b6fe7ad4fd28459dcb3fd",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis 0,67 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p02-vita-cola",
+    "name": "Vita Cola",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-vita-cola.webp",
+    "sourcePage": 2,
+    "rect": [
+      568,
+      1438,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "5ce39915741da432afc730daa7b8c02092d687993b627808eca811d6985e6a39",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-mio-mio",
+    "name": "Mio Mio Erfrischungsgetränke",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-mio-mio.webp",
+    "sourcePage": 2,
+    "rect": [
+      1080,
+      1438,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "da7ced2bb52db0512c296232d0e63ad3867a684f39e676bc9f3350f06fa42e3c",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-fuze-tea",
+    "name": "fuze tea",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-fuze-tea.webp",
+    "sourcePage": 2,
+    "rect": [
+      55,
+      1868,
+      482,
+      437
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        55,
+        1868,
+        482,
+        416
+      ],
+      [
+        120,
+        2284,
+        417,
+        21
+      ]
+    ],
+    "imageSha256": "303ec6bd07f2db857a10214f49723d0a7c805cf6e2ba75d8c8c5af7d283dbbbb",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-spacy",
+    "name": "Spacy Cola-Orange Mix",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-spacy.webp",
+    "sourcePage": 2,
+    "rect": [
+      568,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "2fef76ba430bd99194ecd2d20cea770eb364f5bd63cf152ebae1a46e3d1880d4",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p02-schwarzwald",
+    "name": "Schwarzwald Limo oder Schorle",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p02-schwarzwald.webp",
+    "sourcePage": 2,
+    "rect": [
+      1080,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        1080,
+        1888,
+        482,
+        400
+      ],
+      [
+        1080,
+        2288,
+        374,
+        17
+      ]
+    ],
+    "imageSha256": "5979d7a086e7d10afff7337b680fbfc0fe908e823d18246cf6a316fe56fe40e8",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p03-schloss-quelle",
+    "name": "Schloss Quelle Mineralwasser – Bonuskarte",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-schloss-quelle.webp",
+    "sourcePage": 3,
+    "rect": [
+      55,
+      82,
+      1603,
+      876
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ae99d520ab311eda924ecb94d60bb28a834dff77859722e1df81aa0d2609f3a6",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Anmelden in der trinkgut APP, Aktionskasten kaufen, digitale Stempel in der APP erhalten. Nach 5 Stempeln erhältst Du automatisch einen Coupon für Deinen Gratis-Kasten; in der App aktivieren und einlösen. Gratis-Kasten zzgl. Pfand. Teilnahmebedingungen und Datenschutz in der trinkgut APP und unter trinkgut.de/datenschutz."
+  },
+  {
+    "id": "de-2026-41-p03-mona",
+    "name": "Mona Mineralwasser, auch Lemon",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-mona.webp",
+    "sourcePage": 3,
+    "rect": [
+      95,
+      988,
+      483,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "c7d21c8af8407eda1898a600a21660c980d932ff550484d69e2c792a91eedd38",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p03-bergische-waldquelle",
+    "name": "Bergische Waldquelle Mineralwasser",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-bergische-waldquelle.webp",
+    "sourcePage": 3,
+    "rect": [
+      609,
+      988,
       481,
       419
     ],
@@ -235,21 +655,2432 @@
       1658,
       2400
     ],
-    "cropReferenceRect": [
-      887,
-      1494,
-      381,
-      331
-    ],
-    "cropReferenceDimensions": [
-      1312,
-      1898
-    ],
-    "imageSha256": "2d1743c2ee35552d4972c353f1bc8f76a888a3d2c43c5cf208dd8d47706b4e41",
+    "imageSha256": "4729ac6d11c039d6feb00a51aa39fe988b681e4f6cdf3391078883d9a9a5da69",
     "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
     "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p03-pepsi",
+    "name": "Pepsi, Schwip Schwap oder 7up, auch Zero",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-pepsi.webp",
+    "sourcePage": 3,
+    "rect": [
+      1120,
+      963,
+      481,
+      470
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "434bfd861b0c8ea623156728681ac20a6d618e626811887b4827040bf99ed395",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis 0,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p03-forstetal",
+    "name": "Forstetal 600 Mineralwasser",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-forstetal.webp",
+    "sourcePage": 3,
+    "rect": [
+      95,
+      1438,
+      483,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "84cf260b4e3a0a61d9e9fc4df12e9cfa89c1216de8b0eac750e1186a54686dc5",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p03-bad-meinberger",
+    "name": "Bad Meinberger Mineralwasser",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-bad-meinberger.webp",
+    "sourcePage": 3,
+    "rect": [
+      609,
+      1438,
+      481,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ce9a541c5de7d834817248453e3d2832e1714b61d4e3423f8481f05f7522061d",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p03-active-o2",
+    "name": "Active O2",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-active-o2.webp",
+    "sourcePage": 3,
+    "rect": [
+      1120,
+      1438,
+      481,
+      449
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "064ae54fca5645964b800ba75a9edaae3d5eff5bf3d862c1efd8a70f3f646fcd",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis 0,89 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p03-eau-la-la",
+    "name": "eau la la Mineralwasser – 3 Kästen",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-eau-la-la.webp",
+    "sourcePage": 3,
+    "rect": [
+      95,
+      1888,
+      995,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "616f7613f8f8c928ea09ddcf3b06f1d8b53d36e1acb76ac810ba21c1f7662ae2",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "3 Kästen à 12 x 1 l PET für 9,99 €; zzgl. 3,30 € Pfand je Kasten."
+  },
+  {
+    "id": "de-2026-41-p03-valensina",
+    "name": "Valensina",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p03-valensina.webp",
+    "sourcePage": 3,
+    "rect": [
+      1120,
+      1888,
+      481,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        1120,
+        1888,
+        481,
+        400
+      ],
+      [
+        1120,
+        2288,
+        285,
+        17
+      ]
+    ],
+    "imageSha256": "8eb8e2175675c01e865b5ec950d7f160f1f3ed72da224353be7264cdc25a1372",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-duckstein",
+    "name": "Duckstein Original",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-duckstein.webp",
+    "sourcePage": 4,
+    "rect": [
+      55,
+      518,
+      610,
+      890
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        55,
+        518,
+        610,
+        722
+      ],
+      [
+        55,
+        1240,
+        475,
+        168
+      ]
+    ],
+    "imageSha256": "a87ec06659dadf38d5ea322a47e9ff6fa9673dc3d11d0c7cc0989ed4ea36dac7",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-wickueler",
+    "name": "Wicküler Pilsener",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-wickueler.webp",
+    "sourcePage": 4,
+    "rect": [
+      584,
+      804,
+      469,
+      604
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        674,
+        804,
+        330,
+        449
+      ],
+      [
+        584,
+        1280,
+        469,
+        128
+      ]
+    ],
+    "imageSha256": "2f74a98e77a01571367654aeba8aa85b648c3eb1968291575956c0e55c82a228",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-augustiner",
+    "name": "Augustiner Edelstoff oder Dunkel",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-augustiner.webp",
+    "sourcePage": 4,
+    "rect": [
+      954,
+      555,
+      639,
+      853
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        954,
+        555,
+        639,
+        640
+      ],
+      [
+        1097,
+        1200,
+        452,
+        208
+      ]
+    ],
+    "imageSha256": "fb89f732df46e831bd5cb7017057b31f8907f3a667fb6493d53f6926f97667a1",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-krombacher-dose",
+    "name": "Krombacher Pils oder Radler",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-krombacher-dose.webp",
+    "sourcePage": 4,
+    "rect": [
+      55,
+      1438,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "f5499c6af8847f389b58b4ec118d2e1b9e7908d36abc6c56164361e551c7c34f",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-faxe",
+    "name": "Faxe Premium Lager Beer",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-faxe.webp",
+    "sourcePage": 4,
+    "rect": [
+      568,
+      1438,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "b166df2d04a27d0932704ca987ba3218ddba0917865d4a119115494845aefbe6",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-diebels",
+    "name": "Diebels Alt",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-diebels.webp",
+    "sourcePage": 4,
+    "rect": [
+      1080,
+      1438,
+      482,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ebeaf54fcd2ce8b848be615fec5342fbb26078a845939a7da3dcc6810037fd21",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-becks",
+    "name": "Beck’s Pils, Blue alkoholfrei oder weitere Sorten",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-becks.webp",
+    "sourcePage": 4,
+    "rect": [
+      55,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        55,
+        1888,
+        482,
+        399
+      ],
+      [
+        109,
+        2287,
+        428,
+        18
+      ]
+    ],
+    "imageSha256": "bbe30b9c5f0c0730f8b03999e0f38810f62c2eb37b28451b15cc217401ed5498",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-veltins-sixpack",
+    "name": "Veltins V+",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-veltins-sixpack.webp",
+    "sourcePage": 4,
+    "rect": [
+      568,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "fef61ab629ff5571bbc147c87c26398670be7d3c578b7f83927309152040ace1",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p04-estrella",
+    "name": "Estrella Galicia",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p04-estrella.webp",
+    "sourcePage": 4,
+    "rect": [
+      1080,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        1080,
+        1888,
+        482,
+        400
+      ],
+      [
+        1080,
+        2288,
+        374,
+        17
+      ]
+    ],
+    "imageSha256": "92a6974cca0f3e4023a69996a5704105da139345a02d9f3434e596e06613f4e1",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-lausitzer-porter",
+    "name": "Lausitzer Porter Schwarzes oder Kirsch Porter",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-lausitzer-porter.webp",
+    "sourcePage": 5,
+    "rect": [
+      584,
+      80,
+      1001,
+      881
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "e8ed962e09c41d6f1e60e82502be7f8b2c861b8302a53cf615b8163adb8cd51e",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-altenmuenster",
+    "name": "Altenmünster Urig Würzig",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-altenmuenster.webp",
+    "sourcePage": 5,
+    "rect": [
+      95,
+      988,
+      483,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "5a21dbbbda80fb6fcd87c84bced170bbc9a2c414dd31d96a7af09c28684c2f8e",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-jever",
+    "name": "Jever Pilsener",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-jever.webp",
+    "sourcePage": 5,
+    "rect": [
+      609,
+      988,
+      481,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "6ba5b3d43a0358b6206b878552440848b2360df328baa5e7a2a6f619b5eac69b",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-veltins-kasten",
+    "name": "Veltins V+ Curuba oder Energy",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-veltins-kasten.webp",
+    "sourcePage": 5,
+    "rect": [
+      1120,
+      988,
+      481,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "cea647484f2a0d91019c0406c00d7300ba36ce5a260142b648298e3bb1eb8c30",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-karamalz",
+    "name": "Karamalz Classic",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-karamalz.webp",
+    "sourcePage": 5,
+    "rect": [
+      95,
+      1438,
+      483,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "867daf3f60872c44ec829d14e6ea303de66503c5494d1b34b5149b723c0a5d11",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-potts",
+    "name": "Pott’s Landbier oder Landbier alkoholfrei",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-potts.webp",
+    "sourcePage": 5,
+    "rect": [
+      609,
+      1438,
+      481,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "094fd7428be147e68b657a5b8bc7ae14cea612bbc04d4b414b22a8d16fb3376c",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-kapuziner",
+    "name": "Kapuziner Weißbier, Weißbier alkoholfrei oder Kellerweizen",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-kapuziner.webp",
+    "sourcePage": 5,
+    "rect": [
+      1120,
+      1438,
+      481,
+      419
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "a73eb0df87b110e80f123d47dfff5f77678cd18defc906b885e8ef50d4754c95",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-koestritzer",
+    "name": "Köstritzer Schwarzbier",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-koestritzer.webp",
+    "sourcePage": 5,
+    "rect": [
+      95,
+      1888,
+      483,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "d9a3912b4218aa648c84313e186854e3d4750f28a2fdd30cf1e40bfc8276d37b",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-pilsner-urquell",
+    "name": "Pilsner Urquell",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-pilsner-urquell.webp",
+    "sourcePage": 5,
+    "rect": [
+      609,
+      1888,
+      481,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "56f40ca16cf3cc8c295f40e5fb040e64dc66d0f9aecfac1449efa35adc7eca83",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p05-schneider",
+    "name": "Schneider Weisse TAP 7 Original, TAP 3 Alkoholfrei oder Hefeweissbier Naturtrüb",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p05-schneider.webp",
+    "sourcePage": 5,
+    "rect": [
+      1120,
+      1888,
+      481,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        1120,
+        1888,
+        481,
+        400
+      ],
+      [
+        1120,
+        2288,
+        285,
+        17
+      ]
+    ],
+    "imageSha256": "64281f0f32ebb7e0e22b950bc2ff1058bc3dddf5ca796bd42fdb2f5522a9d66f",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p07-lego-funpack",
+    "name": "LEGO FunPack · Treueaktion",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p07-lego-funpack.webp",
+    "sourcePage": 7,
+    "rect": [
+      0,
+      0,
+      1657,
+      2400
+    ],
+    "sourceDimensions": [
+      1657,
+      2400
+    ],
+    "imageSha256": "d9e47d029575c6f91f7c47ba0d79949cc6a391f7db40bf952f95a5ca8f972791",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Nur mit der trinkgut App: Vom 24.08.2026 bis 17.10.2026 pro 5 EUR Einkaufswert einen LEGO FunPack-Treuepunkt sammeln. Mit 5 Treuepunkten ein LEGO FunPack für 5,99 EUR (UVP). Einlösen direkt an der Kasse bis 31.10.2026. Ohne Abgabe der trinkgut APP Treuepunkte ein LEGO FunPack für 11,99 EUR (UVP). Nur solange der Vorrat reicht."
+  },
+  {
+    "id": "de-2026-41-p08-berentzen-minis",
+    "name": "Berentzen Minis · Partybecher, Gürtel oder Hosenträger",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p08-berentzen-minis.webp",
+    "sourcePage": 8,
+    "rect": [
+      55,
+      977,
+      965,
+      435
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ee178215a194c133384418057004bbf38edf4e5f4232c95c920022355d23e0ce",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p08-pilavas",
+    "name": "Pilavas Ouzo oder Ouzo Nektar",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p08-pilavas.webp",
+    "sourcePage": 8,
+    "rect": [
+      55,
+      1437,
+      482,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "f0e618654c5a5eba888daa81bb18a68b7af501f2db78c9d4772d07487484d0bc",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p08-jaegermeister",
+    "name": "Jägermeister · Kräuterlikör, Scharf, Orange oder Winter Edition",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p08-jaegermeister.webp",
+    "sourcePage": 8,
+    "rect": [
+      569,
+      1437,
+      481,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "eefc9d526526c4fb3489e147ae4008860d1afb61cc5a89018e2c71a859d141bb",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Winter Edition nur für kurze Zeit erhältlich."
+  },
+  {
+    "id": "de-2026-41-p08-monkey-shoulder",
+    "name": "Monkey Shoulder",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p08-monkey-shoulder.webp",
+    "sourcePage": 8,
+    "rect": [
+      1080,
+      1437,
+      483,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "0613e61389f356bfac500a0828516649b1bb4a65d9dec4aa0479351f172ff782",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis nur mit der trinkgut App: 19,99 EUR; regulärer Originalpreis 22,99 EUR."
+  },
+  {
+    "id": "de-2026-41-p09-9mile",
+    "name": "9 Mile Vodka",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-9mile.webp",
+    "sourcePage": 9,
+    "rect": [
+      95,
+      633,
+      510,
+      773
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "52001d300bc1ee48fecfb2299cd5dd5cbfafb60ecc5bfa3191f83c8066db398b",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Mit LED-Beleuchtung im Flaschenboden."
+  },
+  {
+    "id": "de-2026-41-p09-jim-beam",
+    "name": "Jim Beam Whiskey oder Likör · App-Zugabe",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-jim-beam.webp",
+    "sourcePage": 9,
+    "rect": [
+      609,
+      633,
+      481,
+      773
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "f606885a63580adbf8a524c8cf68585e668cc4d10f2123464945ae6e39fcbe1b",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Nur mit der APP: Eine Flasche Jim Beam 0,7 l kaufen und eine Flasche Coca-Cola 1,25 l im Wert von 1,59 EUR gratis dazu; zzgl. Pfand. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p09-kilbeggan",
+    "name": "Kilbeggan Irish Whiskey oder Berry Selection",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-kilbeggan.webp",
+    "sourcePage": 9,
+    "rect": [
+      1097,
+      633,
+      505,
+      773
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "eab4664869153c1b11712c198af67f3c72847a952b590f90306cbb1934dbd649",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "200 PAYBACK Extra-Punkte = 2,00 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+  },
+  {
+    "id": "de-2026-41-p09-fuerst-bismarck",
+    "name": "Fürst Bismarck Doppelkorn",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-fuerst-bismarck.webp",
+    "sourcePage": 9,
+    "rect": [
+      95,
+      1438,
+      482,
+      418
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "030d04dd8a80ea7d8794e53d9ac7a64a8637b5fb8e47ff92de0b40d1c5dbabec",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p09-moskovskaya",
+    "name": "Moskovskaya Vodka",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-moskovskaya.webp",
+    "sourcePage": 9,
+    "rect": [
+      609,
+      1438,
+      481,
+      418
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ed89ea461e93a2b4dd4ec6216e4502655cd3627afbf1ca8edc8cbc778f17da97",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p09-baileys",
+    "name": "Baileys · verschiedene Sorten",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-baileys.webp",
+    "sourcePage": 9,
+    "rect": [
+      1121,
+      1438,
+      482,
+      418
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ecb75bb1faa68ae9d2199e692d079e5a0d32756a85a80a03068ccd1ab78f3c08",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p09-kettenfett",
+    "name": "Kettenfett Lakritzlikör",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-kettenfett.webp",
+    "sourcePage": 9,
+    "rect": [
+      95,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "8d69fb97c19482c47216abb950eff612533b0152417c184b17b30d7fb1395cc4",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p09-sarti-rosa",
+    "name": "Sarti Rosa",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-sarti-rosa.webp",
+    "sourcePage": 9,
+    "rect": [
+      609,
+      1888,
+      481,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "3af8effb7ea0a65ce6e753386736e71666dd1f8879ea2e2e4011383f2d4b1d26",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p09-tamnavulin",
+    "name": "Tamnavulin Double Cask oder Sherry Cask",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p09-tamnavulin.webp",
+    "sourcePage": 9,
+    "rect": [
+      1121,
+      1888,
+      482,
+      417
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "553ea37a62b56603872ab73caaa4f4af92a332c96901eb5fbbc5adb44ba52386",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p10-brut-dargent",
+    "name": "Brut Dargent · verschiedene Sorten",
+    "categorySlug": "sekt",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-brut-dargent.webp",
+    "sourcePage": 10,
+    "rect": [
+      55,
+      315,
+      482,
+      655
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "45f3fd1febf4160148de48082e5c4b48826a422f3477737dcb6d061e9cef7bfa",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-reserve-marande",
+    "name": "Réserve de Marande · Wein des Monats",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-reserve-marande.webp",
+    "sourcePage": 10,
+    "rect": [
+      568,
+      190,
+      1038,
+      780
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "dc6e8163ab8fffe63e167fe10fc9f32b9c71737630f14e80aaac1495269bff51",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Wein des Monats 05.10.-31.10.: Einzelpreis 4,99 EUR; ab 6 Flaschen je 4,49 EUR. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-1112-weine",
+    "name": "1112 Weine · verschiedene Sorten",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-1112-weine.webp",
+    "sourcePage": 10,
+    "rect": [
+      55,
+      989,
+      482,
+      632
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "3b4dc1f26862e5e150664a75a01a6f33c04ca704527f337942c387dc3e46bed4",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-chateau",
+    "name": "Château Margerots oder Colombe L’Église",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-chateau.webp",
+    "sourcePage": 10,
+    "rect": [
+      569,
+      989,
+      481,
+      632
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "a4ca0a38eb8080d7da7373875dea580e58f41a55b74b401d9fa1a84c605038a2",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-grand-sud",
+    "name": "Grand Sud Merlot oder Chardonnay · 3 l Bag-in-Box",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-grand-sud.webp",
+    "sourcePage": 10,
+    "rect": [
+      1080,
+      989,
+      483,
+      632
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "e82927eebc61f814b26ce1ea143a15e274a588acf6f4559c75575110129fe919",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-chipsfrisch",
+    "name": "funny-frisch Chipsfrisch · verschiedene Sorten",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-chipsfrisch.webp",
+    "sourcePage": 10,
+    "rect": [
+      55,
+      1655,
+      482,
+      448
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ea629619d64120898727fad9a40adf99a0634d6c5efa37b5336626b064bd6461",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, funny-frisch 1,19 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-den-gamle",
+    "name": "Den Gamle Fabrik Fruchtaufstrich",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-den-gamle.webp",
+    "sourcePage": 10,
+    "rect": [
+      569,
+      1655,
+      481,
+      448
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "8b15de77488d6f2321fce60e8ac9967335979adb120631991b2d2c4c43eb1c8a",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, Den Gamle 2,49 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p10-melitta",
+    "name": "Melitta Filterkaffee",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p10-melitta.webp",
+    "sourcePage": 10,
+    "rect": [
+      1080,
+      1655,
+      483,
+      448
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "8f05487503ffd2c811fe41116e80dbc304476bd77a212e74fe6fac7a5fc597a0",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "APP-Preis 5,99 EUR; regulärer Originalpreis 6,49 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+  },
+  {
+    "id": "de-2026-41-p11-moet-chandon",
+    "name": "Moët & Chandon Brut Impérial",
+    "categorySlug": "sekt",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p11-moet-chandon.webp",
+    "sourcePage": 11,
+    "rect": [
+      95,
+      660,
+      482,
+      746
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "b0bfb50980839792ee56d46fad7aec5dd1c2d18f4a2250e060a34994a2e4a531",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+  },
+  {
+    "id": "de-2026-41-p11-pfaffl",
+    "name": "Pfaffl Grüner Veltliner, Grauburgunder oder Gemischter Satz",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p11-pfaffl.webp",
+    "sourcePage": 11,
+    "rect": [
+      609,
+      660,
+      481,
+      746
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "2540af38f61ca623d8a7958e3c02eee2a696bccdde7f5074991180b586626b1c",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+  },
+  {
+    "id": "de-2026-41-p11-remy-martin",
+    "name": "Rémy Martin VSOP Cognac",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p11-remy-martin.webp",
+    "sourcePage": 11,
+    "rect": [
+      95,
+      1437,
+      482,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "03768343c04a4d155fba20815a9ef847fb58ec6e15d750b37c9a8a784c772501",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+  },
+  {
+    "id": "de-2026-41-p11-chivas-regal",
+    "name": "Chivas Regal · 12 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p11-chivas-regal.webp",
+    "sourcePage": 11,
+    "rect": [
+      609,
+      1437,
+      481,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "9064d85dd79cf54523ea7600a3c3023055dc927e7a77d8fab94a4a1f283852c6",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+  },
+  {
+    "id": "de-2026-41-p11-don-papa",
+    "name": "Don Papa Baroko oder Masskara",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p11-don-papa.webp",
+    "sourcePage": 11,
+    "rect": [
+      1121,
+      1437,
+      482,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "ae795fed3203859a035be235290d5e9f605f599e708877a8bb4a2ed5c6f4ffdf",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+  },
+  {
+    "id": "de-2026-41-p12-tyrconnell",
+    "name": "Tyrconnell Single Malt Irish Whiskey",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p12-tyrconnell.webp",
+    "sourcePage": 12,
+    "rect": [
+      55,
+      635,
+      482,
+      773
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "e261e466f07a22dd644775479cd8b5bde2206d1078efb7e9438ac6a390ae776f",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p12-scarabus",
+    "name": "Scarabus Islay Single Malt Scotch Whisky",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p12-scarabus.webp",
+    "sourcePage": 12,
+    "rect": [
+      699,
+      612,
+      868,
+      798
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "0fb761e2e63e1e4d113470e287ee7b747484bedd698e03696b75da2f2caea523",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p12-connemara",
+    "name": "Connemara Peated Single Malt Irish Whiskey",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p12-connemara.webp",
+    "sourcePage": 12,
+    "rect": [
+      55,
+      1437,
+      482,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "6b910ac4559bc44224ad51a27f8a9cd39eefc3fa5edc8609c00daadc8c9502fc",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p12-johnnie-walker",
+    "name": "Johnnie Walker Black Label · 12 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p12-johnnie-walker.webp",
+    "sourcePage": 12,
+    "rect": [
+      569,
+      1437,
+      481,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "8b73990955fb138571ff35729e37ab4a899f28e153f0a8e5ffc010552e7e6cd7",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p12-glenmorangie",
+    "name": "Glenmorangie The Original · 12 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p12-glenmorangie.webp",
+    "sourcePage": 12,
+    "rect": [
+      1080,
+      1437,
+      483,
+      868
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "22aad2872e6c5188c4bc045fcda58da3b570720695e39a69a52cb06c024acf99",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p13-glenfarclas",
+    "name": "Glenfarclas Single Malt Scotch Whisky 10 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p13-glenfarclas.webp",
+    "sourcePage": 13,
+    "rect": [
+      90,
+      536,
+      700,
+      875
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "1b110c566237a96ac228d46d4cc716bf96ff12f7b1d9905075cbf4694de9a7fb",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p13-kilchoman-sanaig",
+    "name": "Kilchoman Sanaig Single Malt Scotch Whisky",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p13-kilchoman-sanaig.webp",
+    "sourcePage": 13,
+    "rect": [
+      790,
+      655,
+      814,
+      755
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "a427db515cb3b63ae2ef8770d36f80043e1080222da1300a90fddb83fda9b0ff",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p13-glenfiddich",
+    "name": "Glenfiddich Single Malt Scotch Whisky 12 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p13-glenfiddich.webp",
+    "sourcePage": 13,
+    "rect": [
+      608,
+      1437,
+      483,
+      871
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "36315e6a4356a6c48af792e52bc0fbf4645aab6c2fba212aad896615cf753de7",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p13-laphroaig",
+    "name": "Laphroaig Islay Single Malt Scotch Whisky 10 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p13-laphroaig.webp",
+    "sourcePage": 13,
+    "rect": [
+      1120,
+      1437,
+      484,
+      854
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "3db2b8d2f09fb73d31f8ebc8e236d29b09dc2b3b1b0f01112d8923f7803db6d2",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p14-raunikar",
+    "name": "Raunikar Alte Marille, Williams, Haselnuss, Himbeere oder Zwetschge",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p14-raunikar.webp",
+    "sourcePage": 14,
+    "rect": [
+      60,
+      619,
+      752,
+      799
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "9a886700491bc3794b64b044665fd4ff00aed5b49d259990804605e437793920",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p14-roku-gin",
+    "name": "Roku Gin, verschiedene Sorten",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p14-roku-gin.webp",
+    "sourcePage": 14,
+    "rect": [
+      852,
+      697,
+      721,
+      721
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "b34412c245f056bb090557981778d1cbb1cb81012457a2519c667a9c4564f11d",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p14-havana-club",
+    "name": "Havana Club Rum 7 Jahre",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p14-havana-club.webp",
+    "sourcePage": 14,
+    "rect": [
+      55,
+      1437,
+      484,
+      858
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "05032dbf5fd4ef028f16b40265beae52045bdc3b6fb86875558ae91ee6ceaad0",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p14-bumbu",
+    "name": "Bumbu The Original",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p14-bumbu.webp",
+    "sourcePage": 14,
+    "rect": [
+      568,
+      1437,
+      482,
+      871
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "fc7b384a89814afc4d1150a867702827dfc7f303e16c58654c2454f2de0ad0a1",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p14-ron-zacapa",
+    "name": "Ron Zacapa Solera Gran Reserva No. 23",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p14-ron-zacapa.webp",
+    "sourcePage": 14,
+    "rect": [
+      1080,
+      1437,
+      484,
+      854
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "4fea20185a52f3d032cea12d7d400fa0628cdf9578d217d05630b0ec2dcef9fc",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p15-jaegermeister-manifest",
+    "name": "Jägermeister Manifest mit gratis Glas",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p15-jaegermeister-manifest.webp",
+    "sourcePage": 15,
+    "rect": [
+      96,
+      399,
+      485,
+      1013
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "118b669fffdef6ae671397fdd852853508db86efed702720f015c98263a9f060",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Mit gratis Glas! Jetzt mit Tumbler-Glas gratis."
+  },
+  {
+    "id": "de-2026-41-p15-cardenal-mendoza",
+    "name": "Cardenal Mendoza Brandy de Jerez Solera Gran Reserva mit gratis Glas",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p15-cardenal-mendoza.webp",
+    "sourcePage": 15,
+    "rect": [
+      596,
+      398,
+      618,
+      1016
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        616,
+        398,
+        482,
+        236
+      ],
+      [
+        596,
+        634,
+        618,
+        656
+      ],
+      [
+        596,
+        1286,
+        263,
+        128
+      ]
+    ],
+    "imageSha256": "58a5795ac386cb383cda9cc4a1e3d36360b78959a20668203812c7dd3830a7b5",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Mit gratis Glas!"
+  },
+  {
+    "id": "de-2026-41-p15-metaxa",
+    "name": "Metaxa 12 Sterne mit gratis Beanie",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p15-metaxa.webp",
+    "sourcePage": 15,
+    "rect": [
+      1122,
+      399,
+      482,
+      1014
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        1135,
+        399,
+        469,
+        231
+      ],
+      [
+        1211,
+        617,
+        382,
+        732
+      ],
+      [
+        1125,
+        1285,
+        256,
+        128
+      ]
+    ],
+    "imageSha256": "d87c11748a9cdb468c657da76b6a5e665e29c0ed57d98fe7f46307654f631501",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Mit gratis Beanie!"
+  },
+  {
+    "id": "de-2026-41-p15-grey-goose",
+    "name": "Grey Goose Vodka",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p15-grey-goose.webp",
+    "sourcePage": 15,
+    "rect": [
+      96,
+      1437,
+      483,
+      859
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "dfac558b2e26a6c60441c940ee54fbcb5f54c8b37b2f1cf773c44136a5945183",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p15-belvedere",
+    "name": "Belvedere Organic Vodka",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p15-belvedere.webp",
+    "sourcePage": 15,
+    "rect": [
+      608,
+      1437,
+      483,
+      871
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "7123ee82ac2dfabc9a74069d838ae2144c316cfd8e2e39f508fc54d7664195b3",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p16-mucho-mas-borgo",
+    "name": "Mucho Mas oder Borgo al Pascolo Salice Salentino Riserva DOC",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p16-mucho-mas-borgo.webp",
+    "sourcePage": 16,
+    "rect": [
+      579,
+      525,
+      505,
+      889
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "25e274ef2fb213ce263b10882deb13b35cd3e935fa375d63b0d950efb08a200f",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p16-el-cortez-xo",
+    "name": "El Cortez XO",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p16-el-cortez-xo.webp",
+    "sourcePage": 16,
+    "rect": [
+      1094,
+      544,
+      452,
+      869
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "6b7336fa92847cd80d7e6f0e78ce765adf7993c8512f9d907bec8f1f25d10ec5",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p16-markus-molitor",
+    "name": "Markus Molitor privée, verschiedene Sorten",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p16-markus-molitor.webp",
+    "sourcePage": 16,
+    "rect": [
+      56,
+      1438,
+      482,
+      870
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "sourceRegions": [
+      [
+        56,
+        1438,
+        482,
+        849
+      ],
+      [
+        124,
+        2287,
+        414,
+        21
+      ]
+    ],
+    "imageSha256": "2d4e9be7de5e3d87ec38cc0c6bd91dd339ca219689e2840141881e0161bd138a",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p16-antico-monastero",
+    "name": "Antico Monastero Langhe Nebbiolo oder Langhe Arneis",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p16-antico-monastero.webp",
+    "sourcePage": 16,
+    "rect": [
+      568,
+      1437,
+      482,
+      871
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "de95d14ec18af4efd3cd6d8b3b798102cae0e0060bded47a148968d03c03a3b2",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p16-mayschoss",
+    "name": "Mayschoß Edition Exclusiv Spätburgunder",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p16-mayschoss.webp",
+    "sourcePage": 16,
+    "rect": [
+      1080,
+      1437,
+      484,
+      854
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "460ea8a5c943144d7b0762c6b75b811c995e50cb5a3638ab138abda6ff06c669",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p17-fantazzy",
+    "name": "Fantazzy Passion Blend Vin de France",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-fantazzy.webp",
+    "sourcePage": 17,
+    "rect": [
+      103,
+      549,
+      460,
+      865
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "b1b5cf2363f3d839720fc530551f25459688a3b3880d339f095a80193747e267",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p17-barbanera",
+    "name": "Barbanera Vecciano",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-barbanera.webp",
+    "sourcePage": 17,
+    "rect": [
+      620,
+      544,
+      448,
+      870
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "31dc24bed80651baf1263f0ee0f367194cc3235e09cd16f9d394f6c989cb23ec",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "*für den 2023er"
+  },
+  {
+    "id": "de-2026-41-p17-cremant",
+    "name": "Crémant de Bordeaux, Crémant d'Alsace oder Crémant de Luxembourg",
+    "categorySlug": "sekt",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-cremant.webp",
+    "sourcePage": 17,
+    "rect": [
+      1121,
+      28,
+      514,
+      688
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "336115eb3bf9c36fd4ade8e82ec52f1f21a25694820b22219e99efaa03bf92d5",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p17-valdo",
+    "name": "Valdo Prosecco Valdobbiadene",
+    "categorySlug": "sekt",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-valdo.webp",
+    "sourcePage": 17,
+    "rect": [
+      1121,
+      716,
+      483,
+      697
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "eebe7baaecba13b772b6a2dd28e5d6ea53004c0a7f47f2425c25cf57104b8a6c",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p17-sancerre",
+    "name": "Sancerre Domaine des Nicolas Millet Bio",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-sancerre.webp",
+    "sourcePage": 17,
+    "rect": [
+      97,
+      1437,
+      482,
+      871
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "017a90ca67c34be68d34cb142ee31b404a56c1a9d769dbab1f0463bbb3113c8c",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p17-chateauneuf",
+    "name": "Châteauneuf-du-Pape Cuvée Sainte Vierge",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-chateauneuf.webp",
+    "sourcePage": 17,
+    "rect": [
+      608,
+      1437,
+      483,
+      871
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "b5cc30997bfa7320c40c481ccd2f278b2e2fec4a18934a8e599cd0bdd0ca9fad",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p17-barahonda",
+    "name": "Barahonda Less is cool Sauvignon Blanc Macabeo alkoholfrei",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p17-barahonda.webp",
+    "sourcePage": 17,
+    "rect": [
+      1120,
+      1437,
+      484,
+      854
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "845690c77a15ba24478e6f0d15f08f2e7899a2a5d09f04a884836029d333f6a2",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "de-2026-41-p18-wein-mehrkauf",
+    "name": "Wein-Mehrkauf: Scarànto Lugana, Südtiroler Winzerkeller Pinot Grigio oder Lagrein, Empirio Primitivo di Manduria, Rioja Vega Crianza oder Saint-Émilion Grand Cru",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-41-2026",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/de-2026-41-p18-wein-mehrkauf.webp",
+    "sourcePage": 18,
+    "rect": [
+      27,
+      240,
+      1580,
+      1647
+    ],
+    "sourceDimensions": [
+      1658,
+      2400
+    ],
+    "imageSha256": "26f07ee0f9da6bfaafd9b0bea425b5c1cea8e82707c181652210cf8f004578a2",
+    "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+    "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Stelle Dir Deinen Karton selbst zusammen. Einzelpreis 8.99 (1 l = € 11.99), durchgestrichener Vergleichspreis 9.99 €¹; ab 3 Flaschen je 7.99 (1 l = € 10.65); ab 6 Flaschen je 6.99 (1 l = € 9.32). Je 0,75 l Flasche. ¹ Niedrigster Gesamtpreis der letzten 30 Tage. Saint-Émilion Grand Cru*: *nach Abverkauf liefern wir Château Vieux Pressoir. Auszeichnungen: Scarànto für den 2024er; Empirio für den 2022er; Rioja Vega für den 2021er. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht."
   },
   {
     "id": "nl-2026-41-tamnavulin",
@@ -259,33 +3090,24 @@
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-tamnavulin.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-tamnavulin.webp",
+    "sourcePage": 1,
     "rect": [
       1186,
       40,
-      458,
+      459,
       414
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      857,
-      29,
-      331,
-      299
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "a5e73f8e73ba2dc6d3869716f9a3a28e1a44178dea8f7bd6ac3b6aa0c53f731d",
+    "imageSha256": "733ebb6e9a61895b22c8d56eef92f1bae7a6ec6ffcfdc450147c5eb8d709a317",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
     "id": "nl-2026-41-kilbeggan",
@@ -295,33 +3117,24 @@
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-kilbeggan.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-kilbeggan.webp",
+    "sourcePage": 1,
     "rect": [
-      1645,
+      1644,
       40,
-      309,
+      310,
       414
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      1188,
-      29,
-      223,
-      299
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "ede927c560cc301e870b94dfce95fd3469e98259d30c98d47863138396dd22b7",
+    "imageSha256": "c2ea1e2d994fd9440228b4ccebecbf1aee101815bbcba2223094f3d02c76d114",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
     "id": "nl-2026-41-jim-beam",
@@ -331,33 +3144,120 @@
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-jim-beam.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-jim-beam.webp",
+    "sourcePage": 1,
     "rect": [
       1953,
       40,
-      307,
+      308,
       414
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      1411,
-      29,
-      222,
-      299
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "1a34620b72a9b4ee5cf5d7656d833377aceb0f507658985ccdae3ded930c5949",
+    "imageSha256": "5c031a18344ce733e8e8acd1a9636a0440e3f3d1666ff5fe59a85ef52949aaa4",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "nl-2026-41-label-5",
+    "name": "Label 5 · mit Apple-Whisky-Sour-Rezept",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-label-5.webp",
+    "sourcePage": 1,
+    "rect": [
+      1697,
+      37,
+      851,
+      855
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "sourceRegions": [
+      [
+        2262,
+        37,
+        286,
+        435
+      ],
+      [
+        1697,
+        471,
+        851,
+        421
+      ]
+    ],
+    "imageSha256": "275fab1826295be40f406f0aa625441a9853c59b779d68024c1518859997a2cd",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "1-Liter-Flasche laut Originalangebot. Die zugehörige Rezeptidee bleibt im Originalausschnitt sichtbar."
+  },
+  {
+    "id": "nl-2026-41-baileys",
+    "name": "Bailey’s",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-baileys.webp",
+    "sourcePage": 1,
+    "rect": [
+      51,
+      476,
+      286,
+      416
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "75789a10e66f3c49bd3f131bd5def6b38ba12536f1289930088f1e11ba531dcc",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "",
+    "sourceWarning": "Im Original stehen 0,5- und 0,7-Liter-Gebinde mit demselben Grundpreis. Gebinde und Grundpreis bitte im Markt bestätigen."
+  },
+  {
+    "id": "nl-2026-41-ramazzotti",
+    "name": "Ramazzotti",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-ramazzotti.webp",
+    "sourcePage": 1,
+    "rect": [
+      336,
+      476,
+      310,
+      416
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "009fdec1747d15dae9bf0a26d8e39ffbbfa4fa4affa1de019a6f36c6a859293d",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
     "id": "nl-2026-41-pilavas",
@@ -367,177 +3267,80 @@
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-pilavas.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-pilavas.webp",
+    "sourcePage": 1,
     "rect": [
       645,
       476,
-      325,
-      412
+      326,
+      413
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      466,
-      344,
-      235,
-      298
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "29534226b58646a2e4e66c2d018677eb28defe83833290993d6b8c9a0af9c97d",
+    "imageSha256": "75de5121ed3aa97e6e45462d7cc73d6c8771ee9081644eb79f7f353cb5c6275f",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
   },
   {
-    "id": "nl-2026-41-brut-dargent",
-    "name": "Brut Dargent",
-    "categorySlug": "sekt",
+    "id": "nl-2026-41-jaegermeister",
+    "name": "Jägermeister",
+    "categorySlug": "spirituosen",
     "language": "nl",
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-brut-dargent.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-jaegermeister.webp",
+    "sourcePage": 1,
     "rect": [
-      408,
-      916,
-      266,
-      410
+      970,
+      476,
+      384,
+      416
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      295,
-      662,
-      192,
-      296
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "c7300217ead17b7261dd7e9aabdeca9b78c6f5a0d89e0077bd5145b3ea4832e4",
+    "imageSha256": "c93b20ceb4aeb88102f4af443126eaf206e3ecc734df15bfdda446d6e8fdf568",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": "",
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
   },
   {
-    "id": "nl-2026-41-fuze-tea",
-    "name": "Fuze Tea",
-    "categorySlug": "alkoholfrei",
+    "id": "nl-2026-41-havana-club",
+    "name": "Havana Club",
+    "categorySlug": "spirituosen",
     "language": "nl",
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-fuze-tea.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-havana-club.webp",
+    "sourcePage": 1,
     "rect": [
-      1109,
-      916,
-      346,
-      410
-    ],
-    "sourceDimensions": [
-      2600,
-      1860
-    ],
-    "cropReferenceRect": [
-      801,
-      662,
-      250,
-      296
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "fcf35ee823982a80c9d8ea077d076c1da09bb543fd8de067c40b0d7d8ec26d4f",
-    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
-    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
-    "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
-  },
-  {
-    "id": "nl-2026-41-schneider-weisse",
-    "name": "Schneider Weisse",
-    "categorySlug": "bier",
-    "language": "nl",
-    "flyerId": "nl-2026-10-05",
-    "validFrom": "2026-10-05",
-    "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-schneider-weisse.webp",
-    "sourcePage": 14,
-    "rect": [
-      900,
       1353,
-      415,
-      410
+      476,
+      335,
+      416
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      650,
-      978,
-      300,
-      296
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "ec7530eac05aa509ef447cdc7c792e30fcf87a5f679d13ba727db69e414f762a",
+    "imageSha256": "2be0ce7d5e6ec0f5ed119a64c5b1b2eef243df83e428981b2bc140ad99f27eec",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
-  },
-  {
-    "id": "nl-2026-41-veltins-vplus",
-    "name": "Veltins V+",
-    "categorySlug": "bier",
-    "language": "nl",
-    "flyerId": "nl-2026-10-05",
-    "validFrom": "2026-10-05",
-    "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-veltins-vplus.webp",
-    "sourcePage": 14,
-    "rect": [
-      1315,
-      1353,
-      468,
-      410
-    ],
-    "sourceDimensions": [
-      2600,
-      1860
-    ],
-    "cropReferenceRect": [
-      950,
-      978,
-      338,
-      296
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "ffb16c555b0d88e89ccb2e20a8e2b6b1d4793b568c55aab968ae983578a91c09",
-    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
-    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
-    "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+    "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
   },
   {
     "id": "nl-2026-41-bree",
@@ -547,32 +3350,354 @@
     "flyerId": "nl-2026-10-05",
     "validFrom": "2026-10-05",
     "validTo": "2026-10-10",
-    "image": "/images/offers/2026-41-nl-bree.webp",
-    "sourcePage": 14,
+    "image": "/images/offers/nl-2026-41-bree.webp",
+    "sourcePage": 1,
     "rect": [
-      54,
-      913,
-      349,
-      412
+      51,
+      909,
+      352,
+      417
     ],
     "sourceDimensions": [
       2600,
       1860
     ],
-    "cropReferenceRect": [
-      39,
-      660,
-      252,
-      298
-    ],
-    "cropReferenceDimensions": [
-      1878,
-      1344
-    ],
-    "imageSha256": "ac3ca75729808450f120d6b725badbc8ca7c3f4b235c4c2c210eb0627e9d051e",
+    "imageSha256": "113e6a2ca302aef80669cc3cace0a360527283ea5f64b03443a8e95eda416956",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
     "rightsStatus": "approved",
-    "reviewedAt": "2026-10-08"
+    "reviewedAt": "2026-10-08",
+    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app)."
+  },
+  {
+    "id": "nl-2026-41-brut-dargent",
+    "name": "Brut Dargent",
+    "categorySlug": "sekt",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-brut-dargent.webp",
+    "sourcePage": 1,
+    "rect": [
+      407,
+      909,
+      265,
+      417
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "c72fce33ba68aec801c61cb5b831fd61a9c2ad120299a6d56ebb083f828c8fff",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "nl-2026-41-grand-sud",
+    "name": "Grand Sud · 3 Liter Bag-in-Box",
+    "categorySlug": "wein",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-grand-sud.webp",
+    "sourcePage": 1,
+    "rect": [
+      671,
+      909,
+      425,
+      417
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "fc2e8b3b9a332cf80caa21c84d7ef1e0e057eb7a8c1b097d9183a98ec2801173",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "",
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+  },
+  {
+    "id": "nl-2026-41-fuze-tea",
+    "name": "Fuze Tea",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-fuze-tea.webp",
+    "sourcePage": 1,
+    "rect": [
+      1108,
+      909,
+      343,
+      417
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "d2fcd10bd6449327199e48d85bc6f4276388a817a03e2995f533608d70ef5741",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "nl-2026-41-pepsi",
+    "name": "Pepsi",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-pepsi.webp",
+    "sourcePage": 1,
+    "rect": [
+      1450,
+      909,
+      331,
+      417
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "ee5f55ee19a4d9c538af57bbe7094a34477c48d9f4aaaf3725fc52a4f7860076",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+    "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+  },
+  {
+    "id": "nl-2026-41-active-o2",
+    "name": "Active O2",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-active-o2.webp",
+    "sourcePage": 1,
+    "rect": [
+      1780,
+      909,
+      335,
+      417
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "c5d300681167c05f2999433c3cf751931e0d4aa69baa1a2cc92680281e9072a2",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app)."
+  },
+  {
+    "id": "nl-2026-41-chipsfrisch",
+    "name": "Chipsfrisch",
+    "categorySlug": "lebensmittel",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-chipsfrisch.webp",
+    "sourcePage": 1,
+    "rect": [
+      2126,
+      909,
+      422,
+      417
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "1b589b32f22bd9a593db4d474893fb4dac6d65a09e43cb5efa5f2f1e13c08cfd",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "",
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+  },
+  {
+    "id": "nl-2026-41-hertog-jan",
+    "name": "Hertog Jan · Doppelpack",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-hertog-jan.webp",
+    "sourcePage": 1,
+    "rect": [
+      51,
+      1346,
+      426,
+      420
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "sourceRegions": [
+      [
+        51,
+        1346,
+        426,
+        160
+      ],
+      [
+        51,
+        1505,
+        411,
+        261
+      ]
+    ],
+    "imageSha256": "4b01c02ec59e32cfd3f032cd83be5dad0aedf73c58c16c3d1d828c1fd99d8505",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Doppelpack: 2 Kästen laut Original. Die Pfandangabe ist im unveränderten Originalausschnitt enthalten.",
+    "sourceWarning": "Im Original ist nicht eindeutig, ob das genannte Pfand je Kasten oder für das Doppelpack gilt. Bitte im Markt bestätigen."
+  },
+  {
+    "id": "nl-2026-41-krombacher",
+    "name": "Krombacher · Bier van de maand",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-krombacher.webp",
+    "sourcePage": 1,
+    "rect": [
+      461,
+      1346,
+      437,
+      420
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "sourceRegions": [
+      [
+        480,
+        1346,
+        418,
+        170
+      ],
+      [
+        461,
+        1515,
+        437,
+        251
+      ]
+    ],
+    "imageSha256": "3d332e2435a7249131947b9ed9afa9a69a5a2150b032268f1e3833b006f9d1ac",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "Im Handzettel als Bier des Monats gekennzeichnet. Bitte die Mengenbedingungen des Monatsangebots beim Markt bestätigen lassen.",
+    "sourceWarning": "Die Monatsaktion auf Instagram nennt mindestens drei Kästen für diesen Preis je Kasten. Im Wochenhandzettel fehlt diese Mengenbedingung; bitte vor dem Kauf im Markt klären."
+  },
+  {
+    "id": "nl-2026-41-schneider-weisse",
+    "name": "Schneider Weisse",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-schneider-weisse.webp",
+    "sourcePage": 1,
+    "rect": [
+      897,
+      1346,
+      424,
+      420
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "af3d5b0e02f9ce1815926bc471fad3ddabb22753474ee1a8f158d76b3a04e78e",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "nl-2026-41-veltins-vplus",
+    "name": "Veltins V+",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-veltins-vplus.webp",
+    "sourcePage": 1,
+    "rect": [
+      1320,
+      1346,
+      465,
+      420
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "51a371ab1bd3408c04c7c5c7d3dc8635e6dd60f2b5e6dbb851765b1f9b314a81",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": ""
+  },
+  {
+    "id": "nl-2026-41-coca-cola",
+    "name": "Coca-Cola, Fanta, Sprite & Mezzo Mix",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-05",
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10",
+    "image": "/images/offers/nl-2026-41-coca-cola.webp",
+    "sourcePage": 1,
+    "rect": [
+      1794,
+      1346,
+      402,
+      420
+    ],
+    "sourceDimensions": [
+      2600,
+      1860
+    ],
+    "imageSha256": "a43b19e103aed1287928ca46b759dd4aba5ea1d63bf6aa0790efebcffe214b83",
+    "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+    "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-08",
+    "conditions": "24 × 0,33 Liter laut Original. Teilweise koffeinhaltig.",
+    "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
   }
 ]

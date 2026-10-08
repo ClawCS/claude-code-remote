@@ -11,6 +11,8 @@
     "generate:handzettel": "node scripts/generate-handzettel-manifest.mjs",
     "content:prepare": "tsx scripts/content-weekly.ts --prepare",
     "content:check": "tsx scripts/content-weekly.ts --check",
+    "offers:build": "tsx scripts/build-weekly-offers.ts",
+    "offers:check": "tsx scripts/build-weekly-offers.ts --check",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",

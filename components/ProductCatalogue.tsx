@@ -16,7 +16,7 @@ function Catalogue({children,index}:{children:React.ReactNode;index:FlyerIndex})
     <div className="page-hero-banner py-16 md:py-24"><div className="max-w-7xl mx-auto px-6 text-center relative">
       <p className="text-white/70 mb-3">Trinkgut Jammers · Goch</p>
       <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Sortiment & Wochenangebote</h1>
-      <p className="text-white/80 max-w-2xl mx-auto text-lg">Entdecke unsere Warengruppen und ausgewählte Artikel aus den aktuell gültigen Handzetteln. Das vollständige Sortiment findest du bei uns im Markt.</p>
+      <p className="text-white/80 max-w-2xl mx-auto text-lg">Alle Produktangebote aus dem deutschen und niederländischen Wochenhandzettel – nach Warengruppen sortiert. Gemeinsam beworbene Varianten und Mengenstaffeln bleiben zusammen. Das vollständige Marktsortiment findest du bei uns vor Ort.</p>
       <Link href="/angebote" className="inline-block mt-6 rounded-full border border-white/40 text-white px-6 py-3 font-bold">DE- und NL-Handzettel ansehen →</Link>
     </div></div>
     <div className="max-w-7xl mx-auto px-6 py-10">

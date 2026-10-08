@@ -48,6 +48,8 @@ Niko hat passende KI-generierte Themenbilder für alle Akademiekurse über Image
 
 ## NL-Werbung: Betreiberfreigabe — 08.10.2026
 
+Ergänzung nach ausdrücklicher Design-Abnahme am selben Tag: Für das Sortiment sind alle Angebotsblöcke beider aktuellen Originalhandzettel als vollständige, unveränderte Originalausschnitte freigegeben, auch die bisher zurückgehaltenen NL-Blöcke. App-/Mengenbedingungen erhalten; bekannte Originalwidersprüche am betreffenden Angebot kennzeichnen und nicht in erfundene oder stillschweigend korrigierte Einzelpreise umwandeln. Diese Freigabe betrifft Originalausschnitte, nicht normalisierte Preis- oder WWS-Daten.
+
 Die datumsrichtige, vollständige NL-Originalseite darf auf ausdrückliche Betreiberanweisung trotz dokumentierter rechnerischer Preis-/Grundpreisabweichungen unverändert übernommen werden. Der Betreiber wurde über die KW41-Abweichungen einschließlich Krombacher-Mindestmenge informiert und hat anschließend die Umsetzung bestätigt. Preis-/Pfand-/Bedingungsabweichungen als redaktionelle Warnung melden und dokumentieren; nicht eigenmächtig korrigieren und nicht als rechnerisch fehlerfrei deklarieren. Falsche Woche, unklare Herkunft, fehlendes/defektes Original oder mehrseitige NL-PDF bleiben blockierend. Einzelangebote außerhalb des Originalflyers nur bei vollständig eindeutig belegten Angaben übernehmen; andernfalls auf den Originalhandzettel verweisen.
 
 ## Ausdrückliche Ausnahme für Cocktailrezepte — 05.10.2026

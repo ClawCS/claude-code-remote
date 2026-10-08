@@ -1,0 +1,2529 @@
+{
+  "schemaVersion": 1,
+  "week": "2026-10-05",
+  "approval": "08.10.2026: vollständige Originalausschnitte beider Handzettel freigegeben; keine normalisierten Ersatzpreise.",
+  "sources": [
+    {
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "reviewedAt": "2026-10-08",
+      "rightsStatus": "approved",
+      "language": "de",
+      "flyerId": "catalog-13027-41-2026",
+      "sourceUrl": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+      "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+      "privatePdf": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/de-original-verified.pdf",
+      "pageCount": 18,
+      "pages": [
+        {
+          "page": 1,
+          "notes": [
+            "10 separate printed price blocks. Bonuskarte logo/header and publisher/footer excluded. Footnote 1: Niedrigster Gesamtpreis der letzten 30 Tage, außer König Pilsener 11.99, Havana Club 10.99, Gerri 8.99, Rheinfels 11.00. App condition is printed vertically outside the individual blocks. König uses stepped sourceRegions at the bottom to retain the crate tip without including the protruding Bree app bubble/price line. Its 10.01 € figure is explicitly a printed rechnerischer Preis, not a separate checkout price. General page-1 footer: Für Druckfehler keine Haftung; Abbildungen nicht verbindlich; Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p01-koenig-pilsener",
+              "name": "König Pilsener",
+              "categorySlug": "bier",
+              "rect": [
+                95,
+                444,
+                1506,
+                530
+              ],
+              "sourceRegions": [
+                [
+                  95,
+                  444,
+                  1506,
+                  517
+                ],
+                [
+                  550,
+                  961,
+                  1051,
+                  13
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "1 Kasten König Pilsener 11,99 €; 2 Dosen König Pilsener 0,5 l gratis, zzgl. Pfand; entspricht rechnerisch 10,01 € je Kasten."
+            },
+            {
+              "id": "de-2026-41-p01-bree-weine",
+              "name": "Bree Weine, auch alkoholfrei",
+              "categorySlug": "wein",
+              "rect": [
+                95,
+                958,
+                483,
+                449
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis 2,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p01-gerri",
+              "name": "Gerri Limonaden",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                609,
+                988,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p01-rheinfels-quelle",
+              "name": "Rheinfels Quelle Mineralwasser – 2 Kästen",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1120,
+                988,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "2 Kästen à 12 x 1 l PET für 10,99 €; zzgl. 3,30 € Pfand je Kasten."
+            },
+            {
+              "id": "de-2026-41-p01-ramazzotti",
+              "name": "Ramazzotti, auch alkoholfrei",
+              "categorySlug": "spirituosen",
+              "rect": [
+                95,
+                1438,
+                483,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p01-vilsa",
+              "name": "Vilsa Mineralwasser",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                609,
+                1438,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p01-burgwallbronn",
+              "name": "Burgwallbronn Mineralwasser",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1120,
+                1438,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p01-havana-club",
+              "name": "Havana Club Original oder Especial, auch Mango Lime",
+              "categorySlug": "spirituosen",
+              "rect": [
+                95,
+                1863,
+                483,
+                442
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis 9,99 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p01-schloesser-alt",
+              "name": "Schlösser Alt",
+              "categorySlug": "bier",
+              "rect": [
+                609,
+                1888,
+                481,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p01-bayreuther-hell",
+              "name": "Bayreuther Hell",
+              "categorySlug": "bier",
+              "rect": [
+                1120,
+                1888,
+                481,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-01.png",
+          "expectedOffers": 10
+        },
+        {
+          "page": 2,
+          "notes": [
+            "10 separate priced offers. Hero lifestyle photograph and newsletter/App footer are not separate offers. Effect, Uludag and fuze tea occupy one continuous left background but have separate product and price blocks. fuze tea and Schwarzwald use sourceRegions only to remove the footer phone/QR fragments while preserving complete bottle/crate bottoms."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p02-coca-cola",
+              "name": "Coca-Cola, Fanta oder Sprite",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                465,
+                490,
+                1120,
+                487
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-effect",
+              "name": "effect Energy Drink",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                55,
+                988,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-gerolsteiner-erfrischung",
+              "name": "Gerolsteiner Erfrischungsgetränke",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                568,
+                988,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-landpark-limonaden",
+              "name": "Landpark Bio-Quelle Limonaden",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1080,
+                988,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-uludag",
+              "name": "Uludag Gazoz",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                55,
+                1421,
+                486,
+                438
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis 0,67 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p02-vita-cola",
+              "name": "Vita Cola",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                568,
+                1438,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-mio-mio",
+              "name": "Mio Mio Erfrischungsgetränke",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1080,
+                1438,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-fuze-tea",
+              "name": "fuze tea",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                55,
+                1868,
+                482,
+                437
+              ],
+              "sourceRegions": [
+                [
+                  55,
+                  1868,
+                  482,
+                  416
+                ],
+                [
+                  120,
+                  2284,
+                  417,
+                  21
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-spacy",
+              "name": "Spacy Cola-Orange Mix",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                568,
+                1888,
+                482,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p02-schwarzwald",
+              "name": "Schwarzwald Limo oder Schorle",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1080,
+                1888,
+                482,
+                417
+              ],
+              "sourceRegions": [
+                [
+                  1080,
+                  1888,
+                  482,
+                  400
+                ],
+                [
+                  1080,
+                  2288,
+                  374,
+                  17
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-02.png",
+          "expectedOffers": 10
+        },
+        {
+          "page": 3,
+          "notes": [
+            "9 priced offer blocks. Schloss Quelle crop includes the bonus-card instructions, five-stamp coupon mechanism and footnotes because they are part of the offer. Pepsi and Active O2 app bubbles protrude below the usual row boundary; their bounds include the app litre-price line. Generic Leonie/footer banner excluded. Valensina sourceRegions remove only the overlapping footer QR fragment."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p03-schloss-quelle",
+              "name": "Schloss Quelle Mineralwasser – Bonuskarte",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                55,
+                82,
+                1603,
+                876
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Anmelden in der trinkgut APP, Aktionskasten kaufen, digitale Stempel in der APP erhalten. Nach 5 Stempeln erhältst Du automatisch einen Coupon für Deinen Gratis-Kasten; in der App aktivieren und einlösen. Gratis-Kasten zzgl. Pfand. Teilnahmebedingungen und Datenschutz in der trinkgut APP und unter trinkgut.de/datenschutz."
+            },
+            {
+              "id": "de-2026-41-p03-mona",
+              "name": "Mona Mineralwasser, auch Lemon",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                95,
+                988,
+                483,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p03-bergische-waldquelle",
+              "name": "Bergische Waldquelle Mineralwasser",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                609,
+                988,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p03-pepsi",
+              "name": "Pepsi, Schwip Schwap oder 7up, auch Zero",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1120,
+                963,
+                481,
+                470
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis 0,79 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p03-forstetal",
+              "name": "Forstetal 600 Mineralwasser",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                95,
+                1438,
+                483,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p03-bad-meinberger",
+              "name": "Bad Meinberger Mineralwasser",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                609,
+                1438,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p03-active-o2",
+              "name": "Active O2",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1120,
+                1438,
+                481,
+                449
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis 0,89 € nur gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p03-eau-la-la",
+              "name": "eau la la Mineralwasser – 3 Kästen",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                95,
+                1888,
+                995,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "3 Kästen à 12 x 1 l PET für 9,99 €; zzgl. 3,30 € Pfand je Kasten."
+            },
+            {
+              "id": "de-2026-41-p03-valensina",
+              "name": "Valensina",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1120,
+                1888,
+                481,
+                417
+              ],
+              "sourceRegions": [
+                [
+                  1120,
+                  1888,
+                  481,
+                  400
+                ],
+                [
+                  1120,
+                  2288,
+                  285,
+                  17
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-03.png",
+          "expectedOffers": 9
+        },
+        {
+          "page": 4,
+          "notes": [
+            "9 priced offers. Top-row product pictures interlock, unlike the lower six self-contained panels. Duckstein, Wicküler and Augustiner use original-position sourceRegions with transparent unused space: this preserves the whole product and its own text/price while avoiding adjacent names/prices. No pixels are repositioned or fabricated. Augustiner's image necessarily retains a small adjacent Wicküler pack fragment because the original overlapping artwork cannot be separated by rectangles without clipping the Augustiner crate; no adjacent price is retained. Hero lifestyle headline/photo and generic newsletter/footer excluded. Beck’s and Estrella sourceRegions remove only the overlapping footer phone/QR fragments."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p04-duckstein",
+              "name": "Duckstein Original",
+              "categorySlug": "bier",
+              "rect": [
+                55,
+                518,
+                610,
+                890
+              ],
+              "sourceRegions": [
+                [
+                  55,
+                  518,
+                  610,
+                  722
+                ],
+                [
+                  55,
+                  1240,
+                  475,
+                  168
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-wickueler",
+              "name": "Wicküler Pilsener",
+              "categorySlug": "bier",
+              "rect": [
+                584,
+                804,
+                469,
+                604
+              ],
+              "sourceRegions": [
+                [
+                  674,
+                  804,
+                  330,
+                  449
+                ],
+                [
+                  584,
+                  1280,
+                  469,
+                  128
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-augustiner",
+              "name": "Augustiner Edelstoff oder Dunkel",
+              "categorySlug": "bier",
+              "rect": [
+                954,
+                555,
+                639,
+                853
+              ],
+              "sourceRegions": [
+                [
+                  954,
+                  555,
+                  639,
+                  640
+                ],
+                [
+                  1097,
+                  1200,
+                  452,
+                  208
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-krombacher-dose",
+              "name": "Krombacher Pils oder Radler",
+              "categorySlug": "bier",
+              "rect": [
+                55,
+                1438,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-faxe",
+              "name": "Faxe Premium Lager Beer",
+              "categorySlug": "bier",
+              "rect": [
+                568,
+                1438,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-diebels",
+              "name": "Diebels Alt",
+              "categorySlug": "bier",
+              "rect": [
+                1080,
+                1438,
+                482,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-becks",
+              "name": "Beck’s Pils, Blue alkoholfrei oder weitere Sorten",
+              "categorySlug": "bier",
+              "rect": [
+                55,
+                1888,
+                482,
+                417
+              ],
+              "sourceRegions": [
+                [
+                  55,
+                  1888,
+                  482,
+                  399
+                ],
+                [
+                  109,
+                  2287,
+                  428,
+                  18
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-veltins-sixpack",
+              "name": "Veltins V+",
+              "categorySlug": "bier",
+              "rect": [
+                568,
+                1888,
+                482,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p04-estrella",
+              "name": "Estrella Galicia",
+              "categorySlug": "bier",
+              "rect": [
+                1080,
+                1888,
+                482,
+                417
+              ],
+              "sourceRegions": [
+                [
+                  1080,
+                  1888,
+                  482,
+                  400
+                ],
+                [
+                  1080,
+                  2288,
+                  374,
+                  17
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-04.png",
+          "expectedOffers": 9
+        },
+        {
+          "page": 5,
+          "notes": [
+            "10 priced offers. The unpriced Zeit für Porter editorial text and generic Traugott Simon/footer banner are excluded. Veltins V+ is a separate 24-bottle crate offer, not the sixpack offer on page 4. Schneider sourceRegions remove only the overlapping footer QR fragment, preserving the complete crate base."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p05-lausitzer-porter",
+              "name": "Lausitzer Porter Schwarzes oder Kirsch Porter",
+              "categorySlug": "bier",
+              "rect": [
+                584,
+                80,
+                1001,
+                881
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-altenmuenster",
+              "name": "Altenmünster Urig Würzig",
+              "categorySlug": "bier",
+              "rect": [
+                95,
+                988,
+                483,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-jever",
+              "name": "Jever Pilsener",
+              "categorySlug": "bier",
+              "rect": [
+                609,
+                988,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-veltins-kasten",
+              "name": "Veltins V+ Curuba oder Energy",
+              "categorySlug": "bier",
+              "rect": [
+                1120,
+                988,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-karamalz",
+              "name": "Karamalz Classic",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                95,
+                1438,
+                483,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-potts",
+              "name": "Pott’s Landbier oder Landbier alkoholfrei",
+              "categorySlug": "bier",
+              "rect": [
+                609,
+                1438,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-kapuziner",
+              "name": "Kapuziner Weißbier, Weißbier alkoholfrei oder Kellerweizen",
+              "categorySlug": "bier",
+              "rect": [
+                1120,
+                1438,
+                481,
+                419
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-koestritzer",
+              "name": "Köstritzer Schwarzbier",
+              "categorySlug": "bier",
+              "rect": [
+                95,
+                1888,
+                483,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-pilsner-urquell",
+              "name": "Pilsner Urquell",
+              "categorySlug": "bier",
+              "rect": [
+                609,
+                1888,
+                481,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p05-schneider",
+              "name": "Schneider Weisse TAP 7 Original, TAP 3 Alkoholfrei oder Hefeweissbier Naturtrüb",
+              "categorySlug": "bier",
+              "rect": [
+                1120,
+                1888,
+                481,
+                417
+              ],
+              "sourceRegions": [
+                [
+                  1120,
+                  1888,
+                  481,
+                  400
+                ],
+                [
+                  1120,
+                  2288,
+                  285,
+                  17
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-05.png",
+          "expectedOffers": 10
+        },
+        {
+          "page": 6,
+          "notes": [
+            "Entire page excluded: PAYBACK Joker coupon-heft and contest promotion (up to 33fach °P), with campaign dates 28.09.–01.11.2026 and participation link; no priced product offer or specified purchasable product panel."
+          ],
+          "offers": [],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-06.png",
+          "expectedOffers": 0
+        },
+        {
+          "page": 7,
+          "notes": [
+            "LEGO FunPack is one priced loyalty product promotion; all eight set variants remain grouped. Full-page crop preserves requirements, earning/redemption periods and the unqualified 11.99 EUR alternative. Category Lebensmittel & Mehr is the approved nonfood catch-all."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p07-lego-funpack",
+              "name": "LEGO FunPack · Treueaktion",
+              "categorySlug": "lebensmittel",
+              "rect": [
+                0,
+                0,
+                1657,
+                2400
+              ],
+              "sourceDimensions": [
+                1657,
+                2400
+              ],
+              "conditions": "Nur mit der trinkgut App: Vom 24.08.2026 bis 17.10.2026 pro 5 EUR Einkaufswert einen LEGO FunPack-Treuepunkt sammeln. Mit 5 Treuepunkten ein LEGO FunPack für 5,99 EUR (UVP). Einlösen direkt an der Kasse bis 31.10.2026. Ohne Abgabe der trinkgut APP Treuepunkte ein LEGO FunPack für 11,99 EUR (UVP). Nur solange der Vorrat reicht."
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-07.png",
+          "expectedOffers": 1
+        },
+        {
+          "page": 8,
+          "notes": [
+            "The unpriced Berentzen Bollerwagen giveaway banner is not a product-offer card. Berentzen Minis product offer below it is included. Pilavas and Jägermeister repeat offers elsewhere and are retained in this page draft."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p08-berentzen-minis",
+              "name": "Berentzen Minis · Partybecher, Gürtel oder Hosenträger",
+              "categorySlug": "spirituosen",
+              "rect": [
+                55,
+                977,
+                965,
+                435
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p08-pilavas",
+              "name": "Pilavas Ouzo oder Ouzo Nektar",
+              "categorySlug": "spirituosen",
+              "rect": [
+                55,
+                1437,
+                482,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p08-jaegermeister",
+              "name": "Jägermeister · Kräuterlikör, Scharf, Orange oder Winter Edition",
+              "categorySlug": "spirituosen",
+              "rect": [
+                569,
+                1437,
+                481,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Winter Edition nur für kurze Zeit erhältlich."
+            },
+            {
+              "id": "de-2026-41-p08-monkey-shoulder",
+              "name": "Monkey Shoulder",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1080,
+                1437,
+                483,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis nur mit der trinkgut App: 19,99 EUR; regulärer Originalpreis 22,99 EUR."
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-08.png",
+          "expectedOffers": 4
+        },
+        {
+          "page": 9,
+          "notes": [
+            "Unpriced Genussvoll durch den Herbst hero is excluded. Jim Beam free Coca-Cola is part of the same original offer, not a separate invented zero-price product. PAYBACK side-footnote is transcribed in conditions because a single rectangle extending down the full footnote would include unrelated neighboring offer prices. Jim Beam, Kilbeggan, Baileys and Tamnavulin repeat elsewhere and are retained."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p09-9mile",
+              "name": "9 Mile Vodka",
+              "categorySlug": "spirituosen",
+              "rect": [
+                95,
+                633,
+                510,
+                773
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Mit LED-Beleuchtung im Flaschenboden."
+            },
+            {
+              "id": "de-2026-41-p09-jim-beam",
+              "name": "Jim Beam Whiskey oder Likör · App-Zugabe",
+              "categorySlug": "spirituosen",
+              "rect": [
+                609,
+                633,
+                481,
+                773
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Nur mit der APP: Eine Flasche Jim Beam 0,7 l kaufen und eine Flasche Coca-Cola 1,25 l im Wert von 1,59 EUR gratis dazu; zzgl. Pfand. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p09-kilbeggan",
+              "name": "Kilbeggan Irish Whiskey oder Berry Selection",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1097,
+                633,
+                505,
+                773
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "200 PAYBACK Extra-Punkte = 2,00 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten."
+            },
+            {
+              "id": "de-2026-41-p09-fuerst-bismarck",
+              "name": "Fürst Bismarck Doppelkorn",
+              "categorySlug": "spirituosen",
+              "rect": [
+                95,
+                1438,
+                482,
+                418
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p09-moskovskaya",
+              "name": "Moskovskaya Vodka",
+              "categorySlug": "spirituosen",
+              "rect": [
+                609,
+                1438,
+                481,
+                418
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p09-baileys",
+              "name": "Baileys · verschiedene Sorten",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1121,
+                1438,
+                482,
+                418
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p09-kettenfett",
+              "name": "Kettenfett Lakritzlikör",
+              "categorySlug": "spirituosen",
+              "rect": [
+                95,
+                1888,
+                482,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p09-sarti-rosa",
+              "name": "Sarti Rosa",
+              "categorySlug": "spirituosen",
+              "rect": [
+                609,
+                1888,
+                481,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p09-tamnavulin",
+              "name": "Tamnavulin Double Cask oder Sherry Cask",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1121,
+                1888,
+                482,
+                417
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-09.png",
+          "expectedOffers": 9
+        },
+        {
+          "page": 10,
+          "notes": [
+            "Réserve de Marande uses one shared wide product panel: single-bottle and six-bottle prices remain grouped with the printed 05.10.-31.10. Wein des Monats period. Public operative validity must intersect current flyer validity. Shared side/bottom terms are transcribed in conditions rather than extending rectangular crops across unrelated neighboring prices. Footnote 1 marks lowest total price in the last 30 days; printed exception: funny-frisch 1.19 EUR, Den Gamle 2.49 EUR. Unpriced online/newsletter banner is excluded. Brut Dargent, Grand Sud and Chipsfrisch repeat elsewhere and are retained."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p10-brut-dargent",
+              "name": "Brut Dargent · verschiedene Sorten",
+              "categorySlug": "sekt",
+              "rect": [
+                55,
+                315,
+                482,
+                655
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-reserve-marande",
+              "name": "Réserve de Marande · Wein des Monats",
+              "categorySlug": "wein",
+              "rect": [
+                568,
+                190,
+                1038,
+                780
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Wein des Monats 05.10.-31.10.: Einzelpreis 4,99 EUR; ab 6 Flaschen je 4,49 EUR. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-1112-weine",
+              "name": "1112 Weine · verschiedene Sorten",
+              "categorySlug": "wein",
+              "rect": [
+                55,
+                989,
+                482,
+                632
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-chateau",
+              "name": "Château Margerots oder Colombe L’Église",
+              "categorySlug": "wein",
+              "rect": [
+                569,
+                989,
+                481,
+                632
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-grand-sud",
+              "name": "Grand Sud Merlot oder Chardonnay · 3 l Bag-in-Box",
+              "categorySlug": "wein",
+              "rect": [
+                1080,
+                989,
+                483,
+                632
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-chipsfrisch",
+              "name": "funny-frisch Chipsfrisch · verschiedene Sorten",
+              "categorySlug": "lebensmittel",
+              "rect": [
+                55,
+                1655,
+                482,
+                448
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, funny-frisch 1,19 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-den-gamle",
+              "name": "Den Gamle Fabrik Fruchtaufstrich",
+              "categorySlug": "lebensmittel",
+              "rect": [
+                569,
+                1655,
+                481,
+                448
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Fußnote 1: niedrigster Gesamtpreis der letzten 30 Tage, Den Gamle 2,49 EUR. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            },
+            {
+              "id": "de-2026-41-p10-melitta",
+              "name": "Melitta Filterkaffee",
+              "categorySlug": "lebensmittel",
+              "rect": [
+                1080,
+                1655,
+                483,
+                448
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "APP-Preis 5,99 EUR; regulärer Originalpreis 6,49 EUR. PAYBACK- und APP-Angebote nur gültig gegen Vorlage der PAYBACK Karte, der PAYBACK APP oder der trinkgut APP an der Kasse. APP-Preise und PAYBACK Punkte greifen nicht auf Mischkisten. Durchgestrichener Vergleichspreis ist laut Fußnote 1 der niedrigste Gesamtpreis der letzten 30 Tage. Fußnote 3: Die gekennzeichneten Artikel werden in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6 nicht angeboten. Drogerieartikel nicht erhältlich im Markt Andernach. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen."
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-10.png",
+          "expectedOffers": 8
+        },
+        {
+          "page": 11,
+          "notes": [
+            "Printed promotion validity is Mo-Sa 28.09.2026-10.10.2026 (2 Wochen gültig); public operative validity must intersect current flyer validity. Unpriced Pfaffl portrait/editorial panel is excluded. Shared comparison-price footnote is transcribed in conditions."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p11-moet-chandon",
+              "name": "Moët & Chandon Brut Impérial",
+              "categorySlug": "sekt",
+              "rect": [
+                95,
+                660,
+                482,
+                746
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+            },
+            {
+              "id": "de-2026-41-p11-pfaffl",
+              "name": "Pfaffl Grüner Veltliner, Grauburgunder oder Gemischter Satz",
+              "categorySlug": "wein",
+              "rect": [
+                609,
+                660,
+                481,
+                746
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+            },
+            {
+              "id": "de-2026-41-p11-remy-martin",
+              "name": "Rémy Martin VSOP Cognac",
+              "categorySlug": "spirituosen",
+              "rect": [
+                95,
+                1437,
+                482,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+            },
+            {
+              "id": "de-2026-41-p11-chivas-regal",
+              "name": "Chivas Regal · 12 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                609,
+                1437,
+                481,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+            },
+            {
+              "id": "de-2026-41-p11-don-papa",
+              "name": "Don Papa Baroko oder Masskara",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1121,
+                1437,
+                482,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Gedruckter Angebotszeitraum 28.09.2026-10.10.2026, zwei Wochen gültig. Durchgestrichener Vergleichspreis: niedrigster Gesamtpreis der letzten 30 Tage."
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-11.png",
+          "expectedOffers": 5
+        },
+        {
+          "page": 12,
+          "notes": [
+            "Unpriced whisky assortment header is excluded. Product editorial descriptions remain in the original product crops; none adds an independent offer. No app-specific price or multibuy condition is printed for these five blocks."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p12-tyrconnell",
+              "name": "Tyrconnell Single Malt Irish Whiskey",
+              "categorySlug": "spirituosen",
+              "rect": [
+                55,
+                635,
+                482,
+                773
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p12-scarabus",
+              "name": "Scarabus Islay Single Malt Scotch Whisky",
+              "categorySlug": "spirituosen",
+              "rect": [
+                699,
+                612,
+                868,
+                798
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p12-connemara",
+              "name": "Connemara Peated Single Malt Irish Whiskey",
+              "categorySlug": "spirituosen",
+              "rect": [
+                55,
+                1437,
+                482,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p12-johnnie-walker",
+              "name": "Johnnie Walker Black Label · 12 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                569,
+                1437,
+                481,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p12-glenmorangie",
+              "name": "Glenmorangie The Original · 12 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1080,
+                1437,
+                483,
+                868
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-12.png",
+          "expectedOffers": 5
+        },
+        {
+          "page": 13,
+          "notes": [
+            "Vier getrennte bepreiste Whisky-Angebote. Unbepreiste Hero-Aufnahme, Whisky-Wissen/QR-Kasten und Katalog-Fußbanner sind keine Angebote.",
+            "Die allgemeine PAYBACK-/App-Randfußnote kennzeichnet hier keinen der vier Preise als App-Preis. Keine Preisnormalisierung vorgenommen."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p13-glenfarclas",
+              "name": "Glenfarclas Single Malt Scotch Whisky 10 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                90,
+                536,
+                700,
+                875
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p13-kilchoman-sanaig",
+              "name": "Kilchoman Sanaig Single Malt Scotch Whisky",
+              "categorySlug": "spirituosen",
+              "rect": [
+                790,
+                655,
+                814,
+                755
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p13-glenfiddich",
+              "name": "Glenfiddich Single Malt Scotch Whisky 12 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                608,
+                1437,
+                483,
+                871
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p13-laphroaig",
+              "name": "Laphroaig Islay Single Malt Scotch Whisky 10 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1120,
+                1437,
+                484,
+                854
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-13.png",
+          "expectedOffers": 4
+        },
+        {
+          "page": 14,
+          "notes": [
+            "Fünf Preisblöcke; Raunikar-Sorten und Roku-Gin-Sorten bleiben jeweils unter ihrem gemeinsamen gedruckten Angebot gruppiert.",
+            "Unbepreiste Cocktail-Hero-Aufnahme und Newsletter-/App-Fußbanner ausgeschlossen. Keine einzelnen App-Sonderpreise auf dieser Seite."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p14-raunikar",
+              "name": "Raunikar Alte Marille, Williams, Haselnuss, Himbeere oder Zwetschge",
+              "categorySlug": "spirituosen",
+              "rect": [
+                60,
+                619,
+                752,
+                799
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p14-roku-gin",
+              "name": "Roku Gin, verschiedene Sorten",
+              "categorySlug": "spirituosen",
+              "rect": [
+                852,
+                697,
+                721,
+                721
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p14-havana-club",
+              "name": "Havana Club Rum 7 Jahre",
+              "categorySlug": "spirituosen",
+              "rect": [
+                55,
+                1437,
+                484,
+                858
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p14-bumbu",
+              "name": "Bumbu The Original",
+              "categorySlug": "spirituosen",
+              "rect": [
+                568,
+                1437,
+                482,
+                871
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p14-ron-zacapa",
+              "name": "Ron Zacapa Solera Gran Reserva No. 23",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1080,
+                1437,
+                484,
+                854
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-14.png",
+          "expectedOffers": 5
+        },
+        {
+          "page": 15,
+          "notes": [
+            "Fünf bepreiste Produktangebote. Das Vodka-Martini-Rezept rechts unten, Geschenkideen-Überschrift und Katalog-Fußbanner enthalten keine eigenen Preise und sind ausgeschlossen.",
+            "Cardenal Mendoza ist geometrisch mit Metaxa verzahnt: Die Geschenkbox reicht weiter rechts als der links beginnende Metaxa-Preis. Beide Angebote verwenden sourceRegions, damit keine fremden Produktfragmente oder Preise übernommen werden. Die Regionen bilden nur unveränderte Originalflächen an ihren exakten Ausgangspositionen ab; außerhalb der Vereinigung bleibt das umschließende Rechteck transparent. Keine Montage mit Positionsverschiebung und keine Retusche.",
+            "Die kostenlosen Gläser beziehungsweise das kostenlose Beanie sind Teil der jeweiligen gedruckten Angebote."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p15-jaegermeister-manifest",
+              "name": "Jägermeister Manifest mit gratis Glas",
+              "categorySlug": "spirituosen",
+              "rect": [
+                96,
+                399,
+                485,
+                1013
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Mit gratis Glas! Jetzt mit Tumbler-Glas gratis."
+            },
+            {
+              "id": "de-2026-41-p15-cardenal-mendoza",
+              "name": "Cardenal Mendoza Brandy de Jerez Solera Gran Reserva mit gratis Glas",
+              "categorySlug": "spirituosen",
+              "rect": [
+                596,
+                398,
+                618,
+                1016
+              ],
+              "sourceRegions": [
+                [
+                  616,
+                  398,
+                  482,
+                  236
+                ],
+                [
+                  596,
+                  634,
+                  618,
+                  656
+                ],
+                [
+                  596,
+                  1286,
+                  263,
+                  128
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Mit gratis Glas!"
+            },
+            {
+              "id": "de-2026-41-p15-metaxa",
+              "name": "Metaxa 12 Sterne mit gratis Beanie",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1122,
+                399,
+                482,
+                1014
+              ],
+              "sourceRegions": [
+                [
+                  1135,
+                  399,
+                  469,
+                  231
+                ],
+                [
+                  1211,
+                  617,
+                  382,
+                  732
+                ],
+                [
+                  1125,
+                  1285,
+                  256,
+                  128
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Mit gratis Beanie!"
+            },
+            {
+              "id": "de-2026-41-p15-grey-goose",
+              "name": "Grey Goose Vodka",
+              "categorySlug": "spirituosen",
+              "rect": [
+                96,
+                1437,
+                483,
+                859
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p15-belvedere",
+              "name": "Belvedere Organic Vodka",
+              "categorySlug": "spirituosen",
+              "rect": [
+                608,
+                1437,
+                483,
+                871
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-15.png",
+          "expectedOffers": 5
+        },
+        {
+          "page": 16,
+          "notes": [
+            "Fünf Preisblöcke. Mucho Mas und Borgo al Pascolo Salice Salentino Riserva DOC sind durch das gedruckte oder und einen gemeinsamen Preis verbunden und bleiben ein Angebot. Ebenso bleiben die Antico-Monastero-Sorten gruppiert.",
+            "Die unbepreiste Hero-Aufnahme, der redaktionelle Markus-Molitor-Portrait-/Infokasten und das Newsletter-/App-Fußbanner sind keine zusätzlichen Angebote. Das separate bepreiste Markus-Molitor-privée-Angebot ist vollständig erfasst.",
+            "Beim Markus-Molitor-Block überlappt das App-Fußbanner unten links den Angebotsbereich. sourceRegions lassen ausschließlich diesen fremden Bannerrest transparent, behalten Preis und beide vollständigen Flaschen in ihren Originalpositionen."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p16-mucho-mas-borgo",
+              "name": "Mucho Mas oder Borgo al Pascolo Salice Salentino Riserva DOC",
+              "categorySlug": "wein",
+              "rect": [
+                579,
+                525,
+                505,
+                889
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p16-el-cortez-xo",
+              "name": "El Cortez XO",
+              "categorySlug": "wein",
+              "rect": [
+                1094,
+                544,
+                452,
+                869
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p16-markus-molitor",
+              "name": "Markus Molitor privée, verschiedene Sorten",
+              "categorySlug": "wein",
+              "rect": [
+                56,
+                1438,
+                482,
+                870
+              ],
+              "sourceRegions": [
+                [
+                  56,
+                  1438,
+                  482,
+                  849
+                ],
+                [
+                  124,
+                  2287,
+                  414,
+                  21
+                ]
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p16-antico-monastero",
+              "name": "Antico Monastero Langhe Nebbiolo oder Langhe Arneis",
+              "categorySlug": "wein",
+              "rect": [
+                568,
+                1437,
+                482,
+                871
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p16-mayschoss",
+              "name": "Mayschoß Edition Exclusiv Spätburgunder",
+              "categorySlug": "wein",
+              "rect": [
+                1080,
+                1437,
+                484,
+                854
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-16.png",
+          "expectedOffers": 5
+        },
+        {
+          "page": 17,
+          "notes": [
+            "Sieben Preisblöcke. Crémant de Bordeaux, Crémant d'Alsace und Crémant de Luxembourg bleiben unter dem gemeinsamen gedruckten Preis gruppiert.",
+            "Unbepreistes Hero-/Primitivo-Thema und Newsletter-/App-Fußbanner ausgeschlossen. Barahonda ist ausdrücklich alkoholfrei und wird entsprechend kategorisiert.",
+            "Die Sternfußnote beim Barbanera-Auszeichnungshinweis wird originalgetreu mitgeführt, ohne daraus eine zusätzliche Preisbehauptung abzuleiten."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p17-fantazzy",
+              "name": "Fantazzy Passion Blend Vin de France",
+              "categorySlug": "wein",
+              "rect": [
+                103,
+                549,
+                460,
+                865
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p17-barbanera",
+              "name": "Barbanera Vecciano",
+              "categorySlug": "wein",
+              "rect": [
+                620,
+                544,
+                448,
+                870
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "*für den 2023er"
+            },
+            {
+              "id": "de-2026-41-p17-cremant",
+              "name": "Crémant de Bordeaux, Crémant d'Alsace oder Crémant de Luxembourg",
+              "categorySlug": "sekt",
+              "rect": [
+                1121,
+                28,
+                514,
+                688
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p17-valdo",
+              "name": "Valdo Prosecco Valdobbiadene",
+              "categorySlug": "sekt",
+              "rect": [
+                1121,
+                716,
+                483,
+                697
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p17-sancerre",
+              "name": "Sancerre Domaine des Nicolas Millet Bio",
+              "categorySlug": "wein",
+              "rect": [
+                97,
+                1437,
+                482,
+                871
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p17-chateauneuf",
+              "name": "Châteauneuf-du-Pape Cuvée Sainte Vierge",
+              "categorySlug": "wein",
+              "rect": [
+                608,
+                1437,
+                483,
+                871
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            },
+            {
+              "id": "de-2026-41-p17-barahonda",
+              "name": "Barahonda Less is cool Sauvignon Blanc Macabeo alkoholfrei",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1120,
+                1437,
+                484,
+                854
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": ""
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-17.png",
+          "expectedOffers": 7
+        },
+        {
+          "page": 18,
+          "notes": [
+            "Ein gemeinsamer bepreister Mehrkauf-Block mit sechs Weinvarianten: Scarànto Lugana; Südtiroler Winzerkeller Pinot Grigio; Südtiroler Winzerkeller Lagrein; Empirio Primitivo di Manduria; Rioja Vega Crianza Limited Edition; Saint-Émilion Grand Cru. Die Staffelpreise gelten gemeinsam, daher nicht als sechs scheinbar voneinander unabhängige Preisblöcke aufgeteilt.",
+            "Wein-kaufen-Profitipps/QR-Kasten, Website-/Newsletter-Werbung, Social-/FSC-/trinkgut-Logos und Impressum sind keine zusätzlichen Angebote.",
+            "Originalstaffel und Vergleichspreis bleiben unverändert. Sternfußnote zum Saint-Émilion-Ersatz und Jahresangaben zu den Auszeichnungen bleiben mitgeführt. Keine rechnerische Normalisierung."
+          ],
+          "offers": [
+            {
+              "id": "de-2026-41-p18-wein-mehrkauf",
+              "name": "Wein-Mehrkauf: Scarànto Lugana, Südtiroler Winzerkeller Pinot Grigio oder Lagrein, Empirio Primitivo di Manduria, Rioja Vega Crianza oder Saint-Émilion Grand Cru",
+              "categorySlug": "wein",
+              "rect": [
+                27,
+                240,
+                1580,
+                1647
+              ],
+              "sourceDimensions": [
+                1658,
+                2400
+              ],
+              "conditions": "Stelle Dir Deinen Karton selbst zusammen. Einzelpreis 8.99 (1 l = € 11.99), durchgestrichener Vergleichspreis 9.99 €¹; ab 3 Flaschen je 7.99 (1 l = € 10.65); ab 6 Flaschen je 6.99 (1 l = € 9.32). Je 0,75 l Flasche. ¹ Niedrigster Gesamtpreis der letzten 30 Tage. Saint-Émilion Grand Cru*: *nach Abverkauf liefern wir Château Vieux Pressoir. Auszeichnungen: Scarànto für den 2024er; Empirio für den 2022er; Rioja Vega für den 2021er. Preise gelten nur bei Abholung im Markt und können beim Lieferservice abweichen. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht."
+            }
+          ],
+          "sourceImage": "assets/source/weekly-offers/2026-41/rendered/de-18.png",
+          "expectedOffers": 1
+        }
+      ]
+    },
+    {
+      "validFrom": "2026-10-05",
+      "validTo": "2026-10-10",
+      "reviewedAt": "2026-10-08",
+      "rightsStatus": "approved",
+      "language": "nl",
+      "flyerId": "nl-2026-10-05",
+      "sourceUrl": "https://www.canva.com/design/DAHHqrttnew/view",
+      "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "privatePdf": "public/handzettel/2026/nl-2026-10-05.pdf",
+      "pageCount": 1,
+      "pages": [
+        {
+          "page": 1,
+          "notes": [
+            "Canva-Designseite 14 entspricht Seite 1 der freigegebenen einseitigen PDF.",
+            "21 Produktangebote; Apple Whisky Sour ist die zum Label-5-Angebot gehörige Rezeptidee, kein zusätzlicher Artikel.",
+            "Betreiberfreigabe 08.10.2026 nach vollständigem Design-Abgleich: alle Originalausschnitte einschließlich dokumentierter Originalabweichungen, ohne Preisänderung oder normalisierte Ersatzpreise."
+          ],
+          "offers": [
+            {
+              "id": "nl-2026-41-tamnavulin",
+              "name": "Tamnavulin",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1186,
+                40,
+                459,
+                414
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-kilbeggan",
+              "name": "Kilbeggan",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1644,
+                40,
+                310,
+                414
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-jim-beam",
+              "name": "Jim Beam",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1953,
+                40,
+                308,
+                414
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-label-5",
+              "name": "Label 5 · mit Apple-Whisky-Sour-Rezept",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1697,
+                37,
+                851,
+                855
+              ],
+              "sourceRegions": [
+                [
+                  2262,
+                  37,
+                  286,
+                  435
+                ],
+                [
+                  1697,
+                  471,
+                  851,
+                  421
+                ]
+              ],
+              "conditions": "1-Liter-Flasche laut Originalangebot. Die zugehörige Rezeptidee bleibt im Originalausschnitt sichtbar.",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-baileys",
+              "name": "Bailey’s",
+              "categorySlug": "spirituosen",
+              "rect": [
+                51,
+                476,
+                286,
+                416
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Im Original stehen 0,5- und 0,7-Liter-Gebinde mit demselben Grundpreis. Gebinde und Grundpreis bitte im Markt bestätigen."
+            },
+            {
+              "id": "nl-2026-41-ramazzotti",
+              "name": "Ramazzotti",
+              "categorySlug": "spirituosen",
+              "rect": [
+                336,
+                476,
+                310,
+                416
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-pilavas",
+              "name": "Pilavas Ouzo",
+              "categorySlug": "spirituosen",
+              "rect": [
+                645,
+                476,
+                326,
+                413
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-jaegermeister",
+              "name": "Jägermeister",
+              "categorySlug": "spirituosen",
+              "rect": [
+                970,
+                476,
+                384,
+                416
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+            },
+            {
+              "id": "nl-2026-41-havana-club",
+              "name": "Havana Club",
+              "categorySlug": "spirituosen",
+              "rect": [
+                1353,
+                476,
+                335,
+                416
+              ],
+              "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+            },
+            {
+              "id": "nl-2026-41-bree",
+              "name": "Bree wijn",
+              "categorySlug": "wein",
+              "rect": [
+                51,
+                909,
+                352,
+                417
+              ],
+              "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-brut-dargent",
+              "name": "Brut Dargent",
+              "categorySlug": "sekt",
+              "rect": [
+                407,
+                909,
+                265,
+                417
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-grand-sud",
+              "name": "Grand Sud · 3 Liter Bag-in-Box",
+              "categorySlug": "wein",
+              "rect": [
+                671,
+                909,
+                425,
+                417
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+            },
+            {
+              "id": "nl-2026-41-fuze-tea",
+              "name": "Fuze Tea",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1108,
+                909,
+                343,
+                417
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-pepsi",
+              "name": "Pepsi",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1450,
+                909,
+                331,
+                417
+              ],
+              "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Der gedruckte Grundpreis bezieht sich rechnerisch auf den App-Preis, nicht auf den danebenstehenden regulären Preis."
+            },
+            {
+              "id": "nl-2026-41-active-o2",
+              "name": "Active O2",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1780,
+                909,
+                335,
+                417
+              ],
+              "conditions": "Der gelb markierte Preis gilt nur mit der trinkgut App (Original: alleen met de trinkgut app).",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-chipsfrisch",
+              "name": "Chipsfrisch",
+              "categorySlug": "lebensmittel",
+              "rect": [
+                2126,
+                909,
+                422,
+                417
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+            },
+            {
+              "id": "nl-2026-41-hertog-jan",
+              "name": "Hertog Jan · Doppelpack",
+              "categorySlug": "bier",
+              "rect": [
+                51,
+                1346,
+                426,
+                420
+              ],
+              "sourceRegions": [
+                [
+                  51,
+                  1346,
+                  426,
+                  160
+                ],
+                [
+                  51,
+                  1505,
+                  411,
+                  261
+                ]
+              ],
+              "conditions": "Doppelpack: 2 Kästen laut Original. Die Pfandangabe ist im unveränderten Originalausschnitt enthalten.",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Im Original ist nicht eindeutig, ob das genannte Pfand je Kasten oder für das Doppelpack gilt. Bitte im Markt bestätigen."
+            },
+            {
+              "id": "nl-2026-41-krombacher",
+              "name": "Krombacher · Bier van de maand",
+              "categorySlug": "bier",
+              "rect": [
+                461,
+                1346,
+                437,
+                420
+              ],
+              "sourceRegions": [
+                [
+                  480,
+                  1346,
+                  418,
+                  170
+                ],
+                [
+                  461,
+                  1515,
+                  437,
+                  251
+                ]
+              ],
+              "conditions": "Im Handzettel als Bier des Monats gekennzeichnet. Bitte die Mengenbedingungen des Monatsangebots beim Markt bestätigen lassen.",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Die Monatsaktion auf Instagram nennt mindestens drei Kästen für diesen Preis je Kasten. Im Wochenhandzettel fehlt diese Mengenbedingung; bitte vor dem Kauf im Markt klären."
+            },
+            {
+              "id": "nl-2026-41-schneider-weisse",
+              "name": "Schneider Weisse",
+              "categorySlug": "bier",
+              "rect": [
+                897,
+                1346,
+                424,
+                420
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-veltins-vplus",
+              "name": "Veltins V+",
+              "categorySlug": "bier",
+              "rect": [
+                1320,
+                1346,
+                465,
+                420
+              ],
+              "conditions": "",
+              "sourceDimensions": [
+                2600,
+                1860
+              ]
+            },
+            {
+              "id": "nl-2026-41-coca-cola",
+              "name": "Coca-Cola, Fanta, Sprite & Mezzo Mix",
+              "categorySlug": "alkoholfrei",
+              "rect": [
+                1794,
+                1346,
+                402,
+                420
+              ],
+              "conditions": "24 × 0,33 Liter laut Original. Teilweise koffeinhaltig.",
+              "sourceDimensions": [
+                2600,
+                1860
+              ],
+              "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären."
+            }
+          ],
+          "sourceImage": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/nl-preview-held.png",
+          "expectedOffers": 21
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-08",
+  "scope": "Complete current KW41 original offer panels in the existing assortment card layout",
+  "status": "verified-locally",
+  "week": "2026-10-05",
+  "validFrom": "2026-10-05",
+  "validTo": "2026-10-10",
+  "counts": {
+    "before": 16,
+    "after": 128,
+    "de": 107,
+    "nl": 21,
+    "dePages": [10, 10, 9, 9, 10, 0, 1, 4, 9, 8, 5, 5, 4, 5, 5, 5, 7, 1],
+    "categories": {"bier": 25, "wein": 18, "alkoholfrei": 29, "spirituosen": 46, "lebensmittel": 5, "sekt": 5}
+  },
+  "sources": [
+    {
+      "language": "de",
+      "flyerId": "catalog-13027-41-2026",
+      "url": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+      "pages": 18,
+      "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a"
+    },
+    {
+      "language": "nl",
+      "flyerId": "nl-2026-10-05",
+      "url": "https://www.canva.com/design/DAHHqrttnew/view",
+      "pages": 1,
+      "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "canvaReadConnection": "confirmed via read-only design lookup in this run",
+      "export": "Existing authenticated original export reused and hash verified; no new browser export in this run"
+    }
+  ],
+  "editorialDecisions": [
+    "One card per original priced offer panel, not one invented SKU per pictured variant.",
+    "Shared variants, multi-buy prices, free gifts and app terms remain together.",
+    "DE page 6 has only unpriced editorial/loyalty/competition promotion and produces no product card.",
+    "The priced LEGO loyalty offer on page 7 is included with its collection/redemption conditions.",
+    "The six wines under the shared page-18 pricing panel remain one complete offer card.",
+    "Longer printed secondary promotion periods on DE pages 10 and 11 are noted in conditions but do not extend cards past the current flyer validity.",
+    "Nine existing NL source discrepancies are disclosed beside unchanged originals, not silently corrected.",
+    "Stepped regions retain original pixel positions and exclude unrelated neighboring prices; all derived images are lossless WebP."
+  ],
+  "checks": {
+    "fullTestSuite": {"command": "npm test", "files": 74, "passed": 1215, "failed": 0},
+    "build": {"command": "npm run build", "exitCode": 0, "includesTypeScript": true},
+    "offerIntegrity": {"command": "npm run offers:check", "offers": 128, "exitCode": 0},
+    "metadataRegression": {"tests": 41, "initialRedFailures": 27, "finalFailures": 0},
+    "independentReview": "All 128 metadata records matched the reviewed layout; both PDF hashes matched; in-memory regeneration reproduced all 128 published image hashes. Initial incomplete metadata check was fixed with exact comparison.",
+    "routes": {"/produkte": 128, "/kategorie/bier": 25, "/kategorie/wein": 18, "/kategorie/alkoholfrei": 29, "/kategorie/spirituosen": 46, "/kategorie/lebensmittel": 5, "/kategorie/sekt": 5},
+    "routeStatus": "All seven routes returned HTTP 200 and exact expected counts in the final pass. One initial development-server request to /kategorie/wein returned 500; immediate and final rechecks returned 200, no reproducible failure remained.",
+    "localImages": {"checked": 128, "failed": 0},
+    "browser": ["128 total", "107 Deutsch", "21 Nederlands", "Cardenal search returns original page 15", "Conditions disclosure opens", "Bier category contains 25", "390x844 mobile: no horizontal overflow and no broken visible images"],
+    "screenshots": [
+      "audit/screenshots/complete-offers-2026-10-08/desktop-all.png",
+      "audit/screenshots/complete-offers-2026-10-08/desktop-nl.png",
+      "audit/screenshots/complete-offers-2026-10-08/mobile-bier.png",
+      "audit/screenshots/complete-offers-2026-10-08/mobile-nl.png"
+    ]
+  },
+  "limits": [
+    "Current KW41 coverage only; arbitrary future flyer layouts are not automatically extracted by this change.",
+    "Existing date/source selection removes expired or superseded offers; no old week is extended.",
+    "No WWS, live inventory or normalized price records are introduced.",
+    "Known original price discrepancies remain operator-approved editorial warnings, not verified arithmetic.",
+    "Canva and Instagram account contents remain unchanged."
+  ],
+  "publicUrl": null,
+  "websiteVerified": true,
+  "verifiedOrigin": "http://localhost:3000",
+  "deploymentVerified": false
+}
