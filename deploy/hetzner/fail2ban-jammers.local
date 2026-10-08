@@ -1,0 +1,13 @@
+# /etc/fail2ban/jail.d/jammers.local
+[sshd]
+enabled = true
+backend = systemd
+port = ssh
+mode = normal
+maxretry = 5
+findtime = 10m
+bantime = 1h
+usedns = no
+banaction = nftables-multiport
+# Ban only: no email, external lookup/reporting service or HTTP-access-log jail.
+action = %(action_)s

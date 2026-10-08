@@ -1,0 +1,51 @@
+[Unit]
+Description=Trinkgut Jammers production website
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=jammers
+Group=jammers
+WorkingDirectory=/srv/trinkgut-jammers/current
+Environment=NODE_ENV=production
+Environment=RENTAL_MODE=disabled
+Environment=TZ=Europe/Berlin
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=NODE_OPTIONS=--max-old-space-size=1536
+Environment=MALLOC_ARENA_MAX=2
+# No EnvironmentFile: this information-only launch requires no application secrets.
+# Also reject inherited test clocks/credentials; do not deploy .env.local files.
+UnsetEnvironment=CINEMATIC_E2E CINEMATIC_TEST_NOW CRON_SECRET GEMINI_API_KEY RENTAL_DATA_DIR RENTAL_SETTINGS_FILE RENTAL_PUBLIC_ORIGIN RENTAL_ADMIN_SECRET RENTAL_SESSION_SECRET SMTP_HOST SMTP_PORT SMTP_SECURE SMTP_USER SMTP_PASS SMTP_FROM MOLLIE_API_KEY
+ExecStart=/opt/node/bin/node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3000
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+KillSignal=SIGTERM
+UMask=0027
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+# Must exist and be owned by jammers before start. All content stays read-only.
+ReadWritePaths=/srv/trinkgut-jammers/current/.next/cache
+MemoryHigh=2G
+MemoryMax=3G
+TasksMax=256
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=trinkgut-jammers
+
+[Install]
+WantedBy=multi-user.target

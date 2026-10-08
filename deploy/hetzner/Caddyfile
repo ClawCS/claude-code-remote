@@ -1,0 +1,50 @@
+{
+	admin 127.0.0.1:2019
+	# Operational errors only; no site-level access logger is enabled.
+	log default {
+		output stderr
+		format json
+		level WARN
+		exclude http.log.access
+	}
+	servers {
+		protocols h1 h2
+		max_header_size 64KB
+		timeouts {
+			read_header 10s
+			read_body 30s
+			write 120s
+			idle 2m
+		}
+	}
+}
+
+www.trinkgut-jammers.de {
+	redir https://trinkgut-jammers.de{uri} permanent
+}
+
+trinkgut-jammers.de {
+	# Legacy extraction files are not a public/current assortment API.
+	@legacyProducts path /data/products /data/products/*
+	respond @legacyProducts 404
+
+	# Upload/AI/order handlers remain disabled; current JSON requests are small.
+	# This caps request bodies, not downloaded images or PDFs.
+	request_body {
+		max_size 1MB
+	}
+	encode zstd gzip
+	header -Server
+
+	# Keep Next's cache/security headers and streamed responses unchanged.
+	reverse_proxy 127.0.0.1:3000 {
+		header_up X-Real-IP {remote_host}
+		header_up -Forwarded
+		transport http {
+			dial_timeout 5s
+			response_header_timeout 90s
+			# Shorter than Node's keep-alive; allow cold image optimization.
+			keepalive 2s
+		}
+	}
+}

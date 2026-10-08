@@ -1,0 +1,8 @@
+# /etc/fail2ban/fail2ban.local
+# Ubuntu's foreground fail2ban systemd service captures STDOUT in the journal.
+[Definition]
+loglevel = INFO
+logtarget = STDOUT
+dbfile = /run/fail2ban/fail2ban.sqlite3
+dbpurgeage = 86400
+dbmaxmatches = 0
