@@ -68,7 +68,7 @@ Nachweise: [Tagesbericht](../audit/content-runs/2026-10-01-daily-evidence.json),
 ## Nächste Schritte in Reihenfolge
 
 1. Aktuellen Stand, private Originale und bestehende lokale Änderungen sichern.
-2. [Aktuelle Betreiberantworten](DECISIONS-2026-10-08.md) beachten. Newsletter sonntags 19 Uhr von vorhandenem `info@trinkgut-jammers.de`; Bewerbungen an die Marktadresse für alle dort Berechtigten; zwei Stellenanzeigen gefunden. [Datenschutz-/Löschentwurf](privacy/2026-10-08-datenschutz-loeschkonzept-entwurf.md) und [Jobs-Inhalte](privacy/2026-10-08-jobs-inhaltsvorbereitung.md) vorbereitet, Dienste noch nicht aktiv.
+2. [Aktuelle Betreiberantworten](DECISIONS-2026-10-08.md) beachten. Newsletter sonntags 19 Uhr von vorhandenem `info@trinkgut-jammers.de`; Bewerbungen nach jüngster Korrektur ebenfalls an `info@trinkgut-jammers.de`, Mietanfragen weiterhin an die Marktadresse. Zwei Stellenanzeigen gefunden. [Datenschutz-/Löschentwurf](privacy/2026-10-08-datenschutz-loeschkonzept-entwurf.md) und [Jobs-Inhalte](privacy/2026-10-08-jobs-inhaltsvorbereitung.md) vorbereitet, Dienste noch nicht aktiv.
 3. Den verbindlichen Mietablauf nur bei gesondert gewünschter späterer Aktivierung gemeinsam abnehmen; bis dahin bleibt ausschließlich der Anfrageweg aktiv. Bestätigte Kalender- und Dreierblockregeln sind umgesetzt.
 4. Fehlende Originale zuordnen, geeignete Bilder kuratieren und Desktop/Mobil prüfen.
 5. Newsletter-/Bewerbungsversand und geschützte Uploads technisch konkretisieren. WWS-/Zahlungs-/Rechnungsfragen ausdrücklich zurückgestellt, jetzt nicht erneut pauschal abfragen.

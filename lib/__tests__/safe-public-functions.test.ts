@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { POST as communityPost } from "@/app/api/community/route";
 import { POST as applicationPost } from "@/app/api/bewerbung/route";
 import ProductLayout, { generateMetadata } from "@/app/produkte/[slug]/layout";
+import BewerbungPage from "@/app/bewerbung/page";
 import products from "@/data/products.json";
 
 vi.mock("@/lib/community-db", () => ({loadDB: async () => ({users: {}, monthlyWinners: []}), saveDB: async () => {}, checkMonthlyReset: async () => {}, getLeaderboard: () => [], getLevel: () => "Bronze", generateId: () => "not-used"}));
@@ -27,6 +28,12 @@ describe("unsafe legacy publication paths are closed", () => {
     const response = await applicationPost(new NextRequest("http://localhost/api/bewerbung", {method: "POST", body: new FormData()}));
     expect(response.status).toBe(503);
     expect(response.headers.get("cache-control")).toContain("no-store");
+    expect((await response.json()).error).toContain("info@trinkgut-jammers.de");
+  });
+  it("routes application contact to the dedicated info mailbox, not the rental mailbox", () => {
+    const html = renderToStaticMarkup(BewerbungPage());
+    expect(html).toContain('href="mailto:info@trinkgut-jammers.de?subject=Interesse%20an%20einer%20Mitarbeit"');
+    expect(html).not.toContain("mailto:jammers-goch@trinkgut.de");
   });
   it("does not publish unverified catalog prices or stock in product structured data", async () => {
     const tree = await ProductLayout({children: null, params: Promise.resolve({slug: products[0].slug})});
