@@ -245,23 +245,27 @@ async function load(root: string): Promise<LoadedWeeklyPublications> {
       weekRange(match[1]); week = match[1];
       item = header(await json(root, `data/editorial/weekly-publications/${file.name}`), week);
     } catch { issues.push({ week, code: "week-invalid" }); continue; }
-    const counts = new Map<string, number>();
-    const ids = new Map<string, number>();
-    for (const raw of item.editions) {
-      if (raw && typeof raw === "object") {
-        const value = raw as Record<string, unknown>;
-        if (value.language === "de" || value.language === "nl") counts.set(value.language, (counts.get(value.language) ?? 0) + 1);
-        if (typeof value.id === "string") ids.set(value.id, (ids.get(value.id) ?? 0) + 1);
-      }
-    }
+    const candidates: WeeklyEdition[] = [];
     for (const raw of item.editions) {
       const value = raw && typeof raw === "object" ? raw as Record<string, unknown> : {};
       const language = value.language === "de" || value.language === "nl" ? value.language : undefined;
       try {
-        const edition = parseWeeklyEdition(raw, item.week);
+        candidates.push(parseWeeklyEdition(raw, item.week));
+      } catch { issues.push({ week, ...(language ? { language } : {}), code: "edition-invalid" }); }
+    }
+    // Malformed metadata cannot lend its raw identity to invalidate a valid sibling.
+    // Uniqueness remains strict across all successfully parsed candidates.
+    const counts = new Map<string, number>();
+    const ids = new Map<string, number>();
+    for (const edition of candidates) {
+      counts.set(edition.language, (counts.get(edition.language) ?? 0) + 1);
+      ids.set(edition.id, (ids.get(edition.id) ?? 0) + 1);
+    }
+    for (const edition of candidates) {
+      try {
         if (counts.get(edition.language) !== 1 || ids.get(edition.id) !== 1) throw new Error("Duplicate edition");
         editions.push(await verifyWeeklyEdition(edition, root));
-      } catch { issues.push({ week, ...(language ? { language } : {}), code: "edition-invalid" }); }
+      } catch { issues.push({ week, language: edition.language, code: "edition-invalid" }); }
     }
   }
   return { editions, issues };

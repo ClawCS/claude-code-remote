@@ -34,6 +34,31 @@ describe("immutable weekly publications", () => {
     expect((await loadWeeklyPublications(f.root)).editions.map(x => x.edition.language)).toEqual(["de"]);
     expect(() => parseWeeklyPublication({ ...f.publication, editions: [f.editions[0], { ...f.editions[1], cover: null }] })).toThrow();
   });
+  it("does not let a malformed NL edition's colliding raw ID invalidate verified DE", async () => {
+    const f = await fixture();
+    await f.write("data/editorial/weekly-publications/2026-10-05.json", JSON.stringify({ ...f.publication,
+      editions: [f.editions[0], { ...f.editions[1], id: f.editions[0].id, cover: null }] }));
+    const loaded = await loadWeeklyPublications(f.root);
+    expect(loaded.editions.map(row => row.edition.language)).toEqual(["de"]);
+    expect(loaded.issues).toEqual([{ week: "2026-10-05", language: "nl", code: "edition-invalid" }]);
+    expect(selectPublishedEditions(loaded, new Date("2026-10-08T12:00:00Z")).map(row => row.edition.language)).toEqual(["de"]);
+  });
+  it("still rejects colliding IDs between schema-valid candidates", async () => {
+    const f = await fixture();
+    f.editions[1].id = f.editions[0].id;
+    await f.save();
+    const loaded = await loadWeeklyPublications(f.root);
+    expect(loaded.editions).toEqual([]);
+    expect(loaded.issues.map(issue => issue.language).sort()).toEqual(["de", "nl"]);
+  });
+  it("still rejects duplicate schema-valid languages without disabling their unique sibling", async () => {
+    const f = await fixture();
+    f.publication.editions.push(structuredClone(f.editions[0]));
+    await f.save();
+    const loaded = await loadWeeklyPublications(f.root);
+    expect(loaded.editions.map(row => row.edition.language)).toEqual(["nl"]);
+    expect(loaded.issues.map(issue => issue.language)).toEqual(["de", "de"]);
+  });
   it("acceptsHistoricalPackage: verifies source validity against the package week, not today", async () => {
     const f = await fixture("2025-12-29", "2026-01-03");
     const loaded = await loadWeeklyPublications(f.root);
