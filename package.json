@@ -23,6 +23,8 @@
     "assets:cinematic:check": "node scripts/build-cinematic-assets.mjs --check",
     "assets:market": "node scripts/build-market-assets.mjs",
     "assets:market:check": "node scripts/build-market-assets.mjs --check",
+    "assets:google-market": "node scripts/build-google-market-assets.mjs",
+    "assets:google-market:check": "node scripts/build-google-market-assets.mjs --check",
     "audit:public": "node scripts/audit-public-site.mjs"
   },
   "dependencies": {

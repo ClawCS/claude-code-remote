@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-08",
+  "releaseBasis": "user-approved-google-owner-2026-10-08",
+  "entries": [
+    {
+      "id": "eigenmarken-flaschen",
+      "source": "eigenmarken-flaschen.jpg",
+      "sourceHash": "2f57c822a703ddb0205dcd1db6177700772de17445b53b33608a6d9190ab08d4",
+      "sourceDimensions": {
+        "width": 2373,
+        "height": 3072
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 2373,
+        "height": 3072
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "eigenmarke",
+      "output": {
+        "name": "eigenmarken-flaschen.webp",
+        "maxBytes": 150000,
+        "sha256": "04cde3c3d6d2a51007255ca20bdda106ae13fcb05c174c118a77862e919d5271",
+        "dimensions": {
+          "width": 927,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "regionaler-hofaufbau",
+      "source": "regionaler-hofaufbau.jpg",
+      "sourceHash": "33a2e543ef851656812fc88aa717d37d90886b178fe970ea169c4f7e2b9738c2",
+      "sourceDimensions": {
+        "width": 900,
+        "height": 1600
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 900,
+        "height": 1600
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "marktleben",
+      "output": {
+        "name": "regionaler-hofaufbau.webp",
+        "maxBytes": 150000,
+        "sha256": "3acc5c3c426eff40d978797d0fecbfc2a7b8ea1ff64ed1a585f2e8437a2f9bc3",
+        "dimensions": {
+          "width": 675,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "grusskarten-detail",
+      "source": "grusskarten-detail.jpg",
+      "sourceHash": "c6a5be41fa9ee72b407df4f2852fb514076ff29a021b193f7fdea26076eb580e",
+      "sourceDimensions": {
+        "width": 900,
+        "height": 1600
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 900,
+        "height": 1600
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "geschenkideen",
+      "output": {
+        "name": "grusskarten-detail.webp",
+        "maxBytes": 150000,
+        "sha256": "79bdbeb7346b033f6fef3cf318b06c808665db237598d36d0ec31db2364ea625",
+        "dimensions": {
+          "width": 675,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "desperados-detail",
+      "source": "desperados-detail.jpg",
+      "sourceHash": "8a876a36fd2ebde0441f8d54e268c951eb995faa3090d7d68faeeb310d7b3245",
+      "sourceDimensions": {
+        "width": 900,
+        "height": 1600
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 900,
+        "height": 1600
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "marktleben",
+      "output": {
+        "name": "desperados-detail.webp",
+        "maxBytes": 150000,
+        "sha256": "e911c586d0168425daed61b04caf522fef441cdb0f7cbf9592525d5d85497fc7",
+        "dimensions": {
+          "width": 675,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "baileys-aufbau",
+      "source": "baileys-aufbau.jpg",
+      "sourceHash": "40d1de56b6b5057bbef42f07e97f19815e6238cffd29880faabd83e28f6ef5d4",
+      "sourceDimensions": {
+        "width": 1200,
+        "height": 1600
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1200,
+        "height": 1600
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "marktleben",
+      "output": {
+        "name": "baileys-aufbau.webp",
+        "maxBytes": 150000,
+        "sha256": "534faaeeb72e62f949d1619e6786dcacb3a28d55beb923c0f9de93b3fbdd1eb4",
+        "dimensions": {
+          "width": 900,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "grillbegleiter",
+      "source": "grillbegleiter.jpg",
+      "sourceHash": "6e998a60f80185d13d33fc8b4b88b28385e8076d8835df62a1678fecdb15c82d",
+      "sourceDimensions": {
+        "width": 1200,
+        "height": 1600
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1200,
+        "height": 1600
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "marktleben",
+      "output": {
+        "name": "grillbegleiter.webp",
+        "maxBytes": 250000,
+        "sha256": "75a43ea4cc4800d44e52a8f4e611746999a4ab18352b98942836b2a74065508a",
+        "dimensions": {
+          "width": 900,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "karten-mit-charakter",
+      "source": "karten-mit-charakter.jpg",
+      "sourceHash": "0e5c219230b7881e0f1fd9ab402a164e7b94633e7991dd44d8698f9a926843ee",
+      "sourceDimensions": {
+        "width": 1152,
+        "height": 2048
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1152,
+        "height": 2048
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "geschenkideen",
+      "output": {
+        "name": "karten-mit-charakter.webp",
+        "maxBytes": 150000,
+        "sha256": "64ae962cada51ad18bae907ea6a13710d448692a1d30e44c0086bc31b18831bc",
+        "dimensions": {
+          "width": 675,
+          "height": 1200
+        }
+      }
+    },
+    {
+      "id": "verkostung",
+      "source": "verkostung.jpg",
+      "sourceHash": "cbfac2a4a456736d6280f6b255927394aac8aed9552f6b4026132144bec28ea6",
+      "sourceDimensions": {
+        "width": 762,
+        "height": 1354
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 762,
+        "height": 1354
+      },
+      "provenance": "operator-approved-google-owner",
+      "rubric": "marktleben",
+      "output": {
+        "name": "verkostung.webp",
+        "maxBytes": 150000,
+        "sha256": "8d36893c6c6600ff52d1711e2a75664f387382c8de74a3171148b89ca73a428c",
+        "dimensions": {
+          "width": 675,
+          "height": 1200
+        }
+      }
+    }
+  ]
+}

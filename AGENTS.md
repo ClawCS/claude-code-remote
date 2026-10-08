@@ -42,6 +42,12 @@ Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Ausdrückliche Ausnahme für eigene Google-Profilfotos — 08.10.2026
+
+Niko hat die Übernahme möglichst vieler geeigneter eigener Fotos aus dem Google-Unternehmensprofil von Trinkgut Jammers ausdrücklich beauftragt. Nur eindeutig dem Betreiber zugeordnete Fotos aus „Vom Inhaber“ verwenden, keine Kundenfotos oder Street-View-Bilder. Die geprüften Motive passend zu Marktleben, Geschenkideen und Eigenmarken einordnen; ältere Aufbauten als Rückblicke kennzeichnen, nicht als aktuelle Preis-/Bestandszusage. Lokal optimierte, vollständige Web-Derivate mit eigener Google-Herkunft führen; nicht als Canva verifiziert ausgeben. Private Quellen-URLs, Foto-Identitäten und Exportnachweise bleiben unter `.superpowers/google-photos-2026-10-08/`; das öffentliche Buildmanifest unter `assets/source/google-market-photos/` enthält ausschließlich bereinigte Quellen, Freigabebasis, Maße und SHA-256. Google und Canva unverändert lassen, keine externen Fotoeinbettungen.
+
+Das am 08.10. gezeigte Stapler-/Anlieferungsfoto ist laut Niko Justin zugeordnet und vollständig ausgeschlossen, auch als Ausschnitt. Die bisherigen Personen-Ausschlüsse bleiben bestehen; unbeschriftete Menschen nicht anhand ihrer Gesichter identifizieren.
+
 ## Ausdrückliche Ausnahme für Akademie und Leihartikel — 08.10.2026
 
 Niko hat passende KI-generierte Themenbilder für alle Akademiekurse über Image sowie natürliche Beispielbilder für die Leihartikel ausdrücklich beauftragt und den Kurzdesign-Abgleich freigegeben. Diese Bilder lokal optimieren und in einem getrennten Herkunftsmanifest mit Prompt, Generator, Freigabedatum und SHA-256 dokumentieren. Akademiemotive als KI-generierte Themenbilder kenntlich machen; Leihbilder mit „KI-Beispielbild · Modell und Ausführung können abweichen“ kennzeichnen. Keine nicht belegten konkreten Modelle, Abmessungen oder Eigenschaften als zugesichert ausgeben. Diese Ausnahme gilt nicht für Cocktails, Marktfotos, Mitarbeiter, Werbung oder Gewinnspieloriginale. Vorhandene Canva-Verbindung bleibt unverändert.

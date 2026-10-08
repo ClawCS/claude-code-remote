@@ -25,6 +25,7 @@ const routes = [
   { path: "/geschenkideen", name: "geschenkideen", heading: /^Freude schenken\. Mit Jammers\.$/ },
   { path: "/regionale-spirituosen", name: "regionale-spirituosen", heading: /^Regional\. Besonders\. Für dich\.$/ },
   { path: "/marktleben", name: "marktleben", heading: /^Unser Markt\. Nah dran\.$/ },
+  { path: "/eigenmarke", name: "eigenmarke", heading: /^Unsere Eigenmarken$/ },
   { path: "/cocktails", name: "cocktails", heading: /^Cocktail-Rezepte$/ },
   { path: "/cocktails/mojito", name: "cocktail-mojito", heading: /^Mojito$/ },
   { path: "/cocktails/kategorie/rum", name: "cocktail-category-rum", heading: /^Cocktails mit Rum$/ },
@@ -131,9 +132,10 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
   const expectedCounts: Record<string, number> = {
     "/": 3,
     "/kategorie/alkoholfrei": 0,
-    "/geschenkideen": 1,
+    "/geschenkideen": 3,
     "/regionale-spirituosen": 3,
-    "/marktleben": 2,
+    "/marktleben": 7,
+    "/eigenmarke": 1,
   };
   const originalDimensions: Record<string, readonly [number, number]> = {
     "salitos-market.webp": [696, 975],
@@ -142,6 +144,14 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
     "regional-tante-dele.webp": [1080, 1440],
     "regional-schokolaedchen.webp": [1080, 1440],
     "regional-kaeffchen.webp": [1080, 1440],
+    "eigenmarken-flaschen.webp": [927, 1200],
+    "regionaler-hofaufbau.webp": [675, 1200],
+    "grusskarten-detail.webp": [675, 1200],
+    "desperados-detail.webp": [675, 1200],
+    "baileys-aufbau.webp": [900, 1200],
+    "grillbegleiter.webp": [900, 1200],
+    "karten-mit-charakter.webp": [675, 1200],
+    "verkostung.webp": [675, 1200],
   };
   const images = page.locator("[data-market-discoveries] img, .category-photo img, .regional-specialties img");
   await expect(images).toHaveCount(expectedCounts[path] ?? 0);
@@ -154,6 +164,11 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
     const description = await image.getAttribute("alt");
     const source = new URL(await image.getAttribute("src") ?? "", page.url());
     const filename = (source.searchParams.get("url") ?? source.pathname).split("/").at(-1) ?? "";
+    expect(filename, "excluded forklift photo must never be published").not.toMatch(/justin|gabelstapler|forklift/i);
+    if ((source.searchParams.get("url") ?? source.pathname).startsWith("/images/editorial/google/")) {
+      await expect(image).toHaveAttribute("loading", "lazy");
+      await expect(image).not.toHaveAttribute("alt", /Justin|Gabelstapler|forklift/i);
+    }
     const dimensions = originalDimensions[filename];
     expect(dimensions, `verified original source: ${description}`).toBeDefined();
     await expect(image).toHaveAttribute("width", String(dimensions[0]));

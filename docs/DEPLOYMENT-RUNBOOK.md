@@ -114,13 +114,13 @@ git archive --format=tar.gz --output="$ARCHIVE" "$RELEASE_ID" -- \
   .gitignore package.json package-lock.json next.config.ts tsconfig.json \
   postcss.config.mjs eslint.config.mjs vitest.config.mts playwright.config.ts \
   app components config context data lib public scripts e2e deploy docs \
-  assets/fonts assets/source/market-photos assets/source/team-photos-safe \
+  assets/fonts assets/source/market-photos assets/source/google-market-photos assets/source/team-photos-safe \
   assets/source/preislisten
 tar -tzf "$ARCHIVE"
 shasum -a 256 "$ARCHIVE"
 ```
 
-Archivliste vor Übertragung ansehen, insbesondere auf neue sensible Dateien in diesen Verzeichnissen. Die drei aufgeführten Bildquellordner sind versionierte, geprüfte Build-/Testquellen; private Rohordner bleiben ausgeschlossen. `public` wird als öffentlicher Inhalt behandelt. Der Proxy blockiert zusätzlich `/data/products` und `/data/products/*`, weil historische Extraktionsdateien keine aktuelle Sortiments-API sind. Niemals einen `file_server` auf die Releasewurzel konfigurieren.
+Archivliste vor Übertragung ansehen, insbesondere auf neue sensible Dateien in diesen Verzeichnissen. Die aufgeführten Quellordner sind versionierte, geprüfte Build-/Testquellen; private Rohordner bleiben ausgeschlossen. Die Google-Fotoquellen sind metadatenbereinigte, freigegebene Vollbild-JPEGs; Fotoidentitäten und Exportnachweise unter `.superpowers/` gehören nicht ins Paket. `public` wird als öffentlicher Inhalt behandelt. Der Proxy blockiert zusätzlich `/data/products` und `/data/products/*`, weil historische Extraktionsdateien keine aktuelle Sortiments-API sind. Niemals einen `file_server` auf die Releasewurzel konfigurieren.
 
 Archiv gezielt an `159.69.37.200` übertragen und dort `sha256sum` mit dem vorherigen Hash vergleichen. Ziel ist ein **neues**, noch nicht verwendetes `/srv/trinkgut-jammers/releases/<vollständiger-Commit>/`; vorhandene Releases nicht überschreiben. `RELEASE_ID` und `RELEASE_DIR` in der Server-Shell ausdrücklich setzen. Auspacken und Installieren als `jammers`, nicht `npm` als root. Vor dem Build dürfen keine `.env`, `.env.local`, `.env.production` oder `.env.production.local` existieren.
 

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { eigenmarken } from "@/data/eigenmarken";
 import AcademyEntry from "@/components/AcademyEntry";
+import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
 
 export const metadata: Metadata = {
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function EigenmarkePage() {
+  const photo = GOOGLE_MARKET_PHOTOS.ownBrands;
   return (
     <>
     {/* Red Hero Banner */}
@@ -23,6 +25,12 @@ export default function EigenmarkePage() {
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <section className="grid md:grid-cols-2 gap-8 items-center mb-12" aria-labelledby="own-brand-bottles">
+        <div><h2 id="own-brand-bottles" className="text-3xl font-bold mb-4">Sechs eigene Charaktere.</h2>
+          <p className="max-w-xl">Unsere Eigenmarken zusammen im Bild. Von Kirsche und Haselnuss bis zu Lakritz und Anis: Unter dem Foto findest du die sechs Liköre mit ihren originalen Motiven.</p>
+        </div>
+        <figure className="category-photo"><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 768px) 90vw, 320px" loading="lazy" /><figcaption>{photo.caption}</figcaption></figure>
+      </section>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
         {eigenmarken.map((likoer) => (

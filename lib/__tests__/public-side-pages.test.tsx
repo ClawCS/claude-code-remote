@@ -48,11 +48,21 @@ describe("public side-page presentation", () => {
 
   it("shows the original own-brand posters in full without cover-cropping or zoom", () => {
     const html = renderToStaticMarkup(<EigenmarkePage />);
-    const posters = [...html.matchAll(/<img\b[^>]*>/g)];
+    const posters = [...html.matchAll(/<img\b[^>]*>/g)].filter(([image]) => image.includes("/images/eigenmarken/"));
     expect(posters).toHaveLength(6);
     for (const [poster] of posters) {
       expect(poster).toContain("object-contain");
       expect(poster).not.toMatch(/object-cover|scale-105/);
     }
+  });
+
+  it("introduces the six own-brand posters with the local full-frame bottle-group photo", () => {
+    const html = renderToStaticMarkup(<EigenmarkePage />).replaceAll("%2F", "/");
+    const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
+    expect(images).toHaveLength(7);
+    expect(images[0]).toContain("/images/editorial/google/eigenmarken-flaschen.webp");
+    expect(images[0]).toContain('loading="lazy"');
+    expect(images[0]).not.toMatch(/object-cover|data-nimg="fill"/);
+    expect(images.filter(image => image.includes("/images/eigenmarken/"))).toHaveLength(6);
   });
 });

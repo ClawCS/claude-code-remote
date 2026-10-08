@@ -4,8 +4,8 @@ import { validateOfficialCatalogPackages } from "../lib/official-catalog-package
 
 async function main() {
   // Validate immutable public derivatives before any content/build output.
-  // Neither validator needs private account metadata on a clean checkout.
-  for (const script of ["build-cinematic-assets.mjs", "build-market-assets.mjs"]) {
+  // These validators need no private account metadata on a clean checkout.
+  for (const script of ["build-cinematic-assets.mjs", "build-market-assets.mjs", "build-google-market-assets.mjs"]) {
     execFileSync(process.execPath, [`scripts/${script}`, "--check"], { stdio: "inherit" });
   }
   const packages = await loadFlyerPackages();
