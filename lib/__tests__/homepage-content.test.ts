@@ -128,6 +128,35 @@ describe("homepage content", () => {
     expect(content.nlFlyer).toMatchObject({id:"nl-2026-07-13",pageCount:1,coverUrl:"/images/content/nl.webp",pdfUrl:"/handzettel/2026/nl.pdf"});
     expect(content.event?.id).toBe("strikerball-2026-07-24");
   });
+  it("publishes the verified local NL original without exposing internal Canva provenance", async () => {
+    const load = createHomepageContentLoader({
+      loadValidatedHandzettelCache: async () => makeCache(),
+      loadApprovedCampaigns: async () => [],
+      loadEditorialArchive: async () => [],
+      loadFlyerPackages: async () => [nlPackage],
+    });
+    const content = await load(NOW);
+    expect(content.nlFlyer).toEqual({
+      id: "nl-2026-07-13", title: "Aanbiedingen",
+      validFrom: "2026-07-13", validTo: "2026-07-18", pageCount: 1,
+      viewerUrl: "/handzettel/2026/nl.pdf", pdfUrl: "/handzettel/2026/nl.pdf",
+      coverUrl: "/images/content/nl.webp", sourceUrl: "/handzettel/2026/nl.pdf",
+    });
+    expect(JSON.stringify(content)).not.toMatch(/canva\.com|designId|pageNumbers|exportedAt|rightsStatus/);
+    expect(nlPackage.sourceUrl).toBe("https://www.canva.com/design/test/view");
+  });
+  it.each([
+    "/handzettel/2026/unrelated.pdf",
+    "/assets/source/nl.pdf",
+    "/api/content/current",
+    "/handzettel/2026/../private.pdf",
+  ])("rejects a local flyer source that is not its public PDF: %s", sourceUrl => {
+    const flyer = makeFlyer({
+      viewerUrl: "/handzettel/2026/nl.pdf", pdfUrl: "/handzettel/2026/nl.pdf",
+      sourceUrl,
+    });
+    expect(aggregate({flyer}).flyer).toBeNull();
+  });
   it.each([
     {validFrom:"2026-07-06",validTo:"2026-07-11"},
     {validFrom:"2026-07-20",validTo:"2026-07-25"},

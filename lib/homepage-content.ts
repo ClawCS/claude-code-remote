@@ -27,6 +27,7 @@ export type HomepageFlyer = Readonly<{
   pdfUrl: string;
   pageCount: number;
   coverUrl: string;
+  /** Public original only; internal editorial provenance stays in FlyerPackage. */
   sourceUrl: string;
 }>;
 
@@ -176,7 +177,8 @@ function isCurrentFlyer(flyer: HomepageFlyer, now: Date): boolean {
     !(isCredentialFreeHttpsUrl(flyer.viewerUrl) || /^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(flyer.viewerUrl)) ||
     !(isCredentialFreeHttpsUrl(flyer.pdfUrl) || /^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(flyer.pdfUrl)) ||
     !isSafeImageUrl(flyer.coverUrl) ||
-    !isCredentialFreeHttpsUrl(flyer.sourceUrl)
+    !(isCredentialFreeHttpsUrl(flyer.sourceUrl) ||
+      (flyer.sourceUrl === flyer.pdfUrl && /^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(flyer.sourceUrl)))
   ) {
     return false;
   }
@@ -265,7 +267,7 @@ export function mapFlyerPackageToFlyer(item: FlyerPackage): HomepageFlyer {
   return {
     id: item.id, title: item.title, validFrom: item.validFrom, validTo: item.validTo,
     viewerUrl: item.pdfPath, pdfUrl: item.pdfPath, coverUrl: item.coverPath,
-    pageCount: item.pageNumbers.length, sourceUrl: item.sourceUrl,
+    pageCount: item.pageNumbers.length, sourceUrl: item.pdfPath,
   };
 }
 

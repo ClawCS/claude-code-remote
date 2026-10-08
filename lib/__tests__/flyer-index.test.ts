@@ -40,6 +40,18 @@ describe("flyer index reports runtime integrity failures",()=>{
     expect(index.status).toBe("ok");expect(index.flyers.map(f=>[f.language,f.pageCount,f.coverUrl])).toEqual([["de",10,official.pages[0].imageUrl],["nl",1,"/images/content/nl.webp"]]);
     expect(index.flyers.find(f=>f.language==="nl")?.pdfSha256).toBe(nl.pdfSha256);
   });
+  it("keeps Canva identities out of the public index while retaining the original PDF fingerprint", async () => {
+    mocks.official.mockResolvedValue(official); mocks.packages.mockResolvedValue([nl]);
+    const index = await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
+    expect(index.flyers.find(flyer => flyer.language === "nl")).toEqual({
+      id: "nl-2026-07-13", title: "Aanbiedingen", language: "nl",
+      validFrom: "2026-07-13", validTo: "2026-07-18", pageCount: 1,
+      viewerUrl: "/handzettel/2026/nl.pdf", pdfUrl: "/handzettel/2026/nl.pdf",
+      coverUrl: "/images/content/nl.webp", sourceUrl: "/handzettel/2026/nl.pdf",
+      pdfSha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    });
+    expect(JSON.stringify(index)).not.toMatch(/canva\.com|designId|pageNumbers|exportedAt|rightsStatus/);
+  });
   it("does not accept two NL pages as one complete weekly issue",async()=>{
     mocks.official.mockResolvedValue(official);mocks.packages.mockResolvedValue([nl,{...nl,id:"another-nl"}]);
     const index=await getFlyerIndex(new Date("2026-07-14T12:00:00Z"));
