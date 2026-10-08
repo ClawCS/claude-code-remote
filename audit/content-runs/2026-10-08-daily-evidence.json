@@ -1,0 +1,129 @@
+{
+  "automationId": "jammers-werbung-und-ver-ffentlichung-pr-fen",
+  "triggeredAt": "2026-10-08T04:20:34.426Z",
+  "checkedAt": "2026-10-08T05:54:09Z",
+  "timeZone": "Europe/Berlin",
+  "target": { "validFrom": "2026-10-05", "validTo": "2026-10-10", "kw": 41, "year": 2026 },
+  "baselineCommit": "818270461ab7b3c8535b830685cf6d0933a73342",
+  "previousEvidence": "audit/content-runs/2026-10-07-daily-evidence.json",
+  "status": "failed",
+  "reason": "Valid DE advertising remains active. Mandatory NL remains withheld for the same original price/condition conflicts reported on October 4. The weekly package is not complete.",
+  "officialDe": {
+    "catalogId": "1390117",
+    "catalogVersion": "1",
+    "storeId": "13027",
+    "werbekreis": "3.6",
+    "language": "de",
+    "pageCount": 18,
+    "printedValidFrom": "2026-10-05",
+    "printedValidTo": "2026-10-10",
+    "metadataMatchesPrintedPeriod": true,
+    "dateExceptionApplied": false,
+    "originalVisualReview": "Fresh PDF title page rendered completely and inspected: Mo–Sa 05.10.2026–10.10.2026, WK 3.6. Full original cover also confirmed in the complete mobile website rendering. Full downloaded PDF and cover are byte-identical by SHA-256 to the privately reviewed originals and previous-day evidence.",
+    "pdf": {
+      "url": "https://werbung.trinkgut.de/frontend/catalogs/1390117/1/pdf/complete.pdf",
+      "httpStatus": 200,
+      "bytes": 11639099,
+      "freshFullGetElapsedSeconds": 4.488824,
+      "sha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+      "remoteAndPrivateLocalOriginalMatch": true
+    },
+    "cover": {
+      "url": "https://werbung.trinkgut.de/frontend/mvc/api/catalogs/1390117/v1/normal/bk_1.jpg",
+      "httpStatus": 200,
+      "bytes": 161525,
+      "freshFullGetElapsedSeconds": 0.216254,
+      "sha256": "a9ac782ae646c830ea71b4448fda2ceac8ba06d5b9c0ec93c69fb51828220a51",
+      "remoteAndPrivateLocalOriginalMatch": true
+    },
+    "prepareRetryNeeded": false,
+    "validDePreserved": true
+  },
+  "canvaNl": {
+    "designId": "DAHHqrttnew",
+    "title": "Maasduinen HZ",
+    "designPageCount": 14,
+    "designUpdatedAtReported": 1791356000,
+    "selectedOriginalPage": 14,
+    "printedValidFrom": "2026-10-05",
+    "printedValidTo": "2026-10-10",
+    "language": "nl",
+    "connectorReadVerified": true,
+    "targetedSourceCheck": "Metadata and page-14 richtexts read; complete current page inspected in the authenticated editor. The five documented arithmetic conflicts in Coca-Cola, Grand Sud, Chipsfrisch, Jägermeister and Baileys remain, as does the missing Krombacher quantity condition. No corrected original or alternative-week substitution.",
+    "authenticatedBrowserExportAccessVerified": true,
+    "exportDialog": { "type": "PDF", "preset": "Digital", "selectedPage": 14, "downloadButtonEnabled": true },
+    "newExportPerformed": false,
+    "reasonNoNewExport": "Conflicted original remains unapproved for publication. Existing authentic one-page export stays private; no redundant export of unchanged rejected content.",
+    "privatePdf": {
+      "path": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/nl-original-held.pdf",
+      "pageCount": 1,
+      "bytes": 12278582,
+      "sha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "freshHashMatches": true
+    },
+    "privatePreview": {
+      "path": "assets/source/canva-exports-2026-09-30/weekly-2026-10-05/nl-preview-held.png",
+      "format": "png",
+      "bytes": 3991755,
+      "width": 2600,
+      "height": 1860,
+      "channels": 3,
+      "decodedBytes": 14508000,
+      "fullPixelDecodeSucceeded": true,
+      "sha256": "2b6e6be27cffdb6a979c62c17a4c1f2d0ee08489ddbdfaa21c4337afed64ac64",
+      "freshHashMatches": true
+    },
+    "publicationStatus": "withheld",
+    "flyersJsonRemainsEmpty": true,
+    "reviewQueueItem": "nl-weekly-2026-10-05-price-review",
+    "notificationKey": "kw41-nl-price-conflicts-65fedf4c7016dfd9",
+    "existingOperatorActionUnchanged": "Correct and approve the actual price/quantity/condition information on Canva page 14 before original re-export and publication.",
+    "canvaAndInstagramModified": false
+  },
+  "localWebsite": {
+    "url": "http://localhost:3000",
+    "realClock": true,
+    "testClockOrFixtureUsed": false,
+    "routes": ["/", "/angebote", "/handzettel", "/nl"],
+    "apiRoutes": ["/api/content/current", "/api/content/flyers"],
+    "allHttpStatus": 200,
+    "activeDe": "1390117 v1 / catalog-13027-41-2026 / 18 pages / 2026-10-05–2026-10-10",
+    "activeNl": null,
+    "flyerIndexStatus": "degraded",
+    "flyerIndexIssues": ["nl-flyer-missing"],
+    "scheduledFlyers": [],
+    "oldCatalogOrSubstituteWeekVisible": false,
+    "correctPdfAndCoverLinks": true,
+    "viewports": [{ "width": 1280, "height": 720 }, { "width": 390, "height": 844 }],
+    "browserReview": "Desktop /angebote cover loaded correctly. Mobile /nl showed the complete uncropped DE cover and correct dates; week-offers anchor worked. /handzettel and home DOM matched the period and original PDF link. Missing-NL notices remained truthful in German and Dutch. No horizontal overflow on desktop /angebote or mobile /nl and /handzettel.",
+    "consoleErrors": [],
+    "existingServerUnchanged": true,
+    "temporaryViewportResetAndOwnTabsClosed": true
+  },
+  "checks": {
+    "sourceCheckReport": "audit/content-runs/2026-10-08T05-50-37-308Z-check-12cc1368.json",
+    "sourceCheckExitCode": 1,
+    "localWebsiteCheckReport": "audit/content-runs/2026-10-08T05-51-05-590Z-check-967971d6.json",
+    "localWebsiteCheckExitCode": 1,
+    "expectedFailures": ["Mandatory NL issue absent because its original remains blocked", "Flyer index reports degraded for the same missing NL issue"],
+    "focusedTests": { "checkedAt": "2026-10-08T05:50:56.314Z", "files": 6, "passed": 250, "failed": 0, "exitCode": 0 },
+    "dateBoundaryCoverage": "Passing focused tests cover Berlin start/end boundaries, hidden preload, expiry after validTo and the limited reviewed shortened-week exception. No dates extended.",
+    "contentOrCodeChanges": false,
+    "buildNotRepeated": "No content or code changed; this daily check does not claim a new build."
+  },
+  "publication": {
+    "publicUrl": null,
+    "websiteVerified": false,
+    "deploymentVerified": false,
+    "status": "Public deployment remains unconfirmed: no configured public HTTPS target. Localhost and GitHub are not live evidence."
+  },
+  "notification": {
+    "repeatNlOrPublicUrlAlertSuppressed": true,
+    "reason": "Both operator needs were reported on October 4; no corrected source, new operator need or new outage established."
+  },
+  "preservation": {
+    "preExistingDirtyScreenshotsAndTwoUntrackedReportsPreserved": true,
+    "privateOriginalsNotStaged": true,
+    "onlyOwnAuditFilesToCommit": true
+  }
+}
