@@ -103,15 +103,15 @@ async function expectNaturalEditorialImages(page: Page, path: string): Promise<v
   expect(ratios.displayed).toBeCloseTo(900 / 875, 2);
 
   const team = page.locator(path === "/" ? "#menschen" : 'section[aria-labelledby="team-gallery-title"]');
-  for (const name of ["Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
+  for (const name of ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
     const alt = name === "Niko" ? "Nikolaos Jammers im Markt" : `${name} von Trinkgut Jammers`;
     await expect(team.getByRole("img", { name: alt, exact: true })).toHaveCount(1);
     await expect(path === "/"
       ? team.getByText(name, { exact: true })
       : team.getByRole("heading", { name, exact: true })).toHaveCount(1);
   }
-  await expect(team.getByText(/\b(?:Harpe|Justin|Nils|Nico|Tim)\b/i)).toHaveCount(0);
-  await expect(team.getByRole("img", { name: /\b(?:Harpe|Justin|Nils|Nico|Tim)\b/i })).toHaveCount(0);
+  await expect(team.getByText(/\b(?:Harpe|Justin|Nils|Nico|Tim|Gabriella)\b/i)).toHaveCount(0);
+  await expect(team.getByRole("img", { name: /\b(?:Harpe|Justin|Nils|Nico|Tim|Gabriella)\b/i })).toHaveCount(0);
   for (const [name, width, height] of [["Henri", 570, 660], ["Hannah", 720, 610]] as const) {
     const portrait = team.getByRole("img", { name: `${name} von Trinkgut Jammers`, exact: true });
     await expect(portrait).toHaveAttribute("width", String(width));

@@ -19,18 +19,19 @@ describe("source-gated team gallery", () => {
     const captions = [...html.matchAll(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/g)]
       .map(([, caption]) => caption.replace(/<[^>]+>/g, "").trim());
     expect(captions).toEqual([
-      "Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna",
+      "Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna",
       "Henri", "Hannah",
     ]);
   });
 
-  test("shows the eight current portraits without profiles of departed employees", () => {
+  test("shows the seven approved portraits without withdrawn employee profiles", () => {
     const html = renderToStaticMarkup(<GaleriePage />);
-    for (const name of ["Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
+    for (const name of ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
       expect(html).toContain(name);
     }
-    expect(html).not.toMatch(/\b(?:Nils|Nico|Tim)\b/);
-    expect(html).not.toMatch(/team-(?:nils|nico|tim)\b/);
+    expect(html).not.toMatch(/\b(?:Nils|Nico|Tim|Gabriella)\b/);
+    expect(html).not.toMatch(/team-(?:nils|nico|tim|gabriella)\b/);
+    expect(html).toContain("team-group");
     expect(html).not.toMatch(/\d+ Mitarbeiter/);
     expect(html).not.toContain("Geschäftsführer");
     expect(html).not.toContain("Marketing");
@@ -42,7 +43,7 @@ describe("source-gated team gallery", () => {
     expect(html).not.toContain("Aktuelles Portrait noch nicht veröffentlicht");
     expect(html).toContain("team-henri");
     expect(html).toContain("team-hannah");
-    expect(galleryItems.filter(({ image }) => image)).toHaveLength(8);
+    expect(galleryItems.filter(({ image }) => image)).toHaveLength(7);
     expect(html).not.toMatch(/Harpe|Justin/i);
   });
 
@@ -53,6 +54,6 @@ describe("source-gated team gallery", () => {
     expect(html).not.toContain("<button");
     expect(html).not.toContain("canva.com");
     expect(html).not.toMatch(/\bPB[A-Za-z0-9_-]{12,}\b/);
-    expect(html.match(/<figure/g)).toHaveLength(9);
+    expect(html.match(/<figure/g)).toHaveLength(8);
   });
 });

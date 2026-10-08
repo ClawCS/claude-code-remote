@@ -1,12 +1,12 @@
 import { test, expect } from "./test-fixtures";
 import type { Page } from "@playwright/test";
 
-const names = ["Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna", "Henri", "Hannah"];
+const names = ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"];
 
 async function expectNoDepartedProfiles(page: Page) {
-  await expect(page.locator("main").getByText(/\b(?:Nils|Nico|Tim)\b/)).toHaveCount(0);
-  await expect(page.getByRole("img", { name: /\b(?:Nils|Nico|Tim)\b/ })).toHaveCount(0);
-  await expect(page.locator('main img[src*="team-nils"], main img[src*="team-nico"], main img[src*="team-tim"]')).toHaveCount(0);
+  await expect(page.locator("main").getByText(/\b(?:Nils|Nico|Tim|Gabriella)\b/)).toHaveCount(0);
+  await expect(page.getByRole("img", { name: /\b(?:Nils|Nico|Tim|Gabriella)\b/ })).toHaveCount(0);
+  await expect(page.locator('main img[src*="team-nils"], main img[src*="team-nico"], main img[src*="team-tim"], main img[src*="team-gabriella"]')).toHaveCount(0);
 }
 
 for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {

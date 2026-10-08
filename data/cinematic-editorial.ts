@@ -5,7 +5,6 @@ import heroTeam from "@/public/images/home/cinematic/hero-team.webp";
 import posterCaramello from "@/public/images/home/cinematic/poster-caramello.webp";
 import posterPralleKirsche from "@/public/images/home/cinematic/poster-pralle-kirsche.webp";
 import posterSchwarzerTeufel from "@/public/images/home/cinematic/poster-schwarzer-teufel.webp";
-import teamGabriella from "@/public/images/home/cinematic/team-gabriella.webp";
 import teamGroup from "@/public/images/home/cinematic/team-group.webp";
 import teamJasmin from "@/public/images/home/cinematic/team-jasmin.webp";
 import teamNiko from "@/public/images/home/cinematic/team-niko.webp";
@@ -81,14 +80,6 @@ export const EDITORIAL_IMAGES = deepFreeze({
     reviewedAt: "2026-09-30",
     releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
-  gabriella: {
-    id: "team-gabriella",
-    image: teamGabriella,
-    alt: "Gabriella von Trinkgut Jammers",
-    caption: "Gabriella",
-    reviewedAt: "2026-09-30",
-    releaseBasis: "user-approved-canva-pool-2026-09-30",
-  },
   sven: {
     id: "team-sven", image: teamSven, alt: "Sven von Trinkgut Jammers",
     caption: "Sven", reviewedAt: "2026-09-30",
@@ -121,7 +112,6 @@ export const PEOPLE_STORY = deepFreeze([
   EDITORIAL_IMAGES.niko,
   EDITORIAL_IMAGES.sven,
   EDITORIAL_IMAGES.jasmin,
-  EDITORIAL_IMAGES.gabriella,
   EDITORIAL_IMAGES.janNiklas,
   EDITORIAL_IMAGES.hanna,
   EDITORIAL_IMAGES.henri,

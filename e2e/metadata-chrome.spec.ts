@@ -227,13 +227,14 @@ async function expectPublicChrome(page: Page): Promise<void> {
 }
 
 async function expectNaturalPeopleStory(page: Page): Promise<void> {
-  await expect(page.locator("#menschen figure")).toHaveCount(9);
+  await expect(page.locator("#menschen figure")).toHaveCount(8);
   await expect(page.locator("#menschen figcaption")).toHaveText([
-    "Niko", "Sven", "Jasmin", "Gabriella", "Jan Niklas", "Hanna",
+    "Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna",
     "Henri", "Hannah",
   ]);
   const photos = page.locator("#menschen figure img");
-  await expect(photos).toHaveCount(9);
+  await expect(photos).toHaveCount(8);
+  await expect(page.locator('#menschen img[src*="team-gabriella"]')).toHaveCount(0);
   for (const image of await photos.all()) {
     await image.scrollIntoViewIfNeeded();
     await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true);
@@ -696,7 +697,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   expect(runtimeIssues).toEqual([]);
 });
 
-test("[product-contract] keeps all eight current portraits and the group photo natural on desktop and mobile", async ({ page }) => {
+test("[product-contract] keeps all seven approved portraits and the group photo natural on desktop and mobile", async ({ page }) => {
   const runtimeIssues = collectRuntimeIssues(page);
   for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);

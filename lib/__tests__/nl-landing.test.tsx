@@ -27,6 +27,17 @@ const index: FlyerIndex = {
 beforeEach(() => source.getFlyerIndex.mockResolvedValue(index));
 
 describe("Dutch visitor landing page", () => {
+  it("omits Gabriella's withdrawn portrait while preserving the group and remaining team", async () => {
+    const html = renderToStaticMarkup(await NederlandsPage());
+    const team = html.match(/<section[^>]*aria-label="Ons team"[\s\S]*?<\/section>/)?.[0] ?? "";
+    expect(team).not.toMatch(/Gabriella|team-gabriella/i);
+    expect(team).toContain("team-group");
+    expect(team.match(/<figcaption\b/g)).toHaveLength(7);
+    for (const name of ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
+      expect(team).toContain(`>${name}</figcaption>`);
+    }
+  });
+
   it("puts offers and exact market directions in the hero, with working section targets", async () => {
     const html = renderToStaticMarkup(await NederlandsPage());
     const hero = html.match(/<section\b[\s\S]*?<\/section>/)?.[0] ?? "";
