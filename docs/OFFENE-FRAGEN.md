@@ -1,5 +1,9 @@
 # Trinkgut Jammers offene Betreiberfragen
 
+> **Aktueller Abgleich vom 08.10.2026:** Die nachfolgende 30-Fragen-Liste ist historisch und teilweise beantwortet. Verbindlich für noch ausstehende Entscheidungen ist jetzt [die bereinigte Entscheidungsübersicht](DECISIONS-2026-10-08.md). Insbesondere Domain/Hosting, Impressum, Preisberechnung, neue Glas-/Thekenpreise und Bildausnahmen nicht erneut abfragen. Der Wochenpaket-Entwurf ist freigegeben; der neue Implementierungsplan ist der nächste Schritt. Verbindlicher Miet-/Zahlungsbetrieb bleibt deaktiviert.
+
+## Historischer Fragenstand vom 01.10.2026
+
 Stand: 1. Oktober 2026. Die Nummern entsprechen den 30 Fragen aus dem Chat. Bis zur konkreten Antwort bleibt der jeweilige Punkt offen. „Alles aktualisieren und speichern“ ist keine Zustimmung zu vorgeschlagenen Mietbedingungen, Anbietern oder kostenpflichtigen Diensten.
 
 Neu bestätigt: **Der öffentliche Server ist noch nicht online.** Damit ist der Veröffentlichungsstatus geklärt, nicht aber Domain und Hosting aus Frage 1. Antworten mit der jeweiligen Nummer geben. Zugangsdaten, Passwörter, Zahlungsanbieter-Schlüssel und private Steuernummern gehören nicht in diese Datei oder ins öffentliche Repository.

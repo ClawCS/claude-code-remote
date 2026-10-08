@@ -1,6 +1,6 @@
 # Geprüfte Wochenpakete als regulärer Veröffentlichungsweg
 
-Stand: 08.10.2026. Status: technischer Entwurf zur Freigabe; noch nicht implementiert oder veröffentlicht.
+Stand: 08.10.2026. Status: vom Betreiber im Chat ausdrücklich freigegeben ("auftrag frei gegeben"); Implementierungsplan und Ausführungsmethode sind der nächste Freigabeschritt. Noch nicht implementiert oder veröffentlicht.
 
 ## Auftrag und Erfolgskriterium
 
