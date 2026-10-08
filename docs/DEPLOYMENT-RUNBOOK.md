@@ -111,7 +111,7 @@ cd /Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-product
 RELEASE_ID=$(git rev-parse HEAD)
 ARCHIVE="/tmp/jammers-${RELEASE_ID}.tar.gz"
 git archive --format=tar.gz --output="$ARCHIVE" "$RELEASE_ID" -- \
-  .gitignore package.json package-lock.json next.config.ts tsconfig.json \
+  .gitignore .gitattributes AGENTS.md package.json package-lock.json next.config.ts tsconfig.json \
   postcss.config.mjs eslint.config.mjs vitest.config.mts playwright.config.ts \
   app components config context data lib public scripts e2e deploy docs \
   assets/fonts assets/source/market-photos assets/source/google-market-photos assets/source/team-photos-safe \
@@ -134,7 +134,7 @@ unset CINEMATIC_E2E CINEMATIC_TEST_NOW
 export NODE_ENV=production RENTAL_MODE=disabled NEXT_TELEMETRY_DISABLED=1
 node --version
 npm ci --include=dev
-npm test
+NODE_ENV=test npm test
 npm run lint -- --quiet
 npx next typegen
 npx tsc --noEmit
@@ -142,9 +142,11 @@ npm run offers:check
 npm run build
 ```
 
+Nur der Unit-Testprozess erhält `NODE_ENV=test`, damit ausdrücklich markierte Datumsfixtures funktionieren. Build und Website bleiben im Produktionsmodus; dort werden Testuhren bewusst ignoriert. Nicht den Produktionsschutz abschalten, um Datums-Tests zu erzwingen.
+
 Keine Mac-`node_modules` oder ungeprüfte Mac-`.next` hochladen: Sharp und SWC haben Linux-native Bestandteile. Der Build lädt die Schriften über `next/font/google` und benötigt Internetzugang. Der Prebuild prüft Quellen/Derivate und erstellt den historischen Manifest-Stub; keine privaten Originale nachfordern, um diese Kontrolle zu umgehen. Build/Test dürfen den laufenden Release nie verändern. Bei knappen 4 GB RAM nicht mehrere Builds gleichzeitig ausführen; Speicherfehler zuerst belegen, nicht die Inhaltsprüfung deaktivieren.
 
-Dieses Projekt verwendet normales `next start`, **kein** `output: standalone`. Für das aktuelle Runtimepaket werden `.next`, Linux-`node_modules`, `package.json`, `next.config.ts`, `public`, `data/editorial` sowie `assets/fonts/rental-document` erhalten; Lockfile/`tsconfig.json` ebenfalls mitführen. Der Quellrelease darf für einfache Wartung vollständig bleiben, wird aber nicht als Webverzeichnis freigegeben. `npm prune --omit=dev` ist optional nach den Prüfungen; danach fehlen `tsx` und die Content-/Dispatch-Werkzeuge, weshalb redaktionelle Prüfläufe in einer getrennten vollständigen Arbeitskopie erfolgen müssen.
+Dieses Projekt verwendet normales `next start`, **kein** `output: standalone`. Für das aktuelle Runtimepaket werden `.next`, Linux-`node_modules`, `package.json`, `next.config.ts`, `public`, `data/editorial`, **`data/weekly-offer-layout.json` und `data/weekly-offers.json`** sowie `assets/fonts/rental-document` erhalten; Lockfile/`tsconfig.json` ebenfalls mitführen. Die beiden Angebotsdateien sind zur Integritätsprüfung der Wochenmanifeste auch zur Laufzeit erforderlich; ohne sie wird das Paket zurückgehalten. Der Quellrelease darf für einfache Wartung vollständig bleiben, wird aber nicht als Webverzeichnis freigegeben. `npm prune --omit=dev` ist optional nach den Prüfungen; danach fehlen `tsx` und die Content-/Dispatch-Werkzeuge, weshalb redaktionelle Prüfläufe in einer getrennten vollständigen Arbeitskopie erfolgen müssen.
 
 Als root anschließend den neuen Release root-eigen und nicht gruppen-/weltbeschreibbar machen; Ausführungsbits erhalten. Nur den Cache für `jammers` freigeben:
 
@@ -157,7 +159,7 @@ install -m 0644 "$RELEASE_DIR/deploy/hetzner/trinkgut-jammers.service" /etc/syst
 systemd-analyze verify /etc/systemd/system/trinkgut-jammers.service
 ```
 
-`WorkingDirectory` muss die Releasewurzel sein: Laufzeitdateien werden über `process.cwd()` gelesen. Der Dienst erlaubt nur Schreibzugriff auf `.next/cache` und sein privates temporäres Verzeichnis. Kein Mietdatenverzeichnis und kein schreibbares Contentverzeichnis sind für den gesperrten Informationsbetrieb nötig. Diese Konfiguration deaktiviert auch authentifizierte Handzettel-Refreshes, indem kein Cron-Secret übernommen wird. Neue ISR-/Upload-/Bestellfunktionen benötigen eine separate Freigabe und Speicher-/Rechteprüfung.
+`WorkingDirectory` muss die Releasewurzel sein: Laufzeitdateien werden über `process.cwd()` gelesen. Der Dienst erlaubt nur Schreibzugriff auf `.next/cache` und sein privates temporäres Verzeichnis. Kein Mietdatenverzeichnis und kein schreibbares Contentverzeichnis sind für den gesperrten Informationsbetrieb nötig. Es wird kein Cron-Secret eingerichtet; zusätzlich weisen Fetch-/Cron-Handler autonome Aktualisierungen auch nach Authentifizierung zurück, weil diese kein vollständiges Wochenpaket erzeugen. Neue ISR-/Upload-/Bestellfunktionen benötigen eine separate Freigabe und Speicher-/Rechteprüfung.
 
 ## Umschalten, Proxy und DNS
 
@@ -224,7 +226,7 @@ Die HTTP-Prüfung enthält neben GET/HEAD nur leere, unautorisierte Ablehnungspr
 
 Aktuell hinterlegte DE-/NL-Originale gelten nur vom **05.–10.10.2026**. Danach verschwinden sie datumsgerecht; für den 12.10. ist ein neues Paket erforderlich. Ein Server oder Git-Push erzeugt keine künftige Werbung. Die vorhandenen Codex-Aufgaben (Sonntag 17:00 Vorbereitung, täglich 06:15 Kontrolle, Europe/Berlin) laufen weiterhin Mac-/App-abhängig; dieses Deployment installiert keinen unabhängigen Canva-/Instagram-Import und keinen Cronjob.
 
-Redaktion in einer separaten Arbeitskopie nach `CONTENT-UPDATE-RUNBOOK.md`: DE und datumsrichtige einzelne NL-Seite prüfen, Angebotsschnitte kuratieren, Tests/Build, neuen Release deployen. `flyers.json` ist pro Produktionsprozess gecacht; neue Flyerdateien benötigen einen Neustart. `weekly-offers.json` ist kompiliert: neue Kacheln benötigen einen Neubuild plus Neustart. Vorab vollständig ausgelieferte Pakete aktivieren sich zur Berliner Datumsgrenze automatisch. Nicht im laufenden `current` editieren. `/api/handzettel/cron` würde nur DE-Metadaten aktualisieren und ersetzt weder NL noch Kacheln; es bleibt für diesen Release gesperrt.
+Redaktion in einer separaten Arbeitskopie nach `CONTENT-UPDATE-RUNBOOK.md`: DE und datumsrichtige einzelne NL-Seite prüfen, alle Angebotsschnitte kuratieren, Originale/Cover/Kacheln versionsgebunden als Wochenpaket prüfen, neuen Release bauen und veröffentlichen. Der öffentliche Loader hält unveränderlich geprüfte Pakete pro Produktionsprozess; die aktive Auswahl folgt weiter der echten Berliner Zeit. Clients erhalten dieselbe öffentliche Auswahl initial und über die lesende Angebots-API, keine rohe Angebotsdatei im Client-Bundle. Neue Datenversionen benötigen den gemeinsamen Neubuild mit Neustart; bereits vollständig ausgelieferte Zukunftspakete aktivieren sich zur Datumsgrenze automatisch. Offene Tabs aktualisieren beim Sichtbarwerden und regelmäßig, entfernen abgelaufene Daten und verwerfen verspätete alte Antworten. Nicht im laufenden `current` editieren. Fetch-/Cron-Refresh ist kein vollständiger Paketimport und bleibt gesperrt.
 
 Für Rollback die vorher notierte, unveränderte Releaseadresse als `RELEASE_DIR` setzen; denselben atomaren Symlinkwechsel und `systemctl restart trinkgut-jammers` ausführen, dann lokale/öffentliche Checks wiederholen. Alte Assets in offenen Tabs können nach einem Wechsel einen Reload benötigen. Mindestens den letzten geprüften funktionierenden Release behalten; keine laufenden oder für Rollback benötigten Verzeichnisse löschen. Datumsgebundene Werbung aus einem alten Release wird beim Rollback **nicht** wieder aktuell.
 

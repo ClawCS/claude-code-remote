@@ -1,6 +1,6 @@
 # Geprüfte Wochenpakete als regulärer Veröffentlichungsweg
 
-Stand: 08.10.2026. Status: vom Betreiber im Chat ausdrücklich freigegeben ("auftrag frei gegeben"); Implementierungsplan und Ausführungsmethode sind der nächste Freigabeschritt. Noch nicht implementiert oder veröffentlicht.
+Stand: 08.10.2026. Status: freigegeben, umgesetzt und als App-Release `eb1338c` öffentlich geprüft. Abnahme, tatsächliche Release-/Prüfzeiten, Umsetzungsentscheidungen und bekannte Browsergrenze stehen in [Wochenpakete und WhatsApp-Symbol](../../audits/2026-10-08-weekly-publication-packages.md). Die damalige Quellenlage unten beschreibt den Ausgangszustand, nicht den aktuellen Betrieb.
 
 ## Auftrag und Erfolgskriterium
 
@@ -103,16 +103,16 @@ Benachrichtigungen nur bei relevanter Änderung, Fehler, behobenem Ausfall oder 
 
 ## 7. Abnahmekriterien und Regressionen
 
-- [ ] Geprüfter DE-Handzettel bleibt mit unterbrochenem externem Ursprung vollständig nutzbar.
-- [ ] DE und NL verwenden auf sämtlichen genannten Seiten/APIs lokale Originale und vollständige Covers.
-- [ ] Aktuelle KW41 enthält unverändert 107 DE- und 21 NL-Angebotsblöcke; Preise/Bedingungen bleiben Originalinhalt.
-- [ ] Originalhash-/Versionswechsel, falsche Woche oder fehlendes Bild verhindern die betroffene Freigabe.
-- [ ] Beschädigte PDF, falsche Seitenzahl, fremde Weiterleitung, Teil-Download und Größenüberschreitung haben Regressionstests.
-- [ ] Teilfehler erhält andere gültige Inhalte, meldet aber keine vollständige Woche.
-- [ ] Vorbereitung der Folgewoche beeinträchtigt die laufende Woche nicht; Berliner Start-/Endgrenzen, Sommerzeit und KW40-Ausnahme sind geprüft.
-- [ ] Wochenwechsel funktioniert auch bei bereits geöffnetem Sortiment; keine dauerhafte alte Client-Auswahl.
-- [ ] Sauberer Checkout und Linux-Release benötigen keine privaten Canva-Rohordner zur Prüfung veröffentlichter Dateien.
-- [ ] Vollständiger Testlauf, Lint, TypeScript, Build, öffentlicher HTTP-Audit, Content-Prüfung und Desktop-/Mobilabnahme dokumentiert.
-- [ ] Bestehende Sonntags-/Tagesaufgaben aktualisiert; Zeitplan und zurückhaltende Benachrichtigungen erhalten.
+- [x] Geprüfter DE-Handzettel bleibt mit unterbrochenem externem Ursprung vollständig nutzbar.
+- [x] DE und NL verwenden auf sämtlichen genannten Seiten/APIs lokale Originale und vollständige Covers.
+- [x] Aktuelle KW41 enthält unverändert 107 DE- und 21 NL-Angebotsblöcke; Preise/Bedingungen bleiben Originalinhalt.
+- [x] Originalhash-/Versionswechsel, falsche Woche oder fehlendes Bild verhindern die betroffene Freigabe.
+- [x] Beschädigte PDF, falsche Seitenzahl, fremde Weiterleitung, Teil-Download und Größenüberschreitung haben Regressionstests.
+- [x] Teilfehler erhält andere gültige Inhalte, meldet aber keine vollständige Woche.
+- [x] Vorbereitung der Folgewoche beeinträchtigt die laufende Woche nicht; Berliner Start-/Endgrenzen, Sommerzeit und KW40-Ausnahme sind geprüft.
+- [x] Wochenwechsel funktioniert auch bei bereits geöffnetem Sortiment; keine dauerhafte alte Client-Auswahl.
+- [x] Sauberer Checkout und Linux-Release benötigen keine privaten Canva-Rohordner zur Prüfung veröffentlichter Dateien.
+- [x] Vollständiger Testlauf, Lint, TypeScript, Build, öffentlicher HTTP-Audit, Content-Prüfung und Desktop-/Mobilabnahme dokumentiert.
+- [x] Bestehende Sonntags-/Tagesaufgaben aktualisiert; Zeitplan und zurückhaltende Benachrichtigungen erhalten.
 
 Nicht Bestandteil: Bewerbungsportal, Newsletter, neue Bestell-/Zahlungsfunktionen, Social-Icons, Personaländerungen oder ein WWS-Vollsortiment.
