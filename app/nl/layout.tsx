@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import { MARKET } from "@/lib/cinematic/site";
 
 const description =
-  `Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, ${MARKET.street} in Goch. Ma–za 08:00–20:00 uur.`;
+  `Bekijk de actuele folders van Trinkgut Jammers, ${MARKET.street} in Goch. Persoonlijk advies, feestbenodigdheden en verhuur. Plan je bezoek: ma–za 08:00–20:00 uur.`;
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Informatie voor Nederlandse klanten | Trinkgut Jammers",
+    absolute: "Jouw drankenadres in Goch | Trinkgut Jammers",
   },
   description,
   openGraph: {
-    title: "Informatie voor Nederlandse klanten | Trinkgut Jammers",
+    title: "Jouw drankenadres in Goch | Trinkgut Jammers",
     description,
     locale: "nl_NL",
     type: "website",

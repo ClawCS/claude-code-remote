@@ -1,0 +1,109 @@
+.page {
+  --nl-orange: #f58220;
+  --nl-accent: #a54108;
+  --nl-cream: #fff8ef;
+  --nl-ink: #292421;
+  --nl-muted: #635b54;
+  --nl-line: #e7d8c8;
+  background: var(--nl-cream);
+  color: var(--nl-ink);
+  line-height: 1.65;
+}
+.page :is(h1, h2, h3) { line-height: 1.1; text-wrap: balance; }
+.page :is(a, summary):focus-visible { outline: 3px solid var(--nl-accent); outline-offset: 4px; }
+.page section[id] { scroll-margin-top: 1.5rem; }
+.skipLink { position: absolute; top: .5rem; left: 1rem; padding: .75rem 1rem; background: white; z-index: 200; transform: translateY(-200%); }
+.skipLink:focus { transform: translateY(0); }
+.header { border-bottom: 1px solid var(--nl-line); background: #fffdfa; }
+.headerInner { max-width: 76rem; margin: auto; padding: .8rem clamp(1rem, 4vw, 3rem); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1.5rem; }
+.logo { display: inline-flex; align-items: center; min-height: 44px; }
+.logo img { width: 10rem; height: auto; }
+.nav { display: flex; align-items: center; gap: clamp(.6rem, 2vw, 1.6rem); }
+.nav a, .language { display: inline-flex; min-height: 44px; align-items: center; font-size: .875rem; font-weight: 700; text-decoration: none; }
+.nav a:hover, .language:hover { color: var(--nl-accent); text-decoration: underline; text-underline-offset: .3em; }
+.language { gap: .75rem; }
+.hero, .visit, .services, .contact, .people, .grailbid { width: min(100%, 76rem); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 3rem); }
+.hero { display: grid; grid-template-columns: 1.08fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; padding-block: clamp(2.5rem, 5vw, 4.5rem); }
+.heroCopy, .heroPhoto { min-width: 0; }
+.eyebrow { margin: 0 0 1rem; color: var(--nl-accent); font-size: .8rem; font-weight: 800; letter-spacing: .075em; }
+.eyebrow span { font-size: 1.3rem; margin-right: .4rem; vertical-align: middle; }
+.hero h1 { margin: 0 0 1.4rem; font-size: clamp(2.65rem, 5.4vw, 4.4rem); font-weight: 700; letter-spacing: -.055em; }
+.hero h1 span { display: block; color: var(--nl-accent); }
+.lead { max-width: 43ch; color: var(--nl-muted); font-size: clamp(1rem, 1.45vw, 1.125rem); }
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+.primaryButton, .secondaryButton { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: .8rem; padding: .75rem 1.1rem; border: 1px solid transparent; border-radius: .35rem; text-decoration: none; font-size: .9rem; font-weight: 800; }
+.primaryButton { background: var(--nl-orange); color: var(--nl-ink); }
+.primaryButton:hover { background: #ffa34e; }
+.secondaryButton { border-color: var(--nl-ink); color: var(--nl-ink); }
+.secondaryButton:hover { background: var(--nl-ink); color: white; }
+.heroAddress { margin-top: 1.5rem; font-size: .85rem; }
+.heroAddress span { color: var(--nl-muted); font-size: .78rem; }
+.heroPhoto { margin: 0; background: var(--nl-orange); border-radius: .6rem; overflow: hidden; }
+.heroPhoto img { display: block; width: 100%; height: auto; }
+.heroPhoto figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .2rem 1rem; padding: .85rem 1.2rem; font-size: .8rem; }
+.heroPhoto figcaption strong { font-size: 1rem; }
+.flyerBand { background: #fffdfa; border-block: 1px solid var(--nl-line); }
+.visit { display: grid; grid-template-columns: 1fr 1.1fr; gap: 3rem; padding-block: 4.5rem; }
+.visit h2, .services h2, .contact h2 { margin: 0 0 1.5rem; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700; letter-spacing: -.04em; }
+.visit p:not(.eyebrow), .contact p:not(.eyebrow) { max-width: 46ch; color: var(--nl-muted); }
+.textLink { display: inline-flex; align-items: center; min-height: 44px; gap: .75rem; color: var(--nl-accent); font-weight: 800; text-decoration: underline; text-underline-offset: .3em; font-size: .9rem; }
+.textLink:hover { color: var(--nl-ink); }
+.visitFacts { margin: 0; border-top: 1px solid var(--nl-line); }
+.visitFacts > div { padding-block: 1.2rem; border-bottom: 1px solid var(--nl-line); display: grid; grid-template-columns: 1fr 1.6fr; gap: 1rem; }
+.visitFacts dt { font-size: .85rem; color: var(--nl-accent); font-weight: 800; }
+.visitFacts dd { margin: 0; font-size: .9rem; }
+.visitFacts dd span { color: var(--nl-muted); font-size: .8rem; }
+.services { padding-block: 0 4.5rem; }
+.serviceGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 2rem; border-top: 1px solid var(--nl-line); }
+.serviceGrid article { padding: 1.75rem 1.5rem; border-right: 1px solid var(--nl-line); }
+.serviceGrid article:first-child { padding-left: 0; }
+.serviceGrid article:last-child { border-right: 0; padding-right: 0; }
+.serviceNumber { font-size: .8rem; font-weight: 800; color: var(--nl-accent); }
+.serviceGrid h3 { margin: 1rem 0; font-size: 1.4rem; font-weight: 700; }
+.serviceGrid p { color: var(--nl-muted); font-size: .95rem; }
+.serviceGrid small { display: block; color: var(--nl-muted); }
+.fineprint { margin-top: 1.5rem; color: var(--nl-muted); font-size: .8rem; }
+.contact { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding-block: 2.5rem; background: #ffead4; border-block: 1px solid #eccaa6; }
+.contactLinks { align-self: center; display: grid; }
+.contactLinks a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 52px; padding: .65rem 0; border-bottom: 1px solid #d9b997; font-size: .95rem; font-weight: 700; overflow-wrap: anywhere; }
+.contactLinks a:hover { color: var(--nl-accent); }
+.people { padding-block: 3rem 1rem; }
+.people summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 56px; padding-block: 1rem; border-block: 1px solid var(--nl-line); font-size: 1.25rem; font-weight: 700; cursor: pointer; list-style: none; }
+.people summary::-webkit-details-marker { display: none; }
+.people details[open] summary span { transform: rotate(45deg); }
+.peopleGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; padding-block: 2rem; }
+.peopleGrid figure { margin: 0; }
+.peopleGrid img { width: 100%; height: auto; display: block; border-radius: .25rem; }
+.peopleGrid figcaption { padding-top: .6rem; font-weight: 700; }
+.groupPhoto { grid-column: 1 / -1; max-width: 56rem; justify-self: center; }
+.grailbid { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-block: 1rem 3rem; }
+.grailbid p { max-width: 64ch; font-size: .85rem; color: var(--nl-muted); }
+.grailbid strong { color: var(--nl-ink); }
+.footer { background: var(--nl-ink); color: white; border-top: 4px solid var(--nl-orange); }
+.footerInner { max-width: 76rem; margin: auto; padding: 2rem clamp(1.25rem, 4vw, 3rem); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; font-size: .8rem; }
+.footerInner p { line-height: 1.9; }
+.footerInner nav { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1.25rem; max-width: 28rem; }
+.footerInner a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: .3em; }
+.footerInner a:focus-visible { outline-color: var(--nl-orange); }
+@media (max-width: 760px) {
+  .headerInner { gap: .4rem 1rem; }
+  .nav { order: 3; width: 100%; justify-content: space-between; border-top: 1px solid var(--nl-line); }
+  .nav a { font-size: .8rem; }
+  .hero { grid-template-columns: 1fr; gap: 2rem; }
+  .heroCopy { max-width: 36rem; }
+  .hero h1 { max-width: 13ch; }
+  .heroPhoto { max-width: 32rem; justify-self: center; }
+  .visit, .contact { grid-template-columns: 1fr; gap: 1.5rem; }
+  .visit { padding-block: 3rem; }
+  .visitFacts > div { grid-template-columns: 1fr 1.6fr; }
+  .serviceGrid { grid-template-columns: 1fr; }
+  .serviceGrid article, .serviceGrid article:first-child, .serviceGrid article:last-child { padding: 1.5rem 0; border-right: 0; border-bottom: 1px solid var(--nl-line); }
+  .services { padding-bottom: 3rem; }
+  .peopleGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .footerInner nav { gap: .3rem 1rem; }
+}
+@media (max-width: 370px) {
+  .actions { flex-direction: column; }
+  .visitFacts > div { grid-template-columns: 1fr; gap: .5rem; }
+  .contactLinks a { font-size: .85rem; }
+}

@@ -21,6 +21,20 @@ export default function CinematicHeader({
 
   return (
     <header className={styles.header} data-cinematic-header>
+      <div className={styles.languageStrip}>
+        <Link
+          className={styles.dutchEntry}
+          href="/nl"
+          lang="nl"
+          hrefLang="nl"
+          prefetch={false}
+          aria-label="Nederlands · Click here"
+        >
+          <span className={styles.dutchArrow} aria-hidden="true">→</span>
+          <span aria-hidden="true">🇳🇱</span>
+          <span>Nederlands · <span lang="en">Click here</span></span>
+        </Link>
+      </div>
       <div className={styles.headerInner}>
         <Link
           className={styles.logo}

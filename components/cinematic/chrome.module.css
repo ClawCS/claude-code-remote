@@ -1,4 +1,5 @@
 .header {
+  --cinematic-color-nl-accent: color-mix(in srgb, var(--cinematic-color-yellow) 50%, var(--cinematic-color-red));
   position: sticky;
   z-index: 100;
   inset-block-start: 0;
@@ -7,6 +8,40 @@
   background: var(--cinematic-color-surface);
   color: var(--cinematic-color-ink);
 }
+
+.languageStrip {
+  display: flex;
+  min-block-size: var(--cinematic-spacing-target);
+  align-items: center;
+  justify-content: center;
+  border-block-end: 1px solid var(--cinematic-color-line);
+  background: color-mix(in srgb, var(--cinematic-color-nl-accent) 8%, var(--cinematic-color-surface));
+}
+
+.dutchEntry {
+  display: inline-flex;
+  min-block-size: var(--cinematic-spacing-target);
+  align-items: center;
+  gap: var(--cinematic-spacing-xs);
+  padding-inline: var(--cinematic-spacing-md);
+  color: var(--cinematic-color-ink);
+  font-size: var(--cinematic-typography-size-small);
+  font-weight: var(--cinematic-typography-weight-semibold);
+  line-height: var(--cinematic-typography-line-height-body);
+  text-decoration: none;
+}
+
+.dutchEntry:hover {
+  text-decoration: underline;
+  text-underline-offset: .25em;
+}
+
+.dutchEntry:focus-visible {
+  outline: 2px solid var(--cinematic-color-ink);
+  outline-offset: -2px;
+}
+
+.dutchArrow { color: var(--cinematic-color-nl-accent); }
 
 .headerInner {
   position: relative;
@@ -163,7 +198,7 @@
 
 .mobilePanel {
   width: 100%;
-  max-block-size: calc(100dvh - var(--cinematic-layout-header-height) - var(--cinematic-spacing-md));
+  max-block-size: calc(100dvh - var(--cinematic-layout-header-height) - var(--cinematic-spacing-target) - 4 * var(--cinematic-spacing-hairline) - var(--cinematic-spacing-md));
   overflow-y: auto;
   margin-block-end:var(--cinematic-spacing-md);
   padding:var(--cinematic-spacing-md);

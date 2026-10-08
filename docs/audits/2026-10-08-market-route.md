@@ -28,3 +28,5 @@
 ## Separater NL-Gestaltungsauftrag
 
 Der kurze Design-Abgleich ist noch unbeantwortet: oben sichtbarer Einstieg mit NL-Flagge, „Nederlands · Click here“ und dezentem Pfeil; Besuchs-Landingpage mit „Jouw drankenadres in Goch“, bestehendem echten Canva-Marktfoto, Angeboten und Route direkt im Einstieg. Bestehende Farben bleiben erhalten. Diese optische Änderung wurde noch nicht implementiert. Keine Kontaktaufnahme mit De Gelderlander und keine Anzeigenbuchung vorgenommen.
+
+Nachtrag: Anschließend wurde die behutsame Oranje-Variante für die NL-Seite mit „starte“ freigegeben und umgesetzt. Ergebnis und Prüfungen: [NL-Refresh](2026-10-08-nl-refresh.md). Der obige Absatz beschreibt den Stand zum Abschluss der vorangegangenen Routenkorrektur.

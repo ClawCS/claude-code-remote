@@ -17,6 +17,8 @@ export const MARKET = Object.freeze({
 export const SITE_LINKS = Object.freeze({
   whatsapp:
     "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.",
+  whatsappNl:
+    "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ik%20heb%20een%20vraag.",
   // Include the business name: the previous abbreviated address resolved to another business.
   route: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     `${MARKET.displayName}, ${MARKET.street}, ${MARKET.postalCode} ${MARKET.city}, Deutschland`,
