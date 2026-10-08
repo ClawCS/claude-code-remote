@@ -100,6 +100,8 @@ describe("immutable weekly publications", () => {
     const f = await fixture();
     f.sources[0].pages[0].offers[0].id = "z-last";
     f.sources[0].pages[1].offers[0].id = "a-first";
+    f.sources[0].pages[0].offers[0].imagePath = "/images/offers/z-last.webp";
+    f.sources[0].pages[1].offers[0].imagePath = "/images/offers/a-first.webp";
     f.offers[0].id = "z-last"; f.offers[0].image = "/images/offers/z-last.webp";
     f.offers[1].id = "a-first"; f.offers[1].image = "/images/offers/a-first.webp";
     f.editions[0].offerIds = ["z-last", "a-first"];

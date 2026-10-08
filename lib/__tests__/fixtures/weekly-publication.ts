@@ -45,10 +45,11 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
       language, flyerId, sourceUrl: language === "de" ? officialUrl : "https://www.canva.com/design/SYNTHETIC/view",
       privatePdf: `public${publishedPdfPath}`, publishedPdfPath, pdfSha256: sha256(pdfs[index]),
       validFrom: week, validTo, reviewedAt: `${week}T12:00:00Z`, rightsStatus: "approved",
+      printedValidFrom: week, printedValidTo: validTo, coverSha256: sha256(image),
       pageCount: index === 0 ? 2 : 1,
       pages: Array.from({ length: index === 0 ? 2 : 1 }, (_, pageIndex) => ({
         page: pageIndex + 1, sourceImage: `public/images/content/${week}/${language}.webp`, expectedOffers: 1,
-        offers: [{ id: `${flyerId}-p${pageIndex + 1}`, name: "Synthetic original offer", categorySlug: "alkoholfrei",
+        offers: [{ id: `${flyerId}-p${pageIndex + 1}`, imagePath: `/images/offers/${flyerId}-p${pageIndex + 1}.webp`, name: "Synthetic original offer", categorySlug: "alkoholfrei",
           rect: [1, 1, 4, 3], sourceDimensions: [8, 6], conditions: "Printed condition unchanged" }],
       })),
     };

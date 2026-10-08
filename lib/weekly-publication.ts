@@ -140,7 +140,7 @@ async function decodeImage(bytes: Buffer) {
   return metadata;
 }
 type LayoutPage = { page: number; expectedOffers: number; offers: (ReviewedWeeklyOffer & { imagePath?: string })[] };
-type LayoutSource = WeeklyOfferPublicSource & { publishedPdfPath?: string; pageCount: number; pages: LayoutPage[] };
+type LayoutSource = WeeklyOfferPublicSource & { printedValidFrom: string; printedValidTo: string; coverSha256: string; pageCount: number; pages: LayoutPage[] };
 
 export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string): Promise<VerifiedWeeklyEdition> {
   edition = parseWeeklyEdition(edition, edition.validFrom);
@@ -179,9 +179,12 @@ export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string):
   const source = candidates[0] as LayoutSource;
   if (source.validFrom !== edition.validFrom || source.validTo !== edition.validTo || source.pdfSha256 !== edition.pdf.sha256
     || source.sourceUrl !== originUrl || source.rightsStatus !== "approved" || source.reviewedAt !== edition.review.reviewedAt
-    || (source.publishedPdfPath !== undefined && source.publishedPdfPath !== edition.pdf.path)
+    || source.publishedPdfPath !== edition.pdf.path || source.coverSha256 !== edition.cover.sha256
+    || source.printedValidFrom !== edition.validFrom || source.printedValidTo !== edition.validTo
     || source.pageCount !== edition.pageCount || !Array.isArray(source.pages) || source.pages.length !== edition.pageCount) throw new Error("Reviewed source binding mismatch");
   const expected = new Map<string, ReturnType<typeof buildPublicOfferMetadata>>();
+  const rows = await json(root, "data/weekly-offers.json");
+  if (!Array.isArray(rows)) throw new TypeError("Invalid published offers");
   for (const [index, page] of source.pages.entries()) {
     if (page.page !== index + 1 || !Array.isArray(page.offers) || page.expectedOffers !== page.offers.length
       || page.expectedOffers !== edition.review.pageOfferCounts[index]) throw new Error("Incomplete original page offer census");
@@ -197,16 +200,14 @@ export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string):
         || offer.sourceRegions.some(region => !Array.isArray(region) || region.length !== 4 || !region.every(Number.isSafeInteger)
           || region[2] < 1 || region[3] < 1 || region[0] < offer.rect[0] || region[1] < offer.rect[1]
           || region[0] + region[2] > offer.rect[0] + offer.rect[2] || region[1] + region[3] > offer.rect[1] + offer.rect[3]))) throw new Error("Region outside reviewed original crop");
-      const imagePath = offer.imagePath ?? `/images/offers/${offer.id}.webp`;
+      const published = rows.find(row => row && typeof row === "object" && row.id === offer.id);
+      const imagePath = offer.imagePath ?? `/images/offers/${offer.id}-${published?.imageSha256}.webp`;
       if (!OFFER_PATH.test(imagePath) || imagePath.includes("//")) throw new Error("Unsafe offer image path");
-      // Compatibility with the pre-Task-2 generator: normalize only the explicit public paths.
-      const metadata = buildPublicOfferMetadata({ ...source, sourceUrl: edition.pdf.path, privatePdf: `public${edition.pdf.path}` }, page.page, offer);
-      expected.set(offer.id, { ...metadata, image: imagePath });
+      const metadata = buildPublicOfferMetadata(source, page.page, offer, imagePath);
+      expected.set(offer.id, metadata);
     }
   }
   if (!isDeepStrictEqual([...expected.keys()].sort(), [...edition.offerIds].sort())) throw new Error("Manifest is not the complete reviewed original offer set");
-  const rows = await json(root, "data/weekly-offers.json");
-  if (!Array.isArray(rows)) throw new TypeError("Invalid published offers");
   const relevant = rows.filter(value => value && typeof value === "object"
     && (expected.has(value.id) || value.flyerId === flyerId || (value.language === edition.language && value.validFrom === edition.validFrom)));
   if (relevant.length !== expected.size) throw new Error("Published offer census mismatch");

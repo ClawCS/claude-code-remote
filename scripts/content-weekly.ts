@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { isDeepStrictEqual } from "node:util";
 import path from "node:path";
 import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "../lib/editorial-schedule";
 import { fetchOfficialCatalog, loadValidatedHandzettelCache, validateCatalog } from "../lib/handzettel-catalog";
@@ -7,6 +8,9 @@ import { loadFlyerPackages, selectActiveFlyerPackages, selectWeeklyNlFlyer, veri
 import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, type PublishedFlyer } from "../lib/content-verification";
 import { mapFlyerPackageToFlyer, mapHandzettelCacheToFlyer } from "../lib/homepage-content";
 import { getOfferDemandRange, getOfficialOfferRange } from "../lib/offer-validity";
+import { assembleWeeklyPublication, importOfficialPublication, WeeklyPreparationError } from "../lib/official-publication-import";
+import { buildWeeklyOffers } from "./build-weekly-offers";
+import type { WeeklyPublication } from "../lib/weekly-publication-types";
 
 const {prepare,now,week:explicitWeek,url:overrideUrl} = parseContentArguments(process.argv.slice(2));
 const range = explicitWeek ? getCurrentWeekRange(new Date(`${explicitWeek}T12:00:00Z`)) : prepare ? getPublicationWeekRange(now) : getCurrentWeekRange(now);
@@ -21,13 +25,7 @@ const warnings = report.warnings as string[];
 const sources = report.sources as Record<string, unknown>[];
 const expectedFlyers: PublishedFlyer[] = [];
 let locked = false;
-
-async function atomicJson(file: string, value: unknown) {
-  await mkdir(path.dirname(file), { recursive: true });
-  const temp = `${file}.${randomUUID()}.tmp`;
-  try { await writeFile(temp, `${JSON.stringify(value, null, 2)}\n`, { flag: "wx" }); await rename(temp, file); }
-  finally { await unlink(temp).catch(() => {}); }
-}
+let preparedPublication: WeeklyPublication | undefined;
 
 async function main() {
 try {
@@ -36,13 +34,36 @@ try {
     await writeFile(lockPath, JSON.stringify({runId, startedAt: report.startedAt}), { flag: "wx" });
     locked = true;
     try {
-      const catalog = await fetchOfficialCatalog(new Date(`${range.validFrom}T12:00:00Z`));
-      const packageData = { ...catalog, fetchedAt: new Date().toISOString() };
-      validateCatalog(packageData, range);
-      const file = path.join(root, "data/editorial/official-catalogs", `${range.validFrom}.json`);
-      await atomicJson(file, packageData);
-      sources.push({ source: "trinkgut-official", id: catalog.catalogId, file: path.relative(root, file), validFrom: catalog.validFrom, validTo: catalog.validTo, sha256: createHash("sha256").update(await readFile(file)).digest("hex"), result: "verified" });
-    } catch (error) { errors.push(`Offizieller Handzettel nicht vorbereitet: ${error instanceof Error ? error.message : "Quellenfehler"}`); }
+      // A reviewed local package remains usable if the upstream original later disappears.
+      preparedPublication = await assembleWeeklyPublication(range.validFrom, root);
+      await buildWeeklyOffers(root, ["--check", "--week", range.validFrom]);
+      const complete = ["de","nl"].every(language=>preparedPublication!.editions.some(edition=>edition.language===language));
+      for (const edition of preparedPublication.editions) sources.push({source:edition.source.kind,id:edition.id,language:edition.language,validFrom:edition.validFrom,validTo:edition.validTo,result:complete?"reviewed-local-package":"verified-partial-package",bound:true});
+      report.packageVerified = complete;
+      if (!complete) report.partialPackage = {bound:true,issues:["de","nl"].filter(language=>!preparedPublication!.editions.some(edition=>edition.language===language)).map(language=>({language,message:"Required reviewed edition missing"}))};
+      if (!preparedPublication.editions.some(edition => edition.language === "de")) throw new Error("Geprüftes DE-Angebotspaket fehlt.");
+    } catch (error) {
+      if (error instanceof WeeklyPreparationError) {
+        preparedPublication = error.publication;
+        report.partialPackage = {bound:error.bound,issues:error.issues};
+        for (const edition of error.publication.editions) sources.push({source:edition.source.kind,id:edition.id,language:edition.language,validFrom:edition.validFrom,validTo:edition.validTo,result:"verified-partial-package",bound:error.bound});
+        for (const issue of error.issues) errors.push(`${issue.language.toUpperCase()}-Angebotspaket unvollständig: ${issue.message}`);
+      } else errors.push(`Offizieller Handzettel nicht vorbereitet: ${error instanceof Error ? error.message : "Quellenfehler"}`);
+    }
+    if (!preparedPublication?.editions.some(edition => edition.language === "de")) {
+      try {
+        let catalog = await fetchOfficialCatalog(new Date(`${range.validFrom}T12:00:00Z`));
+        validateCatalog(catalog, range);
+        try {
+          const bound = JSON.parse(await readFile(path.join(root, `data/editorial/official-catalogs/${range.validFrom}.json`), "utf8"));
+          validateCatalog(bound, range);
+          if (isDeepStrictEqual({...bound,fetchedAt:null},{...catalog,fetchedAt:null})) catalog=bound;
+        } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+        const imported = await importOfficialPublication(catalog, {root});
+        sources.push({source:"trinkgut-official",id:catalog.catalogId,validFrom:catalog.validFrom,validTo:catalog.validTo,result:"staged-awaiting-original-layout-review",pdfSha256:imported.pdf.sha256,coverSha256:imported.cover.sha256,stagingDirectory:path.relative(root,imported.stagingDirectory)});
+        errors.push("Originale privat vorbereitet; datums-/sprach-/hashgebundene Layoutprüfung und offers:build -- --week sind vor der Wochenbindung erforderlich.");
+      } catch (error) { errors.push(`Offizieller Handzettel nicht vorbereitet: ${error instanceof Error ? error.message : "Quellenfehler"}`); }
+    }
   } else {
     const catalog = await loadValidatedHandzettelCache(now);
     if (catalog) {
@@ -66,6 +87,7 @@ try {
     } catch (error) { errors.push(error instanceof Error ? error.message : `Dateifehler: ${item.id}`); }
   }
   if (offersRequired && !nlFlyer) errors.push("Pflicht-NL-Flyer fehlt: genau eine geprüfte Canva-Seite für die vollständige Zielwoche erforderlich.");
+  if (prepare && nlFlyer && !preparedPublication?.editions.some(edition => edition.language === "nl")) errors.push("Pflicht-NL-Angebotspaket fehlt: Original-/Layoutprüfung und vollständige Angebotskacheln erforderlich.");
 
   const config = JSON.parse(await readFile(path.join(root, "data/editorial/source-config.json"), "utf8"));
   const publicUrl = overrideUrl ?? config.publicUrl;

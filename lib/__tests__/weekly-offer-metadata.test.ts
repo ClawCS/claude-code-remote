@@ -4,19 +4,22 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import sharp from "sharp";
+import { PDFDocument } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import publicOffers from "@/data/weekly-offers.json";
 import approvedFlyers from "@/data/editorial/flyers.json";
 import { buildPublicOfferMetadata } from "@/lib/weekly-offer-metadata";
 
 const repo = process.cwd();
+const doc = await PDFDocument.create(); doc.addPage([100,100]);
+const pdfBytes = Buffer.from(await doc.save());
 const expectedMetadata = {
   id: "de-test", name: "Original mineral water", categorySlug: "alkoholfrei",
   language: "de", flyerId: "de-week-41", validFrom: "2026-10-05", validTo: "2026-10-10",
   image: "/images/offers/de-test.webp", sourcePage: 1, rect: [1, 1, 4, 3],
   sourceDimensions: [8, 6], sourceRegions: [[1, 1, 4, 3]],
-  pdfSha256: createHash("sha256").update("reviewed-pdf").digest("hex"),
-  sourceUrl: "https://example.com/reviewed.pdf", rightsStatus: "approved",
+  pdfSha256: createHash("sha256").update(pdfBytes).digest("hex"),
+  sourceUrl: "/handzettel/2026/de-test.pdf", rightsStatus: "approved",
   reviewedAt: "2026-10-08T12:00:00Z", conditions: "2 cases; deposit extra",
   sourceWarning: "Printed source warning",
 };
@@ -25,6 +28,7 @@ async function runFixture(options: {
   build?: boolean;
   plain?: boolean;
   nl?: boolean;
+  legacyDe?: boolean;
   mutate?: (row: Record<string, unknown>) => void;
 } = {}) {
   const root = await mkdtemp(path.join(tmpdir(), "weekly-offer-metadata-"));
@@ -34,10 +38,10 @@ async function runFixture(options: {
     const source = await sharp({ create: { width: 8, height: 6, channels: 3, background: "red" } }).png().toBuffer();
     const crop = await sharp(source).extract({ left: 1, top: 1, width: 4, height: 3 }).webp({ lossless: true }).toBuffer();
     await writeFile(path.join(root, "source.png"), source);
-    await writeFile(path.join(root, "source.pdf"), "reviewed-pdf");
+    await writeFile(path.join(root, "source.pdf"), pdfBytes);
     if (options.nl) {
       await mkdir(path.join(root, "public/handzettel/2026"), { recursive: true });
-      await writeFile(path.join(root, "public/handzettel/2026/nl-test.pdf"), "reviewed-pdf");
+      await writeFile(path.join(root, "public/handzettel/2026/nl-test.pdf"), pdfBytes);
     }
     await writeFile(path.join(root, "public/images/offers/de-test.webp"), crop);
     // The alias has identical bytes, so a forged image path must fail on metadata, not on its hash.
@@ -49,12 +53,15 @@ async function runFixture(options: {
       language: options.nl ? "nl" : "de", flyerId: "de-week-41",
       sourceUrl: options.nl ? "https://www.canva.com/design/private-source/view" : "https://example.com/reviewed.pdf",
       pdfSha256: expectedMetadata.pdfSha256, privatePdf: options.nl ? "public/handzettel/2026/nl-test.pdf" : "source.pdf", pageCount: 1,
+      publishedPdfPath: options.nl ? "/handzettel/2026/nl-test.pdf" : "/handzettel/2026/de-test.pdf",
+      printedValidFrom: "2026-10-05", printedValidTo: "2026-10-10", coverSha256: "a".repeat(64),
       validFrom: "2026-10-05", validTo: "2026-10-10", reviewedAt: "2026-10-08T12:00:00Z", rightsStatus: "approved",
-      pages: [{ page: 1, sourceImage: "source.png", expectedOffers: 1, offers: [offer] }],
+      pages: [{ page: 1, sourceImage: "source.png", expectedOffers: 1, offers: [{...offer,imagePath:"/images/offers/de-test.webp"}] }],
     }] }));
     const row: Record<string, unknown> = { ...structuredClone(expectedMetadata),
       imageSha256: createHash("sha256").update(crop).digest("hex") };
     if (options.nl) Object.assign(row, {language: "nl", sourceUrl: "/handzettel/2026/nl-test.pdf"});
+    if (options.legacyDe) row.sourceUrl="https://example.com/reviewed.pdf";
     if (options.plain) { delete row.sourceRegions; delete row.sourceWarning; }
     options.mutate?.(row);
     await writeFile(path.join(root, "data/weekly-offers.json"), JSON.stringify([row]));
@@ -75,6 +82,15 @@ async function runFixture(options: {
 }
 
 describe("weekly offer CLI public metadata binding", () => {
+  it("reuses identical reviewed DE bytes for the build-only transition from origin to local PDF", async () => {
+    const result=await runFixture({build:true,legacyDe:true});expect(result.code).toBe(0);expect(result.rows[0].sourceUrl).toBe("/handzettel/2026/de-test.pdf");expect(result.rows[0].image).toBe("/images/offers/de-test.webp");expect(result.rows[0].conditions).toBe("2 cases; deposit extra");
+  });
+  it("does not accept legacy DE source delivery in strict check mode", async () => {
+    expect((await runFixture({legacyDe:true})).code).toBe(1);
+  });
+  it.each(["conditions","pdfSha256","rect"])("cannot reuse legacy DE bytes after %s changes",async field=>{
+    const result=await runFixture({build:true,legacyDe:true,mutate:row=>{row[field]=field==="conditions"?"Changed conditions":field==="pdfSha256"?"a".repeat(64):[0,1,4,3];}});expect(result.code).toBe(1);
+  });
   it("builds NL public records from the local original while keeping Canva provenance internal", async () => {
     const result = await runFixture({build: true, nl: true});
     expect(result.code).toBe(0);
@@ -138,10 +154,15 @@ describe("generated weekly data imported by the public client", () => {
     "assets/source/private.pdf",
     "public/handzettel/../private.pdf",
     "https://www.canva.com/design/private-source/view",
-  ])("refuses to publish an NL source without a safe local original: %s", privatePdf => {
+  ])("refuses to publish a source without a safe explicit local original: %s", publishedPdfPath => {
     expect(() => buildPublicOfferMetadata({
-      ...expectedMetadata, language: "nl", privatePdf,
-    }, 1, expectedMetadata)).toThrow(/local published PDF/);
+      ...expectedMetadata, language: "nl", publishedPdfPath: publishedPdfPath as string,
+    }, 1, expectedMetadata, "/images/offers/de-test.webp")).toThrow(/local published PDF/);
+  });
+  it("publishes the explicit derivative and local DE original without origin URLs", () => {
+    const metadata = buildPublicOfferMetadata({...expectedMetadata, sourceUrl:"https://origin.invalid/de.pdf", publishedPdfPath:"/handzettel/2026/de-test.pdf"}, 1, expectedMetadata, "/images/offers/de-test-123.webp");
+    expect(metadata.sourceUrl).toBe("/handzettel/2026/de-test.pdf");
+    expect(metadata.image).toBe("/images/offers/de-test-123.webp");
   });
   it("ships only local published PDF sources for NL offers, never internal Canva provenance", () => {
     const nlOffers = publicOffers.filter(offer => offer.language === "nl");
