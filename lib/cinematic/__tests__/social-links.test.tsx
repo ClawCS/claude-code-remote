@@ -32,6 +32,7 @@ import InquiryInformation from "@/app/bestellungen/page";
 import GeschenkideenPage from "@/app/geschenkideen/page";
 import OekoTrackerPage from "@/app/oeko-tracker/page";
 import GewinnspielPage from "@/app/gewinnspiel/page";
+import { SocialIcon } from "@/components/SocialLink";
 
 const whatsapp = "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.";
 const whatsappNl = "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ik%20heb%20een%20vraag.";
@@ -41,6 +42,16 @@ const emptyIndex = { status: "ok", issues: [], generatedAt: "2026-10-08T10:00:00
 afterEach(() => vi.unstubAllEnvs());
 
 describe("recognizable social destinations", () => {
+  test("scopes the WhatsApp green treatment to its SVG symbol", () => {
+    const whatsappIcon = renderToStaticMarkup(<SocialIcon platform="whatsapp" />);
+    const instagramIcon = renderToStaticMarkup(<SocialIcon platform="instagram" />);
+    const whatsappClass = whatsappIcon.match(/<svg\b[^>]*class="([^"]+)"/)?.[1] ?? "";
+    const instagramClass = instagramIcon.match(/<svg\b[^>]*class="([^"]+)"/)?.[1] ?? "";
+
+    expect(whatsappClass).toContain("whatsappIcon");
+    expect(instagramClass).not.toContain("whatsappIcon");
+  });
+
   test("gives each Dutch WhatsApp destination a localized accessible icon", async () => {
     const html = renderToStaticMarkup(await NederlandsPage());
     const links = [...html.matchAll(/<a\b([^>]*href="https:\/\/wa.me\/[^>]+)>([\s\S]*?)<\/a>/g)];
