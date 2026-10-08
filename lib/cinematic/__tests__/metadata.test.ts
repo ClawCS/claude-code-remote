@@ -53,7 +53,7 @@ describe("homepage metadata", () => {
       owner: { "@type": "Person", name: "Nikolaos Jammers" },
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Jurgenstr. 20",
+        streetAddress: "Jurgensstraße 20",
         postalCode: "47574",
         addressLocality: "Goch",
         addressCountry: "DE",

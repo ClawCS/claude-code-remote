@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { MARKET } from "@/lib/cinematic/site";
 
 export default function VideoHero() {
   const [paused, setPaused] = useState(false);
@@ -286,7 +287,7 @@ export default function VideoHero() {
                   Trinkgut Jammers
                 </h2>
                 <p className="text-white/60 text-sm md:text-base tracking-[0.2em] mt-4" style={{ animation: `sb-scene5-sub 18s ease infinite`, animationPlayState: playState }}>
-                  Jurgenstr. 20 &middot; Goch &middot; Seit 2024 für euch da
+                  {MARKET.street} &middot; Goch &middot; Seit 2024 für euch da
                 </p>
               </div>
             </div>

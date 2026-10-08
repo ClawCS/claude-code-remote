@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
-import { MARKET } from "@/lib/cinematic/site";
+import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -48,12 +48,12 @@ export default function Footer() {
               <li>{t("footer.inhaber")}</li>
               <li>
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=Trinkgut+Jammers+Goch+Jurgenstrasse+20"
+                  href={SITE_LINKS.route}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#F59E0B] transition-colors"
                 >
-                  Jurgenstr. 20, 47574 Goch — Route planen ↗
+                  {MARKET.street}, {MARKET.postalCode} {MARKET.city} — Route planen ↗
                 </a>
               </li>
               <li>Tel: <a href="tel:02823418707" className="hover:text-[#F59E0B] transition-colors">02823-418707</a></li>

@@ -2,7 +2,7 @@ export const MARKET = Object.freeze({
   displayName: "Trinkgut Jammers",
   legalName: "Getränkesupermarkt Jammers e.K.",
   owner: "Nikolaos Jammers",
-  street: "Jurgenstr. 20",
+  street: "Jurgensstraße 20",
   postalCode: "47574",
   city: "Goch",
   phoneDisplay: "02823 418707",
@@ -17,8 +17,10 @@ export const MARKET = Object.freeze({
 export const SITE_LINKS = Object.freeze({
   whatsapp:
     "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.",
-  route:
-    "https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20%2C+47574+Goch",
+  // Include the business name: the previous abbreviated address resolved to another business.
+  route: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    `${MARKET.displayName}, ${MARKET.street}, ${MARKET.postalCode} ${MARKET.city}, Deutschland`,
+  )}`,
   grailbid: "https://grailbid.com",
   instagram: "https://www.instagram.com/trinkgutjammers_goch/",
   nl: "/nl",

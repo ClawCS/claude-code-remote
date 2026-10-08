@@ -333,7 +333,7 @@ describe("cinematic homepage composition", () => {
     expect(html).toContain("06.03.2026");
     expect(html).toContain("Mo–Sa 08:00–20:00 Uhr");
     expect(html).toContain("Sonn- und Feiertage geschlossen");
-    expect(html).toContain("Jurgenstr. 20");
+    expect(html).toContain("Jurgensstraße 20");
     expect(html).toContain("47574 Goch");
 
     for (const forbidden of [
@@ -354,7 +354,7 @@ describe("cinematic homepage composition", () => {
     ).toBeGreaterThan(0);
     for (const href of [
       "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.",
-      "https://www.google.com/maps/dir/?api=1&destination=Jurgenstr.+20%2C+47574+Goch",
+      "https://www.google.com/maps/dir/?api=1&destination=Trinkgut%20Jammers%2C%20Jurgensstra%C3%9Fe%2020%2C%2047574%20Goch%2C%20Deutschland",
       "https://grailbid.com",
       "https://www.instagram.com/trinkgutjammers_goch/",
     ]) {

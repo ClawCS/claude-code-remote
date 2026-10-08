@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { MARKET } from "@/lib/cinematic/site";
 
 // --- Pfand types & prices ---
 
@@ -384,7 +385,7 @@ export default function LeergutRechnerPage() {
         <p className="text-sm text-secondary mb-4">
           Bring dein Leergut vorbei und erhalte sofort dein Pfandgeld.
           <br />
-          Mo&ndash;Sa 08:00&ndash;20:00 Uhr | Jurgenstr. 20, 47574 Goch
+          Mo&ndash;Sa 08:00&ndash;20:00 Uhr | {MARKET.street}, {MARKET.postalCode} {MARKET.city}
         </p>
         <a
           href="https://wa.me/491752492386?text=Hallo%2C+ich+m%C3%B6chte+mein+Leergut+abgeben!"

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -32,11 +33,11 @@ export default function KontaktPage() {
             </h2>
             <p className="text-secondary leading-relaxed">
               Trinkgut Jammers Goch<br />
-              Jurgenstr. 20<br />
-              47574 Goch
+              {MARKET.street}<br />
+              {MARKET.postalCode} {MARKET.city}
             </p>
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Trinkgut+Jammers+Goch+Jurgenstrasse+20"
+              href={SITE_LINKS.route}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-4 text-sm text-primary hover:underline"

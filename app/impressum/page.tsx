@@ -17,8 +17,8 @@ export default function ImpressumPage() {
             Trinkgut Jammers<br />
             {MARKET.legalName}<br />
             Inhaber: Nikolaos Jammers<br />
-            Jurgenstr. 20<br />
-            47574 Goch
+            {MARKET.street}<br />
+            {MARKET.postalCode} {MARKET.city}
           </p>
         </section>
 

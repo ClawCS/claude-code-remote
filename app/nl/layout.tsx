@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { MARKET } from "@/lib/cinematic/site";
 
 const description =
-  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgenstr. 20 in Goch. Ma–za 08:00–20:00 uur.";
+  `Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, ${MARKET.street} in Goch. Ma–za 08:00–20:00 uur.`;
 
 export const metadata: Metadata = {
   title: {

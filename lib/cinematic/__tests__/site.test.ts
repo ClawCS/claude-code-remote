@@ -13,7 +13,7 @@ describe("verified market contract", () => {
       displayName: "Trinkgut Jammers",
       legalName: "Getränkesupermarkt Jammers e.K.",
       owner: "Nikolaos Jammers",
-      street: "Jurgenstr. 20",
+      street: "Jurgensstraße 20",
       postalCode: "47574",
       city: "Goch",
       phoneDisplay: "02823 418707",
