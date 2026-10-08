@@ -13,7 +13,7 @@ Stand: 8. Oktober 2026. Abgleich aus ausdrücklichen Betreiberantworten, AGENTS.
 - Team-/Fotoausschlüsse und das Behalten des Gruppenfotos sind entschieden; das ausdrücklich ausgeschlossene Staplerfoto bleibt ausgeschlossen. Die letzte Einzelprofilentfernung ist bereits live, kein erneuter Personalabgleich erforderlich.
 - NL-Landingpage mit Oranje-Akzenten ist umgesetzt. Auch die warme orange gemeinsame NL-Hinweisleiste ist nun ausdrücklich freigegeben; Logo und Hauptnavigation bleiben unverändert.
 - Newsletter ist beauftragt: Anmeldung per E-Mail mit Bestätigung, Sonntag 19:00 Europe/Berlin, digitale Downloadlinks zu beiden Handzetteln der Folgewoche. Absender `info@trinkgut-jammers.de`; Postfach existiert laut Betreiber. Öffentlicher MX-Abgleich am 8. Oktober zeigt `mx00.ionos.de`/`mx01.ionos.de`; das belegt den Empfangsweg, nicht SMTP-Zugriff oder erlaubten Massenversand. Kein vorhandener Newsletter-Dienst. Kein zusätzliches Kundenkonto erforderlich.
-- Bewerbungsportal mit Anschreiben/Bewerbung, Lebenslauf, Portrait und Zeugnissen ist beauftragt; Zieladresse für Bewerbung und Unterlagen ist `jammers-goch@trinkgut.de`. Portrait im Entwurf freiwillig. Konkrete Stellen und berechtigter Empfängerkreis bleiben offen.
+- Bewerbungsportal mit Anschreiben/Bewerbung, Lebenslauf, Portrait und Zeugnissen ist beauftragt; Zieladresse für Bewerbung und Unterlagen ist `jammers-goch@trinkgut.de`. Portrait im Entwurf freiwillig. Alle Postfachberechtigten dürfen laut ausdrücklicher Betreiberantwort die Bewerbungen einsehen. Zwei aktuelle Anzeigen liegen vor: Verkauf (m/w/d) Vollzeit und Teilzeit bis 150 Stunden/Monat, jeweils sofortiger Einstieg möglich.
 
 ## A. Antworten vom 8. Oktober und verbleibender Bedarf
 
@@ -27,7 +27,7 @@ Die A2-Umsetzung unten behebt den bekannten externen DE-Handzettel-404 nicht. Bi
 
 ### A2 – Kleine UI-Änderungen
 
-Alle drei Kurzdesigns sind ausdrücklich freigegeben. Umsetzung und Prüfung laufen im Auftrag dieser Antworten; daraus noch keinen Live-Nachweis ableiten:
+Alle drei Kurzdesigns sind ausdrücklich freigegeben und seit 16:39 UTC / 18:39 Europe/Berlin im App-Release `d93f932` öffentlich geprüft. [Releasebericht](audits/2026-10-08-approved-ui-and-decisions.md):
 
 1. WhatsApp-/Instagram-Weiterleitungen als erkennbare Icons mit ausreichend großer Klickfläche, verständlicher zugänglicher Beschriftung und unverändertem Ziel. Erklärende Texte müssen nicht sämtliche Dienstnamen verlieren.
 2. Sichtbare Hinweise „Bestand nach Liste“, Bestandsdatum und interne Bestandszahlen entfernen; Mengengrenzen intern erhalten. Bei Überschreitung unmittelbar „Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.“ anzeigen. Ohne zentrales Reservierungsregister ist das kein Nachweis marktweiter Terminverfügbarkeit.
@@ -43,7 +43,7 @@ Das Info-Postfach existiert; DNS zeigt IONOS als Empfangsanbieter. Die Versandf�
 
 ### A4 – Bewerbungszugriff und ausgeschriebene Stellen
 
-Antwort: Bewerbung und Unterlagen an `jammers-goch@trinkgut.de`. Der Betreiber nennt zwei aktuell im Markt aushängende Stellenanzeigen als verbindliche Inhaltsgrundlage und überlässt die professionelle Darstellung Codex. Die Anhänge sind bisher weder in der Nachricht noch in den verfügbaren Task-Anhängen angekommen; erneutes Hochladen ist angefragt. Keine Initiativbewerbung als Ersatz für die noch unbekannten konkreten Stellen erfinden. Offen und erneut getrennt gefragt: Dürfen alle Zugriffsberechtigten des Marktpostfachs Bewerbungsunterlagen einsehen?
+Antwort: Bewerbung und Unterlagen an `jammers-goch@trinkgut.de`; alle Postfachberechtigten dürfen sie laut erneuter ausdrücklicher Antwort einsehen. Der Betreiber überlässt die professionelle Darstellung Codex. Die zwei aktuell aushängenden Anzeigen wurden auf seine Erlaubnis direkt auf dem Desktop gefunden und visuell gelesen: Verkäuferin/Verkäufer (m/w/d) Vollzeit sowie Teilzeit bis zu 150 Stunden/Monat, beide mit möglichem sofortigem Einstieg und freundlichem Team. [Originalbelege und Inhaltsvorbereitung](privacy/2026-10-08-jobs-inhaltsvorbereitung.md). Keine weitere Rollen-/Stellenabfrage nötig; Gehalt und nicht belegte Anforderungen/Benefits nicht erfinden. Upload- und Versandtechnik bleibt gesondert einzurichten.
 
 Entwurf: „Team & Jobs“ als gebündelter Einstieg; Bewerbung ohne Kundenkonto, sichere nicht öffentliche Verarbeitung, optionales Portrait. Der ausdrücklich gewünschte Versand der Unterlagen an die Marktadresse wird nicht stillschweigend durch eine reine Benachrichtigung ersetzt. Anhänge benötigen eine geprüfte sichere Übermittlung; ein geschützter Downloadlink bleibt gegebenenfalls eine begründet vorzuschlagende Alternative. Keine erfundenen Stellen, Gehälter oder Benefits; noch kein Uploadbetrieb.
 
