@@ -118,3 +118,30 @@ CREATE UNIQUE INDEX delivery_claim_token ON cases(claimToken) WHERE claimToken I
 CREATE TRIGGER case_accepted_at_immutable BEFORE UPDATE OF acceptedAt ON cases
 BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_ACCEPTED_AT'); END;
 PRAGMA user_version = 4;
+CREATE TABLE auth_staff (
+ id TEXT PRIMARY KEY, login TEXT NOT NULL UNIQUE CHECK(login='niko'),
+ displayName TEXT NOT NULL CHECK(displayName='Nikolaos Jammers'),
+ enabled INTEGER NOT NULL CHECK(enabled IN (0,1)), generation INTEGER NOT NULL CHECK(generation>0),
+ password TEXT NOT NULL CHECK(length(password)<=512), factor TEXT NOT NULL CHECK(length(factor)<=1456),
+ lastStep INTEGER NOT NULL CHECK(lastStep>=0)
+);
+CREATE TABLE auth_sessions (
+ hash TEXT PRIMARY KEY, staffId TEXT NOT NULL REFERENCES auth_staff(id), generation INTEGER NOT NULL,
+ epoch TEXT NOT NULL, csrf TEXT NOT NULL, issuedAt TEXT NOT NULL, lastSeen TEXT NOT NULL,
+ expiresAt TEXT NOT NULL, revoked INTEGER NOT NULL DEFAULT 0 CHECK(revoked IN(0,1))
+);
+CREATE TABLE auth_grants (
+ hash TEXT PRIMARY KEY, staffId TEXT NOT NULL REFERENCES auth_staff(id), sessionHash TEXT NOT NULL REFERENCES auth_sessions(hash),
+ generation INTEGER NOT NULL, epoch TEXT NOT NULL, action TEXT NOT NULL,
+ caseId TEXT NOT NULL REFERENCES cases(id), version INTEGER NOT NULL,
+ issuedAt TEXT NOT NULL, expiresAt TEXT NOT NULL
+);
+CREATE TABLE auth_recovery (
+ hash TEXT PRIMARY KEY, staffId TEXT NOT NULL REFERENCES auth_staff(id), generation INTEGER NOT NULL
+);
+CREATE TABLE auth_attempts (
+ scope TEXT NOT NULL CHECK(scope IN('staff','ip')), key TEXT NOT NULL, at TEXT NOT NULL
+);
+CREATE INDEX auth_attempts_key ON auth_attempts(scope,key,at);
+CREATE TABLE auth_clock (singleton INTEGER PRIMARY KEY CHECK(singleton=1), lastAt TEXT NOT NULL);
+PRAGMA user_version = 5;

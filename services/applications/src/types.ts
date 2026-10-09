@@ -30,6 +30,36 @@ export function utcInstant(value: string): Instant {
   return value as Instant;
 }
 export interface Clock { now(): Date }
+// Worker-only authority. This port must be independently qualified before use;
+// a stored epoch or a local configuration flag is not restore assurance.
+export interface AuthTrustPort { currentEpoch(): Digest | null }
+export interface AuthDependencies {
+  readonly keys: { readonly privateKey: KeyObject; readonly publicKey: KeyObject };
+  readonly rateKey: Buffer;
+  readonly trust: AuthTrustPort;
+}
+export interface LoginInput { readonly username: string; readonly password: string; readonly otp: string; readonly trustedIp: string }
+export interface StaffSession { readonly sessionId: Digest; readonly staffId: StaffId; readonly generation: number; readonly issuedAt: Instant; readonly expiresAt: Instant }
+export type LoginResult = { readonly kind: "denied" } | { readonly kind: "authenticated"; readonly token: string; readonly csrf: string; readonly session: StaffSession };
+export interface ReauthProof { readonly password: string; readonly otp: string; readonly trustedIp: string }
+export interface SensitiveAction { readonly kind: "review" | "reject" | "reopen" | "correct-date" | "hold" | "release-hold" | "manual-case" | "confirm-external-copies"; readonly caseId: ApplicationId; readonly version: number }
+export interface ActionGrant { readonly nonce: string; readonly staffId: StaffId; readonly action: SensitiveAction; readonly issuedAt: Instant; readonly expiresAt: Instant }
+// Worker-local maintenance material, deliberately absent from the shared public
+// applications contract. Only the CLI may display provisioning/recovery values.
+export interface FactorStage { readonly handle: string; readonly provisioningUri: string }
+export interface FactorResult { readonly recoveryCodes: readonly string[] }
+export type ReplacementProof = { readonly password: string; readonly trustedIp: string } & ({ readonly otp: string } | { readonly recoveryCode: string });
+export interface ApplicationAuth {
+  authenticate(input: LoginInput): Promise<LoginResult>;
+  authorizeSession(token: string, now: Instant): StaffSession | null;
+  authorizeSensitiveAction(session: StaffSession, proof: ReauthProof, action: SensitiveAction): Promise<ActionGrant>;
+  logout(token: string): void;
+  authorizeMutation(token: string, csrf: string, origin: string | undefined, configuredOrigin: string): StaffSession | null;
+  beginEnrollment(password: string, confirmation: string): Promise<FactorStage>;
+  finishEnrollment(handle: string, otp: string): FactorResult;
+  beginReplacement(proof: ReplacementProof): Promise<FactorStage>;
+  finishReplacement(handle: string, otp: string): FactorResult;
+}
 export interface DeliveryIdentity { readonly id: ApplicationId; readonly messageId: string; readonly keyId: string; readonly date: Instant }
 export interface MimeLimits { readonly maxRawBytes: number; readonly maxParts: number; readonly maxAttachments: number; readonly maxDepth: number; readonly maxFileBytes: number; readonly maxAttachmentBytes: number; readonly maxTextBytes: number }
 export interface MailAttachmentIdentity { readonly name: string; readonly mediaType: string; readonly digest: Digest; readonly bytes: number }
@@ -175,6 +205,7 @@ export interface ArtifactRecord { caseId: ApplicationId; kind: ArtifactKind; pat
 export interface RequestIdentity { id: ApplicationId; digest: Digest; acceptedAt: Instant }
 export interface ArtifactReservation { caseId: ApplicationId; kind: ArtifactKind; bytes: number; expiresAt: Instant }
 export interface ApplicationRepository extends DeliveryRepository {
+  createAuthentication(deps: AuthDependencies): ApplicationAuth;
   // Capacity is computed by worker custody, never accepted from RPC metadata.
   reserve(input: ReservationInput, capacity?: "available" | "exhausted"): Reservation;
   pruneAdmissionEvents(now: Instant): number;

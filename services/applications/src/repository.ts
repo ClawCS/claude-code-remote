@@ -9,6 +9,8 @@ import { applicationId, digest, utcInstant } from "./types";
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, storageBudget } from "./storage-budget";
 import { admissionKeys, submissionKind, ADMISSION_WINDOW_MS, ADMISSION_EVENT_CAP, RateLimitedError } from "./intake-admission";
 import { createDeliveryRepository, recoverDelivery } from "./delivery-repository";
+import { createAuthRepository, pruneAuthAttempts } from "./auth-repository";
+import { createAuthentication } from "./auth";
 
 const DAY = 86400000;
 function addDays(value: Instant, days: number): Instant { return utcInstant(new Date(Date.parse(value) + days * DAY).toISOString()); }
@@ -52,11 +54,14 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE deliveries")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 4) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE auth_staff")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -66,6 +71,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   const locks = new Map<ApplicationId, Promise<void>>();
   const context = new AsyncLocalStorage<Guard>();
   let closed = false;
+  let authOwned = false;
   function live(): void { if (closed) throw new Error("REPOSITORY_CLOSED"); }
   function readCase(id: ApplicationId): CaseRecord {
     live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, deleteAfter, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, claimToken, claimKind, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission"> & { submission: string }) | undefined;
@@ -99,7 +105,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }
   function pruneAdmissionEvents(now: Instant): number {
     live(); utcInstant(now);
-    return db.prepare("DELETE FROM abuse_events WHERE expiresAt <= ?").run(now).changes;
+    return db.transaction(() => {
+      const removed = pruneAuthAttempts(db, now);
+      return removed + db.prepare("DELETE FROM abuse_events WHERE expiresAt <= ?").run(now).changes;
+    }).immediate();
   }
   function reserve(input: ReservationInput, capacity: "available" | "exhausted" = "available"): Reservation {
     live(); digest(input.sessionHash); checkBytes(input.reservedBytes); utcInstant(input.now);
@@ -109,7 +118,9 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     const outcome = db.transaction((): Reservation | Error => {
       // Expected denials are returned so the authenticated attempt stays charged.
       // SQL/integrity failures throw and roll back the complete transaction.
-      pruneAdmissionEvents(input.now);
+      // Intake keeps its existing rolling-window semantics; auth's monotonic
+      // maintenance clock must not change admission behavior on wall rollback.
+      db.prepare("DELETE FROM abuse_events WHERE expiresAt <= ?").run(input.now);
       const oldest = new Date(Date.parse(input.now) - ADMISSION_WINDOW_MS).toISOString();
       let retryAt = 0;
       for (const [scope, key, limit] of [["session", keys.sessionKey, 6], ["ip", keys.ipKey, 30]] as const) {
@@ -243,6 +254,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }).immediate(); }
   catch (error) { db.close(); closed = true; throw error; }
   return {
+    createAuthentication(deps) { live(); if (authOwned) throw new Error("AUTH_ALREADY_OWNED"); const auth = createAuthentication(createAuthRepository(db, live, readCase, guarded), deps, clock); authOwned = true; return auth; },
     ...delivery,
     getRequestIdentity(id) { readCase(id); return db.prepare("SELECT id,digest,acceptedAt FROM cases WHERE id=?").get(id) as RequestIdentity; },
     getSubmissionKind(id) { return readCase(id).submission; },
