@@ -81,6 +81,27 @@ export type LoginResult = { readonly kind: "denied" } | { readonly kind: "authen
 export interface ReauthProof { readonly password: string; readonly otp: string; readonly trustedIp: string }
 export interface SensitiveAction { readonly kind: "review" | "reject" | "reopen" | "correct-date" | "hold" | "release-hold" | "manual-case" | "confirm-external-copies"; readonly caseId: ApplicationId; readonly version: number }
 export interface ActionGrant { readonly nonce: string; readonly staffId: StaffId; readonly action: SensitiveAction; readonly issuedAt: Instant; readonly expiresAt: Instant }
+export type ManualCategory = "hired" | "withdrawn" | "data-subject-request" | "other";
+export type CaseAction = { readonly kind: "review" } | { readonly kind: "reject"; readonly closedOn: DateOnly }
+  | { readonly kind: "correct-date"; readonly closedOn: DateOnly; readonly reason: string }
+  | { readonly kind: "reopen" | "release-hold"; readonly reason: string }
+  | { readonly kind: "hold"; readonly reviewOn: DateOnly; readonly reason: string }
+  | { readonly kind: "manual-case"; readonly category: ManualCategory; readonly reason: string }
+  | { readonly kind: "confirm-external-copies"; readonly confirmed: boolean; readonly reason: string };
+export interface CaseLifecycle {
+  readonly identityState: "identifying" | "minimized";
+  readonly initialAuthority: string | null;
+  readonly authorityKind: "initial" | "fence" | null; readonly authorityId: string | null;
+  readonly safetyRevision: number; readonly pendingEventId: string | null;
+  readonly deadline: DateOnly | null; readonly deleteFrom: DateOnly | null;
+  readonly hold: { readonly reviewOn: DateOnly; readonly reason: string; readonly actor: StaffId; readonly at: Instant } | null;
+  readonly manualCategory: ManualCategory | null;
+  readonly externalCopiesConfirmed: boolean; readonly externalCopiesAt: Instant | null;
+  readonly externalCopiesActor: StaffId | null; readonly externalCopiesReason: string | null;
+}
+export type Eligibility = "not_due" | "held" | "blocked" | "eligible";
+export interface LifecycleDependencies { readonly repository: ApplicationRepository; readonly session: StaffSession; readonly recoveryEventId?: string }
+export interface LifecycleRecoveryPage { readonly cases: readonly { readonly id: ApplicationId; readonly eventId: string; readonly phase: "proposed" | "acknowledged"; readonly outcome: "acknowledged" | "blocked" | "continuation" }[]; readonly continuation: ApplicationId | null }
 // Worker-local maintenance material, deliberately absent from the shared public
 // applications contract. Only the CLI may display provisioning/recovery values.
 export interface FactorStage { readonly handle: string; readonly provisioningUri: string }
@@ -142,7 +163,7 @@ export interface CaseRecord {
   id: ApplicationId; reference: string; encryptedName: string; job: JobId; acceptedAt: Instant;
   deliveryState: DeliveryState; caseState: CaseState; version: number;
   encryptedPayloadPath: string | null; payloadBytes: number;
-  closedOn: DateOnly | null; deleteAfter: Instant | null; payloadDeleteAfter: Instant;
+  closedOn: DateOnly | null; readonly lifecycle: CaseLifecycle; payloadDeleteAfter: Instant;
   contactDeleteAfter: Instant; claimOwner: string | null; claimedAt: Instant | null;
   claimToken: string | null; claimKind: DeliveryWorkKind | null;
   readonly submission: SubmissionKind;
@@ -243,6 +264,9 @@ export interface RequestIdentity { id: ApplicationId; digest: Digest; acceptedAt
 export interface ArtifactReservation { caseId: ApplicationId; kind: ArtifactKind; bytes: number; expiresAt: Instant }
 export interface ApplicationRepository extends DeliveryRepository {
   createAuthentication(deps: AuthDependencies): ApplicationAuth;
+  getLifecycleCase(id: ApplicationId, session: StaffSession): CaseRecord;
+  applyCaseAction(id: ApplicationId, action: CaseAction, grant: ActionGrant, session: StaffSession, recoveryEventId?: string): Promise<CaseRecord>;
+  recoverLifecyclePending(after?: ApplicationId): Promise<LifecycleRecoveryPage>;
   // Capacity is computed by worker custody, never accepted from RPC metadata.
   reserve(input: ReservationInput, capacity?: "available" | "exhausted"): Reservation;
   pruneAdmissionEvents(now: Instant): number;

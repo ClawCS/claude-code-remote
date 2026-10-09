@@ -46,6 +46,7 @@ describe("durable delivery authority", () => {
       db.prepare("INSERT INTO reservations (id,sessionHash,idempotencyKey,reservedBytes,expiresAt,active,submission) SELECT ?,sessionHash,?,reservedBytes,expiresAt,active,submission FROM reservations LIMIT 1").run(reservation, `overflow-${index}`);
       db.prepare("INSERT INTO cases (id,reference,reservationId,sessionHash,idempotencyKey,digest,encryptedName,job,acceptedAt,deliveryState,caseState,version,payloadBytes,payloadDeleteAfter,contactDeleteAfter,submission) SELECT ?,?,?,sessionHash,?,digest,encryptedName,job,acceptedAt,deliveryState,caseState,version,payloadBytes,payloadDeleteAfter,contactDeleteAfter,submission FROM cases WHERE id=?").run(next, `TJ-${String(index).padStart(24, "0")}`, reservation, `overflow-${index}`, id);
       db.prepare("INSERT INTO deliveries(caseId) VALUES(?)").run(next);
+      db.prepare("INSERT INTO case_lifecycle(caseId) VALUES(?)").run(next);
     }
     db.close(); repo = openRepository(join(dir, "db.sqlite"));
     expect(() => repo.listWorkerSchedule(now)).toThrow("WORKER_SCHEDULE_OVERFLOW");
@@ -83,7 +84,8 @@ describe("durable delivery authority", () => {
   });
   it("migrates actual schema3 send states conservatively without fabricating identity", async () => {
     repo.close(); const legacy = new Database(join(dir, "db.sqlite"));
-    // Remove v4/v5 additions to produce the actual schema3 fixture.
+    // Remove v4/v5/v6 additions to produce the actual schema3 fixture.
+    legacy.exec("DROP TABLE lifecycle_audit; DROP TABLE lifecycle_proposals; DROP TABLE case_lifecycle;");
     legacy.exec("DROP TABLE auth_grants; DROP TABLE auth_sessions; DROP TABLE auth_recovery; DROP TABLE auth_staff; DROP TABLE auth_attempts; DROP TABLE auth_clock; DROP TABLE delivery_attempts; DROP TABLE deliveries; DROP INDEX delivery_claim_token; DROP TRIGGER case_accepted_at_immutable; ALTER TABLE cases DROP COLUMN claimToken; ALTER TABLE cases DROP COLUMN claimKind; PRAGMA user_version=3;");
     legacy.prepare("UPDATE cases SET deliveryState='smtp_accepted' WHERE id=?").run(id); legacy.close();
     repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
@@ -91,7 +93,7 @@ describe("durable delivery authority", () => {
     expect(repo.getDelivery(id).identity).toBeNull(); expect(repo.getDelivery(id).reason).toBe("LEGACY_UNVERIFIED"); expect(repo.getDelivery(id).attempts).toEqual([]);
     expect(repo.getRequestIdentity(id).acceptedAt).toBe(now); expect(repo.listArtifactReservations()).toHaveLength(2);
     repo.close(); const inspection = new Database(join(dir, "db.sqlite"));
-    expect(inspection.pragma("user_version", { simple: true })).toBe(5);
+    expect(inspection.pragma("user_version", { simple: true })).toBe(6);
     expect(() => inspection.prepare("UPDATE cases SET acceptedAt=? WHERE id=?").run(at(1), id)).toThrow("IMMUTABLE_ACCEPTED_AT"); inspection.close();
     repo = openRepository(join(dir, "db.sqlite"));
   });

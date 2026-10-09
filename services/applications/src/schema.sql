@@ -145,3 +145,42 @@ CREATE TABLE auth_attempts (
 CREATE INDEX auth_attempts_key ON auth_attempts(scope,key,at);
 CREATE TABLE auth_clock (singleton INTEGER PRIMARY KEY CHECK(singleton=1), lastAt TEXT NOT NULL);
 PRAGMA user_version = 5;
+CREATE TABLE case_lifecycle (
+ caseId TEXT PRIMARY KEY REFERENCES cases(id),
+ identityState TEXT NOT NULL DEFAULT 'identifying' CHECK(identityState IN('identifying','minimized')),
+ initialAuthority TEXT, authorityKind TEXT CHECK(authorityKind IN('initial','fence')), authorityId TEXT,
+ safetyRevision INTEGER NOT NULL DEFAULT 0 CHECK(safetyRevision>=0), pendingEventId TEXT,
+ deadline TEXT, deleteFrom TEXT, manualCategory TEXT CHECK(manualCategory IN('hired','withdrawn','data-subject-request','other')),
+ holdReviewOn TEXT, holdReason TEXT CHECK(length(CAST(holdReason AS BLOB))<=2000), holdActor TEXT, holdAt TEXT,
+ externalCopiesConfirmed INTEGER NOT NULL DEFAULT 0 CHECK(externalCopiesConfirmed IN(0,1)), externalCopiesAt TEXT, externalCopiesActor TEXT,
+ externalCopiesReason TEXT CHECK(length(CAST(externalCopiesReason AS BLOB))<=2000)
+);
+INSERT INTO case_lifecycle(caseId) SELECT id FROM cases;
+CREATE TRIGGER lifecycle_initial_immutable BEFORE UPDATE OF initialAuthority ON case_lifecycle
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_INITIAL_AUTHORITY'); END;
+CREATE TRIGGER lifecycle_identity_monotonic BEFORE UPDATE OF identityState ON case_lifecycle WHEN OLD.identityState='minimized' AND NEW.identityState!='minimized'
+BEGIN SELECT RAISE(ABORT, 'MINIMIZED_CASE'); END;
+CREATE TABLE lifecycle_proposals (
+ eventId TEXT PRIMARY KEY, caseId TEXT NOT NULL REFERENCES case_lifecycle(caseId),
+ event TEXT NOT NULL CHECK(length(CAST(event AS BLOB))<=2048),
+ actionBytes TEXT NOT NULL CHECK(length(CAST(actionBytes AS BLOB))<=4096),
+ grantHash TEXT NOT NULL, phase TEXT NOT NULL CHECK(phase IN('proposed','acknowledged','applied','superseded')),
+ entry TEXT CHECK(length(CAST(entry AS BLOB))<=4096), head TEXT CHECK(length(CAST(head AS BLOB))<=1024),
+ CHECK((phase='proposed' AND entry IS NULL AND head IS NULL) OR (phase!='proposed' AND entry IS NOT NULL AND head IS NOT NULL))
+);
+CREATE INDEX lifecycle_pending ON case_lifecycle(caseId) WHERE pendingEventId IS NOT NULL;
+CREATE TRIGGER lifecycle_proposal_immutable BEFORE UPDATE OF eventId,caseId,event,actionBytes,grantHash ON lifecycle_proposals
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_LIFECYCLE_PROPOSAL'); END;
+CREATE TABLE lifecycle_audit (
+ sequence INTEGER PRIMARY KEY AUTOINCREMENT, caseId TEXT NOT NULL REFERENCES cases(id),
+ kind TEXT NOT NULL CHECK(kind IN('review','reject','correct-date','reopen','hold','release-hold','manual-case','confirm-external-copies')),
+ actor TEXT NOT NULL REFERENCES auth_staff(id), at TEXT NOT NULL, version INTEGER NOT NULL,
+ reason TEXT CHECK(length(CAST(reason AS BLOB))<=2000), eventId TEXT REFERENCES lifecycle_proposals(eventId),
+ oldState TEXT NOT NULL, newState TEXT NOT NULL, oldClosedOn TEXT, newClosedOn TEXT,
+ oldDeadline TEXT, newDeadline TEXT, oldDeleteFrom TEXT, newDeleteFrom TEXT,
+ oldHoldReviewOn TEXT, newHoldReviewOn TEXT, oldHoldReason TEXT, newHoldReason TEXT, oldHoldActor TEXT, newHoldActor TEXT, oldHoldAt TEXT, newHoldAt TEXT,
+ oldManualCategory TEXT, newManualCategory TEXT, oldExternalConfirmed INTEGER NOT NULL, newExternalConfirmed INTEGER NOT NULL,
+ oldExternalAt TEXT, newExternalAt TEXT, oldExternalActor TEXT, newExternalActor TEXT, oldExternalReason TEXT, newExternalReason TEXT,
+ UNIQUE(caseId,version)
+);
+PRAGMA user_version = 6;

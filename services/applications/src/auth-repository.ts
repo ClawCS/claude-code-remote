@@ -5,6 +5,7 @@ import type { PasswordRecord } from "./auth-crypto";
 export interface AuthStaff { id: StaffId; login: "niko"; displayName: "Nikolaos Jammers"; enabled: number; generation: number; password: PasswordRecord; factor: string; lastStep: number }
 export interface AuthSessionRow { hash: Digest; staffId: StaffId; generation: number; epoch: Digest; csrf: Digest; issuedAt: Instant; lastSeen: Instant; expiresAt: Instant; revoked: number }
 export interface AuthGrantRow { hash: Digest; staffId: StaffId; sessionHash: Digest; generation: number; epoch: Digest; action: SensitiveAction["kind"]; caseId: ApplicationId; version: number; issuedAt: Instant; expiresAt: Instant }
+export interface AuthActionContext { readonly row: Readonly<CaseRecord>; readonly actor: StaffId; readonly now: Instant; readonly epoch: Digest }
 export const AUTH_ACTIONS = ["review", "reject", "reopen", "correct-date", "hold", "release-hold", "manual-case", "confirm-external-copies"] as const;
 export function assertAction(action: SensitiveAction): void {
   applicationId(action.caseId);
@@ -56,8 +57,21 @@ export function createAuthRepository(db: Database.Database, live: () => void, re
   function recovery(id: StaffId, generation: number, hash: Digest): boolean {
     live(); return !!db.prepare("SELECT 1 FROM auth_recovery WHERE staffId=? AND generation=? AND hash=?").get(id, generation, hash);
   }
+  function checkGrant(hash: Digest, activeSession: StaffSession, action: SensitiveAction, epochNow: () => Digest, clockNow: () => Instant, staleError: "AUTH_DENIED" | "CASE_STALE" = "AUTH_DENIED"): AuthActionContext {
+    live(); assertAction(action); digest(hash);
+    const now = clockNow(), epoch = epochNow(); utcInstant(now); digest(epoch);
+    const clockRow = db.prepare("SELECT lastAt FROM auth_clock WHERE singleton=1").get() as { lastAt: Instant } | undefined;
+    if (clockRow && now < utcInstant(clockRow.lastAt)) throw new Error("AUTH_DENIED");
+    const grant = db.prepare("SELECT * FROM auth_grants WHERE hash=?").get(hash) as AuthGrantRow | undefined;
+    if (!grant || grant.staffId !== activeSession.staffId || grant.sessionHash !== activeSession.sessionId || grant.epoch !== epoch || grant.action !== action.kind || grant.caseId !== action.caseId || grant.version !== action.version || now < utcInstant(grant.issuedAt) || now >= utcInstant(grant.expiresAt) || Date.parse(grant.expiresAt) > Date.parse(grant.issuedAt) + 300000) throw new Error("AUTH_DENIED");
+    const own = session(grant.sessionHash, epoch, now);
+    if (!own || own.staffId !== activeSession.staffId || own.generation !== grant.generation || own.generation !== activeSession.generation || own.issuedAt !== activeSession.issuedAt || own.expiresAt !== activeSession.expiresAt || epochNow() !== epoch) throw new Error("AUTH_DENIED");
+    const row = readCase(action.caseId);
+    if (row.version !== action.version) throw new Error(staleError);
+    return Object.freeze({ row: Object.freeze(row), actor: own.staffId, now, epoch });
+  }
   const store = {
-    staff, session, recovery,
+    staff, session, recovery, preflight: checkGrant,
     reserve(login: string, ip: Digest, now: Instant): AuthStaff | null {
       return transaction(() => {
         clock(now); digest(ip); const row = staff(login), key = row?.id ?? "unknown";
@@ -112,16 +126,12 @@ export function createAuthRepository(db: Database.Database, live: () => void, re
     },
     // Task9 composes this only inside the repository. It must perform its actual
     // business mutation in this closure; no public consume-before-write path.
-    async withGrant<T>(hash: Digest, activeSession: StaffSession, action: SensitiveAction, epochNow: () => Digest, clockNow: () => Instant, mutate: (row: Readonly<CaseRecord>) => T): Promise<T> {
+    async withGrant<T>(hash: Digest, activeSession: StaffSession, action: SensitiveAction, epochNow: () => Digest, clockNow: () => Instant, mutate: (row: Readonly<CaseRecord>, context: AuthActionContext) => T, staleError: "AUTH_DENIED" | "CASE_STALE" = "AUTH_DENIED"): Promise<T> {
       assertAction(action);
       return guarded(action.caseId, async () => transaction(() => {
-        const now = clockNow(); clock(now); const epoch = epochNow(); digest(epoch);
-        const grant = db.prepare("SELECT * FROM auth_grants WHERE hash=?").get(hash) as AuthGrantRow | undefined;
-        if (!grant || grant.staffId !== activeSession.staffId || grant.sessionHash !== activeSession.sessionId || grant.epoch !== epoch || grant.action !== action.kind || grant.caseId !== action.caseId || grant.version !== action.version || now < utcInstant(grant.issuedAt) || now >= utcInstant(grant.expiresAt) || Date.parse(grant.expiresAt) > Date.parse(grant.issuedAt) + 300000) throw new Error("AUTH_DENIED");
-        const own = session(grant.sessionHash, epoch, now), row = readCase(action.caseId);
-        if (!own || own.staffId !== activeSession.staffId || own.generation !== grant.generation || own.generation !== activeSession.generation || own.issuedAt !== activeSession.issuedAt || own.expiresAt !== activeSession.expiresAt || row.version !== action.version) throw new Error("AUTH_DENIED");
+        const context = checkGrant(hash, activeSession, action, epochNow, clockNow, staleError), { now, epoch, row } = context; clock(now);
         db.prepare("DELETE FROM auth_grants WHERE hash=?").run(hash);
-        const result = mutate(Object.freeze(row));
+        const result = mutate(row, context);
         if (result && (typeof result === "object" || typeof result === "function") && "then" in result) throw new Error("ASYNC_AUTH_MUTATION");
         if (epochNow() !== epoch) throw new Error("AUTH_DENIED");
         return result;

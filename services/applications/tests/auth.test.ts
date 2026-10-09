@@ -233,6 +233,20 @@ describe("case-bound atomic reauthentication", () => {
     const read = (id: ApplicationId) => { const row = db.prepare("SELECT * FROM cases WHERE id=?").get(id) as CaseRecord | undefined; if (!row) throw new Error("CASE_NOT_FOUND"); return row; };
     return { db, store: createAuthRepository(db, () => { if (!db.open) throw new Error("REPOSITORY_CLOSED"); }, read, (id, action) => repository.withCaseLock(id, action)), read };
   }
+  it("shares a synchronous non-consuming authoritative preflight with final captured actor/time and preserves generic stale denial by default", async () => {
+    const service = auth(), setup = await enrolled(service), logged = await login(service, setup.provisioningUri), target = caseRecord(); time += 30000;
+    const action: SensitiveAction = { kind: "review", caseId: target.id, version: 1 };
+    const grant = await service.authorizeSensitiveAction(logged.session, { password, otp: otp(setup.provisioningUri), trustedIp: "127.0.0.1" }, action);
+    const { db, store } = internal(), hash = tokenDigest("grant", grant.nonce), at = () => utcInstant(new Date(time).toISOString());
+    const context = store.preflight(hash, logged.session, action, () => epoch!, at);
+    expect(context).toMatchObject({ actor: logged.session.staffId, now: at(), epoch, row: { version: 1 } });
+    expect(context).not.toHaveProperty("then"); expect(db.inTransaction).toBe(false);
+    expect(db.prepare("SELECT COUNT(*) AS n FROM auth_grants WHERE hash=?").get(hash)).toEqual({ n: 1 });
+    db.prepare("UPDATE cases SET version=2 WHERE id=?").run(target.id);
+    expect(() => store.preflight(hash, logged.session, action, () => epoch!, at)).toThrow("AUTH_DENIED");
+    expect(() => store.preflight(hash, logged.session, action, () => epoch!, at, "CASE_STALE")).toThrow("CASE_STALE");
+    expect(() => store.preflight(hash, { ...logged.session, generation: 2 }, action, () => epoch!, at, "CASE_STALE")).toThrow("AUTH_DENIED");
+  });
   it("rejects consumption through another live session of the same named staff member", async () => {
     const service = auth(), setup = await enrolled(service), first = await login(service, setup.provisioningUri), target = caseRecord(); time += 30000;
     const action: SensitiveAction = { kind: "hold", caseId: target.id, version: 1 };
