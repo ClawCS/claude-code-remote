@@ -11,6 +11,9 @@ import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
 import { createTestCustodyLedger as createCustodyLedger, testIngressAuthority } from "./fixtures/ingress-authority";
 import { openRepository } from "../src/repository";
 import { digest, utcInstant, type WorkerKeys, type ApplicationRepository, type CommittedIntake } from "../src/types";
+import { makeArtifactHarness, claimArtifactPreparation } from "./fixtures/artifacts";
+import { createArtifactStore } from "../src/artifact-store";
+import { withReconstructedDocuments, type ReconstructionDependencies } from "../src/reconstruction";
 
 let root: string;
 let keys: WorkerKeys;
@@ -45,6 +48,59 @@ async function retryAttempt(idempotencyKey = "synthetic-conflict", requestBody =
   return { reservation, file, commit: { reservationId: reservation.id, encryptedPayloadPath: file.path, actualBytes: file.bytes, digest: payloadDigest(requestBody), encryptedName: "ciphertext:synthetic", job: "sales-fulltime" as const, now: utcInstant("2026-10-09T10:00:00.000Z") } };
 }
 describe("terminal idempotency conflict", () => {
+  it("preserves retired accepted bytes through unhealthy recovery, due cleanup and restart while removing genuine unaccepted orphans", async () => {
+    const h = await makeArtifactHarness();
+    let reopened: ApplicationRepository | undefined;
+    let time = new Date("2026-10-09T10:00:00.000Z");
+    h.config.clock = { now: () => new Date(time) };
+    try {
+      const original = h.repo.getCommittedIntake(h.accepted.id)!, originalBytes = await readFile(original.encryptedPayloadPath);
+      const claimed = await claimArtifactPreparation(h);
+      expect(h.repo.getDelivery(h.accepted.id).contactEnvelope).not.toBeNull();
+      const store = createArtifactStore(h.repo, h.keys, h.keys.custody);
+      const reconstruction: ReconstructionDependencies = {
+        scope: h.keys.custody, monotonicNow: () => 0,
+        scanner: { assurance: "qualified-local-engine", scan: async file => ({ kind: "clean", complete: true, digest: file.digest, bytes: file.bytes, signatureTime: utcInstant(new Date().toISOString()), engineIdentity: "synthetic-not-clamav" }) },
+        inspector: { assurance: "local-test", inspect: async () => ({ kind: "inspected", inspection: { format: "png", pageCount: 1 } }) },
+        raster: { render: async () => { throw new Error("NO_FILES"); } }, output: { verify: async () => {} },
+      };
+      const snapshot = await takePrivateSnapshot(original, h.keys);
+      const bundle = await withPrivateFiles(snapshot, h.keys, processing => withReconstructedDocuments(processing, reconstruction, value => store.adoptBundle(value, claimed.version)));
+      const bundleBytes = await readFile(bundle.path);
+      await h.repo.withCaseLock(h.accepted.id, row => h.repo.retireOriginal(row.id, row.version));
+      expect(h.repo.getCommittedIntake(h.accepted.id)).toBeNull();
+      h.authority.available = false;
+      await expect(h.keys.custody.cleanupOrphans()).rejects.toThrow("INGRESS_AUTHORITY_UNAVAILABLE");
+      expect(h.keys.custody.getIntakeReadiness()).toEqual({ ready: false });
+      h.authority.available = true; time = new Date("2026-10-10T10:00:00.000Z");
+      expect(await h.keys.custody.settleIngress({ kind: "expired" })).toMatchObject({ complete: true });
+      const afterRecovery = await h.keys.custody.cleanupOrphans();
+      expect(await readFile(original.encryptedPayloadPath)).toEqual(originalBytes);
+      expect(afterRecovery.orphans).toEqual([]);
+      expect(await readFile(bundle.path)).toEqual(bundleBytes);
+
+      h.repo.close(); reopened = openRepository(join(h.root, "registry.sqlite"), h.config.clock);
+      let recovered = createCustodyLedger(reopened, h.config);
+      await recovered.reconcile();
+      const afterRestart = await recovered.cleanupOrphans();
+      expect(await readFile(original.encryptedPayloadPath)).toEqual(originalBytes);
+      expect(afterRestart.physicalBytes + afterRestart.reservedHeadroom).toBe(afterRecovery.physicalBytes + afterRecovery.reservedHeadroom);
+      expect(reopened.getArtifact(h.accepted.id, "bundle")).toEqual(bundle);
+
+      const unaccepted = await recovered.reserve({ ...testAdmission(), sessionHash: digest("c".repeat(64)), idempotencyKey: "genuine-orphan", reservedBytes: 20000, now: utcInstant(time.toISOString()) });
+      const orphan = await sealIncoming((async function* () { yield encodePayload(h.payload); })(), { root: h.keys.intakeRoot, maxBytes: 10000, reservationId: unaccepted.id }, h.keys.publicKey);
+      reopened.close(); reopened = openRepository(join(h.root, "registry.sqlite"), h.config.clock);
+      recovered = createCustodyLedger(reopened, h.config);
+      expect((await recovered.reconcile()).orphans).toEqual([{ path: orphan.path, cleanupAfter: "2026-10-11T10:00:00.000Z" }]);
+      time = new Date("2026-10-11T10:00:00.000Z");
+      const cleaned = await recovered.cleanupOrphans();
+      await expect(stat(orphan.path)).rejects.toMatchObject({ code: "ENOENT" });
+      expect(cleaned.orphans).toEqual([]);
+      expect(await readFile(original.encryptedPayloadPath)).toEqual(originalBytes);
+      expect(await readFile(bundle.path)).toEqual(bundleBytes);
+      expect(cleaned.physicalBytes + cleaned.reservedHeadroom).toBe(afterRecovery.physicalBytes + afterRecovery.reservedHeadroom);
+    } finally { reopened?.close(); h.authority.available = true; await h.close(); }
+  });
   it("does not clear an unrelated custody failure or full-reconcile over a live processing scope", async () => {
     const accepted = await sealed(), snapshot = await takePrivateSnapshot(record(accepted), keys);
     await withPrivateFiles(snapshot, keys, async () => {

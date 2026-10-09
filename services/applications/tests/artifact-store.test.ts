@@ -223,9 +223,16 @@ it("does not reserve a second output set for replay after original and intake-jo
   const h=await makeArtifactHarness();
   try{
     const store=createArtifactStore(h.repo,h.keys,h.keys.custody);
+    const originalPath=h.repo.getCommittedIntake(h.accepted.id)!.encryptedPayloadPath;
+    const originalBytes=await readFile(originalPath),journalPath=join(h.keys.privateRoot,`${h.reservation.id}.journal`);
     const artifact=await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1));
     await h.repo.retireOriginal(h.accepted.id,(await claimArtifactPreparation(h)).version);
     h.config.clock.now=()=>new Date("2026-10-10T10:00:00.000Z");
+    await h.keys.custody.reconcile();await h.keys.custody.cleanupOrphans();
+    expect(await readFile(originalPath)).toEqual(originalBytes);
+    expect((await readdir(h.keys.privateRoot)).includes(`${h.reservation.id}.journal`)).toBe(true);
+    // Synthetic later Task11 erasure of these fixture-owned paths, not retention qualification.
+    await fs.unlink(originalPath);await fs.unlink(journalPath);
     await h.keys.custody.reconcile();const before=await h.keys.custody.cleanupOrphans();
     expect((await readdir(h.keys.privateRoot)).includes(`${h.reservation.id}.journal`)).toBe(false);
     const retry=await h.keys.custody.reserve({ ...testAdmission(), ...h.reservation,now:utcInstant("2026-10-10T10:00:00.000Z")}, testReadiness);

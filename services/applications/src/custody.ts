@@ -80,6 +80,14 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     await rename(path, metadataPath(entry.id)); await syncRoot(config.custodyRoot); entries.set(entry.id, entry);
   }
   async function markOrphan(entry: Journal) { await save({ ...entry, version: entry.kind === "intake" ? 3 : entry.version, state: "orphan", cleanupAfter: entry.cleanupAfter < tomorrow() ? entry.cleanupAfter : tomorrow() }); }
+  function acceptedIntakeId(entry: Journal): ApplicationId | undefined {
+    // Logical original retirement clears retained-intake registration, not the
+    // accepted case's authority. Neither settlement nor recovery may erase it.
+    const retained = repo.listRetainedIntakes().find(record => record.encryptedPayloadPath === entry.workerPath);
+    const id = retained?.id ?? (entry.caseId ? repo.getRequestIdentity(applicationId(entry.caseId)).id : undefined);
+    if (id && JSON.stringify(entry.reservation!.submission) !== JSON.stringify(repo.getSubmissionKind(id))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
+    return id;
+  }
   async function inspect(): Promise<CustodyInventory> {
     await checkIncomingRoot(config.intakeRoot, config.intakeUid, config.sharedGid); await checkPrivateRoot(config.custodyRoot); await checkPrivateRoot(config.runtimeRoot);
     const known = new Set([...entries.values()].flatMap(entry => [entry.path, ...(entry.workerPath ? [entry.workerPath] : []), metadataPath(entry.id)]));
@@ -225,6 +233,10 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       await save({...entry,state:"committed",budget:record.bytes});
     }
     for (const entry of entries.values()) {
+      if (entry.kind === "intake") {
+        const acceptedId = acceptedIntakeId(entry);
+        if (acceptedId) { await save({ ...entry, version: 3, state: "committed", caseId: acceptedId }); continue; }
+      }
       const retainedEntry = entry.kind === "intake" ? retained.some(record => record.encryptedPayloadPath === entry.workerPath) : entry.kind === "artifact" ? retainedArtifacts.some(record=>record.path===entry.workerPath) : retained.some(record => record.id === entry.caseId) || retainedArtifacts.some(record=>record.caseId===entry.caseId);
       if (!retainedEntry || entry.state === "reserved") await markOrphan(entry);
     }
@@ -243,11 +255,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       for (const original of [...entries.values()]) {
         if (original.kind !== "intake" || (request.kind !== "drain" && !original.settlement && original.reservation!.expiresAt > now())) continue;
         // Acceptance is authoritative even if a previous journal write/reply failed.
-        const accepted = repo.listRetainedIntakes().find(record => record.encryptedPayloadPath === original.workerPath);
-        // Logical original retirement is not authority for ingress settlement to
-        // erase accepted worker bytes. Task11 owns retained-data deletion.
-        const acceptedId = accepted?.id ?? (original.caseId ? repo.getRequestIdentity(applicationId(original.caseId)).id : undefined);
-        if (acceptedId && JSON.stringify(original.reservation!.submission) !== JSON.stringify(repo.getSubmissionKind(acceptedId))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
+        const acceptedId = acceptedIntakeId(original);
         const entry: Journal = { ...original, settlement: original.settlement ?? request.kind, ...(acceptedId ? { state: "committed", caseId: acceptedId } : { state: "orphan" }) };
         await save(entry);
         if (!await releaseIngress(entry)) { pending++; continue; }
