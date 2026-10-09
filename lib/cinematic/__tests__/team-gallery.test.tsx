@@ -31,7 +31,9 @@ describe("source-gated team gallery", () => {
     }
     expect(html).not.toMatch(/\b(?:Nils|Nico|Tim|Gabriella)\b/);
     expect(html).not.toMatch(/team-(?:nils|nico|tim|gabriella)\b/);
-    expect(html).toContain("team-group");
+    expect(html).not.toContain("team-group");
+    expect(html).toContain("Unser neues Teamfoto folgt");
+    expect(html).toContain('/images/home/brand-logo.webp');
     expect(html).not.toMatch(/\d+ Mitarbeiter/);
     expect(html).not.toContain("Geschäftsführer");
     expect(html).not.toContain("Marketing");

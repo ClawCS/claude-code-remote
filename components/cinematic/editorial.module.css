@@ -350,11 +350,6 @@
     grid-column: auto;
   }
 
-  .peopleGrid [data-people-group] {
-    grid-column: 1 / -1;
-    justify-self: center;
-  }
-
   .serviceRow {
     grid-template-columns: minmax(0, 1fr) auto;
   }

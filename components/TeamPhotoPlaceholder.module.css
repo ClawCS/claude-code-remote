@@ -1,0 +1,31 @@
+.placeholder {
+  display: grid;
+  grid-column: 1 / -1;
+  justify-self: center;
+  align-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 56rem;
+  min-height: clamp(14rem, 24vw, 19rem);
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+  background: var(--cinematic-color-warm, #f4ede3);
+  color: var(--cinematic-color-ink, #27221e);
+  text-align: center;
+}
+
+.placeholder .logo {
+  display: block;
+  width: min(100%, 14rem);
+  max-width: 14rem;
+  height: auto;
+  object-fit: contain;
+}
+
+.placeholder p {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.5;
+}

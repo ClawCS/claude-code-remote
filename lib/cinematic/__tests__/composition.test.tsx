@@ -225,7 +225,9 @@ describe("cinematic homepage composition", () => {
     ]);
     expect(people).not.toMatch(/\b(?:Nils|Nico|Tim|Gabriella)\b/);
     expect(people).not.toMatch(/team-(?:nils|nico|tim|gabriella)\b/);
-    expect(people).toContain("team-group");
+    expect(people).not.toContain("team-group");
+    expect(people).toContain("Unser neues Teamfoto folgt");
+    expect(people).toContain('/images/home/brand-logo.webp');
 
     expect(count(spotlight, /<figure\b/)).toBe(3);
     const posterOrder = [

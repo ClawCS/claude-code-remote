@@ -5,7 +5,6 @@ import heroTeam from "@/public/images/home/cinematic/hero-team.webp";
 import posterCaramello from "@/public/images/home/cinematic/poster-caramello.webp";
 import posterPralleKirsche from "@/public/images/home/cinematic/poster-pralle-kirsche.webp";
 import posterSchwarzerTeufel from "@/public/images/home/cinematic/poster-schwarzer-teufel.webp";
-import teamGroup from "@/public/images/home/cinematic/team-group.webp";
 import teamJasmin from "@/public/images/home/cinematic/team-jasmin.webp";
 import teamNiko from "@/public/images/home/cinematic/team-niko.webp";
 import teamSven from "@/public/images/home/cinematic/team-sven.webp";
@@ -56,14 +55,6 @@ export const EDITORIAL_IMAGES = deepFreeze({
     reviewedAt: "2026-09-30",
     releaseBasis: "user-approved-canva-pool-2026-09-30",
   },
-  group: {
-    id: "team-group",
-    image: teamGroup,
-    alt: "Mitarbeiterinnen und Mitarbeiter von Trinkgut Jammers",
-    caption: "",
-    reviewedAt: "2026-09-30",
-    releaseBasis: "user-approved-canva-pool-2026-09-30",
-  },
   niko: {
     id: "team-niko",
     image: teamNiko,
@@ -108,7 +99,6 @@ export const EDITORIAL_IMAGES = deepFreeze({
 } as const satisfies Readonly<Record<string, EditorialImage>>);
 
 export const PEOPLE_STORY = deepFreeze([
-  EDITORIAL_IMAGES.group,
   EDITORIAL_IMAGES.niko,
   EDITORIAL_IMAGES.sven,
   EDITORIAL_IMAGES.jasmin,

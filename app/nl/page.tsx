@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import SocialLink from "@/components/SocialLink";
+import TeamPhotoPlaceholder from "@/components/TeamPhotoPlaceholder";
 import { PEOPLE_STORY, EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
 import FlyerIndexView from "@/components/FlyerIndexView";
 import { getFlyerIndex } from "@/lib/flyer-index";
@@ -97,9 +98,11 @@ export default async function NederlandsPage() {
         <section className={styles.people} aria-label="Ons team">
           <details>
             <summary>Maak kennis met ons team <span aria-hidden="true">+</span></summary>
-            <div className={styles.peopleGrid}>{PEOPLE_STORY.map((person) => (
-              <figure key={person.id} className={person.id === "team-group" ? styles.groupPhoto : undefined}>
-                <Image src={person.image} alt={person.id === "team-group" ? "Het team van Trinkgut Jammers in Goch" : person.caption + " van Trinkgut Jammers"} sizes={person.id === "team-group" ? "(max-width: 900px) 100vw, 900px" : "(max-width: 760px) 50vw, 25vw"} />
+            <div className={styles.peopleGrid}>
+              <TeamPhotoPlaceholder language="nl" />
+              {PEOPLE_STORY.map((person) => (
+              <figure key={person.id}>
+                <Image src={person.image} alt={person.caption + " van Trinkgut Jammers"} sizes="(max-width: 760px) 50vw, 25vw" />
                 {person.caption && <figcaption>{person.caption}</figcaption>}
               </figure>
             ))}</div>

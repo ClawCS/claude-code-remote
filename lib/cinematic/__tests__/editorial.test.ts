@@ -25,10 +25,10 @@ describe("cinematic editorial contract", () => {
   });
 
   test("keeps the approved people story local, unique, and release-gated", () => {
-    expect(PEOPLE_STORY).toHaveLength(8);
-    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(8);
+    expect(PEOPLE_STORY).toHaveLength(7);
+    expect(new Set(PEOPLE_STORY.map(({ id }) => id)).size).toBe(7);
     expect(PEOPLE_STORY.map(({ id }) => id)).toEqual([
-      "team-group", "team-niko", "team-sven", "team-jasmin",
+      "team-niko", "team-sven", "team-jasmin",
       "team-jan-niklas", "team-hanna", "team-henri", "team-hannah",
     ]);
     for (const item of PEOPLE_STORY) {

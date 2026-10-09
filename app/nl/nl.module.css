@@ -76,7 +76,6 @@
 .peopleGrid figure { margin: 0; }
 .peopleGrid img { width: 100%; height: auto; display: block; border-radius: .25rem; }
 .peopleGrid figcaption { padding-top: .6rem; font-weight: 700; }
-.groupPhoto { grid-column: 1 / -1; max-width: 56rem; justify-self: center; }
 .grailbid { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-block: 1rem 3rem; }
 .grailbid p { max-width: 64ch; font-size: .85rem; color: var(--nl-muted); }
 .grailbid strong { color: var(--nl-ink); }

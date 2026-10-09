@@ -78,7 +78,7 @@ async function expectNaturalEditorialImages(page: Page, path: string): Promise<v
     ? page.locator("#menschen figure img, #eigenmarken figure img")
     : path === "/galerie" ? page.locator("main figure img") : null;
   if (!images) return;
-  await expect(images).toHaveCount(path === "/" ? 12 : 9);
+  await expect(images).toHaveCount(path === "/" ? 11 : 8);
   for (const image of await images.all()) {
     const ratios = await image.evaluate((element: HTMLImageElement) => ({
       natural: element.naturalWidth / element.naturalHeight,
@@ -86,16 +86,11 @@ async function expectNaturalEditorialImages(page: Page, path: string): Promise<v
     }));
     expect(ratios.displayed, `natural aspect ratio: ${await image.getAttribute("alt")}`).toBeCloseTo(ratios.natural, 2);
   }
-  const group = page.getByRole("img", { name: "Mitarbeiterinnen und Mitarbeiter von Trinkgut Jammers", exact: true });
-  await expect(group).toHaveCount(1);
-  await expect(group).toHaveAttribute("width", "900");
-  await expect(group).toHaveAttribute("height", "875");
-  const ratios = await group.evaluate((element: HTMLImageElement) => ({
-    natural: element.naturalWidth / element.naturalHeight,
-    displayed: element.getBoundingClientRect().width / element.getBoundingClientRect().height,
-  }));
-  expect(ratios.natural).toBeCloseTo(900 / 875, 2);
-  expect(ratios.displayed).toBeCloseTo(900 / 875, 2);
+  const placeholder = page.locator("[data-team-photo-placeholder]");
+  await expect(placeholder).toHaveCount(1);
+  await expect(placeholder).toContainText("Unser neues Teamfoto folgt");
+  await expect(placeholder.getByRole("img", { name: "Trinkgut Jammers", exact: true })).toHaveCount(1);
+  await expect(page.locator('img[src*="team-group"], img[src*="team-gruppenfoto"]')).toHaveCount(0);
 
   const team = page.locator(path === "/" ? "#menschen" : 'section[aria-labelledby="team-gallery-title"]');
   for (const name of ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
@@ -220,9 +215,9 @@ for (const viewport of viewports) {
           await saveViewportContext(page, selector, path);
           await testInfo.attach(`${prefix}-${context}-context`, { path, contentType: "image/png" });
         }
-        const groupPhoto = join(screenshotDirectory, `${prefix}-team-group-full.png`);
-        await page.locator("#menschen figure").first().screenshot({ path: groupPhoto, animations: "disabled", caret: "hide" });
-        await testInfo.attach(`${prefix}-team-group-full`, { path: groupPhoto, contentType: "image/png" });
+        const groupPlaceholder = join(screenshotDirectory, `${prefix}-team-placeholder.png`);
+        await page.locator("[data-team-photo-placeholder]").screenshot({ path: groupPlaceholder, animations: "disabled", caret: "hide" });
+        await testInfo.attach(`${prefix}-team-placeholder`, { path: groupPlaceholder, contentType: "image/png" });
       }
 
       // Audit the real production page, without rule exclusions or network fixtures.

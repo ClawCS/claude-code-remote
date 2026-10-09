@@ -34,11 +34,13 @@ describe("Dutch visitor landing page", () => {
     expect(caption.replace(/<[^>]*>/g, "")).toBe("Sven &amp; Niko");
   });
 
-  it("omits Gabriella's withdrawn portrait while preserving the group and remaining team", async () => {
+  it("replaces the withdrawn group photo with a Dutch notice and keeps approved portraits", async () => {
     const html = renderToStaticMarkup(await NederlandsPage());
     const team = html.match(/<section[^>]*aria-label="Ons team"[\s\S]*?<\/section>/)?.[0] ?? "";
     expect(team).not.toMatch(/Gabriella|team-gabriella/i);
-    expect(team).toContain("team-group");
+    expect(team).not.toContain("team-group");
+    expect(team).toContain("Onze nieuwe teamfoto volgt");
+    expect(team).toContain('/images/home/brand-logo.webp');
     expect(team.match(/<figcaption\b/g)).toHaveLength(7);
     for (const name of ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
       expect(team).toContain(`>${name}</figcaption>`);

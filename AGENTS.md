@@ -60,7 +60,11 @@ Auf erneute Betreiberanweisung keine dekorativen Bildunterschriften wie „Rück
 
 ## Einzelprofil-Auswahl — 08.10.2026
 
-Gabriellas Einzelportrait ist auf Betreiberanweisung aus der sichtbaren Teamdarstellung entfernt: Startseite, Galerie/Team und NL-Landingpage. Nicht aus historischen Quelldateien automatisch wieder aufnehmen. Gruppenfoto, übrige freigegebene Portraits und vorhandene Originaldateien bleiben unverändert; dies ist keine Löschung des Quellenarchivs.
+Gabriellas Einzelportrait ist auf Betreiberanweisung aus der sichtbaren Teamdarstellung entfernt: Startseite, Galerie/Team und NL-Landingpage. Nicht aus historischen Quelldateien automatisch wieder aufnehmen. Übrige freigegebene Portraits und vorhandene Originaldateien bleiben unverändert; dies ist keine Löschung des Quellenarchivs.
+
+## Gruppenfoto-Platzhalter — 09.10.2026
+
+Niko hat die frühere Vorgabe, das alte Gruppenfoto beizubehalten, ausdrücklich ersetzt: Auf Startseite, Teamseite und NL-Seite erscheint stattdessen ein schlichter Platzhalter mit bestehendem Jammers-Logo und „Unser neues Teamfoto folgt“ (NL: „Onze nieuwe teamfoto volgt“). Die sieben aktuellen Einzelportraits und das Sven-/Niko-Herobild bleiben unverändert. Das alte Gruppenbild nicht wieder in die öffentliche Seitendarstellung aufnehmen; Original-/Archivdateien nicht löschen. Es wird kein neues Teamfoto generiert oder eine Aktualität alter Personenfotos behauptet.
 
 ## Ausdrückliche Ausnahme für eigene Google-Profilfotos — 08.10.2026
 

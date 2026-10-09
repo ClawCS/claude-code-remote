@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
+import TeamPhotoPlaceholder from "@/components/TeamPhotoPlaceholder";
 
-import { EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
 import { galleryItems } from "@/data/gallery";
 
 export default function GaleriePage() {
@@ -16,9 +16,7 @@ export default function GaleriePage() {
       </header>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12" aria-labelledby="team-gallery-title">
-        <figure className="m-0 max-w-4xl mx-auto mb-12">
-          <Image src={EDITORIAL_IMAGES.group.image} alt={EDITORIAL_IMAGES.group.alt} sizes="(max-width: 768px) 100vw, 900px" className="block w-full h-auto" />
-        </figure>
+        <div className="mb-12"><TeamPhotoPlaceholder /></div>
         <h2 id="team-gallery-title" className="mb-8 text-3xl font-bold">Menschen hinter Jammers</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
           {galleryItems.filter((item) => item.image).map((item) => (

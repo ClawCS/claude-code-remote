@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import TeamPhotoPlaceholder from "@/components/TeamPhotoPlaceholder";
 
 import { PEOPLE_STORY } from "@/data/cinematic-editorial";
 
@@ -18,8 +19,8 @@ export default function PeopleSection(): React.JSX.Element {
         <p>Dein Lieblingsgetränk finden, eine Feier planen oder einfach kurz schnacken: Wir sind für dich da.</p>
       </div>
       <div className={styles.peopleGrid} data-people-story>
-        {PEOPLE_STORY.map((person, index) => {
-          const desktopWidth = index === 0 ? "100vw" : "50vw";
+        <TeamPhotoPlaceholder />
+        {PEOPLE_STORY.map((person) => {
           const figureStyle = {
             "--editorial-image-max-width": `${person.image.width}px`,
           } as CSSProperties;
@@ -29,14 +30,13 @@ export default function PeopleSection(): React.JSX.Element {
               className={styles.figure}
               key={person.id}
               style={figureStyle}
-              data-people-group={index === 0 ? "" : undefined}
             >
               <Image
                 className={styles.image}
                 src={person.image}
                 alt={person.alt}
                 placeholder="blur"
-                sizes={`(max-width: 47.999rem) min(100vw, ${person.image.width}px), min(${desktopWidth}, ${person.image.width}px)`}
+                sizes={`(max-width: 47.999rem) min(100vw, ${person.image.width}px), min(50vw, ${person.image.width}px)`}
               />
               {person.caption && <figcaption className={styles.caption}>
                 {person.caption}
