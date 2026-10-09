@@ -142,3 +142,35 @@ All exit0; build/compiler/lint/diff check produce no diagnostics. No full-suite 
 Self-review rechecked repository transaction conflict provenance, replay-reservation predicate, new-path durable acceptance guard, private marker creation only after awaited authority cleanup/DB release/accounting, unchanged generic fail-closed catch/final owner draining, no boolean reset and original acceptance/ciphertext preservation. Tests exercise real authority descriptors and real HTTP pipeline rather than substituting client asserted readiness or fake storage success. Darwin synthetic tests remain unqualified for Linux lifetime/OS/RSS barriers described above. Review should include R46's expanded custody diff as well as original4B; lost actual UnixRPC-reserve reply still requires authority-backed Task7/14 lifecycle reconciliation, never guessed ID/unlink/forced release.
 
 Correction scoped commit subject:`fix: preserve intake readiness after terminal retry conflicts`. No push; final correction SHA returned separately to the controller.
+
+## Independent review fix round1/5 — F1
+
+Read the full `task-4b-review-1.md` and verified F1 against R20/adopted intake-contract-decision. Reviewed product base:`835cbf1547b9f56619042500d1d604be66d90178`; starting HEAD:`7854c5c` was the controller's documentation-only checkpoint. R46 passed that review and was not rewritten. Review-reception, systematic-debugging and TDD instructions guided verification of the real ordering defect before implementation.
+
+Root cause: upload called worker.reserve before parseMultipart's strict transport Content-Type/boundary validation (including Busboy's rejection of malformed unquoted boundary syntax). Authenticated protocol errors therefore created leases and session/IP abuse events, although R20 excludes pre-protocol failures. Extracted `preflightMultipart` in the owned helper: it validates bounded header syntax and constructs the same Busboy parser without reading/resuming/subscribing to the request body. It runs after authentication/IP/idempotency validation but before readiness/reserve. The resulting boundary/parser are passed to body parsing, avoiding duplicated parsing or validation disagreement. The11MiB declared/body size checks remain after reserve: valid transport with oversized content is still an admitted, charged attempt. Existing invalid-body/disconnect/timeout charging and custody lifecycle are unchanged.
+
+### Exact behavioral RED/GREEN
+
+```sh
+NODE_ENV=test npx vitest run services/applications/tests/intake-http.test.ts -t 'invalid multipart transport headers|valid upload quota unspent|still charges admitted'
+```
+
+Before the product fix:2 failed,1 passed,36 filtered,1.12s,exit1. Actual HTTP + real UnixRPC/SQLite/custody produced6 reserve invocations instead of0,12 persisted admission events instead of0, and429 instead of202 for a valid upload after six application/json requests. The separate admitted malformed-body/declared-oversize charging test already passed. No transform/setup failure counted as RED.
+
+Same command after the fix:3 passed,36 filtered,568ms,exit0. Unsupported application/json, missing boundary, malformed unquoted boundary,71-character boundary, duplicate boundary and absent Content-Type each return400 without any reserve/admission event. Six invalid content types leave quota unspent; a following real valid upload202 creates one durable case and precisely two admission rows. Valid transport with malformed framing400 and declared11534337-byte content413 still creates four admission rows, no accepted case, and no retained incoming files. The reserve observation wrapper forwards to the real RPC; no acceptance/storage/readiness behavior is mocked away.
+
+### Final covering verification and self-review
+
+```sh
+npm run applications:build
+NODE_ENV=test npx vitest run services/applications/tests/intake-http.test.ts services/applications/tests/intake-multipart.test.ts services/applications/tests/intake-session.test.ts
+npx tsc --noEmit
+npx eslint services/applications/src/intake-http.ts services/applications/src/intake-multipart.ts services/applications/tests/intake-http.test.ts services/applications/tests/intake-multipart.test.ts services/applications/tests/intake-session.test.ts --max-warnings 0
+git diff --check
+```
+
+Build exit0 before testing compiled imports. Covering tests:`Test Files 3 passed (3)`;`Tests 66 passed (66)`;3.06s;exit0. Compiler, zero-warning scoped lint and diffcheck exit0 without diagnostics. Existing real disconnect/capacity/rate/timeouts, inclusive multipart boundaries, charset/framing and stable session tests remain green. No full-suite repeat; preceding1881 full-suite and111 R46-covering results retain their clearly stated historical scope.
+
+Self-review confirms preflight uses request headers only; HTTP's existing16KiB header bound and70-character boundary bound still apply, Busboy constructor performs no request-body reads, and the parser is connected to body events only after worker reservation. No new parser/dependency/private Busboy mutation, shared admission/RPC/custody change, R46 exemption change, quota refund, production readiness assertion or scope expansion. Only `intake-http.ts`, `intake-multipart.ts`, `intake-http.test.ts` and this report changed. Root audit docs and foreign artifacts remain excluded. No UI/lib edit, server/account/mail/install/push action. Lost unknown UnixRPC reserve reply and actual Linux/lifetime/scanner/RSS activation obligations remain open exactly as previously reported.
+
+Fix scoped commit subject:`fix: validate multipart transport before intake admission`. Staged diffcheck is required before commit; final SHA returned to the controller, no push.

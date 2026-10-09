@@ -100,18 +100,26 @@ class MultipartEvidence {
   }
   finish() { if (this.state !== "done" || (this.buffer.length !== 0 && !this.buffer.equals(Buffer.from("\r\n")))) invalid(); }
 }
-export async function parseMultipart(request: IncomingMessage, signal: AbortSignal): Promise<IntakePayload> {
+// Header-only protocol validation: constructing Busboy neither reads nor resumes
+// the request. Keep its boundary syntax decision before worker admission too.
+export function preflightMultipart(request: Pick<IncomingMessage, "headers">) {
   const contentType = request.headers["content-type"];
   const match = typeof contentType === "string" && /^multipart\/form-data;[ \t]*boundary=(?:"([A-Za-z0-9'()+_,.\/:=?-]{1,70})"|([A-Za-z0-9'()+_,.\/:=?-]{1,70}))$/i.exec(contentType);
   if (!match) invalid();
   const length = request.headers["content-length"];
   if (length !== undefined && (!/^\d+$/.test(length) || !Number.isSafeInteger(Number(length)))) invalid();
-  if (length !== undefined && Number(length) > REQUEST_LIMIT) large();
-  if (signal.aborted || request.destroyed) throw signal.reason ?? new Error("INVALID_REQUEST");
-  const evidence = new MultipartEvidence(match[1] ?? match[2]);
   // Busboy emits `limit` at equality; +1 sentinels preserve inclusive budgets.
   let parser: ReturnType<typeof busboy>;
   try { parser = busboy({ headers: request.headers, preservePath: true, defCharset: "utf8", defParamCharset: "utf8", highWaterMark: 65536, fileHwm: 65536, limits: { files: 5, fields: 8, parts: 14, fileSize: FILE_LIMIT + 1, fieldSize: FIELD_LIMIT + 1, headerPairs: 3 } }); } catch { invalid(); }
+  return { boundary: match[1] ?? match[2], parser };
+}
+export async function parseMultipart(request: IncomingMessage, signal: AbortSignal, transport = preflightMultipart(request)): Promise<IntakePayload> {
+  // A valid transport with oversized content is an admitted attempt, not a
+  // protocol-header rejection. Its size check deliberately remains post-reserve.
+  const length = request.headers["content-length"];
+  if (length !== undefined && Number(length) > REQUEST_LIMIT) large();
+  if (signal.aborted || request.destroyed) throw signal.reason ?? new Error("INVALID_REQUEST");
+  const evidence = new MultipartEvidence(transport.boundary), parser = transport.parser;
   return new Promise<IntakePayload>((resolve, reject) => {
     const fields: Record<string, string> = {}, files: PayloadFile[] = [];
     let rawBytes = 0, totalBytes = 0, ended = false, settled = false, invalidShape = false;

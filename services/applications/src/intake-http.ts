@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import { isIP } from "node:net";
 import { digest, utcInstant, type Reservation } from "./types";
 import { bootstrapSession, readSession, requireForm, activePilot, sessionAdmission } from "./intake-session";
-import { parseMultipart } from "./intake-multipart";
+import { parseMultipart, preflightMultipart } from "./intake-multipart";
 import { encodePayload, payloadDigest, sealIncoming, sealName, MAX_SEALED_BYTES } from "./crypto";
 import { RateLimitedError } from "./intake-admission";
 
@@ -109,6 +109,7 @@ export function createIntakeServer(config: IntakeConfig, worker: IntakeWorkerPor
       const key = singleHeader(request, "idempotency-key");
       if (!key || !/^[A-Za-z0-9_-]{1,128}$/.test(key)) throw new Error("INVALID_REQUEST");
       const admission = sessionAdmission(config, proven, canonicalIp(request, config));
+      const transport = preflightMultipart(request);
       if (!(await readiness())) throw new Error("WORKER_UNAVAILABLE");
       let reservation: Reservation | undefined, commitStarted = false, reserveAbandoned = false;
       const pending = worker.reserve({ ...admission, idempotencyKey: key, reservedBytes: 2 * MAX_SEALED_BYTES, now: utcInstant(config.clock.now().toISOString()), submission: config.mode === "pilot" ? { kind: "synthetic", pilotRunId: proven.pilot!.runId } : { kind: "application" } });
@@ -116,7 +117,7 @@ export function createIntakeServer(config: IntakeConfig, worker: IntakeWorkerPor
       void pending.then(value => { if (reserveAbandoned) void cleanupReservation(value, admission.sessionHash); }, () => {});
       try {
         reservation = await bounded(pending, controller.signal);
-        const payload = await parseMultipart(request, controller.signal);
+        const payload = await parseMultipart(request, controller.signal, transport);
         const hash = payloadDigest(payload), bytes = encodePayload(payload);
         const source = (async function* () { for (let offset = 0; offset < bytes.length; offset += 65536) { if (controller.signal.aborted) throw controller.signal.reason; yield bytes.subarray(offset, offset + 65536); } })();
         const sealed = await sealIncoming(source, { root: config.acceptance.privateRoot, maxBytes: reservation.reservedBytes / 2, reservationId: reservation.id, sharedGid: config.acceptance.sharedGid }, config.acceptance.publicKey);

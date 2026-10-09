@@ -240,6 +240,32 @@ describe("authenticated synthetic HTTP streams", () => {
     expect(denied.status).toBe(429); expect(denied.body).toMatchObject({ code: "RATE_LIMITED", retryAfterSeconds: 3600 }); expect(denied.headers["retry-after"]).toBe("3600");
     expect(repo!.listRetainedIntakes()).toEqual([]);
   });
+  it("rejects invalid multipart transport headers without reserve or durable admission events", async () => {
+    let reserves = 0;
+    await active("enabled", port => ({ ...port, reserve: input => { reserves++; return port.reserve(input); } }));
+    const session = await bootstrap();
+    const invalidTypes = ["application/json", "multipart/form-data", "multipart/form-data; boundary=a:b", "multipart/form-data; boundary=" + "a".repeat(71), "multipart/form-data; boundary=a; boundary=b", undefined];
+    for (const [index, type] of invalidTypes.entries()) {
+      expect((await request("/api/bewerbung", "POST", { ...uploadHeaders(session, "bad-transport-" + index), "content-type": type }, multipart())).status).toBe(400);
+    }
+    expect.soft(reserves).toBe(0);
+    expect.soft(repo!.pruneAdmissionEvents("2026-10-09T11:00:00.000Z" as import("../src/types").Instant)).toBe(0);
+    expect(repo!.listRetainedIntakes()).toEqual([]); expect(await readdir(config.acceptance!.privateRoot)).toEqual([]);
+  });
+  it("keeps the valid upload quota unspent after six invalid content types", async () => {
+    await active(); const session = await bootstrap();
+    for (let index = 0; index < 6; index++) expect((await request("/api/bewerbung", "POST", { ...uploadHeaders(session, "bad-type-" + index), "content-type": "application/json" }, Buffer.from("{}"))).status).toBe(400);
+    expect((await request("/api/bewerbung", "POST", uploadHeaders(session, "valid-after-types"), multipart())).status).toBe(202);
+    expect(repo!.listRetainedIntakes()).toHaveLength(1);
+    expect(repo!.pruneAdmissionEvents("2026-10-09T11:00:00.000Z" as import("../src/types").Instant)).toBe(2);
+  });
+  it("still charges admitted malformed bodies and declared oversized content", async () => {
+    await active(); const session = await bootstrap();
+    expect((await request("/api/bewerbung", "POST", uploadHeaders(session, "bad-framing"), Buffer.from("synthetic invalid framing"))).status).toBe(400);
+    expect((await request("/api/bewerbung", "POST", { ...uploadHeaders(session, "declared-oversize"), "content-length": "11534337" }, multipart())).status).toBe(413);
+    expect(repo!.pruneAdmissionEvents("2026-10-09T11:00:00.000Z" as import("../src/types").Instant)).toBe(4);
+    expect(repo!.listRetainedIntakes()).toEqual([]); expect(await readdir(config.acceptance!.privateRoot)).toEqual([]);
+  });
   it.each([
     ["five files", Array.from({ length: 5 }, () => ({ data: Buffer.from("synthetic") })), 202],
     ["six files", Array.from({ length: 6 }, () => ({ data: Buffer.from("synthetic") })), 413],
