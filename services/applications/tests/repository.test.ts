@@ -1,0 +1,209 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
+import Database from "better-sqlite3";
+import { openRepository } from "../src/repository";
+import type { ApplicationRepository, Digest, Instant, IntakeCommit } from "../src/types";
+
+const now = "2026-10-09T10:00:00.000Z" as Instant;
+const digest = "a".repeat(64) as Digest;
+const session = "b".repeat(64) as Digest;
+const MiB = 1024 * 1024;
+let dir: string;
+let repo: ApplicationRepository;
+beforeEach(() => { dir = mkdtempSync(join(realpathSync(tmpdir()), "applications-registry-")); repo = openRepository(join(dir, "registry.sqlite")); });
+afterEach(() => { repo?.close(); rmSync(dir, { recursive: true, force: true }); });
+function reserve(key: string, bytes = 1) { return repo.reserve({ sessionHash: session, idempotencyKey: key, reservedBytes: bytes, now }); }
+function commit(key: string, bytes = 1): IntakeCommit {
+  return { reservationId: reserve(key, bytes).id, digest, actualBytes: bytes, encryptedPayloadPath: join(dir, `${key}.enc`), encryptedName: "ciphertext:synthetic-name", job: "sales-fulltime", now };
+}
+
+describe("repository-idempotency", () => {
+  it("returns one stable reference and queues only one intake for identical retries", () => {
+    const input = commit("same"); const first = repo.commitIntake(input); const second = repo.commitIntake(input);
+    expect(second.reference).toBe(first.reference);
+    expect(first.replayed).toBe(false);
+    expect(second.replayed).toBe(true);
+    expect(second.statusProof).not.toBe(first.statusProof);
+    expect(repo.claimNext("worker-a", now)?.id).toBe(first.id);
+    expect(repo.claimNext("worker-b", now)).toBeNull();
+  });
+  it("rejects a changed digest under an already committed key", () => {
+    const input = commit("same"); repo.commitIntake(input);
+    expect(() => repo.commitIntake({ ...input, digest: "c".repeat(64) as Digest })).toThrow("IDEMPOTENCY_CONFLICT");
+  });
+  it("scopes keys to server-issued browser sessions", async () => {
+    const first = repo.commitIntake(commit("same"));
+    const other = repo.reserve({ sessionHash: "c".repeat(64) as Digest, idempotencyKey: "same", reservedBytes: 1, now });
+    const second = repo.commitIntake({ ...commit("unused"), reservationId: other.id });
+    expect(second.reference).not.toBe(first.reference);
+    expect(repo.claimNext("a", now)?.id).toBe(first.id);
+    await repo.transitionDelivery(first.id, 2, { state: "ready" });
+    expect(repo.claimNext("b", now)?.id).toBe(second.id);
+  });
+});
+describe("repository-capacity", () => {
+  it("rejects a concurrent body for the same active key", () => {
+    reserve("in-progress");
+    expect(() => reserve("in-progress")).toThrow("UPLOAD_IN_PROGRESS");
+  });
+  it("counts committed-key replay upload slots and releases them on completion", () => {
+    const first = repo.commitIntake(commit("first")); repo.commitIntake(commit("second")); repo.commitIntake(commit("third"));
+    const a = reserve("first"); reserve("second");
+    expect(() => reserve("third")).toThrow("CAPACITY_EXCEEDED");
+    expect(repo.commitIntake({ ...commitPayload("first", a.id), now }).reference).toBe(first.reference);
+    expect(reserve("third").id).not.toBe(a.id);
+  });
+  it("counts temporary replay bytes even for a committed key", () => {
+    repo.commitIntake(commit("large", 249 * MiB));
+    expect(() => reserve("large", MiB + 1)).toThrow("CAPACITY_EXCEEDED");
+  });
+  it("permits a replay at 20 pending cases but still applies active upload capacity", () => {
+    const first = repo.commitIntake(commit("case-0"));
+    for (let i = 1; i < 20; i++) repo.commitIntake(commit(`case-${i}`));
+    const retry = reserve("case-0");
+    expect(repo.commitIntake(commitPayload("case-0", retry.id)).reference).toBe(first.reference);
+    expect(() => reserve("new-case")).toThrow("CAPACITY_EXCEEDED");
+  });
+  it("rejects the 21st pending case without losing admitted work", () => {
+    for (let i = 0; i < 20; i++) repo.commitIntake(commit(`case-${i}`));
+    expect(() => reserve("overflow")).toThrow("CAPACITY_EXCEEDED");
+  });
+  it("rejects a third simultaneous upload and releases aborted reservation budget", () => {
+    const first = reserve("a"); reserve("b");
+    expect(() => reserve("c")).toThrow("CAPACITY_EXCEEDED");
+    repo.releaseReservation(first.id);
+    expect(reserve("c").id).toBeTruthy();
+  });
+  it("rejects a reservation above 250 MiB", () => { expect(() => reserve("large", 250 * MiB + 1)).toThrow("CAPACITY_EXCEEDED"); });
+  it("counts committed actual bytes plus reservations atomically", () => {
+    repo.commitIntake(commit("large", 249 * MiB));
+    expect(() => reserve("overflow", MiB + 1)).toThrow("CAPACITY_EXCEEDED");
+    expect(reserve("exact", MiB).id).toBeTruthy();
+  });
+  it("rejects actual bytes beyond a reservation without creating a case", () => {
+    const input = commit("small");
+    expect(() => repo.commitIntake({ ...input, actualBytes: 2 })).toThrow("RESERVATION_EXCEEDED");
+    expect(repo.claimNext("worker", now)).toBeNull();
+  });
+  it("expires abandoned reservations after 24 hours", () => {
+    reserve("a"); reserve("b");
+    expect(repo.reserve({ sessionHash: session, idempotencyKey: "c", reservedBytes: 1, now: "2026-10-10T10:00:00.000Z" as Instant }).expiresAt).toBe("2026-10-11T10:00:00.000Z");
+  });
+});
+describe("registry lifecycle", () => {
+  it("refuses an existing database readable by other OS users", () => {
+    const path = join(dir, "unsafe.sqlite"); writeFileSync(path, "", { mode: 0o644 });
+    expect(() => openRepository(path)).toThrow("UNSAFE_PATH");
+  });
+  it("excludes a second worker instance", () => { expect(() => openRepository(join(dir, "registry.sqlite"))).toThrow("REPOSITORY_IN_USE"); });
+  it("eagerly excludes a separate OS process before any intake", () => {
+    const child = spawnSync(process.execPath, ["--import", "tsx", "--eval", `const {openRepository}=require(${JSON.stringify(join(process.cwd(), "services/applications/src/repository.ts"))}); try {openRepository(${JSON.stringify(join(dir, "registry.sqlite"))}); process.exit(2)} catch(e) {if(e.message!=="REPOSITORY_IN_USE") throw e;}`], { encoding: "utf8", timeout: 10000 });
+    expect(child.status, child.stderr).toBe(0);
+  });
+  it("releases process ownership after an abrupt OS-process crash", async () => {
+    repo.close();
+    const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const {openRepository}=require(${JSON.stringify(join(process.cwd(), "services/applications/src/repository.ts"))}); openRepository(${JSON.stringify(join(dir, "registry.sqlite"))}); process.stdout.write("ready"); setInterval(()=>{},1000);`], { stdio: ["ignore", "pipe", "pipe"] });
+    try {
+      const ready = await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("worker failed to start"); })]);
+      expect(String(ready[0])).toBe("ready");
+      const exited = once(child, "exit"); child.kill("SIGKILL"); await exited;
+      repo = openRepository(join(dir, "registry.sqlite"));
+      expect(reserve("after-crash").reservedBytes).toBe(1);
+    } finally { child.kill("SIGKILL"); }
+  });
+  it("persists references and recovers interrupted pre-send claims on restart", () => {
+    const first = repo.commitIntake(commit("durable")); repo.claimNext("before-crash", now); repo.close();
+    repo = openRepository(join(dir, "registry.sqlite"));
+    expect(repo.claimNext("after-crash", now)?.reference).toBe(first.reference);
+    expect(repo.commitIntake({ ...commit("durable") }).reference).toBe(first.reference);
+  });
+  it("audits the version change caused by crash recovery", () => {
+    const accepted = repo.commitIntake(commit("audit-recovery")); repo.claimNext("worker", now); repo.close();
+    repo = openRepository(join(dir, "registry.sqlite")); repo.close();
+    const inspection = new Database(join(dir, "registry.sqlite"), { readonly: true });
+    try {
+      expect(inspection.prepare("SELECT event, version FROM audit WHERE caseId = ? ORDER BY sequence").all(accepted.id)).toEqual([{ event: "accepted", version: 1 }, { event: "claimed", version: 2 }, { event: "recovered", version: 3 }]);
+    } finally { inspection.close(); }
+  });
+  it("never requeues a potentially sent case after restart", async () => {
+    const first = repo.commitIntake(commit("uncertain")); repo.claimNext("worker", now);
+    await repo.transitionDelivery(first.id, 2, { state: "ready" });
+    await repo.transitionDelivery(first.id, 3, { state: "sending" });
+    repo.close(); repo = openRepository(join(dir, "registry.sqlite"));
+    expect(repo.claimNext("new-worker", now)).toBeNull();
+    const state = await repo.withCaseLock(first.id, async row => row.deliveryState);
+    expect(state).toBe("uncertain");
+  });
+  it("serializes the whole async action and never versions a read", async () => {
+    const first = repo.commitIntake(commit("lock"));
+    let release!: () => void; const barrier = new Promise<void>(resolve => { release = resolve; });
+    const order: string[] = [];
+    const a = repo.withCaseLock(first.id, async row => { order.push("a-start"); expect(Object.isFrozen(row)).toBe(true); await barrier; order.push("a-end"); });
+    const b = repo.withCaseLock(first.id, async row => { order.push("b"); expect(row.version).toBe(1); });
+    const settled = Promise.allSettled([a, b]);
+    try { await Promise.resolve(); expect(order).toEqual(["a-start"]); } finally { release(); await settled; }
+    expect(order).toEqual(["a-start", "a-end", "b"]);
+    expect(await repo.withCaseLock(first.id, async row => row.version)).toBe(1);
+  });
+  it("releases the case guard when a callback rejects", async () => {
+    const first = repo.commitIntake(commit("rollback"));
+    await expect(repo.withCaseLock(first.id, async () => { throw new Error("aborted"); })).rejects.toThrow("aborted");
+    expect(await repo.withCaseLock(first.id, async row => row.caseState)).toBe("open");
+  });
+  it("supports explicit CAS transitions inside the guard without deadlock", async () => {
+    const first = repo.commitIntake(commit("transition")); const claim = repo.claimNext("worker", now)!;
+    await repo.withCaseLock(first.id, async row => {
+      const updated = await repo.transitionDelivery(row.id, row.version, { state: "ready" });
+      expect(updated.version).toBe(3);
+    });
+    await expect(repo.transitionDelivery(first.id, claim.version, { state: "sending" })).rejects.toThrow("STALE_VERSION");
+    await expect(repo.transitionDelivery(first.id, 3, { state: "delivered" })).rejects.toThrow("INVALID_TRANSITION");
+  });
+  it("never lets a general transition bypass claim ownership or the single scan slot", async () => {
+    const first = repo.commitIntake(commit("claimed")); const second = repo.commitIntake(commit("waiting"));
+    repo.claimNext("worker", now);
+    await expect(repo.transitionDelivery(second.id, 1, { state: "scanning" })).rejects.toThrow("INVALID_TRANSITION");
+    expect(await repo.withCaseLock(first.id, async row => row.claimOwner)).toBe("worker");
+  });
+  it("does not leak guard authority into a detached async continuation", async () => {
+    const first = repo.commitIntake(commit("detached")); repo.claimNext("worker", now);
+    let resume!: () => void; const barrier = new Promise<void>(resolve => { resume = resolve; });
+    let detached!: Promise<unknown>;
+    await repo.withCaseLock(first.id, async row => { detached = barrier.then(() => repo.transitionDelivery(row.id, row.version, { state: "ready" })); });
+    const result = Promise.allSettled([detached]);
+    let release!: () => void; const held = new Promise<void>(resolve => { release = resolve; });
+    let completed = false;
+    const holding = repo.withCaseLock(first.id, async () => { resume(); await held; });
+    detached.then(() => { completed = true; }, () => {});
+    await new Promise(resolve => setImmediate(resolve));
+    try { expect(completed).toBe(false); } finally { release(); await holding; await result; }
+    expect(completed).toBe(true);
+  });
+});
+describe("public proof", () => {
+  it("anchors replay proofs to the original acceptance, never the retry time", () => {
+    const first = repo.commitIntake(commit("replay-proof"));
+    const later = "2026-10-15T10:00:00.000Z" as Instant;
+    const retry = repo.reserve({ sessionHash: session, idempotencyKey: "replay-proof", reservedBytes: 1, now: later });
+    const accepted = repo.commitIntake({ ...commitPayload("replay-proof", retry.id), now: later });
+    const hash = createHash("sha256").update(accepted.statusProof).digest("hex") as Digest;
+    expect(accepted.acceptedAt).toBe(first.acceptedAt);
+    expect(repo.getPublicStatus(hash, later)?.acceptedAt).toBe(now);
+    expect(repo.getPublicStatus(hash, "2026-10-16T10:00:00.000Z" as Instant)).toBeNull();
+  });
+  it("requires the hashed proof, never the stable reference, and expires seven days from acceptance", () => {
+    const accepted = repo.commitIntake(commit("proof"));
+    const proofHash = createHash("sha256").update(accepted.statusProof).digest("hex") as Digest;
+    expect(repo.getPublicStatus(proofHash, now)).toEqual({ reference: accepted.reference, state: "processing", acceptedAt: now });
+    expect(repo.getPublicStatus(createHash("sha256").update(accepted.reference).digest("hex") as Digest, now)).toBeNull();
+    expect(repo.getPublicStatus(proofHash, "2026-10-16T10:00:00.000Z" as Instant)).toBeNull();
+  });
+});
+function commitPayload(key: string, reservationId: string): IntakeCommit {
+  return { reservationId, digest, actualBytes: 1, encryptedPayloadPath: join(dir, `${key}.enc`), encryptedName: "ciphertext:synthetic-name", job: "sales-fulltime", now };
+}
