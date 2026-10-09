@@ -10,8 +10,16 @@ import { scanFiles } from "./scanner";
 import { encodeRaster } from "./image-encoder";
 import { createPdfReconstruction } from "./pdf-reconstruction";
 import type { GeneratedOutputExpectation, GeneratedOutputPort } from "./generated-output-policy";
+import { strictObject, validatePayload } from "./crypto";
+import { assertAuthenticatedArtifact, authenticatedArtifactBytes, type AuthenticatedArtifact } from "./artifact-crypto";
+import type { RequestIdentity } from "./types";
+import { MAX_BUNDLE_PLAINTEXT } from "./storage-budget";
 
 const reconstructed: unique symbol = Symbol("verified reconstructed application bundle");
+const activeBundles = new WeakSet<object>();
+export function assertReconstructedBundle(value:unknown):asserts value is ReconstructedBundle {
+  if (!value || typeof value!=="object" || !activeBundles.has(value)) throw new Error("INVALID_RECONSTRUCTED_BUNDLE");
+}
 export interface ReconstructedFile extends SnapshotFile { sourceIndex: number; sourceDigest: Digest; pageCount?: number }
 export interface ReconstructedBundle { readonly [reconstructed]: true; version: 1; id: ApplicationId; input: ProcessingSnapshot["input"]; requestDigest: Digest; policyId: "tj-reconstruction-1"; files: readonly ReconstructedFile[] }
 export interface ReconstructionScopePort { withScope<T>(id: ApplicationId, action: (directory: string) => Promise<T>): Promise<T> }
@@ -79,7 +87,10 @@ export async function withReconstructedDocuments<T>(snapshot: ProcessingSnapshot
         // Brand only after whole-set validation/scan. It is not serialized or restorable from JSON.
         const bundle = { version: 1 as const, id: snapshot.id, input: snapshot.input, requestDigest: snapshot.digest, policyId: "tj-reconstruction-1" as const, files: Object.freeze(files) };
         Object.defineProperty(bundle, reconstructed, { value: true, enumerable: false });
-        handedOff = true; return action(Object.freeze(bundle) as ReconstructedBundle);
+        const verified=Object.freeze(bundle) as ReconstructedBundle;
+        activeBundles.add(verified);
+        handedOff = true;
+        try { return await action(verified); } finally { activeBundles.delete(verified); }
       });
     } finally { clearTimeout(timer); }
   } catch (error) {
@@ -88,4 +99,67 @@ export async function withReconstructedDocuments<T>(snapshot: ProcessingSnapshot
     if (handedOff) throw error;
     throw new Error(error instanceof Error && failureCodes.has(error.message) ? error.message : "RECONSTRUCTION_FAILED");
   } finally { busy = false; }
+}
+
+export async function encodeReconstructedBundle(bundle:ReconstructedBundle):Promise<Buffer> {
+  assertReconstructedBundle(bundle);
+  const content:Buffer[]=[];
+  const input=validatePayload({version:1,input:bundle.input,files:[]}).input;
+  const canonicalInput={name:input.name,email:input.email,job:input.job,...(input.phone!==undefined?{phone:input.phone}:{}),...(input.message!==undefined?{message:input.message}:{})};
+  const files=[];
+  for(const file of bundle.files){
+    const bytes=await readSnapshotFile(file); content.push(Buffer.from(bytes));
+    files.push({name:file.name,mediaType:file.mediaType,bytes:file.bytes,digest:file.digest,sourceIndex:file.sourceIndex,sourceDigest:file.sourceDigest,...(file.pageCount!==undefined?{pageCount:file.pageCount}:{})});
+  }
+  assertReconstructedBundle(bundle);
+  const manifest=Buffer.from(JSON.stringify({version:1,id:bundle.id,input:canonicalInput,requestDigest:bundle.requestDigest,policyId:bundle.policyId,files}));
+  if(manifest.length+4>65536)throw new Error("ARTIFACT_TOO_LARGE");
+  const size=Buffer.alloc(4);size.writeUInt32BE(manifest.length);
+  const bytes=Buffer.concat([size,manifest,...content]);
+  if(bytes.length>MAX_BUNDLE_PLAINTEXT)throw new Error("ARTIFACT_TOO_LARGE");
+  return bytes;
+}
+
+// This is not a generic brand mint: it consumes only the exact registered,
+// authenticated plaintext while its evidence callback is live, validates every
+// schema/content binding, creates its own scoped paths, and revokes on exit.
+export async function withRestoredReconstructedBundle<T>(evidence:AuthenticatedArtifact,identity:RequestIdentity,directory:string,action:(bundle:ReconstructedBundle)=>Promise<T>):Promise<T>{
+  const bytes=authenticatedArtifactBytes(evidence,identity.id,"bundle");
+  let verified:ReconstructedBundle|undefined;
+  try{
+    if(bytes.length<4||bytes.length>MAX_BUNDLE_PLAINTEXT)throw new Error("INVALID_ARTIFACT");
+    const length=bytes.readUInt32BE(0);if(length+4>65536||length+4>bytes.length)throw new Error("INVALID_ARTIFACT");
+    const body=strictObject(JSON.parse(new TextDecoder("utf8",{fatal:true}).decode(bytes.subarray(4,4+length))),["version","id","input","requestDigest","policyId","files"]);
+    if(body.version!==1||body.id!==identity.id||body.requestDigest!==identity.digest||body.policyId!=="tj-reconstruction-1"||!Array.isArray(body.files)||body.files.length>5)throw new Error("INVALID_ARTIFACT");
+    const input=validatePayload({version:1,input:body.input,files:[]}).input;
+    const pending:{file:ReconstructedFile;bytes:Buffer}[]=[];let offset=4+length,total=0,pages=0;
+    for(const [index,value] of body.files.entries()){
+      const file=strictObject(value,["name","mediaType","bytes","digest","sourceIndex","sourceDigest"],["pageCount"]);
+      const ext=file.mediaType==="application/pdf"?"pdf":file.mediaType==="image/jpeg"?"jpg":file.mediaType==="image/png"?"png":null;
+      if(!ext||file.name!==`document-${index+1}.${ext}`||file.sourceIndex!==index||!Number.isSafeInteger(file.bytes)||(file.bytes as number)<1||(file.bytes as number)>5242880)throw new Error("INVALID_ARTIFACT");
+      if(ext==="pdf"?(!Number.isInteger(file.pageCount)||(file.pageCount as number)<1||(file.pageCount as number)>20):file.pageCount!==undefined)throw new Error("INVALID_ARTIFACT");
+      total+=file.bytes as number;pages+=(file.pageCount as number|undefined)??0;
+      if(total>10485760||pages>40||offset+(file.bytes as number)>bytes.length)throw new Error("INVALID_ARTIFACT");
+      const content=bytes.subarray(offset,offset+(file.bytes as number));offset+=content.length;
+      if(createHash("sha256").update(content).digest("hex")!==digest(String(file.digest)))throw new Error("DIGEST_MISMATCH");
+      const restored:ReconstructedFile={name:String(file.name),mediaType:String(file.mediaType),bytes:content.length,digest:digest(String(file.digest)),sourceIndex:index,sourceDigest:digest(String(file.sourceDigest)),path:join(directory,String(file.name)),...(file.pageCount!==undefined?{pageCount:file.pageCount as number}:{})};
+      pending.push({file:restored,bytes:content});
+    }
+    if(offset!==bytes.length)throw new Error("INVALID_ARTIFACT");
+    // Check the whole manifest and every hash before exposing any restored file.
+    const info=await lstat(directory);if(!isAbsolute(directory)||resolve(directory)!==directory||!info.isDirectory()||info.isSymbolicLink()||(info.mode&0o777)!==0o700||info.uid!==process.getuid?.())throw new Error("UNSAFE_SCOPE");
+    for(const item of pending){
+      try{await writeFile(item.file.path,item.bytes,{flag:"wx",mode:0o600});}
+      catch(error){
+        if(!(error instanceof Error&&"code" in error&&error.code==="EEXIST"))throw error;
+        // Nested reopens reuse only a hash-verified output, never source paths.
+        await readSnapshotFile(item.file);
+      }
+    }
+    assertAuthenticatedArtifact(evidence,identity.id,"bundle");
+    const bundle={version:1 as const,id:identity.id,input:Object.freeze({...input}),requestDigest:identity.digest,policyId:"tj-reconstruction-1" as const,files:Object.freeze(pending.map(item=>Object.freeze(item.file)))};
+    Object.defineProperty(bundle,reconstructed,{value:true,enumerable:false});
+    verified=Object.freeze(bundle) as ReconstructedBundle;activeBundles.add(verified);
+    return await action(verified);
+  }finally{if(verified)activeBundles.delete(verified);bytes.fill(0);}
 }

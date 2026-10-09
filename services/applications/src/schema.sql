@@ -44,4 +44,21 @@ CREATE TABLE audit (
   version INTEGER NOT NULL,
   at TEXT NOT NULL
 );
-PRAGMA user_version = 1;
+CREATE TABLE artifacts (
+  caseId TEXT NOT NULL REFERENCES cases(id),
+  kind TEXT NOT NULL CHECK(kind IN ('bundle','mime')),
+  path TEXT NOT NULL UNIQUE,
+  bytes INTEGER NOT NULL CHECK(bytes > 0),
+  plaintextDigest TEXT NOT NULL,
+  ciphertextDigest TEXT NOT NULL,
+  expiresAt TEXT NOT NULL,
+  PRIMARY KEY(caseId, kind)
+);
+CREATE TABLE artifact_reservations (
+  caseId TEXT NOT NULL REFERENCES cases(id),
+  kind TEXT NOT NULL CHECK(kind IN ('bundle','mime')),
+  bytes INTEGER NOT NULL CHECK(bytes > 0),
+  expiresAt TEXT NOT NULL,
+  PRIMARY KEY(caseId, kind)
+);
+PRAGMA user_version = 2;

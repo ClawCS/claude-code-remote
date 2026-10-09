@@ -26,6 +26,15 @@ export function strictObject(value: unknown, required: readonly string[], option
   if (required.some(key => !Object.hasOwn(object, key)) || Object.keys(object).some(key => ![...required, ...optional].includes(key))) throw new Error("INVALID_PAYLOAD");
   return object;
 }
+function base64Characters(value:string):boolean {
+  if(value.length%4!==0)return false;
+  const padding=value.endsWith("==")?2:value.endsWith("=")?1:0;
+  for(let index=0;index<value.length-padding;index++){
+    const code=value.charCodeAt(index);
+    if(!((code>=65&&code<=90)||(code>=97&&code<=122)||(code>=48&&code<=57)||code===43||code===47))return false;
+  }
+  return true;
+}
 export function validatePayload(value: unknown): IntakePayload {
   const body = strictObject(value, ["version", "input", "files"]);
   const input = strictObject(body.input, ["name", "email", "job"], ["phone", "message"]);
@@ -37,7 +46,7 @@ export function validatePayload(value: unknown): IntakePayload {
   let total = 0;
   for (const value of body.files) {
     const file = strictObject(value, ["name", "mediaType", "content"]);
-    if (typeof file.name !== "string" || !file.name || file.name.length > 255 || /[\/\\\x00-\x1f\x7f]/.test(file.name) || [".", ".."].includes(file.name) || !["application/pdf", "image/jpeg", "image/png"].includes(String(file.mediaType)) || typeof file.content !== "string" || file.content.length > 6990508 || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(file.content)) throw new Error("INVALID_PAYLOAD");
+    if (typeof file.name !== "string" || !file.name || file.name.length > 255 || /[\/\\\x00-\x1f\x7f]/.test(file.name) || [".", ".."].includes(file.name) || !["application/pdf", "image/jpeg", "image/png"].includes(String(file.mediaType)) || typeof file.content !== "string" || file.content.length > 6990508 || !base64Characters(file.content)) throw new Error("INVALID_PAYLOAD");
     const bytes = Buffer.from(file.content, "base64");
     if (bytes.toString("base64") !== file.content || bytes.length > 5242880) throw new Error("INVALID_PAYLOAD");
     total += bytes.length;

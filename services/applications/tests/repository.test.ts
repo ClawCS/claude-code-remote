@@ -65,18 +65,18 @@ describe("repository-capacity", () => {
     expect(reserve("third").id).not.toBe(a.id);
   });
   it("counts temporary replay bytes even for a committed key", () => {
-    repo.commitIntake(commit("large", 249 * MiB));
+    repo.commitIntake(commit("large", 95 * MiB));
     expect(() => reserve("large", MiB + 1)).toThrow("CAPACITY_EXCEEDED");
   });
-  it("permits a replay at 20 pending cases but still applies active upload capacity", () => {
-    const first = repo.commitIntake(commit("case-0"));
-    for (let i = 1; i < 20; i++) repo.commitIntake(commit(`case-${i}`));
+  it("permits a replay at 20 small persisted cases but still applies active upload capacity", async () => {
+    const first = await smallArtifactCase("case-0");
+    for (let i = 1; i < 20; i++) await smallArtifactCase(`case-${i}`);
     const retry = reserve("case-0");
     expect(repo.commitIntake(commitPayload("case-0", retry.id)).reference).toBe(first.reference);
     expect(() => reserve("new-case")).toThrow("CAPACITY_EXCEEDED");
   });
-  it("rejects the 21st pending case without losing admitted work", () => {
-    for (let i = 0; i < 20; i++) repo.commitIntake(commit(`case-${i}`));
+  it("rejects the 21st pending case without losing admitted work", async () => {
+    for (let i = 0; i < 20; i++) await smallArtifactCase(`case-${i}`);
     expect(() => reserve("overflow")).toThrow("CAPACITY_EXCEEDED");
   });
   it("rejects a third simultaneous upload and releases aborted reservation budget", () => {
@@ -87,9 +87,11 @@ describe("repository-capacity", () => {
   });
   it("rejects a reservation above 250 MiB", () => { expect(() => reserve("large", 250 * MiB + 1)).toThrow("CAPACITY_EXCEEDED"); });
   it("counts committed actual bytes plus reservations atomically", () => {
-    repo.commitIntake(commit("large", 249 * MiB));
+    repo.commitIntake(commit("large", 95 * MiB));
     expect(() => reserve("overflow", MiB + 1)).toThrow("CAPACITY_EXCEEDED");
-    expect(reserve("exact", MiB).id).toBeTruthy();
+    // 250 MiB minus 128 MiB scratch, 95 MiB intake, 26 MiB output,
+    // 65536 manifest, 4096 envelope, 16384 artifact and 8192 registry overhead.
+    expect(reserve("large", 954368).id).toBeTruthy();
   });
   it("rejects actual bytes beyond a reservation without creating a case", () => {
     const input = commit("small");
@@ -102,6 +104,39 @@ describe("repository-capacity", () => {
   });
 });
 describe("registry lifecycle", () => {
+  it("migrates v1 transactionally without changing acceptance, request digest, or public proofs",async()=>{
+    const accepted=repo.commitIntake(commit("legacy"));repo.close();
+    const legacy=new Database(join(dir,"registry.sqlite"));legacy.exec("DROP TABLE artifacts; DROP TABLE artifact_reservations; PRAGMA user_version=1;");legacy.close();
+    repo=openRepository(join(dir,"registry.sqlite"));
+    expect(repo.getRequestIdentity(accepted.id)).toEqual({id:accepted.id,digest,acceptedAt:now});
+    expect(repo.listArtifactReservations()).toEqual([
+      {caseId:accepted.id,kind:"bundle",bytes:10553344,expiresAt:"2026-10-16T10:00:00.000Z"},
+      {caseId:accepted.id,kind:"mime",bytes:16779264,expiresAt:"2026-10-16T10:00:00.000Z"},
+    ]);
+    expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest,now)?.reference).toBe(accepted.reference);
+  });
+  it("keeps artifact identity and original request proof through original retirement and restart", async () => {
+    const accepted = repo.commitIntake(commit("artifacts"));
+    const path = join(dir, "bundle.enc"), bytes = Buffer.from("sealed artifact");
+    writeFileSync(path, bytes, { mode: 0o600 });
+    const record = { caseId: accepted.id, kind: "bundle" as const, path, bytes: bytes.length, plaintextDigest: digest, ciphertextDigest: createHash("sha256").update(bytes).digest("hex") as Digest, expiresAt: "2026-10-16T10:00:00.000Z" as Instant };
+    await repo.adoptArtifact(record, 1);
+    await expect(repo.adoptArtifact({ ...record, plaintextDigest: "c".repeat(64) as Digest }, 2)).rejects.toThrow("ARTIFACT_CONFLICT");
+    expect((await repo.adoptArtifact(record, 1)).version).toBe(2);
+    await repo.retireOriginal(accepted.id, 2);
+    expect(repo.getCommittedIntake(accepted.id)).toBeNull();
+    expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
+    repo.close(); repo = openRepository(join(dir, "registry.sqlite"));
+    expect(repo.getArtifact(accepted.id, "bundle")).toEqual(record);
+    expect(repo.commitIntake(commit("artifacts")).reference).toBe(accepted.reference);
+  });
+  it("cannot retire the sole original or create an artifact once sending has begun", async () => {
+    const accepted = repo.commitIntake(commit("sole"));
+    await expect(repo.retireOriginal(accepted.id, 1)).rejects.toThrow("BUNDLE_REQUIRED");
+    repo.claimNext("worker", now); await repo.transitionDelivery(accepted.id, 2, { state: "ready" }); await repo.transitionDelivery(accepted.id, 3, { state: "sending" });
+    const path = join(dir, "late.enc"); writeFileSync(path, "late", { mode: 0o600 });
+    await expect(repo.adoptArtifact({ caseId: accepted.id, kind: "mime", path, bytes: 4, plaintextDigest: digest, ciphertextDigest: createHash("sha256").update("late").digest("hex") as Digest, expiresAt: "2026-10-16T10:00:00.000Z" as Instant }, 4)).rejects.toThrow("ARTIFACT_CREATION_CLOSED");
+  });
   it("refuses an existing database readable by other OS users", () => {
     const path = join(dir, "unsafe.sqlite"); writeFileSync(path, "", { mode: 0o644 });
     expect(() => openRepository(path)).toThrow("UNSAFE_PATH");
@@ -212,4 +247,12 @@ describe("public proof", () => {
 });
 function commitPayload(key: string, reservationId: string): IntakeCommit {
   return { reservationId, digest, actualBytes: 1, encryptedPayloadPath: join(dir, `${key}.enc`), encryptedName: "ciphertext:synthetic-name", job: "sales-fulltime", now };
+}
+async function smallArtifactCase(key:string){
+  const accepted=repo.commitIntake(commit(key));let version=1;
+  for(const kind of ["bundle","mime"] as const){
+    const path=join(dir,`${key}.${kind}.enc`);writeFileSync(path,"x",{mode:0o600});
+    await repo.adoptArtifact({caseId:accepted.id,kind,path,bytes:1,plaintextDigest:digest,ciphertextDigest:createHash("sha256").update("x").digest("hex") as Digest,expiresAt:"2026-10-16T10:00:00.000Z" as Instant},version++);
+  }
+  return accepted;
 }

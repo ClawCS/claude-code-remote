@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { generateKeyPairSync, randomUUID, createHash } from "node:crypto";
-import { constants } from "node:fs";
 import { mkdtemp, mkdir, realpath, rm, readFile, open, symlink, readdir, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { join } from "node:path";
 import { sealIncoming, encodePayload, payloadDigest, readBoundedFile } from "../src/crypto";
-import { createCustodyLedger, takePrivateSnapshot, withPrivateFiles } from "../src/custody";
+import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
+import { createTestCustodyLedger as createCustodyLedger, testIngressAuthority } from "./fixtures/ingress-authority";
 import { openRepository } from "../src/repository";
 import { digest, utcInstant, type WorkerKeys, type ApplicationRepository, type CommittedIntake } from "../src/types";
 
@@ -41,7 +41,7 @@ function record(file: Awaited<ReturnType<typeof sealed>>) { return records.get(f
 describe("custody-open-fd", () => {
   it("keeps the worker-owned bytes unchanged after mutation through a retained ingress descriptor", async () => {
     let retained!: Awaited<ReturnType<typeof open>>;
-    const file = await sealed(async path => { retained = await open(path, constants.O_RDWR); });
+    const file = await sealed(async path => { retained = await testIngressAuthority(keys.intakeRoot).retain(path.split("/").at(-1)!.slice(0,-4)); });
     try {
       const snapshot = await takePrivateSnapshot(record(file), keys);
       const before = createHash("sha256").update(await readFile(snapshot.encryptedPayloadPath)).digest("hex");
@@ -78,15 +78,24 @@ describe("custody-symlink", () => {
   });
 });
 describe("bounded wire payload", () => {
+  it("accepts exactly 5 MiB decoded base64 without recursion and rejects overlimit or noncanonical encodings",()=>{
+    const file={name:"synthetic.png",mediaType:"image/png" as const,content:Buffer.alloc(5242880,83).toString("base64")};
+    expect(encodePayload({...body,files:[file]}).length).toBeGreaterThan(5242880);
+    expect(()=>encodePayload({...body,files:[{...file,content:Buffer.alloc(5242881,83).toString("base64")}]})).toThrow("INVALID_PAYLOAD");
+    for(const content of ["AAB=","AA=A","A===","AAA","AA$=","AAAA=","===="]){
+      expect(()=>encodePayload({...body,files:[{...file,content}]})).toThrow("INVALID_PAYLOAD");
+    }
+  });
   it("removes journal-owned plaintext after an actual SIGKILL before reopening healthy custody", async () => {
     repo.close();
     const parameters = { root, intakeRoot: keys.intakeRoot, privateRoot: keys.privateRoot, runtimeRoot: keys.runtimeRoot, sourceRoot: process.cwd(), body };
     const code = `const {join}=require('node:path'); const {generateKeyPairSync}=require('node:crypto'); const {openRepository}=require(join(p.sourceRoot,'services/applications/src/repository.ts')); const {createCustodyLedger,takePrivateSnapshot,withPrivateFiles}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {encodePayload,payloadDigest,sealIncoming}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const clock={now:()=>new Date(now)}; const custody=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.privateRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock}); await custody.reconcile(); const keys={...generateKeyPairSync('rsa',{modulusLength:2048}),intakeRoot:p.intakeRoot,privateRoot:p.privateRoot,runtimeRoot:p.runtimeRoot,custody}; const reservation=await custody.reserve({sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); const file=await sealIncoming((async function*(){yield encodePayload(p.body)})(),{root:p.intakeRoot,maxBytes:reservation.reservedBytes,reservationId:reservation.id},keys.publicKey); const accepted=await custody.commitIntake({reservationId:reservation.id,encryptedPayloadPath:file.path,actualBytes:file.bytes,digest:payloadDigest(p.body),encryptedName:'ciphertext',job:'sales-fulltime',now}); const snapshot=await takePrivateSnapshot(repo.getCommittedIntake(accepted.id),keys); await withPrivateFiles(snapshot,keys,async()=>{process.stdout.write('ready');await new Promise(()=>{});}); })().catch(e=>{console.error(e);process.exit(1)}); setInterval(()=>{},1000);`;
-    const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(parameters)};${code}`], { stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(parameters)};${code.replace("services/applications/src/custody.ts","services/applications/tests/fixtures/ingress-authority.ts")}`], { stdio: ["ignore", "pipe", "pipe"] });
     try {
       await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("child failed before plaintext scope"); })]);
       expect(await readdir(keys.runtimeRoot)).toHaveLength(1);
       const exited = once(child, "exit"); child.kill("SIGKILL"); await exited;
+      await testIngressAuthority(keys.intakeRoot).recoverExitedHarness(child,keys.privateRoot);
       repo = openRepository(join(root, "registry.sqlite"));
       const recovered = createCustodyLedger(repo, { intakeRoot: keys.intakeRoot, custodyRoot: keys.privateRoot, runtimeRoot: keys.runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock: { now: () => new Date("2026-10-09T10:00:00.000Z") } });
       await recovered.reconcile(); expect(await readdir(keys.runtimeRoot)).toEqual([]);

@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { openRepository } from "../src/repository";
 import { createWorkerRpc, createWorkerRpcClient } from "../src/worker-rpc";
 import { digest, utcInstant, type ApplicationRepository, type CustodyLedger, type IntakeCommit } from "../src/types";
-import { createCustodyLedger } from "../src/custody";
+import { createTestCustodyLedger as createCustodyLedger, testIngressAuthority } from "./fixtures/ingress-authority";
 import { sealIncoming, intakePath } from "../src/crypto";
 let root: string;
 let repo: ApplicationRepository;
@@ -63,6 +63,9 @@ describe("rpc-no-admin", () => {
     expect((await stat(join(root, "worker.sock"))).mode & 0o777).toBe(0o660);
     expect(await request("reserve", { ...reserveInput(), path: "/etc/passwd" })).toEqual({ ok: false, error: "INVALID_REQUEST" });
     expect(await request("getCommittedIntake")).toEqual({ ok: false, error: "METHOD_NOT_ALLOWED" });
+    for(const method of ["getArtifact","adoptArtifact","retireOriginal","listRetainedArtifacts","isReplayReservation","getRequestIdentity","withScope"]){
+      expect(await request(method)).toEqual({ok:false,error:"METHOD_NOT_ALLOWED"});
+    }
   });
   it("exposes reserve, commit and proof-hash status using a fresh ticket for every replay", async () => {
     await ledger.reconcile();
@@ -114,12 +117,13 @@ describe("durable custody accounting", () => {
   });
   it("preserves the other live upload ownership after a commit failure closes readiness", async () => {
     await ledger.reconcile(); const failing = await admitted("failing"), live = await admitted("live");
-    const writer = await open(live.file.path, "r+");
+    const writer = await testIngressAuthority(intakeRoot).retain(live.reservation.id);
     try {
       await expect(ledger.commitIntake({ ...failing.input, actualBytes: 1 })).rejects.toThrow("SIZE_MISMATCH");
       await expect(ledger.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
       await writer.write(Buffer.from("still live"), 0, 10, 0);
       expect((await stat(live.file.path)).ino).toBe((await writer.stat()).ino);
+      await writer.close();
       await ledger.abortIntake(live.reservation.id, reserveInput().sessionHash);
       const inventory = await ledger.reconcile();
       expect(inventory.orphans).toHaveLength(1);
@@ -130,7 +134,7 @@ describe("durable custody accounting", () => {
   it("requires successful explicit abort draining even after abort cleanup fails", async () => {
     await ledger.reconcile(); const pending = await admitted(); const ciphertext = await readFile(pending.file.path);
     await rm(pending.file.path); await symlink(join(root, "registry.sqlite"), pending.file.path);
-    await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("UNSAFE_PATH");
+    await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("INGRESS_AUTHORITY_MISMATCH");
     await rm(pending.file.path); await writeFile(pending.file.path, ciphertext, { mode: 0o600 });
     await expect(ledger.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
     await ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash);
@@ -138,7 +142,7 @@ describe("durable custody accounting", () => {
     expect(await readdir(intakeRoot)).toEqual([]);
   });
   it("fsyncs a new worker-private accepted inode before ingress can mutate its retained descriptor", async () => {
-    await ledger.reconcile(); const pending = await admitted(); const fd = await open(pending.file.path, "r+");
+    await ledger.reconcile(); const pending = await admitted(); const fd = await testIngressAuthority(intakeRoot).retain(pending.reservation.id);
     const before = await readFile(pending.file.path);
     try {
       const accepted = await ledger.commitIntake(pending.input); const committed = repo.getCommittedIntake(accepted.id)!;
@@ -177,7 +181,7 @@ describe("durable custody accounting", () => {
   it("keeps reservation budget and readiness closed when abort cleanup fails", async () => {
     await ledger.reconcile(); const pending = await admitted();
     await rm(pending.file.path); await symlink(join(root, "registry.sqlite"), pending.file.path);
-    await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("UNSAFE_PATH");
+    await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("INGRESS_AUTHORITY_MISMATCH");
     expect(() => repo.reserve(reserveInput())).toThrow("UPLOAD_IN_PROGRESS");
     await expect(ledger.reserve(reserveInput("later"))).rejects.toThrow("CUSTODY_NOT_READY");
   });
@@ -185,10 +189,11 @@ describe("durable custody accounting", () => {
     repo.close();
     const paths = { root, intakeRoot, custodyRoot, runtimeRoot, stage, sourceRoot: process.cwd() };
     const code = `const {join}=require('node:path'); const {writeFile,readFile,open}=require('node:fs/promises'); const {generateKeyPairSync}=require('node:crypto'); const {openRepository}=require(join(p.sourceRoot,'services/applications/src/repository.ts')); const {createCustodyLedger}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {sealIncoming,intakePath}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const ledger=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.custodyRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock:{now:()=>new Date(now)}}); await ledger.reconcile(); const r=await ledger.reserve({sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); if(p.stage==='partial-before-fsync') await writeFile(intakePath(p.intakeRoot,r.id),'partial',{mode:0o600}); else { const {publicKey}=generateKeyPairSync('rsa',{modulusLength:2048}); const file=await sealIncoming((async function*(){yield Buffer.from('synthetic')})(),{root:p.intakeRoot,maxBytes:r.reservedBytes,reservationId:r.id},publicKey); if(p.stage==='after-db') { const privatePath=intakePath(p.custodyRoot,r.id); const fd=await open(privatePath,'wx',0o600); await fd.writeFile(await readFile(file.path)); await fd.sync(); await fd.close(); repo.commitIntake({reservationId:r.id,encryptedPayloadPath:privatePath,actualBytes:file.bytes,digest:'a'.repeat(64),encryptedName:'ciphertext',job:'sales-fulltime',now}); } } process.stdout.write('ready'); setInterval(()=>{},1000); })().catch(e=>{console.error(e);process.exit(1)});`;
-    const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(paths)};${code}`], { stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(paths)};${code.replace("services/applications/src/custody.ts","services/applications/tests/fixtures/ingress-authority.ts")}`], { stdio: ["ignore", "pipe", "pipe"] });
     try {
       await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("child failed before crash boundary"); })]);
       const exited = once(child, "exit"); child.kill("SIGKILL"); await exited;
+      await testIngressAuthority(intakeRoot).recoverExitedHarness(child,custodyRoot);
       repo = openRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
       const inventory = await ledger.reconcile(); expect(inventory.orphans).toHaveLength(stage === "after-db" ? 0 : 1); expect(repo.listRetainedIntakes()).toHaveLength(stage === "after-db" ? 1 : 0);
     } finally { child.kill("SIGKILL"); }
@@ -226,16 +231,19 @@ describe("durable custody accounting", () => {
   });
   it("counts physical orphan bytes after ticket expiry and cannot evade 250 MiB via registry restart", async () => {
     await ledger.reconcile();
-    for (let i = 0; i < 17; i++) {
-      const reservation = await ledger.reserve({ ...reserveInput(String(i)), reservedBytes: 14 * 1024 * 1024 });
-      const fd = await open(intakePath(intakeRoot, reservation.id), "wx", 0o600); await fd.truncate(14 * 1024 * 1024); await fd.close();
+    for (let i = 0; i < 3; i++) {
+      const reservation = await ledger.reserve({ ...reserveInput(String(i)), reservedBytes: 28 * 1024 * 1024 });
+      const fd = await open(intakePath(intakeRoot, reservation.id), "wx", 0o600); await fd.writeFile(Buffer.alloc(14 * 1024 * 1024,117)); await fd.sync(); await fd.close();
+      const journal=JSON.parse(await readFile(join(custodyRoot,`${reservation.id}.journal`),"utf8"));
+      await testIngressAuthority(intakeRoot).quiesce(journal.lease);
       repo.releaseReservation(reservation.id);
       // Each restart marks known-but-uncommitted files orphaned without dropping their actual disk bytes.
       ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
       await ledger.reconcile();
     }
     time = new Date("2026-10-10T10:00:00.000Z");
-    await expect(ledger.reserve({ ...reserveInput("overflow"), reservedBytes: 14 * 1024 * 1024 })).rejects.toThrow("CAPACITY_EXCEEDED");
+    await expect(ledger.reserve({ ...reserveInput("overflow"), reservedBytes: 28 * 1024 * 1024 })).rejects.toThrow("CAPACITY_EXCEEDED");
+    await expect(ledger.reserve(reserveInput("small-after-capacity-rejection"))).resolves.toMatchObject({reservedBytes:20000});
   });
   it("fails readiness when cleanup encounters replaced symlink custody", async () => {
     await ledger.reconcile(); const pending = await admitted();

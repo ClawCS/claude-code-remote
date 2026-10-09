@@ -4,11 +4,11 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import type { PublicStatus } from "../../../lib/applications-contract";
-import type { Acceptance, ApplicationId, ApplicationRepository, CaseRecord, ClaimedCase, DeliveryState, DeliveryTransition, Digest, Instant, IntakeCommit, Reservation, ReservationInput } from "./types";
+import type { Acceptance, ApplicationId, ApplicationRepository, ArtifactKind, ArtifactRecord, ArtifactReservation, CaseRecord, ClaimedCase, DeliveryState, DeliveryTransition, Digest, Instant, IntakeCommit, Reservation, ReservationInput, RequestIdentity } from "./types";
 import { applicationId, digest, utcInstant } from "./types";
+import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, storageBudget } from "./storage-budget";
 
 const DAY = 86400000;
-const MAX_BYTES = 250 * 1024 * 1024;
 const transitions: Record<DeliveryState, readonly DeliveryState[]> = {
   queued: [], scanning: ["ready", "needs_attention"], ready: ["sending", "needs_attention"],
   sending: ["smtp_accepted", "uncertain", "needs_attention"], smtp_accepted: ["delivered", "uncertain"],
@@ -42,7 +42,14 @@ export function openRepository(path: string): ApplicationRepository {
     db.exec("BEGIN IMMEDIATE; COMMIT;");
     const version = db.pragma("user_version", { simple: true });
     if (version === 0) db.transaction(() => db.exec(readFileSync(join(__dirname, "schema.sql"), "utf8"))).immediate();
-    else if (version !== 1) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version === 1) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8");
+      db.exec(schema.slice(schema.indexOf("CREATE TABLE artifacts")));
+      for (const row of db.prepare("SELECT id, acceptedAt, payloadDeleteAfter FROM cases").all() as CaseRecord[]) {
+        for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter < addDays(row.acceptedAt, 7) ? row.payloadDeleteAfter : addDays(row.acceptedAt, 7));
+      }
+    }).immediate();
+    else if (version !== 2) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     db.transaction(() => {
       db.prepare("DELETE FROM reservations WHERE active = 1").run();
       db.prepare("INSERT INTO audit (caseId, event, version, at) SELECT id, 'recovered', version + 1, ? FROM cases WHERE deliveryState IN ('scanning','ready','sending','smtp_accepted')").run(new Date().toISOString());
@@ -93,7 +100,9 @@ export function openRepository(path: string): ApplicationRepository {
       const reservations = db.prepare("SELECT COUNT(*) AS count, COALESCE(SUM(reservedBytes), 0) AS bytes, COALESCE(SUM(CASE WHEN NOT EXISTS (SELECT 1 FROM cases c WHERE c.sessionHash = r.sessionHash AND c.idempotencyKey = r.idempotencyKey) THEN 1 ELSE 0 END), 0) AS newCount FROM reservations r WHERE active = 1").get() as { count: number; bytes: number; newCount: number };
       const cases = db.prepare("SELECT SUM(CASE WHEN deliveryState != 'delivered' THEN 1 ELSE 0 END) AS count, COALESCE(SUM(payloadBytes), 0) AS bytes FROM cases").get() as { count: number | null; bytes: number };
       const replay = db.prepare("SELECT 1 FROM cases WHERE sessionHash = ? AND idempotencyKey = ?").get(input.sessionHash, input.idempotencyKey);
-      if (reservations.count >= 2 || (!replay && (cases.count ?? 0) + reservations.newCount >= 20) || cases.bytes + reservations.bytes + input.reservedBytes > MAX_BYTES) throw new Error("CAPACITY_EXCEEDED");
+      if (reservations.count >= 2 || (!replay && (cases.count ?? 0) + reservations.newCount >= 20)) throw new Error("CAPACITY_EXCEEDED");
+      const outputs = db.prepare("SELECT COALESCE(SUM(COALESCE(a.bytes,r.bytes)),0) AS bytes, COUNT(*) AS count FROM artifact_reservations r LEFT JOIN artifacts a ON a.caseId=r.caseId AND a.kind=r.kind").get() as { bytes: number; count: number };
+      storageBudget(cases.bytes + outputs.bytes + reservations.bytes + input.reservedBytes, 0, [{ allowance: (reservations.newCount + (replay ? 0 : 1)) * OUTPUT_RESERVE, actual: 0 }], 8192 + outputs.count * ARTIFACT_METADATA_RESERVE);
       const result = { id: randomUUID(), sessionHash: input.sessionHash, idempotencyKey: input.idempotencyKey, reservedBytes: input.reservedBytes, expiresAt: addDays(input.now, 1) };
       db.prepare("INSERT INTO reservations VALUES (@id, @sessionHash, @idempotencyKey, @reservedBytes, @expiresAt, 1)").run(result);
       return result;
@@ -116,6 +125,7 @@ export function openRepository(path: string): ApplicationRepository {
       const row = { id: applicationId(randomUUID()), reference: `TJ-${randomBytes(12).toString("hex").toUpperCase()}`, reservationId: input.reservationId, sessionHash: reservation.sessionHash, idempotencyKey: reservation.idempotencyKey, digest: input.digest, encryptedName: input.encryptedName, job: input.job, acceptedAt: input.now, encryptedPayloadPath: input.encryptedPayloadPath, payloadBytes: input.actualBytes, payloadDeleteAfter: addDays(input.now, 7), contactDeleteAfter: addDays(input.now, 30) };
       db.prepare("INSERT INTO cases (id, reference, reservationId, sessionHash, idempotencyKey, digest, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, payloadDeleteAfter, contactDeleteAfter) VALUES (@id, @reference, @reservationId, @sessionHash, @idempotencyKey, @digest, @encryptedName, @job, @acceptedAt, 'queued', 'open', 1, @encryptedPayloadPath, @payloadBytes, @payloadDeleteAfter, @contactDeleteAfter)").run(row);
       db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
+      for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter);
       db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'accepted', 1, ?)").run(row.id, input.now);
       return proof(row, input.now);
     }).immediate();
@@ -148,7 +158,59 @@ export function openRepository(path: string): ApplicationRepository {
       return readCase(id);
     }).immediate());
   }
+  function getArtifact(id: ApplicationId, kind: ArtifactKind): ArtifactRecord | null {
+    live(); applicationId(id); if (!["bundle", "mime"].includes(kind)) throw new Error("INVALID_ARTIFACT");
+    return (db.prepare("SELECT * FROM artifacts WHERE caseId=? AND kind=?").get(id, kind) as ArtifactRecord | undefined) ?? null;
+  }
+  function verifyArtifact(record: ArtifactRecord): void {
+    applicationId(record.caseId); digest(record.plaintextDigest); digest(record.ciphertextDigest); utcInstant(record.expiresAt);
+    if (!["bundle", "mime"].includes(record.kind) || !Number.isSafeInteger(record.bytes) || record.bytes < 1 || record.bytes > artifactLimit(record.kind) || !isAbsolute(record.path) || resolve(record.path) !== record.path || record.path.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part))) throw new Error("INVALID_ARTIFACT");
+    for (let parent = dirname(record.path); parent !== dirname(parent); parent = dirname(parent)) if (lstatSync(parent).isSymbolicLink()) throw new Error("UNSAFE_PATH");
+    const fd = openSync(record.path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    try {
+      const stat = fstatSync(fd);
+      if (!stat.isFile() || stat.nlink !== 1 || stat.uid !== process.getuid?.() || (stat.mode & 0o7777) !== 0o600 || stat.size !== record.bytes) throw new Error("INVALID_ARTIFACT");
+      const bytes = readFileSync(fd);
+      if (bytes.length !== record.bytes || createHash("sha256").update(bytes).digest("hex") !== record.ciphertextDigest) throw new Error("DIGEST_MISMATCH");
+    } finally { closeSync(fd); }
+  }
+  async function adoptArtifact(record: ArtifactRecord, expectedVersion: number): Promise<CaseRecord> {
+    return guarded(record.caseId, async () => db.transaction(() => {
+      const current = readCase(record.caseId), existing = getArtifact(record.caseId, record.kind);
+      if (existing) {
+        verifyArtifact(existing);
+        if (existing.plaintextDigest !== record.plaintextDigest || existing.expiresAt !== record.expiresAt) throw new Error("ARTIFACT_CONFLICT");
+        return current;
+      }
+      if (current.version !== expectedVersion) throw new Error("STALE_VERSION");
+      if (!["queued", "scanning", "ready"].includes(current.deliveryState)) throw new Error("ARTIFACT_CREATION_CLOSED");
+      const expiry = current.payloadDeleteAfter < addDays(current.acceptedAt, 7) ? current.payloadDeleteAfter : addDays(current.acceptedAt, 7);
+      if (record.expiresAt !== expiry) throw new Error("INVALID_ARTIFACT_EXPIRY");
+      verifyArtifact(record);
+      db.prepare("INSERT INTO artifacts VALUES (@caseId,@kind,@path,@bytes,@plaintextDigest,@ciphertextDigest,@expiresAt)").run(record);
+      db.prepare("UPDATE cases SET version=version+1 WHERE id=? AND version=?").run(record.caseId, expectedVersion);
+      db.prepare("INSERT INTO audit(caseId,event,version,at) VALUES(?,?,?,?)").run(record.caseId, `artifact:${record.kind}`, expectedVersion + 1, new Date().toISOString());
+      return readCase(record.caseId);
+    }).immediate());
+  }
+  async function retireOriginal(id: ApplicationId, expectedVersion: number): Promise<CaseRecord> {
+    return guarded(id, async () => db.transaction(() => {
+      const current = readCase(id), bundle = getArtifact(id, "bundle");
+      if (!bundle) throw new Error("BUNDLE_REQUIRED");
+      verifyArtifact(bundle);
+      if (!current.encryptedPayloadPath) return current;
+      if (current.version !== expectedVersion) throw new Error("STALE_VERSION");
+      db.prepare("UPDATE cases SET encryptedPayloadPath=NULL,payloadBytes=0,version=version+1 WHERE id=? AND version=?").run(id, expectedVersion);
+      db.prepare("INSERT INTO audit(caseId,event,version,at) VALUES(?,?,?,?)").run(id, "original:retired", expectedVersion + 1, new Date().toISOString());
+      return readCase(id);
+    }).immediate());
+  }
   return {
+    getRequestIdentity(id) { readCase(id); return db.prepare("SELECT id,digest,acceptedAt FROM cases WHERE id=?").get(id) as RequestIdentity; },
+    getArtifact, adoptArtifact, retireOriginal,
+    listRetainedArtifacts() { live(); return db.prepare("SELECT * FROM artifacts ORDER BY caseId,kind").all() as ArtifactRecord[]; },
+    listArtifactReservations() { live(); return db.prepare("SELECT * FROM artifact_reservations ORDER BY caseId,kind").all() as ArtifactReservation[]; },
+    isReplayReservation(id) { live(); return !!db.prepare("SELECT 1 FROM reservations r JOIN cases c ON c.sessionHash=r.sessionHash AND c.idempotencyKey=r.idempotencyKey WHERE r.id=?").get(id); },
     getCommittedIntake(id) { live(); applicationId(id); return (db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE id = ? AND encryptedPayloadPath IS NOT NULL").get(id) as import("./types").CommittedIntake | undefined) ?? null; },
     listRetainedIntakes() { live(); return db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE encryptedPayloadPath IS NOT NULL ORDER BY acceptedAt, rowid").all() as import("./types").CommittedIntake[]; },
     reserve, commitIntake, claimNext, getPublicStatus, transitionDelivery,

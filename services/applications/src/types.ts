@@ -42,6 +42,10 @@ export interface CaseRecord {
 }
 export interface ClaimedCase extends CaseRecord { claimOwner: string; claimedAt: Instant }
 export interface DeliveryTransition { state: DeliveryState }
+export type ArtifactKind = "bundle" | "mime";
+export interface ArtifactRecord { caseId: ApplicationId; kind: ArtifactKind; path: string; bytes: number; plaintextDigest: Digest; ciphertextDigest: Digest; expiresAt: Instant }
+export interface RequestIdentity { id: ApplicationId; digest: Digest; acceptedAt: Instant }
+export interface ArtifactReservation { caseId: ApplicationId; kind: ArtifactKind; bytes: number; expiresAt: Instant }
 export interface ApplicationRepository {
   reserve(input: ReservationInput): Reservation;
   releaseReservation(id: string): void;
@@ -52,6 +56,13 @@ export interface ApplicationRepository {
   transitionDelivery(id: ApplicationId, expectedVersion: number, next: DeliveryTransition): Promise<CaseRecord>;
   getCommittedIntake(id: ApplicationId): CommittedIntake | null;
   listRetainedIntakes(): readonly CommittedIntake[];
+  getRequestIdentity(id: ApplicationId): RequestIdentity;
+  getArtifact(id: ApplicationId, kind: ArtifactKind): ArtifactRecord | null;
+  listRetainedArtifacts(): readonly ArtifactRecord[];
+  listArtifactReservations(): readonly ArtifactReservation[];
+  isReplayReservation(reservationId:string):boolean;
+  adoptArtifact(record: ArtifactRecord, expectedVersion: number): Promise<CaseRecord>;
+  retireOriginal(id: ApplicationId, expectedVersion: number): Promise<CaseRecord>;
   close(): void;
 }
 export interface IncomingTarget { root: string; maxBytes: number; reservationId?: string; sharedGid?: number }
@@ -78,7 +89,21 @@ export interface ScannerPort {
 export type ScanResult = { kind: "clean"; scannedDigests: Digest[] } | { kind: "blocked"; reason: ScanFailure };
 export interface PayloadFile { name: string; mediaType: "application/pdf" | "image/jpeg" | "image/png"; content: string }
 export interface IntakePayload { version: 1; input: ApplicationInput; files: PayloadFile[] }
-export interface CustodyConfig { intakeRoot: string; custodyRoot: string; runtimeRoot: string; intakeUid: number; sharedGid: number; clock: Clock }
+export interface IngressLease { reservationId: string; generation: string; domain: string; path: string; allowance: number }
+export type LegacyIngress = Pick<IngressLease,"reservationId"|"path"|"allowance">;
+export interface IngressEvidence { lease: IngressLease; state: "prepared" | "bounded" | "quiescent" | "released"; chargedBytes: number; object: { dev: number; ino: number } | null }
+// Trusted worker dependency, never an intake RPC or caller-supplied closure flag.
+// The default is unavailable; R5 must supply actual no-escape/quota enforcement.
+export interface IngressAuthority {
+  readonly assurance: "unavailable" | "local-test" | "qualified-os";
+  recover(leases: readonly IngressLease[], legacy: readonly LegacyIngress[]): Promise<readonly IngressLease[]>;
+  prepare(reservationId: string, path: string, allowance: number): Promise<IngressLease>;
+  grant(lease: IngressLease): Promise<IngressEvidence>;
+  observe(lease: IngressLease): Promise<IngressEvidence>;
+  quiesce(lease: IngressLease): Promise<IngressEvidence>;
+  released(lease: IngressLease): Promise<IngressEvidence>;
+}
+export interface CustodyConfig { intakeRoot: string; custodyRoot: string; runtimeRoot: string; intakeUid: number; sharedGid: number; clock: Clock; ingressAuthority?: IngressAuthority }
 export interface RpcConfig { socketPath: string; custody: CustodyLedger; sharedGid: number; clock: Clock }
 export interface CustodyInventory { physicalBytes: number; reservedHeadroom: number; orphans: readonly { path: string; cleanupAfter: Instant }[] }
 export interface CustodyLedger {
@@ -89,4 +114,7 @@ export interface CustodyLedger {
   beginProcessing(snapshot: PrivateSnapshot, bytes: number): Promise<string>;
   finishProcessing(path: string): Promise<void>;
   cleanupOrphans(): Promise<CustodyInventory>;
+  withScope<T>(id: ApplicationId, action: (directory: string) => Promise<T>): Promise<T>;
+  withProcessingAuthority<T>(id: ApplicationId, directory: string, action: () => Promise<T>): Promise<T>;
+  publishArtifact(id: ApplicationId, kind: ArtifactKind, bytes: Buffer, metadata: Pick<ArtifactRecord,"plaintextDigest"|"ciphertextDigest"|"expiresAt">, expectedVersion: number): Promise<ArtifactRecord>;
 }
