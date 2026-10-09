@@ -12,6 +12,8 @@
 
 ## Global Constraints
 
+**Gezielter Nachtrag, 09.10.2026:** Die schriftliche Dokument-Ergänzung ist bestätigt. Der [Plan für bereinigte PDF-/JPG-/PNG-Kopien](2026-10-09-application-document-reconstruction.md) ersetzt nach seiner Durchsicht ausschließlich die unten noch historisch beschriebenen Originalanhang-/50-Seiten-Verträge und ergänzt die betroffenen Tasks 3/5/7/11/13/14/15 sowie Inhaltsfixtures in 6/10. Tasks 1/2 werden nicht neu ausgeführt; notwendige Speicher-/Migrationsanpassungen sind im Nachtrag abgegrenzt. Ausführungsmethode bleibt gewählt; PDF-Produktivsperre und separate echte Testfreigaben bestehen fort.
+
 - Arbeitsverzeichnis `/Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production`, Branch `codex/cinematic-production`; vorhandene isolierte Worktree wiederverwenden, vor Änderungen synchronisieren. Fremde Screenshots/Prüfberichte nicht übernehmen oder verwerfen.
 - Pflicht: Name, E-Mail, Stelle. Telefon, Nachricht und sämtliche Unterlagen einschließlich Portrait freiwillig. Stellen: Verkauf Vollzeit und Teilzeit bis zu 150 Stunden/Monat, jeweils m/w/d, sofortiger Einstieg möglich.
 - Höchstens fünf Dateien, 5 MiB je Datei, 10 MiB insgesamt; ausschließlich geprüfte PDF/JPEG/PNG. Höchstens zwei parallele Uploads, ein Scan, 20 wartende Vorgänge und 250 MiB Eingangsdaten. Scanner-Signaturen höchstens 24 Stunden alt.

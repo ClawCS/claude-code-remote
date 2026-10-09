@@ -2,6 +2,8 @@
 
 **Nicht fertig, nicht live aktiviert.** Dieser Bericht dokumentiert einen gesicherten Entwicklungsstand, keine Abnahme des Bewerbungsportals. Die bestehende Website, Mietanfragen, Newsletter, Werbung, DNS und Mailkonten wurden durch diese Umsetzung nicht verändert.
 
+**Fortschreibung am 09.10.2026:** Die weiter unten historisch als offen beschriebene PDF-Entscheidung ist beantwortet: Niko wählte bereinigte PDF-Kopien plus JPG/PNG und bestätigte anschließend die [schriftliche Ergänzung](../superpowers/specs/2026-10-09-application-document-reconstruction-design.md) mit „ergänzung passt, führe aUS“. Der [gezielte Plan-Nachtrag](../superpowers/plans/2026-10-09-application-document-reconstruction.md) ist ausgearbeitet und zur Durchsicht bereit. Keine neue Konvertierungsimplementierung, Installation oder Produktivaktivierung durch diese Dokumentationsfortschreibung; Task 3/F2 bleibt technisch offen. Die konkrete Freigabe echter synthetischer Testmails und ihrer gezielten Löschung ist weiterhin separat erforderlich. Der vorhandene lokale Task-3-Bereich bleibt wegen offener Prüfung und Linux-Testabhängigkeit unveröffentlicht; dokumentierte alte Testergebnisse sind keine neuen Testläufe.
+
 ## Erledigte und unabhängig geprüfte Bausteine
 
 1. Transaktionales privates Bewerbungsregister, Kapazitätsgrenzen und wiederholbare Annahme ohne doppelte Vorgänge. Task1 abgeschlossen.

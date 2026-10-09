@@ -1,6 +1,6 @@
 # Bewerbungsunterlagen: bereinigte PDF-Kopien, JPG und PNG
 
-Datum: 09.10.2026. **Ergänzungsentwurf zur schriftlichen Bestätigung; noch keine Umsetzung oder Live-Freigabe.** Niko hat die Richtung mit „Bereinigte PDF-Kopien ausarbeiten und jpg/png“ gewählt. Der bereits genehmigte [Gesamtentwurf](2026-10-09-application-upload-design.md) und die gewählte subagentengestützte Ausführung bleiben bestehen. Dieser Nachtrag ändert ausschließlich die Behandlung der Dokumentanhänge und deren unmittelbar notwendige Schnittstellen, Hinweise und Tests.
+Datum: 09.10.2026. **Schriftliche Ergänzung vom Betreiber mit „ergänzung passt, führe aUS“ bestätigt; noch keine technische Umsetzung oder Live-Aktivierung.** Niko hatte die Richtung mit „Bereinigte PDF-Kopien ausarbeiten und jpg/png“ gewählt. Der bereits genehmigte [Gesamtentwurf](2026-10-09-application-upload-design.md) und die gewählte subagentengestützte Ausführung bleiben bestehen. Dieser Nachtrag ändert ausschließlich die Behandlung der Dokumentanhänge und deren unmittelbar notwendige Schnittstellen, Hinweise und Tests. Der [gezielte Plan-Nachtrag](../plans/2026-10-09-application-document-reconstruction.md) konkretisiert die Umsetzung.
 
 ## 1. Ergebnis für Bewerber und Markt
 
