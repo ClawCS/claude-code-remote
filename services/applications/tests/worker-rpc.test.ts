@@ -98,7 +98,7 @@ describe("rpc-no-admin", () => {
     expect((await stat(join(root, "worker.sock"))).mode & 0o777).toBe(0o660);
     expect(await request("reserve", { ...reserveInput(), path: "/etc/passwd" })).toEqual({ ok: false, error: "INVALID_REQUEST" });
     expect(await request("getCommittedIntake")).toEqual({ ok: false, error: "METHOD_NOT_ALLOWED" });
-    for(const method of ["getArtifact","adoptArtifact","retireOriginal","listRetainedArtifacts","isReplayReservation","getRequestIdentity","withScope"]){
+    for(const method of ["getArtifact","adoptArtifact","retireOriginal","listRetainedArtifacts","isReplayReservation","getRequestIdentity","getSubmissionKind","withScope"]){
       expect(await request(method)).toEqual({ok:false,error:"METHOD_NOT_ALLOWED"});
     }
   });

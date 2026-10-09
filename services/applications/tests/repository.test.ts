@@ -24,6 +24,15 @@ function commit(key: string, bytes = 1): IntakeCommit {
 }
 
 describe("repository-idempotency", () => {
+  it("reads immutable worker submission metadata synchronously even while the case is locked", async () => {
+    const accepted = repo.commitIntake(commit("submission-lookup"));
+    await repo.withCaseLock(accepted.id, async () => {
+      const metadata = repo.getSubmissionKind(accepted.id);
+      expect(metadata).toEqual({ kind: "application" }); expect(Object.isFrozen(metadata)).toBe(true);
+      expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
+    });
+    expect(() => repo.getSubmissionKind("00000000-0000-4000-8000-000000000001" as Parameters<typeof repo.getSubmissionKind>[0])).toThrow("CASE_NOT_FOUND");
+  });
   it("exposes a minimal authoritative retained manifest only to worker consumers", () => {
     const input = commit("manifest", 12); const accepted = repo.commitIntake(input);
     const wanted = { id: accepted.id, encryptedPayloadPath: input.encryptedPayloadPath, actualBytes: 12, digest, acceptedAt: now };

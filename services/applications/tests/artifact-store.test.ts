@@ -27,6 +27,59 @@ async function withEmptyBundle<T>(h:Awaited<ReturnType<typeof makeArtifactHarnes
   return withPrivateFiles(snapshot,h.keys,processing=>withReconstructedDocuments(processing,deps,action));
 }
 
+it("finishes reconciliation while an artifact reader holds the case lock and waits for custody", async () => {
+  const h = await makeArtifactHarness();
+  const custody = h.keys.custody, store = createArtifactStore(h.repo, h.keys, custody);
+  const event = () => { let resolve!: () => void; const promise = new Promise<void>(done => { resolve = done; }); return { promise, resolve }; };
+  const fsPaused = event(), resumeFs = event(), caseHeld = event(), scopeQueued = event(), inverseLock = event();
+  let rejectBlockedWait!: (error: Error) => void;
+  const cancelBlockedWait = new Promise<never>((_, reject) => { rejectBlockedWait = reject; });
+  void cancelBlockedWait.catch(() => {});
+  let reconciliation: Promise<unknown> | undefined, reader: Promise<unknown> | undefined, blockedCaseWait: Promise<unknown> | undefined;
+  const withCaseLock = h.repo.withCaseLock, withScope = custody.withScope;
+  let pause: ReturnType<typeof vi.spyOn> | undefined;
+  try {
+    await withEmptyBundle(h, bundle => store.adoptBundle(bundle, 1));
+    const readdir = fs.readdir;
+    pause = vi.spyOn(fs, "readdir").mockImplementationOnce(async (...args) => {
+      fsPaused.resolve(); await resumeFs.promise; return readdir(...args);
+    });
+    reconciliation = custody.reconcile();
+    await fsPaused.promise;
+    expect(custody.getIntakeReadiness()).toEqual({ ready: false });
+    let readerHasCase = false;
+    h.repo.withCaseLock = (id, action) => {
+      const alreadyHeld = readerHasCase;
+      const acquired = withCaseLock(id, async row => { readerHasCase = true; caseHeld.resolve(); return action(row); });
+      if (alreadyHeld) {
+        // The reader already owns this lock. Reconciliation must not wait on it
+        // while retaining the queue the reader needs. Cancellation is cleanup
+        // only: the real lock acquisition is still exercised and awaited.
+        blockedCaseWait = acquired; inverseLock.resolve();
+        return Promise.race([acquired, cancelBlockedWait]);
+      }
+      return acquired;
+    };
+    custody.withScope = (id, action) => { const pending = withScope(id, action); scopeQueued.resolve(); return pending; };
+    reader = store.withBundle(h.accepted.id, async bundle => { expect(bundle.requestDigest).toBe(payloadDigest(h.payload)); });
+    await caseHeld.promise; await scopeQueued.promise;
+    resumeFs.resolve();
+    const result = await Promise.race([reconciliation.then(() => "completed"), inverseLock.promise.then(() => "inverse-lock-order")]);
+    expect(result).toBe("completed");
+    // Remove instrumentation before the reader's legitimate nested case lock.
+    h.repo.withCaseLock = withCaseLock;
+    await reader;
+    expect(custody.getIntakeReadiness()).toEqual({ ready: true });
+    expect(await readdir(h.keys.runtimeRoot)).toEqual([]);
+  } finally {
+    h.repo.withCaseLock = withCaseLock; custody.withScope = withScope;
+    resumeFs.resolve(); rejectBlockedWait(new Error("TEST_CANCEL_BLOCKED_RECONCILIATION"));
+    await Promise.allSettled([reconciliation, reader, blockedCaseWait].filter((pending): pending is Promise<unknown> => !!pending));
+    pause?.mockRestore();
+    await h.close();
+  }
+});
+
 // Catches retaining the maximum claim after durable adoption, for each domain.
 it.each(["bundle", "mime"] as const)("replaces the pending %s allowance with registered physical bytes", async kind => {
   const h=await makeArtifactHarness();

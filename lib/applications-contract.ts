@@ -10,3 +10,6 @@ export interface PublicApplicationConfig {
 export type PublicState = "processing" | "delivered" | "needs_attention";
 export interface PublicStatus { reference: string; state: PublicState; acceptedAt: string }
 export interface ApplicationInput { name: string; email: string; job: JobId; phone?: string; message?: string }
+export type IntakeErrorCode = "INVALID_REQUEST" | "FORBIDDEN" | "PAYLOAD_TOO_LARGE" | "RATE_LIMITED" | "CAPACITY_EXCEEDED" | "UPLOAD_IN_PROGRESS" | "IDEMPOTENCY_CONFLICT" | "WORKER_UNAVAILABLE";
+export interface IntakeErrorResponse { error: string; code: IntakeErrorCode; retryAfterSeconds?: number }
+export interface IntakeAcceptanceResponse { reference: string; state: "processing"; statusToken: string }

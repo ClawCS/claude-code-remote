@@ -205,9 +205,9 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     for (const record of retained) {
       const entry = [...entries.values()].find(entry => entry.kind === "intake" && entry.workerPath === record.encryptedPayloadPath);
       if (!entry || record.actualBytes > entry.budget) throw new Error("CUSTODY_ACCOUNTING_FAILED");
-      await repo.withCaseLock(record.id, async row => {
-        if (JSON.stringify(entry.reservation?.submission) !== JSON.stringify(row.submission)) throw new Error("CUSTODY_ACCOUNTING_FAILED");
-      });
+      // Submission is immutable: do not await a case lock while holding the
+      // custody queue that artifact consumers acquire after their case lock.
+      if (JSON.stringify(entry.reservation?.submission) !== JSON.stringify(repo.getSubmissionKind(record.id))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       const fd = await openPrivateFile(record.encryptedPayloadPath, config.custodyRoot); try { if ((await fd.stat()).size !== record.actualBytes) throw new Error("SIZE_MISMATCH"); } finally { await fd.close(); }
       await save({ ...entry, version: 3, state: "committed", caseId: record.id });
     }

@@ -109,6 +109,18 @@ it("rejects corrupt reservation identity in an independently versioned custody j
     expect(recovered.getIntakeReadiness()).toEqual({ ready: false });
   } finally { await h.close(); }
 });
+it("keeps reconciliation unavailable when journal submission differs from immutable case metadata", async () => {
+  const h = await makeArtifactHarness();
+  try {
+    const name = (await readdir(h.keys.privateRoot)).find(name => name.endsWith(".journal"))!, path = join(h.keys.privateRoot, name);
+    const journal = JSON.parse(await readFile(path, "utf8")); journal.reservation.submission = { kind: "synthetic", pilotRunId: "different-run" };
+    await writeFile(path, JSON.stringify(journal), { mode: 0o600 });
+    const recovered = createCustodyLedger(h.repo, h.config);
+    await expect(recovered.reconcile()).rejects.toThrow("CUSTODY_ACCOUNTING_FAILED");
+    expect(recovered.getIntakeReadiness()).toEqual({ ready: false });
+    expect(h.repo.getSubmissionKind(h.accepted.id)).toEqual({ kind: "application" });
+  } finally { await h.close(); }
+});
 it("migrates v2 journals without inventing pilot authorization and rejects v3 missing metadata", async () => {
   const h = await makeArtifactHarness();
   try {

@@ -240,6 +240,7 @@ export function openRepository(path: string): ApplicationRepository {
   }
   return {
     getRequestIdentity(id) { readCase(id); return db.prepare("SELECT id,digest,acceptedAt FROM cases WHERE id=?").get(id) as RequestIdentity; },
+    getSubmissionKind(id) { return readCase(id).submission; },
     getArtifact, adoptArtifact, retireOriginal,
     listRetainedArtifacts() { live(); return db.prepare("SELECT * FROM artifacts ORDER BY caseId,kind").all() as ArtifactRecord[]; },
     listArtifactReservations() { live(); return db.prepare("SELECT * FROM artifact_reservations ORDER BY caseId,kind").all() as ArtifactReservation[]; },

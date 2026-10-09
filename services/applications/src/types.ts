@@ -1,4 +1,5 @@
 import type { ApplicationInput, JobId, PublicStatus } from "../../../lib/applications-contract";
+export type { IntakeErrorCode, IntakeErrorResponse, IntakeAcceptanceResponse } from "../../../lib/applications-contract";
 import type { KeyObject } from "node:crypto";
 import type { DocumentFormat } from "./reconstruction-types";
 export type ApplicationId = string & { readonly __applicationId: unique symbol };
@@ -44,9 +45,6 @@ export interface IntakeWorkerPort {
   abortIntake(reservationId: string, sessionHash: Digest): Promise<void>;
   getIntakeReadiness(): Promise<IntakeReadiness>;
 }
-export type IntakeErrorCode = "INVALID_REQUEST" | "FORBIDDEN" | "PAYLOAD_TOO_LARGE" | "RATE_LIMITED" | "CAPACITY_EXCEEDED" | "UPLOAD_IN_PROGRESS" | "IDEMPOTENCY_CONFLICT" | "WORKER_UNAVAILABLE";
-export interface IntakeErrorResponse { error: string; code: IntakeErrorCode; retryAfterSeconds?: number }
-export interface IntakeAcceptanceResponse { reference: string; state: "processing"; statusToken: string }
 export interface IntakeCommit { reservationId: string; digest: Digest; encryptedPayloadPath: string; actualBytes: number; encryptedName: string; job: JobId; now: Instant }
 export interface Acceptance { id: ApplicationId; reference: string; statusProof: string; acceptedAt: Instant; replayed: boolean }
 export interface CaseRecord {
@@ -76,6 +74,8 @@ export interface ApplicationRepository {
   getCommittedIntake(id: ApplicationId): CommittedIntake | null;
   listRetainedIntakes(): readonly CommittedIntake[];
   getRequestIdentity(id: ApplicationId): RequestIdentity;
+  // Immutable worker-only metadata; synchronous reads acquire no case lock.
+  getSubmissionKind(id: ApplicationId): SubmissionKind;
   getArtifact(id: ApplicationId, kind: ArtifactKind): ArtifactRecord | null;
   listRetainedArtifacts(): readonly ArtifactRecord[];
   listArtifactReservations(): readonly ArtifactReservation[];
