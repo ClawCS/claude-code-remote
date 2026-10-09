@@ -23,18 +23,19 @@ Stand: 9. Oktober 2026. Fortsetzungsauftrag des Betreibers: Bewerbungsupload fer
 
 ## Ergänzende Betreiberfreigabe
 
-Nach dieser Vorprüfung bestätigt Niko am 9. Oktober die empfohlene Variante einschließlich des gezielten Postfachzugriffs zum Löschen. Damit sind geschützter Abschlussbereich und gezielter automatisierter Postfachanteil als Grundvariante gewählt. Keine pauschale Postfach-/Altbewerbungsbereinigung daraus ableiten. Der [schriftliche technische Entwurf](../superpowers/specs/2026-10-09-application-upload-design.md) steht separat zur Prüfung; noch keine Implementierung oder Aktivierung.
+Nach dieser Vorprüfung bestätigt Niko am 9. Oktober die empfohlene Variante einschließlich des gezielten Postfachzugriffs zum Löschen und anschließend die [schriftliche technische Spezifikation](../superpowers/specs/2026-10-09-application-upload-design.md) mit „ja passt so“. Damit sind geschützter Abschlussbereich und gezielter automatisierter Postfachanteil einschließlich Schutzablauf freigegeben. Keine pauschale Postfach-/Altbewerbungsbereinigung daraus ableiten. Der [Implementierungsplan](../superpowers/plans/2026-10-09-application-upload.md) liegt zur Prüfung und Wahl der Ausführungsmethode vor; noch keine Implementierung oder Aktivierung.
 
 ## Vor Implementierung beziehungsweise Aktivierung zu konkretisieren
 
-1. Abschlussdatum und Ablehnungsstatus benötigen eine verantwortliche, authentifizierte Eingabe im Markt. Die bestätigte Sechsmonatsfrist ist entschieden, ihr technischer Auslöser noch nicht.
+1. Abschlussdatum und Ablehnungsstatus benötigen die inzwischen bestätigte verantwortliche, authentifizierte Eingabe im geschützten Marktbereich. Auslöser und Sechsmonatsfrist sind entschieden; deren Implementierung und Prüfung stehen aus.
 2. SMTP kann senden, aber keine Postfachkopien löschen. Die gezielte IMAP-Verarbeitung ist inzwischen grundsätzlich freigegeben; sichere Zuordnung, Anbieterfähigkeiten und Tests müssen diese Grenze noch belegen. Downloads, Weiterleitungen und andere externe Kopien bleiben gesondert zu behandeln.
 3. Postfachzugang nur sicher provisionieren, nicht im Chat, Repository oder Logs. Authentifizierung und eine synthetische Zustellprobe stehen aus; Testempfänger/-umfang vorher abstimmen.
 4. Ressourcen für einen lokalen Scanner vor Aktivierung belegen. ClamAV empfiehlt mindestens 3 GiB zusätzlich zu anderen Anwendungen; der vorhandene 4-GB-Host bietet dafür keine belegte Reserve. Keine eigenmächtige kostenpflichtige Aufrüstung oder externe Weitergabe von Bewerbungsdateien.
 
 ## Prüfplan für die spätere Umsetzung
 
-- [ ] Technischen Datenfluss einschließlich Abschluss- und Löschprozess abstimmen; danach schriftliche Spezifikation/Implementierungsplan prüfen.
+- [x] Technischen Datenfluss einschließlich Abschluss- und Löschprozess abstimmen; schriftliche Spezifikation vom Betreiber bestätigt.
+- [ ] Implementierungsplan prüfen und Ausführungsmethode auswählen.
 - [ ] Formular für die zwei Stellen, Inhalts-/Größenprüfung, private Verarbeitung und Missbrauchsschutz implementieren.
 - [ ] Virenprüfung einschließlich Fehler-/Timeoutfällen und begrenzten Ressourcen testen; ungeprüfte Dateien niemals weiterleiten.
 - [ ] Versand mit festem Empfänger, Duplikat-/Fehlerbehandlung und verständlichen Statusmeldungen testen.

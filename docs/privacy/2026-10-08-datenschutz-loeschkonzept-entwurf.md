@@ -1,6 +1,6 @@
 # Datenschutz und Löschung: Vorbereitung für Newsletter und Bewerbungen
 
-Stand: 8. Oktober 2026, ergänzt um die Betreiberbestätigungen vom 9. Oktober. **Umsetzungskonzept, nicht öffentlich aktiviert.** Vom Betreiber unter A6 beauftragte eigenständige Vorbereitung; Empfängerkreis und Sechsmonatsregel für abgelehnte Bewerbungen sind ausdrücklich bestätigt. Zusätzlich gewählt ist der geschützte Abschluss-/Fristenbereich mit gezielter Postfach-Löschanbindung für eindeutig zugeordnete neue Portalbewerbungen. [Technische Spezifikation zur Prüfung](../superpowers/specs/2026-10-09-application-upload-design.md). Die übrigen Vorschläge bleiben Entwurf. Keine juristische Zertifizierung, keine bereits implementierte Löschautomatik und keine Freigabe zur ungeprüften Löschung vorhandener Daten. Die öffentliche Datenschutzerklärung wird erst an tatsächlich eingerichtete und getestete Abläufe angepasst.
+Stand: 8. Oktober 2026, ergänzt um die Betreiberbestätigungen vom 9. Oktober. **Umsetzungskonzept, nicht öffentlich aktiviert.** Vom Betreiber unter A6 beauftragte eigenständige Vorbereitung; Empfängerkreis und Sechsmonatsregel für abgelehnte Bewerbungen sind ausdrücklich bestätigt. Zusätzlich gewählt und als schriftliche Spezifikation freigegeben ist der geschützte Abschluss-/Fristenbereich mit gezielter Postfach-Löschanbindung für eindeutig zugeordnete neue Portalbewerbungen. Maßgeblich für die Bewerbungsumsetzung ist die [freigegebene technische Spezifikation](../superpowers/specs/2026-10-09-application-upload-design.md); der [Implementierungsplan](../superpowers/plans/2026-10-09-application-upload.md) wartet noch auf Prüfung und Auswahl der Ausführungsmethode. Die übrigen Vorschläge, insbesondere zum Newsletter, bleiben Entwurf. Keine juristische Zertifizierung, keine bereits implementierte Löschautomatik und keine Freigabe zur ungeprüften Löschung vorhandener Daten. Die öffentliche Datenschutzerklärung wird erst an tatsächlich eingerichtete und getestete Abläufe angepasst.
 
 ## 1. Feststehender Umfang
 
@@ -42,7 +42,7 @@ Vorgeschlagener Formularhinweis, **noch kein veröffentlichungsfertiger Art.-13-
 
 ## 4. Fristenmatrix – bestätigte Bewerbungsregel und weitere Vorschläge
 
-Nur die Sechsmonatsregel für abgelehnte Bewerbungen ist am 9. Oktober als Betreiberentscheidung bestätigt. Die weiteren Fristen sind Vorschläge; eine technische Löschautomatik ist damit nicht eingerichtet.
+Die Sechsmonatsregel für abgelehnte Bewerbungen sowie die ergänzenden technischen Bewerbungsfristen in Abschnitt 9 der am 9. Oktober freigegebenen Spezifikation sind als Umsetzungsvorgabe bestätigt. Bei Abweichungen hat diese neuere Spezifikation Vorrang vor der nachstehenden ursprünglichen Entwurfsmatrix. Newsletter- und andere nicht dort geregelte Fristen bleiben Vorschläge; eine technische Löschautomatik ist damit nicht eingerichtet.
 
 | Daten | Umgang und Freigabestand | Noch zu verifizieren |
 | --- | --- | --- |

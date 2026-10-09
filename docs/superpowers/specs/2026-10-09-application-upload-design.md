@@ -1,6 +1,6 @@
 # Bewerbungsportal: Upload, Postfachversand und kontrollierte Löschung
 
-Datum: 9. Oktober 2026. **Schriftlicher Entwurf zur Betreiberprüfung, noch keine Implementierung oder Aktivierung.** Die Grundvariante einschließlich gezielten Postfachzugriffs wurde im Chat bestätigt. Technische Detailentscheidungen unten sind Teil dieses Entwurfs, nicht bereits produktiv eingerichtet.
+Datum: 9. Oktober 2026. **Schriftliche Spezifikation vom Betreiber mit „ja passt so“ freigegeben; noch keine Implementierung oder Aktivierung.** Die Freigabe umfasst die zuvor gewählte Grundvariante einschließlich gezielten Postfachzugriffs und den hier beschriebenen Schutzablauf. Der [Implementierungsplan](../plans/2026-10-09-application-upload.md) konkretisiert Reihenfolge, Schnittstellen und Tests; seine Prüfung und die Wahl der Ausführungsmethode stehen noch aus. Technische Einrichtungen sind dadurch nicht bereits produktiv vorhanden.
 
 ## 1. Ziel und bestätigter Auftrag
 
@@ -131,6 +131,6 @@ Pflichtabnahme:
 
 ## 11. Stand und nächster Schritt
 
-Diese Spezifikation beschreibt die im Chat ausgewählte Variante und ihre technische Begrenzung. Die neue Postfachfreigabe ist dokumentiert, aber es wurden keine Zugangsdaten gelesen, Postfachaktionen durchgeführt, Dienste installiert oder Produktfunktionen aktiviert. Nach Prüfung/Freigabe dieses schriftlichen Entwurfs folgt der konkrete Implementierungsplan mit Aufgaben, Regressionstests und Ausführungsmethode.
+Diese Spezifikation beschreibt die im Chat ausgewählte und am 9. Oktober schriftlich freigegebene Variante und ihre technische Begrenzung. Postfachfreigabe und Spezifikationsfreigabe sind dokumentiert, aber es wurden keine Zugangsdaten gelesen, Postfachaktionen durchgeführt, Dienste installiert oder Produktfunktionen aktiviert. Der konkrete Implementierungsplan liegt separat vor; nach seiner Prüfung und Wahl der Ausführungsmethode folgt die Umsetzung. Vor Produktivaktivierung bleiben die in Abschnitt 10 genannten Nachweise und gegebenenfalls konkreten Test-/Kostenfreigaben erforderlich.
 
 Technische Basis der Uploadkontrollen: [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html). Aktuelle Ausgangsnachweise: [Vorprüfung vom 9. Oktober](../../audits/2026-10-09-application-upload-readiness.md).
