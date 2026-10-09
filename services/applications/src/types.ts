@@ -2,6 +2,8 @@ import type { ApplicationInput, JobId, PublicStatus } from "../../../lib/applica
 export type { IntakeErrorCode, IntakeErrorResponse, IntakeAcceptanceResponse } from "../../../lib/applications-contract";
 import type { KeyObject } from "node:crypto";
 import type { DocumentFormat } from "./reconstruction-types";
+import type { ArtifactStore } from "./artifact-store";
+import type { ReconstructionDependencies } from "./reconstruction";
 export type ApplicationId = string & { readonly __applicationId: unique symbol };
 export type StaffId = string & { readonly __staffId: unique symbol };
 export type DateOnly = string & { readonly __dateOnly: unique symbol };
@@ -95,6 +97,31 @@ export interface DeliveryRecord {
   readonly contactEnvelope: string | null;
 }
 export interface DeliverySnapshot { readonly case: CaseRecord; readonly delivery: DeliveryRecord }
+export type FindOnlyMailbox = Pick<MailboxPort, "findVerified" | "disconnect">;
+export interface DispatchDependencies {
+  readonly repository: ApplicationRepository;
+  readonly clock: Clock;
+  readonly owner: string;
+  readonly keys: WorkerKeys;
+  readonly custody: CustodyLedger;
+  readonly artifacts: ArtifactStore;
+  readonly reconstruction: ReconstructionDependencies;
+  readonly signingKeyId: string;
+  readonly signingKeys: ReadonlyMap<string, KeyObject>;
+  readonly verificationKeys: VerificationKeys;
+  readonly createSmtp: () => SmtpPort;
+  readonly createMailbox: (budget: MailboxRunBudget) => FindOnlyMailbox;
+}
+export type DispatchResult = { readonly kind: "idle" } | {
+  readonly kind: "processed";
+  readonly id: ApplicationId;
+  readonly work: DeliveryWorkKind;
+  readonly state: DeliveryState;
+  readonly reason: DeliveryFailureReason | null;
+  readonly incidentDue: boolean;
+  readonly manualRequired: boolean;
+  readonly nextDueAt: Instant | null;
+};
 export interface DeliveryClaim extends DeliverySnapshot { readonly case: ClaimedCase }
 export interface DeliveryRepository {
   getDelivery(id: ApplicationId): DeliveryRecord;
