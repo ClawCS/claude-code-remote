@@ -59,6 +59,21 @@ export interface CommittedIntake { id: ApplicationId; encryptedPayloadPath: stri
 export interface WorkerKeys { privateKey: KeyObject; publicKey: KeyObject; intakeRoot: string; privateRoot: string; runtimeRoot: string; custody: CustodyLedger }
 export interface PrivateSnapshot { id: ApplicationId; input: Readonly<ApplicationInput>; files: readonly { name: string; mediaType: string; digest: Digest; bytes: number }[]; digest: Digest; encryptedPayloadPath: string; bytes: number }
 export interface ProcessingSnapshot extends Omit<PrivateSnapshot, "files"> { files: readonly { name: string; mediaType: string; digest: Digest; bytes: number; path: string }[] }
+export type SnapshotFile = ProcessingSnapshot["files"][number];
+export type ValidationFailure = "IDENTITY_MISMATCH" | "DIGEST_MISMATCH" | "INVALID_FILE" | "FILE_LIMIT" | "ACTIVE_PDF" | "ENCRYPTED_PDF" | "UNSUPPORTED_PDF" | "PAGE_LIMIT" | "IMAGE_LIMIT" | "PARSER_TIMEOUT" | "PARSER_LIMIT" | "PARSER_UNAVAILABLE" | "SANDBOX_UNAVAILABLE";
+export type ParserResult = { kind: "parsed"; format: "pdf" | "jpeg" | "png" } | { kind: "blocked"; reason: ValidationFailure };
+export interface ParserPort {
+  readonly assurance: "unavailable" | "local-test" | "linux-sandbox";
+  parse(file: SnapshotFile): Promise<ParserResult>;
+}
+export type ValidatedFile = { kind: "valid"; file: SnapshotFile; format: "pdf" | "jpeg" | "png" } | { kind: "diagnostic"; file: SnapshotFile; format: "pdf" | "jpeg" | "png"; productionReady: false } | { kind: "blocked"; reason: ValidationFailure };
+export type ScanFailure = "NOT_READY" | "BUSY" | "TIMEOUT" | "STALE_SIGNATURES" | "INCOMPLETE_SCAN" | "INFECTED" | "SCANNER_ERROR" | "DIGEST_MISMATCH" | "FILE_LIMIT";
+export interface ScannerFileResult { kind: "clean" | "infected" | "error"; complete: boolean; digest: Digest; bytes: number; signatureTime: Instant; engineIdentity: string }
+export interface ScannerPort {
+  readonly assurance: "unavailable" | "local-test" | "qualified-local-engine";
+  scan(file: SnapshotFile, signal: AbortSignal): Promise<ScannerFileResult>;
+}
+export type ScanResult = { kind: "clean"; scannedDigests: Digest[] } | { kind: "blocked"; reason: ScanFailure };
 export interface PayloadFile { name: string; mediaType: "application/pdf" | "image/jpeg" | "image/png"; content: string }
 export interface IntakePayload { version: 1; input: ApplicationInput; files: PayloadFile[] }
 export interface CustodyConfig { intakeRoot: string; custodyRoot: string; runtimeRoot: string; intakeUid: number; sharedGid: number; clock: Clock }
