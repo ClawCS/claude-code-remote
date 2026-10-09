@@ -40,6 +40,12 @@ Nach jeder Code-Aenderung an UI/Seiten (`app/**`, `components/**`, `lib/**`, `pu
 
 Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen.
 
+# Bewerbungen – bestätigte Vorgaben, 09.10.2026
+
+- Bewerbungen und Unterlagen gehen an `info@trinkgut-jammers.de`. Niko bestätigt ausdrücklich, dass sämtliche bereits für dieses Postfach zugangsberechtigten Personen Bewerbungsunterlagen lesen dürfen. Diese Entscheidung nicht erneut abfragen; technische Postfachrechte dadurch nicht verändern oder ausweiten.
+- Für abgelehnte Bewerbungen ist als umzusetzende Betreiberregel bestätigt: sechs Monate nach dokumentiertem Abschluss des Bewerbungsverfahrens löschen, einschließlich Postfachkopien, sofern kein begründeter Ausnahmefall besteht. Keine pauschale gesetzliche Pflichtfrist daraus ableiten.
+- Dies bestätigt die organisatorischen Vorgaben, nicht eine bereits eingerichtete Upload-, Versand- oder Löschautomatik. Sicherer Upload und Versand bleiben vor Aktivierung einzurichten und zu testen; Postfachkopien müssen in den tatsächlichen Löschprozess einbezogen werden. Keine vorhandenen Bewerbungsdaten aufgrund dieser Dokumentation ungeprüft löschen. Details in `docs/privacy/2026-10-08-datenschutz-loeschkonzept-entwurf.md`.
+
 # Verbindliche Bildregel — Niko, 30.09.2026
 
 ## Marktbild-Beschriftungen — 08.10.2026

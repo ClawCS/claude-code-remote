@@ -1,6 +1,6 @@
 # Jobs: bestätigte Inhalte und Originalbelege
 
-8. Oktober 2026. Vorbereitung für das beauftragte Bewerbungsportal, noch kein veröffentlichter Uploadbetrieb. Der Betreiber nennt zwei aktuell im Markt aushängende Anzeigen und erlaubt, die bereitgelegten Dateien direkt auf dem Desktop zu lesen. Beide wurden gefunden und vollständig visuell gelesen. Keine weiteren Stellen oder Konditionen daraus ableiten.
+8. Oktober 2026, ergänzt um die Betreiberbestätigungen vom 9. Oktober. Vorbereitung für das beauftragte Bewerbungsportal, noch kein veröffentlichter Uploadbetrieb. Der Betreiber nennt zwei aktuell im Markt aushängende Anzeigen und erlaubt, die bereitgelegten Dateien direkt auf dem Desktop zu lesen. Beide wurden gefunden und vollständig visuell gelesen. Keine weiteren Stellen oder Konditionen daraus ableiten.
 
 ## Originale
 
@@ -16,7 +16,13 @@ Originaldateien unverändert auf dem Desktop belassen; nicht als Canva-verifizie
 1. **Verkäuferin / Verkäufer (m/w/d) – Vollzeit.** Vollzeitstelle, freundliches Team, sofortiger Einstieg möglich.
 2. **Verkäuferin / Verkäufer (m/w/d) – Teilzeit bis zu 150 Stunden im Monat.** Freundliches Team, sofortiger Einstieg möglich.
 
-Beide Originalanzeigen nennen `jammers-goch@trinkgut.de`, WhatsApp `+49 175 2492386` und Direktnachricht als Kontaktwege. Die jüngste Website-Anweisung ersetzt den Bewerbungsempfänger ausdrücklich durch **`info@trinkgut-jammers.de`**, auch für Unterlagen. Originalposter bleiben unverändert und sind für die aktuelle E-Mail-Adresse nicht mehr maßgeblich. Bestehende Postfachrechte nicht verändern; tatsächlichen Leserkreis des Info-Postfachs vor Uploadaktivierung prüfen. Kein Gehalt, keine vertragliche Mindeststundenzahl, keine zusätzlichen Benefits, Fristen oder Qualifikationsvoraussetzungen belegt.
+Beide Originalanzeigen nennen `jammers-goch@trinkgut.de`, WhatsApp `+49 175 2492386` und Direktnachricht als Kontaktwege. Die jüngste Website-Anweisung ersetzt den Bewerbungsempfänger ausdrücklich durch **`info@trinkgut-jammers.de`**, auch für Unterlagen. Originalposter bleiben unverändert und sind für die aktuelle E-Mail-Adresse nicht mehr maßgeblich. Kein Gehalt, keine vertragliche Mindeststundenzahl, keine zusätzlichen Benefits, Bewerbungsfristen oder Qualifikationsvoraussetzungen belegt.
+
+## Betreiberbestätigungen vom 9. Oktober
+
+- Sämtliche Personen, die bereits Zugang zu `info@trinkgut-jammers.de` haben, dürfen Bewerbungsunterlagen lesen. Keine erneute Empfängerfreigabe nötig; bestehende Postfachrechte nicht verändern oder ausweiten. Die sichere technische Einrichtung ist vor Uploadaktivierung weiterhin zu prüfen.
+- Abgelehnte Bewerbungen sechs Monate nach dokumentiertem Abschluss des Bewerbungsverfahrens löschen, einschließlich Postfachkopien, sofern kein begründeter Ausnahmefall besteht. Dies ist die bestätigte Betreiberregel für die Umsetzung, keine pauschale gesetzliche Pflichtfrist.
+- Upload, sicherer Versand und der zugehörige Löschprozess sind noch nicht implementiert. Insbesondere darf nicht behauptet werden, die Website lösche Postfachkopien bereits automatisch. Keine bestehenden Bewerbungsdaten ungeprüft löschen.
 
 ## Darstellungsentwurf
 
