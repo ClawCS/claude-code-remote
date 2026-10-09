@@ -89,7 +89,12 @@ export function createAuthentication(store: AuthRepository, deps: AuthDependenci
         return { nonce, staffId: own.staffId, action: { ...action }, issuedAt: at, expiresAt };
       } catch { throw new Error("AUTH_DENIED"); }
     },
-    logout(token) { try { store.revoke(tokenDigest("session", token)); } catch { /* No token/account oracle. */ } },
+    logout(token) {
+      let hash: Digest;
+      try { hash = tokenDigest("session", token); } catch { return; }
+      // Task12 must not report completed logout if durable revocation fails.
+      try { store.revoke(hash); } catch { throw new Error("AUTH_LOGOUT_FAILED"); }
+    },
     authorizeMutation(token, csrf, origin, configuredOrigin) {
       try {
         if (!validAdminOrigin(origin, configuredOrigin)) return null;

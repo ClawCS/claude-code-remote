@@ -45,6 +45,25 @@ function successful(result: LoginResult) { if (result.kind !== "authenticated") 
 async function login(service: ReturnType<typeof auth>, uri: string, ip = "127.0.0.1") { return successful(await service.authenticate({ username: "niko", password, otp: otp(uri), trustedIp: ip })); }
 
 describe("session and HTTP policies", () => {
+  it("reports a sanitized logout failure when durable revocation fails and the bearer remains active", async () => {
+    const service = auth(), setup = await enrolled(service), logged = await login(service, setup.provisioningUri), db = connections.current!;
+    db.exec("CREATE TRIGGER synthetic_logout_failure BEFORE UPDATE OF revoked ON auth_sessions BEGIN SELECT RAISE(ABORT,'synthetic private storage detail'); END;");
+    let failure: unknown;
+    try { service.logout(logged.token); } catch (error) { failure = error; }
+    expect(service.authorizeSession(logged.token, utcInstant(new Date(time).toISOString()))).not.toBeNull();
+    expect(failure).toEqual(new Error("AUTH_LOGOUT_FAILED"));
+    db.exec("DROP TRIGGER synthetic_logout_failure;");
+    expect(() => service.logout(logged.token)).not.toThrow();
+    expect(service.authorizeSession(logged.token, utcInstant(new Date(time).toISOString()))).toBeNull();
+  });
+  it("keeps malformed, unknown and already-revoked logout tokens idempotent without revoking another session", async () => {
+    const service = auth(), setup = await enrolled(service), logged = await login(service, setup.provisioningUri);
+    for (const token of ["", "malformed", randomBytes(32).toString("base64url")]) expect(() => service.logout(token)).not.toThrow();
+    expect(service.authorizeSession(logged.token, utcInstant(new Date(time).toISOString()))).not.toBeNull();
+    service.logout(logged.token);
+    expect(() => service.logout(logged.token)).not.toThrow();
+    expect(service.authorizeSession(logged.token, utcInstant(new Date(time).toISOString()))).toBeNull();
+  });
   it("prunes expired auth attempts on worker maintenance without later login, preserving live limits and rollback rejection", async () => {
     const service = auth(), setup = await enrolled(service);
     await login(service, setup.provisioningUri); const first = time;
