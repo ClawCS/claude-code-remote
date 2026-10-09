@@ -95,6 +95,48 @@ async function admitted(key = "synthetic") {
   return { reservation, file, input: commitInput(reservation.id, file.bytes) };
 }
 describe("durable custody accounting", () => {
+  it("refuses abort of authoritative acceptance after an error before the committed journal update", async () => {
+    await ledger.reconcile(); const pending = await admitted();
+    const originalCommit = repo.commitIntake;
+    // Fault only the return boundary AFTER the real SQLite transaction has committed.
+    repo.commitIntake = input => { originalCommit(input); throw new Error("POST_COMMIT_FAILURE"); };
+    try { await expect(ledger.commitIntake(pending.input)).rejects.toThrow("POST_COMMIT_FAILURE"); }
+    finally { repo.commitIntake = originalCommit; }
+    const accepted = repo.listRetainedIntakes()[0];
+    expect(accepted.encryptedPayloadPath).toBe(intakePath(custodyRoot, pending.reservation.id));
+    const before = await readFile(accepted.encryptedPayloadPath);
+    await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("INVALID_RESERVATION");
+    expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
+    expect(repo.getCommittedIntake(accepted.id)).toEqual(accepted);
+    await ledger.reconcile();
+    expect((await ledger.cleanupOrphans()).orphans).toHaveLength(0);
+    expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
+  });
+  it("preserves the other live upload ownership after a commit failure closes readiness", async () => {
+    await ledger.reconcile(); const failing = await admitted("failing"), live = await admitted("live");
+    const writer = await open(live.file.path, "r+");
+    try {
+      await expect(ledger.commitIntake({ ...failing.input, actualBytes: 1 })).rejects.toThrow("SIZE_MISMATCH");
+      await expect(ledger.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+      await writer.write(Buffer.from("still live"), 0, 10, 0);
+      expect((await stat(live.file.path)).ino).toBe((await writer.stat()).ino);
+      await ledger.abortIntake(live.reservation.id, reserveInput().sessionHash);
+      const inventory = await ledger.reconcile();
+      expect(inventory.orphans).toHaveLength(1);
+      expect(inventory.orphans[0].path).toBe(failing.file.path);
+      await expect(ledger.reserve(reserveInput("after-drain"))).resolves.toMatchObject({ reservedBytes: 20000 });
+    } finally { await writer.close(); }
+  });
+  it("requires successful explicit abort draining even after abort cleanup fails", async () => {
+    await ledger.reconcile(); const pending = await admitted(); const ciphertext = await readFile(pending.file.path);
+    await rm(pending.file.path); await symlink(join(root, "registry.sqlite"), pending.file.path);
+    await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("UNSAFE_PATH");
+    await rm(pending.file.path); await writeFile(pending.file.path, ciphertext, { mode: 0o600 });
+    await expect(ledger.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+    await ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash);
+    expect((await ledger.reconcile()).orphans).toHaveLength(0);
+    expect(await readdir(intakeRoot)).toEqual([]);
+  });
   it("fsyncs a new worker-private accepted inode before ingress can mutate its retained descriptor", async () => {
     await ledger.reconcile(); const pending = await admitted(); const fd = await open(pending.file.path, "r+");
     const before = await readFile(pending.file.path);

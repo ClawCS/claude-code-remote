@@ -15,6 +15,7 @@ interface Journal {
 }
 export function createCustodyLedger(repo: ApplicationRepository, config: CustodyConfig): CustodyLedger {
   const entries = new Map<string, Journal>();
+  const intakeOwners = new Set<string>();
   const processingOwners = new Set<string>();
   let ready = false, reconciled = false, queue = Promise.resolve();
   const incoming = { uid: config.intakeUid, gid: config.sharedGid };
@@ -56,7 +57,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     for (const entry of entries.values()) {
       const size = (sizes.get(entry.path) ?? 0) + (entry.workerPath ? sizes.get(entry.workerPath) ?? 0 : 0);
       if (size > entry.budget || (entry.state === "committed" && !sizes.has(entry.workerPath ?? entry.path))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
-      if (entry.state === "reserved") reservedHeadroom += entry.budget - size + JOURNAL_HEADROOM;
+      if (entry.state === "reserved" || intakeOwners.has(entry.id)) reservedHeadroom += entry.budget - size + JOURNAL_HEADROOM;
     }
     if (physicalBytes + reservedHeadroom > PHYSICAL_CAP) throw new Error("CAPACITY_EXCEEDED");
     return Object.freeze({ physicalBytes, reservedHeadroom, orphans: Object.freeze([...entries.values()].filter(entry => entry.state === "orphan").map(entry => Object.freeze({ path: entry.path, cleanupAfter: entry.cleanupAfter }))) });
@@ -94,7 +95,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     await unlink(metadataPath(entry.id)); await syncRoot(config.custodyRoot); entries.delete(entry.id);
   }
   async function reconcile() {
-    if (processingOwners.size || (ready && [...entries.values()].some(entry => entry.kind === "intake" && entry.state === "reserved"))) throw new Error("CUSTODY_SCOPE_ACTIVE");
+    if (processingOwners.size || intakeOwners.size) throw new Error("CUSTODY_SCOPE_ACTIVE");
     ready = false; reconciled = false; entries.clear();
     const roots = [config.intakeRoot, config.custodyRoot, config.runtimeRoot];
     if (process.env.NODE_ENV !== "test" && config.intakeUid === process.getuid?.()) throw new Error("INVALID_STORAGE_IDENTITY");
@@ -145,12 +146,14 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     reconcile: () => exclusive(reconcile),
     reserve: input => exclusive(async () => {
       requireReady();
-      for (const entry of entries.values()) if (entry.kind === "intake" && entry.state === "reserved" && entry.reservation && entry.reservation.expiresAt <= now()) { await markOrphan(entry); repo.releaseReservation(entry.id); }
+      if (intakeOwners.size >= 2) throw new Error("CAPACITY_EXCEEDED");
+      for (const entry of entries.values()) if (entry.kind === "intake" && entry.state === "reserved" && !intakeOwners.has(entry.id) && entry.reservation && entry.reservation.expiresAt <= now()) { await markOrphan(entry); repo.releaseReservation(entry.id); }
       const total = await checked();
       if (input.reservedBytes > 2 * MAX_SEALED_BYTES || total.physicalBytes + total.reservedHeadroom + input.reservedBytes + JOURNAL_HEADROOM > PHYSICAL_CAP) throw new Error("CAPACITY_EXCEEDED");
       const reservation = repo.reserve({ ...input, now: now() });
       try { await save({ version: 1, id: reservation.id, kind: "intake", state: "reserved", budget: reservation.reservedBytes, path: intakePath(config.intakeRoot, reservation.id), workerPath: intakePath(config.custodyRoot, reservation.id), reservation, cleanupAfter: reservation.expiresAt }); }
       catch (error) { ready = false; repo.releaseReservation(reservation.id); throw error; }
+      intakeOwners.add(reservation.id);
       return reservation;
     }),
     commitIntake: input => exclusive(async () => {
@@ -175,15 +178,25 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         // If DB commit completed, recovery must preserve the accepted file; no guessed success.
         if (!repo.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) { await markOrphan(entry); repo.releaseReservation(entry.id); }
         throw error;
-      }
+      } finally { intakeOwners.delete(entry.id); }
     }),
     abortIntake: (id, sessionHash) => exclusive(async () => {
-      const entry = entries.get(id); if (!entry || entry.kind !== "intake" || entry.state !== "reserved" || entry.reservation?.sessionHash !== sessionHash) throw new Error("INVALID_RESERVATION");
-      try { await markOrphan(entry); await deleteEntry(entry); repo.releaseReservation(id); } catch (error) { ready = false; throw error; }
+      const entry = entries.get(id); if (!entry || entry.kind !== "intake" || entry.reservation?.sessionHash !== sessionHash) throw new Error("INVALID_RESERVATION");
+      // A failed post-commit journal write must never overrule durable DB acceptance.
+      const accepted = repo.listRetainedIntakes().find(record => record.encryptedPayloadPath === entry.workerPath);
+      if (accepted) {
+        const committed: Journal = { ...entry, state: "committed", caseId: accepted.id };
+        entries.set(id, committed);
+        try { await save(committed); } catch (error) { ready = false; throw error; }
+        intakeOwners.delete(id);
+        throw new Error("INVALID_RESERVATION");
+      }
+      if (!intakeOwners.has(id) || !["reserved", "orphan"].includes(entry.state)) throw new Error("INVALID_RESERVATION");
+      try { await markOrphan(entry); await deleteEntry(entry); repo.releaseReservation(id); intakeOwners.delete(id); } catch (error) { ready = false; throw error; }
     }),
     cleanupOrphans: () => exclusive(async () => {
       if (!reconciled) throw new Error("CUSTODY_NOT_READY");
-      try { await checked(); for (const entry of [...entries.values()]) if (entry.state === "orphan" && entry.cleanupAfter <= now()) await deleteEntry(entry); return await inspect(); }
+      try { await checked(); for (const entry of [...entries.values()]) if (entry.state === "orphan" && !intakeOwners.has(entry.id) && entry.cleanupAfter <= now()) await deleteEntry(entry); return await inspect(); }
       catch (error) { ready = false; throw error; }
     }),
   };
