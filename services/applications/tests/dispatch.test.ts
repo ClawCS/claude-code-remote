@@ -126,11 +126,21 @@ it("consumes a persisted receipt slot even when mailbox construction fails", asy
   expect(f.delivery().mailboxChecks).toBe(1); expect(f.sent).toHaveLength(1);
 });
 
-it("reports the immutable 24-hour send boundary when it passes during stored MIME verification", async () => {
+it.each([
+  { boundary: "24-hour send", time: "2026-10-10T10:00:00.000Z", reason: "MANUAL_REQUIRED" },
+  { boundary: "effective payload/artifact", time: "2026-10-16T10:00:00.000Z", reason: "PROCESSING_EXPIRED" },
+])("does not reopen MIME when the $boundary deadline passes after verification", async ({ time, reason }) => {
   const f = await harness(); await runDispatchOnce(f.deps);
+  expect((await f.row()).payloadDeleteAfter).toBe("2026-10-16T10:00:00.000Z");
+  expect(f.deps.repository.getArtifact(f.h.accepted.id, "mime")?.expiresAt).toBe("2026-10-16T10:00:00.000Z");
   const original = f.deps.artifacts.withMime;
-  f.deps.artifacts.withMime = (id, action) => original(id, async raw => { const result = await action(raw); f.now("2026-10-10T10:00:00.000Z"); return result; });
-  expect(await runDispatchOnce(f.deps)).toMatchObject({ state: "needs_attention", reason: "MANUAL_REQUIRED" });
+  let opens = 0;
+  f.deps.artifacts.withMime = (id, action) => {
+    opens++;
+    return original(id, async raw => { const result = await action(raw); f.now(time); return result; });
+  };
+  expect(await runDispatchOnce(f.deps)).toMatchObject({ state: "needs_attention", reason });
+  expect(opens).toBe(1);
   expect(f.delivery().attempts).toHaveLength(0); expect(f.sent).toHaveLength(0);
 });
 
@@ -166,6 +176,34 @@ it("captures email before an infected-source determination and shortens invalid 
   expect(f.delivery().contactEnvelope).not.toBeNull(); expect(f.counts().rasterCalls).toBe(0);
   expect((await f.row()).payloadDeleteAfter).toBe("2026-10-10T10:00:00.000Z");
   expect((await f.row()).contactDeleteAfter).toBe("2026-10-10T10:00:00.000Z");
+});
+
+it.each(["mismatched", "unknown"])("shortens retention for authenticated %s source identity without sending", async kind => {
+  const bytes = kind === "mismatched"
+    ? await sharp({ create: { width: 1, height: 1, channels: 3, background: "red" } }).png().toBuffer()
+    : Buffer.from("not an allowed document format");
+  const storage = await makeArtifactHarness([{ name: "claimed.jpg", mediaType: "image/jpeg", content: bytes.toString("base64") }]);
+  const f = await harness(false, storage);
+  expect(await runDispatchOnce(f.deps)).toMatchObject({ state: "needs_attention", reason: "INVALID_INPUT" });
+  expect(f.delivery()).toMatchObject({ category: "invalid", cleanupDueAt: "2026-10-10T09:00:00.000Z" });
+  expect((await f.row()).payloadDeleteAfter).toBe("2026-10-10T10:00:00.000Z");
+  expect((await f.row()).contactDeleteAfter).toBe("2026-10-10T10:00:00.000Z");
+  expect(openContact(f.delivery().contactEnvelope!, { caseId: storage.accepted.id, acceptedAt: storage.accepted.acceptedAt, version: 1 }, storage.keys.privateKey)).toBe("synthetic@example.invalid");
+  expect(f.scans).toHaveLength(1); expect(f.counts().rasterCalls).toBe(0);
+  expect(f.delivery().attempts).toHaveLength(0); expect(f.sent).toHaveLength(0);
+});
+
+it("keeps a processing-file digest integrity failure operational rather than invalid input", async () => {
+  const f = await harness(true), scan = f.deps.reconstruction.scanner.scan;
+  f.deps.reconstruction.scanner.scan = async (file, signal) => {
+    const result = await scan(file, signal), bytes = await readFile(file.path);
+    bytes[bytes.length - 1] ^= 1; await writeFile(file.path, bytes); return result;
+  };
+  expect(await runDispatchOnce(f.deps)).toMatchObject({ state: "needs_attention", reason: "DEPENDENCY_UNAVAILABLE" });
+  expect(f.delivery()).toMatchObject({ category: "operational", cleanupDueAt: null });
+  expect((await f.row()).payloadDeleteAfter).toBe("2026-10-16T10:00:00.000Z");
+  expect((await f.row()).contactDeleteAfter).toBe("2026-11-08T10:00:00.000Z");
+  expect(f.delivery().contactEnvelope).not.toBeNull(); expect(f.sent).toHaveLength(0);
 });
 
 it("fails closed before scanning when original ciphertext is altered", async () => {

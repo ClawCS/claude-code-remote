@@ -91,6 +91,7 @@ export async function runDispatchOnce(deps: DispatchDependencies): Promise<Dispa
         const checked = await verifiedMime();
         // A second authenticated open supplies a fresh source. Never reuse the
         // verifier's consumed iterable or let plaintext outlive withMime.
+        permission("mime");
         await deps.artifacts.withMime(row.id, async raw => {
           permission("mime");
           update(await repo.beginSendAttempt(authority(), checked.artifact, checked.verification, now()));
@@ -125,7 +126,7 @@ export async function runDispatchOnce(deps: DispatchDependencies): Promise<Dispa
         const code = error instanceof Error ? error.message : "";
         if (claimed.case.claimKind === "prepare" && failure.reason === "DEPENDENCY_UNAVAILABLE") {
           if (code === "INFECTED") failure = { category: "invalid", reason: "MALICIOUS_INPUT" };
-          else if (["INVALID_FILE", "FILE_LIMIT", "ACTIVE_PDF", "ENCRYPTED_PDF", "UNSUPPORTED_PDF", "PAGE_LIMIT", "IMAGE_LIMIT", "INVALID_REPLY_TO", "INVALID_MAIL_TEXT"].includes(code)) failure = { category: "invalid", reason: "INVALID_INPUT" };
+          else if (["IDENTITY_MISMATCH", "INVALID_FILE", "FILE_LIMIT", "ACTIVE_PDF", "ENCRYPTED_PDF", "UNSUPPORTED_PDF", "PAGE_LIMIT", "IMAGE_LIMIT", "INVALID_REPLY_TO", "INVALID_MAIL_TEXT"].includes(code)) failure = { category: "invalid", reason: "INVALID_INPUT" };
         }
         update(await repo.recordDeliveryFailure(authority(), failure, now()));
       }
