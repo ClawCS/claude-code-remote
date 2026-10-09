@@ -30,6 +30,43 @@ export function utcInstant(value: string): Instant {
   return value as Instant;
 }
 export interface Clock { now(): Date }
+// Worker-only safety-journal V1. These signed bytes authenticate bindings, not
+// storage durability, current coverage, or exclusion of another writer.
+export type FenceAction = "reject" | "correct-date" | "reopen" | "hold" | "renew-hold" | "release-hold" | "manual-case";
+export type JournalEvent = readonly ["tj-journal-event-v1", string, string, "case_fence", readonly [ApplicationId, "initial" | "fence", string, string, FenceAction]]
+  | readonly ["tj-journal-event-v1", string, string, "barrier", readonly [string, string, "startup" | "restore" | "refresh"]];
+export type Tombstone = JournalEvent;
+export type SignedEntry = string & { readonly __signedJournalEntry: unique symbol };
+export type SignedHead = string & { readonly __signedJournalHead: unique symbol };
+export type LedgerCursor = string & { readonly __journalCursor: unique symbol };
+export type CommittedTombstone = SignedEntry;
+export interface DurableReceipt { readonly entry: SignedEntry; readonly head: SignedHead }
+export interface DeletionLedgerPort {
+  append(event: Tombstone): Promise<DurableReceipt>;
+  readSince(cursor: LedgerCursor): AsyncIterable<CommittedTombstone>;
+}
+export interface LedgerAnchor { readonly cursor: LedgerCursor; readonly receipt: DurableReceipt | null }
+export interface LedgerTrustContext {
+  readonly ledgerId: string; readonly historyEpoch: string; readonly writerEpoch: string;
+  readonly keyId: string; readonly publicKey: KeyObject; readonly genesisHash: string;
+  readonly operationalStart: string; readonly operationalEnd: string;
+  // Independently selected retained coverage anchor, never supplied by HTTP or
+  // inferred from a restored database's signed records. Task14 qualifies it.
+  readonly anchor: LedgerAnchor;
+}
+export interface LedgerTrustPort { currentContext(): LedgerTrustContext | null }
+export interface JournalClock { wallNow(): Date; monotonicNow(): number }
+export interface JournalCheckpoint { readonly sequence: string; readonly hash: string; readonly observedAt: string | null; readonly cursor: LedgerCursor }
+export interface VerifiedJournalEntry extends JournalCheckpoint { readonly event: JournalEvent; readonly wire: SignedEntry }
+export type JournalProgress = { readonly kind: "observed"; readonly checkpoint: JournalCheckpoint; readonly receipt: DurableReceipt }
+  | { readonly kind: "continuation"; readonly checkpoint: JournalCheckpoint; readonly next: "continue-replay" | "refresh" };
+export interface SafetyJournal {
+  append(event: JournalEvent): Promise<DurableReceipt>;
+  refresh(purpose: "startup" | "restore" | "refresh"): Promise<JournalProgress>;
+  continueReplay(): Promise<JournalProgress>;
+  recover(event?: JournalEvent): Promise<JournalProgress>;
+  observation(): JournalCheckpoint | null;
+}
 // Worker-only authority. This port must be independently qualified before use;
 // a stored epoch or a local configuration flag is not restore assurance.
 export interface AuthTrustPort { currentEpoch(): Digest | null }
