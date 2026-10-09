@@ -43,6 +43,13 @@ export type VerificationResult = { kind: "verified" } | { kind: "mismatch" };
 export type SendOutcome = { kind: "accepted" } | { kind: "definitely_failed"; retryable: boolean } | { kind: "uncertain" };
 export interface SmtpResult { readonly accepted: readonly string[]; readonly rejected: readonly string[]; readonly response: string }
 export interface SmtpPort { connect(): Promise<void>; login(): Promise<void>; send(envelope: MailEnvelope, raw: AsyncIterable<Uint8Array>): Promise<SmtpResult>; close(): void }
+export interface MailboxRunBudget { readonly __mailboxRunBudget: unique symbol }
+export interface ImapConfig { readonly user: string; readonly pass: string; readonly keys: VerificationKeys; readonly budget: MailboxRunBudget }
+export interface VerifiedCopy { readonly mailbox: string; readonly uidValidity: string; readonly uid: number; readonly fingerprint: Digest }
+export type MailboxIssue = "INVALID_IDENTITY" | "DEPENDENCY_UNAVAILABLE" | "CONNECTION_FAILED" | "OPERATION_TIMEOUT" | "PROTOCOL_LIMIT" | "LIST_LIMIT" | "FOLDER_UNAVAILABLE" | "CANDIDATE_LIMIT" | "INCOMPLETE_CONTENT" | "CONTENT_MISMATCH" | "UIDVALIDITY_CHANGED" | "UNSAFE_DELETE_CAPABILITY" | "WRITE_UNAVAILABLE" | "IDENTITY_CHANGED" | "DELETE_UNCERTAIN";
+export interface MailboxSearch { copies: VerifiedCopy[]; complete: boolean; issues: MailboxIssue[] }
+export type DeleteResult = { kind: "deleted" } | { kind: "not-found" } | { kind: "mismatch"; issue: MailboxIssue } | { kind: "blocked"; issue: MailboxIssue } | { kind: "uncertain"; issue: MailboxIssue };
+export interface MailboxPort { findVerified(mail: RegisteredMail): Promise<MailboxSearch>; deleteVerified(copy: VerifiedCopy, mail: RegisteredMail): Promise<DeleteResult>; disconnect(): Promise<void> }
 export type DeliveryState = "queued" | "scanning" | "ready" | "sending" | "smtp_accepted" | "uncertain" | "delivered" | "needs_attention";
 export type CaseState = "open" | "reviewing" | "rejected_closed" | "manual_case";
 export type SubmissionKind = { readonly kind: "application" } | { readonly kind: "synthetic"; readonly pilotRunId: string };

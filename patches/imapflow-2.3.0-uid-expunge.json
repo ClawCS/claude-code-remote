@@ -1,0 +1,36 @@
+{
+  "package": "imapflow",
+  "version": "2.3.0",
+  "files": [
+    {
+      "path": "dist/cjs/commands/expunge.js",
+      "originalSha256": "a2f08fcbf1fd26d8689465475eb085a539e75e09fb847851f4df59bb20831954",
+      "patchedSha256": "6bcb38dd8180c6428a67b63d2b974e7be49a392a5bd77ae2692b61cb02d96d1d",
+      "replacements": [
+        {
+          "from": "    options = options || {};",
+          "to": "    options = options || {};\n    // TJ R48: UID mode must never mutate without explicit targeted capability.\n    if (options.uid && !connection.capabilities.has('UIDPLUS')) return false;"
+        },
+        {
+          "from": "    let byUid = options.uid && (0, tools_js_1.hasCapability)(connection, 'UIDPLUS');",
+          "to": "    // TJ R48: capability can change during awaited STORE; never fall back.\n    if (options.uid && !connection.capabilities.has('UIDPLUS')) return false;\n    let byUid = !!options.uid;"
+        }
+      ]
+    },
+    {
+      "path": "dist/esm/commands/expunge.js",
+      "originalSha256": "e5440fac99ca3e94dea21642e5a1d2a7ba33087bc834dcf683bd65b75cade2b3",
+      "patchedSha256": "4292662e60e15f21049c2e56acb6a971741a7892f46fc31d74a7d9b48405f655",
+      "replacements": [
+        {
+          "from": "    options = options || {};",
+          "to": "    options = options || {};\n    // TJ R48: UID mode must never mutate without explicit targeted capability.\n    if (options.uid && !connection.capabilities.has('UIDPLUS')) return false;"
+        },
+        {
+          "from": "    let byUid = options.uid && hasCapability(connection, 'UIDPLUS');",
+          "to": "    // TJ R48: capability can change during awaited STORE; never fall back.\n    if (options.uid && !connection.capabilities.has('UIDPLUS')) return false;\n    let byUid = !!options.uid;"
+        }
+      ]
+    }
+  ]
+}

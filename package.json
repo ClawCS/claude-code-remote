@@ -4,9 +4,12 @@
   "private": true,
   "engines": { "node": ">=22.13.0" },
   "scripts": {
+    "applications:imap-patch": "node scripts/applications-imap-patch.mjs",
+    "postinstall": "npm run applications:imap-patch",
+    "preapplications:build": "npm run applications:imap-patch",
     "applications:build": "tsc -p services/applications/tsconfig.json && node -e \"require('node:fs').copyFileSync('services/applications/src/schema.sql', '.build/applications/services/applications/src/schema.sql')\"",
     "dev": "next dev --webpack",
-    "prebuild": "tsx scripts/validate-content-build.ts",
+    "prebuild": "npm run applications:imap-patch && tsx scripts/validate-content-build.ts",
     "build": "next build",
     "start": "next start",
     "generate:handzettel": "node scripts/generate-handzettel-manifest.mjs",
