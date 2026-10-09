@@ -1,4 +1,4 @@
-import { makeArtifactHarness } from "./artifacts";
+import { makeArtifactHarness, claimArtifactPreparation } from "./artifacts";
 import { createArtifactStore } from "../../src/artifact-store";
 import { takePrivateSnapshot, withPrivateFiles } from "../../src/custody";
 import { withReconstructedDocuments, type ReconstructionDependencies } from "../../src/reconstruction";
@@ -28,7 +28,7 @@ async function main(){
   try{
     await withPrivateFiles(snapshot,h.keys,processing=>withReconstructedDocuments(processing,deps,async bundle=>{
       await createArtifactStore(h.repo,h.keys,h.keys.custody).adoptBundle(bundle,1);
-      if(stage==="after-retire"){await h.repo.retireOriginal(h.accepted.id,2);await pause();}
+      if(stage==="after-retire"){const current=await claimArtifactPreparation(h);await h.repo.retireOriginal(h.accepted.id,current.version);await pause();}
     }));
     throw new Error("BOUNDARY_NOT_REACHED");
   }catch(error){

@@ -1,6 +1,6 @@
 import { testAdmission } from "./fixtures/admission";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createHash } from "node:crypto";
+import { createHash, generateKeyPairSync } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -8,12 +8,14 @@ import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import Database from "better-sqlite3";
 import { openRepository } from "../src/repository";
-import type { ApplicationRepository, Digest, Instant, IntakeCommit } from "../src/types";
+import { sealContact } from "../src/contact-crypto";
+import type { ApplicationId, ApplicationRepository, CaseRecord, Digest, Instant, IntakeCommit } from "../src/types";
 
 const now = "2026-10-09T10:00:00.000Z" as Instant;
 const digest = "a".repeat(64) as Digest;
 const session = "b".repeat(64) as Digest;
 const MiB = 1024 * 1024;
+const contactKeys = generateKeyPairSync("rsa", { modulusLength: 2048 });
 let dir: string;
 let repo: ApplicationRepository;
 beforeEach(() => { dir = mkdtempSync(join(realpathSync(tmpdir()), "applications-registry-")); repo = openRepository(join(dir, "registry.sqlite")); });
@@ -57,8 +59,8 @@ describe("repository-idempotency", () => {
     const other = repo.reserve({ ...testAdmission(),  sessionHash: "c".repeat(64) as Digest, idempotencyKey: "same", reservedBytes: 1, now });
     const second = repo.commitIntake({ ...commit("unused"), reservationId: other.id });
     expect(second.reference).not.toBe(first.reference);
-    expect(repo.claimNext("a", now)?.id).toBe(first.id);
-    await repo.transitionDelivery(first.id, 2, { state: "ready" });
+    const claim = repo.claimNext("a", now)!; expect(claim.id).toBe(first.id);
+    await repo.recordDeliveryFailure(authority(claim), { category: "operational", reason: "DEPENDENCY_UNAVAILABLE" }, now);
     expect(repo.claimNext("b", now)?.id).toBe(second.id);
   });
 });
@@ -116,7 +118,7 @@ describe("repository-capacity", () => {
 describe("registry lifecycle", () => {
   it("migrates v1 transactionally without changing acceptance, request digest, or public proofs",async()=>{
     const accepted=repo.commitIntake(commit("legacy"));repo.close();
-    const legacy=new Database(join(dir,"registry.sqlite"));legacy.exec("DROP TABLE artifacts; DROP TABLE artifact_reservations; DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=1;");legacy.close();
+    const legacy=new Database(join(dir,"registry.sqlite"));removeV4(legacy);legacy.exec("DROP TABLE artifacts; DROP TABLE artifact_reservations; DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=1;");legacy.close();
     repo=openRepository(join(dir,"registry.sqlite"));
     expect(repo.getRequestIdentity(accepted.id)).toEqual({id:accepted.id,digest,acceptedAt:now});
     expect(repo.listArtifactReservations()).toEqual([
@@ -126,19 +128,19 @@ describe("registry lifecycle", () => {
     expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest,now)?.reference).toBe(accepted.reference);
     expect(repo.claimNext("migration", now)?.submission).toEqual({ kind: "application" });
   });
-  it("migrates the actual v2 artifact schema to v3 without changing artifacts or identity", async () => {
+  it("migrates the actual v2 artifact schema through v3 to v4 without changing artifacts or identity", async () => {
     const accepted = repo.commitIntake(commit("v2"));
     const path = join(dir, "v2-bundle.enc"), bytes = Buffer.from("synthetic-v2-artifact"); writeFileSync(path, bytes, { mode: 0o600 });
     const artifact = { caseId: accepted.id, kind: "bundle" as const, path, bytes: bytes.length, plaintextDigest: digest, ciphertextDigest: createHash("sha256").update(bytes).digest("hex") as Digest, expiresAt: "2026-10-16T10:00:00.000Z" as Instant };
     await repo.adoptArtifact(artifact, 1); const reserves = repo.listArtifactReservations();
     repo.close(); const legacy = new Database(join(dir, "registry.sqlite"));
-    legacy.exec("DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=2;"); legacy.close();
+    removeV4(legacy); legacy.exec("DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=2;"); legacy.close();
     repo = openRepository(join(dir, "registry.sqlite"));
     expect(repo.getArtifact(accepted.id, "bundle")).toEqual(artifact); expect(repo.listArtifactReservations()).toEqual(reserves);
     expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
     expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest, now)?.reference).toBe(accepted.reference);
     await repo.withCaseLock(accepted.id, async row => { expect(row.submission).toEqual({ kind: "application" }); });
-    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(3);
+    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(4);
     expect(() => inspect.prepare("UPDATE cases SET submission=? WHERE id=?").run('{"kind":"synthetic","pilotRunId":"invented"}', accepted.id)).toThrow("IMMUTABLE_SUBMISSION"); inspect.close();
     repo = openRepository(join(dir, "registry.sqlite"));
   });
@@ -150,7 +152,9 @@ describe("registry lifecycle", () => {
     await repo.adoptArtifact(record, 1);
     await expect(repo.adoptArtifact({ ...record, plaintextDigest: "c".repeat(64) as Digest }, 2)).rejects.toThrow("ARTIFACT_CONFLICT");
     expect((await repo.adoptArtifact(record, 1)).version).toBe(2);
-    await repo.retireOriginal(accepted.id, 2);
+    const claimed=repo.claimNext("contact-fixture",now)!;
+    const contact=await repo.storeContact(authority(claimed),sealContact("synthetic@example.test",{caseId:accepted.id,acceptedAt:now,version:1},contactKeys.publicKey),contactKeys.privateKey,now);
+    await repo.retireOriginal(accepted.id, contact.case.version);
     expect(repo.getCommittedIntake(accepted.id)).toBeNull();
     expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
     repo.close(); repo = openRepository(join(dir, "registry.sqlite"));
@@ -160,9 +164,9 @@ describe("registry lifecycle", () => {
   it("cannot retire the sole original or create an artifact once sending has begun", async () => {
     const accepted = repo.commitIntake(commit("sole"));
     await expect(repo.retireOriginal(accepted.id, 1)).rejects.toThrow("BUNDLE_REQUIRED");
-    repo.claimNext("worker", now); await repo.transitionDelivery(accepted.id, 2, { state: "ready" }); await repo.transitionDelivery(accepted.id, 3, { state: "sending" });
+    const sending = await beginSyntheticSend(accepted.id);
     const path = join(dir, "late.enc"); writeFileSync(path, "late", { mode: 0o600 });
-    await expect(repo.adoptArtifact({ caseId: accepted.id, kind: "mime", path, bytes: 4, plaintextDigest: digest, ciphertextDigest: createHash("sha256").update("late").digest("hex") as Digest, expiresAt: "2026-10-16T10:00:00.000Z" as Instant }, 4)).rejects.toThrow("ARTIFACT_CREATION_CLOSED");
+    await expect(repo.adoptArtifact({ caseId: accepted.id, kind: "bundle", path, bytes: 4, plaintextDigest: digest, ciphertextDigest: createHash("sha256").update("late").digest("hex") as Digest, expiresAt: "2026-10-16T10:00:00.000Z" as Instant }, sending.version)).rejects.toThrow("ARTIFACT_CREATION_CLOSED");
   });
   it("refuses an existing database readable by other OS users", () => {
     const path = join(dir, "unsafe.sqlite"); writeFileSync(path, "", { mode: 0o644 });
@@ -199,9 +203,7 @@ describe("registry lifecycle", () => {
     } finally { inspection.close(); }
   });
   it("never requeues a potentially sent case after restart", async () => {
-    const first = repo.commitIntake(commit("uncertain")); repo.claimNext("worker", now);
-    await repo.transitionDelivery(first.id, 2, { state: "ready" });
-    await repo.transitionDelivery(first.id, 3, { state: "sending" });
+    const first = repo.commitIntake(commit("uncertain")); await beginSyntheticSend(first.id);
     repo.close(); repo = openRepository(join(dir, "registry.sqlite"));
     expect(repo.claimNext("new-worker", now)).toBeNull();
     const state = await repo.withCaseLock(first.id, async row => row.deliveryState);
@@ -226,8 +228,8 @@ describe("registry lifecycle", () => {
   it("supports explicit CAS transitions inside the guard without deadlock", async () => {
     const first = repo.commitIntake(commit("transition")); const claim = repo.claimNext("worker", now)!;
     await repo.withCaseLock(first.id, async row => {
-      const updated = await repo.transitionDelivery(row.id, row.version, { state: "ready" });
-      expect(updated.version).toBe(3);
+      const updated = await repo.stageDeliveryIdentity(authority(row), "signing-1", now);
+      expect(updated.case.version).toBe(3);
     });
     await expect(repo.transitionDelivery(first.id, claim.version, { state: "sending" })).rejects.toThrow("STALE_VERSION");
     await expect(repo.transitionDelivery(first.id, 3, { state: "delivered" })).rejects.toThrow("INVALID_TRANSITION");
@@ -242,7 +244,7 @@ describe("registry lifecycle", () => {
     const first = repo.commitIntake(commit("detached")); repo.claimNext("worker", now);
     let resume!: () => void; const barrier = new Promise<void>(resolve => { resume = resolve; });
     let detached!: Promise<unknown>;
-    await repo.withCaseLock(first.id, async row => { detached = barrier.then(() => repo.transitionDelivery(row.id, row.version, { state: "ready" })); });
+    await repo.withCaseLock(first.id, async row => { detached = barrier.then(() => repo.stageDeliveryIdentity(authority(row), "signing-1", now)); });
     const result = Promise.allSettled([detached]);
     let release!: () => void; const held = new Promise<void>(resolve => { release = resolve; });
     let completed = false;
@@ -276,10 +278,27 @@ function commitPayload(key: string, reservationId: string): IntakeCommit {
   return { reservationId, digest, actualBytes: 1, encryptedPayloadPath: join(dir, `${key}.enc`), encryptedName: "ciphertext:synthetic-name", job: "sales-fulltime", now };
 }
 async function smallArtifactCase(key:string){
-  const accepted=repo.commitIntake(commit(key));let version=1;
+  const accepted=repo.commitIntake(commit(key));let row=await stageMail(accepted.id);
   for(const kind of ["bundle","mime"] as const){
     const path=join(dir,`${key}.${kind}.enc`);writeFileSync(path,"x",{mode:0o600});
-    await repo.adoptArtifact({caseId:accepted.id,kind,path,bytes:1,plaintextDigest:digest,ciphertextDigest:createHash("sha256").update("x").digest("hex") as Digest,expiresAt:"2026-10-16T10:00:00.000Z" as Instant},version++);
+    row=await repo.adoptArtifact({caseId:accepted.id,kind,path,bytes:1,plaintextDigest:digest,ciphertextDigest:createHash("sha256").update("x").digest("hex") as Digest,expiresAt:"2026-10-16T10:00:00.000Z" as Instant},row.version);
   }
+  await repo.bindVerifiedMime(authority(row),repo.getArtifact(accepted.id,"mime")!,{kind:"verified"},now);
   return accepted;
+}
+function authority(row: CaseRecord) { return { id: row.id, version: row.version, token: row.claimToken! }; }
+async function stageMail(id: ApplicationId) {
+  const claimed=repo.claimNext("fixture",now)!; expect(claimed.id).toBe(id);
+  const staged=await repo.stageDeliveryIdentity(authority(claimed),"signing-1",now);
+  return (await repo.stageRegisteredMail(authority(staged.case),{id,messageId:staged.delivery.identity!.messageId,keyId:"signing-1",profile:"tj-mail-1",fingerprint:digest,shape:{kind:"text",parts:1,attachments:[]}},now)).case;
+}
+async function beginSyntheticSend(id: ApplicationId) {
+  const row=await stageMail(id),path=join(dir,`${id}.mime.enc`);writeFileSync(path,"x",{mode:0o600});
+  const artifact={caseId:id,kind:"mime" as const,path,bytes:1,plaintextDigest:digest,ciphertextDigest:createHash("sha256").update("x").digest("hex") as Digest,expiresAt:"2026-10-16T10:00:00.000Z" as Instant};
+  const adopted=await repo.adoptArtifact(artifact,row.version); await repo.bindVerifiedMime(authority(adopted),artifact,{kind:"verified"},now);
+  const claimed=repo.claimDispatchWork("fixture",now,"send")!;
+  return (await repo.beginSendAttempt(authority(claimed.case),artifact,{kind:"verified"},now)).case;
+}
+function removeV4(db: Database.Database) {
+  db.exec("DROP TABLE delivery_attempts; DROP TABLE deliveries; DROP INDEX delivery_claim_token; DROP TRIGGER case_accepted_at_immutable; ALTER TABLE cases DROP COLUMN claimToken; ALTER TABLE cases DROP COLUMN claimKind;");
 }

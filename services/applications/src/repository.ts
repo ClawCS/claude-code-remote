@@ -4,24 +4,20 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import type { PublicStatus } from "../../../lib/applications-contract";
-import type { Acceptance, ApplicationId, ApplicationRepository, ArtifactKind, ArtifactRecord, ArtifactReservation, CaseRecord, ClaimedCase, DeliveryState, DeliveryTransition, Digest, Instant, IntakeCommit, Reservation, ReservationInput, RequestIdentity } from "./types";
+import type { Acceptance, ApplicationId, ApplicationRepository, ArtifactKind, ArtifactRecord, ArtifactReservation, CaseRecord, ClaimedCase, Clock, DeliveryTransition, Digest, Instant, IntakeCommit, Reservation, ReservationInput, RequestIdentity } from "./types";
 import { applicationId, digest, utcInstant } from "./types";
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, storageBudget } from "./storage-budget";
 import { admissionKeys, submissionKind, ADMISSION_WINDOW_MS, ADMISSION_EVENT_CAP, RateLimitedError } from "./intake-admission";
+import { createDeliveryRepository, recoverDelivery } from "./delivery-repository";
 
 const DAY = 86400000;
-const transitions: Record<DeliveryState, readonly DeliveryState[]> = {
-  queued: [], scanning: ["ready", "needs_attention"], ready: ["sending", "needs_attention"],
-  sending: ["smtp_accepted", "uncertain", "needs_attention"], smtp_accepted: ["delivered", "uncertain"],
-  uncertain: ["delivered", "needs_attention"], delivered: [], needs_attention: [],
-};
 function addDays(value: Instant, days: number): Instant { return utcInstant(new Date(Date.parse(value) + days * DAY).toISOString()); }
 function checkBytes(value: number): void { if (!Number.isSafeInteger(value) || value < 0) throw new Error("INVALID_BYTES"); }
 interface StoredReservation extends Omit<Reservation, "submission"> { active: number; submission: string }
 interface StoredCase extends Omit<CaseRecord, "submission"> { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string; submission: string }
 interface Guard { id: ApplicationId; active: boolean }
 
-export function openRepository(path: string): ApplicationRepository {
+export function openRepository(path: string, clock: Clock = { now: () => new Date() }): ApplicationRepository {
   if (!isAbsolute(path) || resolve(path) !== path || path.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part))) throw new Error("UNSAFE_PATH");
   for (let part = dirname(path); part !== dirname(part); part = dirname(part)) {
     const stat = lstatSync(part); if (stat.isSymbolicLink()) throw new Error("UNSAFE_PATH");
@@ -41,7 +37,7 @@ export function openRepository(path: string): ApplicationRepository {
     db.pragma("synchronous = FULL");
     // An eager write transaction obtains ownership; the pragma alone does not.
     db.exec("BEGIN IMMEDIATE; COMMIT;");
-    const version = db.pragma("user_version", { simple: true });
+    let version = db.pragma("user_version", { simple: true });
     if (version === 0) db.transaction(() => db.exec(readFileSync(join(__dirname, "schema.sql"), "utf8"))).immediate();
     else if (version === 1 || version === 2) db.transaction(() => {
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8");
@@ -53,13 +49,14 @@ export function openRepository(path: string): ApplicationRepository {
         db.pragma("user_version = 2");
       }
       db.exec(`ALTER TABLE reservations ADD COLUMN submission TEXT NOT NULL DEFAULT '{"kind":"application"}'; ALTER TABLE cases ADD COLUMN submission TEXT NOT NULL DEFAULT '{"kind":"application"}';`);
-      db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events")));
+      db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
+      db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
-    db.transaction(() => {
-      db.prepare("DELETE FROM reservations WHERE active = 1").run();
-      db.prepare("INSERT INTO audit (caseId, event, version, at) SELECT id, 'recovered', version + 1, ? FROM cases WHERE deliveryState IN ('scanning','ready','sending','smtp_accepted')").run(new Date().toISOString());
-      db.prepare("UPDATE cases SET deliveryState = CASE WHEN deliveryState IN ('sending','smtp_accepted') THEN 'uncertain' ELSE 'queued' END, claimOwner = NULL, claimedAt = NULL, version = version + 1 WHERE deliveryState IN ('scanning','ready','sending','smtp_accepted')").run();
+    else if (version !== 3 && version !== 4) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    version = db.pragma("user_version", { simple: true });
+    if (version === 3) db.transaction(() => {
+      db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE deliveries")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -71,8 +68,15 @@ export function openRepository(path: string): ApplicationRepository {
   let closed = false;
   function live(): void { if (closed) throw new Error("REPOSITORY_CLOSED"); }
   function readCase(id: ApplicationId): CaseRecord {
-    live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, deleteAfter, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission"> & { submission: string }) | undefined;
+    live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, deleteAfter, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, claimToken, claimKind, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission"> & { submission: string }) | undefined;
     if (!row) throw new Error("CASE_NOT_FOUND");
+    utcInstant(row.acceptedAt); utcInstant(row.payloadDeleteAfter); utcInstant(row.contactDeleteAfter);
+    if (!Number.isSafeInteger(row.version) || row.version < 1 || row.payloadDeleteAfter > addDays(row.acceptedAt, 7) || row.contactDeleteAfter > addDays(row.acceptedAt, 30) || (row.claimToken === null) !== (row.claimKind === null) || (row.claimToken !== null && (!/^[a-f0-9]{64}$/.test(row.claimToken) || !["prepare", "send", "reconcile"].includes(row.claimKind!)))) throw new Error("INVALID_DELIVERY_METADATA");
+    if ((row.claimToken === null) !== (row.claimOwner === null) || (row.claimToken === null) !== (row.claimedAt === null)) throw new Error("INVALID_DELIVERY_METADATA");
+    if (row.claimToken !== null) {
+      utcInstant(row.claimedAt!);
+      if (!/^[A-Za-z0-9_-]{1,128}$/.test(row.claimOwner!) || (row.claimKind === "prepare" && row.deliveryState !== "scanning") || (row.claimKind === "send" && !["ready", "sending"].includes(row.deliveryState)) || (row.claimKind === "reconcile" && !["smtp_accepted", "uncertain"].includes(row.deliveryState))) throw new Error("INVALID_DELIVERY_METADATA");
+    }
     return { ...row, submission: submissionKind(JSON.parse(row.submission)) };
   }
   async function guarded<T>(id: ApplicationId, action: () => Promise<T>): Promise<T> {
@@ -157,6 +161,7 @@ export function openRepository(path: string): ApplicationRepository {
       submissionKind(JSON.parse(reservation.submission));
       const row = { id: applicationId(randomUUID()), reference: `TJ-${randomBytes(12).toString("hex").toUpperCase()}`, reservationId: input.reservationId, sessionHash: reservation.sessionHash, idempotencyKey: reservation.idempotencyKey, digest: input.digest, encryptedName: input.encryptedName, job: input.job, acceptedAt: input.now, encryptedPayloadPath: input.encryptedPayloadPath, payloadBytes: input.actualBytes, payloadDeleteAfter: addDays(input.now, 7), contactDeleteAfter: addDays(input.now, 30), submission: reservation.submission };
       db.prepare("INSERT INTO cases (id, reference, reservationId, sessionHash, idempotencyKey, digest, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, payloadDeleteAfter, contactDeleteAfter, submission) VALUES (@id, @reference, @reservationId, @sessionHash, @idempotencyKey, @digest, @encryptedName, @job, @acceptedAt, 'queued', 'open', 1, @encryptedPayloadPath, @payloadBytes, @payloadDeleteAfter, @contactDeleteAfter, @submission)").run(row);
+      db.prepare("INSERT INTO deliveries(caseId) VALUES(?)").run(row.id);
       db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
       for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter);
       db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'accepted', 1, ?)").run(row.id, input.now);
@@ -164,16 +169,7 @@ export function openRepository(path: string): ApplicationRepository {
     }).immediate();
   }
   function claimNext(owner: string, now: Instant): ClaimedCase | null {
-    live(); utcInstant(now); if (!/^[A-Za-z0-9_-]{1,128}$/.test(owner)) throw new Error("INVALID_CLAIM_OWNER");
-    return db.transaction(() => {
-      if (db.prepare("SELECT 1 FROM cases WHERE deliveryState = 'scanning'").get()) return null;
-      const rows = db.prepare("SELECT id, version FROM cases WHERE deliveryState = 'queued' ORDER BY acceptedAt, rowid").all() as { id: ApplicationId; version: number }[];
-      const next = rows.find(row => !locks.has(row.id)); if (!next) return null;
-      const result = db.prepare("UPDATE cases SET deliveryState = 'scanning', claimOwner = ?, claimedAt = ?, version = version + 1 WHERE id = ? AND version = ? AND deliveryState = 'queued'").run(owner, now, next.id, next.version);
-      if (result.changes !== 1) throw new Error("STALE_VERSION");
-      db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'claimed', ?, ?)").run(next.id, next.version + 1, now);
-      return readCase(next.id) as ClaimedCase;
-    }).immediate();
+    live(); return delivery.claimDispatchWork(owner, now, "prepare")?.case ?? null;
   }
   function getPublicStatus(proofHash: Digest, now: Instant): PublicStatus | null {
     live(); digest(proofHash); utcInstant(now);
@@ -181,15 +177,13 @@ export function openRepository(path: string): ApplicationRepository {
     return row ? { reference: row.reference, acceptedAt: row.acceptedAt, state: row.deliveryState === "delivered" ? "delivered" : ["uncertain", "needs_attention"].includes(row.deliveryState) ? "needs_attention" : "processing" } : null;
   }
   async function transitionDelivery(id: ApplicationId, expectedVersion: number, next: DeliveryTransition): Promise<CaseRecord> {
-    return guarded(id, async () => db.transaction(() => {
+    return guarded(id, async () => {
       const current = readCase(id);
       if (current.version !== expectedVersion) throw new Error("STALE_VERSION");
-      if (!transitions[current.deliveryState].includes(next.state)) throw new Error("INVALID_TRANSITION");
-      const result = db.prepare("UPDATE cases SET deliveryState = ?, version = version + 1 WHERE id = ? AND version = ?").run(next.state, id, expectedVersion);
-      if (result.changes !== 1) throw new Error("STALE_VERSION");
-      db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, ?, ?, ?)").run(id, `delivery:${next.state}`, expectedVersion + 1, new Date().toISOString());
-      return readCase(id);
-    }).immediate());
+      // Compatibility entry point is deliberately non-authoritative. Every state
+      // change now requires the domain command's token and durable predicates.
+      void next; throw new Error("INVALID_TRANSITION");
+    });
   }
   function getArtifact(id: ApplicationId, kind: ArtifactKind): ArtifactRecord | null {
     live(); applicationId(id); if (!["bundle", "mime"].includes(kind)) throw new Error("INVALID_ARTIFACT");
@@ -217,6 +211,7 @@ export function openRepository(path: string): ApplicationRepository {
       }
       if (current.version !== expectedVersion) throw new Error("STALE_VERSION");
       if (!["queued", "scanning", "ready"].includes(current.deliveryState)) throw new Error("ARTIFACT_CREATION_CLOSED");
+      if (record.kind === "mime" && !delivery.getDelivery(record.caseId).registered) throw new Error("MAIL_REGISTRATION_REQUIRED");
       const expiry = current.payloadDeleteAfter < addDays(current.acceptedAt, 7) ? current.payloadDeleteAfter : addDays(current.acceptedAt, 7);
       if (record.expiresAt !== expiry) throw new Error("INVALID_ARTIFACT_EXPIRY");
       verifyArtifact(record);
@@ -233,12 +228,22 @@ export function openRepository(path: string): ApplicationRepository {
       verifyArtifact(bundle);
       if (!current.encryptedPayloadPath) return current;
       if (current.version !== expectedVersion) throw new Error("STALE_VERSION");
+      if (!delivery.getDelivery(id).contactEnvelope) throw new Error("CONTACT_REQUIRED");
       db.prepare("UPDATE cases SET encryptedPayloadPath=NULL,payloadBytes=0,version=version+1 WHERE id=? AND version=?").run(id, expectedVersion);
       db.prepare("INSERT INTO audit(caseId,event,version,at) VALUES(?,?,?,?)").run(id, "original:retired", expectedVersion + 1, new Date().toISOString());
       return readCase(id);
     }).immediate());
   }
+  const delivery = createDeliveryRepository(db, readCase, guarded, id => locks.has(id), getArtifact, verifyArtifact);
+  // Validate every persisted ledger before exposing this exclusively-owned DB.
+  try { db.transaction(() => {
+    db.prepare("DELETE FROM reservations WHERE active = 1").run();
+    recoverDelivery(db, utcInstant(clock.now().toISOString()));
+    for (const row of db.prepare("SELECT id FROM cases").all() as { id: ApplicationId }[]) delivery.getDelivery(row.id);
+  }).immediate(); }
+  catch (error) { db.close(); closed = true; throw error; }
   return {
+    ...delivery,
     getRequestIdentity(id) { readCase(id); return db.prepare("SELECT id,digest,acceptedAt FROM cases WHERE id=?").get(id) as RequestIdentity; },
     getSubmissionKind(id) { return readCase(id).submission; },
     getArtifact, adoptArtifact, retireOriginal,

@@ -75,15 +75,47 @@ export interface CaseRecord {
   encryptedPayloadPath: string | null; payloadBytes: number;
   closedOn: DateOnly | null; deleteAfter: Instant | null; payloadDeleteAfter: Instant;
   contactDeleteAfter: Instant; claimOwner: string | null; claimedAt: Instant | null;
+  claimToken: string | null; claimKind: DeliveryWorkKind | null;
   readonly submission: SubmissionKind;
 }
-export interface ClaimedCase extends CaseRecord { claimOwner: string; claimedAt: Instant }
+export interface ClaimedCase extends CaseRecord { claimOwner: string; claimedAt: Instant; claimToken: string; claimKind: DeliveryWorkKind }
 export interface DeliveryTransition { state: DeliveryState }
+export type DeliveryWorkKind = "prepare" | "send" | "reconcile";
+export interface DeliveryClaimAuthority { id: ApplicationId; version: number; token: string }
+export type DeliveryFailureReason = "INVALID_INPUT" | "MALICIOUS_INPUT" | "CONTACT_UNAVAILABLE" | "ARTIFACT_UNAVAILABLE" | "VERIFICATION_FAILED" | "DEPENDENCY_UNAVAILABLE" | "PERMANENT_SEND_FAILURE" | "ATTEMPTS_EXHAUSTED" | "RECEIPT_UNRESOLVED" | "LEGACY_UNVERIFIED" | "PROCESSING_EXPIRED" | "MANUAL_REQUIRED";
+export type DeliveryFailure = { category: "invalid"; reason: "INVALID_INPUT" | "MALICIOUS_INPUT" } | { category: "operational"; reason: Exclude<DeliveryFailureReason, "INVALID_INPUT" | "MALICIOUS_INPUT"> };
+export interface DeliveryAttempt { ordinal: number; startedAt: Instant; finishedAt: Instant | null; outcome: SendOutcome | null; mimeDigest: Digest; fingerprint: Digest }
+export interface DeliveryRecord {
+  readonly id: ApplicationId; readonly identity: DeliveryIdentity | null; readonly registered: RegisteredMail | null;
+  readonly mimeDigest: Digest | null; readonly sendDueAt: Instant | null; readonly receiptStartedAt: Instant | null;
+  readonly receiptSchedule: readonly Instant[]; readonly receiptCursor: number; readonly mailboxChecks: number;
+  readonly confirmedAt: Instant | null; readonly copies: readonly VerifiedCopy[]; readonly attempts: readonly DeliveryAttempt[];
+  readonly category: "invalid" | "operational" | null; readonly reason: DeliveryFailureReason | null; readonly determinedAt: Instant | null;
+  readonly incidentAt: Instant; readonly manualRequiredAt: Instant; readonly cleanupDueAt: Instant | null;
+  readonly contactEnvelope: string | null;
+}
+export interface DeliverySnapshot { readonly case: CaseRecord; readonly delivery: DeliveryRecord }
+export interface DeliveryClaim extends DeliverySnapshot { readonly case: ClaimedCase }
+export interface DeliveryRepository {
+  getDelivery(id: ApplicationId): DeliveryRecord;
+  claimDispatchWork(owner: string, now: Instant, kind?: DeliveryWorkKind): DeliveryClaim | null;
+  stageDeliveryIdentity(claim: DeliveryClaimAuthority, keyId: string, now: Instant): Promise<DeliverySnapshot>;
+  stageRegisteredMail(claim: DeliveryClaimAuthority, mail: RegisteredMail, now: Instant): Promise<DeliverySnapshot>;
+  // Caller must obtain verification from authenticated withMime bytes. These commands
+  // validate its DTO/registration authority; they do not perform network/MIME verification.
+  bindVerifiedMime(claim: DeliveryClaimAuthority, artifact: ArtifactRecord, verification: VerificationResult, now: Instant): Promise<DeliverySnapshot>;
+  beginSendAttempt(claim: DeliveryClaimAuthority, artifact: ArtifactRecord, verification: VerificationResult, now: Instant): Promise<DeliverySnapshot>;
+  finishSendAttempt(claim: DeliveryClaimAuthority, outcome: SendOutcome, now: Instant): Promise<DeliverySnapshot>;
+  recordMailboxCheck(claim: DeliveryClaimAuthority, mail: RegisteredMail, result: MailboxSearch, now: Instant): Promise<DeliverySnapshot>;
+  storeContact(claim: DeliveryClaimAuthority, envelope: string, privateKey: KeyObject, now: Instant): Promise<DeliverySnapshot>;
+  recordDeliveryFailure(claim: DeliveryClaimAuthority, failure: DeliveryFailure, now: Instant): Promise<DeliverySnapshot>;
+  releaseDeliveryClaim(claim: DeliveryClaimAuthority, now: Instant): Promise<DeliverySnapshot>;
+}
 export type ArtifactKind = "bundle" | "mime";
 export interface ArtifactRecord { caseId: ApplicationId; kind: ArtifactKind; path: string; bytes: number; plaintextDigest: Digest; ciphertextDigest: Digest; expiresAt: Instant }
 export interface RequestIdentity { id: ApplicationId; digest: Digest; acceptedAt: Instant }
 export interface ArtifactReservation { caseId: ApplicationId; kind: ArtifactKind; bytes: number; expiresAt: Instant }
-export interface ApplicationRepository {
+export interface ApplicationRepository extends DeliveryRepository {
   // Capacity is computed by worker custody, never accepted from RPC metadata.
   reserve(input: ReservationInput, capacity?: "available" | "exhausted"): Reservation;
   pruneAdmissionEvents(now: Instant): number;

@@ -29,6 +29,8 @@ CREATE TABLE cases (
   contactDeleteAfter TEXT NOT NULL,
   claimOwner TEXT,
   claimedAt TEXT,
+  claimToken TEXT,
+  claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile')),
   submission TEXT NOT NULL DEFAULT '{"kind":"application"}',
   UNIQUE (sessionHash, idempotencyKey)
 );
@@ -75,4 +77,44 @@ CREATE TRIGGER reservation_submission_immutable BEFORE UPDATE OF submission ON r
 BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_SUBMISSION'); END;
 CREATE TRIGGER case_submission_immutable BEFORE UPDATE OF submission ON cases
 BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_SUBMISSION'); END;
-PRAGMA user_version = 3;
+CREATE TABLE deliveries (
+  caseId TEXT PRIMARY KEY REFERENCES cases(id),
+  messageId TEXT UNIQUE,
+  keyId TEXT,
+  identityDate TEXT,
+  registered TEXT CHECK(registered IS NULL OR length(registered)<=4096),
+  mimeDigest TEXT,
+  sendDueAt TEXT,
+  receiptStartedAt TEXT,
+  receiptSchedule TEXT NOT NULL DEFAULT '[]' CHECK(length(receiptSchedule)<=256),
+  receiptCursor INTEGER NOT NULL DEFAULT 0 CHECK(receiptCursor BETWEEN 0 AND 5),
+  mailboxChecks INTEGER NOT NULL DEFAULT 0 CHECK(mailboxChecks BETWEEN 0 AND 5),
+  confirmedAt TEXT,
+  copies TEXT NOT NULL DEFAULT '[]' CHECK(length(copies)<=90000),
+  category TEXT CHECK(category IN ('invalid','operational')),
+  reason TEXT,
+  determinedAt TEXT,
+  cleanupDueAt TEXT,
+  contactEnvelope TEXT CHECK(contactEnvelope IS NULL OR length(contactEnvelope)<=2752),
+  CHECK((messageId IS NULL AND keyId IS NULL AND identityDate IS NULL) OR (messageId IS NOT NULL AND keyId IS NOT NULL AND identityDate IS NOT NULL)),
+  CHECK(registered IS NULL OR messageId IS NOT NULL),
+  CHECK(mimeDigest IS NULL OR registered IS NOT NULL)
+);
+CREATE TABLE delivery_attempts (
+  caseId TEXT NOT NULL REFERENCES deliveries(caseId),
+  ordinal INTEGER NOT NULL CHECK(ordinal BETWEEN 1 AND 3),
+  startedAt TEXT NOT NULL,
+  finishedAt TEXT,
+  outcome TEXT CHECK(outcome IN ('accepted','definitely_failed','uncertain')),
+  retryable INTEGER CHECK(retryable IN (0,1)),
+  mimeDigest TEXT NOT NULL,
+  fingerprint TEXT NOT NULL,
+  PRIMARY KEY(caseId,ordinal),
+  CHECK((finishedAt IS NULL AND outcome IS NULL AND retryable IS NULL) OR
+        (finishedAt IS NOT NULL AND outcome IS NOT NULL AND ((outcome='definitely_failed' AND retryable IS NOT NULL) OR (outcome!='definitely_failed' AND retryable IS NULL))))
+);
+CREATE UNIQUE INDEX delivery_unfinished ON delivery_attempts(caseId) WHERE finishedAt IS NULL;
+CREATE UNIQUE INDEX delivery_claim_token ON cases(claimToken) WHERE claimToken IS NOT NULL;
+CREATE TRIGGER case_accepted_at_immutable BEFORE UPDATE OF acceptedAt ON cases
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_ACCEPTED_AT'); END;
+PRAGMA user_version = 4;

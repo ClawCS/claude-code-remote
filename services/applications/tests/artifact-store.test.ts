@@ -4,7 +4,7 @@ import { createHash, generateKeyPairSync, randomUUID } from "node:crypto";
 import { applicationId, utcInstant } from "../src/types";
 import { openArtifactEnvelope, sealArtifactEnvelope } from "../src/artifact-crypto";
 import { createArtifactStore } from "../src/artifact-store";
-import { makeArtifactHarness } from "./fixtures/artifacts";
+import { makeArtifactHarness, claimArtifactPreparation } from "./fixtures/artifacts";
 import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
 import { withReconstructedDocuments, assertReconstructedBundle, type ReconstructionDependencies, type ReconstructedBundle } from "../src/reconstruction";
 import { readdir, readFile, rm } from "node:fs/promises";
@@ -88,7 +88,7 @@ it.each(["bundle", "mime"] as const)("replaces the pending %s allowance with reg
     const before=await h.keys.custody.cleanupOrphans();
     const original=h.repo.getCommittedIntake(h.accepted.id)!;
     expect(before.physicalBytes+before.reservedHeadroom).toBe(134217728+8192+8192+original.actualBytes+10553344+16779264+16384);
-    const record=kind==="bundle"?await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1)):await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),1);
+    const record=kind==="bundle"?await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1)):await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),(await claimArtifactPreparation(h,true)).version);
     const after=await h.keys.custody.cleanupOrphans();
     expect((await fs.stat(record.path)).size).toBe(record.bytes);
     const maximum=kind==="bundle"?10553344:16779264;
@@ -103,7 +103,7 @@ it("admits another small case using capacity released by adopted bundle and MIME
   try {
     const store=createArtifactStore(h.repo,h.keys,h.keys.custody);
     await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1));
-    await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),2);
+    await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),(await claimArtifactPreparation(h,true)).version);
     for(let index=0;index<4;index++){
       const reservation=await h.keys.custody.reserve({ ...testAdmission(), ...h.reservation,idempotencyKey:`after-artifacts-${index}`,now:utcInstant("2026-10-09T10:00:00.000Z")}, testReadiness);
       const sealed=await sealIncoming((async function*(){yield encodePayload(h.payload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:reservation.id},h.keys.publicKey);
@@ -176,7 +176,7 @@ it("restores newly encoded bytes with original source mapping in a reused scope 
       await store.withBundle(bundle.id,async restored=>expect(restored.files[0].digest).toBe(wanted));
     });
     await expect(withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1),100)).rejects.toThrow("ARTIFACT_CONFLICT");
-    await h.repo.retireOriginal(h.accepted.id,2);
+    await h.repo.retireOriginal(h.accepted.id,(await claimArtifactPreparation(h)).version);
     await h.keys.custody.reconcile();
     await store.withBundle(h.accepted.id,async restored=>{
       expect(restored.requestDigest).toBe(payloadDigest(h.payload));
@@ -192,7 +192,7 @@ it("restores newly encoded bytes with original source mapping in a reused scope 
 it("fails startup readiness for same-size tampering of a registered artifact",async()=>{
   const h=await makeArtifactHarness();
   try{
-    const record=await createArtifactStore(h.repo,h.keys,h.keys.custody).adoptMime(h.accepted.id,(async function*(){yield Buffer.from("raw message");})(),1);
+    const record=await createArtifactStore(h.repo,h.keys,h.keys.custody).adoptMime(h.accepted.id,(async function*(){yield Buffer.from("raw message");})(),(await claimArtifactPreparation(h,true)).version);
     const fs=await import("node:fs/promises"), fd=await fs.open(record.path,"r+");try{await fd.write(Buffer.from([0]),0,1,0);}finally{await fd.close();}
     const recovered=createCustodyLedger(h.repo,h.config);
     await expect(recovered.reconcile()).rejects.toThrow("DIGEST_MISMATCH");
@@ -224,7 +224,7 @@ it("does not reserve a second output set for replay after original and intake-jo
   try{
     const store=createArtifactStore(h.repo,h.keys,h.keys.custody);
     const artifact=await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1));
-    await h.repo.retireOriginal(h.accepted.id,2);
+    await h.repo.retireOriginal(h.accepted.id,(await claimArtifactPreparation(h)).version);
     h.config.clock.now=()=>new Date("2026-10-10T10:00:00.000Z");
     await h.keys.custody.reconcile();const before=await h.keys.custody.cleanupOrphans();
     expect((await readdir(h.keys.privateRoot)).includes(`${h.reservation.id}.journal`)).toBe(false);
@@ -242,10 +242,12 @@ it("stores 16 MiB MIME once, rejects changed retries, and authenticates before y
   try {
     const store=createArtifactStore(h.repo,h.keys,h.keys.custody), bytes=Buffer.alloc(16*1024*1024,77);
     const raw=async function*(){yield bytes;};
-    const record=await store.adoptMime(h.accepted.id,raw(),1);
-    expect(await store.adoptMime(h.accepted.id,raw(),1)).toEqual(record);
-    await expect(store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("different");})(),2)).rejects.toThrow("ARTIFACT_CONFLICT");
-    await expect(store.adoptMime(h.accepted.id,(async function*(){yield Buffer.alloc(16*1024*1024+1);})(),2)).rejects.toThrow("ARTIFACT_TOO_LARGE");
+    const version=(await claimArtifactPreparation(h,true)).version;
+    const record=await store.adoptMime(h.accepted.id,raw(),version);
+    expect(await store.adoptMime(h.accepted.id,raw(),version)).toEqual(record);
+    const current=await h.repo.withCaseLock(h.accepted.id,async row=>row.version);
+    await expect(store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("different");})(),current)).rejects.toThrow("ARTIFACT_CONFLICT");
+    await expect(store.adoptMime(h.accepted.id,(async function*(){yield Buffer.alloc(16*1024*1024+1);})(),current)).rejects.toThrow("ARTIFACT_TOO_LARGE");
     await store.withMime(h.accepted.id,async raw=>{let count=0;for await(const chunk of raw)count+=chunk.length;expect(count).toBe(16777216);});
     const fs=await import("node:fs/promises"), fd=await fs.open(record.path,"r+");
     try {await fd.write(Buffer.from([0]),0,1,0);}finally{await fd.close();}
