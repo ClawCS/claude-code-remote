@@ -80,7 +80,7 @@ export function recoverDelivery(db: Database.Database, now: Instant): void {
     let state = row.deliveryState, reason: DeliveryFailureReason | null = null;
     const retainedMime = db.prepare("SELECT 1 FROM artifacts WHERE caseId=? AND kind='mime'").get(row.id);
     if ((["sending", "smtp_accepted", "uncertain"].includes(state) && (!delivery.registered || !delivery.mimeDigest)) || (state === "delivered" && !delivery.confirmedAt) || (retainedMime && !delivery.registered)) { state = "needs_attention"; reason = "LEGACY_UNVERIFIED"; }
-    else if (unfinished || state === "sending") {
+    else if (state === "sending" || (unfinished && ["smtp_accepted", "uncertain"].includes(state))) {
       state = "uncertain";
       if (!delivery.receiptStartedAt) db.prepare("UPDATE deliveries SET receiptStartedAt=?,receiptSchedule=?,sendDueAt=NULL WHERE caseId=?").run(now, JSON.stringify(schedule(now, row.acceptedAt)), row.id);
     } else if (state === "scanning" || (state === "ready" && !delivery.mimeDigest)) state = "queued";

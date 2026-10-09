@@ -135,6 +135,36 @@ describe("durable delivery authority", () => {
     await expect(repo.beginSendAttempt(authority(claim.case), current.artifact, { kind: "verified" }, now)).rejects.toThrow("INVALID_DELIVERY_WORK");
     expect(recovered.receiptSchedule).toEqual([now, at(5), at(30), at(60), at(1440)]);
   });
+  it("preserves confirmed delivery across restart despite an unfinished original SMTP attempt", async () => {
+    await sending(); reopen();
+    const claim = repo.claimDispatchWork("receipt", now, "reconcile")!;
+    const done = await repo.recordMailboxCheck(authority(claim.case), claim.delivery.registered!, { complete: true, copies: [{ mailbox: "INBOX", uidValidity: "17", uid: 42, fingerprint: hash }], issues: [] }, now);
+    expect(done.case.deliveryState).toBe("delivered");
+    expect(done.delivery.attempts[0]).toMatchObject({ outcome: null, finishedAt: null });
+    reopen();
+    const recovered = await repo.withCaseLock(id, async row => row);
+    expect(recovered.deliveryState).toBe("delivered");
+    expect(recovered).toEqual(done.case);
+    expect(repo.getDelivery(id)).toEqual(done.delivery);
+    expect(repo.claimDispatchWork("again", at(5))).toBeNull();
+  });
+  it.each(["final unresolved", "manual"] as const)("preserves %s attention across restart despite an unfinished original SMTP attempt", async resolution => {
+    await sending(); reopen();
+    const time = resolution === "final unresolved" ? at(1440) : now;
+    const claim = repo.claimDispatchWork("receipt", time, "reconcile")!;
+    const done = resolution === "final unresolved"
+      ? await repo.recordMailboxCheck(authority(claim.case), claim.delivery.registered!, { complete: true, copies: [], issues: [] }, time)
+      : await repo.recordDeliveryFailure(authority(claim.case), { category: "operational", reason: "MANUAL_REQUIRED" }, time);
+    expect(done.case.deliveryState).toBe("needs_attention");
+    expect(done.delivery.reason).toBe(resolution === "final unresolved" ? "RECEIPT_UNRESOLVED" : "MANUAL_REQUIRED");
+    expect(done.delivery.attempts[0]).toMatchObject({ outcome: null, finishedAt: null });
+    reopen();
+    const recovered = await repo.withCaseLock(id, async row => row);
+    expect(recovered.deliveryState).toBe("needs_attention");
+    expect(recovered).toEqual(done.case);
+    expect(repo.getDelivery(id)).toEqual(done.delivery);
+    expect(repo.claimDispatchWork("again", at(1500))).toBeNull();
+  });
   it("persists accepted outcomes and never converts them to ordinary sending after restart", async () => {
     const current = await sending(); await repo.finishSendAttempt(authority(current.row.case), { kind: "accepted" }, at(1)); reopen();
     expect(repo.claimDispatchWork("send", at(2), "send")).toBeNull();
