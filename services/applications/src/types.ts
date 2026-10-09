@@ -28,6 +28,21 @@ export function utcInstant(value: string): Instant {
   return value as Instant;
 }
 export interface Clock { now(): Date }
+export interface DeliveryIdentity { readonly id: ApplicationId; readonly messageId: string; readonly keyId: string; readonly date: Instant }
+export interface MimeLimits { readonly maxRawBytes: number; readonly maxParts: number; readonly maxAttachments: number; readonly maxDepth: number; readonly maxFileBytes: number; readonly maxAttachmentBytes: number; readonly maxTextBytes: number }
+export interface MailAttachmentIdentity { readonly name: string; readonly mediaType: string; readonly digest: Digest; readonly bytes: number }
+export interface MailShape { readonly kind: "text" | "mixed"; readonly parts: number; readonly attachments: readonly MailAttachmentIdentity[] }
+export interface MailFingerprint { readonly fingerprint: Digest; readonly headers: Readonly<Record<string, string>>; readonly attachments: readonly MailAttachmentIdentity[]; readonly shape: MailShape }
+export interface RegisteredMail { readonly id: ApplicationId; readonly messageId: string; readonly keyId: string; readonly profile: "tj-mail-1"; readonly fingerprint: Digest; readonly shape: MailShape }
+export interface MailEnvelope { readonly from: "info@trinkgut-jammers.de"; readonly to: readonly ["info@trinkgut-jammers.de"] }
+export interface PreparedMail { readonly identity: DeliveryIdentity; readonly envelope: MailEnvelope; readonly raw: AsyncIterable<Uint8Array>; readonly fingerprint: Digest; readonly registered: RegisteredMail }
+// Task7 owns durable adoption/registration before invoking the SMTP boundary.
+export interface StoredMailForSend { readonly registered: RegisteredMail; readonly raw: AsyncIterable<Uint8Array> }
+export type VerificationKeys = ReadonlyMap<string, KeyObject>;
+export type VerificationResult = { kind: "verified" } | { kind: "mismatch" };
+export type SendOutcome = { kind: "accepted" } | { kind: "definitely_failed"; retryable: boolean } | { kind: "uncertain" };
+export interface SmtpResult { readonly accepted: readonly string[]; readonly rejected: readonly string[]; readonly response: string }
+export interface SmtpPort { connect(): Promise<void>; login(): Promise<void>; send(envelope: MailEnvelope, raw: AsyncIterable<Uint8Array>): Promise<SmtpResult>; close(): void }
 export type DeliveryState = "queued" | "scanning" | "ready" | "sending" | "smtp_accepted" | "uncertain" | "delivered" | "needs_attention";
 export type CaseState = "open" | "reviewing" | "rejected_closed" | "manual_case";
 export type SubmissionKind = { readonly kind: "application" } | { readonly kind: "synthetic"; readonly pilotRunId: string };
