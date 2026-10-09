@@ -40,6 +40,10 @@ Nach jeder Code-Aenderung an UI/Seiten (`app/**`, `components/**`, `lib/**`, `pu
 
 Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen.
 
+# Kontakt-Logos – freigegebenes Design, 09.10.2026
+
+Für Google-Maps-Routenlinks, Instagram- und WhatsApp-Kontaktlinks die belegten offiziellen Originalgrafiken unter `public/images/brands/` nutzen; Herkunft und SHA-256 unter `assets/source/contact-brands/provenance.json`. Keine selbst nachgezeichneten Symbole, umgefärbten Logos, zusätzlichen Rahmen oder farbigen Buttonflächen, auch nicht beim Hover. Original-Proportionen und transparente Freiräume erhalten. Zugängliche DE-/NL-Beschriftungen, unveränderte Linkziele, große unsichtbare Klickfläche und sichtbaren Tastaturfokus erhalten. Das aktuell offiziell gelieferte WhatsApp-Logo ist ein grünes Zeichen auf Transparenz; keinen grün-weißen Container erfinden. Diese Freigabe ersetzt die frühere Anweisung, bestehende Buttonhintergründe beizubehalten.
+
 # Bewerbungen – bestätigte Vorgaben, 09.10.2026
 
 - Bewerbungen und Unterlagen gehen an `info@trinkgut-jammers.de`. Niko bestätigt ausdrücklich, dass sämtliche bereits für dieses Postfach zugangsberechtigten Personen Bewerbungsunterlagen lesen dürfen. Diese Entscheidung nicht erneut abfragen; technische Postfachrechte dadurch nicht verändern oder ausweiten.

@@ -33,13 +33,11 @@ export default function LocationFooter(): React.JSX.Element {
         <a href={`mailto:${MARKET.email}`}>{MARKET.email}</a>
       </address>
       <nav className={styles.footerNav} aria-label="Kontakt und Anfahrt">
-        <a
+        <SocialLink
+          platform="maps"
           href={SITE_LINKS.route}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Route planen
-        </a>
+          label="Route zu Trinkgut Jammers in Google Maps planen"
+        />
         <SocialLink
           platform="whatsapp"
           href={SITE_LINKS.whatsapp}

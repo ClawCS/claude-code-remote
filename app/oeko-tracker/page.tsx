@@ -523,7 +523,6 @@ export default function OekoTrackerPage() {
             platform="whatsapp"
             href="https://wa.me/491752492386"
             label="Trinkgut Jammers per WhatsApp kontaktieren"
-            className="bg-green-500/30 text-white hover:bg-green-500/50 transition-colors"
           />
         </div>
       </div>

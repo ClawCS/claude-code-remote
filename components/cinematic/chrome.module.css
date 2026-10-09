@@ -157,17 +157,7 @@
   display: none;
   grid-row: 1;
   padding:0;
-  border: 1px solid var(--cinematic-color-red);
   color: var(--cinematic-color-red);
-  transition: color var(--cinematic-motion-duration-fast)
-      var(--cinematic-motion-easing-standard),
-    background-color var(--cinematic-motion-duration-fast)
-      var(--cinematic-motion-easing-standard);
-}
-
-.whatsapp:hover {
-  background: var(--cinematic-color-red);
-  color:var(--cinematic-color-white);
 }
 
 .mobileDetails {

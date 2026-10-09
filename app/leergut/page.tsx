@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import SocialLink from "@/components/SocialLink";
 import { MARKET } from "@/lib/cinematic/site";
 
 // --- Pfand types & prices ---
@@ -387,14 +388,11 @@ export default function LeergutRechnerPage() {
           <br />
           Mo&ndash;Sa 08:00&ndash;20:00 Uhr | {MARKET.street}, {MARKET.postalCode} {MARKET.city}
         </p>
-        <a
+        <SocialLink
+          platform="whatsapp"
           href="https://wa.me/491752492386?text=Hallo%2C+ich+m%C3%B6chte+mein+Leergut+abgeben!"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors text-sm"
-        >
-          {"\uD83D\uDCF1"} Per WhatsApp anfragen
-        </a>
+          label="Leergut per WhatsApp anfragen"
+        />
       </div>
 
       {/* Pfand Info Table */}

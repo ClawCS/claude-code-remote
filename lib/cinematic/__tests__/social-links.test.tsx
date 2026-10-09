@@ -32,6 +32,7 @@ import InquiryInformation from "@/app/bestellungen/page";
 import GeschenkideenPage from "@/app/geschenkideen/page";
 import OekoTrackerPage from "@/app/oeko-tracker/page";
 import GewinnspielPage from "@/app/gewinnspiel/page";
+import LeergutPage from "@/app/leergut/page";
 import { SocialIcon } from "@/components/SocialLink";
 
 const whatsapp = "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.";
@@ -42,14 +43,30 @@ const emptyIndex = { status: "ok", issues: [], generatedAt: "2026-10-08T10:00:00
 afterEach(() => vi.unstubAllEnvs());
 
 describe("recognizable social destinations", () => {
-  test("scopes the WhatsApp green treatment to its SVG symbol", () => {
-    const whatsappIcon = renderToStaticMarkup(<SocialIcon platform="whatsapp" />);
-    const instagramIcon = renderToStaticMarkup(<SocialIcon platform="instagram" />);
-    const whatsappClass = whatsappIcon.match(/<svg\b[^>]*class="([^"]+)"/)?.[1] ?? "";
-    const instagramClass = instagramIcon.match(/<svg\b[^>]*class="([^"]+)"/)?.[1] ?? "";
+  test.each(["whatsapp", "instagram"] as const)("renders %s from a local original image without CSS-dependent recoloring", (platform) => {
+    const html = renderToStaticMarkup(<SocialIcon platform={platform} />);
+    expect(html).toMatch(/<img\b[^>]*src="\/images\/brands\/[^\"]+"/);
+    expect(html).toContain('alt=""');
+    expect(html).toContain('aria-hidden="true"');
+    expect(html).not.toContain("currentColor");
+  });
 
-    expect(whatsappClass).toContain("whatsappIcon");
-    expect(instagramClass).not.toContain("whatsappIcon");
+  test.each([
+    ["footer", () => <LocationFooter />, 1, "Route zu Trinkgut Jammers in Google Maps planen"],
+    ["contact", () => <KontaktPage />, 1, "Route zu Trinkgut Jammers in Google Maps planen"],
+    ["Dutch landing", () => NederlandsPage(), 2, "Plan je route naar Trinkgut Jammers in Google Maps"],
+  ] as const)("keeps exact directions as accessible original-icon links in %s", async (_name, component, count, label) => {
+    const html = renderToStaticMarkup(await component());
+    const links = [...html.matchAll(/<a\b([^>]*href="https:\/\/www.google.com\/maps[^>]+)>([\s\S]*?)<\/a>/g)];
+    expect(links).toHaveLength(count);
+    for (const [, attrs, content] of links) {
+      const href = attrs.match(/href="([^"]+)"/)![1].replaceAll("&amp;", "&");
+      expect(new URL(href).searchParams.get("destination")).toBe("Trinkgut Jammers, Jurgensstraße 20, 47574 Goch, Deutschland");
+      expect(attrs).toContain(`aria-label="${label}"`);
+      expect(attrs).toContain('rel="noopener noreferrer"');
+      expect(content).toMatch(/<img\b[^>]*src="\/images\/brands\/[^\"]+"/);
+      expect(content.replace(/<[^>]*>/g, "").trim()).toBe("");
+    }
   });
 
   test("gives each Dutch WhatsApp destination a localized accessible icon", async () => {
@@ -59,7 +76,7 @@ describe("recognizable social destinations", () => {
     for (const [, attrs, content] of links) {
       expect(attrs).toContain(`href="${whatsappNl}"`);
       expect(attrs).toMatch(/aria-label="Stuur[^\"]*WhatsApp-bericht"/);
-      expect(content).toMatch(/<svg\b[^>]*aria-hidden="true"/);
+      expect(content).toMatch(/<img\b[^>]*aria-hidden="true"/);
       expect(content.replace(/<[^>]*>/g, "").trim()).toBe("");
     }
   });
@@ -80,6 +97,7 @@ describe("recognizable social destinations", () => {
     ["inquiry information", () => <InquiryInformation />, [whatsapp]],
     ["gift advice", () => <GeschenkideenPage />, [whatsapp]],
     ["eco tracker contact", () => <OekoTrackerPage />, ["https://wa.me/491752492386"]],
+    ["deposit return contact", () => <LeergutPage />, ["https://wa.me/491752492386?text=Hallo%2C+ich+m%C3%B6chte+mein+Leergut+abgeben!"]],
     ["giveaway empty state", () => {
       vi.stubEnv("CINEMATIC_E2E", "1");
       vi.stubEnv("CINEMATIC_TEST_NOW", "2027-01-01T12:00:00.000Z");
@@ -95,8 +113,8 @@ describe("recognizable social destinations", () => {
       expect(attrs).toMatch(/aria-label="[^\"]*(?:WhatsApp|Instagram)[^\"]*"/);
       expect(attrs).toContain('target="_blank"');
       expect(attrs).toContain('rel="noopener noreferrer"');
-      expect(content).toMatch(/<svg\b[^>]*aria-hidden="true"/);
-      expect(content).toMatch(/<svg\b[^>]*focusable="false"/);
+      expect(content).toMatch(/<img\b[^>]*aria-hidden="true"/);
+      expect(content).toContain('alt=""');
       expect(content.replace(/<[^>]*>/g, "").trim()).toBe("");
     }
   });

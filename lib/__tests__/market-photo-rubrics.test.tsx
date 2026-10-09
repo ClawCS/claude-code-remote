@@ -58,7 +58,7 @@ test("keeps market groups and approved photos without decorative captions or the
 
 test("adds greeting-card photos to gift ideas without replacing the gift-basket introduction", () => {
   const html = decodeURIComponent(renderToStaticMarkup(<GeschenkideenPage />));
-  const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
+  const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image).filter(image => !image.includes('aria-hidden="true"'));
   expect(images).toHaveLength(3);
   expect(images[0]).toContain("/images/editorial/canva/gift-basket.webp");
   for (const filename of ["grusskarten-detail.webp", "karten-mit-charakter.webp"]) {

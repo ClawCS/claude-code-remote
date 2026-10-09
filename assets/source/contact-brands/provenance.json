@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-10-09",
+  "purpose": "Official, original-color contact-link marks for the existing business website. No added borders, badge containers, colored button backgrounds, recoloring, reconstructed paths, or third-party icon libraries.",
+  "authorization": "Operator approved implementation and live deployment of original Google Maps, Instagram and WhatsApp contact icons. Existing account links and business details remain unchanged.",
+  "acquisition": {
+    "method": "Public HTTPS downloads from official Google and Meta pages and the original asset URLs exposed in their public markup. No login, account change, checkbox acceptance, or access-control bypass.",
+    "urlSanitization": "Meta CDN download URLs omit all transient query parameters. Stable official source-page URLs and source archive member names identify provenance.",
+    "archives": "Downloaded official ZIP packs were verified and selected assets extracted without modification. Full ZIPs were removed after hashing to avoid retaining unrelated assets and large duplicate archives. Selected original source files are retained."
+  },
+  "assets": [
+    {
+      "id": "google-maps",
+      "owner": "Google LLC",
+      "sourcePage": "https://www.google.com/maps/about/",
+      "downloadUrl": "https://www.gstatic.com/marketing-cms/assets/images/81/e4/1bdb808b40a28cc70ac24bf5e6fa/google-maps-favicon.png=s180",
+      "sourceEvidence": "Official Google Maps About HTML links this exact file as apple-touch-icon, sizes=180x180. Visually verified as the current multicolor gradient Maps pin with transparent surrounding pixels.",
+      "sourcePath": "assets/source/contact-brands/google-maps-site-icon.png",
+      "publicPath": "public/images/brands/google-maps-original.png",
+      "mediaType": "image/png",
+      "width": 180,
+      "height": 180,
+      "alpha": true,
+      "visibleAlphaBounds": { "left": 27, "top": 9, "width": 126, "height": 162 },
+      "bytes": 18833,
+      "sha256": "b9bdc7e110fe7e57fb7142e09cfa276eb562c1222e321cd2f453c55b10d64291",
+      "modifications": "None. Public file is byte-identical to the official downloaded original, including transparent padding.",
+      "guidanceUrls": [
+        "https://about.google/brand-resource-center/products-and-services/geo-guidelines/",
+        "https://partnermarketinghub.withgoogle.com/brands/google-maps/visual-identity/visual-identity/"
+      ],
+      "usageGuidance": "Use the full-color mark to identify the Google Maps destination link, with legible clear space. Do not recolor, distort, add strokes or effects, or imply endorsement. Google Geo guidelines welcome website text/button links to Maps.",
+      "sourceLimitations": "The Partner Marketing Hub downloadable icon pack required an approved login and was not accessed. This is an unmodified official public product-page icon, not a downloaded partner-pack asset. No separate Google approval is claimed."
+    },
+    {
+      "id": "instagram",
+      "owner": "Meta Platforms, Inc.",
+      "sourcePage": "https://www.meta.com/brand/resources/instagram/instagram-brand/",
+      "downloadUrlSanitized": "https://scontent-dus1-1.xx.fbcdn.net/v/t39.8562-6/10000000_295565596234104_6752419821643487968_n.zip/IG_brand_asset_pack_2023.zip",
+      "archiveSha256": "a9e5cbe63dc01279b3d12d536ea9d94ab5236521601bd5cc4b4caf7ba7060e82",
+      "archiveMember": "01 Static Glyph/01 Gradient Glyph/Instagram_Glyph_Gradient.png",
+      "sourceEvidence": "Exact gradient glyph extracted from the official logo pack currently linked by Meta's public Instagram brand page.",
+      "sourcePath": "assets/source/contact-brands/Instagram_Glyph_Gradient.png",
+      "publicPath": "public/images/brands/instagram-original.png",
+      "mediaType": "image/png",
+      "width": 5000,
+      "height": 5000,
+      "alpha": true,
+      "bytes": 2648790,
+      "sha256": "21f86b55f986848665ce54ab354ff6b43b7705e6c421d90c04369882b5956766",
+      "modifications": "None. Public file is byte-identical to the original ZIP member. It is Meta's supplied gradient glyph, not a hand-colored approximation.",
+      "guidanceUrls": ["https://www.meta.com/brand/resources/instagram/instagram-brand/"],
+      "usageGuidance": "Use supplied official assets, subordinate to the business brand. Do not imply partnership, sponsorship or endorsement. This use identifies the business's existing Instagram profile.",
+      "sourceLimitations": "The current public pack supplies the gradient PNG only at 5000x5000; its SVG alternative contains embedded raster content and is larger. No small responsive derivative is included here. The 2023 pack name is the actual pack linked on the retrieval date, not an inferred latest-version claim."
+    },
+    {
+      "id": "whatsapp",
+      "owner": "Meta Platforms, Inc.",
+      "sourcePage": "https://www.meta.com/en-gb/brand/resources/whatsapp/whatsapp-brand/",
+      "downloadUrlSanitized": "https://scontent-dus1-1.xx.fbcdn.net/v/t39.8562-6/746629803_1051972883983037_89334403037226259_n.zip/WhatsApp-Brand-Resource-Center.zip",
+      "archiveSha256": "31cd2eaacb0abfd3640e51cb807c21dafba872e3aff8e520ff20ee6a1b01498f",
+      "archiveMember": "Brand Resource Center Page Downloads/01_Glyph/01_Digital RGB/03_SVG/Digital_Glyph_Green_RGB_2026.svg",
+      "sourceEvidence": "Exact digital RGB green 2026 glyph extracted from the official logo pack. The same current green outline design is also displayed on the public whatsapp.com site.",
+      "sourcePath": "assets/source/contact-brands/Digital_Glyph_Green_RGB_2026.svg",
+      "publicPath": "public/images/brands/whatsapp-original.svg",
+      "mediaType": "image/svg+xml",
+      "viewBox": "0 0 720 720",
+      "width": 720,
+      "height": 720,
+      "alpha": true,
+      "brandColor": "#25d366",
+      "bytes": 1181,
+      "sha256": "f7b1311db718533e671645f57cd94b92f0e006e61d7e6581a80675fc5a478fc4",
+      "modifications": "None. Public file is byte-identical to the original ZIP member. The current supplied green outline glyph remains transparent; no white fill, green badge, or other container was fabricated.",
+      "guidanceUrls": ["https://www.meta.com/en-gb/brand/resources/whatsapp/whatsapp-brand/"],
+      "usageGuidance": "Use the supplied current official mark without design or color changes. Scaling is allowed. Do not imply endorsement or make WhatsApp more prominent than the business brand.",
+      "sourceLimitations": "Current official 2026 pack uses a green outline glyph on transparency, not an older solid-green badge with white handset. The original current mark is used to honor the operator's requirement for authentic unmodified logos and no added colored button backgrounds."
+    }
+  ]
+}

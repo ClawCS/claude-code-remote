@@ -37,14 +37,12 @@ export default function KontaktPage() {
               {MARKET.street}<br />
               {MARKET.postalCode} {MARKET.city}
             </p>
-            <a
+            <SocialLink
+              platform="maps"
               href={SITE_LINKS.route}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 text-sm text-primary hover:underline"
-            >
-              In Google Maps öffnen →
-            </a>
+              label="Route zu Trinkgut Jammers in Google Maps planen"
+              className="mt-4"
+            />
 
             <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
               <span aria-hidden="true">🕐</span> Öffnungszeiten
@@ -72,7 +70,6 @@ export default function KontaktPage() {
               platform="whatsapp"
               href="https://wa.me/491752492386"
               label="Schreib uns auf WhatsApp"
-              className="bg-[#25D366] hover:bg-[#1FB856] text-[#17351F] transition-colors"
             />
 
             <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">

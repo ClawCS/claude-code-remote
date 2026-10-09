@@ -1,16 +1,20 @@
 .link {
   box-sizing: border-box;
   display: inline-flex;
-  width: 44px;
-  min-width: 44px;
-  min-height: 44px;
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  min-height: 48px;
   align-items: center;
   justify-content: center;
   justify-self: start;
   flex-shrink: 0;
   padding: 0;
-  border: 1px solid currentColor;
-  border-radius: .5rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
   vertical-align: middle;
   text-decoration: none;
 }
@@ -20,13 +24,18 @@
   outline-offset: 3px;
 }
 
-.icon {
-  display: block;
-  width: 24px;
-  height: 24px;
-  flex: none;
+/* Keep original brand artwork unframed, including on legacy colored surfaces. */
+.link[data-brand-link],
+.link[data-brand-link]:hover {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.whatsappIcon {
-  color: #25D366;
+.icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex: none;
 }

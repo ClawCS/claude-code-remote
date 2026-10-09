@@ -65,9 +65,9 @@
 .fineprint { margin-top: 1.5rem; color: var(--nl-muted); font-size: .8rem; }
 .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding-block: 2.5rem; background: #ffead4; border-block: 1px solid #eccaa6; }
 .contactLinks { align-self: center; display: grid; }
-.contactLinks a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 52px; padding: .65rem 0; border-bottom: 1px solid #d9b997; font-size: .95rem; font-weight: 700; overflow-wrap: anywhere; }
+.contactLinks a:not([data-brand-link]) { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 52px; padding: .65rem 0; border-bottom: 1px solid #d9b997; font-size: .95rem; font-weight: 700; overflow-wrap: anywhere; }
 .contactLinks a:hover { color: var(--nl-accent); }
-.contactLinks .socialContact { justify-content: center; min-height: 44px; margin-block: .5rem; padding: 0; border: 1px solid currentColor; }
+.contactLinks .socialContact { margin-block: .5rem; }
 .people { padding-block: 3rem 1rem; }
 .people summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 56px; padding-block: 1rem; border-block: 1px solid var(--nl-line); font-size: 1.25rem; font-weight: 700; cursor: pointer; list-style: none; }
 .people summary::-webkit-details-marker { display: none; }

@@ -43,7 +43,7 @@ export default async function NederlandsPage() {
             <p className={styles.lead}>Een dagje Duitsland? Kom langs bij Jammers. Ontdek jouw favoriete dranken, bekijk onze actuele aanbiedingen en maak kennis met de mensen achter de winkel.</p>
             <div className={styles.actions}>
               <a href="#handzettel" className={styles.primaryButton}>Bekijk de aanbiedingen <span aria-hidden="true">↓</span></a>
-              <a href={SITE_LINKS.route} target="_blank" rel="noopener noreferrer" className={styles.secondaryButton}>Plan je route <span aria-hidden="true">↗</span></a>
+              <SocialLink platform="maps" href={SITE_LINKS.route} label="Plan je route naar Trinkgut Jammers in Google Maps" />
             </div>
             <p className={styles.heroAddress}>{MARKET.street} · {MARKET.postalCode} {MARKET.city}<br /><strong>Ma–za 08:00–20:00 uur</strong><br /><span>Gesloten op zon- en feestdagen in Noordrijn-Westfalen.</span></p>
           </div>
@@ -62,7 +62,7 @@ export default async function NederlandsPage() {
             <p className={styles.eyebrow}>Maak er een bezoekje van</p>
             <h2 id="bezoek-title">Even naar Goch.<br />Even naar Jammers.</h2>
             <p>Combineer je bezoek aan Goch met een stop bij ons in de winkel. Of je nu iets zoekt voor het weekend, voor bij het eten of voor een feest: we denken graag met je mee.</p>
-            <a className={styles.textLink} href={SITE_LINKS.route} target="_blank" rel="noopener noreferrer">Plan je route naar onze winkel <span aria-hidden="true">↗</span></a>
+            <SocialLink platform="maps" href={SITE_LINKS.route} label="Plan je route naar Trinkgut Jammers in Google Maps" />
           </div>
           <dl className={styles.visitFacts}>
             <div><dt>Hier vind je ons</dt><dd>{MARKET.displayName}<br />{MARKET.street}<br />{MARKET.postalCode} {MARKET.city}, Duitsland</dd></div>
