@@ -1,5 +1,5 @@
 import { testAdmission } from "./fixtures/admission";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { generateKeyPairSync, randomUUID, createHash } from "node:crypto";
 import { mkdtemp, mkdir, realpath, rm, readFile, open, symlink, readdir, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -29,7 +29,7 @@ beforeEach(async () => {
   await custody.reconcile();
   keys = { ...pair, intakeRoot, privateRoot, runtimeRoot, custody }; records = new Map();
 });
-afterEach(async () => { repo?.close(); await rm(root, { recursive: true, force: true }); });
+afterEach(async () => { vi.restoreAllMocks(); repo?.close(); await rm(root, { recursive: true, force: true }); });
 async function sealed(beforeCommit?: (path: string) => Promise<void>) {
   const reservation = await keys.custody.reserve({ ...testAdmission(),  sessionHash: digest("b".repeat(64)), idempotencyKey: randomUUID(), reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") });
   const file = await sealIncoming((async function* () { yield payload; })(), { root: keys.intakeRoot, maxBytes: reservation.reservedBytes, reservationId: reservation.id }, keys.publicKey);
@@ -38,6 +38,50 @@ async function sealed(beforeCommit?: (path: string) => Promise<void>) {
   records.set(file.path, repo.getCommittedIntake(accepted.id)!); return file;
 }
 function record(file: Awaited<ReturnType<typeof sealed>>) { return records.get(file.path)!; }
+
+async function retryAttempt(idempotencyKey = "synthetic-conflict", requestBody = body) {
+  const reservation = await keys.custody.reserve({ ...testAdmission(), sessionHash: digest("b".repeat(64)), idempotencyKey, reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") });
+  const file = await sealIncoming((async function* () { yield encodePayload(requestBody); })(), { root: keys.intakeRoot, maxBytes: reservation.reservedBytes / 2, reservationId: reservation.id }, keys.publicKey);
+  return { reservation, file, commit: { reservationId: reservation.id, encryptedPayloadPath: file.path, actualBytes: file.bytes, digest: payloadDigest(requestBody), encryptedName: "ciphertext:synthetic", job: "sales-fulltime" as const, now: utcInstant("2026-10-09T10:00:00.000Z") } };
+}
+describe("terminal idempotency conflict", () => {
+  it("keeps healthy readiness after proven repository conflict, terminal cleanup and identical original accounting", async () => {
+    const first = await retryAttempt(), accepted = await keys.custody.commitIntake(first.commit);
+    const original = repo.getCommittedIntake(accepted.id)!, bytes = await readFile(original.encryptedPayloadPath), inventory = await keys.custody.cleanupOrphans();
+    const changed = await retryAttempt(undefined, { ...body, files: [{ ...body.files[0], content: Buffer.from("synthetic edited document").toString("base64") }] });
+    await expect(keys.custody.commitIntake(changed.commit)).rejects.toThrow("IDEMPOTENCY_CONFLICT");
+    expect(keys.custody.getIntakeReadiness()).toEqual({ ready: true });
+    expect(await readdir(keys.intakeRoot)).toEqual([]); expect(await keys.custody.cleanupOrphans()).toEqual(inventory);
+    expect(repo.getCommittedIntake(accepted.id)).toEqual(original); expect(await readFile(original.encryptedPayloadPath)).toEqual(bytes);
+    const unrelated = await retryAttempt("synthetic-unrelated"); await expect(keys.custody.commitIntake(unrelated.commit)).resolves.toMatchObject({ replayed: false });
+    expect(repo.listRetainedIntakes()).toHaveLength(2);
+  });
+  it("fails closed and retains both copies/accounting when conflict terminal authority still has a live descriptor", async () => {
+    const first = await retryAttempt(), accepted = await keys.custody.commitIntake(first.commit);
+    const original = repo.getCommittedIntake(accepted.id)!, bytes = await readFile(original.encryptedPayloadPath), before = await keys.custody.cleanupOrphans();
+    const changed = await retryAttempt(undefined, { ...body, files: [{ ...body.files[0], content: Buffer.from("synthetic edited document").toString("base64") }] });
+    const holder = await testIngressAuthority(keys.intakeRoot).retain(changed.reservation.id);
+    try {
+      await expect(keys.custody.commitIntake(changed.commit)).rejects.toThrow("INGRESS_BUSY");
+      expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
+      expect(await readFile(changed.file.path)).toHaveLength(changed.file.bytes);
+      const journal = JSON.parse(await readFile(join(keys.privateRoot, changed.reservation.id + ".journal"), "utf8"));
+      expect(journal).toMatchObject({ state: "orphan", release: "pending", budget: 20000 });
+      expect(await readFile(journal.workerPath)).toHaveLength(changed.file.bytes);
+      const after = await keys.custody.cleanupOrphans(); expect(after.physicalBytes).toBeGreaterThan(before.physicalBytes); expect(after.reservedHeadroom).toBeGreaterThan(before.reservedHeadroom);
+      expect(repo.getCommittedIntake(accepted.id)).toEqual(original); expect(await readFile(original.encryptedPayloadPath)).toEqual(bytes);
+      await expect(keys.custody.reserve({ ...testAdmission(), sessionHash: digest("c".repeat(64)), idempotencyKey: "unrelated", reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") })).rejects.toThrow("CUSTODY_NOT_READY");
+    } finally { await holder.close(); }
+    expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
+  });
+  it("does not exempt a repository error merely named conflict when no matching accepted key exists", async () => {
+    const pending = await retryAttempt();
+    vi.spyOn(repo, "commitIntake").mockImplementationOnce(() => { throw new Error("IDEMPOTENCY_CONFLICT"); });
+    await expect(keys.custody.commitIntake(pending.commit)).rejects.toThrow("IDEMPOTENCY_CONFLICT");
+    expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false }); expect(repo.listRetainedIntakes()).toEqual([]);
+    expect((await keys.custody.cleanupOrphans()).physicalBytes).toBeGreaterThan(pending.file.bytes);
+  });
+});
 
 describe("custody-open-fd", () => {
   it("keeps the worker-owned bytes unchanged after mutation through a retained ingress descriptor", async () => {

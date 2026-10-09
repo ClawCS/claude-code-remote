@@ -101,3 +101,44 @@ Nine product/test files: `lib/applications-contract.ts`; `services/applications/
 Self-review checked owned source/test diffs, public-secret boundary, strict signed claims, inclusive Busboy behavior, observer/header agreement, canonical digest/retry behavior, response projection, no logging/raw IP, disabled startup/imports, timeout/fd close ordering and scoped ownership. Found/fixed multipart error normalization/chunk-order and deadline-response issues with behavioral RED/GREEN evidence. The two existing shared availability/lost-reply boundaries were escalated, retained fail-closed, and explicitly documented rather than silently expanding4B. All tests are invented local fixtures and no real documents/mail are used.
 
 Scoped commit subject: `feat: add bounded application upload and private status endpoint`. No push. Final SHA is returned to the controller with this report path.
+
+## R46 pre-review correctness correction
+
+Original4B commit: `b225c021e2cea0ea6532d35fb7f1ca9288132ddc`. Controller subsequently approved R46's smallest custody/covering-test expansion before initial independent review. This appendix supersedes concern1's unresolved availability handoff above; the ordinary409 latch is now corrected. The prior1881-test full-suite result remains **pre-correction** evidence, not a claim that the full suite was rerun after R46. The explicit lost unknown UnixRPC reserve reply, actual lifetime reconciliation and Linux/activation qualification obligations remain unchanged.
+
+Changed only `services/applications/src/custody.ts`, its directly covering existing `services/applications/tests/custody.test.ts`, owned `services/applications/tests/intake-http.test.ts`, and this report. No repository/schema/types/RPC/authority/fixture/API expansion; controller-owned audit documentation and foreign artifacts remain unstaged.
+
+The repository's reviewed transaction throws IDEMPOTENCY_CONFLICT before any new acceptance when the already accepted session/key differs in digest/submission. Custody now recognizes the error only at that repository call boundary, confirms a matching accepted replay reservation and no retained intake at the new worker path, then uses existing markOrphan/deleteEntry/releaseReservation/checked operations. A private local marker is minted only after all terminal authority-backed cleanup and accounting succeed; only that marker bypasses the generic readiness latch and rethrows the original409. There is no ready=true reset, broad message-based outer-catch exemption, guessed unlink, forced lifetime release, HTTP bypass or accepted-copy deletion. Any authority, cleanup, persistence, verification or accounting failure before the marker reaches the existing fail-closed path.
+
+### R46 behavioral RED/GREEN
+
+Command before the custody correction:
+
+```sh
+NODE_ENV=test npx vitest run services/applications/tests/custody.test.ts services/applications/tests/intake-http.test.ts -t 'terminal idempotency conflict|does not merge cross-session'
+```
+
+RED:3 failed,1 passed,46 filtered. Concrete failures: healthy custody readiness was false instead of true after ordinary conflict; retained live descriptor produced IDEMPOTENCY_CONFLICT instead of required terminal INGRESS_BUSY; real HTTP config was enabled:false instead of enabled:true after changed-content409. The negative fake-conflict-label case already passed.
+
+Same command after the correction:4 passed,46 filtered,1.06s,exit0. Successful conflict test checks exact pre/post custody inventory equality, empty incoming directory, original committed record and ciphertext byte equality, then accepts an unrelated real custody intake. The real HTTP/UnixRPC/SQLite/custody test preserves cross-session isolation, gets409 for changed content, observes enabled:true and unrelated202, with three durable cases. Authority failure test retains an actual registered ingress descriptor: INGRESS_BUSY, readiness:false, both incoming/worker copies remain, orphan release:pending and full20000-byte budget remain accounted, physical/reserved headroom exceed the original-only baseline, original record/ciphertext stay unchanged, unrelated reserve fails CUSTODY_NOT_READY. Closing that descriptor alone does not reset readiness. An error merely named conflict without a matching accepted key remains unavailable with no accepted record and accounted copies.
+
+### R46 final scoped verification
+
+```sh
+NODE_ENV=test APPLICATIONS_TEST_QPDF=/opt/homebrew/opt/qpdf/bin/qpdf APPLICATIONS_TEST_POPPLER=/Users/niko/Desktop/Homepage/trinkgut-jammers-v2/.worktrees/cinematic-production/.superpowers/sdd/2026-10-09-application-document-reconstruction/tools/prefix/poppler-26.10.0/bin/pdftoppm npx vitest run services/applications/tests/custody.test.ts services/applications/tests/intake-http.test.ts services/applications/tests/worker-rpc.test.ts services/applications/tests/storage-budget.test.ts services/applications/tests/artifact-store.test.ts
+```
+
+Output:`Test Files 5 passed (5)`;`Tests 111 passed (111)`;10.73s;exit0. No warnings/errors/skips. Covers the new success/failing-authority/fake-label regressions and existing post-durable-commit abort protection, other live-owner preservation, ingress integrity and artifact/storage accounting cases.
+
+```sh
+npm run applications:build
+npx tsc --noEmit
+npx eslint services/applications/src/custody.ts services/applications/tests/custody.test.ts services/applications/tests/intake-http.test.ts --max-warnings 0
+git diff --check
+```
+
+All exit0; build/compiler/lint/diff check produce no diagnostics. No full-suite repeat, dependency/install/server/account/mail/push action, or UI/lib change during R46. Original Next guide/local-page verification remains applicable to the preceding type-only lib change.
+
+Self-review rechecked repository transaction conflict provenance, replay-reservation predicate, new-path durable acceptance guard, private marker creation only after awaited authority cleanup/DB release/accounting, unchanged generic fail-closed catch/final owner draining, no boolean reset and original acceptance/ciphertext preservation. Tests exercise real authority descriptors and real HTTP pipeline rather than substituting client asserted readiness or fake storage success. Darwin synthetic tests remain unqualified for Linux lifetime/OS/RSS barriers described above. Review should include R46's expanded custody diff as well as original4B; lost actual UnixRPC-reserve reply still requires authority-backed Task7/14 lifecycle reconciliation, never guessed ID/unlink/forced release.
+
+Correction scoped commit subject:`fix: preserve intake readiness after terminal retry conflicts`. No push; final correction SHA returned separately to the controller.

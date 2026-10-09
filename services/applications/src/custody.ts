@@ -3,7 +3,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { constants } from "node:fs";
 import { mkdir, open, rmdir, unlink, lstat, readdir, rename } from "node:fs/promises";
 import { join } from "node:path";
-import type { ApplicationRepository, ApplicationId, ArtifactRecord, CommittedIntake, PrivateSnapshot, WorkerKeys, ProcessingSnapshot, CustodyLedger, CustodyInventory, CustodyConfig, Reservation, Instant, IngressLease, IngressEvidence } from "./types";
+import type { ApplicationRepository, ApplicationId, ArtifactRecord, CommittedIntake, PrivateSnapshot, WorkerKeys, ProcessingSnapshot, CustodyLedger, CustodyInventory, CustodyConfig, Reservation, Instant, IngressLease, IngressEvidence, Acceptance } from "./types";
 import { digest, utcInstant } from "./types";
 import { checkPrivateRoot, checkIncomingRoot, openPrivateFile, decodePayload, decryptEnvelope, payloadDigest, syncRoot, intakePath, MAX_SEALED_BYTES, readBoundedFile, strictObject } from "./crypto";
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, SCRATCH_RESERVE, storageBudget } from "./storage-budget";
@@ -20,6 +20,11 @@ interface Journal {
   artifactKind?: "bundle" | "mime";
 }
 export function createCustodyLedger(repo: ApplicationRepository, config: CustodyConfig): CustodyLedger {
+  // Only created after a repository-origin conflict is proven unaccepted and
+  // existing authority-backed terminal cleanup/accounting has succeeded.
+  class CleanedRepositoryConflict extends Error {
+    constructor(readonly original: Error) { super("IDEMPOTENCY_CONFLICT"); }
+  }
   const entries = new Map<string, Journal>();
   const intakeOwners = new Set<string>();
   const processingOwners = new Set<string>();
@@ -332,11 +337,20 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
           try { await target.writeFile(bytes); await target.sync(); } finally { await target.close(); }
         } finally { await fd.close(); }
         await syncRoot(config.custodyRoot); await checked();
-        const accepted = repo.commitIntake({ ...input, encryptedPayloadPath: entry.workerPath!, now: now() });
+        let accepted: Acceptance;
+        try { accepted = repo.commitIntake({ ...input, encryptedPayloadPath: entry.workerPath!, now: now() }); }
+        catch (error) {
+          if (error instanceof Error && error.message === "IDEMPOTENCY_CONFLICT" && repo.isReplayReservation(entry.id) && !repo.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) {
+            await markOrphan(entry); await deleteEntry(entry); repo.releaseReservation(entry.id); await checked();
+            throw new CleanedRepositoryConflict(error);
+          }
+          throw error;
+        }
         if (accepted.replayed) { await markOrphan(entry); await deleteEntry(entry); }
         else { const committed: Journal = { ...entry, state: "committed", caseId: accepted.id }; await save(committed); await releaseIngress(committed); }
         return accepted;
       } catch (error) {
+        if (error instanceof CleanedRepositoryConflict) throw error.original;
         ready = false;
         // If DB commit completed, recovery must preserve the accepted file; no guessed success.
         if (!repo.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) { await markOrphan(entry); repo.releaseReservation(entry.id); }

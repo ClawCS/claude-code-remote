@@ -287,10 +287,9 @@ describe("authenticated synthetic HTTP streams", () => {
     expect(two.body).not.toMatchObject({ reference: (one.body as { reference: string }).reference });
     expect((await request("/api/bewerbung", "POST", uploadHeaders(first), multipart(undefined, [{ data: Buffer.from("synthetic changed") }]))).status).toBe(409);
     expect(repo!.listRetainedIntakes()).toHaveLength(2);
-    // Existing reviewed custody behavior: an ordinary conflict latches global
-    // readiness false. This availability concern is handed off, not bypassed.
-    expect((await request("/api/bewerbung/config")).body).toMatchObject({ enabled: false });
-    expect((await request("/api/bewerbung", "POST", uploadHeaders(second, "after-conflict"), multipart())).status).toBe(503);
+    expect((await request("/api/bewerbung/config")).body).toMatchObject({ enabled: true });
+    expect((await request("/api/bewerbung", "POST", uploadHeaders(second, "after-conflict"), multipart())).status).toBe(202);
+    expect(repo!.listRetainedIntakes()).toHaveLength(3);
   });
   it("fails closed on unavailable readiness without accepting or reserving", async () => {
     await active("enabled", port => ({ ...port, getIntakeReadiness: unavailable.getIntakeReadiness }));
