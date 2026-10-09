@@ -12,6 +12,15 @@ function mixed(attachmentCount = 1) {
   return headers + "\r\n\r\n" + text + leaves + "--FIXED--\r\n";
 }
 describe("strict declared MIME v1 structure", () => {
+  it("preserves meaningful folded-header continuation whitespace in independent fingerprints", async () => {
+    const flat = message("A").toString().replace("Subject: Synthetic", "Subject: Synthetic A");
+    const singleFold = flat.replace("Subject: Synthetic A", "Subject: Synthetic\r\n A");
+    const changedFold = flat.replace("Subject: Synthetic A", "Subject: Synthetic\r\n  A");
+    const original = await fingerprintMime(bytes(Buffer.from(flat)), MIME_LIMITS);
+    expect((await fingerprintMime(bytes(Buffer.from(singleFold)), MIME_LIMITS)).fingerprint).toBe(original.fingerprint);
+    const changed = await fingerprintMime(bytes(Buffer.from(changedFold)), MIME_LIMITS);
+    expect(changed.headers.subject).toBe("Synthetic  A"); expect(changed.fingerprint).not.toBe(original.fingerprint);
+  });
   it("preserves a UTF-8 BOM instead of silently removing content", async () => {
     expect((await inspectMimeStructure(message(Buffer.from([0xef, 0xbb, 0xbf, 0x41])), MIME_LIMITS)).text).toBe("\uFEFFA");
   });

@@ -1,11 +1,56 @@
 import { describe, expect, it } from "vitest";
 import { createServer, type Socket } from "node:net";
+import { EventEmitter } from "node:events";
+import { Readable } from "node:stream";
 import SMTPConnection from "nodemailer/lib/smtp-connection";
 import { createSmtpPort, sendMail } from "../src/smtp";
 import { applicationId, digest, type RegisteredMail } from "../src/types";
 const registered: RegisteredMail = { id: applicationId("11111111-1111-4111-8111-111111111111"), messageId: "<application-1111@trinkgut-jammers.de>", keyId: "mail-2026", profile: "tj-mail-1", fingerprint: digest("a".repeat(64)), shape: { kind: "text", parts: 1, attachments: [] } };
 async function* raw() { yield Buffer.from("stored immutable MIME\r\n"); }
+// Public event/callback boundary only; no sockets or library-private state.
+function eventConnection() {
+  const events = new EventEmitter(), calls: string[] = [];
+  let connectDone: Parameters<SMTPConnection["connect"]>[0], loginDone: Parameters<SMTPConnection["login"]>[1], sendDone: Parameters<SMTPConnection["send"]>[2];
+  let source: Parameters<SMTPConnection["send"]>[1];
+  const connection = {
+    on: events.on.bind(events),
+    connect(done: Parameters<SMTPConnection["connect"]>[0]) { calls.push("connect"); connectDone = done; },
+    login(_auth: Parameters<SMTPConnection["login"]>[0], done: Parameters<SMTPConnection["login"]>[1]) { calls.push("login"); loginDone = done; },
+    send(_envelope: Parameters<SMTPConnection["send"]>[0], rawSource: Parameters<SMTPConnection["send"]>[1], done: Parameters<SMTPConnection["send"]>[2]) { calls.push("send"); source = rawSource; sendDone = done; },
+    close() { calls.push("close"); },
+  };
+  return { connection, events, calls, source: () => source, connect: () => connectDone?.(), login: () => loginDone(null, true), lateConnectFailure: () => connectDone?.(new Error("late callback")), accept: () => sendDone(null, { accepted: ["info@trinkgut-jammers.de"], rejected: [], response: "250 queued", envelopeTime: 0, messageTime: 0, messageSize: 1 }) };
+}
+async function flushOperations() { for (let i = 0; i < 6; i++) await Promise.resolve(); }
 describe("conservative SMTP local port", () => {
+  it.each(["connect", "login", "send"])("settles event-only %s failure without waiting for a callback", async phase => {
+    const stub = eventConnection(), port = createSmtpPort({ user: "synthetic", pass: "synthetic" }, () => stub.connection);
+    let outcome: unknown; const pending = sendMail({ registered, raw: raw() }, port).then(value => { outcome = value; });
+    if (phase !== "connect") { stub.connect(); await flushOperations(); }
+    if (phase === "send") { stub.login(); await flushOperations(); }
+    stub.events.emit("error", new Error("event only")); await flushOperations();
+    expect(outcome).toEqual(phase === "send" ? { kind: "uncertain" } : { kind: "definitely_failed", retryable: true });
+    await pending; expect(stub.calls.filter(call => call === "close")).toHaveLength(1);
+    if (phase === "send") { expect(stub.source()).toBeInstanceOf(Readable); expect((stub.source() as Readable).destroyed).toBe(true); stub.accept(); expect(outcome).toEqual({ kind: "uncertain" }); }
+    stub.events.emit("error", new Error("late event")); stub.lateConnectFailure();
+    expect(stub.calls.filter(call => call === "close")).toHaveLength(1);
+  });
+  it.each(["connect-login", "login-send"])("latches errors in the %s phase gap before invoking another client operation", async gap => {
+    const stub = eventConnection(), port = createSmtpPort({ user: "synthetic", pass: "synthetic" }, () => stub.connection);
+    let outcome: unknown; const pending = sendMail({ registered, raw: raw() }, port).then(value => { outcome = value; });
+    stub.connect();
+    if (gap === "login-send") { await flushOperations(); stub.login(); }
+    stub.events.emit("error", new Error("gap failure")); await flushOperations();
+    expect(outcome).toEqual(gap === "connect-login" ? { kind: "definitely_failed", retryable: true } : { kind: "uncertain" });
+    await pending; expect(stub.calls).toEqual(gap === "connect-login" ? ["connect", "close"] : ["connect", "login", "close"]);
+  });
+  it("ignores an old operation callback while settling the current operation and preserves final acceptance", async () => {
+    const stub = eventConnection(), port = createSmtpPort({ user: "synthetic", pass: "synthetic" }, () => stub.connection);
+    const pending = sendMail({ registered, raw: raw() }, port);
+    stub.connect(); await flushOperations(); stub.lateConnectFailure(); stub.login(); await flushOperations(); stub.accept();
+    stub.events.emit("error", new Error("after final acceptance"));
+    expect(await pending).toEqual({ kind: "accepted" }); expect(stub.calls).toEqual(["connect", "login", "send", "close"]);
+  });
   it.each(["connect", "login"])("classifies failure before send at %s as definitely failed", async phase => {
     const port = { async connect() { if (phase === "connect") throw new Error("disconnect"); }, async login() { if (phase === "login") throw new Error("auth failed"); }, async send() { throw new Error("must not send"); }, close() {} };
     expect(await sendMail({ registered, raw: raw() }, port)).toEqual({ kind: "definitely_failed", retryable: true });

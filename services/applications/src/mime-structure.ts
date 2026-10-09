@@ -32,7 +32,9 @@ function headers(node: MimeNode): Record<string, string> {
   for (const { key, line } of node.headers.getList()) {
     if (!(node.root ? rootHeaders : leafHeaders).has(key) || (key !== "received" && key in values)) invalid();
     const colon = line.indexOf(":"); if (colon < 1) invalid();
-    const value = line.slice(colon + 1).replace(/^ /, "").replace(/\r?\n[\t ]+/g, " ");
+    // Unfold only the line break; following spaces/tabs are content and must
+    // remain fingerprint-bound, rather than collapsing to a single space.
+    const value = line.slice(colon + 1).replace(/^ /, "").replace(/\r?\n(?=[\t ])/g, "");
     if (/[^\x20-\x7e\t]/.test(value)) invalid(); values[key] = value;
   }
   return values;

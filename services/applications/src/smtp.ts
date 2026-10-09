@@ -3,20 +3,42 @@ import SMTPConnection from "nodemailer/lib/smtp-connection";
 import type { MailEnvelope, SendOutcome, SmtpPort, SmtpResult, StoredMailForSend } from "./types";
 import { MAIL_ADDRESS } from "./mime-structure";
 export interface SmtpCredentials { readonly user: string; readonly pass: string }
-export type SmtpConnectionFactory = (options: SMTPConnection.Options) => Pick<SMTPConnection, "connect" | "login" | "send" | "close" | "on">;
+export type SmtpConnectionFactory = (options: SMTPConnection.Options) => Pick<SMTPConnection, "connect" | "login" | "send" | "close"> & { on(event: "error", listener: (error: Error) => void): unknown };
 // Worker-only dependency. Construction does not connect; no credential logging.
 export function createSmtpPort(credentials: SmtpCredentials, factory: SmtpConnectionFactory = options => new SMTPConnection(options)): SmtpPort {
   const connection = factory({ host: "smtp.ionos.de", port: 587, secure: false, requireTLS: true, opportunisticTLS: false, tls: { rejectUnauthorized: true, minVersion: "TLSv1.2" }, connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 30000, dnsTimeout: 10000, maxResponseSize: 16384, logger: false, debug: false, transactionLog: false });
-  connection.on("error", () => {});
+  let terminalError: unknown, activeReject: ((error: unknown) => void) | undefined, closed = false;
+  const closeConnection = () => { if (!closed) { closed = true; try { connection.close(); } catch { /* Outcome is already settled; close remains one-shot. */ } } };
+  connection.on("error", error => {
+    // Connect/login may emit only this event. Latch errors in phase gaps too,
+    // so no later client operation can proceed on a failed connection.
+    terminalError ??= error ?? new Error("SMTP_UNKNOWN");
+    activeReject?.(terminalError); closeConnection();
+  });
+  const operation = <T>(start: (finish: (error: unknown, result: T) => void) => void, cleanup: () => void = () => {}): Promise<T> => new Promise<T>((resolve, reject) => {
+    if (terminalError !== undefined || closed) { reject(terminalError ?? new Error("SMTP_CLOSED")); return; }
+    if (activeReject) { reject(new Error("SMTP_OPERATION_BUSY")); return; }
+    let settled = false;
+    const finish = (error: unknown, result: T) => {
+      if (settled) return; settled = true; activeReject = undefined; cleanup();
+      if (error != null) { terminalError ??= error; closeConnection(); reject(error); } else resolve(result);
+    };
+    activeReject = error => finish(error, undefined as T);
+    try { start(finish); } catch (error) { finish(error, undefined as T); }
+  });
   return {
-    connect: () => new Promise<void>((resolve, reject) => connection.connect(error => error ? reject(error) : resolve())),
-    login: () => new Promise<void>((resolve, reject) => connection.login({ user: credentials.user, pass: credentials.pass }, error => error ? reject(error) : resolve())),
-    send: (envelope, raw) => new Promise<SmtpResult>((resolve, reject) => {
-      const source = Readable.from(raw);
-      connection.send({ from: envelope.from, to: [...envelope.to] }, source, (error, result) => {
-        source.destroy(); if (error) reject(error); else if (result) resolve({ accepted: result.accepted, rejected: result.rejected, response: result.response }); else reject(new Error("SMTP_UNKNOWN"));
-      });
-    }), close: () => connection.close(),
+    connect: () => operation<void>(finish => connection.connect(error => finish(error, undefined))),
+    login: () => operation<void>(finish => connection.login({ user: credentials.user, pass: credentials.pass }, error => finish(error, undefined))),
+    send: (envelope, raw) => {
+      let source: Readable | undefined;
+      return operation<SmtpResult>(finish => {
+        source = Readable.from(raw);
+        connection.send({ from: envelope.from, to: [...envelope.to] }, source, (error, result) => {
+          finish(error ?? (!result ? new Error("SMTP_UNKNOWN") : undefined), result ? { accepted: result.accepted, rejected: result.rejected, response: result.response } : undefined as never);
+        });
+      }, () => source?.destroy());
+    },
+    close: () => { terminalError ??= new Error("SMTP_CLOSED"); activeReject?.(terminalError); closeConnection(); },
   };
 }
 function negativeReply(error: unknown): number | undefined {
