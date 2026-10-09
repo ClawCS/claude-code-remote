@@ -1,7 +1,8 @@
 import type { ValidationFailure } from "./types";
+import { RECONSTRUCTION_LIMITS } from "./reconstruction-limits";
 export interface PdfPolicyResult { pages: number; streams: string[] }
 export class PdfPolicyError extends Error { constructor(readonly reason: ValidationFailure) { super(reason); } }
-export const PDF_LIMITS = { objects: 20_000, values: 200_000, depth: 64, pages: 50, jsonBytes: 16 * 1024 * 1024, diagnostics: 64 * 1024, streamBytes: 64 * 1024 * 1024, decodedBytes: 128 * 1024 * 1024, filters: 4 } as const;
+export const PDF_LIMITS = { objects: 20_000, values: 200_000, depth: 64, pages: RECONSTRUCTION_LIMITS.pdfPages, jsonBytes: 16 * 1024 * 1024, diagnostics: 64 * 1024, streamBytes: 64 * 1024 * 1024, decodedBytes: 128 * 1024 * 1024, filters: 4 } as const;
 type Dict = Record<string, unknown>;
 const activeKeys = new Set(["/JS", "/JavaScript", "/OpenAction", "/AA", "/EmbeddedFiles", "/EF", "/AF", "/XFA", "/AcroForm", "/RichMediaContent", "/RichMediaSettings", "/3DD", "/3DA", "/PresSteps", "/Collection"]);
 const activeNames = new Set(["/JavaScript", "/Launch", "/EmbeddedFile", "/Filespec", "/FileAttachment", "/Widget", "/Movie", "/Sound", "/Screen", "/RichMedia", "/3D", "/GoToR", "/GoToE", "/SubmitForm", "/ImportData", "/Rendition"]);

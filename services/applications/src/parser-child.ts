@@ -3,13 +3,17 @@ import sharp from "sharp";
 import { FileCheckError, identifyFile, readSnapshotFile } from "./file-validation";
 import { inspectPdfGraph, PDF_LIMITS, PdfPolicyError } from "./pdf-policy";
 import { PINNED_QPDF_VERSION } from "./parser-process";
+import { RECONSTRUCTION_LIMITS } from "./reconstruction-limits";
+import { strictRecord, type SourceInspection, type SourceInspectorResult } from "./reconstruction-types";
 import type { ParserResult, SnapshotFile } from "./types";
+import { isAbsolute } from "node:path";
 
 // Entrypoint is diagnostic-only until a qualified Linux supervisor is implemented.
-async function inspect(file: SnapshotFile, qpdfPath: string): Promise<ParserResult> {
-  if (process.env.NODE_ENV !== "test") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
+async function inspect(file: SnapshotFile, qpdfPath: string): Promise<SourceInspection> {
+  if (process.env.NODE_ENV !== "test") throw new FileCheckError("SANDBOX_UNAVAILABLE");
   const bytes = await readSnapshotFile(file), format = identifyFile(bytes);
   if (!format) throw new FileCheckError("IDENTITY_MISMATCH");
+  let pageCount = 1;
   if (format === "pdf") {
     const command = (args: string[], maxBuffer: number, expected = 0) => {
       // spawnSync's command-wide maxBuffer can exceed the diagnostic acceptance
@@ -30,6 +34,7 @@ async function inspect(file: SnapshotFile, qpdfPath: string): Promise<ParserResu
     command(["--suppress-recovery", "--check", file.path], PDF_LIMITS.diagnostics);
     const json = command(["--suppress-recovery", "--json=2", "--json-key=qpdf", "--json-stream-data=none", file.path], PDF_LIMITS.jsonBytes);
     const policy = inspectPdfGraph(JSON.parse(json.toString("utf8")));
+    pageCount = policy.pages;
     let decoded = 0;
     for (const stream of policy.streams) {
       const data = command(["--suppress-recovery", `--show-object=${stream}`, "--filtered-stream-data", "--decode-level=all", file.path], PDF_LIMITS.streamBytes);
@@ -37,11 +42,11 @@ async function inspect(file: SnapshotFile, qpdfPath: string): Promise<ParserResu
     }
   } else {
     sharp.cache(false); sharp.concurrency(1);
-    const image = sharp(bytes, { failOn: "warning", limitInputPixels: 25_000_000, limitInputChannels: 4, unlimited: false, sequentialRead: true });
+    const image = sharp(bytes, { failOn: "warning", limitInputPixels: RECONSTRUCTION_LIMITS.imagePixels, limitInputChannels: 4, unlimited: false, sequentialRead: true });
     try {
       const metadata = await image.metadata();
       if (metadata.format !== format) throw new FileCheckError("IDENTITY_MISMATCH");
-      if (!metadata.width || !metadata.height || metadata.width * metadata.height > 25_000_000 || (metadata.pages ?? 1) !== 1) throw new FileCheckError("IMAGE_LIMIT");
+      if (!metadata.width || !metadata.height || metadata.width > RECONSTRUCTION_LIMITS.edgePixels || metadata.height > RECONSTRUCTION_LIMITS.edgePixels || metadata.width * metadata.height > RECONSTRUCTION_LIMITS.imagePixels || (metadata.pages ?? 1) !== 1) throw new FileCheckError("IMAGE_LIMIT");
       await image.stats(); // Evaluates compressed pixels; metadata alone is insufficient.
     } catch (error) {
       if (error instanceof FileCheckError) throw error;
@@ -50,16 +55,25 @@ async function inspect(file: SnapshotFile, qpdfPath: string): Promise<ParserResu
     }
   }
   await readSnapshotFile(file);
-  return { kind: "parsed", format };
+  return { format, pageCount };
 }
 async function main(): Promise<void> {
-  let result: ParserResult;
+  let result: ParserResult | SourceInspectorResult, sourceOperation = false;
   try {
     let request = Buffer.alloc(0);
     for await (const chunk of process.stdin) { if (request.length + chunk.length > 16384) throw new FileCheckError("PARSER_LIMIT"); request = Buffer.concat([request, chunk]); }
-    const input = JSON.parse(request.toString("utf8")); result = await inspect(input.file, input.qpdfPath);
+    const raw: unknown = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(request));
+    const source = strictRecord(raw, ["version", "operation", "file", "qpdfPath"]);
+    const legacy = strictRecord(raw, ["file", "qpdfPath"]);
+    if (source?.version === 1 && source.operation === "inspect-source") sourceOperation = true;
+    else if (!legacy) throw new FileCheckError("INVALID_FILE");
+    const input = sourceOperation ? source! : legacy!;
+    const file = strictRecord(input.file, ["name", "path", "bytes", "mediaType", "digest"]);
+    if (!file || typeof file.name !== "string" || typeof file.path !== "string" || typeof file.mediaType !== "string" || typeof file.digest !== "string" || !/^[a-f0-9]{64}$/.test(file.digest) || !Number.isSafeInteger(file.bytes) || typeof input.qpdfPath !== "string" || !isAbsolute(input.qpdfPath)) throw new FileCheckError("INVALID_FILE");
+    const inspection = await inspect(file as unknown as SnapshotFile, input.qpdfPath);
+    result = sourceOperation ? { kind: "inspected", inspection } : { kind: "parsed", format: inspection.format };
   }
   catch (error) { result = { kind: "blocked", reason: error instanceof FileCheckError || error instanceof PdfPolicyError ? error.reason : "INVALID_FILE" }; }
-  process.stdout.write(JSON.stringify(result));
+  process.stdout.write(JSON.stringify(sourceOperation ? { version: 1, operation: "inspect-source", result } : result));
 }
 void main();

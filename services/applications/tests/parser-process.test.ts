@@ -2,11 +2,59 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { createLocalDiagnosticParser, parserReadiness, runLocalDiagnosticProcess } from "../src/parser-process";
+import { createLocalDiagnosticParser, createLocalDiagnosticSourceInspector, parserReadiness, runLocalDiagnosticProcess } from "../src/parser-process";
 import { fixture, staticPdf, requireQpdfTestExecutable } from "./fixtures/synthetic";
+import { decodeSourceInspectorResponse } from "../src/reconstruction-types";
 
 afterEach(() => vi.unstubAllEnvs());
 describe("local supervisor: deadlines and output limits, not Linux sandbox proof", () => {
+  it.each([
+    { kind: "inspected", inspection: { format: "pdf", pageCount: 1 } },
+    { version: true, operation: "inspect-source", result: { kind: "inspected", inspection: { format: "pdf", pageCount: 1 } } },
+    { version: 1, operation: "parse", result: { kind: "inspected", inspection: { format: "pdf", pageCount: 1 } } },
+    { version: 1, operation: "inspect-source", result: { kind: "inspected", inspection: { format: "png", pageCount: 2 } } },
+    { version: 1, operation: "inspect-source", result: { kind: "blocked", reason: "made-up" } },
+    { version: 1, operation: "inspect-source", result: { kind: "parsed", format: "pdf" } },
+    { version: 1, operation: "inspect-source", result: { kind: "inspected", inspection: { format: "pdf", pageCount: 1 } }, extra: true },
+  ])("rejects contradictory/unversioned child response %j", response => {
+    expect(decodeSourceInspectorResponse(response)).toBeUndefined();
+  });
+  it("returns actual inspection using an explicitly versioned child operation", async () => {
+    const root = await mkdtemp(join(tmpdir(), "source-child-"));
+    try {
+      const file = await fixture(root, staticPdf());
+      const result = await runLocalDiagnosticProcess(process.execPath, ["--import", require.resolve("tsx"), join(process.cwd(), "services/applications/src/parser-child.ts")], 30000, 4096, Buffer.from(JSON.stringify({ version: 1, operation: "inspect-source", file, qpdfPath: requireQpdfTestExecutable() })));
+      expect(result.code).toBe(0);
+      expect(JSON.parse(result.output.toString())).toEqual({ version: 1, operation: "inspect-source", result: { kind: "inspected", inspection: { format: "pdf", pageCount: 1 } } });
+    } finally { await rm(root, { recursive: true, force: true }); }
+  });
+  it.each([
+    { version: true, operation: "inspect-source" },
+    { version: 2, operation: "inspect-source" },
+    { version: 1, operation: "parse" },
+    { version: 1, operation: "inspect-source", extra: true },
+    { version: 1, operation: "inspect-source", pageCount: 20 },
+  ])("rejects malformed child operation %j rather than falling back to parse", async fields => {
+    const root = await mkdtemp(join(tmpdir(), "source-child-"));
+    try {
+      const file = await fixture(root, staticPdf());
+      const result = await runLocalDiagnosticProcess(process.execPath, ["--import", require.resolve("tsx"), join(process.cwd(), "services/applications/src/parser-child.ts")], 30000, 4096, Buffer.from(JSON.stringify({ file, qpdfPath: requireQpdfTestExecutable(), ...fields })));
+      expect(JSON.parse(result.output.toString())).toEqual({ kind: "blocked", reason: "INVALID_FILE" });
+    } finally { await rm(root, { recursive: true, force: true }); }
+  });
+  it("cancels a running source inspection and rejects construction outside test mode", async () => {
+    const root = await mkdtemp(join(tmpdir(), "source-cancel-"));
+    try {
+      const path = join(root, "qpdf-hung");
+      await writeFile(path, `#!${process.execPath}\nsetInterval(()=>{},1000);`, { mode: 0o700 });
+      const controller = new AbortController();
+      const result = createLocalDiagnosticSourceInspector(path).inspect(await fixture(root, staticPdf()), controller.signal);
+      setTimeout(() => controller.abort(), 100);
+      expect(await result).toEqual({ kind: "blocked", reason: "PARSER_TIMEOUT" });
+      vi.stubEnv("NODE_ENV", "production");
+      expect(() => createLocalDiagnosticSourceInspector(path)).toThrow("LOCAL_DIAGNOSTIC_ONLY");
+    } finally { await rm(root, { recursive: true, force: true }); }
+  });
   it.each(["", "relative/qpdf", "/missing/synthetic-qpdf"])("requires an explicit usable QPDF fixture executable: %s", path => {
     expect(() => requireQpdfTestExecutable(path)).toThrow("QPDF_TEST_PREREQUISITE");
   });

@@ -10,6 +10,15 @@ function graph(extra: Record<string, unknown> = {}, objects: Record<string, unkn
   }] };
 }
 describe("QPDF selected-view static profile", () => {
+  it.each([20, 21])("enforces the twenty-page limit on actual page tree count %s", count => {
+    const input = graph();
+    input.qpdf[0].maxobjectid = count + 2;
+    const objects = input.qpdf[1] as Record<string, unknown>;
+    objects["obj:2 0 R"] = { value: { "/Type": "/Pages", "/Kids": Array.from({ length: count }, (_, i) => `${i + 3} 0 R`), "/Count": count } };
+    for (let i = 0; i < count; i++) objects[`obj:${i + 3} 0 R`] = { value: { "/Type": "/Page", "/Parent": "2 0 R" } };
+    if (count === 20) expect(inspectPdfGraph(input).pages).toBe(20);
+    else expect(() => inspectPdfGraph(input)).toThrow("PAGE_LIMIT");
+  });
   it("allows ordinary page Parent backlinks and syntax-looking strings", () => { expect(inspectPdfGraph(graph({}, { "obj:4 0 R": { value: { "/Title": "u:/JavaScript /Launch", "/S": "/P" } } }))).toEqual({ pages: 1, streams: [] }); });
   it.each(["/JS", "/JavaScript", "/OpenAction", "/AA", "/EmbeddedFiles", "/XFA", "/AcroForm", "/AF"]) ("rejects active key %s in selected unreferenced objects", key => { expect(() => inspectPdfGraph(graph({}, { "obj:4 0 R": { value: { [key]: {} } } }))).toThrow("ACTIVE_PDF"); });
   it("decodes binary canonical names rather than matching raw spelling", () => { expect(() => inspectPdfGraph(graph({ "n:/Open#41ction": {} }))).toThrow("ACTIVE_PDF"); });

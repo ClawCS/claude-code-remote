@@ -1,5 +1,6 @@
 import type { ApplicationInput, JobId, PublicStatus } from "../../../lib/applications-contract";
 import type { KeyObject } from "node:crypto";
+import type { DocumentFormat } from "./reconstruction-types";
 export type ApplicationId = string & { readonly __applicationId: unique symbol };
 export type StaffId = string & { readonly __staffId: unique symbol };
 export type DateOnly = string & { readonly __dateOnly: unique symbol };
@@ -62,7 +63,7 @@ export interface ProcessingSnapshot extends Omit<PrivateSnapshot, "files"> { fil
 export type SnapshotFile = ProcessingSnapshot["files"][number];
 export const VALIDATION_FAILURES = ["IDENTITY_MISMATCH", "DIGEST_MISMATCH", "INVALID_FILE", "FILE_LIMIT", "ACTIVE_PDF", "ENCRYPTED_PDF", "UNSUPPORTED_PDF", "PAGE_LIMIT", "IMAGE_LIMIT", "PARSER_TIMEOUT", "PARSER_LIMIT", "PARSER_UNAVAILABLE", "SANDBOX_UNAVAILABLE", "PDF_AMBIGUITY_UNRESOLVED"] as const;
 export type ValidationFailure = typeof VALIDATION_FAILURES[number];
-export type ParserResult = { kind: "parsed"; format: "pdf" | "jpeg" | "png" } | { kind: "blocked"; reason: ValidationFailure };
+export type ParserResult = { kind: "parsed"; format: DocumentFormat } | { kind: "blocked"; reason: ValidationFailure };
 export interface ParserPort {
   readonly assurance: "unavailable" | "local-test" | "linux-sandbox";
   parse(file: SnapshotFile): Promise<ParserResult>;

@@ -4,6 +4,30 @@ import { open } from "node:fs/promises";
 import { extname, isAbsolute, resolve } from "node:path";
 import { readBoundedFile } from "./crypto";
 import { VALIDATION_FAILURES, type ParserPort, type ParserResult, type SnapshotFile, type ValidatedFile, type ValidationFailure } from "./types";
+import { decodeSourceInspectorResult, type SourceInspection, type SourceInspectorPort } from "./reconstruction-types";
+
+export async function inspectReconstructionSource(file: SnapshotFile, inspector: SourceInspectorPort, signal: AbortSignal): Promise<SourceInspection> {
+  try {
+    if (signal.aborted) throw new FileCheckError("PARSER_TIMEOUT");
+    const assurance = inspector?.assurance;
+    if ((assurance !== "local-test" && assurance !== "linux-sandbox") || (assurance === "local-test" && process.env.NODE_ENV !== "test")) throw new FileCheckError("SANDBOX_UNAVAILABLE");
+    const format = identifyFile(await readSnapshotFile(file));
+    if (!format || !sourceIdentityMatches(file, format)) throw new FileCheckError("IDENTITY_MISMATCH");
+    const result = decodeSourceInspectorResult(await inspector.inspect(file, signal));
+    if (signal.aborted) throw new FileCheckError("PARSER_TIMEOUT");
+    await readSnapshotFile(file);
+    if (!result) throw new FileCheckError("INVALID_FILE");
+    if (result.kind === "blocked") throw new FileCheckError(result.reason);
+    if (result.inspection.format !== format) throw new FileCheckError("IDENTITY_MISMATCH");
+    // Source eligibility is NOT output validation or permission to dispatch originals.
+    return result.inspection;
+  } catch (error) { throw error instanceof FileCheckError ? error : new FileCheckError("INVALID_FILE"); }
+}
+function sourceIdentityMatches(file: SnapshotFile, format: "pdf" | "jpeg" | "png"): boolean {
+  const suffixes = { pdf: [".pdf"], jpeg: [".jpg", ".jpeg"], png: [".png"] };
+  const media = { pdf: "application/pdf", jpeg: "image/jpeg", png: "image/png" };
+  return suffixes[format].includes(extname(file.name).toLowerCase()) && file.mediaType === media[format];
+}
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024;
 export class FileCheckError extends Error { constructor(readonly reason: ValidationFailure) { super(reason); } }
@@ -47,9 +71,7 @@ export function createFileValidator(parser: ParserPort) {
       if (assurance !== "local-test" && assurance !== "linux-sandbox") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
       if (assurance === "local-test" && process.env.NODE_ENV !== "test") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
       const bytes = await readSnapshotFile(file), format = identifyFile(bytes);
-      const suffixes = { pdf: [".pdf"], jpeg: [".jpg", ".jpeg"], png: [".png"] };
-      const media = { pdf: "application/pdf", jpeg: "image/jpeg", png: "image/png" };
-      if (!format || !suffixes[format].includes(extname(file.name).toLowerCase()) || file.mediaType !== media[format]) return { kind: "blocked", reason: "IDENTITY_MISMATCH" };
+      if (!format || !sourceIdentityMatches(file, format)) return { kind: "blocked", reason: "IDENTITY_MISMATCH" };
       const result = decodeParserResult(await parser.parse(file));
       await readSnapshotFile(file);
       if (!result) return { kind: "blocked", reason: "INVALID_FILE" };
