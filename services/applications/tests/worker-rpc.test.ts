@@ -35,6 +35,69 @@ async function request(method: string, params: unknown = {}) {
   return JSON.parse(String(data));
 }
 describe("rpc-no-admin", () => {
+  it("settles an actual lost reserve reply only after the retained producer descriptor closes", async () => {
+    await ledger.reconcile();
+    let granted!: () => void, continueReply!: () => void;
+    const atGrant = new Promise<void>(resolve => { granted = resolve; });
+    const reply = new Promise<void>(resolve => { continueReply = resolve; });
+    const realReserve = ledger.reserve;
+    let reservation!: Awaited<ReturnType<typeof ledger.reserve>>;
+    ledger.reserve = async (input, readiness) => { reservation = await realReserve(input, readiness); granted(); await reply; return reservation; };
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness });
+    server.listen(join(root, "worker.sock")); await once(server, "listening");
+    const socket = createConnection(join(root, "worker.sock")); await once(socket, "connect");
+    socket.write(JSON.stringify({ method: "reserve", params: reserveInput() }) + "\n");
+    await atGrant;
+    await writeFile(intakePath(intakeRoot, reservation.id), "synthetic live writer", { mode: 0o600 });
+    const authority = testIngressAuthority(intakeRoot), holder = await authority.retain(reservation.id);
+    socket.destroy(); continueReply();
+    try {
+      time = new Date("2026-10-10T10:00:00.000Z");
+      expect(await ledger.settleIngress({ kind: "expired" })).toMatchObject({ complete: false, pending: 1 });
+      const journal = JSON.parse(await readFile(join(custodyRoot, `${reservation.id}.journal`), "utf8"));
+      expect(journal).toMatchObject({ settlement: "expired", release: "pending", budget: 20000 });
+      expect((await authority.observe(journal.lease)).chargedBytes).toBe(21);
+      await holder.write(Buffer.from("live"), 0, 4, 0);
+      await expect(ledger.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+      expect(await request("reserve", reserveInput("blocked"))).toMatchObject({ ok: false });
+    } finally { await holder.close(); }
+    expect(await ledger.settleIngress({ kind: "expired" })).toMatchObject({ complete: true, pending: 0 });
+    expect(await readdir(intakeRoot)).toEqual([]); expect(await readdir(custodyRoot)).toEqual([]);
+    expect(await ledger.settleIngress({ kind: "expired" })).toMatchObject({ complete: true, pending: 0 });
+    ledger.reserve = realReserve;
+    expect(await request("reserve", reserveInput("recovered"))).toMatchObject({ ok: true });
+  });
+  it("preserves accepted bytes after an actual lost commit reply with a live producer and restart", async () => {
+    await ledger.reconcile();
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness });
+    server.listen(join(root, "worker.sock")); await once(server, "listening");
+    const reservation = await createWorkerRpcClient(join(root, "worker.sock")).reserve(reserveInput());
+    const file = await sealIncoming((async function* () { yield Buffer.from("synthetic"); })(), { root: intakeRoot, maxBytes: 10000, reservationId: reservation.id }, publicKey);
+    const holder = await testIngressAuthority(intakeRoot).retain(reservation.id);
+    let committed!: () => void, releaseReply!: () => void;
+    const durable = new Promise<void>(resolve => { committed = resolve; }), reply = new Promise<void>(resolve => { releaseReply = resolve; });
+    const realCommit = ledger.commitIntake;
+    ledger.commitIntake = async input => { const result = await realCommit(input); committed(); await reply; return result; };
+    const socket = createConnection(join(root, "worker.sock")); await once(socket, "connect");
+    socket.write(JSON.stringify({ method: "commitIntake", params: commitInput(reservation.id, file.bytes) }) + "\n");
+    await durable; socket.destroy(); releaseReply();
+    const accepted = repo.listRetainedIntakes()[0], before = await readFile(accepted.encryptedPayloadPath);
+    try {
+      expect(await ledger.settleIngress({ kind: "drain" })).toMatchObject({ complete: false, pending: 1 });
+      await holder.write(Buffer.from("mutated"), 0, 7, 0);
+      expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
+      await new Promise<void>(resolve => server.close(() => resolve()));
+      repo.close(); repo = openRepository(join(root, "registry.sqlite"));
+      ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
+      await ledger.reconcile();
+      expect(ledger.getIntakeReadiness()).toEqual({ ready: false });
+      expect(await ledger.settleIngress({ kind: "expired" })).toMatchObject({ complete: false, pending: 1 });
+    } finally { await holder.close(); }
+    expect(await ledger.settleIngress({ kind: "expired" })).toMatchObject({ complete: true, pending: 0 });
+    expect(repo.getCommittedIntake(accepted.id)).toEqual(accepted);
+    expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
+    expect(await readdir(intakeRoot)).toEqual([]);
+  });
   it("reads readiness without reserving and defaults unavailable even after reconciliation", async () => {
     await ledger.reconcile();
     server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock }); server.listen(join(root, "worker.sock")); await once(server, "listening");
@@ -146,6 +209,7 @@ describe("durable custody accounting", () => {
     await expect(ledger.abortIntake(pending.reservation.id, reserveInput().sessionHash)).rejects.toThrow("INVALID_RESERVATION");
     expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
     expect(repo.getCommittedIntake(accepted.id)).toEqual(accepted);
+    expect(await ledger.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
     await ledger.reconcile();
     expect((await ledger.cleanupOrphans()).orphans).toHaveLength(0);
     expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
@@ -276,9 +340,14 @@ describe("durable custody accounting", () => {
       ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
       await ledger.reconcile();
     }
-    time = new Date("2026-10-10T10:00:00.000Z");
+    time = new Date("2026-10-10T09:59:59.000Z");
     await expect(ledger.reserve({ ...testAdmission(),  ...reserveInput("overflow"), reservedBytes: 28 * 1024 * 1024 })).rejects.toThrow("CAPACITY_EXCEEDED");
-    await expect(ledger.reserve(reserveInput("small-after-capacity-rejection"))).resolves.toMatchObject({reservedBytes:20000});
+    const small = await ledger.reserve(reserveInput("small-after-capacity-rejection"));
+    expect(small.reservedBytes).toBe(20000); await ledger.abortIntake(small.id, reserveInput().sessionHash);
+    time = new Date("2026-10-10T10:00:00.000Z");
+    await expect(ledger.reserve(reserveInput("expired-not-proof"))).rejects.toThrow("CUSTODY_NOT_READY");
+    expect((await ledger.settleIngress({ kind: "expired" })).inventory.physicalBytes).toBe(0);
+    await expect(ledger.reserve(reserveInput("after-terminal-release"))).resolves.toMatchObject({ reservedBytes: 20000 });
   });
   it("fails readiness when cleanup encounters replaced symlink custody", async () => {
     await ledger.reconcile(); const pending = await admitted();

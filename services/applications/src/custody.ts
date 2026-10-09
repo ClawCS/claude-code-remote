@@ -4,7 +4,7 @@ import { constants } from "node:fs";
 import { mkdir, open, rmdir, unlink, lstat, readdir, rename } from "node:fs/promises";
 import { join } from "node:path";
 import type { ApplicationRepository, ApplicationId, ArtifactRecord, CommittedIntake, PrivateSnapshot, WorkerKeys, ProcessingSnapshot, CustodyLedger, CustodyInventory, CustodyConfig, Reservation, Instant, IngressLease, IngressEvidence, Acceptance } from "./types";
-import { digest, utcInstant } from "./types";
+import { applicationId, digest, utcInstant } from "./types";
 import { checkPrivateRoot, checkIncomingRoot, openPrivateFile, decodePayload, decryptEnvelope, payloadDigest, syncRoot, intakePath, MAX_SEALED_BYTES, readBoundedFile, strictObject } from "./crypto";
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, SCRATCH_RESERVE, storageBudget } from "./storage-budget";
 import { openArtifactHandle, readArtifactFile } from "./artifact-crypto";
@@ -17,6 +17,7 @@ interface Journal {
   version: 1 | 2 | 3; id: string; kind: "intake" | "processing" | "artifact"; state: "reserved" | "committed" | "orphan";
   path: string; workerPath?: string; budget: number; cleanupAfter: Instant; reservation?: Reservation; caseId?: string;
   lease?: IngressLease; release?: "pending" | "released";
+  settlement?: "expired" | "drain";
   artifactKind?: "bundle" | "mime";
 }
 export function createCustodyLedger(repo: ApplicationRepository, config: CustodyConfig): CustodyLedger {
@@ -29,7 +30,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   const intakeOwners = new Set<string>();
   const processingOwners = new Set<string>();
   const scopeContext = new AsyncLocalStorage<{id:ApplicationId;path:string;active:boolean}>();
-  let ready = false, reconciled = false, queue = Promise.resolve();
+  let ready = false, reconciled = false, ingressBlocked = false, queue = Promise.resolve();
   const incoming = { uid: config.intakeUid, gid: config.sharedGid };
   const now = () => utcInstant(config.clock.now().toISOString());
   const tomorrow = () => utcInstant(new Date(config.clock.now().getTime() + 86400000).toISOString());
@@ -52,7 +53,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     if (!entry.lease) throw new Error("INGRESS_AUTHORITY_UNAVAILABLE");
     await save({ ...entry, version: 3, release: "pending" });
     const evidence = validateEvidence(entry, await authority().quiesce(entry.lease));
-    if (!["quiescent", "released"].includes(evidence.state)) return false;
+    if (!["quiescent", "released"].includes(evidence.state)) { ingressBlocked = true; return false; }
     let existing: Awaited<ReturnType<typeof lstat>> | undefined;
     try { existing = await lstat(entry.path); } catch (error) { if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error; }
     if (existing) {
@@ -149,6 +150,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       if (![1,2,3].includes(entry.version) || !/^[a-f0-9-]{36}$/.test(entry.id) || !["intake", "processing", "artifact"].includes(entry.kind) || !["reserved", "committed", "orphan"].includes(entry.state) || !Number.isSafeInteger(entry.budget) || entry.budget < 1 || entry.budget > (entry.kind === "processing" ? SCRATCH_RESERVE : 2 * MAX_SEALED_BYTES) || entry.path !== ownedPath(entry) || (entry.kind === "intake" && entry.workerPath !== intakePath(config.custodyRoot, entry.id))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       if (entry.kind === "artifact" && (!["bundle","mime"].includes(entry.artifactKind ?? "") || entry.workerPath !== join(config.custodyRoot,`${entry.id}.${entry.artifactKind}.enc`) || entry.budget > artifactLimit(entry.artifactKind!))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       if (entry.version >= 2 && entry.kind === "intake" && (!entry.lease || entry.lease.reservationId !== entry.id || entry.lease.path !== entry.path || entry.lease.allowance !== entry.reservation!.reservedBytes / 2 || !entry.lease.generation || !entry.lease.domain || !["pending","released"].includes(entry.release ?? ""))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
+      if (entry.settlement !== undefined && (entry.kind !== "intake" || !["expired", "drain"].includes(entry.settlement))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       utcInstant(entry.cleanupAfter); return entry;
     } finally { await fd.close(); }
   }
@@ -230,10 +232,40 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     // Startup only: known plaintext from a dead process is removed before healthy admission.
     for (const entry of [...entries.values()]) if (entry.kind === "processing") await deleteEntry(entry);
     for (const entry of entries.values()) if (entry.kind === "intake" && entry.state === "committed") await releaseIngress(entry);
-    const result = await inspect(); ready = true; reconciled = true; return result;
+    const result = await inspect(); reconciled = true;
+    ready = ![...entries.values()].some(entry => entry.settlement && entry.release !== "released");
+    return result;
+  }
+  async function settleIngress(request: { kind: "expired" | "drain" }) {
+    if (!reconciled || !["expired", "drain"].includes(request.kind)) throw new Error("CUSTODY_NOT_READY");
+    let pending = 0;
+    try {
+      for (const original of [...entries.values()]) {
+        if (original.kind !== "intake" || (request.kind !== "drain" && !original.settlement && original.reservation!.expiresAt > now())) continue;
+        // Acceptance is authoritative even if a previous journal write/reply failed.
+        const accepted = repo.listRetainedIntakes().find(record => record.encryptedPayloadPath === original.workerPath);
+        // Logical original retirement is not authority for ingress settlement to
+        // erase accepted worker bytes. Task11 owns retained-data deletion.
+        const acceptedId = accepted?.id ?? (original.caseId ? repo.getRequestIdentity(applicationId(original.caseId)).id : undefined);
+        if (acceptedId && JSON.stringify(original.reservation!.submission) !== JSON.stringify(repo.getSubmissionKind(acceptedId))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
+        const entry: Journal = { ...original, settlement: original.settlement ?? request.kind, ...(acceptedId ? { state: "committed", caseId: acceptedId } : { state: "orphan" }) };
+        await save(entry);
+        if (!await releaseIngress(entry)) { pending++; continue; }
+        if (!acceptedId) await deleteEntry(entries.get(entry.id)!);
+        repo.releaseReservation(entry.id);
+        intakeOwners.delete(entry.id);
+      }
+      let inventory = await checked();
+      ingressBlocked = pending !== 0;
+      if (pending) ready = false;
+      // A settlement cannot waive an unrelated storage failure. Re-establish
+      // full custody evidence only when every live scope/owner has settled.
+      else if (!ready && !intakeOwners.size && !processingOwners.size) inventory = await reconcile();
+      return { complete: pending === 0, pending, inventory };
+    } catch (error) { ready = false; throw error; }
   }
   return {
-    getIntakeReadiness: () => ({ ready }),
+    getIntakeReadiness: () => ({ ready: ready && !ingressBlocked }),
     withProcessingAuthority: async (id,path,action) => {
       if (!processingOwners.has(path) || ![...entries.values()].some(entry=>entry.path===path && entry.caseId===id)) throw new Error("INVALID_PRIVATE_PAYLOAD");
       const guard={id,path,active:true};
@@ -295,10 +327,15 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       try { await deleteEntry(entry); processingOwners.delete(path); } catch (error) { ready = false; processingOwners.delete(path); throw error; }
     }),
     reconcile: () => exclusive(reconcile),
+    settleIngress: request => exclusive(() => settleIngress(request)),
     reserve: (input, readiness) => exclusive(async () => {
       requireReady();
+      if (ingressBlocked) throw new Error("CUSTODY_NOT_READY");
       if (readiness?.getIntakeReadiness().ready !== true) throw new Error("WORKER_UNAVAILABLE");
-      for (const entry of entries.values()) if (entry.kind === "intake" && entry.state === "reserved" && !intakeOwners.has(entry.id) && entry.reservation && entry.reservation.expiresAt <= now()) { await markOrphan(entry); repo.releaseReservation(entry.id); }
+      // Expiry asks the producer authority; it is never proof of release itself.
+      if ([...entries.values()].some(entry => entry.kind === "intake" && entry.release !== "released" && entry.reservation!.expiresAt <= now())) {
+        ready = false; throw new Error("CUSTODY_NOT_READY");
+      }
       const total = await checked();
       let producerSlots=0;
       try{
@@ -308,6 +345,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         }
       }catch(error){ready=false;throw error;}
       const exhausted = intakeOwners.size >= 2 || producerSlots >= 2 || input.reservedBytes > 2 * MAX_SEALED_BYTES || total.physicalBytes + total.reservedHeadroom + input.reservedBytes + JOURNAL_HEADROOM > PHYSICAL_CAP;
+      if (readiness?.getIntakeReadiness().ready !== true) throw new Error("WORKER_UNAVAILABLE");
       const reservation = repo.reserve({ ...input, now: now() }, exhausted ? "exhausted" : "available");
       const outputAllowance=repo.isReplayReservation(reservation.id)?0:OUTPUT_RESERVE;
       if(total.physicalBytes+total.reservedHeadroom+input.reservedBytes+JOURNAL_HEADROOM+outputAllowance>PHYSICAL_CAP){
@@ -317,10 +355,11 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         const path = intakePath(config.intakeRoot, reservation.id), lease = await authority().prepare(reservation.id, path, reservation.reservedBytes / 2);
         const entry: Journal = { version: 3, id: reservation.id, kind: "intake", state: "reserved", budget: reservation.reservedBytes, path, workerPath: intakePath(config.custodyRoot, reservation.id), reservation, cleanupAfter: reservation.expiresAt, lease, release: "pending" };
         if (lease.reservationId !== reservation.id || lease.path !== path || lease.allowance !== reservation.reservedBytes / 2) throw new Error("INGRESS_AUTHORITY_MISMATCH");
-        await save(entry); await checked();
+        await save(entry); intakeOwners.add(reservation.id); await checked();
+        if (readiness?.getIntakeReadiness().ready !== true) throw new Error("WORKER_UNAVAILABLE");
         if (validateEvidence(entry, await authority().grant(lease)).state !== "bounded") throw new Error("INGRESS_AUTHORITY_MISMATCH");
       }
-      catch (error) { ready = false; repo.releaseReservation(reservation.id); throw error; }
+      catch (error) { ready = false; if (!entries.has(reservation.id)) repo.releaseReservation(reservation.id); throw error; }
       intakeOwners.add(reservation.id);
       return reservation;
     }),
@@ -353,9 +392,14 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         if (error instanceof CleanedRepositoryConflict) throw error.original;
         ready = false;
         // If DB commit completed, recovery must preserve the accepted file; no guessed success.
-        if (!repo.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) { await markOrphan(entry); repo.releaseReservation(entry.id); }
+        if (!repo.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) {
+          await markOrphan(entry);
+          // Errors do not prove producer termination. Keep the reservation and
+          // owner if revocation is pending; retain orphan accounting after release.
+          try { if (await releaseIngress(entries.get(entry.id)!)) repo.releaseReservation(entry.id); } catch { /* Durable uncertainty remains charged. */ }
+        }
         throw error;
-      } finally { intakeOwners.delete(entry.id); }
+      } finally { if (!entries.has(entry.id) || entries.get(entry.id)!.release === "released") intakeOwners.delete(entry.id); }
     }),
     abortIntake: (id, sessionHash) => exclusive(async () => {
       const entry = entries.get(id); if (!entry || entry.kind !== "intake" || entry.reservation?.sessionHash !== sessionHash) throw new Error("INVALID_RESERVATION");
@@ -365,7 +409,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         const committed: Journal = { ...entry, state: "committed", caseId: accepted.id };
         entries.set(id, committed);
         try { await save(committed); } catch (error) { ready = false; throw error; }
-        intakeOwners.delete(id);
+        if (committed.release === "released") intakeOwners.delete(id);
         throw new Error("INVALID_RESERVATION");
       }
       if (!intakeOwners.has(id) || !["reserved", "orphan"].includes(entry.state)) throw new Error("INVALID_RESERVATION");

@@ -183,6 +183,26 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
   }
   return {
     getDelivery,
+    listWorkerSchedule(now) {
+      utcInstant(now);
+      const ids = db.prepare("SELECT id FROM cases WHERE deliveryState <> 'delivered' ORDER BY acceptedAt,rowid LIMIT 21").all() as { id: ApplicationId }[];
+      if (ids.length > 20) throw new Error("WORKER_SCHEDULE_OVERFLOW");
+      return ids.map(({ id }) => {
+        const row = readCase(id), delivery = getDelivery(id), busy = row.claimToken !== null || locked(id);
+        if (!/^TJ-[A-F0-9]{24}$/.test(row.reference)) invalid();
+        let dispatchDueAt: Instant | null = null;
+        if (!busy) {
+          if (row.deliveryState === "queued") dispatchDueAt = row.acceptedAt;
+          else if (row.deliveryState === "ready") dispatchDueAt = delivery.sendDueAt;
+          else if (["smtp_accepted", "uncertain"].includes(row.deliveryState)) dispatchDueAt = delivery.receiptSchedule[delivery.receiptCursor] ?? null;
+          if (dispatchDueAt) {
+            const artifact = getArtifact(id, "mime");
+            dispatchDueAt = [dispatchDueAt, row.payloadDeleteAfter, ...(artifact ? [artifact.expiresAt] : []), ...(row.deliveryState === "ready" ? [delivery.manualRequiredAt] : [])].sort()[0];
+          }
+        }
+        return { id, reference: row.reference, state: row.deliveryState, busy, dispatchDueAt, incidentAt: delivery.incidentAt, manualRequiredAt: delivery.manualRequiredAt };
+      });
+    },
     claimDispatchWork(owner, now, kind) {
       utcInstant(now); if (typeof owner !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(owner)) throw new Error("INVALID_CLAIM_OWNER");
       if (kind !== undefined && !["prepare", "send", "reconcile"].includes(kind)) invalid();

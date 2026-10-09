@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createHash, generateKeyPairSync } from "node:crypto";
+import { createHash, generateKeyPairSync, randomUUID } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -39,6 +39,22 @@ async function sending(time = now) {
 }
 function reopen() { repo.close(); repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) }); }
 describe("durable delivery authority", () => {
+  it("refuses an oversized unresolved schedule rather than silently dropping cases", () => {
+    repo.close(); const db = new Database(join(dir, "db.sqlite"));
+    for (let index = 0; index < 20; index++) {
+      const next = randomUUID(), reservation = randomUUID();
+      db.prepare("INSERT INTO reservations (id,sessionHash,idempotencyKey,reservedBytes,expiresAt,active,submission) SELECT ?,sessionHash,?,reservedBytes,expiresAt,active,submission FROM reservations LIMIT 1").run(reservation, `overflow-${index}`);
+      db.prepare("INSERT INTO cases (id,reference,reservationId,sessionHash,idempotencyKey,digest,encryptedName,job,acceptedAt,deliveryState,caseState,version,payloadBytes,payloadDeleteAfter,contactDeleteAfter,submission) SELECT ?,?,?,sessionHash,?,digest,encryptedName,job,acceptedAt,deliveryState,caseState,version,payloadBytes,payloadDeleteAfter,contactDeleteAfter,submission FROM cases WHERE id=?").run(next, `TJ-${String(index).padStart(24, "0")}`, reservation, `overflow-${index}`, id);
+      db.prepare("INSERT INTO deliveries(caseId) VALUES(?)").run(next);
+    }
+    db.close(); repo = openRepository(join(dir, "db.sqlite"));
+    expect(() => repo.listWorkerSchedule(now)).toThrow("WORKER_SCHEDULE_OVERFLOW");
+  });
+  it("refuses a corrupted non-random reference rather than projecting it into worker logs", () => {
+    repo.close(); const db = new Database(join(dir, "db.sqlite")); db.prepare("UPDATE cases SET reference='private@example.invalid' WHERE id=?").run(id); db.close();
+    repo = openRepository(join(dir, "db.sqlite"));
+    expect(() => repo.listWorkerSchedule(now)).toThrow("INVALID_DELIVERY_METADATA");
+  });
   it("requires durable authenticated contact before retiring the last original authority", async () => {
     const prepared = await prepare(), path = join(dir, "bundle.enc"); writeFileSync(path, "bundle", { mode: 0o600 });
     const adopted = await repo.adoptArtifact({ caseId: id, kind: "bundle", path, bytes: 6, plaintextDigest: hash, ciphertextDigest: digest(createHash("sha256").update("bundle").digest("hex")), expiresAt: utcInstant("2026-10-16T10:00:00.000Z") }, prepared.case.version);

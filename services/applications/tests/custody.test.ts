@@ -45,6 +45,94 @@ async function retryAttempt(idempotencyKey = "synthetic-conflict", requestBody =
   return { reservation, file, commit: { reservationId: reservation.id, encryptedPayloadPath: file.path, actualBytes: file.bytes, digest: payloadDigest(requestBody), encryptedName: "ciphertext:synthetic", job: "sales-fulltime" as const, now: utcInstant("2026-10-09T10:00:00.000Z") } };
 }
 describe("terminal idempotency conflict", () => {
+  it("does not clear an unrelated custody failure or full-reconcile over a live processing scope", async () => {
+    const accepted = await sealed(), snapshot = await takePrivateSnapshot(record(accepted), keys);
+    await withPrivateFiles(snapshot, keys, async () => {
+      const pending = await retryAttempt();
+      await expect(keys.custody.commitIntake({ ...pending.commit, actualBytes: 1 })).rejects.toThrow("SIZE_MISMATCH");
+      expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
+      expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
+      await expect(keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+    });
+    await keys.custody.reconcile(); expect(keys.custody.getIntakeReadiness()).toEqual({ ready: true });
+  });
+  it("counts an unlinked live producer inode until real holder settlement, never treating ENOENT as proof", async () => {
+    const pending = await retryAttempt(), authority = testIngressAuthority(keys.intakeRoot), holder = await authority.retain(pending.reservation.id);
+    await rm(pending.file.path);
+    try {
+      const result = await keys.custody.settleIngress({ kind: "drain" });
+      expect(result.complete).toBe(false); expect(result.inventory.physicalBytes).toBeGreaterThanOrEqual(pending.file.bytes);
+      await holder.write(Buffer.from("still live"), 0, 10, 0);
+      await expect(keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+    } finally { await holder.close(); }
+    expect((await keys.custody.settleIngress({ kind: "drain" })).inventory.physicalBytes).toBe(0);
+  });
+  it("rejects wrong-generation evidence and preserves the reservation through a failed final release acknowledgement", async () => {
+    const pending = await retryAttempt(), authority = testIngressAuthority(keys.intakeRoot), quiesce = authority.quiesce.bind(authority);
+    const wrong = vi.spyOn(authority, "quiesce").mockImplementationOnce(async lease => ({ ...await authority.observe(lease), lease: { ...lease, generation: "wrong-generation" } }));
+    await expect(keys.custody.settleIngress({ kind: "drain" })).rejects.toThrow("INGRESS_AUTHORITY_MISMATCH");
+    expect(await readFile(pending.file.path)).toHaveLength(pending.file.bytes); wrong.mockImplementation(quiesce);
+    vi.spyOn(authority, "released").mockRejectedValueOnce(new Error("synthetic-final-release-failed"));
+    await expect(keys.custody.settleIngress({ kind: "drain" })).rejects.toThrow("synthetic-final-release-failed");
+    const journal = JSON.parse(await readFile(join(keys.privateRoot, pending.reservation.id + ".journal"), "utf8"));
+    expect(journal).toMatchObject({ release: "pending", settlement: "drain", budget: 20000 });
+    expect(() => repo.reserve({ ...testAdmission(), sessionHash: digest("b".repeat(64)), idempotencyKey: "synthetic-conflict", reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") })).toThrow("UPLOAD_IN_PROGRESS");
+    await expect(keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+    expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true, pending: 0 });
+  });
+  it("rechecks the current worker gate after awaited custody checks and before granting a producer", async () => {
+    let healthy = true;
+    const authority = testIngressAuthority(keys.intakeRoot), original = authority.prepare.bind(authority);
+    vi.spyOn(authority, "prepare").mockImplementation(async (...args) => { const lease = await original(...args); healthy = false; return lease; });
+    await expect(keys.custody.reserve({ ...testAdmission(), sessionHash: digest("b".repeat(64)), idempotencyKey: "closing", reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") }, { getIntakeReadiness: () => ({ ready: healthy }) })).rejects.toThrow("WORKER_UNAVAILABLE");
+    const journalName = (await readdir(keys.privateRoot)).find(name => name.endsWith(".journal"))!;
+    const journal = JSON.parse(await readFile(join(keys.privateRoot, journalName), "utf8"));
+    expect((await authority.observe(journal.lease)).state).toBe("prepared");
+    expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
+  });
+  it("keeps accepted producer ownership until terminal settlement rather than clearing it at commit return", async () => {
+    const pending = await retryAttempt(), holder = await testIngressAuthority(keys.intakeRoot).retain(pending.reservation.id);
+    try {
+      const accepted = await keys.custody.commitIntake(pending.commit);
+      await expect(keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+      expect(repo.getCommittedIntake(accepted.id)).not.toBeNull();
+    } finally { await holder.close(); }
+    expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
+    await expect(keys.custody.reconcile()).resolves.toMatchObject({ orphans: [] });
+  });
+  it("retains the failed commit reservation until authority-backed cleanup succeeds", async () => {
+    const pending = await retryAttempt(), holder = await testIngressAuthority(keys.intakeRoot).retain(pending.reservation.id);
+    try {
+      await expect(keys.custody.commitIntake({ ...pending.commit, actualBytes: 1 })).rejects.toThrow("SIZE_MISMATCH");
+      expect(() => repo.reserve({ ...testAdmission(), sessionHash: digest("b".repeat(64)), idempotencyKey: "synthetic-conflict", reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") })).toThrow("UPLOAD_IN_PROGRESS");
+      await expect(keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+    } finally { await holder.close(); }
+    expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
+  });
+  it("settles only known terminal producer generations and preserves durable intent across restart", async () => {
+    const pending = await retryAttempt();
+    const authority = testIngressAuthority(keys.intakeRoot), holder = await authority.retain(pending.reservation.id);
+    try {
+      expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: false, pending: 1 });
+      const journal = JSON.parse(await readFile(join(keys.privateRoot, pending.reservation.id + ".journal"), "utf8"));
+      expect(journal).toMatchObject({ settlement: "drain", release: "pending", budget: 20000 });
+      expect(() => repo.reserve({ ...testAdmission(), sessionHash: digest("b".repeat(64)), idempotencyKey: "synthetic-conflict", reservedBytes: 20000, now: utcInstant("2026-10-09T10:00:00.000Z") })).toThrow("UPLOAD_IN_PROGRESS");
+      await expect(keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+      expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
+      await holder.write(Buffer.from("live"), 0, 4, 0);
+      expect((await holder.stat()).ino).toBe((await stat(pending.file.path)).ino);
+      repo.close(); repo = openRepository(join(root, "registry.sqlite"));
+      keys.custody = createCustodyLedger(repo, { intakeRoot: keys.intakeRoot, custodyRoot: keys.privateRoot, runtimeRoot: keys.runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock: { now: () => new Date("2026-10-09T10:00:00.000Z") } });
+      await keys.custody.reconcile();
+      expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
+      expect(await keys.custody.settleIngress({ kind: "expired" })).toMatchObject({ complete: false, pending: 1 });
+    } finally { await holder.close(); }
+    expect(await keys.custody.settleIngress({ kind: "expired" })).toMatchObject({ complete: true, pending: 0 });
+    expect(await readdir(keys.intakeRoot)).toEqual([]);
+    expect(await readdir(keys.privateRoot)).toEqual([]);
+    expect(await keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true, pending: 0 });
+    expect(keys.custody.getIntakeReadiness()).toEqual({ ready: true });
+  });
   it("keeps healthy readiness after proven repository conflict, terminal cleanup and identical original accounting", async () => {
     const first = await retryAttempt(), accepted = await keys.custody.commitIntake(first.commit);
     const original = repo.getCommittedIntake(accepted.id)!, bytes = await readFile(original.encryptedPayloadPath), inventory = await keys.custody.cleanupOrphans();

@@ -123,7 +123,39 @@ export type DispatchResult = { readonly kind: "idle" } | {
   readonly nextDueAt: Instant | null;
 };
 export interface DeliveryClaim extends DeliverySnapshot { readonly case: ClaimedCase }
+export interface WorkerScheduleEntry {
+  readonly id: ApplicationId; readonly reference: string; readonly state: DeliveryState;
+  readonly busy: boolean; readonly dispatchDueAt: Instant | null;
+  readonly incidentAt: Instant; readonly manualRequiredAt: Instant;
+}
+export interface WorkerProof { readonly checkedAt: Instant; readonly validUntil: Instant }
+export interface WorkerRestoreProof extends WorkerProof { readonly checkpointId: string; readonly ledgerVerified: true }
+export interface WorkerOwner { readonly repository: ApplicationRepository; readonly custody: CustodyLedger; readonly clock: Clock }
+export type WorkerAssurance = "unavailable" | "local-test" | "qualified";
+export interface WorkerLifecycleOptions {
+  // Trusted platform wiring acquires the exclusive repository and its sole ledger.
+  // Called once, only from start(). No second retention/maintenance DB owner.
+  readonly acquire: () => WorkerOwner;
+  readonly dispatch?: (owner: WorkerOwner) => DispatchDependencies;
+  readonly restore?: { readonly assurance: WorkerAssurance; verify(owner: WorkerOwner): Promise<WorkerRestoreProof | null>; current(owner: WorkerOwner): WorkerRestoreProof | null };
+  readonly retention?: { readonly assurance: WorkerAssurance; sweep(owner: WorkerOwner): Promise<WorkerProof | null> };
+  // Runtime proof includes actual previous-process scanner/raster holder recovery;
+  // scanner proof includes current signatures/engine, not just daemon liveness.
+  readonly readiness?: { readonly assurance: WorkerAssurance; current(owner: WorkerOwner): { runtime: WorkerProof | null; scanner: WorkerProof | null; mail: WorkerProof | null; retention: WorkerProof | null } };
+  readonly rpc?: { readonly socketPath: string; readonly sharedGid: number };
+  // Task14-owned services must resolve only after their real scopes have settled.
+  readonly services?: { settle(): Promise<void>; close(): Promise<void> };
+  readonly onEvent?: (event: { readonly reference: string; readonly code: "WORKER_UNAVAILABLE" | "DRAIN_INCOMPLETE" | "DELIVERY_INCIDENT" | "MANUAL_REQUIRED" }) => void;
+}
+export type WorkerLifecycleState = "new" | "starting" | "unavailable" | "running" | "draining" | "stopped";
+export interface ApplicationWorker extends IntakeReadinessProvider {
+  start(): Promise<{ state: WorkerLifecycleState }>;
+  runOnce(): Promise<{ dispatched: boolean; nextWakeAt: Instant | null }>;
+  drain(options: { graceMs: number }): Promise<{ state: "draining" | "stopped"; complete: boolean }>;
+  getState(): WorkerLifecycleState;
+}
 export interface DeliveryRepository {
+  listWorkerSchedule(now: Instant): readonly WorkerScheduleEntry[];
   getDelivery(id: ApplicationId): DeliveryRecord;
   claimDispatchWork(owner: string, now: Instant, kind?: DeliveryWorkKind): DeliveryClaim | null;
   stageDeliveryIdentity(claim: DeliveryClaimAuthority, keyId: string, now: Instant): Promise<DeliverySnapshot>;
@@ -200,12 +232,16 @@ export interface IngressAuthority {
   prepare(reservationId: string, path: string, allowance: number): Promise<IngressLease>;
   grant(lease: IngressLease): Promise<IngressEvidence>;
   observe(lease: IngressLease): Promise<IngressEvidence>;
+  // Requests irreversible revocation of this generation's grant/reopen rights.
+  // Quiescent means every holder has actually terminated/reaped, including any
+  // transferred descriptors. A timer, absent pathname or socket close is not proof.
   quiesce(lease: IngressLease): Promise<IngressEvidence>;
   released(lease: IngressLease): Promise<IngressEvidence>;
 }
 export interface CustodyConfig { intakeRoot: string; custodyRoot: string; runtimeRoot: string; intakeUid: number; sharedGid: number; clock: Clock; ingressAuthority?: IngressAuthority }
 export interface RpcConfig { socketPath: string; custody: CustodyLedger; sharedGid: number; clock: Clock; readiness?: IntakeReadinessProvider }
 export interface CustodyInventory { physicalBytes: number; reservedHeadroom: number; orphans: readonly { path: string; cleanupAfter: Instant }[] }
+export interface IngressSettlement { complete: boolean; pending: number; inventory: CustodyInventory }
 export interface CustodyLedger {
   reconcile(): Promise<CustodyInventory>;
   getIntakeReadiness(): IntakeReadiness;
@@ -216,6 +252,8 @@ export interface CustodyLedger {
   beginProcessing(snapshot: PrivateSnapshot, bytes: number): Promise<string>;
   finishProcessing(path: string): Promise<void>;
   cleanupOrphans(): Promise<CustodyInventory>;
+  // Worker-only; serialized with custody changes, never acquires a case lock.
+  settleIngress(request: { kind: "expired" | "drain" }): Promise<IngressSettlement>;
   withScope<T>(id: ApplicationId, action: (directory: string) => Promise<T>): Promise<T>;
   withProcessingAuthority<T>(id: ApplicationId, directory: string, action: () => Promise<T>): Promise<T>;
   publishArtifact(id: ApplicationId, kind: ArtifactKind, bytes: Buffer, metadata: Pick<ArtifactRecord,"plaintextDigest"|"ciphertextDigest"|"expiresAt">, expectedVersion: number): Promise<ArtifactRecord>;

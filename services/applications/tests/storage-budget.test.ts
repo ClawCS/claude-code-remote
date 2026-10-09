@@ -69,6 +69,8 @@ it("accounts for an ingress inode until its retained descriptor is closed", asyn
     expect(hidden.physicalBytes+hidden.reservedHeadroom).toBe(before);
     await expect(child.grow(10001)).rejects.toThrow("FIXTURE_QUOTA_EXCEEDED");
   } finally { await retained.close(); await child.close(); }
+  await expect(custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+  expect(await custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
   await custody.reconcile();
   expect(await readdir(intakeRoot)).toEqual([]);
 });
@@ -153,6 +155,8 @@ it.each(["stale","unavailable"])("preserves DB acceptance and all transient allo
     expect(journal.budget).toBe(20000);expect(journal.release).toBe("pending");
     await expect(h.keys.custody.reserve({ ...testAdmission(), sessionHash,idempotencyKey:"later",reservedBytes:20000,now}, testReadiness)).rejects.toThrow("CUSTODY_NOT_READY");
     h.authority.quiesce=quiesce;
+    await expect(h.keys.custody.reconcile()).rejects.toThrow("CUSTODY_SCOPE_ACTIVE");
+    expect(await h.keys.custody.settleIngress({ kind: "drain" })).toMatchObject({ complete: true });
     await h.keys.custody.reconcile();
     expect(await readdir(h.keys.intakeRoot)).toEqual([]);
   }finally{await h.close();}
