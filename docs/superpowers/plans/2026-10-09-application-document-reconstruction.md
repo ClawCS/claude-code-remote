@@ -8,7 +8,7 @@
 
 **Tech Stack:** Bestehende TypeScript-/Vitest-/SQLite-/Kryptografiebausteine, Sharp und pdf-lib; QPDF 12.4.2 für die vorhandene begrenzte Strukturprüfung, Poppler für die Rasterdarstellung; Linux-Prozessisolation und ClamAV. Zielprofil Poppler 26.10.0; tatsächlicher Build, Bibliotheken und Fonts müssen vor Nutzung festgehalten und qualifiziert werden, kein ungeprüfter Versionsfallback.
 
-**Spec:** [Schriftlich bestätigte Ergänzung](../specs/2026-10-09-application-document-reconstruction-design.md), bestätigt am 09.10.2026 mit „ergänzung passt, führe aUS“. [Hauptplan](2026-10-09-application-upload.md) und dessen Ausführungsmethode bleiben bestehen. Dieser konkrete Plan-Nachtrag ist zur Durchsicht erstellt; die Umsetzung dieses Nachtrags beginnt nach seiner Bestätigung. Keine erneute Auswahl der Methode und kein Neustart abgeschlossener Tasks.
+**Spec:** [Schriftlich bestätigte Ergänzung](../specs/2026-10-09-application-document-reconstruction-design.md), bestätigt am 09.10.2026 mit „ergänzung passt, führe aUS“. **Diesen konkreten Plan-Nachtrag hat Niko anschließend mit „ja bestätige ich“ freigegeben.** [Hauptplan](2026-10-09-application-upload.md) und dessen Ausführungsmethode bleiben bestehen. Umsetzung beginnt; keine erneute Auswahl der Methode und kein Neustart abgeschlossener Tasks. Freigabe ist kein Nachweis technischer Fertigstellung oder Live-Aktivierung.
 
 ## Global Constraints
 
@@ -41,7 +41,7 @@ Keine aktuelle `mail-manifest.ts`, `smtp.ts`, `dispatch.ts` oder Upload-HTTP-Imp
 
 Backendpfade unten sind relativ zu `services/applications/`; explizite `lib/`, `deploy/`, `scripts/`, `docs/`, `components/` und `e2e/` sind relativ zur Repositorywurzel. Tests synthetisch. Jeder Task: Verhaltens-RED vor Produktcode, GREEN, Build/Typprüfung, eigener Commit, unabhängiges Review. Keine fehlende Importdatei allein als RED-Beleg; keine Änderungen an gemeinsamen Dateien parallel.
 
-## R1 — Strikte Rasterverträge und Quellprüfung
+## Task 1: R1 — Strikte Rasterverträge und Quellprüfung
 
 **Files:** Create `src/reconstruction-types.ts`, `src/reconstruction-limits.ts`, `src/raster-protocol.ts`, `tests/raster-protocol.test.ts`; Modify `src/types.ts`, `src/file-validation.ts`, `src/pdf-policy.ts`, `src/parser-child.ts`, `tests/file-validation.test.ts`, `tests/pdf-policy.test.ts`.
 
@@ -53,7 +53,7 @@ Backendpfade unten sind relativ zu `services/applications/`; explizite `lib/`, `
 - [ ] Quellprüfung darf bekannten aktiven Inhalt, Verschlüsselung, Reparaturwarnung, unbekannte Konstrukte oder Hashänderung nicht ignorieren. QPDF-Seitenlimit auf 20 setzen; ursprüngliche F2-Fixtures beibehalten. Keine Behauptung, versteckte doppelte Originaldefinitionen nun vollständig erkennen zu können. JPG/PNG benötigen ebenfalls Rekonstruktion vor Versand.
 - [ ] Obige Tests, `npm run applications:build`, `npx tsc --noEmit` grün; scoped Commit `feat: define bounded document reconstruction contracts`. Unabhängiges Gate vor R2.
 
-## R2 — Neue PDF-/Bildkopien und vollständiger Verarbeitungssatz
+## Task 2: R2 — Neue PDF-/Bildkopien und vollständiger Verarbeitungssatz
 
 **Files:** Create `src/raster-process.ts`, `src/raster-child.ts`, `src/image-encoder.ts`, `src/pdf-reconstruction.ts`, `src/generated-output-policy.ts`, `src/reconstruction.ts`, `tests/reconstruction.test.ts`, `tests/reconstruction-visual.test.ts`, `tests/fixtures/reconstruction.ts`; Modify `src/scanner.ts` nur für einen typisierten Dateien-Satz-Adapter; extend `tests/scanner.test.ts` und Fixtures-README. Keine Betriebssandbox vortäuschen.
 
@@ -69,7 +69,7 @@ Backendpfade unten sind relativ zu `services/applications/`; explizite `lib/`, `
 - [ ] Visuelle Tests mit synthetischen mehrseitigen PDFs (8-Punkt-Text, Tabelle, Scan, gemischte Formate/Rotation, echte leere Seite, sichtbare Signatur), JPEG-EXIF, sRGB/qualifiziertem ICC und PNG-Alpha. Beide `duplicateDefinitionPdf(false/true)` müssen blockieren oder ausschließlich neu gebaute sichere PDFs ergeben. Ausgaben erneut rendern und tatsächlich visuell prüfen; weder nur Snapshotzahl noch Hash als Lesbarkeitsnachweis. Exakte `APPLICATIONS_TEST_POPPLER`-/QPDF-Pfade verlangen, fehlende Tools nicht überspringen.
 - [ ] `NODE_ENV=test npx vitest run services/applications/tests/reconstruction-visual.test.ts` mit beiden zuvor geprüften absoluten Toolpfaden; obige Tests, Build und tsc grün. Ergebnis unterscheidet lokale Diagnose/Fixtures von Linux-Isolation. Commit `feat: reconstruct complete application document copies`; unabhängig prüfen.
 
-## R3 — Verschlüsselte Ausgaben, MIME-Speicher und echte Kapazitätsreserve
+## Task 3: R3 — Verschlüsselte Ausgaben, MIME-Speicher und echte Kapazitätsreserve
 
 **Files:** Create `src/artifact-store.ts`, `src/artifact-crypto.ts`, `src/storage-budget.ts`, `src/reconstruction-scope.ts`, `tests/artifact-store.test.ts`, `tests/storage-budget.test.ts`, `tests/reconstruction-scope.test.ts`; Modify `src/types.ts`, `src/repository.ts`, `src/schema.sql`, `src/custody.ts`, `src/config.ts`, zugehörige Repository-/Custody-/RPC-Tests und Buildscript, falls neue SQL-Migrationsdatei nötig.
 
@@ -83,7 +83,7 @@ Backendpfade unten sind relativ zu `services/applications/`; explizite `lib/`, `
 - [ ] Original erst zurückziehen, nachdem Bundle mit Formularwerten und Source-Digest nachweislich dauerhaft übernommen ist; Authoritätswechsel im Register vor alter Datei-Löschung, ursprüngliche Referenz/Idempotenznachweise erhalten. Reconcile versteht beide Zustände. MIME bleibt bis zur erlaubten Frist für Retry/Abgleich erhalten. Scope-`finally` plus Crashjournal; keine Löschung eines aktiven Scopes.
 - [ ] Tests für akzeptierten Maximalfall plus zweiten Upload, Replay, doppelte Buchführung, volle Platte, unlinked-open-FD und gescheiterte Löschung. Nach Reopen gleiche Artefakte, keine verlängerten Fristen. Obige Tests, Build/tsc grün; Commit `feat: persist reconstructed documents and delivery artifacts`. Review aller R1–R3 gegen F2 und bestehende Custody-Findings, dann Hauptplan 4A/4B fortsetzen.
 
-## R4 — Betroffene Hauptplan-Verbraucher gezielt anpassen
+## Task 4: R4 — Betroffene Hauptplan-Verbraucher gezielt anpassen
 
 Diese Schritte gehören in die jeweils genannten Hauptplan-Tasks, nicht in eine zweite Parallelimplementierung. Deren übrige Tests und Freigabegrenzen bleiben erhalten.
 
@@ -97,7 +97,7 @@ Diese Schritte gehören in die jeweils genannten Hauptplan-Tasks, nicht in eine 
 - [ ] In Task 11 zuerst `expect(retainedArtifactKindsAfterDeadline).toEqual([])` für Original, Bundle, MIME, Scope-/Stagingreste; Tag-7-Retry ändert acceptedAt/Ablauf nicht. Minimale Zuordnungsnachweise können nach Dokumentlöschung weiter bestehen, enthalten aber keine Unterlagen. Restore öffnet ohne aktuellen Ledger nie die Annahme. `NODE_ENV=test npx vitest run services/applications/tests/retention.test.ts services/applications/tests/restore.test.ts` RED/GREEN; Task-11-Commit.
 - [ ] In Task 13 zuerst Tests für den genauen sichtbaren Hinweis aus Spec §2, freiwillige Dateien, 20/40-Seiten-, Ein-/Ausgangsgrenzen und vollständige Fehleranzeige. „Technisch aufbereitete Kopien“ auch in der Mail, kein gültiges digitales Signaturversprechen. Config ergänzt rein öffentliche Dokumentgrenzen ohne Pfade/Toolversionen. `NODE_ENV=test npx vitest run lib/__tests__/application-ui-contract.test.ts` RED/GREEN plus vorhandene UI-Audits/AGENTS-Refresh; Task-13-Commit. Bestehendes Design unverändert.
 
-## R5 — Echte Linux-Isolation, Qualität und Freigabe
+## Task 5: R5 — Echte Linux-Isolation, Qualität und Freigabe
 
 **Files:** Create `src/linux-raster.ts`, `src/linux-sandbox.ts`, `tests/linux-reconstruction.test.ts`, `deploy/hetzner/applications/reconstruction-policy.json`, `scripts/applications-reconstruction-qualification.mjs`; Modify Hauptplan-Task-14-Betriebsdateien, `src/generated-output-policy.ts` für die tatsächliche Plattformqualifikation, Test-/Releaseskripte, `docs/APPLICATIONS-RUNBOOK.md`, `docs/DEPLOYMENT-RUNBOOK.md`; Nachweise im tatsächlichen Task-15-Bericht.
 
@@ -116,4 +116,4 @@ Diese Schritte gehören in die jeweils genannten Hauptplan-Tasks, nicht in eine 
 - Spec §6 → R3/R4; ursprüngliche Idempotenz getrennt, dauerhafte unveränderte Artefakte, passende Inhaltsbindung und bestehende Fristen/Restore.
 - Spec §7 → R2/R5 plus unabhängige Reviews; fünf Review-Focus-Fälle konkreten Tests zugeordnet. Keine neue Methode/Grundarchitektur außerhalb der freigegebenen Ergänzung.
 - Typen/Schnittstellen werden in ihrem Erzeugertask definiert; R2-Scope zunächst Testadapter, Produktionsadapter R3/R5. Neue konkrete Dateien erzeugen keine Behauptung, bestehende spätere Hauptplan-Tasks seien schon implementiert.
-- Diese Dokumentprüfung ist keine Ausführung der Tests. Kein Code, Renderer, echter Versand oder Live-Dienst wurde durch den Plan aktiviert. Der Nachtrag ist zur schriftlichen Durchsicht bereit; danach mit der bereits gewählten subagentengestützten Methode fortfahren.
+- Diese Dokumentprüfung ist keine Ausführung der Tests. Kein Code, Renderer, echter Versand oder Live-Dienst wurde durch den Plan aktiviert. Der Nachtrag wurde schriftlich bestätigt; mit der bereits gewählten subagentengestützten Methode fortfahren.
