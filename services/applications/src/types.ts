@@ -29,8 +29,24 @@ export function utcInstant(value: string): Instant {
 export interface Clock { now(): Date }
 export type DeliveryState = "queued" | "scanning" | "ready" | "sending" | "smtp_accepted" | "uncertain" | "delivered" | "needs_attention";
 export type CaseState = "open" | "reviewing" | "rejected_closed" | "manual_case";
-export interface ReservationInput { sessionHash: Digest; idempotencyKey: string; reservedBytes: number; now: Instant }
-export interface Reservation { id: string; sessionHash: Digest; idempotencyKey: string; reservedBytes: number; expiresAt: Instant }
+export type SubmissionKind = { readonly kind: "application" } | { readonly kind: "synthetic"; readonly pilotRunId: string };
+export interface AdmissionKeys { sessionKey: Digest; ipKey: Digest }
+export interface ReservationInput { sessionHash: Digest; idempotencyKey: string; reservedBytes: number; now: Instant; abuse: AdmissionKeys; submission: SubmissionKind }
+export interface Reservation { id: string; sessionHash: Digest; idempotencyKey: string; reservedBytes: number; expiresAt: Instant; readonly submission: SubmissionKind }
+export interface IntakeReadiness { ready: boolean }
+// Worker-owned current evidence, including freshness and deployment qualification.
+// A missing provider is unavailable; local fixtures never qualify production.
+export interface IntakeReadinessProvider { getIntakeReadiness(): IntakeReadiness }
+export interface IntakeWorkerPort {
+  reserve(input: ReservationInput): Promise<Reservation>;
+  commitIntake(input: IntakeCommit): Promise<Acceptance>;
+  getPublicStatus(proofHash: Digest, now: Instant): Promise<PublicStatus | null>;
+  abortIntake(reservationId: string, sessionHash: Digest): Promise<void>;
+  getIntakeReadiness(): Promise<IntakeReadiness>;
+}
+export type IntakeErrorCode = "INVALID_REQUEST" | "FORBIDDEN" | "PAYLOAD_TOO_LARGE" | "RATE_LIMITED" | "CAPACITY_EXCEEDED" | "UPLOAD_IN_PROGRESS" | "IDEMPOTENCY_CONFLICT" | "WORKER_UNAVAILABLE";
+export interface IntakeErrorResponse { error: string; code: IntakeErrorCode; retryAfterSeconds?: number }
+export interface IntakeAcceptanceResponse { reference: string; state: "processing"; statusToken: string }
 export interface IntakeCommit { reservationId: string; digest: Digest; encryptedPayloadPath: string; actualBytes: number; encryptedName: string; job: JobId; now: Instant }
 export interface Acceptance { id: ApplicationId; reference: string; statusProof: string; acceptedAt: Instant; replayed: boolean }
 export interface CaseRecord {
@@ -39,6 +55,7 @@ export interface CaseRecord {
   encryptedPayloadPath: string | null; payloadBytes: number;
   closedOn: DateOnly | null; deleteAfter: Instant | null; payloadDeleteAfter: Instant;
   contactDeleteAfter: Instant; claimOwner: string | null; claimedAt: Instant | null;
+  readonly submission: SubmissionKind;
 }
 export interface ClaimedCase extends CaseRecord { claimOwner: string; claimedAt: Instant }
 export interface DeliveryTransition { state: DeliveryState }
@@ -47,7 +64,9 @@ export interface ArtifactRecord { caseId: ApplicationId; kind: ArtifactKind; pat
 export interface RequestIdentity { id: ApplicationId; digest: Digest; acceptedAt: Instant }
 export interface ArtifactReservation { caseId: ApplicationId; kind: ArtifactKind; bytes: number; expiresAt: Instant }
 export interface ApplicationRepository {
-  reserve(input: ReservationInput): Reservation;
+  // Capacity is computed by worker custody, never accepted from RPC metadata.
+  reserve(input: ReservationInput, capacity?: "available" | "exhausted"): Reservation;
+  pruneAdmissionEvents(now: Instant): number;
   releaseReservation(id: string): void;
   commitIntake(input: IntakeCommit): Acceptance;
   claimNext(owner: string, now: Instant): ClaimedCase | null;
@@ -104,11 +123,13 @@ export interface IngressAuthority {
   released(lease: IngressLease): Promise<IngressEvidence>;
 }
 export interface CustodyConfig { intakeRoot: string; custodyRoot: string; runtimeRoot: string; intakeUid: number; sharedGid: number; clock: Clock; ingressAuthority?: IngressAuthority }
-export interface RpcConfig { socketPath: string; custody: CustodyLedger; sharedGid: number; clock: Clock }
+export interface RpcConfig { socketPath: string; custody: CustodyLedger; sharedGid: number; clock: Clock; readiness?: IntakeReadinessProvider }
 export interface CustodyInventory { physicalBytes: number; reservedHeadroom: number; orphans: readonly { path: string; cleanupAfter: Instant }[] }
 export interface CustodyLedger {
   reconcile(): Promise<CustodyInventory>;
-  reserve(input: ReservationInput): Promise<Reservation>;
+  getIntakeReadiness(): IntakeReadiness;
+  // Private worker gate evaluated inside the custody queue, not a wire parameter.
+  reserve(input: ReservationInput, readiness?: IntakeReadinessProvider): Promise<Reservation>;
   commitIntake(input: IntakeCommit): Promise<Acceptance>;
   abortIntake(id: string, sessionHash: Digest): Promise<void>;
   beginProcessing(snapshot: PrivateSnapshot, bytes: number): Promise<string>;

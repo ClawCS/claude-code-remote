@@ -1,13 +1,13 @@
 import { createConnection, createServer, type Server } from "node:net";
 import { chmodSync, chownSync, lstatSync } from "node:fs";
 import { dirname, isAbsolute, resolve } from "node:path";
-import type { PublicStatus } from "../../../lib/applications-contract";
-import type { Acceptance, ApplicationRepository, RpcConfig, Reservation, ReservationInput, IntakeCommit, Digest, Instant } from "./types";
+import type { ApplicationRepository, RpcConfig, IntakeCommit, Digest, Instant, IntakeWorkerPort } from "./types";
 import { digest, utcInstant } from "./types";
 import { strictObject } from "./crypto";
+import { admissionKeys, submissionKind, RateLimitedError } from "./intake-admission";
 
 const MAX_REQUEST_BYTES = 16384;
-const ERRORS = new Set(["METHOD_NOT_ALLOWED", "INVALID_REQUEST", "INVALID_RESERVATION", "CUSTODY_NOT_READY", "CUSTODY_UNACCOUNTED_FILE", "CUSTODY_ACCOUNTING_FAILED", "CAPACITY_EXCEEDED", "UPLOAD_IN_PROGRESS", "IDEMPOTENCY_CONFLICT", "RESERVATION_EXCEEDED", "RESERVATION_NOT_FOUND", "INVALID_PRIVATE_PAYLOAD", "SIZE_MISMATCH", "UNSAFE_PATH"]);
+const ERRORS = new Set(["METHOD_NOT_ALLOWED", "INVALID_REQUEST", "INVALID_RESERVATION", "CUSTODY_NOT_READY", "CUSTODY_UNACCOUNTED_FILE", "CUSTODY_ACCOUNTING_FAILED", "CAPACITY_EXCEEDED", "UPLOAD_IN_PROGRESS", "IDEMPOTENCY_CONFLICT", "RESERVATION_EXCEEDED", "RESERVATION_NOT_FOUND", "INVALID_PRIVATE_PAYLOAD", "SIZE_MISMATCH", "UNSAFE_PATH", "RATE_LIMITED", "WORKER_UNAVAILABLE"]);
 function object(value: unknown, required: readonly string[]): Record<string, unknown> {
   try { return strictObject(value, required); } catch { throw new Error("INVALID_REQUEST"); }
 }
@@ -27,17 +27,27 @@ export function createWorkerRpc(repo: ApplicationRepository, config: RpcConfig):
   socketParent(config);
   // Bootstrap explicitly reconciles once, then shares this ledger with all worker processing.
   const custody = config.custody;
+  const readiness = { getIntakeReadiness: () => {
+    try { return { ready: custody.getIntakeReadiness().ready === true && config.readiness?.getIntakeReadiness().ready === true }; }
+    catch { return { ready: false }; }
+  } };
   async function dispatch(value: unknown): Promise<unknown> {
     const request = object(value, ["method", "params"]);
-    if (!["reserve", "commitIntake", "getPublicStatus", "abortIntake"].includes(String(request.method))) throw new Error("METHOD_NOT_ALLOWED");
+    if (!["reserve", "commitIntake", "getPublicStatus", "abortIntake", "getIntakeReadiness"].includes(String(request.method))) throw new Error("METHOD_NOT_ALLOWED");
+    if (request.method === "getIntakeReadiness") { object(request.params, []); return readiness.getIntakeReadiness(); }
     if (request.method === "abortIntake") {
       const params = object(request.params, ["reservationId", "sessionHash"]);
       await custody.abortIntake(string(params.reservationId, 36), safeDigest(params.sessionHash)); return null;
     }
     if (request.method === "reserve") {
-      const params = object(request.params, ["sessionHash", "idempotencyKey", "reservedBytes", "now"]);
-      const input = { sessionHash: safeDigest(params.sessionHash), idempotencyKey: string(params.idempotencyKey, 128), reservedBytes: integer(params.reservedBytes), now: timestamp(params.now) };
-      return custody.reserve(input);
+      const params = object(request.params, ["sessionHash", "idempotencyKey", "reservedBytes", "now", "abuse", "submission"]);
+      timestamp(params.now);
+      const idempotencyKey = string(params.idempotencyKey, 128);
+      if (!/^[A-Za-z0-9_-]{1,128}$/.test(idempotencyKey)) throw new Error("INVALID_REQUEST");
+      let abuse, submission;
+      try { abuse = admissionKeys(params.abuse); submission = submissionKind(params.submission); } catch { throw new Error("INVALID_REQUEST"); }
+      const input = { sessionHash: safeDigest(params.sessionHash), idempotencyKey, reservedBytes: integer(params.reservedBytes), now: utcInstant(config.clock.now().toISOString()), abuse, submission };
+      return custody.reserve(input, readiness);
     }
     if (request.method === "commitIntake") {
       const params = object(request.params, ["reservationId", "digest", "encryptedPayloadPath", "actualBytes", "encryptedName", "job", "now"]);
@@ -51,7 +61,7 @@ export function createWorkerRpc(repo: ApplicationRepository, config: RpcConfig):
   const server = createServer({ allowHalfOpen: true }, socket => {
     let buffer = Buffer.alloc(0), handled = false;
     socket.setTimeout(5000, () => socket.destroy());
-    const fail = (error: string) => { handled = true; socket.end(JSON.stringify({ ok: false, error }) + "\n"); };
+    const fail = (error: string, retryAfterSeconds?: number) => { handled = true; socket.end(JSON.stringify({ ok: false, error, ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }) }) + "\n"); };
     socket.on("error", () => {});
     socket.on("data", chunk => {
       if (handled) return;
@@ -63,7 +73,7 @@ export function createWorkerRpc(repo: ApplicationRepository, config: RpcConfig):
       if (newline !== buffer.length - 1) { fail("INVALID_REQUEST"); return; }
       let request: unknown;
       try { request = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(buffer.subarray(0, newline))); } catch { fail("INVALID_REQUEST"); return; }
-      void dispatch(request).then(result => socket.end(JSON.stringify({ ok: true, result }) + "\n"), error => fail(error instanceof Error && ERRORS.has(error.message) ? error.message : "WORKER_UNAVAILABLE"));
+      void dispatch(request).then(result => socket.end(JSON.stringify({ ok: true, result }) + "\n"), error => fail(error instanceof Error && ERRORS.has(error.message) ? error.message : "WORKER_UNAVAILABLE", error instanceof RateLimitedError ? error.retryAfterSeconds : undefined));
     });
     socket.on("end", () => { if (!handled) fail("INVALID_REQUEST"); });
   });
@@ -77,12 +87,7 @@ export function createWorkerRpc(repo: ApplicationRepository, config: RpcConfig):
   });
   return server;
 }
-export interface WorkerRpcClient {
-  reserve(input: ReservationInput): Promise<Reservation>;
-  commitIntake(input: IntakeCommit): Promise<Acceptance>;
-  getPublicStatus(proofHash: Digest, now: Instant): Promise<PublicStatus | null>;
-  abortIntake(reservationId: string, sessionHash: Digest): Promise<void>;
-}
+export type WorkerRpcClient = IntakeWorkerPort;
 export function createWorkerRpcClient(socketPath: string): WorkerRpcClient {
   async function call<T>(method: string, params: unknown): Promise<T> {
     const request = Buffer.from(JSON.stringify({ method, params }) + "\n");
@@ -96,10 +101,19 @@ export function createWorkerRpcClient(socketPath: string): WorkerRpcClient {
       socket.on("data", chunk => {
         if (buffer.length + chunk.length > MAX_REQUEST_BYTES) { fail(new Error("WORKER_UNAVAILABLE")); return; }
         buffer = Buffer.concat([buffer, chunk]); if (!buffer.includes(10)) return;
-        try { const response = JSON.parse(buffer.toString("utf8")) as { ok: boolean; result: T; error: string }; if (!response.ok) { fail(new Error(ERRORS.has(response.error) ? response.error : "WORKER_UNAVAILABLE")); return; } settled = true; resolve(response.result); socket.destroy(); } catch { fail(new Error("WORKER_UNAVAILABLE")); }
+        try {
+          const response = JSON.parse(buffer.toString("utf8")) as { ok: boolean; result: T; error: string; retryAfterSeconds?: number };
+          if (!response.ok) {
+            const seconds = response.retryAfterSeconds;
+            if (response.error === "RATE_LIMITED" && Number.isSafeInteger(seconds) && seconds! >= 1 && seconds! <= 3600) fail(new RateLimitedError(seconds!));
+            else fail(new Error(response.error === "RATE_LIMITED" ? "WORKER_UNAVAILABLE" : ERRORS.has(response.error) ? response.error : "WORKER_UNAVAILABLE"));
+            return;
+          }
+          settled = true; resolve(response.result); socket.destroy();
+        } catch { fail(new Error("WORKER_UNAVAILABLE")); }
       });
       socket.on("close", () => { if (!settled) fail(new Error("WORKER_UNAVAILABLE")); });
     });
   }
-  return { reserve: input => call("reserve", input), commitIntake: input => call("commitIntake", input), getPublicStatus: (proofHash, now) => call("getPublicStatus", { proofHash, now }), abortIntake: async (reservationId, sessionHash) => { await call("abortIntake", { reservationId, sessionHash }); } };
+  return { getIntakeReadiness: () => call("getIntakeReadiness", {}), reserve: input => call("reserve", input), commitIntake: input => call("commitIntake", input), getPublicStatus: (proofHash, now) => call("getPublicStatus", { proofHash, now }), abortIntake: async (reservationId, sessionHash) => { await call("abortIntake", { reservationId, sessionHash }); } };
 }

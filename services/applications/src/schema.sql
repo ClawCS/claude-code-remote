@@ -4,7 +4,8 @@ CREATE TABLE reservations (
   idempotencyKey TEXT NOT NULL,
   reservedBytes INTEGER NOT NULL CHECK (reservedBytes >= 0),
   expiresAt TEXT NOT NULL,
-  active INTEGER NOT NULL CHECK (active IN (0, 1))
+  active INTEGER NOT NULL CHECK (active IN (0, 1)),
+  submission TEXT NOT NULL DEFAULT '{"kind":"application"}'
 );
 CREATE UNIQUE INDEX active_reservation_key ON reservations(sessionHash, idempotencyKey) WHERE active = 1;
 CREATE TABLE cases (
@@ -28,6 +29,7 @@ CREATE TABLE cases (
   contactDeleteAfter TEXT NOT NULL,
   claimOwner TEXT,
   claimedAt TEXT,
+  submission TEXT NOT NULL DEFAULT '{"kind":"application"}',
   UNIQUE (sessionHash, idempotencyKey)
 );
 CREATE INDEX cases_queue ON cases(deliveryState, acceptedAt, id);
@@ -61,4 +63,16 @@ CREATE TABLE artifact_reservations (
   expiresAt TEXT NOT NULL,
   PRIMARY KEY(caseId, kind)
 );
-PRAGMA user_version = 2;
+CREATE TABLE abuse_events (
+  scope TEXT NOT NULL CHECK(scope IN ('session','ip')),
+  key TEXT NOT NULL,
+  occurredAt TEXT NOT NULL,
+  expiresAt TEXT NOT NULL
+);
+CREATE INDEX abuse_events_key ON abuse_events(scope,key,occurredAt);
+CREATE INDEX abuse_events_expiry ON abuse_events(expiresAt);
+CREATE TRIGGER reservation_submission_immutable BEFORE UPDATE OF submission ON reservations
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_SUBMISSION'); END;
+CREATE TRIGGER case_submission_immutable BEFORE UPDATE OF submission ON cases
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_SUBMISSION'); END;
+PRAGMA user_version = 3;

@@ -1,3 +1,4 @@
+import { testAdmission, testReadiness } from "./fixtures/admission";
 import { afterEach, expect, it } from "vitest";
 import { generateKeyPairSync } from "node:crypto";
 import { mkdtemp, mkdir, readFile, readdir, realpath, rm, stat, unlink, writeFile } from "node:fs/promises";
@@ -20,12 +21,12 @@ it("reserves future output and scratch capacity before accepting another case", 
   repository = openRepository(join(root, "registry.sqlite"));
   const now = utcInstant("2026-10-09T10:00:00.000Z"), sessionHash = digest("a".repeat(64));
   for (let index = 0; index < 4; index++) {
-    const reservation = repository.reserve({ sessionHash, idempotencyKey: String(index), reservedBytes: 2, now });
+    const reservation = repository.reserve({ ...testAdmission(),  sessionHash, idempotencyKey: String(index), reservedBytes: 2, now });
     repository.commitIntake({ reservationId: reservation.id, digest: sessionHash, encryptedPayloadPath: join(root, `${index}.enc`), actualBytes: 1, encryptedName: "ciphertext", job: "sales-fulltime", now });
   }
-  expect(() => repository!.reserve({ sessionHash, idempotencyKey: "fifth", reservedBytes: 2, now })).toThrow("CAPACITY_EXCEEDED");
+  expect(() => repository!.reserve({ ...testAdmission(),  sessionHash, idempotencyKey: "fifth", reservedBytes: 2, now })).toThrow("CAPACITY_EXCEEDED");
   // A retry needs transient intake space, not another permanent output set.
-  expect(repository.reserve({ sessionHash, idempotencyKey: "0", reservedBytes: 2, now }).id).toBeTruthy();
+  expect(repository.reserve({ ...testAdmission(),  sessionHash, idempotencyKey: "0", reservedBytes: 2, now }).id).toBeTruthy();
 });
 
 // Catches releasing physical capacity while a foreign, unlinked ingress inode
@@ -41,7 +42,7 @@ it("accounts for an ingress inode until its retained descriptor is closed", asyn
   await custody.reconcile();
   const pair = generateKeyPairSync("rsa", { modulusLength: 2048 });
   const payload = { version: 1 as const, input: { name: "Synthetic", email: "synthetic@example.invalid", job: "sales-fulltime" as const }, files: [] };
-  const reservation = await custody.reserve({ sessionHash: digest("a".repeat(64)), idempotencyKey: "open-inode", reservedBytes: 20000, now });
+  const reservation = await custody.reserve({ ...testAdmission(),  sessionHash: digest("a".repeat(64)), idempotencyKey: "open-inode", reservedBytes: 20000, now }, testReadiness);
   const sealed = await sealIncoming((async function* () { yield encodePayload(payload); })(), { root: intakeRoot, maxBytes: 10000, reservationId: reservation.id }, pair.publicKey);
   const retained = await authority.retain(reservation.id);
   const child = await authority.holdInChild(reservation.id);
@@ -77,7 +78,7 @@ it("blocks admission before writes when no lifetime/quota authority is available
   try{
     const unavailable=createCustodyLedger(h.repo,{...h.config,ingressAuthority:undefined});
     await expect(unavailable.reconcile()).rejects.toThrow("INGRESS_AUTHORITY_UNAVAILABLE");
-    await expect(unavailable.reserve({sessionHash:digest("c".repeat(64)),idempotencyKey:"forbidden",reservedBytes:20000,now:utcInstant("2026-10-09T10:00:00.000Z")})).rejects.toThrow("CUSTODY_NOT_READY");
+    await expect(unavailable.reserve({ ...testAdmission(), sessionHash:digest("c".repeat(64)),idempotencyKey:"forbidden",reservedBytes:20000,now:utcInstant("2026-10-09T10:00:00.000Z")}, testReadiness)).rejects.toThrow("CUSTODY_NOT_READY");
     expect(await readdir(h.keys.intakeRoot)).toEqual([]);
   }finally{await h.close();}
 });
@@ -93,16 +94,40 @@ it("migrates legacy journals only with the authority's exact recovered domain ma
     expect(h.repo.getCommittedIntake(h.accepted.id)).not.toBeNull();
     const recovered=createCustodyLedger(h.repo,h.config);await recovered.reconcile();
     const migrated=JSON.parse(await readFile(path,"utf8"));
-    expect(migrated.version).toBe(2);expect(migrated.lease.generation).toBe(original.lease.generation);
+    expect(migrated.version).toBe(3);expect(migrated.lease.generation).toBe(original.lease.generation);
     expect(migrated.cleanupAfter).toBe(original.cleanupAfter);
   }finally{await h.close();}
+});
+it("rejects corrupt reservation identity in an independently versioned custody journal", async () => {
+  const h = await makeArtifactHarness();
+  try {
+    const name = (await readdir(h.keys.privateRoot)).find(name => name.endsWith(".journal"))!, path = join(h.keys.privateRoot, name);
+    const journal = JSON.parse(await readFile(path, "utf8")); journal.reservation.sessionHash = "corrupt";
+    await writeFile(path, JSON.stringify(journal), { mode: 0o600 });
+    const recovered = createCustodyLedger(h.repo, h.config);
+    await expect(recovered.reconcile()).rejects.toThrow("CUSTODY_ACCOUNTING_FAILED");
+    expect(recovered.getIntakeReadiness()).toEqual({ ready: false });
+  } finally { await h.close(); }
+});
+it("migrates v2 journals without inventing pilot authorization and rejects v3 missing metadata", async () => {
+  const h = await makeArtifactHarness();
+  try {
+    const name = (await readdir(h.keys.privateRoot)).find(name => name.endsWith(".journal"))!, path = join(h.keys.privateRoot, name);
+    const legacy = JSON.parse(await readFile(path, "utf8")); legacy.version = 2; delete legacy.reservation.submission;
+    await writeFile(path, JSON.stringify(legacy), { mode: 0o600 });
+    await createCustodyLedger(h.repo, h.config).reconcile();
+    const migrated = JSON.parse(await readFile(path, "utf8"));
+    expect(migrated.version).toBe(3); expect(migrated.reservation.submission).toEqual({ kind: "application" });
+    delete migrated.reservation.submission; await writeFile(path, JSON.stringify(migrated), { mode: 0o600 });
+    await expect(createCustodyLedger(h.repo, h.config).reconcile()).rejects.toThrow("CUSTODY_ACCOUNTING_FAILED");
+  } finally { await h.close(); }
 });
 
 it.each(["stale","unavailable"])("preserves DB acceptance and all transient allowance when release authority is %s",async fault=>{
   const h=await makeArtifactHarness();
   try{
     const now=utcInstant("2026-10-09T10:00:00.000Z"),sessionHash=digest("c".repeat(64));
-    const reservation=await h.keys.custody.reserve({sessionHash,idempotencyKey:"release-failure",reservedBytes:20000,now});
+    const reservation=await h.keys.custody.reserve({ ...testAdmission(), sessionHash,idempotencyKey:"release-failure",reservedBytes:20000,now}, testReadiness);
     const sealed=await sealIncoming((async function*(){yield encodePayload(h.payload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:reservation.id},h.keys.publicKey);
     const quiesce=h.authority.quiesce.bind(h.authority);
     h.authority.quiesce=async lease=>{
@@ -114,7 +139,7 @@ it.each(["stale","unavailable"])("preserves DB acceptance and all transient allo
     expect((await stat(sealed.path)).size).toBe(sealed.bytes);
     const journal=JSON.parse(await readFile(join(h.keys.privateRoot,`${reservation.id}.journal`),"utf8"));
     expect(journal.budget).toBe(20000);expect(journal.release).toBe("pending");
-    await expect(h.keys.custody.reserve({sessionHash,idempotencyKey:"later",reservedBytes:20000,now})).rejects.toThrow("CUSTODY_NOT_READY");
+    await expect(h.keys.custody.reserve({ ...testAdmission(), sessionHash,idempotencyKey:"later",reservedBytes:20000,now}, testReadiness)).rejects.toThrow("CUSTODY_NOT_READY");
     h.authority.quiesce=quiesce;
     await h.keys.custody.reconcile();
     expect(await readdir(h.keys.intakeRoot)).toEqual([]);
@@ -127,13 +152,13 @@ it("retains the two producer slots across repository restart while real child ho
   try{
     const now=utcInstant("2026-10-09T10:00:00.000Z");
     for(const idempotencyKey of ["holder-one","holder-two"]){
-      const reservation=await h.keys.custody.reserve({sessionHash:digest("c".repeat(64)),idempotencyKey,reservedBytes:20000,now});
+      const reservation=await h.keys.custody.reserve({ ...testAdmission(), sessionHash:digest("c".repeat(64)),idempotencyKey,reservedBytes:20000,now}, testReadiness);
       await sealIncoming((async function*(){yield encodePayload(h.payload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:reservation.id},h.keys.publicKey);
       holders.push(await h.authority.holdInChild(reservation.id));
     }
     h.repo.close();reopened=openRepository(join(h.root,"registry.sqlite"));
     const recovered=createCustodyLedger(reopened,h.config);await recovered.reconcile();
-    await expect(recovered.reserve({sessionHash:digest("d".repeat(64)),idempotencyKey:"third-holder",reservedBytes:20000,now})).rejects.toThrow("CAPACITY_EXCEEDED");
+    await expect(recovered.reserve({ ...testAdmission(), sessionHash:digest("d".repeat(64)),idempotencyKey:"third-holder",reservedBytes:20000,now}, testReadiness)).rejects.toThrow("CAPACITY_EXCEEDED");
     expect(await holders[0].grow(9000)).toBe(9000);
   }finally{for(const holder of holders)await holder.close();reopened?.close();await h.close();}
 });
@@ -151,19 +176,19 @@ it("admits a maximum decoded intake and a second physical upload without double-
       expect(active.physicalBytes+active.reservedHeadroom).toBe(before.physicalBytes+before.reservedHeadroom);
     });
     const encoded=encodePayload(h.payload),maxBytes=encoded.length+2048,now=utcInstant("2026-10-09T10:00:00.000Z");
-    const second=await h.keys.custody.reserve({sessionHash:digest("c".repeat(64)),idempotencyKey:"second-max",reservedBytes:2*maxBytes,now});
+    const second=await h.keys.custody.reserve({ ...testAdmission(), sessionHash:digest("c".repeat(64)),idempotencyKey:"second-max",reservedBytes:2*maxBytes,now}, testReadiness);
     const file=await sealIncoming((async function*(){yield encoded;})(),{root:h.keys.intakeRoot,maxBytes,reservationId:second.id},h.keys.publicKey);
     expect((await stat(file.path)).size).toBe(file.bytes);
     await h.keys.custody.commitIntake({reservationId:second.id,digest:payloadDigest(h.payload),encryptedPayloadPath:file.path,actualBytes:file.bytes,encryptedName:"ciphertext",job:"sales-fulltime",now});
     const inventory=await h.keys.custody.cleanupOrphans();
     expect(inventory.physicalBytes+inventory.reservedHeadroom).toBeLessThanOrEqual(262144000);
-    await expect(h.keys.custody.reserve({sessionHash:digest("d".repeat(64)),idempotencyKey:"third-max",reservedBytes:2*maxBytes,now})).rejects.toThrow("CAPACITY_EXCEEDED");
-    const smallPayload={...h.payload,files:[]},small=await h.keys.custody.reserve({sessionHash:digest("e".repeat(64)),idempotencyKey:"small",reservedBytes:20000,now});
+    await expect(h.keys.custody.reserve({ ...testAdmission(), sessionHash:digest("d".repeat(64)),idempotencyKey:"third-max",reservedBytes:2*maxBytes,now}, testReadiness)).rejects.toThrow("CAPACITY_EXCEEDED");
+    const smallPayload={...h.payload,files:[]},small=await h.keys.custody.reserve({ ...testAdmission(), sessionHash:digest("e".repeat(64)),idempotencyKey:"small",reservedBytes:20000,now}, testReadiness);
     const smallFile=await sealIncoming((async function*(){yield encodePayload(smallPayload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:small.id},h.keys.publicKey);
     await h.keys.custody.commitIntake({reservationId:small.id,digest:payloadDigest(smallPayload),encryptedPayloadPath:smallFile.path,actualBytes:smallFile.bytes,encryptedName:"ciphertext",job:"sales-fulltime",now});
     const almost=await h.keys.custody.cleanupOrphans();
     const remaining=262144000-almost.physicalBytes-almost.reservedHeadroom-8192;
-    const fill=await h.keys.custody.reserve({...h.reservation,reservedBytes:remaining,now});
+    const fill=await h.keys.custody.reserve({ ...testAdmission(), ...h.reservation,reservedBytes:remaining,now}, testReadiness);
     try{
       const full=await h.keys.custody.cleanupOrphans();expect(full.physicalBytes+full.reservedHeadroom).toBe(262144000);
       await withPrivateFiles(snapshot,h.keys,async processing=>expect(processing.files).toHaveLength(2));

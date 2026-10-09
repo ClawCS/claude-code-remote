@@ -8,6 +8,7 @@ import { createCustodyLedger as productionCustodyLedger } from "../../src/custod
 export { takePrivateSnapshot, withPrivateFiles } from "../../src/custody";
 import type { ApplicationRepository, CustodyConfig } from "../../src/types";
 import type { IngressAuthority, IngressEvidence, IngressLease, LegacyIngress } from "../../src/types";
+import { testReadiness } from "./admission";
 
 // Explicit controlled-holder fixture, NOT an OS quota/confinement adapter.
 // The harness grants access only to its bounded seal helper and registered
@@ -20,7 +21,10 @@ export function testIngressAuthority(domain: string): TestIngressAuthority {
   if (!port) { port = new TestIngressAuthority(domain); domains.set(domain, port); }
   return port;
 }
-export function createTestCustodyLedger(repo:ApplicationRepository,config:CustodyConfig){return productionCustodyLedger(repo,{...config,ingressAuthority:testIngressAuthority(config.intakeRoot)});}
+export function createTestCustodyLedger(repo:ApplicationRepository,config:CustodyConfig){
+  const ledger = productionCustodyLedger(repo,{...config,ingressAuthority:testIngressAuthority(config.intakeRoot)});
+  return { ...ledger, reserve: (input: Parameters<typeof ledger.reserve>[0], readiness = testReadiness) => ledger.reserve(input, readiness) };
+}
 export const createCustodyLedger=createTestCustodyLedger;
 interface Entry { lease: IngressLease; state: IngressEvidence["state"]; holders: Set<FileHandle>; child?: ChildProcess }
 export class TestIngressAuthority implements IngressAuthority {

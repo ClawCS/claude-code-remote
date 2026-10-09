@@ -8,6 +8,42 @@ import { digest } from "./types";
 // V1: magic(8), RSA wrapped-key length(u16), wrapped-key, nonce(12), ciphertext, tag(16).
 // Authenticate the complete prefix as AAD. Bound plaintext independently of physical budget.
 const MAGIC = Buffer.from("TJAPP001");
+const NAME_MAGIC = Buffer.from("TJNAME01");
+function nameBytes(name: string): Buffer {
+  if (typeof name !== "string" || !name || name.length > 120 || name.includes("\0")) throw new Error("INVALID_NAME");
+  const bytes = Buffer.from(name, "utf8");
+  if (bytes.length > 480 || new TextDecoder("utf-8", { fatal: true }).decode(bytes) !== name) throw new Error("INVALID_NAME");
+  return bytes;
+}
+export function sealName(name: string, publicKey: KeyObject): string {
+  const plaintext = nameBytes(name), length = publicKey.asymmetricKeyDetails?.modulusLength ?? 0;
+  if (publicKey.type !== "public" || publicKey.asymmetricKeyType !== "rsa" || length < 2048 || length > 8192 || publicKey.asymmetricKeyDetails?.publicExponent !== BigInt(65537)) throw new Error("INVALID_PUBLIC_KEY");
+  const key = randomBytes(32), nonce = randomBytes(12);
+  try {
+    const wrapped = publicEncrypt({ key: publicKey, padding: cryptoConstants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256", oaepLabel: NAME_MAGIC }, key);
+    const size = Buffer.alloc(2); size.writeUInt16BE(wrapped.length);
+    const prefix = Buffer.concat([NAME_MAGIC, size, wrapped, nonce]);
+    const cipher = createCipheriv("aes-256-gcm", key, nonce); cipher.setAAD(prefix);
+    return Buffer.concat([prefix, cipher.update(plaintext), cipher.final(), cipher.getAuthTag()]).toString("base64");
+  } finally { key.fill(0); plaintext.fill(0); }
+}
+export function openName(value: string, privateKey: KeyObject): string {
+  let key: Buffer | undefined, plaintext: Buffer | undefined;
+  try {
+    if (typeof value !== "string" || value.length > 4096 || !base64Characters(value) || privateKey.type !== "private" || privateKey.asymmetricKeyType !== "rsa") throw new Error();
+    const bytes = Buffer.from(value, "base64");
+    if (bytes.toString("base64") !== value || bytes.length < 38 || !bytes.subarray(0, 8).equals(NAME_MAGIC)) throw new Error();
+    const size = bytes.readUInt16BE(8), prefixLength = 22 + size;
+    if (size < 256 || size > 1024 || bytes.length <= prefixLength + 16 || bytes.length > prefixLength + 16 + 480) throw new Error();
+    key = privateDecrypt({ key: privateKey, padding: cryptoConstants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256", oaepLabel: NAME_MAGIC }, bytes.subarray(10, 10 + size));
+    const decipher = createDecipheriv("aes-256-gcm", key, bytes.subarray(10 + size, prefixLength));
+    decipher.setAAD(bytes.subarray(0, prefixLength)); decipher.setAuthTag(bytes.subarray(-16));
+    plaintext = Buffer.concat([decipher.update(bytes.subarray(prefixLength, -16)), decipher.final()]);
+    const name = new TextDecoder("utf-8", { fatal: true }).decode(plaintext); nameBytes(name).fill(0);
+    return name;
+  } catch { throw new Error("AUTHENTICATION_FAILED"); }
+  finally { key?.fill(0); plaintext?.fill(0); }
+}
 export const MAX_PAYLOAD_BYTES = 14 * 1024 * 1024 + 65536;
 export const MAX_SEALED_BYTES = MAX_PAYLOAD_BYTES + 2048;
 export async function readBoundedFile(fd: import("node:fs/promises").FileHandle, limit: number): Promise<Buffer> {

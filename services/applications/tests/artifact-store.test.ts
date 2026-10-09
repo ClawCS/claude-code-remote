@@ -1,3 +1,4 @@
+import { testAdmission, testReadiness } from "./fixtures/admission";
 import { expect, it, vi } from "vitest";
 import { createHash, generateKeyPairSync, randomUUID } from "node:crypto";
 import { applicationId, utcInstant } from "../src/types";
@@ -51,7 +52,7 @@ it("admits another small case using capacity released by adopted bundle and MIME
     await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1));
     await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),2);
     for(let index=0;index<4;index++){
-      const reservation=await h.keys.custody.reserve({...h.reservation,idempotencyKey:`after-artifacts-${index}`,now:utcInstant("2026-10-09T10:00:00.000Z")});
+      const reservation=await h.keys.custody.reserve({ ...testAdmission(), ...h.reservation,idempotencyKey:`after-artifacts-${index}`,now:utcInstant("2026-10-09T10:00:00.000Z")}, testReadiness);
       const sealed=await sealIncoming((async function*(){yield encodePayload(h.payload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:reservation.id},h.keys.publicKey);
       await h.keys.custody.commitIntake({reservationId:reservation.id,digest:payloadDigest(h.payload),encryptedPayloadPath:sealed.path,actualBytes:sealed.bytes,encryptedName:"ciphertext",job:"sales-fulltime",now:utcInstant("2026-10-09T10:00:00.000Z")});
     }
@@ -76,7 +77,7 @@ it.each([false,true])("closes admission and releases ownership after scope mkdir
     try{await expect(store.withBundle(h.accepted.id,async()=>{})).rejects.toThrow("ENOSPC");}finally{fault.mockRestore();}
     const journals=await Promise.all((await readdir(h.keys.privateRoot)).filter(name=>name.endsWith(".journal")).map(async name=>JSON.parse(await readFile(join(h.keys.privateRoot,name),"utf8"))));
     expect(journals.filter(entry=>entry.kind==="processing")).toHaveLength(1);
-    await expect(h.keys.custody.reserve({...h.reservation,idempotencyKey:"after-mkdir-failure",now:utcInstant("2026-10-09T10:00:00.000Z")})).rejects.toThrow("CUSTODY_NOT_READY");
+    await expect(h.keys.custody.reserve({ ...testAdmission(), ...h.reservation,idempotencyKey:"after-mkdir-failure",now:utcInstant("2026-10-09T10:00:00.000Z")}, testReadiness)).rejects.toThrow("CUSTODY_NOT_READY");
     await expect(store.withBundle(h.accepted.id,async()=>{})).rejects.toThrow("CUSTODY_NOT_READY");
     await h.keys.custody.reconcile();
     expect(await readdir(h.keys.runtimeRoot)).toEqual([]);
@@ -174,7 +175,7 @@ it("does not reserve a second output set for replay after original and intake-jo
     h.config.clock.now=()=>new Date("2026-10-10T10:00:00.000Z");
     await h.keys.custody.reconcile();const before=await h.keys.custody.cleanupOrphans();
     expect((await readdir(h.keys.privateRoot)).includes(`${h.reservation.id}.journal`)).toBe(false);
-    const retry=await h.keys.custody.reserve({...h.reservation,now:utcInstant("2026-10-10T10:00:00.000Z")});
+    const retry=await h.keys.custody.reserve({ ...testAdmission(), ...h.reservation,now:utcInstant("2026-10-10T10:00:00.000Z")}, testReadiness);
     const during=await h.keys.custody.cleanupOrphans();
     expect(during.physicalBytes+during.reservedHeadroom-before.physicalBytes-before.reservedHeadroom).toBe(28192);
     expect(h.repo.getRequestIdentity(h.accepted.id).digest).toBe(payloadDigest(h.payload));

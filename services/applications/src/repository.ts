@@ -7,6 +7,7 @@ import type { PublicStatus } from "../../../lib/applications-contract";
 import type { Acceptance, ApplicationId, ApplicationRepository, ArtifactKind, ArtifactRecord, ArtifactReservation, CaseRecord, ClaimedCase, DeliveryState, DeliveryTransition, Digest, Instant, IntakeCommit, Reservation, ReservationInput, RequestIdentity } from "./types";
 import { applicationId, digest, utcInstant } from "./types";
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, storageBudget } from "./storage-budget";
+import { admissionKeys, submissionKind, ADMISSION_WINDOW_MS, ADMISSION_EVENT_CAP, RateLimitedError } from "./intake-admission";
 
 const DAY = 86400000;
 const transitions: Record<DeliveryState, readonly DeliveryState[]> = {
@@ -16,8 +17,8 @@ const transitions: Record<DeliveryState, readonly DeliveryState[]> = {
 };
 function addDays(value: Instant, days: number): Instant { return utcInstant(new Date(Date.parse(value) + days * DAY).toISOString()); }
 function checkBytes(value: number): void { if (!Number.isSafeInteger(value) || value < 0) throw new Error("INVALID_BYTES"); }
-interface StoredReservation extends Reservation { active: number }
-interface StoredCase extends CaseRecord { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string }
+interface StoredReservation extends Omit<Reservation, "submission"> { active: number; submission: string }
+interface StoredCase extends Omit<CaseRecord, "submission"> { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string; submission: string }
 interface Guard { id: ApplicationId; active: boolean }
 
 export function openRepository(path: string): ApplicationRepository {
@@ -42,14 +43,19 @@ export function openRepository(path: string): ApplicationRepository {
     db.exec("BEGIN IMMEDIATE; COMMIT;");
     const version = db.pragma("user_version", { simple: true });
     if (version === 0) db.transaction(() => db.exec(readFileSync(join(__dirname, "schema.sql"), "utf8"))).immediate();
-    else if (version === 1) db.transaction(() => {
+    else if (version === 1 || version === 2) db.transaction(() => {
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8");
-      db.exec(schema.slice(schema.indexOf("CREATE TABLE artifacts")));
-      for (const row of db.prepare("SELECT id, acceptedAt, payloadDeleteAfter FROM cases").all() as CaseRecord[]) {
-        for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter < addDays(row.acceptedAt, 7) ? row.payloadDeleteAfter : addDays(row.acceptedAt, 7));
+      if (version === 1) {
+        db.exec(schema.slice(schema.indexOf("CREATE TABLE artifacts"), schema.indexOf("CREATE TABLE abuse_events")));
+        for (const row of db.prepare("SELECT id, acceptedAt, payloadDeleteAfter FROM cases").all() as CaseRecord[]) {
+          for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter < addDays(row.acceptedAt, 7) ? row.payloadDeleteAfter : addDays(row.acceptedAt, 7));
+        }
+        db.pragma("user_version = 2");
       }
+      db.exec(`ALTER TABLE reservations ADD COLUMN submission TEXT NOT NULL DEFAULT '{"kind":"application"}'; ALTER TABLE cases ADD COLUMN submission TEXT NOT NULL DEFAULT '{"kind":"application"}';`);
+      db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events")));
     }).immediate();
-    else if (version !== 2) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     db.transaction(() => {
       db.prepare("DELETE FROM reservations WHERE active = 1").run();
       db.prepare("INSERT INTO audit (caseId, event, version, at) SELECT id, 'recovered', version + 1, ? FROM cases WHERE deliveryState IN ('scanning','ready','sending','smtp_accepted')").run(new Date().toISOString());
@@ -65,9 +71,9 @@ export function openRepository(path: string): ApplicationRepository {
   let closed = false;
   function live(): void { if (closed) throw new Error("REPOSITORY_CLOSED"); }
   function readCase(id: ApplicationId): CaseRecord {
-    live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, deleteAfter, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt FROM cases WHERE id = ?").get(id) as CaseRecord | undefined;
+    live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, deleteAfter, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission"> & { submission: string }) | undefined;
     if (!row) throw new Error("CASE_NOT_FOUND");
-    return row;
+    return { ...row, submission: submissionKind(JSON.parse(row.submission)) };
   }
   async function guarded<T>(id: ApplicationId, action: () => Promise<T>): Promise<T> {
     live(); const own = context.getStore();
@@ -87,26 +93,52 @@ export function openRepository(path: string): ApplicationRepository {
     db.prepare("INSERT INTO status_proofs VALUES (?, ?, ?)").run(createHash("sha256").update(statusProof).digest("hex"), row.id, addDays(row.acceptedAt, 7));
     return { id: row.id, reference: row.reference, acceptedAt: row.acceptedAt, statusProof, replayed };
   }
-  function reserve(input: ReservationInput): Reservation {
+  function pruneAdmissionEvents(now: Instant): number {
+    live(); utcInstant(now);
+    return db.prepare("DELETE FROM abuse_events WHERE expiresAt <= ?").run(now).changes;
+  }
+  function reserve(input: ReservationInput, capacity: "available" | "exhausted" = "available"): Reservation {
     live(); digest(input.sessionHash); checkBytes(input.reservedBytes); utcInstant(input.now);
     if (!/^[A-Za-z0-9_-]{1,128}$/.test(input.idempotencyKey)) throw new Error("INVALID_IDEMPOTENCY_KEY");
-    return db.transaction(() => {
+    const keys = admissionKeys(input.abuse), submission = submissionKind(input.submission), serialized = JSON.stringify(submission);
+    if (capacity !== "available" && capacity !== "exhausted") throw new Error("INVALID_CAPACITY");
+    const outcome = db.transaction((): Reservation | Error => {
+      // Expected denials are returned so the authenticated attempt stays charged.
+      // SQL/integrity failures throw and roll back the complete transaction.
+      pruneAdmissionEvents(input.now);
+      const oldest = new Date(Date.parse(input.now) - ADMISSION_WINDOW_MS).toISOString();
+      let retryAt = 0;
+      for (const [scope, key, limit] of [["session", keys.sessionKey, 6], ["ip", keys.ipKey, 30]] as const) {
+        const events = db.prepare("SELECT occurredAt FROM abuse_events WHERE scope=? AND key=? AND occurredAt>? AND occurredAt<=? ORDER BY occurredAt").all(scope, key, oldest, input.now) as { occurredAt: string }[];
+        if (events.length >= limit) retryAt = Math.max(retryAt, Date.parse(events[events.length - limit].occurredAt) + ADMISSION_WINDOW_MS);
+      }
+      if (retryAt) return new RateLimitedError(Math.max(1, Math.ceil((retryAt - Date.parse(input.now)) / 1000)));
+      const count = db.prepare("SELECT COUNT(*) AS count FROM abuse_events").get() as { count: number };
+      if (count.count + 2 > ADMISSION_EVENT_CAP) throw new Error("ADMISSION_UNAVAILABLE");
+      const expiresAt = new Date(Date.parse(input.now) + ADMISSION_WINDOW_MS).toISOString();
+      for (const [scope, key] of [["session", keys.sessionKey], ["ip", keys.ipKey]]) db.prepare("INSERT INTO abuse_events VALUES (?,?,?,?)").run(scope, key, input.now, expiresAt);
       db.prepare("DELETE FROM reservations WHERE active = 1 AND expiresAt <= ?").run(input.now);
+      const accepted = db.prepare("SELECT submission FROM cases WHERE sessionHash=? AND idempotencyKey=?").get(input.sessionHash, input.idempotencyKey) as { submission: string } | undefined;
+      if (accepted && accepted.submission !== serialized) return new Error("IDEMPOTENCY_CONFLICT");
       const existing = db.prepare("SELECT * FROM reservations WHERE sessionHash = ? AND idempotencyKey = ? AND active = 1").get(input.sessionHash, input.idempotencyKey) as StoredReservation | undefined;
       if (existing) {
-        if (existing.reservedBytes !== input.reservedBytes) throw new Error("IDEMPOTENCY_CONFLICT");
-        throw new Error("UPLOAD_IN_PROGRESS");
+        if (existing.reservedBytes !== input.reservedBytes || existing.submission !== serialized) return new Error("IDEMPOTENCY_CONFLICT");
+        return new Error("UPLOAD_IN_PROGRESS");
       }
+      if (capacity === "exhausted") return new Error("CAPACITY_EXCEEDED");
       const reservations = db.prepare("SELECT COUNT(*) AS count, COALESCE(SUM(reservedBytes), 0) AS bytes, COALESCE(SUM(CASE WHEN NOT EXISTS (SELECT 1 FROM cases c WHERE c.sessionHash = r.sessionHash AND c.idempotencyKey = r.idempotencyKey) THEN 1 ELSE 0 END), 0) AS newCount FROM reservations r WHERE active = 1").get() as { count: number; bytes: number; newCount: number };
       const cases = db.prepare("SELECT SUM(CASE WHEN deliveryState != 'delivered' THEN 1 ELSE 0 END) AS count, COALESCE(SUM(payloadBytes), 0) AS bytes FROM cases").get() as { count: number | null; bytes: number };
       const replay = db.prepare("SELECT 1 FROM cases WHERE sessionHash = ? AND idempotencyKey = ?").get(input.sessionHash, input.idempotencyKey);
-      if (reservations.count >= 2 || (!replay && (cases.count ?? 0) + reservations.newCount >= 20)) throw new Error("CAPACITY_EXCEEDED");
+      if (reservations.count >= 2 || (!replay && (cases.count ?? 0) + reservations.newCount >= 20)) return new Error("CAPACITY_EXCEEDED");
       const outputs = db.prepare("SELECT COALESCE(SUM(COALESCE(a.bytes,r.bytes)),0) AS bytes, COUNT(*) AS count FROM artifact_reservations r LEFT JOIN artifacts a ON a.caseId=r.caseId AND a.kind=r.kind").get() as { bytes: number; count: number };
-      storageBudget(cases.bytes + outputs.bytes + reservations.bytes + input.reservedBytes, 0, [{ allowance: (reservations.newCount + (replay ? 0 : 1)) * OUTPUT_RESERVE, actual: 0 }], 8192 + outputs.count * ARTIFACT_METADATA_RESERVE);
-      const result = { id: randomUUID(), sessionHash: input.sessionHash, idempotencyKey: input.idempotencyKey, reservedBytes: input.reservedBytes, expiresAt: addDays(input.now, 1) };
-      db.prepare("INSERT INTO reservations VALUES (@id, @sessionHash, @idempotencyKey, @reservedBytes, @expiresAt, 1)").run(result);
+      try { storageBudget(cases.bytes + outputs.bytes + reservations.bytes + input.reservedBytes, 0, [{ allowance: (reservations.newCount + (replay ? 0 : 1)) * OUTPUT_RESERVE, actual: 0 }], 8192 + outputs.count * ARTIFACT_METADATA_RESERVE); }
+      catch (error) { if (error instanceof Error && error.message === "CAPACITY_EXCEEDED") return error; throw error; }
+      const result = { id: randomUUID(), sessionHash: input.sessionHash, idempotencyKey: input.idempotencyKey, reservedBytes: input.reservedBytes, expiresAt: addDays(input.now, 1), submission };
+      db.prepare("INSERT INTO reservations (id,sessionHash,idempotencyKey,reservedBytes,expiresAt,active,submission) VALUES (@id, @sessionHash, @idempotencyKey, @reservedBytes, @expiresAt, 1, @submission)").run({ ...result, submission: serialized });
       return result;
     }).immediate();
+    if (outcome instanceof Error) throw outcome;
+    return outcome;
   }
   function commitIntake(input: IntakeCommit): Acceptance {
     live(); digest(input.digest); checkBytes(input.actualBytes); utcInstant(input.now);
@@ -116,14 +148,15 @@ export function openRepository(path: string): ApplicationRepository {
       if (input.actualBytes > reservation.reservedBytes) throw new Error("RESERVATION_EXCEEDED");
       const existing = db.prepare("SELECT * FROM cases WHERE sessionHash = ? AND idempotencyKey = ?").get(reservation.sessionHash, reservation.idempotencyKey) as StoredCase | undefined;
       if (existing) {
-        if (existing.digest !== input.digest) throw new Error("IDEMPOTENCY_CONFLICT");
+        if (existing.digest !== input.digest || existing.submission !== reservation.submission) throw new Error("IDEMPOTENCY_CONFLICT");
         db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
         return proof(existing, input.now, true);
       }
       if (!reservation.active) throw new Error("RESERVATION_NOT_FOUND");
       if (!isAbsolute(input.encryptedPayloadPath) || resolve(input.encryptedPayloadPath) !== input.encryptedPayloadPath || input.encryptedPayloadPath.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part)) || !input.encryptedName || input.encryptedName.length > 4096) throw new Error("INVALID_PRIVATE_PAYLOAD");
-      const row = { id: applicationId(randomUUID()), reference: `TJ-${randomBytes(12).toString("hex").toUpperCase()}`, reservationId: input.reservationId, sessionHash: reservation.sessionHash, idempotencyKey: reservation.idempotencyKey, digest: input.digest, encryptedName: input.encryptedName, job: input.job, acceptedAt: input.now, encryptedPayloadPath: input.encryptedPayloadPath, payloadBytes: input.actualBytes, payloadDeleteAfter: addDays(input.now, 7), contactDeleteAfter: addDays(input.now, 30) };
-      db.prepare("INSERT INTO cases (id, reference, reservationId, sessionHash, idempotencyKey, digest, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, payloadDeleteAfter, contactDeleteAfter) VALUES (@id, @reference, @reservationId, @sessionHash, @idempotencyKey, @digest, @encryptedName, @job, @acceptedAt, 'queued', 'open', 1, @encryptedPayloadPath, @payloadBytes, @payloadDeleteAfter, @contactDeleteAfter)").run(row);
+      submissionKind(JSON.parse(reservation.submission));
+      const row = { id: applicationId(randomUUID()), reference: `TJ-${randomBytes(12).toString("hex").toUpperCase()}`, reservationId: input.reservationId, sessionHash: reservation.sessionHash, idempotencyKey: reservation.idempotencyKey, digest: input.digest, encryptedName: input.encryptedName, job: input.job, acceptedAt: input.now, encryptedPayloadPath: input.encryptedPayloadPath, payloadBytes: input.actualBytes, payloadDeleteAfter: addDays(input.now, 7), contactDeleteAfter: addDays(input.now, 30), submission: reservation.submission };
+      db.prepare("INSERT INTO cases (id, reference, reservationId, sessionHash, idempotencyKey, digest, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, payloadDeleteAfter, contactDeleteAfter, submission) VALUES (@id, @reference, @reservationId, @sessionHash, @idempotencyKey, @digest, @encryptedName, @job, @acceptedAt, 'queued', 'open', 1, @encryptedPayloadPath, @payloadBytes, @payloadDeleteAfter, @contactDeleteAfter, @submission)").run(row);
       db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
       for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter);
       db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'accepted', 1, ?)").run(row.id, input.now);
@@ -213,7 +246,7 @@ export function openRepository(path: string): ApplicationRepository {
     isReplayReservation(id) { live(); return !!db.prepare("SELECT 1 FROM reservations r JOIN cases c ON c.sessionHash=r.sessionHash AND c.idempotencyKey=r.idempotencyKey WHERE r.id=?").get(id); },
     getCommittedIntake(id) { live(); applicationId(id); return (db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE id = ? AND encryptedPayloadPath IS NOT NULL").get(id) as import("./types").CommittedIntake | undefined) ?? null; },
     listRetainedIntakes() { live(); return db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE encryptedPayloadPath IS NOT NULL ORDER BY acceptedAt, rowid").all() as import("./types").CommittedIntake[]; },
-    reserve, commitIntake, claimNext, getPublicStatus, transitionDelivery,
+    reserve, pruneAdmissionEvents, commitIntake, claimNext, getPublicStatus, transitionDelivery,
     releaseReservation(id) { live(); db.prepare("DELETE FROM reservations WHERE id = ? AND active = 1").run(id); },
     withCaseLock: (id, action) => guarded(id, () => action(Object.freeze(readCase(id)))),
     close() { if (closed) return; if (locks.size) throw new Error("CASE_LOCK_ACTIVE"); db.close(); closed = true; },

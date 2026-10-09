@@ -1,3 +1,4 @@
+import { testAdmission, testReadiness } from "./admission";
 import { generateKeyPairSync, randomUUID } from "node:crypto";
 import { mkdtemp, mkdir, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -19,7 +20,7 @@ export async function makeArtifactHarness(files:PayloadFile[]=[]) {
   const keys: WorkerKeys={...generateKeyPairSync("rsa",{modulusLength:2048}),intakeRoot,privateRoot,runtimeRoot,custody};
   const payload={version:1 as const,input:{name:"Synthetic Applicant",email:"synthetic@example.invalid",job:"sales-fulltime" as const},files};
   const encoded=encodePayload(payload), maxBytes=Math.max(10000,encoded.length+2048);
-  const reservation=await custody.reserve({sessionHash:digest("b".repeat(64)),idempotencyKey:randomUUID(),reservedBytes:2*maxBytes,now});
+  const reservation=await custody.reserve({ ...testAdmission(), sessionHash:digest("b".repeat(64)),idempotencyKey:randomUUID(),reservedBytes:2*maxBytes,now}, testReadiness);
   const file=await sealIncoming((async function*(){yield encoded;})(),{root:intakeRoot,maxBytes,reservationId:reservation.id},keys.publicKey);
   const accepted=await custody.commitIntake({reservationId:reservation.id,digest:payloadDigest(payload),encryptedPayloadPath:file.path,actualBytes:file.bytes,encryptedName:"ciphertext",job:"sales-fulltime",now});
   return {root,repo,keys,accepted,payload,config,authority,reservation,close:async()=>{repo.close();await rm(root,{recursive:true,force:true});}};

@@ -1,3 +1,4 @@
+import { testAdmission } from "./fixtures/admission";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createHash } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
@@ -17,7 +18,7 @@ let dir: string;
 let repo: ApplicationRepository;
 beforeEach(() => { dir = mkdtempSync(join(realpathSync(tmpdir()), "applications-registry-")); repo = openRepository(join(dir, "registry.sqlite")); });
 afterEach(() => { repo?.close(); rmSync(dir, { recursive: true, force: true }); });
-function reserve(key: string, bytes = 1) { return repo.reserve({ sessionHash: session, idempotencyKey: key, reservedBytes: bytes, now }); }
+function reserve(key: string, bytes = 1) { return repo.reserve({ ...testAdmission(),  sessionHash: session, idempotencyKey: key, reservedBytes: bytes, now }); }
 function commit(key: string, bytes = 1): IntakeCommit {
   return { reservationId: reserve(key, bytes).id, digest, actualBytes: bytes, encryptedPayloadPath: join(dir, `${key}.enc`), encryptedName: "ciphertext:synthetic-name", job: "sales-fulltime", now };
 }
@@ -44,7 +45,7 @@ describe("repository-idempotency", () => {
   });
   it("scopes keys to server-issued browser sessions", async () => {
     const first = repo.commitIntake(commit("same"));
-    const other = repo.reserve({ sessionHash: "c".repeat(64) as Digest, idempotencyKey: "same", reservedBytes: 1, now });
+    const other = repo.reserve({ ...testAdmission(),  sessionHash: "c".repeat(64) as Digest, idempotencyKey: "same", reservedBytes: 1, now });
     const second = repo.commitIntake({ ...commit("unused"), reservationId: other.id });
     expect(second.reference).not.toBe(first.reference);
     expect(repo.claimNext("a", now)?.id).toBe(first.id);
@@ -100,13 +101,13 @@ describe("repository-capacity", () => {
   });
   it("expires abandoned reservations after 24 hours", () => {
     reserve("a"); reserve("b");
-    expect(repo.reserve({ sessionHash: session, idempotencyKey: "c", reservedBytes: 1, now: "2026-10-10T10:00:00.000Z" as Instant }).expiresAt).toBe("2026-10-11T10:00:00.000Z");
+    expect(repo.reserve({ ...testAdmission(),  sessionHash: session, idempotencyKey: "c", reservedBytes: 1, now: "2026-10-10T10:00:00.000Z" as Instant }).expiresAt).toBe("2026-10-11T10:00:00.000Z");
   });
 });
 describe("registry lifecycle", () => {
   it("migrates v1 transactionally without changing acceptance, request digest, or public proofs",async()=>{
     const accepted=repo.commitIntake(commit("legacy"));repo.close();
-    const legacy=new Database(join(dir,"registry.sqlite"));legacy.exec("DROP TABLE artifacts; DROP TABLE artifact_reservations; PRAGMA user_version=1;");legacy.close();
+    const legacy=new Database(join(dir,"registry.sqlite"));legacy.exec("DROP TABLE artifacts; DROP TABLE artifact_reservations; DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=1;");legacy.close();
     repo=openRepository(join(dir,"registry.sqlite"));
     expect(repo.getRequestIdentity(accepted.id)).toEqual({id:accepted.id,digest,acceptedAt:now});
     expect(repo.listArtifactReservations()).toEqual([
@@ -114,6 +115,23 @@ describe("registry lifecycle", () => {
       {caseId:accepted.id,kind:"mime",bytes:16779264,expiresAt:"2026-10-16T10:00:00.000Z"},
     ]);
     expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest,now)?.reference).toBe(accepted.reference);
+    expect(repo.claimNext("migration", now)?.submission).toEqual({ kind: "application" });
+  });
+  it("migrates the actual v2 artifact schema to v3 without changing artifacts or identity", async () => {
+    const accepted = repo.commitIntake(commit("v2"));
+    const path = join(dir, "v2-bundle.enc"), bytes = Buffer.from("synthetic-v2-artifact"); writeFileSync(path, bytes, { mode: 0o600 });
+    const artifact = { caseId: accepted.id, kind: "bundle" as const, path, bytes: bytes.length, plaintextDigest: digest, ciphertextDigest: createHash("sha256").update(bytes).digest("hex") as Digest, expiresAt: "2026-10-16T10:00:00.000Z" as Instant };
+    await repo.adoptArtifact(artifact, 1); const reserves = repo.listArtifactReservations();
+    repo.close(); const legacy = new Database(join(dir, "registry.sqlite"));
+    legacy.exec("DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=2;"); legacy.close();
+    repo = openRepository(join(dir, "registry.sqlite"));
+    expect(repo.getArtifact(accepted.id, "bundle")).toEqual(artifact); expect(repo.listArtifactReservations()).toEqual(reserves);
+    expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
+    expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest, now)?.reference).toBe(accepted.reference);
+    await repo.withCaseLock(accepted.id, async row => { expect(row.submission).toEqual({ kind: "application" }); });
+    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(3);
+    expect(() => inspect.prepare("UPDATE cases SET submission=? WHERE id=?").run('{"kind":"synthetic","pilotRunId":"invented"}', accepted.id)).toThrow("IMMUTABLE_SUBMISSION"); inspect.close();
+    repo = openRepository(join(dir, "registry.sqlite"));
   });
   it("keeps artifact identity and original request proof through original retirement and restart", async () => {
     const accepted = repo.commitIntake(commit("artifacts"));
@@ -230,7 +248,7 @@ describe("public proof", () => {
   it("anchors replay proofs to the original acceptance, never the retry time", () => {
     const first = repo.commitIntake(commit("replay-proof"));
     const later = "2026-10-15T10:00:00.000Z" as Instant;
-    const retry = repo.reserve({ sessionHash: session, idempotencyKey: "replay-proof", reservedBytes: 1, now: later });
+    const retry = repo.reserve({ ...testAdmission(),  sessionHash: session, idempotencyKey: "replay-proof", reservedBytes: 1, now: later });
     const accepted = repo.commitIntake({ ...commitPayload("replay-proof", retry.id), now: later });
     const hash = createHash("sha256").update(accepted.statusProof).digest("hex") as Digest;
     expect(accepted.acceptedAt).toBe(first.acceptedAt);

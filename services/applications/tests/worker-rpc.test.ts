@@ -1,3 +1,4 @@
+import { testAdmission, testReadiness } from "./fixtures/admission";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createConnection, type Server } from "node:net";
 import { once } from "node:events";
@@ -34,13 +35,47 @@ async function request(method: string, params: unknown = {}) {
   return JSON.parse(String(data));
 }
 describe("rpc-no-admin", () => {
-  it("rejects admission before explicit worker startup reconciliation", async () => {
+  it("reads readiness without reserving and defaults unavailable even after reconciliation", async () => {
+    await ledger.reconcile();
     server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock }); server.listen(join(root, "worker.sock")); await once(server, "listening");
+    const before = await readdir(custodyRoot);
+    expect(await request("getIntakeReadiness")).toEqual({ ok: true, result: { ready: false } });
+    expect(await readdir(custodyRoot)).toEqual(before);
+    expect(await request("getIntakeReadiness", { reserve: true })).toEqual({ ok: false, error: "INVALID_REQUEST" });
+    expect(await request("reserve", reserveInput())).toEqual({ ok: false, error: "WORKER_UNAVAILABLE" });
+    expect(repo.pruneAdmissionEvents(utcInstant("2026-10-09T11:00:00.000Z"))).toBe(0);
+  });
+  it("rechecks worker gate for reserve and exposes precise durable rate retry through the client", async () => {
+    await ledger.reconcile(); let gate = true;
+    const readiness = { getIntakeReadiness: () => ({ ready: gate }) };
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness }); server.listen(join(root, "worker.sock")); await once(server, "listening");
+    const client = createWorkerRpcClient(join(root, "worker.sock")), admission = reserveInput();
+    expect(await client.getIntakeReadiness()).toEqual({ ready: true });
+    gate = false;
+    await expect(client.reserve(admission)).rejects.toThrow("WORKER_UNAVAILABLE");
+    gate = true;
+    for (let i = 0; i < 6; i++) { const reservation = await client.reserve({ ...admission, idempotencyKey: `rate-${i}` }); await client.abortIntake(reservation.id, admission.sessionHash); }
+    await expect(client.reserve(admission)).rejects.toMatchObject({ message: "RATE_LIMITED", retryAfterSeconds: 3600 });
+    expect(repo.pruneAdmissionEvents(utcInstant("2026-10-09T11:00:00.000Z"))).toBe(12);
+  });
+  it("serializes simultaneous admission and charges capacity denials without exceeding budgets", async () => {
+    await ledger.reconcile();
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness }); server.listen(join(root, "worker.sock")); await once(server, "listening");
+    const admission = reserveInput();
+    const results = await Promise.all(Array.from({ length: 6 }, (_, i) => request("reserve", { ...admission, idempotencyKey: `parallel-${i}` })));
+    expect(results.filter(result => result.ok)).toHaveLength(2);
+    expect(results.filter(result => !result.ok).map(result => result.error)).toEqual(Array(4).fill("CAPACITY_EXCEEDED"));
+    expect(await request("reserve", { ...admission, idempotencyKey: "seventh" })).toEqual({ ok: false, error: "RATE_LIMITED", retryAfterSeconds: 3600 });
+    for (const result of results.filter(result => result.ok)) await ledger.abortIntake(result.result.id, admission.sessionHash);
+    expect(repo.pruneAdmissionEvents(utcInstant("2026-10-09T11:00:00.000Z"))).toBe(12);
+  });
+  it("rejects admission before explicit worker startup reconciliation", async () => {
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness }); server.listen(join(root, "worker.sock")); await once(server, "listening");
     expect(await request("reserve", reserveInput())).toEqual({ ok: false, error: "CUSTODY_NOT_READY" });
   });
   it("shares accounting with worker snapshots created after RPC startup", async () => {
     await ledger.reconcile();
-    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock }); server.listen(join(root, "worker.sock")); await once(server, "listening");
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness }); server.listen(join(root, "worker.sock")); await once(server, "listening");
     const client = createWorkerRpcClient(join(root, "worker.sock"));
     const reserved = await client.reserve(reserveInput()); const file = await sealIncoming((async function* () { yield Buffer.from("synthetic"); })(), { root: intakeRoot, maxBytes: reserved.reservedBytes, reservationId: reserved.id }, publicKey);
     const accepted = await client.commitIntake(commitInput(reserved.id, file.bytes));
@@ -52,13 +87,13 @@ describe("rpc-no-admin", () => {
   });
   it("rejects delete without exposing any administrative operation", async () => {
     await ledger.reconcile();
-    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock });
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness });
     server.listen(join(root, "worker.sock")); await once(server, "listening");
     expect(await request("delete")).toEqual({ ok: false, error: "METHOD_NOT_ALLOWED" });
   });
   it("creates a restricted Unix socket and rejects extra schema fields", async () => {
     await ledger.reconcile();
-    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock });
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness });
     server.listen(join(root, "worker.sock")); await once(server, "listening");
     expect((await stat(join(root, "worker.sock"))).mode & 0o777).toBe(0o660);
     expect(await request("reserve", { ...reserveInput(), path: "/etc/passwd" })).toEqual({ ok: false, error: "INVALID_REQUEST" });
@@ -69,7 +104,7 @@ describe("rpc-no-admin", () => {
   });
   it("exposes reserve, commit and proof-hash status using a fresh ticket for every replay", async () => {
     await ledger.reconcile();
-    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock }); server.listen(join(root, "worker.sock")); await once(server, "listening");
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness }); server.listen(join(root, "worker.sock")); await once(server, "listening");
     const reserved = await request("reserve", reserveInput()); expect(reserved.ok).toBe(true);
     const file = await sealIncoming((async function* () { yield Buffer.from("synthetic"); })(), { root: intakeRoot, maxBytes: 20000, reservationId: reserved.result.id }, publicKey);
     const accepted = await request("commitIntake", commitInput(reserved.result.id, file.bytes)); expect(accepted.ok).toBe(true);
@@ -79,8 +114,8 @@ describe("rpc-no-admin", () => {
   });
   it("binds abort to the session and never deletes an accepted file", async () => {
     await ledger.reconcile();
-    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock }); server.listen(join(root, "worker.sock")); await once(server, "listening");
-    const client = createWorkerRpcClient(join(root, "worker.sock")); const reservation = await client.reserve({ ...reserveInput(), now: utcInstant("2099-10-09T10:00:00.000Z") });
+    server = createWorkerRpc(repo, { socketPath: join(root, "worker.sock"), custody: ledger, sharedGid: process.getgid!(), clock, readiness: testReadiness }); server.listen(join(root, "worker.sock")); await once(server, "listening");
+    const client = createWorkerRpcClient(join(root, "worker.sock")); const reservation = await client.reserve({ ...testAdmission(),  ...reserveInput(), now: utcInstant("2099-10-09T10:00:00.000Z") });
     expect(reservation.expiresAt).toBe("2026-10-10T10:00:00.000Z");
     await writeFile(intakePath(intakeRoot, reservation.id), "synthetic", { mode: 0o600 });
     await expect(client.abortIntake(reservation.id, digest("c".repeat(64)))).rejects.toThrow("INVALID_RESERVATION");
@@ -90,7 +125,7 @@ describe("rpc-no-admin", () => {
     await expect(client.abortIntake(next.id, reserveInput().sessionHash)).rejects.toThrow("INVALID_RESERVATION"); expect((await stat(repo.getCommittedIntake(accepted.id)!.encryptedPayloadPath)).size).toBe(file.bytes);
   });
 });
-function reserveInput(key = "synthetic") { return { sessionHash: digest("b".repeat(64)), idempotencyKey: key, reservedBytes: 20000, now }; }
+function reserveInput(key = "synthetic") { return { ...testAdmission(), sessionHash: digest("b".repeat(64)), idempotencyKey: key, reservedBytes: 20000, now }; }
 function commitInput(id: string, bytes: number): IntakeCommit { return { reservationId: id, encryptedPayloadPath: intakePath(intakeRoot, id), actualBytes: bytes, digest: digest("a".repeat(64)), encryptedName: "ciphertext:synthetic", job: "sales-fulltime", now }; }
 async function admitted(key = "synthetic") {
   const reservation = await ledger.reserve(reserveInput(key));
@@ -188,7 +223,7 @@ describe("durable custody accounting", () => {
   for (const stage of ["partial-before-fsync", "sealed-before-db", "after-db"] as const) it(`recovers after an actual killed worker at ${stage}`, async () => {
     repo.close();
     const paths = { root, intakeRoot, custodyRoot, runtimeRoot, stage, sourceRoot: process.cwd() };
-    const code = `const {join}=require('node:path'); const {writeFile,readFile,open}=require('node:fs/promises'); const {generateKeyPairSync}=require('node:crypto'); const {openRepository}=require(join(p.sourceRoot,'services/applications/src/repository.ts')); const {createCustodyLedger}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {sealIncoming,intakePath}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const ledger=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.custodyRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock:{now:()=>new Date(now)}}); await ledger.reconcile(); const r=await ledger.reserve({sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); if(p.stage==='partial-before-fsync') await writeFile(intakePath(p.intakeRoot,r.id),'partial',{mode:0o600}); else { const {publicKey}=generateKeyPairSync('rsa',{modulusLength:2048}); const file=await sealIncoming((async function*(){yield Buffer.from('synthetic')})(),{root:p.intakeRoot,maxBytes:r.reservedBytes,reservationId:r.id},publicKey); if(p.stage==='after-db') { const privatePath=intakePath(p.custodyRoot,r.id); const fd=await open(privatePath,'wx',0o600); await fd.writeFile(await readFile(file.path)); await fd.sync(); await fd.close(); repo.commitIntake({reservationId:r.id,encryptedPayloadPath:privatePath,actualBytes:file.bytes,digest:'a'.repeat(64),encryptedName:'ciphertext',job:'sales-fulltime',now}); } } process.stdout.write('ready'); setInterval(()=>{},1000); })().catch(e=>{console.error(e);process.exit(1)});`;
+    const code = `const {join}=require('node:path'); const {testAdmission}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {writeFile,readFile,open}=require('node:fs/promises'); const {generateKeyPairSync}=require('node:crypto'); const {openRepository}=require(join(p.sourceRoot,'services/applications/src/repository.ts')); const {createCustodyLedger}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {sealIncoming,intakePath}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const ledger=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.custodyRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock:{now:()=>new Date(now)}}); await ledger.reconcile(); const r=await ledger.reserve({ ...testAdmission(), sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); if(p.stage==='partial-before-fsync') await writeFile(intakePath(p.intakeRoot,r.id),'partial',{mode:0o600}); else { const {publicKey}=generateKeyPairSync('rsa',{modulusLength:2048}); const file=await sealIncoming((async function*(){yield Buffer.from('synthetic')})(),{root:p.intakeRoot,maxBytes:r.reservedBytes,reservationId:r.id},publicKey); if(p.stage==='after-db') { const privatePath=intakePath(p.custodyRoot,r.id); const fd=await open(privatePath,'wx',0o600); await fd.writeFile(await readFile(file.path)); await fd.sync(); await fd.close(); repo.commitIntake({reservationId:r.id,encryptedPayloadPath:privatePath,actualBytes:file.bytes,digest:'a'.repeat(64),encryptedName:'ciphertext',job:'sales-fulltime',now}); } } process.stdout.write('ready'); setInterval(()=>{},1000); })().catch(e=>{console.error(e);process.exit(1)});`;
     const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(paths)};${code.replace("services/applications/src/custody.ts","services/applications/tests/fixtures/ingress-authority.ts")}`], { stdio: ["ignore", "pipe", "pipe"] });
     try {
       await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("child failed before crash boundary"); })]);
@@ -232,7 +267,7 @@ describe("durable custody accounting", () => {
   it("counts physical orphan bytes after ticket expiry and cannot evade 250 MiB via registry restart", async () => {
     await ledger.reconcile();
     for (let i = 0; i < 3; i++) {
-      const reservation = await ledger.reserve({ ...reserveInput(String(i)), reservedBytes: 28 * 1024 * 1024 });
+      const reservation = await ledger.reserve({ ...testAdmission(),  ...reserveInput(String(i)), reservedBytes: 28 * 1024 * 1024 });
       const fd = await open(intakePath(intakeRoot, reservation.id), "wx", 0o600); await fd.writeFile(Buffer.alloc(14 * 1024 * 1024,117)); await fd.sync(); await fd.close();
       const journal=JSON.parse(await readFile(join(custodyRoot,`${reservation.id}.journal`),"utf8"));
       await testIngressAuthority(intakeRoot).quiesce(journal.lease);
@@ -242,7 +277,7 @@ describe("durable custody accounting", () => {
       await ledger.reconcile();
     }
     time = new Date("2026-10-10T10:00:00.000Z");
-    await expect(ledger.reserve({ ...reserveInput("overflow"), reservedBytes: 28 * 1024 * 1024 })).rejects.toThrow("CAPACITY_EXCEEDED");
+    await expect(ledger.reserve({ ...testAdmission(),  ...reserveInput("overflow"), reservedBytes: 28 * 1024 * 1024 })).rejects.toThrow("CAPACITY_EXCEEDED");
     await expect(ledger.reserve(reserveInput("small-after-capacity-rejection"))).resolves.toMatchObject({reservedBytes:20000});
   });
   it("fails readiness when cleanup encounters replaced symlink custody", async () => {
