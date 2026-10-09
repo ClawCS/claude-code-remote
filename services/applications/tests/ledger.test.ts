@@ -101,6 +101,24 @@ describe("one bounded worker journal owner", () => {
     expect((await h.service.continueReplay()).kind).toBe("observed");
     expect(yielded).toBe(1002); expect(h.service.observation()?.sequence).toBe("1002");
   });
+  it.each(["refresh", "append"] as const)("preserves the backlog continuation when a queued %s fails preflight", async command => {
+    let yielded = 0;
+    const h = harness(s => ({ ...s.port, async *readSince(cursor) { for await (const entry of s.port.readSince(cursor)) { yielded++; yield entry; } } }));
+    for (let i = 1; i <= 1001; i++) h.commit(fence(i.toString(16).padStart(32, "0")));
+    const first = h.service.refresh("startup");
+    const queued = (command === "refresh" ? h.service.refresh("refresh") : h.service.append(fence())).catch(error => error.message);
+    const prefix = await first;
+    expect(prefix).toMatchObject({ kind: "continuation", next: "continue-replay", checkpoint: { sequence: "1000" } });
+    expect(await queued).toBe("JOURNAL_UNKNOWN");
+    expect(yielded).toBe(1000); expect(h.service.observation()).toBeNull();
+    expect(h.calls.filter(call => call.method === "append")).toHaveLength(1);
+    const completion = await h.service.continueReplay();
+    expect(completion).toMatchObject({ kind: "observed", checkpoint: { sequence: "1002" } });
+    expect(yielded).toBe(1002);
+    expect(h.calls.filter(call => call.method === "readSince").map(call => JSON.parse(call.value as string)[3])).toEqual(["0", "1000"]);
+    expect(h.calls.filter(call => call.method === "append")).toHaveLength(1);
+    expect(h.service.observation()?.sequence).toBe("1002");
+  });
   it("rejects missing/changed trust and clock rollback after an await without forgetting pending ownership", async () => {
     const gate = deferred<DurableReceipt>(); let pause = false;
     const h = harness(s => ({ ...s.port, append: event => pause ? gate.promise : s.port.append(event) }));

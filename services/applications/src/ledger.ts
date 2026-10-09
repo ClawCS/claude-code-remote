@@ -19,6 +19,7 @@ interface Work {
   phase: "waiting" | "append" | "replay";
   deadline: number;
   expired: boolean;
+  ownsPending: boolean;
   timer: ReturnType<typeof setTimeout>;
   run(): Promise<void>;
   expire(): void;
@@ -92,13 +93,13 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
     return new Promise<T>((resolve, reject) => {
       let delivered = false;
       const work: Work = {
-        admitted, deadline: admitted + 15_000, phase: "waiting", expired: false, timer: undefined as unknown as ReturnType<typeof setTimeout>,
+        admitted, deadline: admitted + 15_000, phase: "waiting", expired: false, ownsPending: false, timer: undefined as unknown as ReturnType<typeof setTimeout>,
         expire() {
           if (work.expired) return;
           work.expired = true; delivered = true;
           if (work.phase === "waiting") { const index = waiting.indexOf(work); if (index >= 0) waiting.splice(index, 1); reject(failure("QUEUE_EXPIRED")); }
           else if (work.phase === "replay" && progressResult) { observedAt = null; resolve(continuation() as T); }
-          else { unknown = pending !== null; observedAt = null; reject(failure(unknown ? "UNKNOWN" : "UNAVAILABLE")); }
+          else { if (work.ownsPending && pending) unknown = true; observedAt = null; reject(failure(unknown ? "UNKNOWN" : "UNAVAILABLE")); }
         },
         async run() {
           let result: T | undefined, error: unknown;
@@ -107,8 +108,10 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
             if (replayOnly) replayPhase(work);
             result = await action(work);
           } catch (caught) {
-            if (!work.expired && pending) { unknown = true; observedAt = null; }
-            error = pending ? failure("UNKNOWN") : caught instanceof Error ? caught : failure("UNAVAILABLE");
+            // A queued preflight rejection does not own the previous command's
+            // retained replay and must not invalidate its verified continuation.
+            if (!work.expired && work.ownsPending && pending) { unknown = true; observedAt = null; }
+            error = work.ownsPending && pending ? failure("UNKNOWN") : caught instanceof Error ? caught : failure("UNAVAILABLE");
           }
           // All underlying awaits (including iterator cleanup) settled. Release
           // before delivering normal completion, never on caller timeout alone.
@@ -144,6 +147,7 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
   async function replay(work: Work): Promise<JournalProgress> {
     const state = pending;
     if (!state?.target) throw failure("UNAVAILABLE");
+    work.ownsPending = true;
     const target = verifyJournalReceipt(state.targetEvent ?? state.barrier ?? state.event, state.target, context);
     const member = state.receipt ? verifyJournalReceipt(state.event, state.receipt, context) : null;
     if (member && state.replay.sequence === member.sequence && state.replay.hash === member.hash) state.memberSeen = true;
@@ -197,7 +201,7 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
       }
       if (!observation()) throw failure(pending || unknown ? "UNKNOWN" : "UNAVAILABLE");
       const start = current(), priorObservation = observedAt; timeBinding(value, start.wall, start.wall);
-      pending = { event: value, replay: checkpoint, memberSeen: false, challengeStarted: start.mono }; observedAt = null;
+      pending = { event: value, replay: checkpoint, memberSeen: false, challengeStarted: start.mono }; work.ownsPending = true; observedAt = null;
       const receipt = await appendExact(value, work, r => { pending!.receipt = r; pending!.target = r; });
       const entry = verifyJournalReceipt(value, receipt, context);
       if (BigInt(entry.sequence) <= BigInt(checkpoint.sequence)) {
@@ -218,7 +222,7 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
     return enqueue(async work => {
       if (pending || unknown) throw failure("UNKNOWN");
       const start = current(), event = freshBarrier(purpose);
-      pending = { event, replay: checkpoint, memberSeen: false, challengeStarted: start.mono }; observedAt = null;
+      pending = { event, replay: checkpoint, memberSeen: false, challengeStarted: start.mono }; work.ownsPending = true; observedAt = null;
       const receipt = await appendExact(event, work, r => { pending!.receipt = r; pending!.target = r; });
       timeBinding(event, start.wall, current().wall); verifyJournalReceipt(event, receipt, context);
       replayPhase(work); return replay(work);
@@ -233,6 +237,7 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
     } catch (error) { return Promise.reject(error); }
     return enqueue(async work => {
       pending ??= { event: value, replay: anchor, memberSeen: false };
+      work.ownsPending = true;
       const state = pending; observedAt = null;
       if (!state.receipt) await appendExact(state.event, work, r => { state.receipt = r; });
       // The old exact receipt never renews freshness. Reconcile through a new
