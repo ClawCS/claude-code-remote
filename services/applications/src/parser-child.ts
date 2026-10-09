@@ -12,6 +12,9 @@ async function inspect(file: SnapshotFile, qpdfPath: string): Promise<ParserResu
   if (!format) throw new FileCheckError("IDENTITY_MISMATCH");
   if (format === "pdf") {
     const command = (args: string[], maxBuffer: number, expected = 0) => {
+      // spawnSync's command-wide maxBuffer can exceed the diagnostic acceptance
+      // limit (JSON/decoded-output commands). The 64-KiB stderr check below is
+      // post-buffer acceptance, NOT an independent early stderr-buffer limit.
       const result = spawnSync(qpdfPath, args, { env: { NODE_ENV: "test", TZ: "UTC", LANG: "C", LC_ALL: "C", PATH: "/usr/bin:/bin" }, cwd: "/", maxBuffer, encoding: "buffer", stdio: ["ignore", "pipe", "pipe"] });
       if (result.error) throw new FileCheckError("code" in result.error && result.error.code === "ENOBUFS" ? "PARSER_LIMIT" : "PARSER_UNAVAILABLE");
       if (result.stderr.length > PDF_LIMITS.diagnostics) throw new FileCheckError("PARSER_LIMIT");

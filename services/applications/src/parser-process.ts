@@ -1,7 +1,8 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
-import type { ParserPort, ParserResult, ValidationFailure } from "./types";
+import { decodeParserResult } from "./file-validation";
+import type { ParserPort, ParserResult } from "./types";
 
 export const PARSER_TIMEOUT_MS = 30_000;
 export const PINNED_QPDF_VERSION = "12.4.2";
@@ -24,7 +25,6 @@ export async function runLocalDiagnosticProcess(executable: string, args: string
     child.on("close", code => { clearTimeout(timer); resolve({ code, output: failure ? Buffer.alloc(0) : Buffer.concat(chunks), ...(failure ? { failure } : {}) }); });
   });
 }
-const failures: ValidationFailure[] = ["IDENTITY_MISMATCH", "DIGEST_MISMATCH", "INVALID_FILE", "FILE_LIMIT", "ACTIVE_PDF", "ENCRYPTED_PDF", "UNSUPPORTED_PDF", "PAGE_LIMIT", "IMAGE_LIMIT", "PARSER_TIMEOUT", "PARSER_LIMIT", "PARSER_UNAVAILABLE", "SANDBOX_UNAVAILABLE"];
 export function createLocalDiagnosticParser(qpdfPath: string, deadlineMs = PARSER_TIMEOUT_MS): ParserPort {
   if (process.env.NODE_ENV !== "test" || !isAbsolute(qpdfPath) || !Number.isFinite(deadlineMs) || deadlineMs < 1 || deadlineMs > PARSER_TIMEOUT_MS) throw new Error("LOCAL_DIAGNOSTIC_ONLY");
   return {
@@ -38,12 +38,8 @@ export function createLocalDiagnosticParser(qpdfPath: string, deadlineMs = PARSE
       if (result.failure) return { kind: "blocked", reason: result.failure };
       if (result.code !== 0) return { kind: "blocked", reason: "INVALID_FILE" };
       try {
-        const value: unknown = JSON.parse(result.output.toString("utf8"));
-        if (!value || typeof value !== "object") throw new Error();
-        const dto = value as Record<string, unknown>;
-        if (Object.keys(dto).length !== 2) throw new Error();
-        if (dto.kind === "parsed" && ["pdf", "jpeg", "png"].includes(String(dto.format))) return dto as ParserResult;
-        if (dto.kind === "blocked" && failures.includes(dto.reason as ValidationFailure)) return dto as ParserResult;
+        const resultDto = decodeParserResult(JSON.parse(result.output.toString("utf8")));
+        if (resultDto) return resultDto;
       } catch { /* No document diagnostics cross the process boundary. */ }
       return { kind: "blocked", reason: "INVALID_FILE" };
     },

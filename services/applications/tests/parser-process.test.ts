@@ -3,10 +3,13 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createLocalDiagnosticParser, parserReadiness, runLocalDiagnosticProcess } from "../src/parser-process";
-import { fixture, staticPdf } from "./fixtures/synthetic";
+import { fixture, staticPdf, requireQpdfTestExecutable } from "./fixtures/synthetic";
 
 afterEach(() => vi.unstubAllEnvs());
 describe("local supervisor: deadlines and output limits, not Linux sandbox proof", () => {
+  it.each(["", "relative/qpdf", "/missing/synthetic-qpdf"])("requires an explicit usable QPDF fixture executable: %s", path => {
+    expect(() => requireQpdfTestExecutable(path)).toThrow("QPDF_TEST_PREREQUISITE");
+  });
   it("transports private parser metadata on stdin, not argv or environment", async () => {
     const code = "let bytes=0;process.stdin.on('data',b=>bytes+=b.length);process.stdin.on('end',()=>process.stdout.write(JSON.stringify({bytes,args:process.argv.slice(1)})));";
     const result = await runLocalDiagnosticProcess(process.execPath, ["-e", code], 1000, 4096, Buffer.from("synthetic-private-name"));

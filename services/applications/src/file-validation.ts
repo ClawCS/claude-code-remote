@@ -3,7 +3,7 @@ import { constants } from "node:fs";
 import { open } from "node:fs/promises";
 import { extname, isAbsolute, resolve } from "node:path";
 import { readBoundedFile } from "./crypto";
-import type { ParserPort, SnapshotFile, ValidatedFile, ValidationFailure } from "./types";
+import { VALIDATION_FAILURES, type ParserPort, type ParserResult, type SnapshotFile, type ValidatedFile, type ValidationFailure } from "./types";
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024;
 export class FileCheckError extends Error { constructor(readonly reason: ValidationFailure) { super(reason); } }
@@ -24,20 +24,41 @@ export function identifyFile(bytes: Buffer): "pdf" | "jpeg" | "png" | undefined 
   if (bytes.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff]))) return "jpeg";
   if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) return "png";
 }
+export function decodeParserResult(value: unknown): ParserResult | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return;
+  const prototype: unknown = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) return;
+  const keys = Reflect.ownKeys(value), properties = Object.getOwnPropertyDescriptors(value);
+  if (keys.length !== 2 || keys.some(key => typeof key !== "string" || !("value" in properties[key]))) return;
+  const kind: unknown = properties.kind?.value;
+  if (kind === "parsed" && keys.includes("format")) {
+    const format: unknown = properties.format.value;
+    if (format === "pdf" || format === "jpeg" || format === "png") return { kind, format };
+  }
+  if (kind === "blocked" && keys.includes("reason")) {
+    const reason: unknown = properties.reason.value;
+    if (typeof reason === "string" && VALIDATION_FAILURES.includes(reason as ValidationFailure)) return { kind, reason: reason as ValidationFailure };
+  }
+}
 export function createFileValidator(parser: ParserPort) {
   return async (file: SnapshotFile): Promise<ValidatedFile> => {
-    if (parser.assurance === "unavailable") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
-    if (parser.assurance === "local-test" && process.env.NODE_ENV !== "test") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
     try {
+      const assurance = parser?.assurance;
+      if (assurance !== "local-test" && assurance !== "linux-sandbox") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
+      if (assurance === "local-test" && process.env.NODE_ENV !== "test") return { kind: "blocked", reason: "SANDBOX_UNAVAILABLE" };
       const bytes = await readSnapshotFile(file), format = identifyFile(bytes);
       const suffixes = { pdf: [".pdf"], jpeg: [".jpg", ".jpeg"], png: [".png"] };
       const media = { pdf: "application/pdf", jpeg: "image/jpeg", png: "image/png" };
       if (!format || !suffixes[format].includes(extname(file.name).toLowerCase()) || file.mediaType !== media[format]) return { kind: "blocked", reason: "IDENTITY_MISMATCH" };
-      const result = await parser.parse(file);
+      const result = decodeParserResult(await parser.parse(file));
       await readSnapshotFile(file);
+      if (!result) return { kind: "blocked", reason: "INVALID_FILE" };
       if (result.kind === "blocked") return result;
       if (result.format !== format) return { kind: "blocked", reason: "IDENTITY_MISMATCH" };
-      return parser.assurance === "local-test" ? { kind: "diagnostic", file, format, productionReady: false } : { kind: "valid", file, format };
+      // Temporary F2 activation barrier: OS isolation cannot resolve QPDF/viewer
+      // disagreement on discarded malformed definitions. Controller ruling pending.
+      if (format === "pdf" && assurance === "linux-sandbox") return { kind: "blocked", reason: "PDF_AMBIGUITY_UNRESOLVED" };
+      return assurance === "local-test" ? { kind: "diagnostic", file, format, productionReady: false } : { kind: "valid", file, format };
     } catch (error) { return { kind: "blocked", reason: error instanceof FileCheckError ? error.reason : "INVALID_FILE" }; }
   };
 }

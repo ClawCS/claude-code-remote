@@ -7,7 +7,8 @@ import sharp from "sharp";
 import { deflateSync } from "node:zlib";
 import { createLocalDiagnosticParser } from "../src/parser-process";
 import { createFileValidator, validateFile } from "../src/file-validation";
-import { fixture, staticPdf, pdf, streamObject, incrementalPdf, duplicateDefinitionPdf } from "./fixtures/synthetic";
+import type { ParserPort } from "../src/types";
+import { fixture, staticPdf, pdf, streamObject, incrementalPdf, duplicateDefinitionPdf, requireQpdfTestExecutable } from "./fixtures/synthetic";
 
 let root: string;
 beforeEach(async () => { root = await mkdtemp(join(tmpdir(), "application-validation-")); });
@@ -34,8 +35,47 @@ describe("snapshot identity", () => {
     expect(await mutate(again)).toEqual({ kind: "blocked", reason: "DIGEST_MISMATCH" });
   });
 });
+describe("runtime parser boundary", () => {
+  it.each([
+    { assurance: undefined, result: { kind: "parsed", format: "pdf" }, reason: "SANDBOX_UNAVAILABLE" },
+    { assurance: "unsupported", result: { kind: "parsed", format: "pdf" }, reason: "SANDBOX_UNAVAILABLE" },
+    { assurance: "linux-sandbox", result: { kind: "unavailable", format: "pdf" }, reason: "INVALID_FILE" },
+  ])("fails closed for review probe $assurance / $result.kind", async ({ assurance, result, reason }) => {
+    const parser = { ...(assurance === undefined ? {} : { assurance }), async parse() { return result; } } as unknown as ParserPort;
+    expect(await createFileValidator(parser)(await fixture(root, staticPdf()))).toEqual({ kind: "blocked", reason });
+  });
+  it.each([
+    null, undefined, "parsed", [], {}, { kind: "parsed" }, { format: "pdf" },
+    { kind: "parsed", format: "pdf", extra: true }, { kind: "parsed", format: ["pdf"] },
+    { kind: "parsed", format: "svg" }, { kind: "blocked" },
+    { kind: "blocked", reason: "UNRECOGNIZED" }, { kind: "blocked", reason: ["ACTIVE_PDF"] },
+    { kind: "blocked", reason: "ACTIVE_PDF", format: "pdf" },
+    Object.assign([], { kind: "parsed", format: "pdf" }),
+    Object.create({ kind: "parsed", format: "pdf" }),
+    Object.defineProperty({ format: "pdf" }, "kind", { get: () => "parsed", enumerable: true }),
+  ].map(result => ({ result })))("rejects malformed parser DTO $result", async ({ result }) => {
+    const parser = { assurance: "linux-sandbox", async parse() { return result; } } as unknown as ParserPort;
+    expect(await createFileValidator(parser)(await fixture(root, staticPdf()))).toEqual({ kind: "blocked", reason: "INVALID_FILE" });
+  });
+  it("preserves an exact supported blocked result", async () => {
+    const parser: ParserPort = { assurance: "linux-sandbox", async parse() { return { kind: "blocked", reason: "ACTIVE_PDF" }; } };
+    expect(await createFileValidator(parser)(await fixture(root, staticPdf()))).toEqual({ kind: "blocked", reason: "ACTIVE_PDF" });
+  });
+  it("keeps production PDFs blocked even when a future adapter claims Linux sandbox assurance", async () => {
+    const parser: ParserPort = { assurance: "linux-sandbox", async parse() { return { kind: "parsed", format: "pdf" }; } };
+    expect(await createFileValidator(parser)(await fixture(root, staticPdf()))).toEqual({ kind: "blocked", reason: "PDF_AMBIGUITY_UNRESOLVED" });
+  });
+  it("does not mistake the PDF ambiguity barrier for image qualification", async () => {
+    const bytes = await sharp({ create: { width: 1, height: 1, channels: 3, background: "white" } }).png().toBuffer();
+    const file = await fixture(root, bytes, "synthetic.png", "image/png");
+    const parser: ParserPort = { assurance: "linux-sandbox", async parse() { return { kind: "parsed", format: "png" }; } };
+    // This exercises the contract with a fake port; it does not qualify a real sandbox.
+    expect(await createFileValidator(parser)(file)).toEqual({ kind: "valid", file, format: "png" });
+  });
+});
 describe("real pinned QPDF and Sharp, local diagnostic only", () => {
-  const validate = createFileValidator(createLocalDiagnosticParser("/opt/homebrew/opt/qpdf/bin/qpdf"));
+  const qpdfExecutable = requireQpdfTestExecutable();
+  const validate = createFileValidator(createLocalDiagnosticParser(qpdfExecutable));
   it("accepts a static original PDF without changing its bytes", async () => { const file = await fixture(root, staticPdf()); expect(await validate(file)).toEqual({ kind: "diagnostic", file, format: "pdf", productionReady: false }); });
   it.each(["jpeg", "png"] as const)("fully decodes a synthetic %s", async format => {
     const bytes = await sharp({ create: { width: 2, height: 3, channels: 3, background: "white" } }).toFormat(format).toBuffer();
@@ -57,13 +97,13 @@ describe("real pinned QPDF and Sharp, local diagnostic only", () => {
   });
   it("rejects an empty-user-password encrypted PDF", async () => {
     const original = await fixture(root, staticPdf(), "original.pdf"), path = join(root, "encrypted.pdf");
-    execFileSync("/opt/homebrew/opt/qpdf/bin/qpdf", [original.path, "--encrypt", "", "synthetic-owner", "256", "--", path], { stdio: "ignore" });
+    execFileSync(qpdfExecutable, [original.path, "--encrypt", "", "synthetic-owner", "256", "--", path], { stdio: "ignore" });
     const bytes = await import("node:fs/promises").then(fs => fs.readFile(path));
     expect(await validate(await fixture(root, bytes))).toEqual({ kind: "blocked", reason: "ENCRYPTED_PDF" });
   });
   it("supports modern xref/object streams using the original selected view", async () => {
     const source = await fixture(root, staticPdf(), "source.pdf"), path = join(root, "modern.pdf");
-    execFileSync("/opt/homebrew/opt/qpdf/bin/qpdf", ["--object-streams=generate", source.path, path], { stdio: "ignore" });
+    execFileSync(qpdfExecutable, ["--object-streams=generate", source.path, path], { stdio: "ignore" });
     const bytes = await import("node:fs/promises").then(fs => fs.readFile(path));
     expect((await validate(await fixture(root, bytes))).kind).toBe("diagnostic");
   });

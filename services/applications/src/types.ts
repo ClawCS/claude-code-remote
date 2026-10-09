@@ -60,7 +60,8 @@ export interface WorkerKeys { privateKey: KeyObject; publicKey: KeyObject; intak
 export interface PrivateSnapshot { id: ApplicationId; input: Readonly<ApplicationInput>; files: readonly { name: string; mediaType: string; digest: Digest; bytes: number }[]; digest: Digest; encryptedPayloadPath: string; bytes: number }
 export interface ProcessingSnapshot extends Omit<PrivateSnapshot, "files"> { files: readonly { name: string; mediaType: string; digest: Digest; bytes: number; path: string }[] }
 export type SnapshotFile = ProcessingSnapshot["files"][number];
-export type ValidationFailure = "IDENTITY_MISMATCH" | "DIGEST_MISMATCH" | "INVALID_FILE" | "FILE_LIMIT" | "ACTIVE_PDF" | "ENCRYPTED_PDF" | "UNSUPPORTED_PDF" | "PAGE_LIMIT" | "IMAGE_LIMIT" | "PARSER_TIMEOUT" | "PARSER_LIMIT" | "PARSER_UNAVAILABLE" | "SANDBOX_UNAVAILABLE";
+export const VALIDATION_FAILURES = ["IDENTITY_MISMATCH", "DIGEST_MISMATCH", "INVALID_FILE", "FILE_LIMIT", "ACTIVE_PDF", "ENCRYPTED_PDF", "UNSUPPORTED_PDF", "PAGE_LIMIT", "IMAGE_LIMIT", "PARSER_TIMEOUT", "PARSER_LIMIT", "PARSER_UNAVAILABLE", "SANDBOX_UNAVAILABLE", "PDF_AMBIGUITY_UNRESOLVED"] as const;
+export type ValidationFailure = typeof VALIDATION_FAILURES[number];
 export type ParserResult = { kind: "parsed"; format: "pdf" | "jpeg" | "png" } | { kind: "blocked"; reason: ValidationFailure };
 export interface ParserPort {
   readonly assurance: "unavailable" | "local-test" | "linux-sandbox";

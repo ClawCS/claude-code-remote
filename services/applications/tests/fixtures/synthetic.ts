@@ -1,7 +1,15 @@
 import { createHash } from "node:crypto";
+import { accessSync, constants, statSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { isAbsolute, join } from "node:path";
 import { digest, applicationId, type ProcessingSnapshot, type SnapshotFile } from "../../src/types";
+export function requireQpdfTestExecutable(value = process.env.APPLICATIONS_TEST_QPDF): string {
+  try {
+    if (!value || !isAbsolute(value) || !statSync(value).isFile()) throw new Error();
+    accessSync(value, constants.X_OK);
+    return value;
+  } catch { throw new Error("QPDF_TEST_PREREQUISITE: set APPLICATIONS_TEST_QPDF to an absolute executable path for pinned QPDF 12.4.2; no fixtures are skipped"); }
+}
 
 // Independent tiny PDF fixture writer. It creates bytes for tests; never validates uploads.
 export function pdf(objects: string[], trailer = "/Root 1 0 R", appended = ""): Buffer {
