@@ -5,8 +5,20 @@ import { chmodSync, mkdtempSync, realpathSync, rmSync, symlinkSync } from "node:
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const env = { NODE_ENV: "production", APPLICATIONS_MODE: "enabled", APPLICATIONS_ORIGIN: "https://trinkgut-jammers.de", APPLICATIONS_INTAKE_ROOT: "/srv/trinkgut-intake", APPLICATIONS_WORKER_ROOT: "/srv/trinkgut-worker", APPLICATIONS_SOCKET_PATH: "/run/trinkgut-applications/worker.sock" } satisfies NodeJS.ProcessEnv;
+const env = { NODE_ENV: "production", APPLICATIONS_MODE: "enabled", APPLICATIONS_ORIGIN: "https://trinkgut-jammers.de", APPLICATIONS_INTAKE_ROOT: "/srv/trinkgut-intake", APPLICATIONS_WORKER_ROOT: "/srv/trinkgut-worker", APPLICATIONS_SOCKET_PATH: "/run/trinkgut-applications/worker.sock", APPLICATIONS_INTAKE_UID: "1001", APPLICATIONS_WORKER_UID: "1002", APPLICATIONS_SHARED_GID: "1003", APPLICATIONS_RUNTIME_ROOT: "/run/trinkgut-applications-worker" } satisfies NodeJS.ProcessEnv;
 describe("application configuration", () => {
+  it("requires distinct explicitly configured production service identities", () => {
+    expect(() => readConfig({ ...env, APPLICATIONS_INTAKE_UID: undefined })).toThrow("INVALID_STORAGE_IDENTITY");
+    expect(() => readConfig({ ...env, APPLICATIONS_WORKER_UID: "1001" })).toThrow("INVALID_STORAGE_IDENTITY");
+    expect(() => readConfig({ ...env, APPLICATIONS_SHARED_GID: "-1" })).toThrow("INVALID_STORAGE_IDENTITY");
+    expect(readConfig(env)).toMatchObject({ intake: { ownerUid: 1001, sharedGid: 1003 }, worker: { ownerUid: 1002, sharedGid: 1003, runtimeRoot: "/run/trinkgut-applications-worker" } });
+  });
+  it("accepts only exact shared incoming permissions and worker-private storage", () => {
+    const dir = mkdtempSync(join(realpathSync(tmpdir()), "application-config-shared-"));
+    const local = { ...env, NODE_ENV: "test", APPLICATIONS_ORIGIN: "http://localhost:3105", APPLICATIONS_INTAKE_ROOT: dir, APPLICATIONS_INTAKE_UID: String(process.getuid!()), APPLICATIONS_WORKER_UID: String(process.getuid!()), APPLICATIONS_SHARED_GID: String(process.getgid!()) } satisfies NodeJS.ProcessEnv;
+    try { chmodSync(dir, 0o2770); expect(() => readConfig(local)).not.toThrow(); chmodSync(dir, 0o2777); expect(() => readConfig(local)).toThrow("UNSAFE_PATH"); }
+    finally { rmSync(dir, { recursive: true, force: true }); }
+  });
   it("rejects an enabled service without a real HTTPS origin", () => {
     for (const origin of [undefined, "", "https://example.com", "http://trinkgut-jammers.de", "https://localhost", "https://trinkgut-jammers.de/path"]) expect(() => readConfig({ ...env, APPLICATIONS_ORIGIN: origin })).toThrow("INVALID_ORIGIN");
   });

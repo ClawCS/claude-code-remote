@@ -23,6 +23,12 @@ function commit(key: string, bytes = 1): IntakeCommit {
 }
 
 describe("repository-idempotency", () => {
+  it("exposes a minimal authoritative retained manifest only to worker consumers", () => {
+    const input = commit("manifest", 12); const accepted = repo.commitIntake(input);
+    const wanted = { id: accepted.id, encryptedPayloadPath: input.encryptedPayloadPath, actualBytes: 12, digest, acceptedAt: now };
+    expect(repo.getCommittedIntake(accepted.id)).toEqual(wanted);
+    expect(repo.listRetainedIntakes()).toEqual([wanted]);
+  });
   it("returns one stable reference and queues only one intake for identical retries", () => {
     const input = commit("same"); const first = repo.commitIntake(input); const second = repo.commitIntake(input);
     expect(second.reference).toBe(first.reference);

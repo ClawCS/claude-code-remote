@@ -1,4 +1,5 @@
-import type { JobId, PublicStatus } from "../../../lib/applications-contract";
+import type { ApplicationInput, JobId, PublicStatus } from "../../../lib/applications-contract";
+import type { KeyObject } from "node:crypto";
 export type ApplicationId = string & { readonly __applicationId: unique symbol };
 export type StaffId = string & { readonly __staffId: unique symbol };
 export type DateOnly = string & { readonly __dateOnly: unique symbol };
@@ -48,5 +49,27 @@ export interface ApplicationRepository {
   getPublicStatus(proofHash: Digest, now: Instant): PublicStatus | null;
   withCaseLock<T>(id: ApplicationId, action: (row: Readonly<CaseRecord>) => Promise<T>): Promise<T>;
   transitionDelivery(id: ApplicationId, expectedVersion: number, next: DeliveryTransition): Promise<CaseRecord>;
+  getCommittedIntake(id: ApplicationId): CommittedIntake | null;
+  listRetainedIntakes(): readonly CommittedIntake[];
   close(): void;
+}
+export interface IncomingTarget { root: string; maxBytes: number; reservationId?: string; sharedGid?: number }
+export interface SealedFile { path: string; bytes: number; wireDigest: Digest }
+export interface CommittedIntake { id: ApplicationId; encryptedPayloadPath: string; actualBytes: number; digest: Digest; acceptedAt: Instant }
+export interface WorkerKeys { privateKey: KeyObject; publicKey: KeyObject; intakeRoot: string; privateRoot: string; runtimeRoot: string; custody: CustodyLedger }
+export interface PrivateSnapshot { id: ApplicationId; input: Readonly<ApplicationInput>; files: readonly { name: string; mediaType: string; digest: Digest; bytes: number }[]; digest: Digest; encryptedPayloadPath: string; bytes: number }
+export interface ProcessingSnapshot extends Omit<PrivateSnapshot, "files"> { files: readonly { name: string; mediaType: string; digest: Digest; bytes: number; path: string }[] }
+export interface PayloadFile { name: string; mediaType: "application/pdf" | "image/jpeg" | "image/png"; content: string }
+export interface IntakePayload { version: 1; input: ApplicationInput; files: PayloadFile[] }
+export interface CustodyConfig { intakeRoot: string; custodyRoot: string; runtimeRoot: string; intakeUid: number; sharedGid: number; clock: Clock }
+export interface RpcConfig { socketPath: string; custody: CustodyLedger; sharedGid: number; clock: Clock }
+export interface CustodyInventory { physicalBytes: number; reservedHeadroom: number; orphans: readonly { path: string; cleanupAfter: Instant }[] }
+export interface CustodyLedger {
+  reconcile(): Promise<CustodyInventory>;
+  reserve(input: ReservationInput): Promise<Reservation>;
+  commitIntake(input: IntakeCommit): Promise<Acceptance>;
+  abortIntake(id: string, sessionHash: Digest): Promise<void>;
+  beginProcessing(snapshot: PrivateSnapshot, bytes: number): Promise<string>;
+  finishProcessing(path: string): Promise<void>;
+  cleanupOrphans(): Promise<CustodyInventory>;
 }
