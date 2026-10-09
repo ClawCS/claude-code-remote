@@ -25,8 +25,11 @@ Sämtliche neuen Implementierungscommits bleiben lokal und ungepusht, solange di
 1. Transaktionales privates Bewerbungsregister, Kapazitätsgrenzen und wiederholbare Annahme ohne doppelte Vorgänge. Task1 abgeschlossen.
 2. Verschlüsselter Dateieingang, getrennte Worker-Kopie, dauerhafte Zuordnung und Wiederanlaufprüfung. Zwei im Review gefundene Fehler bei Abbruch/Dateieigentum wurden behoben und separat nachgeprüft. Task2 abgeschlossen.
 3. Dateiidentität, begrenzte lokale PDF-/Bilddiagnostik und Scanner-Schnittstelle implementiert. **Task3 noch offen:** Die aktuelle PDF-Interpretation genügt nicht für unveränderte Weiterleitung aller zugelassenen PDFs. Die Produktivfreigabe dafür ist ausdrücklich blockiert.
+4. **Task4A lokal abgeschlossen und unabhängig geprüft:** getrennte Annahmekonfiguration, signierte Sitzungsgrundlagen, dauerhaft begrenzte Annahmeversuche, verschlüsselter Name und unveränderliche Kennzeichnung synthetischer Testvorgänge. Commit `0906da8`: vollständiger Lauf mit 100 Dateien / 1.815 Tests, Backend-Build, TypeScript und Lint erfolgreich. Das Review fand eine mögliche gegenseitige Blockade zwischen Wiederanlaufprüfung und Artefaktverarbeitung sowie einen falsch platzierten öffentlichen Antworttyp. Beides ist in `b7fb73b` korrigiert; 139 abdeckende Tests und anschließend 29 RPC-Tests sowie Build, TypeScript und Lint bestanden. Die unabhängige Nachprüfung bestätigte beide Korrekturen. Der vollständige 1.815-Test-Lauf gehört zum Stand vor dieser Korrektur. Die öffentliche HTTP-Annahme (Task4B) wird gesondert umgesetzt und geprüft.
 
 Die vollständige öffentliche HTTP-Annahme, Mailzustellung/-abgleich, Mitarbeiterverwaltung, Fristen-/Postfachlöschung, Formularintegration und Linux-Betriebsqualifikation sind weitere offene Aufgaben des genehmigten Plans. Es wurde keine echte Bewerbung, Nachricht oder Zahlung erzeugt und keine Postfachnachricht gelesen oder gelöscht.
+
+**Task4B lokal implementiert, unabhängige Abnahme läuft:** `b225c02` enthält die begrenzte HTTP-Annahme, signierte Sitzung/Formnachweise und privaten Statusabruf. Vollständiger Lauf: 103 Dateien / 1.881 Tests, zusätzlich Build, TypeScript und Lint erfolgreich. Ein realer HTTP-Test zeigte, dass ein geänderter Wiederholungsversuch nach korrektem Konfliktfehler auch weitere Bewerbungen blockierte. `835cbf1` korrigiert dies ausschließlich nach nachgewiesener, zuständigkeitsgebundener Bereinigung; wirkliche Speicher-/Freigabefehler bleiben sperrend. Danach bestanden 111 abdeckende Tests sowie Build, TypeScript und Lint. Der vollständige 1.881-Test-Lauf gilt für den Stand vor dieser Korrektur. Eine unabhängige Prüfung betrachtet beide Commits gemeinsam; daraus wird noch keine Abnahme oder Live-Freigabe abgeleitet. Verlorene Reservierungsantworten erfordern weiterhin den tatsächlichen Wiederanlauf-/Lebensdauernachweis des späteren Workerbetriebs; kein ungeprüftes Freigeben belegter Dateien.
 
 ## Sicherheitsbefund und Korrekturen
 
@@ -86,7 +89,7 @@ Der erlaubte gezielte Upgrade zog notwendige Abhängigkeiten nach: jpeg-turbo3.2
 
 ## Fortsetzung
 
-1. Die lokal unabhängig geprüften R1–R3-Bausteine nicht erneut implementieren. Die vorbereiteten Task4A/4B-Verträge/HTTP-Annahme und die restlichen Planaufgaben fortsetzen; Schema v2 und die neu geprüften Speichergrenzen berücksichtigen.
+1. Die lokal unabhängig geprüften R1–R3- und Task4A-Bausteine nicht erneut implementieren. Task4B (HTTP-Annahme) und die restlichen Planaufgaben fortsetzen; das auf Version 3 migrierte Schema und die neu geprüften Speichergrenzen berücksichtigen.
 2. Task3-FindingF2 erst durch vollständige Mail-/Löschintegration und tatsächliche Linux-/Scannerqualifikation endgültig schließen; lokale Diagnose nicht als Produktivfreigabe umdeuten.
 3. Erfasste kleinere Reviewpunkte in der abschließenden Prüfung bearbeiten; sichere Standardeinstellung bleibt deaktiviert.
 4. Die bereits erteilte begrenzte Testfreigabe beachten; sichere Geheimnisbereitstellung, Aufbewahrungs-/Backupgrenzen und Linux-/Scannerkapazität vor Pilot/Live-Aktivierung nachweisen.
