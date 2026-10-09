@@ -1,0 +1,76 @@
+# Bewerbungsupload — Zwischenstand am 09.10.2026
+
+**Nicht fertig, nicht live aktiviert.** Dieser Bericht dokumentiert einen gesicherten Entwicklungsstand, keine Abnahme des Bewerbungsportals. Die bestehende Website, Mietanfragen, Newsletter, Werbung, DNS und Mailkonten wurden durch diese Umsetzung nicht verändert.
+
+## Erledigte und unabhängig geprüfte Bausteine
+
+1. Transaktionales privates Bewerbungsregister, Kapazitätsgrenzen und wiederholbare Annahme ohne doppelte Vorgänge. Task1 abgeschlossen.
+2. Verschlüsselter Dateieingang, getrennte Worker-Kopie, dauerhafte Zuordnung und Wiederanlaufprüfung. Zwei im Review gefundene Fehler bei Abbruch/Dateieigentum wurden behoben und separat nachgeprüft. Task2 abgeschlossen.
+3. Dateiidentität, begrenzte lokale PDF-/Bilddiagnostik und Scanner-Schnittstelle implementiert. **Task3 noch offen:** Die aktuelle PDF-Interpretation genügt nicht für unveränderte Weiterleitung aller zugelassenen PDFs. Die Produktivfreigabe dafür ist ausdrücklich blockiert.
+
+Die vollständige öffentliche HTTP-Annahme, Mailzustellung/-abgleich, Mitarbeiterverwaltung, Fristen-/Postfachlöschung, Formularintegration und Linux-Betriebsqualifikation sind weitere offene Aufgaben des genehmigten Plans. Es wurde keine echte Bewerbung, Nachricht oder Zahlung erzeugt und keine Postfachnachricht gelesen oder gelöscht.
+
+## Sicherheitsbefund und Korrekturen
+
+Das unabhängige Review von `78c6b8e` fand einen unzureichenden Laufzeitcheck für Prüfergebnisse. Dieser ist in `0c7a642` durch exakte erlaubte Status-/Ergebnisformen korrigiert; Regressionstests und eine zweite unabhängige Prüfung bestätigen die Korrektur. Zwei kleinere Befunde zur Dokumentation der Puffergrenzen und zur plattformabhängigen Testkonfiguration sind ebenfalls behoben. Die zweite Prüfung fand keine neue Verschlechterung durch diese Korrekturen.
+
+Offen bleibt eine architektonische PDF-Grenze: Zwei synthetische PDFs enthalten doppelte Dokumentdefinitionen, davon eine mit aktiver Aktion. QPDF12.4.2 wählt die harmlose Definition und meldet keine Warnung. Damit ist die geforderte Eindeutigkeit der unveränderten Datei nicht belegt. Ein tatsächlich ausnutzbarer Fehler in einem bestimmten Empfängerprogramm wurde **nicht** nachgewiesen. Virenscanner und Linux-Isolation allein beheben diese Interpretationslücke nicht.
+
+Die neue Sperre `PDF_AMBIGUITY_UNRESOLVED` verhindert eine produktiv gültige PDF-Freigabe auch dann, wenn ein späterer Prüfer lediglich die Kennzeichnung `linux-sandbox` liefert. Die lokale Diagnose darf den Befund weiterhin sichtbar machen. Diese Sperre ist eine Schutzmaßnahme, **keine Fertigstellung der PDF-Funktion**.
+
+Eine begrenzte Untersuchung der QPDF-C-API bestätigte das Verhalten. Die ebenfalls geprüften öffentlichen Quellen zu pdfcpu zeigen keine nachgewiesene Lösung für diese beiden Fälle. Es wurden dafür keine weiteren Programme installiert und keine Hersteller kontaktiert.
+
+## Offene Entscheidung
+
+Niko wurde gefragt, ob eine Änderung des bisherigen Konzepts ausgearbeitet werden soll:
+
+- Empfehlung: PDF-Seiten in einer isolierten Verarbeitung in eine neue, bildbasierte PDF-Kopie übertragen und nur diese Kopie versenden. Der Bewerber muss darüber informiert werden; Textsuche, anklickbare Links und digitale Signaturen gehen verloren. Lesbarkeit, vollständige Seiten und Größen-/Ressourcengrenzen wären zusätzlich nachzuweisen.
+- Alternative: vorerst nur JPG/PNG-Anhänge zulassen. Dies wäre ebenfalls eine ausdrückliche Änderung des vereinbarten Uploadumfangs, keine stillschweigende Ersatzlösung.
+
+**Noch keine Antwort, keine Umsetzung dieser Änderungen.** Die ursprüngliche Vorgabe der unveränderten Dokumentweiterleitung wird nicht eigenmächtig aufgegeben. Inhaltsbereinigung ist ein möglicher Bestandteil eines mehrschichtigen Schutzkonzepts, keine allgemeine Sicherheitsgarantie; siehe [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html).
+
+Separat ist die konkrete Freigabe für drei eindeutig markierte synthetische TEST-Bewerbungen an `info@trinkgut-jammers.de`, eine Testordnerkopie und ausschließlich deren gezielte Löschung noch unbeantwortet. Keine echte Mailprüfung ohne diese Freigabe und die übrigen Betriebsnachweise.
+
+## Prüfnachweise
+
+| Stand | Nachweis |
+| --- | --- |
+| Task1 |42 fokussierte Tests; vollständiger damaliger Lauf1490 Tests; Build/TypeScript/Lint erfolgreich; unabhängiges Review abgeschlossen |
+| Task2 | ursprünglicher vollständiger Lauf1526 Tests; Korrekturrunde36 abdeckende Tests; Build/TypeScript/Lint und separates Review erfolgreich |
+| Task3 vor Korrektur,78c6b8e |92 Dateien/1614 Unit-Tests erfolgreich; Backend-Build, TypeScript, Lint und kompiliertes Laufzeitsmoke ohne tsx erfolgreich |
+| Task3 Korrektur,0c7a642 |111 abdeckende Tests in vier Dateien erfolgreich; Backend-Build, TypeScript, Lint ohne Warnungen, Diffprüfung erfolgreich; unabhängige Nachprüfung: Laufzeitfehler und kleinere Befunde behoben, PDF-Architekturpunkt bleibt offen |
+
+Der vollständige1614-Test-Lauf war **vor** der Korrektur; er wird nicht als danach erneut ausgeführt dargestellt. Die tatsächliche ClamAV-Engine ist nicht installiert/geprüft; bisher gibt es lokale Protokollfixtures. Unterschiedliche Linux-Benutzerrechte, harte Ressourcenbegrenzung, Virensignaturen, kompletter Versand-/Löschablauf und produktive Bereitschaft sind noch nachzuweisen.
+
+Die PDF-Tests brauchen jetzt ausdrücklich `APPLICATIONS_TEST_QPDF` mit einem absoluten Pfad auf die geprüfte QPDF-Version. Letzter lokaler Korrekturlauf:
+
+```sh
+APPLICATIONS_TEST_QPDF=/opt/homebrew/opt/qpdf/bin/qpdf NODE_ENV=test npx vitest run services/applications/tests/file-validation.test.ts services/applications/tests/parser-process.test.ts services/applications/tests/pdf-policy.test.ts services/applications/tests/scanner.test.ts
+npm run applications:build
+npx tsc --noEmit
+```
+
+Die Linux-Test-/Bereitstellungsumgebung ist dafür noch nicht eingerichtet. Dieser Stand darf nicht ungeprüft in die reguläre Website-Veröffentlichung übernommen werden.
+
+## Speicherung und Live-Status
+
+- Branch `codex/cinematic-production` in der vorhandenen Worktree.
+- Task1/Task2 bis `4c3d410` wurden nach Review auf GitHub gesichert; der Remote-Stand wurde erneut abgerufen.
+- Task3 und die Schutzkorrektur sind lokal als `78c6b8e` und `0c7a642` committet. **Nicht gepusht oder deployed**, solange der offene Prüfpunkt und die Linux-Testabhängigkeit nicht geklärt sind.
+-32 fremde geänderte Screenshots und10 fremde unversionierte Content-Prüfberichte wurden weder übernommen noch verworfen.
+- Der zuletzt nur lesend geprüfte Live-Release war `b2383232fb5dfdb3a25a96d01995d470b0a54889`. In diesem Auftrag wurde kein neuer Live-Release ausgerollt. Kein Push oder lokaler Test wird als Live-Nachweis ausgegeben.
+
+## Lokale Werkzeugänderungen
+
+Für die Parserprüfung wurde QPDF über Homebrew eingerichtet, zunächst12.3.2 aus veralteten Metadaten und anschließend geprüft12.4.2 (Formel12.4.2_1). Bei der ersten Installation löschte Homebrews automatische Aufräumfunktion unerwartet alte Homebrew-Caches/Manifeste/Logs und ein Verzeichnis. Bei weiteren Aufrufen war diese Aufräumfunktion deaktiviert.
+
+Der erlaubte gezielte Upgrade zog notwendige Abhängigkeiten nach: jpeg-turbo3.2.0, ca-certificates2026-09-25 und openssl@4 4.0.3. Homebrew löste dabei die bisherigen openssl@3-Verknüpfungen und aktualisierte seinen portablen Ruby auf4.0.7. Es wurden keine blinden Rückverknüpfungen, allgemeinen Paket-Upgrades oder Dienststarts vorgenommen. Diese lokalen Änderungen sind vom unveränderten Live-Server zu unterscheiden.
+
+## Fortsetzung
+
+1. Entscheidung zur PDF-Verarbeitung klären und die betreffende Sicherheits-/Produktvorgabe ausdrücklich aktualisieren.
+2. Task3-FindingF2 durch eine geprüfte Lösung schließen; bisherige lokale Diagnose nicht als Freigabe umdeuten.
+3. Erst danach die vorbereiteten Task4A/4B-Verträge/HTTP-Annahme und die restlichen Planaufgaben fortsetzen.
+4. Echte Testfreigabe, sichere Geheimnisbereitstellung, Aufbewahrungs-/Backupgrenzen und Linux-/Scannerkapazität vor Pilot/Live-Aktivierung nachweisen.
+
+Arbeitsplan: [2026-10-09-application-upload.md](../superpowers/plans/2026-10-09-application-upload.md). Der lokale planbezogene Fortschrittsledger bleibt erhalten; Task3 ist nicht als abgeschlossen markiert.
