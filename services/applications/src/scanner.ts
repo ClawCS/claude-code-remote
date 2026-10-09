@@ -2,7 +2,7 @@ import { FileCheckError, readSnapshotFile } from "./file-validation";
 import { createConnection } from "node:net";
 import { lstat } from "node:fs/promises";
 import { isAbsolute } from "node:path";
-import { utcInstant, type ProcessingSnapshot, type ScannerPort, type ScanResult, type ScanFailure, type Digest, type Instant } from "./types";
+import { utcInstant, type ProcessingSnapshot, type SnapshotFile, type ScannerPort, type ScanResult, type ScanFailure, type Digest, type Instant } from "./types";
 
 const MAX_SIGNATURE_AGE_MS = 24 * 60 * 60 * 1000;
 const SCAN_TIMEOUT_MS = 30_000;
@@ -75,16 +75,25 @@ export function createLocalClamDiagnosticPort(socketPath: string): ScannerPort {
 }
 class ScanError extends Error { constructor(readonly reason: ScanFailure) { super(reason); } }
 export async function scanSnapshot(snapshot: ProcessingSnapshot, scanner: ScannerPort): Promise<ScanResult> {
+  return scanFileSet(snapshot.files, scanner, false);
+}
+/** R2 callers retain scopes until the engine really settles, even after timeout. */
+export async function scanFiles(files: readonly SnapshotFile[], scanner: ScannerPort, signal?: AbortSignal): Promise<ScanResult> {
+  return scanFileSet(files, scanner, true, signal);
+}
+async function scanFileSet(files: readonly SnapshotFile[], scanner: ScannerPort, waitForSettlement: boolean, signal?: AbortSignal): Promise<ScanResult> {
   if (scanner?.assurance !== "qualified-local-engine") return { kind: "blocked", reason: "NOT_READY" };
   if (busy) return { kind: "blocked", reason: "BUSY" };
-  if (snapshot.files.length > 5 || snapshot.files.reduce((sum, f) => sum + f.bytes, 0) > 10 * 1024 * 1024) return { kind: "blocked", reason: "FILE_LIMIT" };
+  if (files.length > 5 || files.reduce((sum, f) => sum + f.bytes, 0) > 10 * 1024 * 1024) return { kind: "blocked", reason: "FILE_LIMIT" };
   busy = true;
   const abort = new AbortController(); let timer: ReturnType<typeof setTimeout> | undefined;
+  const cancel = () => abort.abort(); signal?.addEventListener("abort", cancel, { once: true }); if (signal?.aborted) cancel();
   const operation = (async (): Promise<ScanResult> => {
     const scannedDigests: Digest[] = [];
-    for (const file of snapshot.files) {
+    for (const file of files) {
       if (abort.signal.aborted) throw new ScanError("TIMEOUT");
       await readSnapshotFile(file);
+      if (abort.signal.aborted) throw new ScanError("TIMEOUT");
       const result = await scanner.scan(file, abort.signal);
       if (abort.signal.aborted) throw new ScanError("TIMEOUT");
       await readSnapshotFile(file);
@@ -96,14 +105,19 @@ export async function scanSnapshot(snapshot: ProcessingSnapshot, scanner: Scanne
       if (!Number.isFinite(time) || new Date(time).toISOString() !== result.signatureTime || age < 0 || age > MAX_SIGNATURE_AGE_MS) throw new ScanError("STALE_SIGNATURES");
       scannedDigests.push(file.digest);
     }
+    // Complete R2 set binding: a later engine operation must not have changed
+    // an earlier file after that file's individual post-scan hash check.
+    if (waitForSettlement) for (const file of files) { await readSnapshotFile(file); if (abort.signal.aborted) throw new ScanError("TIMEOUT"); }
+    if (abort.signal.aborted) throw new ScanError("TIMEOUT");
     return { kind: "clean", scannedDigests };
   })();
   // A timed-out port that ignores cancellation keeps the process-wide slot locked.
   // Returning a timeout must never permit a second overlapping engine operation.
-  const settled = operation.finally(() => { busy = false; if (timer) clearTimeout(timer); });
+  const settled = operation.finally(() => { busy = false; if (timer) clearTimeout(timer); signal?.removeEventListener("abort", cancel); });
   try {
     return await Promise.race([settled, new Promise<ScanResult>((_, reject) => { timer = setTimeout(() => { abort.abort(); reject(new ScanError("TIMEOUT")); }, SCAN_TIMEOUT_MS); })]);
   } catch (error) {
+    if (waitForSettlement) { try { await settled; } catch { /* The original fixed failure wins after settlement. */ } }
     return { kind: "blocked", reason: error instanceof ScanError ? error.reason : error instanceof FileCheckError && error.reason === "DIGEST_MISMATCH" ? "DIGEST_MISMATCH" : "SCANNER_ERROR" };
   }
 }

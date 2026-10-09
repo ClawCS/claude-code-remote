@@ -2,6 +2,44 @@
 
 No applicant files, production messages, malware, or private keys are stored here. `synthetic.ts` generates tiny PDFs in test-private temporary directories; Sharp generates solid-color PNG/JPEG files. Tests remove their temporary files. No EICAR test is claimed: ClamAV is not installed or qualified.
 
+## R2 reconstruction evidence (local diagnostics only)
+
+`reconstruction.ts` fixtures construct synthetic four-page PDFs with 8-point type,
+table lines, a visible synthetic signature, an embedded scan, mixed point sizes,
+offset CropBox/rotation and an actual blank page. Reconstruction uses only new
+pixel encodings and new image-only PDFs. Applicant PDF objects are never loaded
+or copied into outputs. Source/output PNG renders live in the ignored amendment
+workspace `visual/`, not `public/`; tests save both for actual visual review.
+Image fixtures cover alpha, EXIF rotation and the exact Sharp built-in sRGB/P3
+ICC hashes. Unknown ICC, APNG/MPO structures, generated metadata and recipe
+geometry mismatches fail closed. The local P3 conversion fixture is not a broad
+production color-profile qualification.
+
+Real-tool tests require explicit absolute `APPLICATIONS_TEST_POPPLER` (native
+26.10.0 `pdftoppm`, sibling `pdfinfo`) and `APPLICATIONS_TEST_QPDF` (12.4.2).
+No missing-tool skip or bundled 26.05 substitution is allowed. The local child
+checks versions, preserves annotations while rendering, rejects all renderer
+stderr diagnostics and parses bounded RGB P6 output. Exact inherited PDF boxes
+come from QPDF and are cross-checked against Poppler; raster/point dimensions
+must agree at 200 dpi within one pixel. Non-default UserUnit is unsupported.
+
+`reconstruction.test.ts` uses typed source/raster/output/scanner doubles only at
+port boundaries; actual encoding, complete package assembly, byte/page gates,
+scope cleanup, deadlines and processing-slot settlement are real. Its scanner
+double is not a ClamAV readiness claim. R27's `scanFiles` waits for underlying
+scanner settlement; the legacy `scanSnapshot` retains its early-timeout result.
+An indefinitely nonsettling dependency deliberately keeps the slot/scope held;
+hard termination, escaped-descendant handling, memory/temp accounting, real AV,
+Linux isolation and multi-worker coordination remain production gates in R5.
+R31 permits a canonical PNG to have the same source/output hash only after a
+real pixel rebuild into a distinct exclusively-created scoped file and full
+recipe validation/scan. No original fallback or metadata noise is used.
+
+The bundle's unique-symbol mark is created only after all outputs pass validation
+and a complete output scan. It is non-enumerable and not serialized. Restoring
+persisted bundles requires R3 authentication/strict decoding/hash verification;
+this task supplies no restoration shortcut or persistent plaintext adapter.
+
 ## Evidence classes
 
 - `file-validation.test.ts`: real local QPDF **12.4.2** and Sharp **0.35.5**, plus explicitly identified identity/digest port doubles. Set **`APPLICATIONS_TEST_QPDF` to an absolute executable path** before running local fixtures. The shared `requireQpdfTestExecutable()` setup supplies both parser construction and fixture-generation commands; there is no platform-specific path default. Missing/relative/non-executable paths fail with `QPDF_TEST_PREREQUISITE`, never skip. This Mac's recorded installation is `/opt/homebrew/opt/qpdf/bin/qpdf`, Homebrew `qpdf 12.4.2_1` arm64_tahoe bottle. The parser checks the executable version on every PDF. Wrong versions fail closed; there is no pdf-lib fallback.

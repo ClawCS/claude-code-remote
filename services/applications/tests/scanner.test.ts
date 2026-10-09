@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createLocalClamDiagnosticPort, scanSnapshot } from "../src/scanner";
+import { createLocalClamDiagnosticPort, scanSnapshot, scanFiles } from "../src/scanner";
 import { createServer, type Server } from "node:net";
 import { once } from "node:events";
 import { utcInstant, type ScannerPort, type SnapshotFile } from "../src/types";
@@ -12,6 +12,16 @@ beforeEach(async () => { root = await mkdtemp(join(tmpdir(), "application-scan-"
 afterEach(async () => { vi.useRealTimers(); await rm(root, { recursive: true, force: true }); });
 function port(overrides = {}): ScannerPort { return { assurance: "qualified-local-engine", async scan(file) { return { kind: "clean", complete: true, digest: file.digest, bytes: file.bytes, signatureTime: utcInstant("2026-10-09T11:00:00.000Z"), engineIdentity: "synthetic-engine/1", ...overrides }; } }; }
 describe("fail closed scan orchestration (engine is a stub)", () => {
+  it("settled file-set scanning cannot release its caller before an ignored abort settles", async () => {
+    let start!: () => void, finish!: () => void; const started = new Promise<void>(resolve => { start = resolve; });
+    const stalled = port(), scan = stalled.scan;
+    stalled.scan = async (...args) => { start(); await new Promise<void>(resolve => { finish = resolve; }); return scan(...args); };
+    let returned = false; const pending = scanFiles([file], stalled).then(result => { returned = true; return result; });
+    await started; await vi.advanceTimersByTimeAsync(30_000);
+    expect(returned).toBe(false); expect(await scanSnapshot(snapshot([file]), port())).toEqual({ kind: "blocked", reason: "BUSY" });
+    finish(); expect(await pending).toEqual({ kind: "blocked", reason: "TIMEOUT" });
+    expect((await scanFiles([file], port())).kind).toBe("clean");
+  });
   it("returns only exact snapshot digests after complete fresh scans", async () => { expect(await scanSnapshot(snapshot([file]), port())).toEqual({ kind: "clean", scannedDigests: [file.digest] }); });
   it.each([["2026-10-08T11:59:59.999Z", "STALE_SIGNATURES"], ["2026-10-09T12:00:00.001Z", "STALE_SIGNATURES"]])("rejects bad signature age %s", async (signatureTime, reason) => { expect(await scanSnapshot(snapshot([file]), port({ signatureTime }))).toEqual({ kind: "blocked", reason }); });
   it("permits exactly 24h but never incomplete scans", async () => {
