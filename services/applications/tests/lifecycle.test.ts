@@ -85,6 +85,60 @@ async function setup(initial = "2026-10-10T12:00:00.000Z") {
 }
 
 describe("actual lifecycle commits", () => {
+  it.each(["rejected", "manual", "held"] as const)("rejects persisted initial-authority %s decisions without inventing a fence", async state => {
+    const s = await setup(), before = s.read(), at = utcInstant(new Date(s.time).toISOString());
+    const contradictory = { ...before, lifecycle: { ...before.lifecycle } };
+    if (state === "rejected") {
+      s.db.prepare("UPDATE cases SET caseState='rejected_closed',closedOn='2026-10-10' WHERE id=?").run(s.accepted.id);
+      s.db.prepare("UPDATE case_lifecycle SET deadline='2027-04-10',deleteFrom='2027-04-11' WHERE caseId=?").run(s.accepted.id);
+      contradictory.caseState = "rejected_closed"; contradictory.closedOn = dateOnly("2026-10-10");
+      contradictory.lifecycle.deadline = dateOnly("2027-04-10"); contradictory.lifecycle.deleteFrom = dateOnly("2027-04-11");
+    } else if (state === "manual") {
+      s.db.prepare("UPDATE cases SET caseState='manual_case' WHERE id=?").run(s.accepted.id);
+      s.db.prepare("UPDATE case_lifecycle SET manualCategory='other' WHERE caseId=?").run(s.accepted.id);
+      contradictory.caseState = "manual_case"; contradictory.lifecycle.manualCategory = "other";
+    } else {
+      s.db.prepare("UPDATE cases SET caseState='reviewing' WHERE id=?").run(s.accepted.id);
+      s.db.prepare("UPDATE case_lifecycle SET holdReviewOn='2026-10-10',holdReason='Pending review',holdActor=?,holdAt=? WHERE caseId=?").run(s.logged.session.staffId, at, s.accepted.id);
+      contradictory.caseState = "reviewing";
+      contradictory.lifecycle.hold = { reviewOn: dateOnly("2026-10-10"), reason: "Pending review", actor: s.logged.session.staffId, at };
+    }
+    expect(s.read).toThrow("INVALID_LIFECYCLE_STATE");
+    expect(deletionEligibility(contradictory, dateOnly("2028-01-01"))).toBe("blocked");
+    expect(s.db.prepare("SELECT initialAuthority,authorityKind,authorityId FROM case_lifecycle WHERE caseId=?").get(s.accepted.id)).toEqual({ initialAuthority: before.lifecycle.initialAuthority, authorityKind: "initial", authorityId: before.lifecycle.initialAuthority });
+    expect(s.db.prepare("SELECT COUNT(*) AS n FROM lifecycle_proposals").get()).toEqual({ n: 0 });
+  });
+  it.each([
+    ["proposed", "missing"], ["acknowledged", "missing"],
+    ["proposed", "mismatched"], ["acknowledged", "mismatched"],
+    ["proposed", "extra"], ["acknowledged", "extra"],
+  ] as const)("rejects persisted %s outstanding proposals with a %s pending correspondence", async (phase, fault) => {
+    const s = await setup(), before = s.read();
+    function insertProposal() {
+      const eventId = randomBytes(16).toString("hex"), event: JournalEvent = ["tj-journal-event-v1", eventId, new Date(s.time).toISOString(), "case_fence", [s.accepted.id, "initial", before.lifecycle.initialAuthority!, "1", "reject"]];
+      const receipt = phase === "acknowledged" ? s.fixture.commit(event) : null;
+      s.db.prepare("INSERT INTO lifecycle_proposals(eventId,caseId,event,actionBytes,grantHash,phase,entry,head) VALUES(?,?,?,?,?,?,?,?)").run(eventId, s.accepted.id, JSON.stringify(event), JSON.stringify({ kind: "reject", closedOn: "2026-10-10" }), "f".repeat(64), phase, receipt?.entry ?? null, receipt?.head ?? null);
+      return eventId;
+    }
+    const eventId = insertProposal();
+    s.db.prepare("UPDATE case_lifecycle SET pendingEventId=?,safetyRevision=? WHERE caseId=?").run(eventId, phase === "proposed" ? 1 : 2, s.accepted.id);
+    expect(s.read().lifecycle.pendingEventId).toBe(eventId);
+    if (fault === "extra") insertProposal();
+    else s.db.prepare("UPDATE case_lifecycle SET pendingEventId=? WHERE caseId=?").run(fault === "missing" ? null : "e".repeat(32), s.accepted.id);
+    const persisted = s.db.prepare("SELECT pendingEventId,safetyRevision FROM case_lifecycle WHERE caseId=?").get(s.accepted.id);
+    const proposals = s.db.prepare("SELECT eventId,phase FROM lifecycle_proposals ORDER BY eventId").all();
+    expect(s.read).toThrow("INVALID_LIFECYCLE_STATE");
+    expect(s.db.prepare("SELECT pendingEventId,safetyRevision FROM case_lifecycle WHERE caseId=?").get(s.accepted.id)).toEqual(persisted);
+    expect(s.db.prepare("SELECT eventId,phase FROM lifecycle_proposals ORDER BY eventId").all()).toEqual(proposals);
+    expect(s.db.prepare("SELECT COUNT(*) AS n FROM lifecycle_audit").get()).toEqual({ n: 0 });
+  });
+  it("retains initial authority through ordinary review and external attestation without a fence", async () => {
+    const s = await setup(), initial = s.read().lifecycle.initialAuthority;
+    await s.act({ kind: "review" }); await s.act({ kind: "confirm-external-copies", confirmed: true, reason: "Checked current copies" });
+    expect(s.read()).toMatchObject({ caseState: "reviewing", lifecycle: { initialAuthority: initial, authorityKind: "initial", authorityId: initial, pendingEventId: null, externalCopiesConfirmed: true } });
+    expect(deletionEligibility(s.read(), dateOnly("2028-01-01"))).toBe("not_due");
+    expect(s.db.prepare("SELECT COUNT(*) AS n FROM lifecycle_proposals").get()).toEqual({ n: 0 });
+  });
   it("covers the complete state/action legality matrix without deriving expectations from the transition implementation", async () => {
     const s = await setup(), base = s.read(), at = utcInstant(new Date(s.time).toISOString());
     const actions: CaseAction[] = [{ kind: "review" }, { kind: "reject", closedOn: dateOnly("2026-10-10") }, { kind: "correct-date", closedOn: dateOnly("2026-10-10"), reason: "Correction" }, { kind: "reopen", reason: "Reopen" }, { kind: "hold", reviewOn: dateOnly("2026-10-10"), reason: "Hold" }, { kind: "release-hold", reason: "Release" }, { kind: "manual-case", category: "data-subject-request", reason: "Separate" }, { kind: "confirm-external-copies", confirmed: true, reason: "Checked" }];
@@ -237,6 +291,9 @@ describe("actual lifecycle commits", () => {
       expect(s.service.authorizeSession(s.logged.token, utcInstant(new Date(s.time).toISOString()))).toEqual(s.logged.session);
       await applyCaseAction(s.accepted.id, { kind: "review" }, retainedGrant!, { repository: s.repository, session: s.logged.session });
       await expect(applyCaseAction(s.accepted.id, { kind: "review" }, retainedGrant!, { repository: s.repository, session: s.logged.session })).rejects.toThrow("AUTH_DENIED");
+      await s.act({ kind: "confirm-external-copies", confirmed: true, reason: "Historical copies checked" });
+      expect(s.read().lifecycle).toMatchObject({ initialAuthority: null, authorityKind: null, authorityId: null, externalCopiesConfirmed: true });
+      expect(deletionEligibility(s.read(), dateOnly("2028-01-01"))).toBe("blocked");
       await expect(s.act({ kind: "reject", closedOn: dateOnly("2026-10-10") })).rejects.toThrow("CASE_BLOCKED");
     }
     s.reopenOwner(); expect(s.db.prepare("SELECT COUNT(*) AS n FROM case_lifecycle").get()).toEqual({ n: 1 });

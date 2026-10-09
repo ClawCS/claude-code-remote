@@ -72,6 +72,7 @@ export function validateLifecycle(row: CaseRecord): void {
   if (!l || !["identifying", "minimized"].includes(l.identityState) || !Number.isSafeInteger(l.safetyRevision) || l.safetyRevision < 0 || (l.pendingEventId !== null && !validId(l.pendingEventId)) || typeof l.externalCopiesConfirmed !== "boolean") throw new Error("INVALID_LIFECYCLE_STATE");
   if (l.initialAuthority !== null && !validId(l.initialAuthority)) throw new Error("INVALID_LIFECYCLE_STATE");
   if ((l.authorityKind === null) !== (l.authorityId === null) || (l.authorityKind !== null && (!["initial", "fence"].includes(l.authorityKind) || !validId(l.authorityId))) || (l.authorityKind === "initial" && l.authorityId !== l.initialAuthority)) throw new Error("INVALID_LIFECYCLE_STATE");
+  if (l.authorityKind === "initial" && (!["open", "reviewing"].includes(row.caseState) || l.hold !== null)) throw new Error("INVALID_LIFECYCLE_STATE");
   if (row.caseState === "rejected_closed") {
     if (!row.closedOn) throw new Error("INVALID_LIFECYCLE_STATE");
     const dates = retentionDates(row.closedOn);

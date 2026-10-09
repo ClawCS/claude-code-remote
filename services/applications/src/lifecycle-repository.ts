@@ -46,6 +46,8 @@ export function readLifecycle(db: Database.Database, row: Omit<CaseRecord, "life
     const kind = event[4][4] === "renew-hold" ? "hold" : event[4][4];
     if (!db.prepare("SELECT 1 FROM lifecycle_audit WHERE caseId=? AND eventId=? AND version=? AND kind=?").get(row.id, p.eventId, Number(event[4][3]) + 1, kind)) fail();
   }
+  const outstanding = db.prepare("SELECT eventId FROM lifecycle_proposals WHERE caseId=? AND phase IN('proposed','acknowledged') LIMIT 2").all(row.id) as { eventId: string }[];
+  if (lifecycle.pendingEventId === null ? outstanding.length !== 0 : outstanding.length !== 1 || outstanding[0].eventId !== lifecycle.pendingEventId) fail();
   if (lifecycle.pendingEventId) {
     const p = proposal(db, lifecycle.pendingEventId), event = decodeJournalEvent(p.event);
     if (p.caseId !== row.id || !["proposed", "acknowledged"].includes(p.phase) || event[3] !== "case_fence" || Number(event[4][3]) > row.version) fail();
