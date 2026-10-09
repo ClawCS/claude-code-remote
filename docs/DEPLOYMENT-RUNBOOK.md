@@ -115,7 +115,7 @@ git archive --format=tar.gz --output="$ARCHIVE" "$RELEASE_ID" -- \
   postcss.config.mjs eslint.config.mjs vitest.config.mts playwright.config.ts \
   app components config context data lib public scripts e2e deploy docs \
   assets/fonts assets/source/market-photos assets/source/google-market-photos assets/source/team-photos-safe \
-  assets/source/preislisten
+  assets/source/preislisten assets/source/contact-brands
 tar -tzf "$ARCHIVE"
 shasum -a 256 "$ARCHIVE"
 ```

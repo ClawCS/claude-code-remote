@@ -4,7 +4,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
   test.describe(`original contact icons at ${viewport.width}px`, () => {
     test.use({ viewport });
     for (const path of ["/", "/nl", "/kontakt", "/community", "/galerie", "/leergut", "/oeko-tracker"]) {
-      test(`${path} keeps native artwork, transparent targets and accessible names`, async ({ page }) => {
+      test(`${path} keeps native artwork, transparent targets and accessible names`, async ({ page }, testInfo) => {
         await page.goto(path);
         const icons = page.locator('a[href*="wa.me/"], a[href="https://www.instagram.com/trinkgutjammers_goch/"], a[href*="google.com/maps/dir/"]');
         expect(await icons.count()).toBeGreaterThan(0);
@@ -32,6 +32,9 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
           await expect(img).toHaveCSS("filter", "none");
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+        if (path === "/kontakt" && viewport.width === 1440) {
+          await page.locator("footer#kontakt").screenshot({ path: testInfo.outputPath("original-contact-icons.png") });
+        }
       });
     }
   });
