@@ -1,0 +1,87 @@
+{
+  "kind": "daily-weekly-publication-check",
+  "checkedAt": "2026-10-09T04:20:35Z",
+  "timeZone": "Europe/Berlin",
+  "localDate": "2026-10-09",
+  "sourceCommit": "c33c0fc85244630ed95cb19d5f37725ce15644cf",
+  "publicUrl": "https://trinkgut-jammers.de",
+  "target": { "validFrom": "2026-10-05", "validTo": "2026-10-10" },
+  "status": "ok",
+  "contentReport": "2026-10-09T04-16-29-659Z-check-39daf0cb.json",
+  "preparation": {
+    "newImportRequired": false,
+    "reason": "Both current editions are already fully bound and publicly delivered. No missing edition, replacement week, date extension or redundant re-export.",
+    "contentFilesChanged": false
+  },
+  "originals": [
+    {
+      "language": "de",
+      "pageCount": 18,
+      "pdfBytes": 11639099,
+      "pdfSha256": "be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a",
+      "coverBytes": 161525,
+      "coverSha256": "a9ac782ae646c830ea71b4448fda2ceac8ba06d5b9c0ec93c69fb51828220a51",
+      "coverDimensions": [625, 905],
+      "offerCount": 107,
+      "printedPeriod": "05.10.2026 - 10.10.2026"
+    },
+    {
+      "language": "nl",
+      "pageCount": 1,
+      "pdfBytes": 12278582,
+      "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
+      "coverBytes": 1002536,
+      "coverSha256": "a64e80d7087932e064b2d1c9686442bf3a4efc2ce230ac1a18dc1a2b21b0eeb2",
+      "coverDimensions": [2600, 1860],
+      "offerCount": 21,
+      "printedPeriod": "05.10.2026 - 10.10.2026"
+    }
+  ],
+  "originalReview": "Local PDFs independently decoded with pdfinfo and pypdf; PDF and cover sizes/hashes match the weekly manifest. Both full covers and fresh original renders (DE title page and complete NL page) visually inspected: correct languages, full motifs and date/footer text. Previously approved NL arithmetic and quantity discrepancies remain unchanged; not declared mathematically correct.",
+  "canva": {
+    "connectorReadVerified": true,
+    "currentOriginalPageTextVerified": true,
+    "printedPeriod": "41e week: 05.10.2026 - 10.10.2026",
+    "browserAuthenticated": true,
+    "originalExportDialog": {
+      "verified": true,
+      "format": "PDF",
+      "preset": "Digital",
+      "selectedPage": 14,
+      "downloadButtonEnabled": true,
+      "downloadTriggered": false
+    },
+    "reasonNoNewDownload": "Original already exported and byte-verified. This run verifies authenticated export readiness, not a fresh successful export.",
+    "accountOrDesignChanged": false
+  },
+  "verification": {
+    "contentCheck": { "exitCode": 0, "errors": [], "warnings": [] },
+    "offersCheck": { "exitCode": 0, "verifiedOriginalOfferImages": 128 },
+    "websiteVerified": true,
+    "deploymentVerified": true,
+    "clock": "Actual current Berlin time; no test clock or --now argument.",
+    "publicApis": ["/api/content/current", "/api/content/flyers", "/api/content/offers", "/api/handzettel/fetch"],
+    "publicPages": ["/", "/angebote", "/handzettel", "/nl", "/produkte"],
+    "categoryPages": "All six categories represented by the active original offers, verified by content:check.",
+    "publicFileGetChecks": { "pdfs": 2, "covers": 2, "offerImages": 128, "verified": ["content-type", "byte length", "SHA-256"] },
+    "browser": {
+      "route": "/angebote",
+      "desktop": "1280x900: German edition left, Dutch edition right; both covers decoded, complete and contain-fitted.",
+      "mobile": "390x844: editions stacked, full NL motive visible; both covers decoded and contain-fitted; no horizontal overflow.",
+      "temporaryViewportReset": true,
+      "temporaryTabsClosed": true
+    }
+  },
+  "deployment": {
+    "performed": false,
+    "reason": "No application or content change. Audit-only commit does not require a new Linux release.",
+    "serverConfigurationChanged": false
+  },
+  "limitations": [
+    "Known embedded PDF-viewer limitation in the in-app browser from the prior release review was not reclassified or retested here; direct original PDF bytes pass the public download checks.",
+    "No new full-site audit, cross-browser matrix, legal review or source-wide Canva search claimed. This is the scoped current-week daily control.",
+    "Future-week preparation still depends on the Mac/Codex app and source login; no independent server Canva cron."
+  ],
+  "notification": { "required": false, "reason": "No new error, repaired outage, required user action or material content change since the verified weekly-package release." },
+  "safety": "Foreign screenshots and earlier untracked reports preserved. No Canva/Instagram edits, emails, payments, rental activation, DNS change or production write. Only sanitized daily audit evidence is committed."
+}
