@@ -111,7 +111,8 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     for(const entry of entries.values())if(entry.kind==="intake")metadataHeadroom+=Math.max(0,JOURNAL_HEADROOM-(sizes.get(metadataPath(entry.id))??0));
     for (const reserve of repo.listArtifactReservations()) {
       const active = [...entries.values()].filter(entry => entry.kind === "artifact" && entry.caseId === reserve.caseId && entry.artifactKind === reserve.kind && entry.state !== "orphan");
-      claims.push({ allowance: reserve.bytes, actual: active.reduce((sum,entry)=>sum+(sizes.get(entry.path)??0)+(sizes.get(entry.workerPath!)??0),0) });
+      const registered = repo.getArtifact(reserve.caseId,reserve.kind);
+      claims.push({ allowance: registered?.bytes ?? reserve.bytes, actual: registered ? sizes.get(registered.path) ?? 0 : active.reduce((sum,entry)=>sum+(sizes.get(entry.path)??0)+(sizes.get(entry.workerPath!)??0),0) });
       metadataHeadroom+=Math.max(0,ARTIFACT_METADATA_RESERVE-active.reduce((sum,entry)=>sum+(sizes.get(metadataPath(entry.id))??0),0));
     }
     // New in-flight keys need one future output set; accepted-key retries do not.
@@ -223,7 +224,9 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         if (!repo.getArtifact(id,"bundle")) throw new Error("INVALID_ARTIFACT_AUTHORITY");
         const ticket=randomUUID(),path=join(config.runtimeRoot,ticket);
         await save({version:2,id:ticket,path,kind:"processing",state:"reserved",budget:SCRATCH_RESERVE,caseId:id,cleanupAfter:tomorrow()});
-        processingOwners.add(path); await mkdir(path,{mode:0o700}); return path;
+        processingOwners.add(path);
+        try { await mkdir(path,{mode:0o700}); return path; }
+        catch(error) { processingOwners.delete(path); ready=false; throw error; }
       });
       const guard={id,path,active:true};
       try { return await scopeContext.run(guard,()=>action(path)); }

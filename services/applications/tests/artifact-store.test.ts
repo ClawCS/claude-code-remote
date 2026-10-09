@@ -1,4 +1,4 @@
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { createHash, generateKeyPairSync, randomUUID } from "node:crypto";
 import { applicationId, utcInstant } from "../src/types";
 import { openArtifactEnvelope, sealArtifactEnvelope } from "../src/artifact-crypto";
@@ -7,7 +7,8 @@ import { makeArtifactHarness } from "./fixtures/artifacts";
 import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
 import { withReconstructedDocuments, assertReconstructedBundle, type ReconstructionDependencies, type ReconstructedBundle } from "../src/reconstruction";
 import { readdir, readFile, rm } from "node:fs/promises";
-import { payloadDigest } from "../src/crypto";
+import { encodePayload, payloadDigest, sealIncoming } from "../src/crypto";
+import * as fs from "node:fs/promises";
 import sharp from "sharp";
 import { createCustodyLedger } from "../src/custody";
 import { spawn } from "node:child_process";
@@ -17,11 +18,71 @@ import { openRepository } from "../src/repository";
 import { testIngressAuthority } from "./fixtures/ingress-authority";
 import type { Acceptance } from "../src/types";
 
+vi.mock("node:fs/promises",async importOriginal=>({...await importOriginal<typeof import("node:fs/promises")>()}));
+
 async function withEmptyBundle<T>(h:Awaited<ReturnType<typeof makeArtifactHarness>>, action:(bundle:ReconstructedBundle)=>Promise<T>,pixel=9) {
   const snapshot=await takePrivateSnapshot(h.repo.getCommittedIntake(h.accepted.id)!,h.keys);
   const deps:ReconstructionDependencies={scope:h.keys.custody,monotonicNow:()=>0,scanner:{assurance:"qualified-local-engine",scan:async file=>({kind:"clean",complete:true,digest:file.digest,bytes:file.bytes,signatureTime:utcInstant(new Date().toISOString()),engineIdentity:"typed-fixture-not-clamav"})},inspector:{assurance:"local-test",inspect:async()=>({kind:"inspected",inspection:{format:"png",pageCount:1}})},raster:{render:async(_file,emit)=>{await emit({index:0,width:1,height:1,channels:3,pixels:new Uint8Array([pixel,8,7])});return{format:"png",pageCount:1};}},output:{verify:async file=>{await sharp(await readFile(file.path)).raw().toBuffer();}}};
   return withPrivateFiles(snapshot,h.keys,processing=>withReconstructedDocuments(processing,deps,action));
 }
+
+// Catches retaining the maximum claim after durable adoption, for each domain.
+it.each(["bundle", "mime"] as const)("replaces the pending %s allowance with registered physical bytes", async kind => {
+  const h=await makeArtifactHarness();
+  try {
+    const store=createArtifactStore(h.repo,h.keys,h.keys.custody);
+    const before=await h.keys.custody.cleanupOrphans();
+    const original=h.repo.getCommittedIntake(h.accepted.id)!;
+    expect(before.physicalBytes+before.reservedHeadroom).toBe(134217728+8192+8192+original.actualBytes+10553344+16779264+16384);
+    const record=kind==="bundle"?await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1)):await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),1);
+    const after=await h.keys.custody.cleanupOrphans();
+    expect((await fs.stat(record.path)).size).toBe(record.bytes);
+    const maximum=kind==="bundle"?10553344:16779264;
+    expect(after.physicalBytes+after.reservedHeadroom).toBe(before.physicalBytes+before.reservedHeadroom-maximum+record.bytes);
+    const recovered=createCustodyLedger(h.repo,h.config),restarted=await recovered.reconcile();
+    expect(restarted.physicalBytes+restarted.reservedHeadroom).toBe(after.physicalBytes+after.reservedHeadroom);
+  } finally { await h.close(); }
+});
+
+it("admits another small case using capacity released by adopted bundle and MIME bytes", async()=>{
+  const h=await makeArtifactHarness();
+  try {
+    const store=createArtifactStore(h.repo,h.keys,h.keys.custody);
+    await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1));
+    await store.adoptMime(h.accepted.id,(async function*(){yield Buffer.from("small MIME");})(),2);
+    for(let index=0;index<4;index++){
+      const reservation=await h.keys.custody.reserve({...h.reservation,idempotencyKey:`after-artifacts-${index}`,now:utcInstant("2026-10-09T10:00:00.000Z")});
+      const sealed=await sealIncoming((async function*(){yield encodePayload(h.payload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:reservation.id},h.keys.publicKey);
+      await h.keys.custody.commitIntake({reservationId:reservation.id,digest:payloadDigest(h.payload),encryptedPayloadPath:sealed.path,actualBytes:sealed.bytes,encryptedName:"ciphertext",job:"sales-fulltime",now:utcInstant("2026-10-09T10:00:00.000Z")});
+    }
+    expect(h.repo.listRetainedIntakes()).toHaveLength(5);
+    const inventory=await h.keys.custody.cleanupOrphans();
+    expect(inventory.physicalBytes+inventory.reservedHeadroom).toBeLessThan(262144000);
+  }finally{await h.close();}
+});
+
+// Fault injection is limited to the filesystem acquisition boundary; durable
+// journals, admission, ownership recovery and later bundle access remain real.
+it.each([false,true])("closes admission and releases ownership after scope mkdir fails (created=%s)",async created=>{
+  const h=await makeArtifactHarness();
+  try{
+    const store=createArtifactStore(h.repo,h.keys,h.keys.custody);
+    await withEmptyBundle(h,bundle=>store.adoptBundle(bundle,1));
+    const mkdir=fs.mkdir;
+    const fault=vi.spyOn(fs,"mkdir").mockImplementationOnce(async(path,options)=>{
+      if(created)await mkdir(path,options);
+      throw Object.assign(new Error("ENOSPC"),{code:"ENOSPC"});
+    });
+    try{await expect(store.withBundle(h.accepted.id,async()=>{})).rejects.toThrow("ENOSPC");}finally{fault.mockRestore();}
+    const journals=await Promise.all((await readdir(h.keys.privateRoot)).filter(name=>name.endsWith(".journal")).map(async name=>JSON.parse(await readFile(join(h.keys.privateRoot,name),"utf8"))));
+    expect(journals.filter(entry=>entry.kind==="processing")).toHaveLength(1);
+    await expect(h.keys.custody.reserve({...h.reservation,idempotencyKey:"after-mkdir-failure",now:utcInstant("2026-10-09T10:00:00.000Z")})).rejects.toThrow("CUSTODY_NOT_READY");
+    await expect(store.withBundle(h.accepted.id,async()=>{})).rejects.toThrow("CUSTODY_NOT_READY");
+    await h.keys.custody.reconcile();
+    expect(await readdir(h.keys.runtimeRoot)).toEqual([]);
+    await store.withBundle(h.accepted.id,async bundle=>expect(bundle.requestDigest).toBe(payloadDigest(h.payload)));
+  }finally{await h.close();}
+});
 
 it("persists an immutable encrypted bundle, preserves request identity, and expires callback authority", async()=>{
   const h=await makeArtifactHarness();
@@ -87,11 +148,16 @@ it("fails startup readiness for same-size tampering of a registered artifact",as
 it("cleans a failed 16 MiB MIME adoption without widening the intake file policy",async()=>{
   const h=await makeArtifactHarness();
   try{
+    const before=await h.keys.custody.cleanupOrphans();
     const original=h.repo.adoptArtifact;
     h.repo.adoptArtifact=async()=>{throw new Error("CAS_BOUNDARY_FAILURE");};
     await expect(createArtifactStore(h.repo,h.keys,h.keys.custody).adoptMime(h.accepted.id,(async function*(){yield Buffer.alloc(16*1024*1024,77);})(),1)).rejects.toThrow("CAS_BOUNDARY_FAILURE");
     h.repo.adoptArtifact=original;
-    const recovered=createCustodyLedger(h.repo,h.config);expect((await recovered.reconcile()).orphans).toHaveLength(1);
+    const recovered=createCustodyLedger(h.repo,h.config),inventory=await recovered.reconcile();expect(inventory.orphans).toHaveLength(1);
+    const artifactName=(await readdir(h.keys.privateRoot)).find(name=>name.endsWith(".mime.enc"))!;
+    const orphanBytes=(await fs.stat(join(h.keys.privateRoot,artifactName))).size+(await fs.stat(join(h.keys.privateRoot,artifactName.replace(".mime.enc",".journal")))).size;
+    // Failed publication keeps the future MIME maximum AND charges real residue.
+    expect(inventory.physicalBytes+inventory.reservedHeadroom).toBe(before.physicalBytes+before.reservedHeadroom+orphanBytes);
     h.config.clock.now=()=>new Date("2026-10-10T10:00:00.000Z");
     expect((await recovered.cleanupOrphans()).orphans).toEqual([]);
     expect(h.repo.getCommittedIntake(h.accepted.id)).not.toBeNull();
