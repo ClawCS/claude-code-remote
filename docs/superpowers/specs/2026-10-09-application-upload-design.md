@@ -2,6 +2,8 @@
 
 Datum: 9. Oktober 2026. **Schriftliche Spezifikation vom Betreiber mit „ja passt so“ freigegeben; noch keine Aktivierung.** Die Freigabe umfasst die zuvor gewählte Grundvariante einschließlich gezielten Postfachzugriffs und den hier beschriebenen Schutzablauf. Der [Implementierungsplan](../plans/2026-10-09-application-upload.md) konkretisiert Reihenfolge, Schnittstellen und Tests; der Betreiber hat anschließend die empfohlene subagentengestützte Umsetzung gewählt. Technische Einrichtungen sind dadurch nicht bereits produktiv vorhanden.
 
+**Ergänzung in Abstimmung, 09.10.2026:** Nach dem dokumentierten PDF-Prüfbefund hat Niko die Ausarbeitung bereinigter PDF-Kopien sowie JPG/PNG gewählt. Der [gezielte Ergänzungsentwurf](2026-10-09-application-document-reconstruction-design.md) beschreibt die geänderte Dokumentbehandlung zur schriftlichen Bestätigung. Bis zu Umsetzung und Abnahme bleibt die PDF-Versandsperre bestehen; der unten beschriebene Originalweg ist keine Freigabe zur ungeprüften PDF-Weiterleitung. Übrige bestätigte Vorgaben und Ausführungsmethode bleiben erhalten.
+
 ## 1. Ziel und bestätigter Auftrag
 
 Besucher können sich auf die beiden tatsächlichen Stellen bewerben, Unterlagen direkt hochladen und erkennen, ob ihre Bewerbung angenommen und an den Markt übermittelt wurde. Der Markt erhält die geprüften Unterlagen als Anhänge an **info@trinkgut-jammers.de**. Ein kleiner geschützter Bereich dokumentiert Abschluss und Löschfrist; kein vollständiges Personalverwaltungssystem.
