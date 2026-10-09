@@ -33,6 +33,8 @@ Die vollständige öffentliche HTTP-Annahme, Mailzustellung/-abgleich, Mitarbeit
 
 ## Sicherheitsbefund und Korrekturen
 
+**Task5 lokal abgeschlossen und unabhängig geprüft:** Mailpakete werden ausschließlich aus den vollständig geprüften, neu erzeugten Dokumentkopien erstellt. Inhalt, Anhangsreihenfolge und Identität werden unabhängig neu berechnet und signiert; ein kopierter Herkunftsheader reicht nicht für Zustell- oder Löschnachweise. Commit `9075440`: 67 fokussierte Tests und vollständiger Lauf mit 106 Dateien / 1.954 Tests, Build, TypeScript und Lint bestanden. Das unabhängige Review fand zwei Fehler: Mail-Verbindungsfehler konnten eine Operation hängen lassen und gefaltete Kopfzeilen konnten bedeutende Leerzeichen verlieren. `32b1a8c` korrigiert beides; sechs verhaltensbezogene Tests waren zunächst rot, danach bestanden alle 74 abdeckenden Tests sowie Build, TypeScript, Lint und Diffprüfung. Die unabhängige Nachprüfung bestätigt beide Korrekturen ohne neue Befunde. Der vollständige 1.954-Test-Lauf gehört zum Stand vor dieser Korrektur. Dies ist weiterhin nur die lokale Umsetzung; echte IONOS-Zustellung, Postfachabgleich und Linux-Betrieb sind nicht nachgewiesen.
+
 Das unabhängige Review von `78c6b8e` fand einen unzureichenden Laufzeitcheck für Prüfergebnisse. Dieser ist in `0c7a642` durch exakte erlaubte Status-/Ergebnisformen korrigiert; Regressionstests und eine zweite unabhängige Prüfung bestätigen die Korrektur. Zwei kleinere Befunde zur Dokumentation der Puffergrenzen und zur plattformabhängigen Testkonfiguration sind ebenfalls behoben. Die zweite Prüfung fand keine neue Verschlechterung durch diese Korrekturen.
 
 Offen bleibt eine architektonische PDF-Grenze: Zwei synthetische PDFs enthalten doppelte Dokumentdefinitionen, davon eine mit aktiver Aktion. QPDF12.4.2 wählt die harmlose Definition und meldet keine Warnung. Damit ist die geforderte Eindeutigkeit der unveränderten Datei nicht belegt. Ein tatsächlich ausnutzbarer Fehler in einem bestimmten Empfängerprogramm wurde **nicht** nachgewiesen. Virenscanner und Linux-Isolation allein beheben diese Interpretationslücke nicht.
@@ -89,7 +91,7 @@ Der erlaubte gezielte Upgrade zog notwendige Abhängigkeiten nach: jpeg-turbo3.2
 
 ## Fortsetzung
 
-1. Die lokal unabhängig geprüften R1–R3- und Task4A/4B-Bausteine nicht erneut implementieren. Task5 (inhaltsgebundenes Mailpaket) und die restlichen Planaufgaben fortsetzen; das auf Version 3 migrierte Schema und die neu geprüften Speichergrenzen berücksichtigen.
+1. Die lokal unabhängig geprüften R1–R3- und Task4A/4B/5-Bausteine nicht erneut implementieren. Mit Task6 (begrenzter Postfachabgleich und ausschließlich gezielte Löschprimitive) und den restlichen Planaufgaben fortsetzen; das auf Version 3 migrierte Schema und die neu geprüften Speichergrenzen berücksichtigen.
 2. Task3-FindingF2 erst durch vollständige Mail-/Löschintegration und tatsächliche Linux-/Scannerqualifikation endgültig schließen; lokale Diagnose nicht als Produktivfreigabe umdeuten.
 3. Erfasste kleinere Reviewpunkte in der abschließenden Prüfung bearbeiten; sichere Standardeinstellung bleibt deaktiviert.
 4. Die bereits erteilte begrenzte Testfreigabe beachten; sichere Geheimnisbereitstellung, Aufbewahrungs-/Backupgrenzen und Linux-/Scannerkapazität vor Pilot/Live-Aktivierung nachweisen.
