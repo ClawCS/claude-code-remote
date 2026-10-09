@@ -2,7 +2,21 @@
 
 **Nicht fertig, nicht live aktiviert.** Dieser Bericht dokumentiert einen gesicherten Entwicklungsstand, keine Abnahme des Bewerbungsportals. Die bestehende Website, Mietanfragen, Newsletter, Werbung, DNS und Mailkonten wurden durch diese Umsetzung nicht verändert.
 
-**Fortschreibung am 09.10.2026:** Die weiter unten historisch als offen beschriebene PDF-Entscheidung ist beantwortet: Niko wählte bereinigte PDF-Kopien plus JPG/PNG und bestätigte anschließend die [schriftliche Ergänzung](../superpowers/specs/2026-10-09-application-document-reconstruction-design.md) mit „ergänzung passt, führe aUS“. Der [gezielte Plan-Nachtrag](../superpowers/plans/2026-10-09-application-document-reconstruction.md) ist ausgearbeitet und zur Durchsicht bereit. Keine neue Konvertierungsimplementierung, Installation oder Produktivaktivierung durch diese Dokumentationsfortschreibung; Task 3/F2 bleibt technisch offen. Die konkrete Freigabe echter synthetischer Testmails und ihrer gezielten Löschung ist weiterhin separat erforderlich. Der vorhandene lokale Task-3-Bereich bleibt wegen offener Prüfung und Linux-Testabhängigkeit unveröffentlicht; dokumentierte alte Testergebnisse sind keine neuen Testläufe.
+## Aktuelle Fortschreibung: Dokumentrekonstruktion
+
+Niko hat sowohl die [schriftliche Ergänzung](../superpowers/specs/2026-10-09-application-document-reconstruction-design.md) als auch den [gezielten Plan-Nachtrag](../superpowers/plans/2026-10-09-application-document-reconstruction.md) bestätigt. Die zuvor offene Richtungsentscheidung ist erledigt; keine weitere Design- oder Methodenfreigabe erforderlich.
+
+- **R1 lokal umgesetzt und unabhängig geprüft:** strikte Raster-/Quellverträge, unveränderte Sperre für direkten Original-PDF-Versand. Commit `ae7f4d6`; vollständiger damaliger Lauf: 93 Dateien / 1.725 Tests; fokussiert 151 Tests; Build, TypeScript und Lint erfolgreich.
+- **R2 lokal umgesetzt und unabhängig geprüft:** vollständige neue PDF-/JPG-/PNG-Kopien, begrenzte Rohpixelverarbeitung, vollständige Ausgabeprüfung und Scanner-Schnittstelle. Commit `303d72b`; vollständiger Lauf vor der letzten reinen Erweiterung der visuellen Fixtures: 95 Dateien / 1.758 Tests. Danach fokussiert 52 Tests, davon 15 visuelle Tests, sowie Build, TypeScript und Lint erfolgreich. Keine echte ClamAV-Qualifikation daraus ableiten.
+- Der Controller hat alle vier synthetischen PDF-Seitenpaare sowie größere JPEG-/PNG- und Transparenzmuster tatsächlich visuell verglichen. Lesbarkeit, Reihenfolge, Drehung, Seitenränder und leere Seite wurden lokal überprüft. Dies ersetzt weder Linux-Qualifikation noch Tests mit sämtlichen zugelassenen Grenzfällen.
+- Beide unabhängigen Taskreviews sind ohne blockierenden Befund abgeschlossen. Drei kleinere Punkte bleiben für die abschließende Prüfung erfasst: abschließende Abbruchprüfung im Quellprüfhelfer, vollständiger Callback-Regressionstest der mehrdeutigen PDF und bessere Lesbarkeit des Raster-Kindprozesses. R2 dokumentiert außerdem ehrlich, dass sein erster RED-Lauf nur fehlende Module meldete; spätere verhaltensbezogene RED/GREEN-Nachweise ersetzen diese Prozessabweichung nicht rückwirkend.
+- **R3 in Bearbeitung:** verschlüsselte, unveränderliche Ausgabe-/MIME-Artefakte und gemeinsame Speicherbilanz. Ein realer neuer Dateisystemtest ist absichtlich rot: Ein nach `unlink` weiterhin offener Eingangsdeskriptor wird bisher nicht vollständig bilanziert (1.123 statt mindestens 1.529 Byte im synthetischen Test). Die interne Lebensdauer-/Kapazitätsgrenze wird vor Fortsetzung präzisiert; keine vermeintliche Freigabe durch bloßes Löschen eines Pfades.
+
+Für diese lokalen Prüfungen wurde Poppler 26.10.0 samt erforderlichem CMake/pkgconf ausschließlich im ignorierten, planbezogenen Werkzeugverzeichnis gebaut. Keine globale Installation, Änderung gebündelter Laufzeiten oder Serverinstallation in diesem Schritt. Offizielle HTTPS-Quellen, Hashes und Bibliotheken sind dort dokumentiert; vorhandene PGP-Signaturen wurden nicht verifiziert. Der macOS-Build ist kein Linux-Betriebsnachweis.
+
+**Praxistest ausdrücklich genehmigt:** Erst nach bestandenen Sicherheitsprüfungen genau drei als TEST markierte Bewerbungen mit erfundenen Daten an `info@trinkgut-jammers.de`, eine Kopie im eigens angelegten Testordner, anschließend ausschließlich diese Testnachrichten einschließlich der Testkopie gezielt löschen. Bestehende Nachrichten bleiben unberührt. Die Zustimmung ist in `AGENTS.md` und Commit `8d9c958` gespeichert. Noch keine echte Testmail versandt, kein Postfach gelesen oder verändert; sichere Zugangsdaten und alle übrigen Gates bleiben erforderlich.
+
+Sämtliche neuen Implementierungscommits bleiben lokal und ungepusht, solange die dokumentierten Sicherheits-/Linux-Gates offen sind. Keine Live-Aktivierung, kein neuer Website-Release. Der nachfolgende Abschnitt beschreibt den historischen Ausgangsbefund und wird nicht als aktueller unbeantworteter Freigabebedarf verstanden.
 
 ## Erledigte und unabhängig geprüfte Bausteine
 
@@ -22,16 +36,16 @@ Die neue Sperre `PDF_AMBIGUITY_UNRESOLVED` verhindert eine produktiv gültige PD
 
 Eine begrenzte Untersuchung der QPDF-C-API bestätigte das Verhalten. Die ebenfalls geprüften öffentlichen Quellen zu pdfcpu zeigen keine nachgewiesene Lösung für diese beiden Fälle. Es wurden dafür keine weiteren Programme installiert und keine Hersteller kontaktiert.
 
-## Offene Entscheidung
+## Historische Entscheidungsvorlage — inzwischen beantwortet
 
 Niko wurde gefragt, ob eine Änderung des bisherigen Konzepts ausgearbeitet werden soll:
 
 - Empfehlung: PDF-Seiten in einer isolierten Verarbeitung in eine neue, bildbasierte PDF-Kopie übertragen und nur diese Kopie versenden. Der Bewerber muss darüber informiert werden; Textsuche, anklickbare Links und digitale Signaturen gehen verloren. Lesbarkeit, vollständige Seiten und Größen-/Ressourcengrenzen wären zusätzlich nachzuweisen.
 - Alternative: vorerst nur JPG/PNG-Anhänge zulassen. Dies wäre ebenfalls eine ausdrückliche Änderung des vereinbarten Uploadumfangs, keine stillschweigende Ersatzlösung.
 
-**Noch keine Antwort, keine Umsetzung dieser Änderungen.** Die ursprüngliche Vorgabe der unveränderten Dokumentweiterleitung wird nicht eigenmächtig aufgegeben. Inhaltsbereinigung ist ein möglicher Bestandteil eines mehrschichtigen Schutzkonzepts, keine allgemeine Sicherheitsgarantie; siehe [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html).
+Zum Zeitpunkt des ursprünglichen Berichts lag noch keine Antwort vor. Inzwischen gilt die bestätigte Ergänzung und der oben dokumentierte Umsetzungsstand. Inhaltsbereinigung ist ein möglicher Bestandteil eines mehrschichtigen Schutzkonzepts, keine allgemeine Sicherheitsgarantie; siehe [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html).
 
-Separat ist die konkrete Freigabe für drei eindeutig markierte synthetische TEST-Bewerbungen an `info@trinkgut-jammers.de`, eine Testordnerkopie und ausschließlich deren gezielte Löschung noch unbeantwortet. Keine echte Mailprüfung ohne diese Freigabe und die übrigen Betriebsnachweise.
+Die ursprünglich separat angefragte Freigabe für drei eindeutig markierte synthetische TEST-Bewerbungen ist inzwischen erteilt (genauer Umfang oben). Keine echte Mailprüfung ohne die übrigen Betriebsnachweise.
 
 ## Prüfnachweise
 
@@ -70,9 +84,9 @@ Der erlaubte gezielte Upgrade zog notwendige Abhängigkeiten nach: jpeg-turbo3.2
 
 ## Fortsetzung
 
-1. Entscheidung zur PDF-Verarbeitung klären und die betreffende Sicherheits-/Produktvorgabe ausdrücklich aktualisieren.
-2. Task3-FindingF2 durch eine geprüfte Lösung schließen; bisherige lokale Diagnose nicht als Freigabe umdeuten.
+1. Genehmigte Rekonstruktionsergänzung ab R3 fortsetzen; R1/R2 nicht wiederholen. Speicherlebensdauer-/Kapazitätsbefund mit Regressionstest schließen.
+2. Task3-FindingF2 durch vollständige Integration und Qualifikation schließen; bisherige lokale Diagnose nicht als Produktivfreigabe umdeuten.
 3. Erst danach die vorbereiteten Task4A/4B-Verträge/HTTP-Annahme und die restlichen Planaufgaben fortsetzen.
-4. Echte Testfreigabe, sichere Geheimnisbereitstellung, Aufbewahrungs-/Backupgrenzen und Linux-/Scannerkapazität vor Pilot/Live-Aktivierung nachweisen.
+4. Die bereits erteilte begrenzte Testfreigabe beachten; sichere Geheimnisbereitstellung, Aufbewahrungs-/Backupgrenzen und Linux-/Scannerkapazität vor Pilot/Live-Aktivierung nachweisen.
 
 Arbeitsplan: [2026-10-09-application-upload.md](../superpowers/plans/2026-10-09-application-upload.md). Der lokale planbezogene Fortschrittsledger bleibt erhalten; Task3 ist nicht als abgeschlossen markiert.
