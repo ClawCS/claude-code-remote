@@ -8,7 +8,7 @@
 
 **Tech Stack:** Bestehendes Next 16/React 19/TypeScript/Vitest/Playwright; Node mindestens 22.13.0, Linux-Build mit der geprüften Hostversion; SQLite über `better-sqlite3@13.0.3`, Streaming-Multipart über `busboy@1.6.0`, `imapflow@2.3.0`, `mailparser@3.9.37`, `otpauth@9.5.2`, vorhandenes Nodemailer, Sharp und pdf-lib; lokales ClamAV; Caddy/systemd. Neue Paketversionen wurden am 09.10.2026 nur über Registry-Metadaten geprüft, noch nicht installiert oder sicherheitsgeprüft.
 
-**Spec:** [Freigegebene technische Spezifikation](../specs/2026-10-09-application-upload-design.md). Betreiberfreigabe des schriftlichen Entwurfs am 09.10.2026: „ja passt so“. Dieser Implementierungsplan wartet noch auf Prüfung und Wahl der Ausführungsmethode; keine Produktivaktivierung durch dieses Dokument.
+**Spec:** [Freigegebene technische Spezifikation](../specs/2026-10-09-application-upload-design.md). Betreiberfreigabe des schriftlichen Entwurfs am 09.10.2026: „ja passt so“. Anschließend bestätigt Niko den Plan und wählt mit „empfohlene“ die subagentengestützte Umsetzung mit separater Gegenprüfung. Die Umsetzung beginnt; keine Produktivaktivierung durch diese Freigabe allein.
 
 ## Global Constraints
 
@@ -265,4 +265,4 @@ Diese Prüfung bewertet den **Plan**, nicht eine vorhandene Implementierung:
 - Alle fünf Review-Focus-Fälle sind konkreten Regressionstests zugeordnet. Schnittstellenbezeichnungen und öffentliche/private Daten sind konsistent festgelegt; keine freie Delete-/DB-Methode für Intake.
 - Betriebsabhängige Größen/Providerfähigkeiten bleiben ausdrücklich Aktivierungsgates, keine erfundenen Fakten. Geheimnisse, reale Mails, Infrastrukturinstallation und Liveschaltung sind durch die Planerstellung **nicht durchgeführt**.
 
-**Handoff:** Plan zur Betreiberprüfung vorlegen; Empfehlung: subagentengestützte Umsetzung mit separatem Review jeder sicherheitsrelevanten Einheit. Alternative: direkte Umsetzung in dieser Session mit unabhängiger Gesamtprüfung am Ende. Vor der Wahl keine Implementierung beginnen.
+**Ausführung gewählt:** Subagentengestützte Umsetzung mit separatem Review jeder sicherheitsrelevanten Einheit, bestätigt am 09.10.2026. Fortschritt wird während der Umsetzung im planbezogenen SDD-Ledger und danach im bereinigten Prüfbericht festgehalten. Weitere Design-/Methodenbestätigungen sind nicht nötig; konkrete Test-, Geheimnis- und gegebenenfalls Kostenfreigaben aus Task 15 bleiben erforderlich.
