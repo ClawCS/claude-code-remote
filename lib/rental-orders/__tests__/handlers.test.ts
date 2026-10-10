@@ -55,11 +55,60 @@ async function action(order: RentalOrder, name: string, cookie: string): Promise
 function syntheticLiveConfig(): string {
   const file = join(dir, "settings.json"), dataDir = join(dir, "private");
   writeFileSync(file, JSON.stringify({ issuer: { name: "Synthetic market", address: ["Test street 1"], taxNumber: "TEST TAX", vatRateBps: 1900, invoicePrefix: "RE" }, termsVersion: "v1", termsText: "Synthetic terms", privacyText: "Synthetic privacy", marketEmail: "market@example.invalid", publicOrigin: "https://rentals.example.invalid", selfPickupOnly: true, noExtraUpfrontCharges: true, onlinePayment: false }), { mode: 0o600 });
-  for (const [name, value] of Object.entries({ RENTAL_MODE: "live", RENTAL_DATA_DIR: dataDir, RENTAL_SETTINGS_FILE: file, RENTAL_ADMIN_SECRET: "a".repeat(40), RENTAL_SESSION_SECRET: "s".repeat(40), SMTP_HOST: "smtp.example.invalid", SMTP_PORT: "465", SMTP_SECURE: "true", SMTP_USER: "synthetic", SMTP_PASS: "synthetic-password", SMTP_FROM: "sender@example.invalid" })) vi.stubEnv(name, value);
+  for (const [name, value] of Object.entries({ RENTAL_MODE: "live", RENTAL_TRUSTED_PROXY: "single-proxy-x-real-ip", RENTAL_DATA_DIR: dataDir, RENTAL_SETTINGS_FILE: file, RENTAL_ADMIN_SECRET: "a".repeat(40), RENTAL_SESSION_SECRET: "s".repeat(40), SMTP_HOST: "smtp.example.invalid", SMTP_PORT: "465", SMTP_SECURE: "true", SMTP_USER: "synthetic", SMTP_PASS: "synthetic-password", SMTP_FROM: "sender@example.invalid" })) vi.stubEnv(name, value);
   return dataDir;
 }
 
 describe("rental handlers with real SQLite, captured mail and local test payments", () => {
+  it("keeps a second client able to log in after another client exhausts its failed attempts", async () => {
+    const dataDir = syntheticLiveConfig();
+    const attempt = (ip: string, password: string) => handlers.rentalLoginHandler(new Request("https://rentals.example.invalid/api/rental-admin/session", {
+      method: "POST", headers: { "Content-Type": "application/json", Origin: "https://rentals.example.invalid", "X-Real-IP": ip }, body: JSON.stringify({ password }),
+    }));
+    for (let i = 0; i < 10; i++) expect((await attempt("192.0.2.1", "wrong")).status).toBe(401);
+    const blocked = await attempt("192.0.2.1", "wrong");
+    expect(blocked.status).toBe(429); expect(blocked.headers.get("Retry-After")).toBe("60");
+    expect((await attempt("192.0.2.2", process.env.RENTAL_ADMIN_SECRET!)).status).toBe(200);
+    expect(existsSync(dataDir)).toBe(false);
+  });
+  it("keeps independent submit clients separate even when the first sends malformed bodies", async () => {
+    const dataDir = syntheticLiveConfig();
+    const attempt = (ip: string) => handlers.rentalSubmitHandler(new Request("https://rentals.example.invalid/api/rentals/orders", {
+      method: "POST", headers: { "Content-Type": "application/json", Origin: "https://rentals.example.invalid", "X-Real-IP": ip }, body: "{",
+    }));
+    for (let i = 0; i < 30; i++) expect((await attempt("192.0.2.1")).status).toBe(400);
+    expect((await attempt("192.0.2.1")).status).toBe(429);
+    expect((await attempt("192.0.2.2")).status).toBe(400);
+    expect(existsSync(dataDir)).toBe(false);
+  });
+  it("keeps provider webhooks independent and signals a retry instead of acknowledging a rejected delivery", async () => {
+    const dataDir = syntheticLiveConfig();
+    const attempt = (ip: string, body = "{}") => handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", {
+      method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Real-IP": ip }, body,
+    }));
+    for (let i = 0; i < 120; i++) expect((await attempt("192.0.2.1")).status).toBe(400);
+    const blocked = await attempt("192.0.2.1", "id=tr_retry123");
+    expect(blocked.status).toBe(429); expect(blocked.headers.get("Retry-After")).toBe("60");
+    expect(await blocked.json()).not.toHaveProperty("received");
+    expect(existsSync(dataDir)).toBe(false);
+    expect((await attempt("192.0.2.2", "id=tr_provider123")).status).toBe(200);
+    vi.setSystemTime(new Date("2026-10-01T12:01:00Z"));
+    expect((await attempt("192.0.2.1", "id=tr_retry123")).status).toBe(200);
+    expect(runtime.rentalRuntime().service.list()).toEqual([]);
+    expect(runtime.rentalRuntime().service.outbox()).toEqual([]);
+  });
+  it("does not expose a live session, ordering or webhook without the trusted proxy gate", async () => {
+    const dataDir = syntheticLiveConfig(); vi.stubEnv("RENTAL_TRUSTED_PROXY", "");
+    const config = await handlers.rentalConfigHandler(new Request("https://rentals.example.invalid/api/rentals/config"));
+    expect(await config.json()).toMatchObject({ enabled: false, onlinePayment: false });
+    for (const handler of [handlers.rentalLoginHandler, handlers.rentalSubmitHandler, handlers.rentalWebhookHandler]) {
+      const response = await handler(new Request("https://rentals.example.invalid/api/rentals/unused", {
+        method: "POST", headers: { "Content-Type": "application/json", Origin: "https://rentals.example.invalid", "X-Real-IP": "192.0.2.1" }, body: JSON.stringify({ password: process.env.RENTAL_ADMIN_SECRET }),
+      }));
+      expect(response.status).toBe(503); expect(response.headers.has("Set-Cookie")).toBe(false);
+    }
+    expect(existsSync(dataDir)).toBe(false);
+  });
   const rejectionProbes = [
     ["admin list", 401, () => handlers.rentalAdminListHandler(request("/api/rental-admin/orders"))],
     ["admin action", 401, () => handlers.rentalAdminActionHandler(request("/api/rental-admin/orders/unknown", { body: {} }), "unknown")],
@@ -86,13 +135,13 @@ describe("rental handlers with real SQLite, captured mail and local test payment
   it.each([["missing ID", "{}", 400], ["invalid ID", "id=tr_bad%2Fid", 400], ["oversized body", "id=" + "x".repeat(2100), 413]] as const)("rejects malformed live webhook before creating private storage: %s", async (_label, body, expectedStatus) => {
     const dataDir = syntheticLiveConfig();
     expect(existsSync(dataDir)).toBe(false);
-    const response = await handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body }));
+    const response = await handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Real-IP": "192.0.2.1" }, body }));
     expect(response.status).toBe(expectedStatus);
     expect(existsSync(dataDir)).toBe(false);
   });
   it("acknowledges a syntactically valid unknown webhook without creating orders or mail work", async () => {
     syntheticLiveConfig();
-    const response = await handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: "id=tr_unknown123" }));
+    const response = await handlers.rentalWebhookHandler(new Request("https://rentals.example.invalid/api/rentals/webhook", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Real-IP": "192.0.2.1" }, body: "id=tr_unknown123" }));
     expect(response.status).toBe(200); expect(await response.json()).toEqual({ received: true });
     expect(runtime.rentalRuntime().service.list()).toEqual([]);
     expect(runtime.rentalRuntime().service.outbox()).toEqual([]);

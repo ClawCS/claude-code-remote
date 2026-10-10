@@ -6,6 +6,7 @@ import { homedir, tmpdir } from "node:os";
 export type RentalRuntimeConfig = {
   mode: "disabled" | "test" | "live"; enabled: boolean; issues: string[];
   dataDir: string; publicOrigin: string; adminSecret: string; sessionSecret: string;
+  trustedProxy?: "single-proxy-x-real-ip";
   mollieApiKey?: string;
   smtp?: { host: string; port: number; secure: boolean; user: string; pass: string; from: string };
   marketEmail: string; issuer: RentalIssuer; termsVersion: string; termsText: string;
@@ -65,6 +66,11 @@ export function loadRentalConfig(env: Record<string, string | undefined> = proce
     try { const url = new URL(config.publicOrigin); if (!loopback(url.hostname) || !["http:", "https:"].includes(url.protocol) || url.username || url.password || url.pathname !== "/" || url.search || url.hash) issues.push("Testmodus ist nur auf einem gültigen Loopback-Ursprung zulässig."); else config.publicOrigin = url.origin; }
     catch { issues.push("Ungültiger Test-Ursprung."); }
   } else {
+    // Operator attestation: the app is reachable only through one trusted proxy
+    // which overwrites X-Real-IP with the connecting client's IP, never appends it.
+    // Do not set this until the actual ingress boundary has been verified.
+    if (env.RENTAL_TRUSTED_PROXY === "single-proxy-x-real-ip") config.trustedProxy = "single-proxy-x-real-ip";
+    else issues.push("RENTAL_TRUSTED_PROXY erfordert einen geprüften einzelnen Proxy mit überschriebenem X-Real-IP und gesperrtem Direktzugriff.");
     let settings: Record<string, unknown> = {};
     try {
       if (!env.RENTAL_SETTINGS_FILE || !isAbsolute(env.RENTAL_SETTINGS_FILE)) throw new Error();

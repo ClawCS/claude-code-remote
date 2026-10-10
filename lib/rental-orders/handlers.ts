@@ -28,7 +28,11 @@ function objectBody(value: unknown): Record<string, unknown> {
 async function guarded(run: () => Promise<Response> | Response): Promise<Response> {
   try { return await run(); }
   catch (error) {
-    if (error instanceof RentalHttpError || error instanceof RentalOrderError) return privateJson({ error: error.message }, error.status);
+    if (error instanceof RentalHttpError || error instanceof RentalOrderError) {
+      const response = privateJson({ error: error.message }, error.status);
+      if (error instanceof RentalHttpError && error.retryAfterSeconds) response.headers.set("Retry-After", String(error.retryAfterSeconds));
+      return response;
+    }
     return privateJson({ error: "Die Aktion konnte nicht abgeschlossen werden. Bitte erneut versuchen oder den Markt kontaktieren." }, 500);
   }
 }
@@ -53,7 +57,7 @@ export const rentalQuoteHandler = (request: Request) => guarded(async () => {
 });
 export const rentalSubmitHandler = (request: Request) => guarded(async () => {
   const admission = admissionConfig(request); assertSameOrigin(request, admission.publicOrigin);
-  rateLimit("rental-submit", 30);
+  rateLimit(request, "rental-submit", admission);
   const body = objectBody(await readBoundedJson(request));
   const nonce = request.headers.get("idempotency-key") || "";
   if (!/^[A-Za-z0-9_-]{16,100}$/.test(nonce)) throw new RentalHttpError("Bitte die Bestellseite erneut öffnen.");
@@ -82,7 +86,7 @@ export const rentalDocumentHandler = (request: Request, id: string, kind: string
 export const rentalLoginHandler = (request: Request) => guarded(async () => {
   const config = loadRentalConfig(); guardRuntime(request, config);
   if (!config.enabled) throw new RentalHttpError("Die Marktverwaltung ist noch nicht eingerichtet.", 503);
-  assertSameOrigin(request, config.publicOrigin); rateLimit("rental-login", 10);
+  assertSameOrigin(request, config.publicOrigin); rateLimit(request, "rental-login", config);
   const body = objectBody(await readBoundedJson(request, 2048));
   if (!credentialMatches(body.password, config.adminSecret)) throw new RentalHttpError("Der Markt-Zugang ist nicht korrekt.", 401);
   const response = privateJson({ ok: true });
@@ -142,7 +146,7 @@ export const rentalTestPayHandler = (request: Request, id: string) => guarded(as
 export const rentalWebhookHandler = (request: Request) => guarded(async () => {
   const admission = admissionConfig(request);
   if (admission.mode !== "live") throw new RentalHttpError("Nicht verfügbar.", 404);
-  rateLimit("rental-webhook", 120);
+  rateLimit(request, "rental-webhook", admission);
   if (Number(request.headers.get("content-length")) > 2048) throw new RentalHttpError("Ungültige Meldung.", 413);
   const reader = request.body?.getReader(); if (!reader) throw new RentalHttpError("Ungültige Meldung.");
   let text = ""; let length = 0; const decoder = new TextDecoder();

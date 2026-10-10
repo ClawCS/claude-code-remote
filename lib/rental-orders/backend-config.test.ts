@@ -10,12 +10,19 @@ function fixture() {
   const dir = mkdtempSync(join(tmpdir(), "rental-config-")); dirs.push(dir);
   const file = join(dir, "settings.json");
   const settings = { issuer: { name: "Example business", address: ["Example Street 1", "12345 Example"], taxNumber: "TEST TAX", vatRateBps: 1900, invoicePrefix: "RE" }, termsVersion: "v1", termsText: "Approved terms", privacyText: "Approved privacy", marketEmail: "market@example.com", publicOrigin: "https://rent.example.com", selfPickupOnly: true, noExtraUpfrontCharges: true, onlinePayment: true };
-  const env = { RENTAL_MODE: "live", RENTAL_DATA_DIR: join(dir, "private"), RENTAL_SETTINGS_FILE: file, RENTAL_ADMIN_SECRET: "a".repeat(40), RENTAL_SESSION_SECRET: "s".repeat(40), MOLLIE_API_KEY: "live_examplekey", SMTP_HOST: "smtp.example.com", SMTP_PORT: "465", SMTP_SECURE: "true", SMTP_USER: "mailer", SMTP_PASS: "smtp-secret", SMTP_FROM: "rentals@example.com" };
+  const env = { RENTAL_MODE: "live", RENTAL_TRUSTED_PROXY: "single-proxy-x-real-ip", RENTAL_DATA_DIR: join(dir, "private"), RENTAL_SETTINGS_FILE: file, RENTAL_ADMIN_SECRET: "a".repeat(40), RENTAL_SESSION_SECRET: "s".repeat(40), MOLLIE_API_KEY: "live_examplekey", SMTP_HOST: "smtp.example.com", SMTP_PORT: "465", SMTP_SECURE: "true", SMTP_USER: "mailer", SMTP_PASS: "smtp-secret", SMTP_FROM: "rentals@example.com" };
   writeFileSync(file, JSON.stringify(settings), { mode: 0o600 });
   return { dir, file, settings, env };
 }
 
 describe("rental runtime activation", () => {
+  it.each([undefined, "", "true", "x-forwarded-for"])("keeps live ordering closed without explicit trusted proxy policy: %s", value => {
+    const { env } = fixture();
+    const config = loadRentalConfig({ ...env, RENTAL_TRUSTED_PROXY: value });
+    expect(config.enabled).toBe(false);
+    expect(config.issues.some(issue => issue.includes("RENTAL_TRUSTED_PROXY"))).toBe(true);
+    expect(publicRentalConfig(config).onlinePayment).toBe(false);
+  });
   it("does not activate from secrets alone or incomplete live settings", () => {
     expect(loadRentalConfig({}).enabled).toBe(false);
     const config = loadRentalConfig({ RENTAL_MODE: "live" });
