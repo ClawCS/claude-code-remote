@@ -24,6 +24,10 @@ it("offers both approved jobs and the fixed contact in the safe initial HTML", (
   expect(html).not.toContain('<input type="file"');
   expect(html).not.toContain("Bewerbungsdateien hochgeladen oder gespeichert");
 });
+it.each(["Vollzeit", "Teilzeit"])("offers a role-specific email action for %s before upload readiness", (role) => {
+  const html = renderToStaticMarkup(BewerbungPage());
+  expect(html).toMatch(new RegExp(`href="mailto:info@trinkgut-jammers\\.de\\?subject=Bewerbung%20Verkauf%20${role}"[^>]*>Per E-Mail für ${role} bewerben</a>`));
+});
 it("explains conditional portal processing, voluntary files and honest copy limits", () => {
   const html=renderToStaticMarkup(DatenschutzPage());
   expect(html).toContain('id="bewerbungen"');

@@ -81,7 +81,26 @@ test("disabled runtime stays email-only and never bootstraps a session", async (
   await page.goto("/bewerbung");
   await expect(page.getByText("Der Online-Upload ist zurzeit nicht verfügbar.", { exact: false })).toBeVisible();
   await expect(page.getByLabel("Name *", { exact: true })).toHaveCount(0);
+  for (const role of ["Vollzeit", "Teilzeit"]) {
+    const card = page.locator("section").filter({ has: page.getByRole("heading", { name: `Verkauf ${role} (m/w/d)`, exact: true }) }).last();
+    await expect(card.getByRole("link", { name: `Per E-Mail für ${role} bewerben`, exact: true })).toHaveAttribute("href", `mailto:info@trinkgut-jammers.de?subject=Bewerbung%20Verkauf%20${role}`);
+    await expect(card.getByRole("button", { name: `Für ${role} bewerben`, exact: true })).toHaveCount(0);
+  }
   expect(port.sessions).toBe(0); expect(port.uploads).toEqual([]);
+});
+
+test.describe("email-only applications without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+  test("keeps both sales email actions usable without the upload client", async ({ page }) => {
+    await page.goto("/bewerbung");
+    for (const role of ["Vollzeit", "Teilzeit"]) {
+      const link = page.getByRole("link", { name: `Per E-Mail für ${role} bewerben`, exact: true });
+      await expect(link).toBeVisible();
+      await expect(link).toHaveAttribute("href", `mailto:info@trinkgut-jammers.de?subject=Bewerbung%20Verkauf%20${role}`);
+    }
+    await expect(page.getByRole("link", { name: "Per E-Mail für die Ausbildung bewerben", exact: true })).toHaveAttribute("href", "mailto:info@trinkgut-jammers.de?subject=Bewerbung%20Ausbildung");
+    await expect(page.locator('input[type="file"]')).toHaveCount(0);
+  });
 });
 
 test("existing authorized pilot is clearly TEST and uses only the reviewed synthetic marker",async({page})=>{

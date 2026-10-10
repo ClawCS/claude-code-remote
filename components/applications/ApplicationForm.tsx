@@ -157,8 +157,22 @@ export default function ApplicationForm({ config: _initialConfig }: { config?: P
   const fieldClass = styles.field;
   return <section aria-labelledby="application-contact-title">
     <div className={styles.jobGrid}>
-      <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.fulltime} /><h2 className="text-2xl font-bold">Verkauf Vollzeit (m/w/d)</h2><p className="mt-3">Bewirb dich für den Verkauf in Vollzeit.</p><button type="button" className={styles.textLink} disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-fulltime")}>Für Vollzeit bewerben</button></section>
-      <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.parttime} /><h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2><p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p><button type="button" className={styles.textLink} disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button></section>
+      <section className={styles.jobCard}>
+        <JobPoster photo={USER_JOB_POSTERS.fulltime} />
+        <h2 className="text-2xl font-bold">Verkauf Vollzeit (m/w/d)</h2>
+        <p className="mt-3">Bewirb dich für den Verkauf in Vollzeit.</p>
+        {config.enabled
+          ? <button type="button" className={styles.textLink} disabled={locked || !!receipt} onClick={() => chooseJob("sales-fulltime")}>Für Vollzeit bewerben</button>
+          : <a className={styles.textLink} href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Verkauf%20Vollzeit`}>Per E-Mail für Vollzeit bewerben</a>}
+      </section>
+      <section className={styles.jobCard}>
+        <JobPoster photo={USER_JOB_POSTERS.parttime} />
+        <h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2>
+        <p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p>
+        {config.enabled
+          ? <button type="button" className={styles.textLink} disabled={locked || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button>
+          : <a className={styles.textLink} href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Verkauf%20Teilzeit`}>Per E-Mail für Teilzeit bewerben</a>}
+      </section>
       <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.apprentice} /><h2 className="text-2xl font-bold">Ausbildung im Getränkehandel / Einzelhandel (m/w/d)</h2><p className="mt-3">Starte deine Ausbildung bei Jammers in Goch. Wir freuen uns auf deine Bewerbung.</p><a className={styles.textLink} href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Ausbildung`}>Per E-Mail für die Ausbildung bewerben</a></section>
     </div>
     <div className={styles.application}>
