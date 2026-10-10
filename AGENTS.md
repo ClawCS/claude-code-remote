@@ -46,6 +46,10 @@ Nach jeder Code-Aenderung an UI/Seiten (`app/**`, `components/**`, `lib/**`, `pu
 
 Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen.
 
+# Weiterbildungsaussagen – ausdrücklicher Widerruf, 10.10.2026
+
+Niko verlangt die vollständige Entfernung des Akademie-Banners „Du willst dich weiterbilden?“ einschließlich der nicht bestätigten Zusagen zur Mitarbeiterunterstützung und Förderung über Bildungsgutscheine. Auch keine Kontaktaufforderung zu Förderberatung durch den Markt daraus ableiten. Eine ältere Git-Version oder ein allgemeiner Homepageauftrag ist keine Freigabe für solche Arbeitgeberleistungen. Externe Weiterbildungshinweise bleiben davon getrennt; keine Wiedereinführung dieser Aussagen ohne ausdrückliche Betreiberbestätigung.
+
 # Kontakt-Logos – freigegebenes Design, 09.10.2026
 
 Für Google-Maps-Routenlinks, Instagram- und WhatsApp-Kontaktlinks die belegten offiziellen Originalgrafiken unter `public/images/brands/` nutzen; Herkunft und SHA-256 unter `assets/source/contact-brands/provenance.json`. Keine selbst nachgezeichneten Symbole, umgefärbten Logos, zusätzlichen Rahmen oder farbigen Buttonflächen, auch nicht beim Hover. Original-Proportionen und transparente Freiräume erhalten. Zugängliche DE-/NL-Beschriftungen, unveränderte Linkziele, große unsichtbare Klickfläche und sichtbaren Tastaturfokus erhalten. Das aktuell offiziell gelieferte WhatsApp-Logo ist ein grünes Zeichen auf Transparenz; keinen grün-weißen Container erfinden. Diese Freigabe ersetzt die frühere Anweisung, bestehende Buttonhintergründe beizubehalten.

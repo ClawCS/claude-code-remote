@@ -28,18 +28,6 @@ export default function ZertifikatePage() {
         </p>
       </div>
 
-      {/* Info-Banner */}
-      <div className="bg-gradient-to-r from-[#DC2626] to-[#B91C1C] text-white rounded-2xl p-6 mb-10 flex flex-col sm:flex-row items-center gap-4">
-        <span className="text-4xl">💡</span>
-        <div>
-          <h3 className="font-bold text-lg">Du willst dich weiterbilden?</h3>
-          <p className="text-white/90 text-sm">
-            Sprich uns an! Wir bei Trinkgut Jammers unterstützen Mitarbeiter bei Weiterbildungen.
-            Einige Kurse können über Bildungsgutscheine gefördert werden.
-          </p>
-        </div>
-      </div>
-
       {/* Kategorien */}
       {kategorien.map((kat) => {
         const kurse = zertifikatskurse.filter((k) => k.kategorie === kat.key);
@@ -137,17 +125,11 @@ export default function ZertifikatePage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Zurück zur Akademie */}
       <div className="text-center">
-        <p className="text-muted mb-4">Fragen zu Kursen oder Förderung? Sprich uns direkt an!</p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/akademie" className="px-6 py-3 bg-[#DC2626] text-white rounded-xl font-semibold hover:bg-[#B91C1C] transition-colors">
-            Zurück zur Akademie
-          </Link>
-          <a href="tel:+492823418707" className="px-6 py-3 border-2 border-secondary text-secondary rounded-xl font-semibold hover:bg-secondary hover:text-white transition-colors">
-            Anrufen: 02823-418707
-          </a>
-        </div>
+        <Link href="/akademie" className="inline-flex px-6 py-3 bg-[#DC2626] text-white rounded-xl font-semibold hover:bg-[#B91C1C] transition-colors">
+          Zurück zur Akademie
+        </Link>
       </div>
     </div>
   );
