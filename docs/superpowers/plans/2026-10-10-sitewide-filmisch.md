@@ -77,7 +77,7 @@
 - [ ] **Step 2: Run RED.** `NODE_ENV=test npx vitest run lib/cinematic/__tests__/sitewide-landings.test.tsx --maxWorkers=2`; real missing structure assertions fail first.
 - [ ] **Step 3: Implement deliberate composition.** Bring the whole approved prototype progression to the real page: editorial offers, confident service story, larger alternating market/brand imagery, clear giveaways/team/TCG entrances. Remove duplicated decorative marketing blocks while retaining every functional destination and required warning. Original film, view/pause behavior and six-bottle finale unchanged. NL uses same header proportions/type system with Dutch navigation; no orange full-page repaint.
 - [ ] **Step 4: Browser verify.** 390/768/1440 full page views, film+finale, no horizontal overflow, complete poster/flyer motives, no stale beige/technical heading styles, no broken hash anchors. Include long NL current title and no-active-flyer state using marked fixtures only, never production clock override.
-- [ ] **Step 5: Focused tests, TypeScript, changed-file lint, diff check, project tests once, commit.** Keep evidence in own report; main controller handles shared final build.
+- [ ] **Step 5: Focused tests, TypeScript, changed-file lint, diff check, full web tests once, commit.** Use `NODE_ENV=test npm test -- lib --maxWorkers=2`. Native application prerequisites were diagnosed in Task1; unchanged native suites are consolidated in final acceptance, not repeated for each visual family. Keep evidence in own report; main controller handles shared final build.
 
 ### Task 3: Offers, catalogue, brands, people and action pages
 
@@ -94,7 +94,7 @@
 - [ ] **Step 2: Run RED.** `NODE_ENV=test npx vitest run lib/cinematic/__tests__/sitewide-collections.test.tsx --maxWorkers=2` shows missing new family structure.
 - [ ] **Step 3: Implement.** Offers: calm language/date treatment and complete local originals; catalogue: clear search/filter toolbar with clean structured cards (not a made-up WWS catalogue). Brands/stories: large image+text editorial rhythm, no synthetic data. Team: portraits with names only and approved logo placeholder. Giveaways: complete post covers and real agenda retained, visually part of same site.
 - [ ] **Step 4: Verify at 390/768/1440.** Representative route of every listed family plus `/kategorie/bier` (verify actual slug), search no-match and archive; inspect full motives and long titles, open actual flyer viewer, keyboard close/focus. No cross-family CSS leaks after navigation.
-- [ ] **Step 5: Focused family tests, TypeScript, changed-file lint, diff check, project tests once, commit.** Do not edit content manifests/assets/API or schedule, do not build concurrently.
+- [ ] **Step 5: Focused family tests, TypeScript, changed-file lint, diff check, full web tests once, commit.** Use `NODE_ENV=test npm test -- lib --maxWorkers=2`; unchanged native application suites are consolidated in final acceptance. Do not edit content manifests/assets/API or schedule, do not build concurrently.
 
 ### Task 4: Recipes, academy and interactive customer tools
 
@@ -110,7 +110,7 @@
 - [ ] **Step 2: Run RED.** `NODE_ENV=test npx vitest run lib/cinematic/__tests__/sitewide-learning-tools.test.tsx --maxWorkers=2`; tests must expose old presentation or missing structure, not data stubs.
 - [ ] **Step 3: Implement.** Recipes image-led with intact licenses; course navigation/readable lesson text with existing illustrative media. Tools become focused workspaces with clear step/progress/results layouts; remove decorative emoji, obsolete gradients/glows/oversized rounded tiles from rendered views without deleting functional text/states. Retired feature pages stay informative and disabled. No education funding claims or new promised expertise.
 - [ ] **Step 4: Browser verify each family.** 390/768/1440 first view plus relevant active states; no controls hidden by sticky bars or inaccessible mobile lesson navigation; strong focus/contrast and intact input relationships.
-- [ ] **Step 5: Focused tests, existing quiz/finder/calculator tests, TypeScript, changed-file lint, diff check, project tests once, commit.** Do not change actual recipe/course/tool data.
+- [ ] **Step 5: Focused tests, existing quiz/finder/calculator tests, TypeScript, changed-file lint, diff check, full web tests once, commit.** Use `NODE_ENV=test npm test -- lib --maxWorkers=2`; unchanged native application suites are consolidated in final acceptance. Do not change actual recipe/course/tool data.
 
 ### Task 5: Rental, career, lists, contact, legal and recovery pages
 
@@ -127,7 +127,7 @@
 - [ ] **Step 2: Run RED.** `NODE_ENV=test npx vitest run lib/cinematic/__tests__/sitewide-service-pages.test.tsx --maxWorkers=2` fails on old presentation.
 - [ ] **Step 3: Implement.** Rental product choice and summary become a calm useful catalogue/form, consistent controls and mobile stacking. Career job originals remain full and prominent with clear info mailbox CTA and unchanged gates. Lists/drawers/checkout states consistent. Contact receives useful grouped information, legal pages comfortable reading widths, 404 straightforward links rather than emoji cards.
 - [ ] **Step 4: Browser verify.** All listed families at 390/768/1440, important form/empty/error states, Escape drawer close/focus; no business mutation or inferred activation. Inspect inherited admin shell read-only for layout regression without admin login or protected data.
-- [ ] **Step 5: Focused tests, existing rental/application/read-only tests, TypeScript, changed-file lint, diff check, project tests once, commit.** Report residual native prerequisites honestly; no service/security fixes from this scope.
+- [ ] **Step 5: Focused tests, existing rental/application/read-only web tests, TypeScript, changed-file lint, diff check, full web tests once, commit.** Use `NODE_ENV=test npm test -- lib --maxWorkers=2`; unchanged native application suites are consolidated in final acceptance. Report residual native prerequisites honestly; no service/security fixes from this scope.
 
 ## Controller final acceptance
 
