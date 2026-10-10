@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCustodyLedger } from "../../src/custody";
-import { openRepository } from "../../src/repository";
+import { openTestRepository as openRepository } from "./admission";
 import { encodePayload, payloadDigest, sealIncoming } from "../../src/crypto";
 import { digest, utcInstant, type WorkerKeys, type PayloadFile } from "../../src/types";
 import { testIngressAuthority } from "./ingress-authority";

@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCustodyLedger } from "../src/custody";
 import { encodePayload, payloadDigest, sealIncoming } from "../src/crypto";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { digest, utcInstant, type ApplicationRepository } from "../src/types";
 import { testIngressAuthority, TestIngressAuthority } from "./fixtures/ingress-authority";
 import { makeArtifactHarness } from "./fixtures/artifacts";

@@ -9,7 +9,7 @@ import { createHmac, generateKeyPairSync } from "node:crypto";
 import { mkdtemp, realpath, mkdir, rm, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { createTestCustodyLedger } from "./fixtures/ingress-authority";
 import { testReadiness } from "./fixtures/admission";
 import { createWorkerRpc, createWorkerRpcClient } from "../src/worker-rpc";
@@ -59,7 +59,7 @@ async function active(mode: "enabled" | "pilot" = "enabled", wrap?: (port: Intak
   time = new Date("2026-10-09T10:00:00.000Z");
   const clock = { now: () => new Date(time) };
   config = { mode, origin, clock, host: "127.0.0.1", port: 3105, proxy: { peer: "loopback", clientIpHeader: "x-application-client-ip" }, lifetimes: { sessionSeconds: 604800, formSeconds: 900, pilotSeconds: 3600 }, acceptance: { privateRoot: intakeRoot, socketPath: join(root, "worker.sock"), ownerUid: process.getuid!(), sharedGid: process.getgid!(), publicKey: keys.publicKey, keys: { cookieSignature: Buffer.alloc(32, 1), formSignature: Buffer.alloc(32, 2), sessionHash: Buffer.alloc(32, 3), sessionRate: Buffer.alloc(32, 4), ipRate: Buffer.alloc(32, 5), pilotSignature: Buffer.alloc(32, 6) } } };
-  repo = openRepository(join(root, "registry.sqlite"));
+  repo = openRepository(join(root, "registry.sqlite"), clock, mode === "pilot" ? { admissionScope: { currentScope: () => ["b".repeat(32), "synthetic", "synthetic-run", "2026-10-09T10:00:00.000Z", "2026-10-09T11:00:00.000Z"] } } : {});
   // Explicit synthetic controlled-holder fixture; never a production readiness adapter.
   const custody = createTestCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
   await custody.reconcile();

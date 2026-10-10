@@ -3,7 +3,7 @@ import { generateKeyPairSync, randomBytes } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { digest } from "../src/types";
 import { TOTP, Secret } from "otpauth";
 import { createPasswordHasher, newFactor, openFactor, sealFactor, validPassword } from "../src/auth-crypto";

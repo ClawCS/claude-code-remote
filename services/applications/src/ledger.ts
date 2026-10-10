@@ -1,8 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { decodeJournalEvent, encodeJournalEvent, validateJournalTrust, verifyJournalCheckpoint, verifyJournalEntry, verifyJournalReceipt, verifyNextJournalEntry } from "./ledger-contract";
-import type { DeletionLedgerPort, DurableReceipt, JournalCheckpoint, JournalClock, JournalEvent, JournalProgress, LedgerTrustContext, LedgerTrustPort, SafetyJournal } from "./types";
+import { applicationId, type ApplicationId, type DeletionLedgerPort, type DurableReceipt, type JournalCheckpoint, type JournalClock, type JournalEvent, type JournalProgress, type JournalSafetyProjection, type LedgerTrustContext, type LedgerTrustPort, type SafetyJournal } from "./types";
 
-interface Dependencies { readonly port: DeletionLedgerPort; readonly trust: LedgerTrustPort; readonly clock: JournalClock }
+interface Dependencies { readonly port: DeletionLedgerPort; readonly trust: LedgerTrustPort; readonly clock: JournalClock; readonly projection?: JournalSafetyProjection }
 interface Pending {
   readonly event: JournalEvent;
   receipt?: DurableReceipt;
@@ -39,7 +39,7 @@ function identity(context: LedgerTrustContext): string {
 
 /** Worker-local sole coordinator. Construction and signatures do not qualify the
  * injected storage or trust ports. Production composition must own exactly one. */
-export function createSafetyJournal({ port, trust, clock }: Dependencies): SafetyJournal {
+export function createSafetyJournal({ port, trust, clock, projection }: Dependencies): SafetyJournal {
   if (ownedPorts.has(port)) throw failure("ALREADY_OWNED");
   let context: LedgerTrustContext;
   try { context = snapshot(trust.currentContext()); } catch { throw failure("UNAVAILABLE"); }
@@ -49,6 +49,8 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
   let wallHigh = -Infinity, monoHigh = -Infinity, clockFailed = false;
   let active: Work | null = null;
   const waiting: Work[] = [];
+  const admittedOwners = new Set<Promise<void>>();
+  function settle(): Promise<void> { return Promise.all([...admittedOwners]).then(() => {}); }
 
   function now(): { wall: number; mono: number } {
     const wallDate = clock.wallNow(), wall = wallDate.getTime(), mono = clock.monotonicNow();
@@ -64,10 +66,19 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
     } catch { observedAt = null; throw failure("UNAVAILABLE"); }
   }
   current();
+  projection?.beginProjection(context.anchor);
   ownedPorts.add(port);
   function observation(): JournalCheckpoint | null {
     try { const time = current(); return !pending && !unknown && observedAt !== null && time.mono - observedAt < 60_000 ? checkpoint : null; }
     catch { return null; }
+  }
+  function caseAuthority(caseId: ApplicationId) {
+    try {
+      applicationId(caseId); const head = observation(); if (!head || !projection) return null;
+      const latestFence = projection.readCaseAuthority(caseId, head);
+      if (observation() !== head) return null;
+      return Object.freeze({ head: Object.freeze({ sequence: head.sequence, hash: head.hash, observedAt: head.observedAt, cursor: head.cursor }), latestFence });
+    } catch { return null; }
   }
   function continuation(): JournalProgress { return { kind: "continuation", checkpoint: pending?.replay ?? checkpoint, next: pending?.target ? "continue-replay" : "refresh" }; }
   function guard(work: Work): void {
@@ -90,6 +101,9 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
     let admitted: number;
     try { admitted = current().mono; } catch { return Promise.reject(failure("UNAVAILABLE")); }
     if (active && waiting.length >= 2) return Promise.reject(failure("QUEUE_FULL"));
+    let settled!: () => void;
+    const ownership = new Promise<void>(resolve => { settled = resolve; }); admittedOwners.add(ownership);
+    const release = () => { admittedOwners.delete(ownership); settled(); };
     return new Promise<T>((resolve, reject) => {
       let delivered = false;
       const work: Work = {
@@ -97,7 +111,7 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
         expire() {
           if (work.expired) return;
           work.expired = true; delivered = true;
-          if (work.phase === "waiting") { const index = waiting.indexOf(work); if (index >= 0) waiting.splice(index, 1); reject(failure("QUEUE_EXPIRED")); }
+          if (work.phase === "waiting") { const index = waiting.indexOf(work); if (index >= 0) waiting.splice(index, 1); release(); reject(failure("QUEUE_EXPIRED")); }
           else if (work.phase === "replay" && progressResult) { observedAt = null; resolve(continuation() as T); }
           else { if (work.ownsPending && pending) unknown = true; observedAt = null; reject(failure(unknown ? "UNKNOWN" : "UNAVAILABLE")); }
         },
@@ -115,7 +129,7 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
           }
           // All underlying awaits (including iterator cleanup) settled. Release
           // before delivering normal completion, never on caller timeout alone.
-          clearTimeout(work.timer); active = null; drain();
+          clearTimeout(work.timer); active = null; release(); drain();
           if (!delivered) { delivered = true; if (error) reject(error); else resolve(result as T); }
         },
       };
@@ -169,7 +183,10 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
           state.memberSeen = true;
         }
         if (entry.sequence === target.sequence && (entry.hash !== target.hash || entry.wire !== state.target.entry)) throw failure("INVALID");
-        state.replay = entry; checkpoint = entry; count++; bytes += size;
+        guard(work); projection?.applyVerifiedEntry(state.replay, entry); guard(work);
+        state.replay = entry;
+        if (BigInt(entry.sequence) > BigInt(checkpoint.sequence)) checkpoint = entry;
+        count++; bytes += size;
       }
       if (state.replay.hash !== target.hash || !state.memberSeen) throw failure("INCOMPLETE");
     } finally {
@@ -255,5 +272,5 @@ export function createSafetyJournal({ port, trust, clock }: Dependencies): Safet
     if (unknown || !pending?.target) return Promise.reject(failure("UNAVAILABLE"));
     return enqueue(replay, true);
   }
-  return Object.freeze({ append, refresh, recover, continueReplay, observation });
+  return Object.freeze({ append, refresh, recover, continueReplay, observation, caseAuthority, settle });
 }

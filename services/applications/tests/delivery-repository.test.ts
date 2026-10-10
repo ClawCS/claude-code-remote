@@ -4,9 +4,9 @@ import { mkdtempSync, realpathSync, rmSync, unlinkSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { sealContact } from "../src/contact-crypto";
-import { testAdmission } from "./fixtures/admission";
+import { testAdmission, removeTask10Schema } from "./fixtures/admission";
 import { digest, utcInstant, type ApplicationId, type ApplicationRepository, type ArtifactRecord, type CaseRecord, type DeliverySnapshot, type RegisteredMail } from "../src/types";
 
 const now = utcInstant("2026-10-09T10:00:00.000Z"), hash = digest("a".repeat(64));
@@ -84,7 +84,8 @@ describe("durable delivery authority", () => {
   });
   it("migrates actual schema3 send states conservatively without fabricating identity", async () => {
     repo.close(); const legacy = new Database(join(dir, "db.sqlite"));
-    // Remove v4/v5/v6 additions to produce the actual schema3 fixture.
+    // Remove v4/v5/v6/v7 additions to produce the actual schema3 fixture.
+    removeTask10Schema(legacy);
     legacy.exec("DROP TABLE lifecycle_audit; DROP TABLE lifecycle_proposals; DROP TABLE case_lifecycle;");
     legacy.exec("DROP TABLE auth_grants; DROP TABLE auth_sessions; DROP TABLE auth_recovery; DROP TABLE auth_staff; DROP TABLE auth_attempts; DROP TABLE auth_clock; DROP TABLE delivery_attempts; DROP TABLE deliveries; DROP INDEX delivery_claim_token; DROP TRIGGER case_accepted_at_immutable; ALTER TABLE cases DROP COLUMN claimToken; ALTER TABLE cases DROP COLUMN claimKind; PRAGMA user_version=3;");
     legacy.prepare("UPDATE cases SET deliveryState='smtp_accepted' WHERE id=?").run(id); legacy.close();
@@ -93,7 +94,7 @@ describe("durable delivery authority", () => {
     expect(repo.getDelivery(id).identity).toBeNull(); expect(repo.getDelivery(id).reason).toBe("LEGACY_UNVERIFIED"); expect(repo.getDelivery(id).attempts).toEqual([]);
     expect(repo.getRequestIdentity(id).acceptedAt).toBe(now); expect(repo.listArtifactReservations()).toHaveLength(2);
     repo.close(); const inspection = new Database(join(dir, "db.sqlite"));
-    expect(inspection.pragma("user_version", { simple: true })).toBe(6);
+    expect(inspection.pragma("user_version", { simple: true })).toBe(7);
     expect(() => inspection.prepare("UPDATE cases SET acceptedAt=? WHERE id=?").run(at(1), id)).toThrow("IMMUTABLE_ACCEPTED_AT"); inspection.close();
     repo = openRepository(join(dir, "db.sqlite"));
   });

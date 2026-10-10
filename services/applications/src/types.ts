@@ -33,8 +33,17 @@ export interface Clock { now(): Date }
 // Worker-only safety-journal V1. These signed bytes authenticate bindings, not
 // storage durability, current coverage, or exclusion of another writer.
 export type FenceAction = "reject" | "correct-date" | "reopen" | "hold" | "renew-hold" | "release-hold" | "manual-case";
+export type CopyResultPayload = readonly [ApplicationId, string, "deleted" | "not-found", null]
+  | readonly [ApplicationId, string, "mismatch", "INVALID_IDENTITY" | "CONTENT_MISMATCH" | "UIDVALIDITY_CHANGED" | "IDENTITY_CHANGED"]
+  | readonly [ApplicationId, string, "blocked", "DEPENDENCY_UNAVAILABLE" | "CONNECTION_FAILED" | "OPERATION_TIMEOUT" | "PROTOCOL_LIMIT" | "FOLDER_UNAVAILABLE" | "CANDIDATE_LIMIT" | "INCOMPLETE_CONTENT" | "UNSAFE_DELETE_CAPABILITY" | "WRITE_UNAVAILABLE"]
+  | readonly [ApplicationId, string, "uncertain", "DELETE_UNCERTAIN"];
+export type MailboxJournalEvent = readonly ["tj-journal-event-v1", string, string, "attempt_intent", readonly [ApplicationId, string, "initial" | "fence", string, string, string, string, string]]
+  | readonly ["tj-journal-event-v1", string, string, "copy_mutation_started", readonly [ApplicationId, string, "1" | "2" | "3", string]]
+  | readonly ["tj-journal-event-v1", string, string, "copy_result", CopyResultPayload]
+  | readonly ["tj-journal-event-v1", string, string, "mailbox_clear_observed", readonly [ApplicationId, string, "1" | "2" | "3", string, string, "listed-selectable-v1"]];
 export type JournalEvent = readonly ["tj-journal-event-v1", string, string, "case_fence", readonly [ApplicationId, "initial" | "fence", string, string, FenceAction]]
-  | readonly ["tj-journal-event-v1", string, string, "barrier", readonly [string, string, "startup" | "restore" | "refresh"]];
+  | readonly ["tj-journal-event-v1", string, string, "barrier", readonly [string, string, "startup" | "restore" | "refresh"]]
+  | MailboxJournalEvent;
 export type Tombstone = JournalEvent;
 export type SignedEntry = string & { readonly __signedJournalEntry: unique symbol };
 export type SignedHead = string & { readonly __signedJournalHead: unique symbol };
@@ -58,6 +67,13 @@ export interface LedgerTrustPort { currentContext(): LedgerTrustContext | null }
 export interface JournalClock { wallNow(): Date; monotonicNow(): number }
 export interface JournalCheckpoint { readonly sequence: string; readonly hash: string; readonly observedAt: string | null; readonly cursor: LedgerCursor }
 export interface VerifiedJournalEntry extends JournalCheckpoint { readonly event: JournalEvent; readonly wire: SignedEntry }
+export interface JournalFenceFact { readonly eventId: string; readonly sequence: string; readonly entryHash: string }
+export interface JournalCaseAuthority { readonly head: JournalCheckpoint; readonly latestFence: JournalFenceFact | null }
+export interface JournalSafetyProjection {
+  beginProjection(anchor: LedgerAnchor): void;
+  applyVerifiedEntry(previous: JournalCheckpoint, entry: VerifiedJournalEntry): void;
+  readCaseAuthority(caseId: ApplicationId, expectedAppliedHead: JournalCheckpoint): JournalFenceFact | null;
+}
 export type JournalProgress = { readonly kind: "observed"; readonly checkpoint: JournalCheckpoint; readonly receipt: DurableReceipt }
   | { readonly kind: "continuation"; readonly checkpoint: JournalCheckpoint; readonly next: "continue-replay" | "refresh" };
 export interface SafetyJournal {
@@ -66,6 +82,8 @@ export interface SafetyJournal {
   continueReplay(): Promise<JournalProgress>;
   recover(event?: JournalEvent): Promise<JournalProgress>;
   observation(): JournalCheckpoint | null;
+  caseAuthority(caseId: ApplicationId): JournalCaseAuthority | null;
+  settle(): Promise<void>;
 }
 // Worker-only authority. This port must be independently qualified before use;
 // a stored epoch or a local configuration flag is not restore assurance.
@@ -139,10 +157,28 @@ export interface VerifiedCopy { readonly mailbox: string; readonly uidValidity: 
 export type MailboxIssue = "INVALID_IDENTITY" | "DEPENDENCY_UNAVAILABLE" | "CONNECTION_FAILED" | "OPERATION_TIMEOUT" | "PROTOCOL_LIMIT" | "LIST_LIMIT" | "FOLDER_UNAVAILABLE" | "CANDIDATE_LIMIT" | "INCOMPLETE_CONTENT" | "CONTENT_MISMATCH" | "UIDVALIDITY_CHANGED" | "UNSAFE_DELETE_CAPABILITY" | "WRITE_UNAVAILABLE" | "IDENTITY_CHANGED" | "DELETE_UNCERTAIN";
 export interface MailboxSearch { copies: VerifiedCopy[]; complete: boolean; issues: MailboxIssue[] }
 export type DeleteResult = { kind: "deleted" } | { kind: "not-found" } | { kind: "mismatch"; issue: MailboxIssue } | { kind: "blocked"; issue: MailboxIssue } | { kind: "uncertain"; issue: MailboxIssue };
-export interface MailboxPort { findVerified(mail: RegisteredMail): Promise<MailboxSearch>; deleteVerified(copy: VerifiedCopy, mail: RegisteredMail): Promise<DeleteResult>; disconnect(): Promise<void> }
+export interface MailboxPort { findVerified(mail: RegisteredMail): Promise<MailboxSearch>; deleteVerified(copy: VerifiedCopy, mail: RegisteredMail): Promise<DeleteResult>; disconnect(): Promise<void>; settle(): Promise<void> }
 export type DeliveryState = "queued" | "scanning" | "ready" | "sending" | "smtp_accepted" | "uncertain" | "delivered" | "needs_attention";
 export type CaseState = "open" | "reviewing" | "rejected_closed" | "manual_case";
 export type SubmissionKind = { readonly kind: "application" } | { readonly kind: "synthetic"; readonly pilotRunId: string };
+// Worker-private, independently configured authorization, never intake DTOs.
+export type AdmissionScope = readonly [string, "application", null, string, string | null]
+  | readonly [string, "synthetic", string, string, string | null];
+export interface AdmissionScopePort { currentScope(): AdmissionScope | null }
+export interface DeletionScope {
+  readonly ledgerId: string; readonly historyEpoch: string;
+  readonly associationKeyId: string; readonly associationKey: Buffer;
+  readonly approvedScopes: readonly AdmissionScope[];
+}
+export interface DeletionScopePort { currentScope(): DeletionScope | null }
+export type DeletionReason = "DEFERRED" | "AUTHORITY_UNAVAILABLE" | "CONTEXT_CHANGED" | "INVALID_EVIDENCE" | "JOURNAL_UNAVAILABLE" | "STORAGE_FAILED" | "ORCHESTRATION_FAILED" | MailboxIssue;
+export interface DeletionCaseResult { readonly id: ApplicationId; readonly status: "not_due" | "held" | "mailbox_cleared" | "partial" | "blocked"; readonly reason: DeletionReason | null; readonly externalCopiesConfirmed: boolean }
+export interface DeletionReport { readonly runId: string; readonly ownership: "settled" | "retained"; readonly stopReason: "finished" | "deadline" | "blocked"; readonly hasMore: boolean; readonly cases: readonly DeletionCaseResult[] }
+export interface DeletionDependencies {
+  readonly repository: ApplicationRepository; readonly clock: JournalClock;
+  readonly scope?: DeletionScopePort; readonly verificationKeys: () => VerificationKeys;
+  readonly createMailbox: (budget: MailboxRunBudget) => MailboxPort;
+}
 export interface AdmissionKeys { sessionKey: Digest; ipKey: Digest }
 export interface ReservationInput { sessionHash: Digest; idempotencyKey: string; reservedBytes: number; now: Instant; abuse: AdmissionKeys; submission: SubmissionKind }
 export interface Reservation { id: string; sessionHash: Digest; idempotencyKey: string; reservedBytes: number; expiresAt: Instant; readonly submission: SubmissionKind }
@@ -167,6 +203,7 @@ export interface CaseRecord {
   contactDeleteAfter: Instant; claimOwner: string | null; claimedAt: Instant | null;
   claimToken: string | null; claimKind: DeliveryWorkKind | null;
   readonly submission: SubmissionKind;
+  readonly acceptanceEpochId: string | null;
 }
 export interface ClaimedCase extends CaseRecord { claimOwner: string; claimedAt: Instant; claimToken: string; claimKind: DeliveryWorkKind }
 export interface DeliveryTransition { state: DeliveryState }

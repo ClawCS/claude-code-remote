@@ -30,6 +30,23 @@ async function setup(options: ServerOptions, budget?: MailboxRunBudget, timeout?
 }
 function safeCommands(commands: { verb: string; args: string }[]) { expect(commands.filter(c => ["EXPUNGE", "CLOSE", "UNSELECT"].includes(c.verb))).toEqual([]); expect(commands.filter(c => c.verb === "UID EXPUNGE").every(c => c.args === "123")).toBe(true); expect(commands.filter(c => c.verb === "UID STORE").every(c => c.args === "123 +FLAGS (\\Deleted)")).toBe(true); }
 describe("bounded mailbox using real loopback IMAP", () => {
+  it("retains an already-entered messageDelete continuation after bounded disconnect", async () => {
+    const { mail, raw } = await mailFixture(), folder = { path: "INBOX", messages: [message(raw), foreign()] };
+    const { adapter, server } = await setup({ folders: [folder] });
+    expect(adapter.settle).toBeTypeOf("function");
+    const target = (await adapter.findVerified(mail)).copies[0];
+    let entered!: () => void, release!: () => void;
+    const entering = new Promise<void>(resolve => { entered = resolve; }), gate = new Promise<void>(resolve => { release = resolve; });
+    const original = ImapFlow.prototype.messageDelete;
+    vi.spyOn(ImapFlow.prototype, "messageDelete").mockImplementation(async function(this: ImapFlow, ...args) { entered(); await gate; return original.apply(this, args); });
+    const result = adapter.deleteVerified(target, mail); await entering;
+    let settled = false; const settlement = adapter.settle().then(() => { settled = true; });
+    await adapter.disconnect();
+    expect(await result).toEqual({ kind: "uncertain", issue: "DELETE_UNCERTAIN" });
+    expect(settled).toBe(false);
+    release(); await settlement;
+    expect(folder.messages).toContainEqual(foreign()); safeCommands(server.commands);
+  });
   it("verifies all selectable folders, PEEKs only eligible candidates and deletes exactly one fresh UID", async () => {
     const timers = vi.spyOn(globalThis, "setTimeout");
     const { mail, raw } = await mailFixture(), other = foreign();

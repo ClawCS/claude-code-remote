@@ -47,6 +47,27 @@ function eventTuple(value: unknown): JournalEvent {
   } else if (e[3] === "barrier") {
     const body = tuple(e[4], 3); matches(body[0], digest); matches(body[1], digest);
     requireValue(["startup", "restore", "refresh"].includes(body[2] as string));
+  } else if (e[3] === "attempt_intent") {
+    const body = tuple(e[4], 8); requireValue(typeof body[0] === "string"); applicationId(body[0]);
+    matches(body[1], id); requireValue(body[2] === "initial" || body[2] === "fence"); matches(body[3], id);
+    sequence(body[4]); requireValue(BigInt(body[4]) <= BigInt(Number.MAX_SAFE_INTEGER));
+    matches(body[5], id); matches(body[6], /^[a-z0-9-]{1,32}$/); matches(body[7], digest);
+  } else if (e[3] === "copy_mutation_started" || e[3] === "mailbox_clear_observed") {
+    const body = tuple(e[4], e[3] === "copy_mutation_started" ? 4 : 6);
+    requireValue(typeof body[0] === "string"); applicationId(body[0]); matches(body[1], id);
+    requireValue(body[2] === "1" || body[2] === "2" || body[2] === "3");
+    if (e[3] === "copy_mutation_started") matches(body[3], digest);
+    else {
+      instant(body[3]); instant(body[4]);
+      requireValue(body[3] <= body[4] && body[4] <= e[2] && body[5] === "listed-selectable-v1");
+    }
+  } else if (e[3] === "copy_result") {
+    const body = tuple(e[4], 4); requireValue(typeof body[0] === "string"); applicationId(body[0]); matches(body[1], id);
+    if (body[2] === "deleted" || body[2] === "not-found") requireValue(body[3] === null);
+    else if (body[2] === "mismatch") requireValue(["INVALID_IDENTITY", "CONTENT_MISMATCH", "UIDVALIDITY_CHANGED", "IDENTITY_CHANGED"].includes(body[3] as string));
+    else if (body[2] === "blocked") requireValue(["DEPENDENCY_UNAVAILABLE", "CONNECTION_FAILED", "OPERATION_TIMEOUT", "PROTOCOL_LIMIT", "FOLDER_UNAVAILABLE", "CANDIDATE_LIMIT", "INCOMPLETE_CONTENT", "UNSAFE_DELETE_CAPABILITY", "WRITE_UNAVAILABLE"].includes(body[3] as string));
+    else if (body[2] === "uncertain") requireValue(body[3] === "DELETE_UNCERTAIN");
+    else invalid();
   } else invalid();
   const payload = Object.freeze([...(e[4] as unknown[])]);
   return Object.freeze([e[0], e[1], e[2], e[3], payload]) as unknown as JournalEvent;
@@ -71,7 +92,11 @@ function signed(wire: unknown, kind: "entry" | "head", context: LedgerTrustConte
   requireValue(body[0] === `tj-journal-${kind}-v1` && body[1] === context.ledgerId && body[2] === context.historyEpoch && body[3] === context.writerEpoch);
   sequence(body[4]); matches(body[5], digest);
   requireValue(body[kind === "entry" ? 6 : 8] === context.keyId);
-  if (kind === "entry") { const event = eventTuple(body[7]); encodeJournalEvent(event); observed(event[2], context); body[7] = event; }
+  if (kind === "entry") {
+    const event = eventTuple(body[7]); encodeJournalEvent(event); observed(event[2], context);
+    if (event[3] === "mailbox_clear_observed") { observed(event[4][3], context); observed(event[4][4], context); }
+    body[7] = event;
+  }
   else { matches(body[6], id); observed(body[7], context); }
   matches(envelope[1], /^[A-Za-z0-9_-]{86}$/);
   const signature = Buffer.from(envelope[1], "base64url");

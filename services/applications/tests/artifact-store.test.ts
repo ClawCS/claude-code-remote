@@ -15,7 +15,7 @@ import { createCustodyLedger } from "../src/custody";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { join } from "node:path";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { testIngressAuthority } from "./fixtures/ingress-authority";
 import type { Acceptance } from "../src/types";
 

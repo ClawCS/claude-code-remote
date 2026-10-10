@@ -1,4 +1,4 @@
-import { testAdmission } from "./fixtures/admission";
+import { testAdmission, removeTask10Schema } from "./fixtures/admission";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createHash, generateKeyPairSync } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import Database from "better-sqlite3";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { sealContact } from "../src/contact-crypto";
 import type { ApplicationId, ApplicationRepository, CaseRecord, Digest, Instant, IntakeCommit } from "../src/types";
 
@@ -140,7 +140,7 @@ describe("registry lifecycle", () => {
     expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
     expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest, now)?.reference).toBe(accepted.reference);
     await repo.withCaseLock(accepted.id, async row => { expect(row.submission).toEqual({ kind: "application" }); });
-    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(6);
+    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(7);
     expect(() => inspect.prepare("UPDATE cases SET submission=? WHERE id=?").run('{"kind":"synthetic","pilotRunId":"invented"}', accepted.id)).toThrow("IMMUTABLE_SUBMISSION"); inspect.close();
     repo = openRepository(join(dir, "registry.sqlite"));
   });
@@ -300,6 +300,7 @@ async function beginSyntheticSend(id: ApplicationId) {
   return (await repo.beginSendAttempt(authority(claimed.case),artifact,{kind:"verified"},now)).case;
 }
 function removeV4(db: Database.Database) {
+  removeTask10Schema(db);
   db.exec("DROP TABLE lifecycle_audit; DROP TABLE lifecycle_proposals; DROP TABLE case_lifecycle;");
   db.exec("DROP TABLE auth_grants; DROP TABLE auth_sessions; DROP TABLE auth_recovery; DROP TABLE auth_staff; DROP TABLE auth_attempts; DROP TABLE auth_clock;");
   db.exec("DROP TABLE delivery_attempts; DROP TABLE deliveries; DROP INDEX delivery_claim_token; DROP TRIGGER case_accepted_at_immutable; ALTER TABLE cases DROP COLUMN claimToken; ALTER TABLE cases DROP COLUMN claimKind;");

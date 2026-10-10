@@ -3,7 +3,7 @@ import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { digest, utcInstant, type ApplicationRepository } from "../src/types";
 
 let root: string, repo: ApplicationRepository;
@@ -31,6 +31,7 @@ describe("durable admission", () => {
     expect(() => repo.reserve(input("rate-denied"))).toThrow("RATE_LIMITED");
   });
   it("rejects changed synthetic run before accepting an identical-content replay", () => {
+    repo.close(); repo = openRepository(join(root, "registry.sqlite"), { now: () => new Date(now) }, { admissionScope: { currentScope: () => ["b".repeat(32), "synthetic", "run-one", "2026-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z"] } });
     const original = repo.reserve({ ...input("pilot"), submission: { kind: "synthetic" as const, pilotRunId: "run-one" } });
     repo.commitIntake({ reservationId: original.id, digest: sessionHash, encryptedPayloadPath: join(root, "original.enc"), actualBytes: 1, encryptedName: "encrypted", job: "sales-fulltime", now });
     expect(() => repo.reserve({ ...input("pilot"), submission: { kind: "synthetic" as const, pilotRunId: "run-two" } })).toThrow("IDEMPOTENCY_CONFLICT");

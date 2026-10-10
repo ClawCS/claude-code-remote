@@ -14,6 +14,17 @@ function deferred<T>() { let resolve!: (value: T) => void, reject!: (error: Erro
 afterEach(() => vi.useRealTimers());
 
 describe("one bounded worker journal owner", () => {
+  it("settlement observes real admitted append ownership after the caller times out", async () => {
+    vi.useFakeTimers(); const gate = deferred<DurableReceipt>(); let blocked = false;
+    const h = harness(s => ({ ...s.port, append: event => blocked ? gate.promise : s.port.append(event) }));
+    await h.service.refresh("startup"); blocked = true;
+    const event = fence(), reply = h.service.append(event).catch(() => undefined); let settled = false;
+    const settlement = h.service.settle().then(() => { settled = true; });
+    h.advance(15000); await vi.advanceTimersByTimeAsync(15000); await reply;
+    expect(settled).toBe(false); expect(h.service.observation()).toBeNull();
+    gate.resolve(h.commit(event)); await settlement;
+    expect(settled).toBe(true); expect(h.service.observation()).toBeNull();
+  });
   it("requires a newly committed challenge and exact replay, not bootstrap self-claims", async () => {
     const h = harness(); expect(h.service.observation()).toBeNull();
     await expect(h.service.append(fence())).rejects.toThrow("JOURNAL_UNAVAILABLE");

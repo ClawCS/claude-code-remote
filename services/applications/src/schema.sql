@@ -184,3 +184,50 @@ CREATE TABLE lifecycle_audit (
  UNIQUE(caseId,version)
 );
 PRAGMA user_version = 6;
+-- Task10 migration7: historical acceptance provenance stays NULL.
+ALTER TABLE cases ADD COLUMN acceptanceEpochId TEXT;
+CREATE TRIGGER case_acceptance_epoch_immutable BEFORE UPDATE OF acceptanceEpochId ON cases
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_ACCEPTANCE_EPOCH'); END;
+CREATE TABLE journal_projection (
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1), pass TEXT NOT NULL,
+ ledgerId TEXT NOT NULL, historyEpoch TEXT NOT NULL, sequence TEXT NOT NULL,
+ hash TEXT NOT NULL, observedAt TEXT, cursor TEXT NOT NULL
+);
+CREATE TABLE journal_facts (
+ pass TEXT NOT NULL, eventId TEXT NOT NULL, sequence TEXT NOT NULL, entryHash TEXT NOT NULL,
+ event TEXT NOT NULL CHECK(length(CAST(event AS BLOB))<=2048), caseId TEXT, kind TEXT NOT NULL,
+ resultFor TEXT, PRIMARY KEY(pass,eventId), UNIQUE(pass,sequence), UNIQUE(pass,resultFor)
+);
+CREATE TABLE journal_fences (
+ pass TEXT NOT NULL, caseId TEXT NOT NULL, eventId TEXT NOT NULL, sequence TEXT NOT NULL, entryHash TEXT NOT NULL,
+ PRIMARY KEY(pass,caseId)
+);
+CREATE INDEX journal_case_facts ON journal_facts(pass,caseId,kind,length(sequence) DESC,sequence DESC);
+CREATE TABLE deletion_progress(singleton INTEGER PRIMARY KEY CHECK(singleton=1), cycle INTEGER NOT NULL CHECK(cycle>0));
+INSERT INTO deletion_progress VALUES(1,1);
+CREATE TABLE deletion_state(
+ caseId TEXT PRIMARY KEY REFERENCES cases(id), selectedCycle INTEGER NOT NULL DEFAULT 0, lastAttempt TEXT,
+ status TEXT NOT NULL DEFAULT 'blocked' CHECK(status IN('blocked','partial','mailbox_cleared')),
+ clearEventId TEXT, clearVersion INTEGER, clearSafetyRevision INTEGER,
+ contradictory INTEGER NOT NULL DEFAULT 0 CHECK(contradictory IN(0,1))
+);
+CREATE TABLE deletion_events(
+ eventId TEXT PRIMARY KEY, caseId TEXT NOT NULL REFERENCES cases(id), event TEXT NOT NULL CHECK(length(CAST(event AS BLOB))<=2048),
+ resultFor TEXT UNIQUE,
+ phase TEXT NOT NULL CHECK(phase IN('proposed','acknowledged')), entry TEXT CHECK(length(CAST(entry AS BLOB))<=4096), head TEXT CHECK(length(CAST(head AS BLOB))<=1024),
+ CHECK((phase='proposed' AND entry IS NULL AND head IS NULL) OR (phase='acknowledged' AND entry IS NOT NULL AND head IS NOT NULL))
+);
+CREATE UNIQUE INDEX deletion_one_pending ON deletion_events(caseId) WHERE phase='proposed';
+CREATE TRIGGER deletion_event_immutable BEFORE UPDATE OF eventId,caseId,event,resultFor ON deletion_events
+BEGIN SELECT RAISE(ABORT, 'IMMUTABLE_DELETION_EVENT'); END;
+CREATE TABLE deletion_searches(
+ attemptId TEXT NOT NULL REFERENCES deletion_events(eventId), round TEXT NOT NULL CHECK(round IN('1','2','3')),
+ startedAt TEXT NOT NULL, finishedAt TEXT NOT NULL, expiresAt TEXT NOT NULL, complete INTEGER NOT NULL CHECK(complete IN(0,1)),
+ issues TEXT NOT NULL CHECK(length(issues)<=1024), associations TEXT NOT NULL CHECK(length(associations)<=1400),
+ PRIMARY KEY(attemptId,round)
+);
+CREATE TABLE deletion_diagnostics(
+ eventId TEXT PRIMARY KEY, caseId TEXT NOT NULL REFERENCES cases(id), code TEXT NOT NULL CHECK(length(code)<=64), observedAt TEXT NOT NULL, expiresAt TEXT NOT NULL
+);
+CREATE INDEX deletion_due ON case_lifecycle(deleteFrom,caseId);
+PRAGMA user_version = 7;

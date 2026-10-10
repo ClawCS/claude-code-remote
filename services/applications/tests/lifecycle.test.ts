@@ -10,7 +10,7 @@ import { createSafetyJournal } from "../src/ledger";
 import { applyCaseAction, berlinDate, decideCaseAction, deletionEligibility, lifecycleIndicators, retentionDates } from "../src/lifecycle";
 import { applicationId, dateOnly, digest, utcInstant, type CaseAction, type ApplicationRepository, type JournalEvent } from "../src/types";
 import { syntheticJournal } from "./fixtures/ledger";
-import { testAdmission } from "./fixtures/admission";
+import { testAdmission, testAdmissionScope, removeTask10Schema } from "./fixtures/admission";
 
 const connections = vi.hoisted(() => ({ current: undefined as Database.Database | undefined }));
 vi.mock("better-sqlite3", async original => {
@@ -45,9 +45,12 @@ async function setup(initial = "2026-10-10T12:00:00.000Z") {
   const directory = mkdtempSync(join(realpathSync(tmpdir()), "lifecycle-synthetic-"));
   let time = Date.parse(initial), monotonic = 0, epoch: ReturnType<typeof digest> | null = digest("a".repeat(64));
   const fixture = syntheticJournal();
-  let journal = createSafetyJournal({ port: fixture.port, trust: { currentContext: () => fixture.context }, clock: { wallNow: () => new Date(time), monotonicNow: () => monotonic } });
+  let journal!: ReturnType<typeof createSafetyJournal>;
+  const options = { admissionScope: { currentScope: () => testAdmissionScope }, journalFactory: (projection: Parameters<typeof createSafetyJournal>[0]["projection"]) => {
+    journal = createSafetyJournal({ port: { append: event => fixture.port.append(event), readSince: cursor => fixture.port.readSince(cursor) }, trust: { currentContext: () => fixture.context }, clock: { wallNow: () => new Date(time), monotonicNow: () => monotonic }, projection }); return journal;
+  } };
+  let repository: ApplicationRepository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }, options);
   await journal.refresh("startup");
-  let repository: ApplicationRepository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }, { journal });
   cleanups.push(() => { repository.close(); rmSync(directory, { recursive: true, force: true }); });
   let service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch } });
   const stage = await service.beginEnrollment(password, password);
@@ -79,12 +82,20 @@ async function setup(initial = "2026-10-10T12:00:00.000Z") {
   }
   return { directory, fixture, get journal() { return journal; }, get service() { return service; }, logged, accepted, accept, read, grant, act, get repository() { return repository; }, get db() { return connections.current!; }, setTime(value: number) { time = value; }, advance(ms: number) { time += ms; monotonic += ms; }, get time() { return time; }, setEpoch(value: typeof epoch) { epoch = value; }, reopenOwner(restartJournal = false) {
     repository.close();
-    if (restartJournal) journal = createSafetyJournal({ port: { append: event => fixture.port.append(event), readSince: cursor => fixture.port.readSince(cursor) }, trust: { currentContext: () => fixture.context }, clock: { wallNow: () => new Date(time), monotonicNow: () => monotonic } });
-    repository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }, { journal }); service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch } });
+    void restartJournal; // Every original-owner restart now invalidates projected current authority.
+    repository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }, options); service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch } });
   } };
 }
 
 describe("actual lifecycle commits", () => {
+  it("blocks a locally current action when an independent newer fence has no local business proposal", async () => {
+    const s = await setup(), row = s.read();
+    s.fixture.commit(["tj-journal-event-v1", "e".repeat(32), new Date(s.time).toISOString(), "case_fence", [row.id, "initial", row.lifecycle.initialAuthority!, String(row.version), "reject"]]);
+    await s.journal.refresh("refresh");
+    await expect(s.act({ kind: "reject", closedOn: dateOnly("2026-10-10") })).rejects.toThrow("CASE_BLOCKED");
+    expect(s.read().caseState).toBe("open");
+    expect(s.db.prepare("SELECT count(*) n FROM lifecycle_proposals").get()).toEqual({ n: 0 });
+  });
   it.each(["rejected", "manual", "held"] as const)("rejects persisted initial-authority %s decisions without inventing a fence", async state => {
     const s = await setup(), before = s.read(), at = utcInstant(new Date(s.time).toISOString());
     const contradictory = { ...before, lifecycle: { ...before.lifecycle } };
@@ -276,6 +287,7 @@ describe("actual lifecycle commits", () => {
     const retainedGrant = version === 5 ? await s.grant({ kind: "review" }) : null;
     s.repository.close();
     const legacy = new Database(join(s.directory, "registry.sqlite"));
+    removeTask10Schema(legacy);
     legacy.exec("DROP TABLE lifecycle_audit; DROP TABLE lifecycle_proposals; DROP TABLE case_lifecycle;");
     if (version === 4) legacy.exec("DROP TABLE auth_grants; DROP TABLE auth_sessions; DROP TABLE auth_recovery; DROP TABLE auth_staff; DROP TABLE auth_attempts; DROP TABLE auth_clock;");
     legacy.pragma(`user_version=${version}`); legacy.close();
@@ -284,7 +296,7 @@ describe("actual lifecycle commits", () => {
     expect(row.lifecycle).toMatchObject({ initialAuthority: null, authorityKind: null, authorityId: null, identityState: "identifying" });
     expect(row.acceptedAt).toBe(acceptedAt); expect(deletionEligibility(row, dateOnly("2028-01-01"))).toBe("blocked");
     expect(s.repository.commitIntake(s.accepted.input).replayed).toBe(true);
-    expect(s.db.pragma("user_version", { simple: true })).toBe(6);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(7);
     expect(s.db.prepare("SELECT COUNT(*) AS n FROM case_lifecycle").get()).toEqual({ n: 1 });
     expect(s.repository.getPublicStatus(digest((await import("node:crypto")).createHash("sha256").update(s.accepted.statusProof).digest("hex")), utcInstant(new Date(s.time).toISOString()))).toEqual(publicBefore);
     if (version === 5) {

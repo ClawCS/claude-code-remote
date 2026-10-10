@@ -10,7 +10,7 @@ import sharp from "sharp";
 import { runDispatchOnce } from "../src/dispatch";
 import { createArtifactStore } from "../src/artifact-store";
 import { createCustodyLedger } from "../src/custody";
-import { openRepository } from "../src/repository";
+import { openTestRepository as openRepository } from "./fixtures/admission";
 import { openContact } from "../src/contact-crypto";
 import { verifyMail, fingerprintMime, MIME_LIMITS } from "../src/mail-manifest";
 import { utcInstant, type Acceptance, type ArtifactRecord, type DispatchDependencies, type MailboxSearch, type RegisteredMail } from "../src/types";

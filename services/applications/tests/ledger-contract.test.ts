@@ -1,10 +1,61 @@
 import { describe, expect, it } from "vitest";
 import { generateKeyPairSync } from "node:crypto";
 import { decodeJournalEvent, encodeJournalEvent, verifyJournalEntry, verifyJournalHead, verifyJournalReceipt, verifyJournalCheckpoint, verifyNextJournalEntry } from "../src/ledger-contract";
-import { entryHash, fence, instant, syntheticJournal } from "./fixtures/ledger";
+import { caseId, entryHash, fence, instant, syntheticJournal } from "./fixtures/ledger";
 import type { JournalEvent, LedgerCursor, SignedEntry } from "../src/types";
 
 describe("bounded canonical journal contract", () => {
+  const intent = [caseId, "1".repeat(32), "fence", "2".repeat(32), "3", "4".repeat(32), "association-key", "5".repeat(64)];
+  const marker = [caseId, "6".repeat(32), "1", "7".repeat(64)];
+  const clear = [caseId, "6".repeat(32), "3", "2026-10-10T11:59:00.000Z", instant, "listed-selectable-v1"];
+  const mailboxEvent = (kind: string, body: unknown[]): JournalEvent => ["tj-journal-event-v1", "a".repeat(32), instant, kind, body] as unknown as JournalEvent;
+  it.each([
+    ["attempt_intent", intent], ["copy_mutation_started", marker],
+    ["copy_result", [caseId, "8".repeat(32), "deleted", null]], ["mailbox_clear_observed", clear],
+  ])("accepts and signs the exact %s mailbox tuple", (kind, body) => {
+    const event = mailboxEvent(kind as string, body as unknown[]), s = syntheticJournal();
+    expect(decodeJournalEvent(JSON.stringify(event))).toEqual(event);
+    expect(verifyJournalReceipt(event, s.commit(event), s.context).event).toEqual(event);
+  });
+  it.each([
+    ["deleted", null], ["not-found", null],
+    ...["INVALID_IDENTITY", "CONTENT_MISMATCH", "UIDVALIDITY_CHANGED", "IDENTITY_CHANGED"].map(issue => ["mismatch", issue] as const),
+    ...["DEPENDENCY_UNAVAILABLE", "CONNECTION_FAILED", "OPERATION_TIMEOUT", "PROTOCOL_LIMIT", "FOLDER_UNAVAILABLE", "CANDIDATE_LIMIT", "INCOMPLETE_CONTENT", "UNSAFE_DELETE_CAPABILITY", "WRITE_UNAVAILABLE"].map(issue => ["blocked", issue] as const),
+    ["uncertain", "DELETE_UNCERTAIN"],
+  ] as const)("accepts only the reachable copy result %s/%s", (kind, issue) => {
+    const event = mailboxEvent("copy_result", [caseId, "8".repeat(32), kind, issue]);
+    expect(decodeJournalEvent(JSON.stringify(event))).toEqual(event);
+  });
+  it("rejects a signed clear observation whose search falls outside independent operating bounds", () => {
+    const s = syntheticJournal(), event = mailboxEvent("mailbox_clear_observed", [...clear]);
+    const context = { ...s.context, operationalStart: instant, operationalEnd: instant };
+    expect(() => verifyJournalReceipt(event, s.receipt(event), context)).toThrow();
+    const exact = mailboxEvent("mailbox_clear_observed", [caseId, clear[1], "1", instant, instant, "listed-selectable-v1"]);
+    expect(verifyJournalReceipt(exact, s.receipt(exact), context).event).toEqual(exact);
+  });
+  it.each([
+    ["attempt_intent", [...intent, "extra"]], ["attempt_intent", [caseId, ...intent.slice(1, 4), "01", ...intent.slice(5)]],
+    ["attempt_intent", [caseId, ...intent.slice(1, 4), "9007199254740992", ...intent.slice(5)]],
+    ["attempt_intent", [caseId, intent[1], "unknown", ...intent.slice(3)]],
+    ["attempt_intent", [...intent.slice(0, 6), "Key", intent[7]]],
+    ["attempt_intent", [...intent.slice(0, 5), "legacy", ...intent.slice(6)]],
+    ["copy_mutation_started", [caseId, marker[1], "4", marker[3]]],
+    ["copy_mutation_started", [caseId, marker[1], 1, marker[3]]],
+    ["copy_mutation_started", ["not-a-case", ...marker.slice(1)]],
+    ["copy_result", [caseId, "8".repeat(32), "deleted", "DELETE_UNCERTAIN"]],
+    ["copy_result", [caseId, "8".repeat(32), "not-found", "INVALID_IDENTITY"]],
+    ["copy_result", [caseId, "8".repeat(32), "blocked", "LIST_LIMIT"]],
+    ["copy_result", [caseId, "8".repeat(32), "blocked", "CONTENT_MISMATCH"]],
+    ["copy_result", [caseId, "8".repeat(32), "mismatch", "CONNECTION_FAILED"]],
+    ["copy_result", [caseId, "8".repeat(32), "uncertain", null]],
+    ["copy_result", [caseId, "8".repeat(32), "all_deleted", null]],
+    ["mailbox_clear_observed", [caseId, clear[1], "3", instant, "2026-10-10T11:59:59.999Z", clear[5]]],
+    ["mailbox_clear_observed", [caseId, clear[1], "3", instant, "2026-10-10T12:00:00.001Z", clear[5]]],
+    ["mailbox_clear_observed", [...clear.slice(0, 5), "all-folders"]],
+    ["mailbox_clear_observed", [caseId, clear[1], "3", "2026-10-10T12:00:00Z", instant, clear[5]]],
+  ])("rejects malformed mailbox phase %s/%j", (kind, body) => {
+    expect(() => decodeJournalEvent(JSON.stringify(mailboxEvent(kind as string, body as unknown[])))).toThrow();
+  });
   it("round-trips the flat fence and barrier without normalizing caller bytes", () => {
     const event = fence();
     expect(encodeJournalEvent(event)).toBe('["tj-journal-event-v1","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","2026-10-10T12:00:00.000Z","case_fence",["11111111-1111-4111-8111-111111111111","initial","bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","1","reject"]]');

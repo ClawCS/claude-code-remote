@@ -50,14 +50,29 @@ export function createMailbox(config: ImapConfig, test?: ImapTestDependencies): 
   let client: ImapFlow | undefined, connected = false, closed = false, fatal: MailboxIssue | undefined;
   let selectedWrite = false;
   let tail: Promise<void> = Promise.resolve(), rejectActive: ((error: Failure) => void) | undefined;
+  const owners = new Set<Promise<void>>(); let children: Promise<void>[] | undefined;
+  let disconnectWork: Promise<void> | undefined;
+  function observe(work: Promise<unknown>): Promise<void> {
+    const owned = work.then(() => {}, () => {}); owners.add(owned);
+    void owned.then(() => { owners.delete(owned); }); return owned;
+  }
   function fail(issue: MailboxIssue) { fatal ??= issue; rejectActive?.(new Failure(fatal)); client?.close(); }
   function healthy() { if (fatal || closed) throw new Failure(fatal ?? "CONNECTION_FAILED"); }
-  function serial<T>(action: () => Promise<T>): Promise<T> { const next = tail.then(action); tail = next.then(() => {}, () => {}); return next; }
+  function serial<T>(action: () => Promise<T>): Promise<T> {
+    const actual: Promise<void>[] = [];
+    const next = tail.then(() => { children = actual; return action(); });
+    tail = next.then(() => {}, () => {});
+    observe(tail.then(async () => { await Promise.all(actual); }));
+    return next;
+  }
   async function operation<T>(action: () => Promise<T>): Promise<T> {
     healthy(); assertImapDependency();
     let timer: ReturnType<typeof setTimeout> | undefined;
     const aborted = new Promise<never>((_resolve, reject) => { rejectActive = reject; timer = setTimeout(() => fail("OPERATION_TIMEOUT"), deadline); });
-    try { return await Promise.race([action(), aborted]); }
+    try {
+      const underlying = action(); children?.push(underlying.then(() => {}, () => {}));
+      return await Promise.race([underlying, aborted]);
+    }
     finally { clearTimeout(timer); rejectActive = undefined; }
   }
   async function connect() {
@@ -177,11 +192,11 @@ export function createMailbox(config: ImapConfig, test?: ImapTestDependencies): 
     async disconnect() {
       if (closed) return; closed = true;
       if (rejectActive) { rejectActive(new Failure("CONNECTION_FAILED")); client?.close(); }
-      await tail;
-      if (!client) return;
+      disconnectWork = observe((async () => { await tail; if (client) await client.logout().catch(() => {}); })());
       let timer: ReturnType<typeof setTimeout> | undefined;
-      try { await Promise.race([client.logout().catch(() => {}), new Promise<void>(resolve => { timer = setTimeout(() => { client?.close(); resolve(); }, disconnectDeadline); })]); }
-      finally { clearTimeout(timer); client.close(); }
+      try { await Promise.race([disconnectWork, new Promise<void>(resolve => { timer = setTimeout(() => { client?.close(); resolve(); }, disconnectDeadline); })]); }
+      finally { clearTimeout(timer); client?.close(); }
     },
+    settle() { return Promise.all([...owners]).then(() => {}); },
   };
 }

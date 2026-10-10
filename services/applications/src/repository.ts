@@ -12,7 +12,10 @@ import { createDeliveryRepository, recoverDelivery } from "./delivery-repository
 import { createAuthRepository, pruneAuthAttempts } from "./auth-repository";
 import { createAuthentication, trustedAuthEpoch } from "./auth";
 import { createLifecycleRepository, readLifecycle } from "./lifecycle-repository";
-import type { AuthDependencies, SafetyJournal } from "./types";
+import { createJournalProjection } from "./journal-projection";
+import { admissionScopeAccepts, snapshotAdmissionScope } from "./deletion-association";
+import { bindDeletionOwner, createDeletionRepository } from "./deletion-repository";
+import type { AdmissionScopePort, AuthDependencies, JournalSafetyProjection, SafetyJournal } from "./types";
 
 const DAY = 86400000;
 function addDays(value: Instant, days: number): Instant { return utcInstant(new Date(Date.parse(value) + days * DAY).toISOString()); }
@@ -21,7 +24,7 @@ interface StoredReservation extends Omit<Reservation, "submission"> { active: nu
 interface StoredCase extends Omit<CaseRecord, "submission"> { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string; submission: string }
 interface Guard { id: ApplicationId; active: boolean }
 
-export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journal?: SafetyJournal } = {}): ApplicationRepository {
+export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journalFactory?: (projection: JournalSafetyProjection) => SafetyJournal; readonly admissionScope?: AdmissionScopePort } = {}): ApplicationRepository {
   if (!isAbsolute(path) || resolve(path) !== path || path.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part))) throw new Error("UNSAFE_PATH");
   for (let part = dirname(path); part !== dirname(part); part = dirname(part)) {
     const stat = lstatSync(part); if (stat.isSymbolicLink()) throw new Error("UNSAFE_PATH");
@@ -56,7 +59,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -66,7 +69,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE auth_staff"), schema.indexOf("CREATE TABLE case_lifecycle")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 5) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE case_lifecycle")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE case_lifecycle"), schema.indexOf("-- Task10 migration7")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 6) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 migration7")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -80,9 +86,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   let authDependencies: AuthDependencies | undefined;
   function live(): void { if (closed) throw new Error("REPOSITORY_CLOSED"); }
   function readCase(id: ApplicationId): CaseRecord {
-    live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, claimToken, claimKind, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission" | "lifecycle"> & { submission: string }) | undefined;
+    live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, acceptanceEpochId, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, claimToken, claimKind, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission" | "lifecycle"> & { submission: string }) | undefined;
     if (!row) throw new Error("CASE_NOT_FOUND");
     utcInstant(row.acceptedAt); utcInstant(row.payloadDeleteAfter); utcInstant(row.contactDeleteAfter);
+    if (row.acceptanceEpochId !== null && !/^[a-f0-9]{32}$/.test(row.acceptanceEpochId)) throw new Error("INVALID_ACCEPTANCE_EPOCH");
     if (!Number.isSafeInteger(row.version) || row.version < 1 || row.payloadDeleteAfter > addDays(row.acceptedAt, 7) || row.contactDeleteAfter > addDays(row.acceptedAt, 30) || (row.claimToken === null) !== (row.claimKind === null) || (row.claimToken !== null && (!/^[a-f0-9]{64}$/.test(row.claimToken) || !["prepare", "send", "reconcile"].includes(row.claimKind!)))) throw new Error("INVALID_DELIVERY_METADATA");
     if ((row.claimToken === null) !== (row.claimOwner === null) || (row.claimToken === null) !== (row.claimedAt === null)) throw new Error("INVALID_DELIVERY_METADATA");
     if (row.claimToken !== null) {
@@ -164,27 +171,32 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   function commitIntake(input: IntakeCommit): Acceptance {
     live(); digest(input.digest); checkBytes(input.actualBytes); utcInstant(input.now);
     return db.transaction(() => {
+      const now = utcInstant(clock.now().toISOString());
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(now)) throw new Error("INVALID_INSTANT");
       const reservation = db.prepare("SELECT * FROM reservations WHERE id = ?").get(input.reservationId) as StoredReservation | undefined;
-      if (!reservation || (reservation.active && reservation.expiresAt <= input.now)) throw new Error("RESERVATION_NOT_FOUND");
+      if (!reservation || (reservation.active && reservation.expiresAt <= now)) throw new Error("RESERVATION_NOT_FOUND");
       if (input.actualBytes > reservation.reservedBytes) throw new Error("RESERVATION_EXCEEDED");
       const existing = db.prepare("SELECT * FROM cases WHERE sessionHash = ? AND idempotencyKey = ?").get(reservation.sessionHash, reservation.idempotencyKey) as StoredCase | undefined;
       if (existing) {
         if (existing.digest !== input.digest || existing.submission !== reservation.submission) throw new Error("IDEMPOTENCY_CONFLICT");
         db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
-        return proof(existing, input.now, true);
+        return proof(existing, now, true);
       }
       if (!reservation.active) throw new Error("RESERVATION_NOT_FOUND");
       if (!isAbsolute(input.encryptedPayloadPath) || resolve(input.encryptedPayloadPath) !== input.encryptedPayloadPath || input.encryptedPayloadPath.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part)) || !input.encryptedName || input.encryptedName.length > 4096) throw new Error("INVALID_PRIVATE_PAYLOAD");
-      submissionKind(JSON.parse(reservation.submission));
-      const row = { id: applicationId(randomUUID()), reference: `TJ-${randomBytes(12).toString("hex").toUpperCase()}`, reservationId: input.reservationId, sessionHash: reservation.sessionHash, idempotencyKey: reservation.idempotencyKey, digest: input.digest, encryptedName: input.encryptedName, job: input.job, acceptedAt: input.now, encryptedPayloadPath: input.encryptedPayloadPath, payloadBytes: input.actualBytes, payloadDeleteAfter: addDays(input.now, 7), contactDeleteAfter: addDays(input.now, 30), submission: reservation.submission };
-      db.prepare("INSERT INTO cases (id, reference, reservationId, sessionHash, idempotencyKey, digest, encryptedName, job, acceptedAt, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, payloadDeleteAfter, contactDeleteAfter, submission) VALUES (@id, @reference, @reservationId, @sessionHash, @idempotencyKey, @digest, @encryptedName, @job, @acceptedAt, 'queued', 'open', 1, @encryptedPayloadPath, @payloadBytes, @payloadDeleteAfter, @contactDeleteAfter, @submission)").run(row);
+      const submission = submissionKind(JSON.parse(reservation.submission));
+      let acceptanceEpochId: string;
+      try { const scope = snapshotAdmissionScope(lifecycleOptions.admissionScope?.currentScope()); if (!admissionScopeAccepts(scope, submission, now)) throw new Error(); acceptanceEpochId = scope[0]; }
+      catch { throw new Error("ADMISSION_SCOPE_UNAVAILABLE"); }
+      const row = { id: applicationId(randomUUID()), reference: `TJ-${randomBytes(12).toString("hex").toUpperCase()}`, reservationId: input.reservationId, sessionHash: reservation.sessionHash, idempotencyKey: reservation.idempotencyKey, digest: input.digest, encryptedName: input.encryptedName, job: input.job, acceptedAt: now, acceptanceEpochId, encryptedPayloadPath: input.encryptedPayloadPath, payloadBytes: input.actualBytes, payloadDeleteAfter: addDays(now, 7), contactDeleteAfter: addDays(now, 30), submission: reservation.submission };
+      db.prepare("INSERT INTO cases (id, reference, reservationId, sessionHash, idempotencyKey, digest, encryptedName, job, acceptedAt, acceptanceEpochId, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, payloadDeleteAfter, contactDeleteAfter, submission) VALUES (@id, @reference, @reservationId, @sessionHash, @idempotencyKey, @digest, @encryptedName, @job, @acceptedAt, @acceptanceEpochId, 'queued', 'open', 1, @encryptedPayloadPath, @payloadBytes, @payloadDeleteAfter, @contactDeleteAfter, @submission)").run(row);
       db.prepare("INSERT INTO deliveries(caseId) VALUES(?)").run(row.id);
       const initialAuthority = randomBytes(16).toString("hex");
       db.prepare("INSERT INTO case_lifecycle(caseId,initialAuthority,authorityKind,authorityId) VALUES(?,?,'initial',?)").run(row.id, initialAuthority, initialAuthority);
       db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
       for (const kind of ["bundle", "mime"] as const) db.prepare("INSERT INTO artifact_reservations VALUES (?, ?, ?, ?)").run(row.id, kind, artifactLimit(kind), row.payloadDeleteAfter);
-      db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'accepted', 1, ?)").run(row.id, input.now);
-      return proof(row, input.now);
+      db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'accepted', 1, ?)").run(row.id, now);
+      return proof(row, now);
     }).immediate();
   }
   function claimNext(owner: string, now: Instant): ClaimedCase | null {
@@ -255,7 +267,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }
   const delivery = createDeliveryRepository(db, readCase, guarded, id => locks.has(id), getArtifact, verifyArtifact);
   const authStore = createAuthRepository(db, live, readCase, guarded);
-  const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), lifecycleOptions.journal);
+  let journal: SafetyJournal | undefined;
+  try { journal = lifecycleOptions.journalFactory?.(createJournalProjection(db)); }
+  catch (error) { db.close(); closed = true; throw error; }
+  const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), journal);
   // Validate every persisted ledger before exposing this exclusively-owned DB.
   try { db.transaction(() => {
     db.prepare("DELETE FROM reservations WHERE active = 1").run();
@@ -263,7 +278,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     for (const row of db.prepare("SELECT id FROM cases").all() as { id: ApplicationId }[]) delivery.getDelivery(row.id);
   }).immediate(); }
   catch (error) { db.close(); closed = true; throw error; }
-  return {
+  const repository: ApplicationRepository = {
     createAuthentication(deps) { live(); if (authOwned) throw new Error("AUTH_ALREADY_OWNED"); const auth = createAuthentication(authStore, deps, clock); authDependencies = deps; authOwned = true; return auth; },
     ...delivery,
     ...lifecycle,
@@ -280,4 +295,8 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     withCaseLock: (id, action) => guarded(id, () => action(Object.freeze(readCase(id)))),
     close() { if (closed) return; if (locks.size) throw new Error("CASE_LOCK_ACTIVE"); db.close(); closed = true; },
   };
+  bindDeletionOwner(repository, createDeletionRepository(db, readCase, delivery.getDelivery, id => {
+    live(); const own = context.getStore(); if (!own?.active || own.id !== id) throw new Error("DELETION_GUARD_REQUIRED");
+  }, journal, () => utcInstant(clock.now().toISOString())));
+  return repository;
 }

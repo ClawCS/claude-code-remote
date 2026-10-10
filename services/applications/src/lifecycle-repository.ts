@@ -58,6 +58,10 @@ export function readLifecycle(db: Database.Database, row: Omit<CaseRecord, "life
 // Internal composition of the sole DB/auth/clock owner; not an RPC port.
 export function createLifecycleRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, auth: AuthRepository, epochNow: () => ReturnType<typeof digest>, clockNow: () => Instant, journal?: SafetyJournal) {
   function requireJournal(): SafetyJournal { if (!journal) throw new Error("CASE_JOURNAL_UNAVAILABLE"); return journal; }
+  function requireAuthority(row: CaseRecord, pendingId?: string): void {
+    const proof = requireJournal().caseAuthority(row.id);
+    if (!proof || (pendingId ? proof.latestFence?.eventId !== pendingId : row.lifecycle.authorityKind === "initial" ? proof.latestFence !== null : !row.lifecycle.authorityId || proof.latestFence?.eventId !== row.lifecycle.authorityId)) throw new Error("CASE_BLOCKED");
+  }
   function authorize(session: StaffSession): void {
     const now = clockNow(), epoch = epochNow(), row = auth.session(session.sessionId, epoch, now);
     if (!row || row.staffId !== session.staffId || row.generation !== session.generation || row.issuedAt !== session.issuedAt || row.expiresAt !== session.expiresAt || epochNow() !== epoch) throw new Error("AUTH_DENIED");
@@ -80,10 +84,11 @@ export function createLifecycleRepository(db: Database.Database, readCase: (id: 
     const facade = requireJournal(), event = decodeJournalEvent(p.event);
     const progress = await facade.recover(event);
     if (progress.kind !== "observed") return "continuation";
+    requireAuthority(readCase(p.caseId), p.eventId);
     // recover's receipt belongs to its fresh barrier. Idempotent append retrieves
     // the original receipt and never renews freshness or retries a new ID.
     const receipt = await facade.append(event); ack(p, receipt);
-    if (!facade.observation()) throw new Error("CASE_JOURNAL_UNAVAILABLE");
+    requireAuthority(readCase(p.caseId), p.eventId);
     return "acknowledged";
   }
   function writeBusiness(before: CaseRecord, after: CaseRecord, action: CaseAction, actor: StaffSession["staffId"], now: Instant, eventId: string | null): CaseRecord {
@@ -125,6 +130,7 @@ export function createLifecycleRepository(db: Database.Database, readCase: (id: 
       if (fenced) {
         const facade = requireJournal();
         if (!row.lifecycle.initialAuthority || !row.lifecycle.authorityId || !row.lifecycle.authorityKind || !facade.observation()) throw new Error("CASE_BLOCKED");
+        requireAuthority(row, predecessor?.eventId);
         eventId = randomBytes(16).toString("hex");
         const event: JournalEvent = ["tj-journal-event-v1", eventId, context.now, "case_fence", [id, predecessor ? "fence" : row.lifecycle.authorityKind, predecessor?.eventId ?? row.lifecycle.authorityId, String(row.version), fenced]];
         db.transaction(() => {
@@ -135,6 +141,7 @@ export function createLifecycleRepository(db: Database.Database, readCase: (id: 
           db.prepare("UPDATE case_lifecycle SET pendingEventId=?,safetyRevision=safetyRevision+1 WHERE caseId=?").run(eventId, id);
         }).immediate();
         const receipt = await facade.append(event); ack(proposal(db, eventId), receipt);
+        requireAuthority(readCase(id), eventId);
         safetyRevision += 2;
       }
       return auth.withGrant(hash, active, binding, epochNow, clockNow, (currentRow, final) => {
@@ -142,6 +149,7 @@ export function createLifecycleRepository(db: Database.Database, readCase: (id: 
         if (eventId) {
           const staged = proposal(db, eventId);
           if (staged.phase !== "acknowledged" || staged.actionBytes !== bytes || staged.grantHash !== hash || !requireJournal().observation()) throw new Error("CASE_BLOCKED");
+          requireAuthority(currentRow, eventId);
         }
         const after = decideCaseAction(currentRow, action, final.actor, final.now);
         return writeBusiness(currentRow, after, action, final.actor, final.now, eventId);
