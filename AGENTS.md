@@ -59,6 +59,10 @@ Für Google-Maps-Routenlinks, Instagram- und WhatsApp-Kontaktlinks die belegten 
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Ausdrückliche Desktop-Fotofreigabe — 10.10.2026
+
+Niko beauftragt die passenden Bilder aus seinem Ordner „Fotos Homepage“. Die 17 ausgewählten Motive und Ausschlüsse stehen in `docs/superpowers/specs/2026-10-10-desktop-photo-integration.md`. IMG_6810, IMG_6942, IMG_7981, IMG_8123, IMG_8169 und IMG_7783 zeigen laut Betreiber weder Justin noch Harpe. Ausbildung und Gas-Tauschwerbung (14,99 €/25,99 €) sind aktuell bestätigt. E-Mail auf den drei Stellenplakaten: `info@trinkgut-jammers.de`. Niko akzeptiert ausdrücklich leichte Veränderungen der KI-generierten Anzeigenpersonen bei dieser Korrektur; keine echten Mitarbeiterfotos daraus ableiten. Diese Ausnahme gilt nur für die Stellenplakate, nicht für echte Markt-/Gewinnübergabe-Fotos. Quellen als Betreiber-Desktopbestand und bearbeitete Anzeigen dokumentieren, niemals als Canva-verifiziert ausgeben. Keine Änderung von Upload-/Mail-/Sicherheitskonfiguration aus dieser Fotoveröffentlichung ableiten.
+
 ## Marktbild-Beschriftungen — 08.10.2026
 
 Auf erneute Betreiberanweisung keine dekorativen Bildunterschriften wie „Rückblick 2025“ unter Markt-/Entdeckungsfotos rendern. Das Niko-Foto mit Reinigungshandschuhen und Sprühflasche sowie seine Karte „Mit Herz. Und mit anpacken.“ sind aus der sichtbaren Website entfernt; nicht erneut verwenden. Quelldateien und Herkunftsnachweise bleiben erhalten. Diese Anweisung ersetzt die frühere sichtbare Rückblick-Kennzeichnung der Google-Marktfotos; der allgemeine Hinweis zu nicht aktuellen Fotopreisen bleibt. Mitarbeiternamen, notwendige Bildnachweise, KI-Beispielkennzeichnungen und datierte Angebote/Gewinnspiele bleiben unverändert.

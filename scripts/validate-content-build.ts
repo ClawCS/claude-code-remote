@@ -15,7 +15,7 @@ export async function validateWeeklyPublicationBuild(root=process.cwd()):Promise
 async function main() {
   // Validate immutable public derivatives before any content/build output.
   // These validators need no private account metadata on a clean checkout.
-  for (const script of ["build-cinematic-assets.mjs", "build-market-assets.mjs", "build-google-market-assets.mjs"]) {
+  for (const script of ["build-cinematic-assets.mjs", "build-market-assets.mjs", "build-google-market-assets.mjs", "build-user-market-assets.mjs"]) {
     execFileSync(process.execPath, [`scripts/${script}`, "--check"], { stdio: "inherit" });
   }
   const packages = await loadFlyerPackages();

@@ -29,6 +29,8 @@
     "assets:market:check": "node scripts/build-market-assets.mjs --check",
     "assets:google-market": "node scripts/build-google-market-assets.mjs",
     "assets:google-market:check": "node scripts/build-google-market-assets.mjs --check",
+    "assets:user-market": "node scripts/build-user-market-assets.mjs",
+    "assets:user-market:check": "node scripts/build-user-market-assets.mjs --check",
     "audit:public": "node scripts/audit-public-site.mjs"
   },
   "dependencies": {

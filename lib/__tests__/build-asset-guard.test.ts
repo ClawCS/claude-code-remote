@@ -7,15 +7,16 @@ import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
 const fixtures: string[] = [];
 afterEach(() => { for (const root of fixtures.splice(0)) rmSync(root, { recursive: true, force: true }); });
 
-async function prebuildFixture(failing?: "cinematic" | "market" | "missing-market" | "google-market" | "missing-google-market") {
+async function prebuildFixture(failing?: "cinematic" | "market" | "missing-market" | "google-market" | "missing-google-market" | "user-market" | "missing-user-market") {
   const {root} = await weeklyPublicationFixture();
   fixtures.push(root);
   mkdirSync(join(root, "scripts"), { recursive: true });
   mkdirSync(join(root, "data/editorial/official-catalogs"), { recursive: true });
   const marker = join(root, "completed-checks.txt");
-  for (const kind of ["cinematic", "market", "google-market"] as const) {
+  for (const kind of ["cinematic", "market", "google-market", "user-market"] as const) {
     if (kind === "market" && failing === "missing-market") continue;
     if (kind === "google-market" && failing === "missing-google-market") continue;
+    if (kind === "user-market" && failing === "missing-user-market") continue;
     writeFileSync(join(root, `scripts/build-${kind}-assets.mjs`), `import { appendFileSync } from "node:fs";\nconst args = process.argv.slice(2);\nappendFileSync(${JSON.stringify(marker)}, ${JSON.stringify(kind)} + ":" + args.join(",") + "\\n");\nif (JSON.stringify(args) !== '["--check"]') process.exit(7);\nprocess.exit(${failing === kind ? 1 : 0});\n`);
   }
   writeFileSync(join(root, "scripts/generate-handzettel-manifest.mjs"), `import { appendFileSync } from "node:fs"; appendFileSync(${JSON.stringify(marker)}, "manifest\\n");\n`);
@@ -34,7 +35,7 @@ describe("prebuild asset publication guard", () => {
   it("checks all public pipelines before producing content artifacts", async () => {
     const result = await prebuildFixture();
     expect(result.code, result.text).toBe(0);
-    expect(result.events).toEqual(["cinematic:--check", "market:--check", "google-market:--check", "manifest"]);
+    expect(result.events).toEqual(["cinematic:--check", "market:--check", "google-market:--check", "user-market:--check", "manifest"]);
   });
   it("stops before content output if cinematic assets are invalid", async () => {
     const result = await prebuildFixture("cinematic");
@@ -55,5 +56,10 @@ describe("prebuild asset publication guard", () => {
     const result = await prebuildFixture(failing);
     expect(result.code, result.text).toBe(1);
     expect(result.events).toEqual(failing === "google-market" ? ["cinematic:--check", "market:--check", "google-market:--check"] : ["cinematic:--check", "market:--check"]);
+  });
+  it.each(["user-market", "missing-user-market"] as const)("stops before content output for %s", async failing => {
+    const result = await prebuildFixture(failing);
+    expect(result.code, result.text).toBe(1);
+    expect(result.events).not.toContain("manifest");
   });
 });

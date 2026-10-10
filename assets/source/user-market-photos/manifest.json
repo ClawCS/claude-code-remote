@@ -1,0 +1,483 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-10",
+  "releaseBasis": "user-approved-desktop-2026-10-10",
+  "entries": [
+    {
+      "id": "bueble-aufbau",
+      "source": "bueble-aufbau.jpg",
+      "sourceHash": "7a3f17608936eca575c895fa892c4c73c77ce4c32f259e39a53ae14972767ca5",
+      "sourceDimensions": {
+        "width": 788,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 788,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "bueble-aufbau.webp",
+        "maxBytes": 350000,
+        "sha256": "5b5d49d626e75a251d35b2c218d7410a1e9b0d0305c0f8003f7ccd727438b68a",
+        "dimensions": {
+          "width": 788,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "erdinger-aufbau",
+      "source": "erdinger-aufbau.jpg",
+      "sourceHash": "3936f1040edc1de47c002fb1d0b2ac9765cd4d0d6d6339c8d84bf1113458aa16",
+      "sourceDimensions": {
+        "width": 788,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 788,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "erdinger-aufbau.webp",
+        "maxBytes": 350000,
+        "sha256": "73839a5759157fcd3b249ca0deb650b5161b4b9cfa3b9f3cb6c986cb0e544e10",
+        "dimensions": {
+          "width": 788,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "weinregal",
+      "source": "weinregal.jpg",
+      "sourceHash": "d3d9e503c9328017ec38611fedf9a256e35db2bb10442d499a6b17fed9156220",
+      "sourceDimensions": {
+        "width": 788,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 788,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "weinregal.webp",
+        "maxBytes": 350000,
+        "sha256": "7a89c47c3a7cf21c58874136c0cc26505136b0018fd9ba34ffdafc3f768fab37",
+        "dimensions": {
+          "width": 788,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "biermischgetraenke",
+      "source": "biermischgetraenke.jpg",
+      "sourceHash": "31f4c9af18a127c38dfbdfd503ae98a66735a77194be2bf313442010e2f0fe39",
+      "sourceDimensions": {
+        "width": 791,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 791,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "biermischgetraenke.webp",
+        "maxBytes": 350000,
+        "sha256": "a1451fa076f91592ae9669cddc290a3ad97374454a128d595d48c8fbab81a04a",
+        "dimensions": {
+          "width": 791,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "schneider-weisse",
+      "source": "schneider-weisse.jpg",
+      "sourceHash": "28a1d92cbd7177f7a3ba4ed693d528facf42b37a4a80d468d23002f937bd4c0a",
+      "sourceDimensions": {
+        "width": 785,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 785,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "schneider-weisse.webp",
+        "maxBytes": 350000,
+        "sha256": "bf029a731eeb202cb33e71f929894e8c104da0af5b6d8bb56a87454508509b87",
+        "dimensions": {
+          "width": 785,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "spezi-regal",
+      "source": "spezi-regal.jpg",
+      "sourceHash": "dd1aeaae9153a318cda327af1cf032a83d92c297efd25a118b8ada538e630547",
+      "sourceDimensions": {
+        "width": 788,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 788,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "spezi-regal.webp",
+        "maxBytes": 350000,
+        "sha256": "d37c1c6089a38cd3603e9674828959228f038afc342804c4bf73f1257ad28ad0",
+        "dimensions": {
+          "width": 788,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "gewinnuebergabe-01",
+      "source": "gewinnuebergabe-01.jpg",
+      "sourceHash": "c27e7e88736033c6e879e4aa019a7195d68ed3869c36eb6e0959ebfe2b154c46",
+      "sourceDimensions": {
+        "width": 1050,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1050,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Gewinnspiele",
+      "output": {
+        "name": "gewinnuebergabe-01.webp",
+        "maxBytes": 350000,
+        "sha256": "c213a2ac4b44ff442bcaff55fa5c9e0f3e0decf9726131e5bb8b66a4726ad3df",
+        "dimensions": {
+          "width": 1050,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "gewinnuebergabe-02",
+      "source": "gewinnuebergabe-02.jpg",
+      "sourceHash": "9a5c915f80dee009ebe15fea1b4051ee037350672dee22fc76c6d8df3e8a09c6",
+      "sourceDimensions": {
+        "width": 1050,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1050,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Gewinnspiele",
+      "output": {
+        "name": "gewinnuebergabe-02.webp",
+        "maxBytes": 350000,
+        "sha256": "8ff77c1a3c6de0ee9b22361a3ab7b64a25ceee47948f15de9a47092e74bb34df",
+        "dimensions": {
+          "width": 1050,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "gewinnuebergabe-03",
+      "source": "gewinnuebergabe-03.jpg",
+      "sourceHash": "56a909ff1bf0a7efe9b05b72d3b1044f7c55e1d905028e8a323eb518eaf9431c",
+      "sourceDimensions": {
+        "width": 1050,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1050,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Gewinnspiele",
+      "output": {
+        "name": "gewinnuebergabe-03.webp",
+        "maxBytes": 350000,
+        "sha256": "357450db7e7c05a801e0d1271db2af330c0bc15e4f9553479cb8af095a8ab976",
+        "dimensions": {
+          "width": 1050,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "gewinnuebergabe-04",
+      "source": "gewinnuebergabe-04.jpg",
+      "sourceHash": "fcfb555c8327a1b76ed7f61e0c273464aa1e62b61bede57f8c9ec9eff450d9bb",
+      "sourceDimensions": {
+        "width": 1050,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1050,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Gewinnspiele",
+      "output": {
+        "name": "gewinnuebergabe-04.webp",
+        "maxBytes": 350000,
+        "sha256": "9d214dc10e78a987285e6ad3974ff3e9106b398a70e457d962d19a8c7c5be048",
+        "dimensions": {
+          "width": 1050,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "gewinnuebergabe-05",
+      "source": "gewinnuebergabe-05.jpg",
+      "sourceHash": "1fbcde8072d9408e7599cbfd5f82d1c42ecd01788b43771661252fc4cbb15d0b",
+      "sourceDimensions": {
+        "width": 1050,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1050,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "photo",
+      "processing": "technical-only",
+      "rubric": "Gewinnspiele",
+      "output": {
+        "name": "gewinnuebergabe-05.webp",
+        "maxBytes": 350000,
+        "sha256": "3a78d79553f9c6aafab653a8d327075cefbb780ad8dba429e09bd5f8582d9df3",
+        "dimensions": {
+          "width": 1050,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "jobs-vollzeit",
+      "source": "jobs-vollzeit.jpg",
+      "sourceHash": "62bdfc73da053836a6ea4e4bb1e08530e2d26d928a9cb2f39357a3b2fdbd3f35",
+      "sourceDimensions": {
+        "width": 986,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 986,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "poster",
+      "processing": "ai-email-edit",
+      "rubric": "Jobs",
+      "output": {
+        "name": "jobs-vollzeit.webp",
+        "maxBytes": 500000,
+        "sha256": "26f5e4672deed7f93205223239e8b1a95d1ab3d2012ac844974adfc4bb4efc22",
+        "dimensions": {
+          "width": 986,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "jobs-teilzeit",
+      "source": "jobs-teilzeit.jpg",
+      "sourceHash": "a6fa0a1844009cb0df4b40e1ef3e9d7d8e64688c4127dbe90f6ee52f5e6cc702",
+      "sourceDimensions": {
+        "width": 987,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 987,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "poster",
+      "processing": "ai-email-edit",
+      "rubric": "Jobs",
+      "output": {
+        "name": "jobs-teilzeit.webp",
+        "maxBytes": 500000,
+        "sha256": "58a459e156031b162ed5ac59d36a8033d396ef4af003131a5dfc46d2643b62d4",
+        "dimensions": {
+          "width": 987,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "jobs-ausbildung",
+      "source": "jobs-ausbildung.jpg",
+      "sourceHash": "4a685061f19c5ee6d19df3b998f0a0261e447b73c1fe1dcda646d44788eca4e1",
+      "sourceDimensions": {
+        "width": 1120,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1120,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "poster",
+      "processing": "ai-email-edit",
+      "rubric": "Jobs",
+      "output": {
+        "name": "jobs-ausbildung.webp",
+        "maxBytes": 500000,
+        "sha256": "f6596b2e41fff254a0bc5c7712e060f027d8caa1a854c792f6e35d89740005f9",
+        "dimensions": {
+          "width": 1120,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "gasflaschen-tausch",
+      "source": "gasflaschen-tausch.jpg",
+      "sourceHash": "9f019fa7734f4f261af34a7d31cd7f71919603d0e25961b00ec78286c3200940",
+      "sourceDimensions": {
+        "width": 989,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 989,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "poster",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "gasflaschen-tausch.webp",
+        "maxBytes": 500000,
+        "sha256": "8bf72c938e6fc86559ddce566b5226d6fd0d414ae884a2dc58064037fb1a02ab",
+        "dimensions": {
+          "width": 989,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "salitos-plakat",
+      "source": "salitos-plakat.jpg",
+      "sourceHash": "5b5f20d7bc8ea79eb516210cf6eb6902431b2fe79357ae8decdfe8a7b88fe4e1",
+      "sourceDimensions": {
+        "width": 989,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 989,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "poster",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "salitos-plakat.webp",
+        "maxBytes": 500000,
+        "sha256": "5f882ce90ec6d102b11b62086ef6b7b818be709dfe608bf5beb1aa827bc2676f",
+        "dimensions": {
+          "width": 989,
+          "height": 1400
+        }
+      }
+    },
+    {
+      "id": "liefmans-plakat",
+      "source": "liefmans-plakat.jpg",
+      "sourceHash": "5d88dd67609df8080205eea005fba5094025c09e7c17c7ba0a69fec9defed040",
+      "sourceDimensions": {
+        "width": 991,
+        "height": 1400
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 991,
+        "height": 1400
+      },
+      "provenance": "operator-approved-desktop",
+      "kind": "poster",
+      "processing": "technical-only",
+      "rubric": "Marktleben",
+      "output": {
+        "name": "liefmans-plakat.webp",
+        "maxBytes": 500000,
+        "sha256": "b82706f26396c7dd36b75f418528c9e25bd0d56432eb761b4d0ad85af12464f7",
+        "dimensions": {
+          "width": 991,
+          "height": 1400
+        }
+      }
+    }
+  ]
+}
