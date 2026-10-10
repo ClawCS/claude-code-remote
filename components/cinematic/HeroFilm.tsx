@@ -18,6 +18,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
   const video = useRef<HTMLVideoElement>(null);
   const controls = useRef<{ toggle(): void } | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
   const [desktop, setDesktop] = useState(false);
   const [finale, setFinale] = useState(false);
@@ -34,18 +35,21 @@ export default function HeroFilm({ children, className, copyClassName }: {
     let blocked = false;
     let disposed = false;
     let isPlaying = false;
+    let isPending = false;
     let request = 0;
     const eligible = () => !motion.matches && !connection?.saveData;
-    const pause = () => { request += 1; isPlaying = false; media.pause(); setPlaying(false); };
+    const pause = () => { request += 1; isPlaying = false; isPending = false; media.pause(); setPlaying(false); setPending(false); };
     const detach = () => { pause(); media.removeAttribute("src"); media.load(); setFinale(false); };
     const fallback = () => { blocked = true; manualPlayback = false; detach(); setFailed(true); };
     const start = () => {
-      if (disposed || document.hidden || !visible) return;
+      if (disposed || document.hidden || !visible || isPlaying || isPending) return;
       if (!media.hasAttribute("src")) {
         media.src = wide.matches ? "/videos/jammers-hero-desktop.mp4" : "/videos/jammers-hero-mobile.mp4";
         media.load();
       }
       const attempt = ++request;
+      isPending = true;
+      setPending(true);
       setFailed(false);
       void media.play().catch(() => { if (!disposed && attempt === request) fallback(); });
     };
@@ -62,6 +66,8 @@ export default function HeroFilm({ children, className, copyClassName }: {
     const onPlaying = () => {
       if (disposed || document.hidden || !visible || manualPaused || !media.hasAttribute("src") || (!manualPlayback && !eligible())) { pause(); return; }
       isPlaying = true;
+      isPending = false;
+      setPending(false);
       setPlaying(true);
     };
     const onPause = () => { isPlaying = false; setPlaying(false); };
@@ -71,7 +77,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
       reconcile();
     }, { threshold: [0, 0.15] });
     controls.current = { toggle() {
-      if (isPlaying) { manualPaused = true; manualPlayback = false; pause(); }
+      if (isPlaying || isPending) { manualPaused = true; manualPlayback = false; pause(); }
       else { manualPaused = false; manualPlayback = true; blocked = false; start(); }
     } };
     widthChanged();
@@ -83,7 +89,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
     media.addEventListener("pause", onPause);
     media.addEventListener("timeupdate", onTime);
     media.addEventListener("error", fallback);
-    if (observer) observer.observe(wrapper.current!);
+    if (observer) observer.observe(media);
     else { visible = true; reconcile(); }
     return () => {
       disposed = true;
@@ -118,7 +124,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
           Dein Browser kann diesen Film nicht abspielen. Das Schlussmotiv zeigt sechs Jammers-Liköre mit passenden Gläsern.
         </video>
         <button className={styles.control} type="button" disabled={!hydrated} onClick={() => controls.current?.toggle()} aria-describedby={descriptionId}>
-          {playing ? "Film pausieren" : "Film abspielen"}
+          {pending ? "Wiedergabe abbrechen" : playing ? "Film pausieren" : "Film abspielen"}
         </button>
       </div>
       <div className={styles.caption}>

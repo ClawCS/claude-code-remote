@@ -23,8 +23,8 @@ beforeAll(async () => {
 }, 30_000);
 afterAll(async () => { await browser?.close(); });
 
-async function mount(options: { reduced?: boolean; saveData?: boolean; width?: number; reject?: boolean; nativeMedia?: boolean } = {}) {
-  const page = await browser.newPage({ viewport: { width: options.width ?? 1440, height: 900 }, reducedMotion: options.reduced ? "reduce" : "no-preference" });
+async function mount(options: { reduced?: boolean; saveData?: boolean; width?: number; height?: number; tallCopy?: boolean; reject?: boolean; nativeMedia?: boolean } = {}) {
+  const page = await browser.newPage({ viewport: { width: options.width ?? 1440, height: options.height ?? 900 }, reducedMotion: options.reduced ? "reduce" : "no-preference" });
   await page.route("https://film.test/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     if (path === "/") return route.fulfill({ contentType: "text/html", body: "<div id='root'></div>" });
@@ -48,6 +48,7 @@ async function mount(options: { reduced?: boolean; saveData?: boolean; width?: n
     }
   }, { ...options, tokens: cinematicTokenStyle });
   await page.addStyleTag({ content: css });
+  if (options.tallCopy) await page.addStyleTag({ content: "[data-film-copy] { min-height:600px; } body { padding-bottom:1000px; }" });
   await page.addScriptTag({ content: bundle });
   await page.locator("button").waitFor({ state: "visible" });
   await page.waitForFunction(() => !document.querySelector("button")?.disabled);
@@ -57,6 +58,45 @@ async function mount(options: { reduced?: boolean; saveData?: boolean; width?: n
 const label = async (page: Page) => page.locator("button").innerText();
 
 describe("HeroFilm loading and playback", () => {
+  it("does not load offscreen mobile media just because tall copy is visible", async () => {
+    const page = await mount({ width: 390, height: 500, tallCopy: true });
+    expect((await page.locator("video").boundingBox())!.y).toBeGreaterThanOrEqual(500);
+    // Wait for real browser intersection delivery, not a substituted observer.
+    await page.locator("video").evaluate((video) => new Promise<void>((resolve) => {
+      const observer = new IntersectionObserver(() => { observer.disconnect(); resolve(); });
+      observer.observe(video);
+    }));
+    await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+    expect(await page.locator("video").getAttribute("src")).toBeNull();
+    expect(await label(page)).toBe("Film abspielen");
+    await page.locator("video").scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-mobile.mp4");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film abspielen");
+    expect((await page.locator("video").boundingBox())!.y).toBeGreaterThanOrEqual(500);
+    await page.close();
+  });
+
+  it("allows cancellation of pending explicit playback and ignores its late completion", async () => {
+    const page = await mount({ reduced: true });
+    await page.evaluate(() => {
+      HTMLMediaElement.prototype.play = function () {
+        return new Promise<void>((resolve) => {
+          (window as Window & { completePlay?: () => void }).completePlay = () => { this.dispatchEvent(new Event("playing")); resolve(); };
+        });
+      };
+    });
+    await page.locator("button").click();
+    expect(await label(page)).toBe("Wiedergabe abbrechen");
+    await page.locator("button").click();
+    expect(await label(page)).toBe("Film abspielen");
+    await page.evaluate(() => (window as Window & { completePlay?: () => void }).completePlay?.());
+    expect(await label(page)).toBe("Film abspielen");
+    expect(await page.locator("[role=status]").innerText()).toBe("");
+    await page.close();
+  });
+
   it("ships a usable poster and links but no media URL or inert control before hydration", () => {
     const html = renderToStaticMarkup(<HeroFilm><a href="/angebote">Angebote</a></HeroFilm>);
     expect(html).toContain('poster="/images/home/jammers-film-poster.webp"');
