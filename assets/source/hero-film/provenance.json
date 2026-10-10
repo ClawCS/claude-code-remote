@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "kind": "operator-approved-ai-advertising-film",
+  "approval": {
+    "date": "2026-10-10",
+    "basis": "Operator approved direction A and requested the production design rebuild after viewing accepted v2.",
+    "specification": "docs/superpowers/specs/2026-10-10-filmisch-redesign.md",
+    "exception": "Explicit exception to the Canva-only image rule for this accepted AI advertising film and its finale poster; not documentary market imagery or a pixel-identical product photograph.",
+    "deploymentApprovedByThisManifest": false
+  },
+  "generation": {
+    "providers": ["Runway", "OpenAI imagegen", "local AVFoundation assembly"],
+    "acceptedTaskIds": ["269e26d5-7937-45b8-8127-1945b38bbb12", "867270ee-eda9-4ec4-b102-68d422a1c4ed"],
+    "finale": "Accepted static AI motif with a minimal 1% zoom, assembled into v2 from second 11. Rejected animated finale with changing label details is not used.",
+    "reference": "Operator-approved six-bottle product photograph; bottle identities informed the generated motif, which is not pixel-identical.",
+    "promptSummary": "Warm 16:9 advertising scenes of drinks and an illustrative party setup; pouring Pralle Kirsche; six complete bottles in original order with matching filled shot glasses, black tabletop and restrained red accent. No new generation for the production derivatives."
+  },
+  "source": {
+    "filename": "jammers-hero-15s-v2.mp4",
+    "sha256": "dfb37e4e0ea987dce428afeaf93eb2c3030849603901264967671141289202c7",
+    "bytes": 17311407,
+    "width": 1920,
+    "height": 1080,
+    "durationSeconds": 15,
+    "fps": 24,
+    "hasAudio": false
+  },
+  "posterSource": {
+    "filename": "jammers-eigenmarken-finale-v1.png",
+    "sha256": "f2122a859e68538cee3520802606a9956f056d26bac1746c2bb29415d7a52ba8",
+    "fit": "Full motif contained in 16:9; no crop, no retouching."
+  },
+  "derivation": {
+    "encoder": "scripts/encode-hero-film.swift",
+    "codec": "H.264 High, MP4",
+    "desktopBitrate": 2500000,
+    "mobileBitrate": 1200000,
+    "fps": 24,
+    "durationSeconds": 15,
+    "hasAudio": false,
+    "fastStart": true,
+    "metadataStripped": true,
+    "fit": "Uniform full-frame 16:9 downscale, preserving all source imagery.",
+    "posterEncoding": "sharp WebP, 1280x720 contain, quality 84"
+  },
+  "files": [
+    { "path": "public/videos/jammers-hero-desktop.mp4", "sha256": "f74801aa87f6c6545ad8eb7b404e801d059f2441ff304617e5f9cf598909739c", "bytes": 4789249, "width": 1280, "height": 720, "maxBytes": 6000000, "durationSeconds": 15, "fps": 24, "hasAudio": false },
+    { "path": "public/videos/jammers-hero-mobile.mp4", "sha256": "db6b240fee5bef822bedfc4f98f6a5dde86a9cf403917df9b48a3768fca4a3ac", "bytes": 2317235, "width": 960, "height": 540, "maxBytes": 3000000, "durationSeconds": 15, "fps": 24, "hasAudio": false },
+    { "path": "public/images/home/jammers-film-poster.webp", "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638", "bytes": 130626, "width": 1280, "height": 720 }
+  ],
+  "publicLabel": "KI-Werbefilm · beispielhafte Partyszene"
+}
