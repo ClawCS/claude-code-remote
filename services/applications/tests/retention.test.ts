@@ -200,7 +200,8 @@ it.each([false, true])("retains long final traversal only for verified barrier-o
   const f = await fixture(), db = connections.at(-1)!;
   bindMaintenance(f.owner, f.services, f.monotonicNow);
   const erasure = erasureOwner(f.owner.repository);
-  for (let n = 0; n < 8; n++) {
+  // Exhaust the nine fixed due streams; seven unchanged final-work phases remain.
+  for (let n = 0; n < 9; n++) {
     const run = await beginMaintenance(f.owner);
     expect((await erasure.finalWorkBatch(run)).complete).toBe(false);
     await settleMaintenance(f.owner);

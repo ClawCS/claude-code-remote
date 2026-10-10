@@ -428,3 +428,28 @@ INSERT INTO cleanup_maintenance VALUES(1,'',0);
 CREATE TABLE cleanup_prune_cursors(stream INTEGER PRIMARY KEY CHECK(stream BETWEEN 0 AND 2), scanPass TEXT NOT NULL, journalId TEXT NOT NULL, slot TEXT NOT NULL, leaf TEXT NOT NULL, root TEXT NOT NULL);
 INSERT INTO cleanup_prune_cursors VALUES(0,'','','','',''),(1,'','','','',''),(2,'','','','','');
 PRAGMA user_version = 12;
+-- Task11C migration13: private immutable operator evidence and indexed early due stream.
+CREATE TABLE delivery_incident_resolutions(
+ caseId TEXT PRIMARY KEY NOT NULL REFERENCES cases(id),
+ version INTEGER NOT NULL CHECK(version BETWEEN 1 AND 9007199254740991),
+ actor TEXT NOT NULL REFERENCES auth_staff(id),
+ recordedAt TEXT NOT NULL CHECK(length(recordedAt)=24 AND strftime('%Y-%m-%dT%H:%M:%fZ',recordedAt) IS NOT NULL AND strftime('%Y-%m-%dT%H:%M:%fZ',recordedAt)=recordedAt),
+ contactedAt TEXT NOT NULL CHECK(length(contactedAt)=24 AND strftime('%Y-%m-%dT%H:%M:%fZ',contactedAt) IS NOT NULL AND strftime('%Y-%m-%dT%H:%M:%fZ',contactedAt)=contactedAt AND contactedAt<=recordedAt),
+ contactChannel TEXT NOT NULL CHECK(contactChannel IN('email','phone','in_person')),
+ agreedResubmissionRoute TEXT NOT NULL CHECK(length(trim(agreedResubmissionRoute)) BETWEEN 1 AND 250 AND length(CAST(agreedResubmissionRoute AS BLOB))<=1000 AND instr(agreedResubmissionRoute,char(0))=0)
+) STRICT;
+CREATE TRIGGER incident_resolution_immutable BEFORE UPDATE ON delivery_incident_resolutions
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_INCIDENT_RESOLUTION'); END;
+CREATE INDEX maintenance_incident_resolution_due ON delivery_incident_resolutions(recordedAt,caseId);
+CREATE TABLE maintenance_selectors_old13 AS SELECT * FROM maintenance_selectors;
+DROP TABLE maintenance_selectors;
+CREATE TABLE maintenance_selectors(singleton INTEGER PRIMARY KEY CHECK(singleton=1),duePhase INTEGER NOT NULL CHECK(duePhase BETWEEN 0 AND 8),pendingPhase INTEGER NOT NULL CHECK(pendingPhase BETWEEN 0 AND 1),globalPhase INTEGER NOT NULL CHECK(globalPhase BETWEEN 0 AND 3));
+INSERT INTO maintenance_selectors SELECT * FROM maintenance_selectors_old13;
+DROP TABLE maintenance_selectors_old13;
+CREATE TABLE maintenance_due_cursors_old13 AS SELECT * FROM maintenance_due_cursors;
+DROP TABLE maintenance_due_cursors;
+CREATE TABLE maintenance_due_cursors(stream INTEGER PRIMARY KEY CHECK(stream BETWEEN 0 AND 8),keyAt TEXT NOT NULL,keyId TEXT NOT NULL);
+INSERT INTO maintenance_due_cursors SELECT * FROM maintenance_due_cursors_old13;
+INSERT INTO maintenance_due_cursors VALUES(8,'','');
+DROP TABLE maintenance_due_cursors_old13;
+PRAGMA user_version = 13;

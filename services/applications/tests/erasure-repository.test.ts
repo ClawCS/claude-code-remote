@@ -9,7 +9,7 @@ import { encodeJournalEvent } from "../src/ledger-contract";
 import { erasureOwner } from "../src/erasure-repository";
 import { replayAssociation } from "../src/erasure-association";
 import { createHash } from "node:crypto";
-import { removeTask11Schema, removeTask11B1Schema, removeTask11B1bNSchema, testAdmission, testAdmissionScope } from "./fixtures/admission";
+import { removeTask11Schema, removeTask11B1Schema, removeTask11B1bNSchema, removeTask11CSchema, testAdmission, testAdmissionScope } from "./fixtures/admission";
 import { applicationId,digest, utcInstant } from "../src/types";
 import { caseId, instant, syntheticJournal } from "./fixtures/ledger";
 import type { EraseJournalEvent, JournalEvent,SafetyJournal } from "../src/types";
@@ -76,23 +76,35 @@ describe("original erasure owner foundations", () => {
       expect(end.targets).toEqual([]);expect(end.next).toBeNull();
     });
   });
-  it("migrates fresh and genuine schema8/9/10/11 owners to exactly schema12", () => {
-    const s = setup(); expect(s.db.pragma("user_version", { simple: true })).toBe(12);
+  it("migrates fresh and genuine schema8/9/10/11 owners to exactly schema13", () => {
+    const s = setup(); expect(s.db.pragma("user_version", { simple: true })).toBe(13);
     removeTask11B1bNSchema(s.db); s.db.pragma("user_version=11");
     s.db.prepare("INSERT INTO reservations(id,sessionHash,idempotencyKey,reservedBytes,expiresAt,active) VALUES(?,?,?,?,?,1)").run("historical-source", "a".repeat(64), "historical", 20000, instant);
     s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(12);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(13);
     expect(s.db.prepare("SELECT custodyStarted,cleanupDisposition,active FROM reservations WHERE id='historical-source'").get()).toEqual({ custodyStarted: null, cleanupDisposition: null, active: 1 });
     expect(() => s.db.prepare("UPDATE reservations SET custodyStarted=0 WHERE id='historical-source'").run()).toThrow("IMMUTABLE_CLEANUP_SOURCE");
     expect(() => s.db.prepare("UPDATE reservations SET custodyStarted=1 WHERE id='historical-source'").run()).toThrow("IMMUTABLE_CLEANUP_SOURCE");
     removeTask11B1bNSchema(s.db);
     s.db.exec("DROP INDEX erasure_inventory_case; DROP INDEX erasure_manifest_execution; DROP INDEX erasure_inventory_identity; PRAGMA user_version=10;"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(12);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(13);
     removeTask11B1Schema(s.db); s.db.pragma("user_version=9"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(12);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(13);
     removeTask11Schema(s.db);s.db.pragma("user_version=8");s.restart();
-    expect(s.db.pragma("user_version",{simple:true})).toBe(12);
+    expect(s.db.pragma("user_version",{simple:true})).toBe(13);
     expect(s.db.prepare("SELECT name FROM sqlite_master WHERE name='deletion_contradictory_result'").get()).toBeDefined();
+  });
+  it("migrates genuine schema12 preserving existing fixed cursors and adding the indexed ninth stream exactly once", () => {
+    const s = setup(); removeTask11CSchema(s.db); s.db.pragma("user_version=12");
+    s.db.prepare("UPDATE maintenance_selectors SET duePhase=7,pendingPhase=1,globalPhase=3").run();
+    s.db.prepare("UPDATE maintenance_due_cursors SET keyAt=?,keyId=? WHERE stream=7").run(instant, caseId);
+    s.restart();
+    expect(s.db.pragma("user_version", { simple: true })).toBe(13);
+    expect(s.db.prepare("SELECT duePhase,pendingPhase,globalPhase FROM maintenance_selectors").get()).toEqual({ duePhase: 7, pendingPhase: 1, globalPhase: 3 });
+    expect(s.db.prepare("SELECT * FROM maintenance_due_cursors WHERE stream>=7 ORDER BY stream").all()).toEqual([{ stream: 7, keyAt: instant, keyId: caseId }, { stream: 8, keyAt: "", keyId: "" }]);
+    const plan = s.db.prepare("EXPLAIN QUERY PLAN SELECT recordedAt,caseId FROM delivery_incident_resolutions INDEXED BY maintenance_incident_resolution_due WHERE recordedAt<=? AND (recordedAt,caseId)>(?,?) ORDER BY recordedAt,caseId LIMIT 4").all(instant, "", "") as { detail: string }[];
+    expect(plan.map(row => row.detail).join(" ")).toContain("SEARCH delivery_incident_resolutions USING COVERING INDEX maintenance_incident_resolution_due");
+    s.restart(); expect(s.db.prepare("SELECT count(*) n FROM maintenance_due_cursors").get()).toEqual({ n: 9 });
   });
   it("rejects incomplete present-object and cross-kind inventory rows at the schema boundary",()=>{
     const s=setup(),pass="a".repeat(32),id="b".repeat(36);

@@ -75,7 +75,7 @@ export interface ErasureWork {
 export type ErasureRowPhase = "scope-contact" | "scope-proofs" | "payload-artifacts" | "payload-reservations" | "payload-case" | "payload-send"
   | "identity-grants" | "identity-lifecycle-audit" | "identity-lifecycle-proposals" | "identity-audit" | "identity-searches"
   | "identity-diagnostics" | "identity-mail-events" | "identity-mail-state" | "identity-delivery-attempts" | "identity-delivery"
-  | "identity-lifecycle" | "identity-replay-reservations" | "identity-case-reservation";
+  | "identity-lifecycle" | "identity-incident-resolution" | "identity-replay-reservations" | "identity-case-reservation";
 export type ErasureRowKey = string | number | readonly [string, string | number];
 export type ErasureRowCursor = readonly [string, ErasureRowPhase, ErasureRowKey | null];
 export interface ErasureRowTarget { readonly phase: ErasureRowPhase; readonly key: ErasureRowKey }
@@ -138,7 +138,18 @@ export interface LoginInput { readonly username: string; readonly password: stri
 export interface StaffSession { readonly sessionId: Digest; readonly staffId: StaffId; readonly generation: number; readonly issuedAt: Instant; readonly expiresAt: Instant }
 export type LoginResult = { readonly kind: "denied" } | { readonly kind: "authenticated"; readonly token: string; readonly csrf: string; readonly session: StaffSession };
 export interface ReauthProof { readonly password: string; readonly otp: string; readonly trustedIp: string }
-export interface SensitiveAction { readonly kind: "review" | "reject" | "reopen" | "correct-date" | "hold" | "release-hold" | "manual-case" | "confirm-external-copies"; readonly caseId: ApplicationId; readonly version: number }
+export interface SensitiveAction { readonly kind: "review" | "reject" | "reopen" | "correct-date" | "hold" | "release-hold" | "manual-case" | "confirm-external-copies" | "record-delivery-incident-resolution"; readonly caseId: ApplicationId; readonly version: number }
+export interface IncidentResolutionInput {
+  readonly kind: "record-delivery-incident-resolution";
+  readonly contactedAt: Instant;
+  readonly contactChannel: "email" | "phone" | "in_person";
+  readonly agreedResubmissionRoute: string;
+}
+export interface IncidentResolutionRecord extends Omit<IncidentResolutionInput, "kind"> {
+  readonly caseId: ApplicationId; readonly version: number; readonly actor: StaffId; readonly recordedAt: Instant;
+}
+export type IncidentResolutionRetention = "commit_pending" | "committed_cleanup_pending" | "local_scopes_complete";
+export interface IncidentResolutionResult { readonly record: IncidentResolutionRecord; readonly retention: IncidentResolutionRetention }
 export interface ActionGrant { readonly nonce: string; readonly staffId: StaffId; readonly action: SensitiveAction; readonly issuedAt: Instant; readonly expiresAt: Instant }
 export type ManualCategory = "hired" | "withdrawn" | "data-subject-request" | "other";
 export type CaseAction = { readonly kind: "review" } | { readonly kind: "reject"; readonly closedOn: DateOnly }
@@ -376,6 +387,8 @@ export interface ApplicationRepository extends DeliveryRepository {
   createAuthentication(deps: AuthDependencies): ApplicationAuth;
   getLifecycleCase(id: ApplicationId, session: StaffSession): CaseRecord;
   applyCaseAction(id: ApplicationId, action: CaseAction, grant: ActionGrant, session: StaffSession, recoveryEventId?: string): Promise<CaseRecord>;
+  recordDeliveryIncidentResolution(id: ApplicationId, input: IncidentResolutionInput, grant: ActionGrant, session: StaffSession): Promise<IncidentResolutionResult>;
+  getDeliveryIncidentResolution(id: ApplicationId, session: StaffSession): IncidentResolutionResult | null;
   recoverLifecyclePending(after?: ApplicationId): Promise<LifecycleRecoveryPage>;
   // Capacity is computed by worker custody, never accepted from RPC metadata.
   reserve(input: ReservationInput, capacity?: "available" | "exhausted"): Reservation;

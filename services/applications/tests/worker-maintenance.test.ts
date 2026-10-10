@@ -274,14 +274,15 @@ describe("original maintenance lifetime", () => {
     f.db.transaction(() => { for (const id of ids.slice(0, -1)) cover.run(id, "a".repeat(32)); })();
     f.advance(7 * 86400000); await refreshTestRepository(f.owner.repository);
     bindMaintenance(f.owner, f.services, f.monotonicNow); const owner = erasureOwner(f.owner.repository);
+    const expectedCalls = Math.floor((ids.length - 1) / 20) * 9 + 1, finiteGuard = expectedCalls + 9;
     let found = false, calls = 0;
-    while (!found && calls < 410) {
+    while (!found && calls < finiteGuard) {
       const run = await beginMaintenance(f.owner), page = await owner.listDue(run); calls++;
       expect(page.consumedItems).toBeLessThanOrEqual(108); expect(maintenanceSnapshot(f.owner).selectedCount).toBeLessThanOrEqual(20);
       found = page.items.some(candidate => candidate.caseId === wanted && candidate.scope === "processing_payload");
       await settleMaintenance(f.owner);
     }
-    expect(found).toBe(true); expect(calls).toBe(401);
+    expect(found).toBe(true); expect(calls).toBe(expectedCalls);
   });
   it("counts a preexisting case-guard wait before selection without resetting its deadline", async () => {
     const f = await setup(), { accepted } = await f.accept(), entered = deferred(), gate = deferred();

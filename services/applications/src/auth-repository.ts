@@ -6,7 +6,7 @@ export interface AuthStaff { id: StaffId; login: "niko"; displayName: "Nikolaos 
 export interface AuthSessionRow { hash: Digest; staffId: StaffId; generation: number; epoch: Digest; csrf: Digest; issuedAt: Instant; lastSeen: Instant; expiresAt: Instant; revoked: number }
 export interface AuthGrantRow { hash: Digest; staffId: StaffId; sessionHash: Digest; generation: number; epoch: Digest; action: SensitiveAction["kind"]; caseId: ApplicationId; version: number; issuedAt: Instant; expiresAt: Instant }
 export interface AuthActionContext { readonly row: Readonly<CaseRecord>; readonly actor: StaffId; readonly now: Instant; readonly epoch: Digest }
-export const AUTH_ACTIONS = ["review", "reject", "reopen", "correct-date", "hold", "release-hold", "manual-case", "confirm-external-copies"] as const;
+export const AUTH_ACTIONS = ["review", "reject", "reopen", "correct-date", "hold", "release-hold", "manual-case", "confirm-external-copies", "record-delivery-incident-resolution"] as const;
 export function assertAction(action: SensitiveAction): void {
   applicationId(action.caseId);
   if (!AUTH_ACTIONS.includes(action.kind) || !Number.isSafeInteger(action.version) || action.version < 1) throw new Error("AUTH_DENIED");

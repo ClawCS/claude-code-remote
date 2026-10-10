@@ -38,6 +38,7 @@ export interface PhysicalVerifier {
 }
 interface AcceptedAuthority {
   resolve(commit: string): ErasureWork; guard(id: ApplicationId): object;
+  locallyComplete(work: ErasureWork): boolean;
   matchesReservation(work: ErasureWork, identity: {sessionHash: string; idempotencyKey: string}): boolean;
   registerPhysicalVerifier(verifier: PhysicalVerifier): void;
 }
@@ -715,14 +716,20 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       const artifact = db.prepare("SELECT 1 FROM artifacts WHERE caseId=? LIMIT 1").get(work.caseId);
       const reserved = db.prepare("SELECT 1 FROM artifact_reservations WHERE caseId=? LIMIT 1").get(work.caseId);
       reduced = source.encryptedPayloadPath === null && source.payloadBytes === 0 && !artifact && !reserved;
-    } else if (!rowOnly) {
+    } else {
       identity = linked("identifying_register") ?? linked("incident_identity");
       if (!identity) inventoryInvalid();
+      // Row-only work can outlive its parent only after actual current-owner
+      // completion of the independently bound identity scope. Absence alone
+      // and restored/historical done flags are never completion authority.
+      if (rowOnly && !acceptedAuthority.locallyComplete(identity)) inventoryInvalid();
       if (identity.scope === "incident_identity") {
         const payload = linked("processing_payload");
-        if (!payload || payload.commitEventId !== physical.commitEventId || payload.stage !== "locally-complete") inventoryInvalid();
+        if (!payload || (!rowOnly && payload.commitEventId !== physical.commitEventId) || payload.stage !== "locally-complete" || (rowOnly && !acceptedAuthority.locallyComplete(payload))) inventoryInvalid();
       }
-    } else inventoryInvalid();
+    }
+    // Fixed64 includes work/guard, up to four linked scopes (6 each), source,
+    // reservation/artifact points and two captured completion-map lookups.
     // Once the real source is reduced the old physical traversal has no more
     // execution purpose. Do not retain its last journal/leaf as a shadow copy
     // after normalized ownership metadata is retired. Recovery reselects.
@@ -760,7 +767,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
 interface ReservationSource { id: string; sessionHash: string; idempotencyKey: string; reservedBytes: number; expiresAt: string; submission: string }
 
 const payload: readonly ErasureRowPhase[]=["payload-artifacts","payload-reservations","payload-case","payload-send"];
-const identity: readonly ErasureRowPhase[]=["identity-grants","identity-lifecycle-audit","identity-lifecycle-proposals","identity-audit","identity-searches","identity-diagnostics","identity-mail-events","identity-mail-state","identity-delivery-attempts","identity-delivery","identity-lifecycle","identity-replay-reservations","identity-case-reservation"];
+const identity: readonly ErasureRowPhase[]=["identity-grants","identity-lifecycle-audit","identity-lifecycle-proposals","identity-audit","identity-searches","identity-diagnostics","identity-mail-events","identity-mail-state","identity-delivery-attempts","identity-delivery","identity-lifecycle","identity-incident-resolution","identity-replay-reservations","identity-case-reservation"];
 const phases:Readonly<Record<EraseScope,readonly ErasureRowPhase[]>>={processing_payload:payload,processing_contact:["scope-contact"],public_token:["scope-proofs"],incident_identity:["scope-contact","scope-proofs",...identity],identifying_register:["scope-contact","scope-proofs",...payload,...identity]};
 function fail():never{throw new Error("ERASURE_CURSOR_INVALID");}
 
@@ -815,6 +822,7 @@ export function createErasureRowSelector(db:Database.Database){
         case "payload-case":sql="SELECT id FROM cases WHERE id=? AND (encryptedPayloadPath IS NOT NULL OR payloadBytes!=0) AND id>? LIMIT ?";operands=[id,last??"",limit];key=r=>r.id as string;break;
         case "payload-send":sql="SELECT caseId FROM deliveries WHERE caseId=? AND sendDueAt IS NOT NULL AND caseId>? LIMIT ?";operands=[id,last??"",limit];key=r=>r.caseId as string;break;
         case "identity-grants":sql="SELECT hash FROM auth_grants WHERE caseId=? AND hash>? ORDER BY hash LIMIT ?";operands=[id,last??"",limit];key=r=>r.hash as string;break;
+        case "identity-incident-resolution":sql="SELECT caseId FROM delivery_incident_resolutions WHERE caseId=? AND caseId>? LIMIT ?";operands=[id,last??"",limit];key=r=>r.caseId as string;break;
         case "identity-lifecycle-audit":case "identity-audit":{
           const table=phase==="identity-audit"?"audit":"lifecycle_audit";
           sql=`SELECT sequence FROM ${table} WHERE caseId=? AND sequence>? ORDER BY sequence LIMIT ?`;operands=[id,last??0,limit];key=r=>r.sequence as number;break;

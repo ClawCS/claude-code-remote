@@ -72,7 +72,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10 && version !== 11 && version !== 12) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10 && version !== 11 && version !== 12 && version !== 13) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -100,7 +100,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-A migration11"), schema.indexOf("-- Task11B1b-N migration12")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 11) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-N migration12")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-N migration12"), schema.indexOf("-- Task11C migration13")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 12) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11C migration13")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -337,7 +340,13 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   let journal: SafetyJournal | undefined;
   try { journal = lifecycleOptions.journalFactory?.(createJournalProjection(db)); }
   catch (error) { db.close(); closed = true; throw error; }
-  const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), journal);
+  // Callbacks capture the original const owner. They cannot be invoked until
+  // construction finishes; no mutable/undefined owner or public binder escapes.
+  const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), journal, Object.freeze({
+    delivery: delivery.getDelivery,
+    prepare: (id: ApplicationId) => erasure.prepareIncidentResolution(id),
+    retention: (id: ApplicationId) => erasure.incidentResolutionRetention(id),
+  }));
   // Validate every persisted ledger before exposing this exclusively-owned DB.
   try { db.prepare("UPDATE erasure_maintenance SET scanPass=? WHERE singleton=1").run(randomBytes(16).toString("hex")); if(startup==="ordinary")db.transaction(() => {
     recoverDelivery(db, utcInstant(clock.now().toISOString()),id=>scopeDenied(id,"payload")||scopeDenied(id,"identity"));

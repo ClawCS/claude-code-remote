@@ -66,13 +66,13 @@ async function step(owner: WorkerOwner, state: Session, run: MaintenanceRun): Pr
   switch (state.phase) {
     case "scan": if ((await custody.scanBatch(run)).complete) state.phase = "due"; return;
     case "due":
-      // Rotate once through the eight original fair streams before rebuilding
-      // physical coverage. Each page retains its own original 860 precharge.
+      // Rotate once through the nine original fair streams before rebuilding
+      // physical coverage. Each page retains its own bounded 866 precharge.
       do {
         await erasure.prepareDueBatch(run);
         state.duePages=(state.duePages??0)+1;
-        if(state.duePages===8){state.duePages=0;state.phase="pending";break;}
-      } while(maintenanceRemaining(run,owner.repository).items>=860 && maintenanceRemaining(run,owner.repository).selections>=3);
+        if(state.duePages===9){state.duePages=0;state.phase="pending";break;}
+      } while(maintenanceRemaining(run,owner.repository).items>=866 && maintenanceRemaining(run,owner.repository).selections>=3);
       return;
     case "pending": {
       const page = await erasure.listPending(run), first = page.items[0];

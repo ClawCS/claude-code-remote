@@ -296,7 +296,7 @@ describe("actual lifecycle commits", () => {
     expect(row.lifecycle).toMatchObject({ initialAuthority: null, authorityKind: null, authorityId: null, identityState: "identifying" });
     expect(row.acceptedAt).toBe(acceptedAt); expect(deletionEligibility(row, dateOnly("2028-01-01"))).toBe("blocked");
     expect(s.repository.commitIntake(s.accepted.input).replayed).toBe(true);
-    expect(s.db.pragma("user_version", { simple: true })).toBe(12);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(13);
     expect(s.db.prepare("SELECT COUNT(*) AS n FROM case_lifecycle").get()).toEqual({ n: 1 });
     expect(s.repository.getPublicStatus(digest((await import("node:crypto")).createHash("sha256").update(s.accepted.statusProof).digest("hex")), utcInstant(new Date(s.time).toISOString()))).toEqual(publicBefore);
     if (version === 5) {

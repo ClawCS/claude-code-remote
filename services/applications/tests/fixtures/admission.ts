@@ -32,8 +32,13 @@ export function removeTask11B1Schema(db: Database.Database): void {
   db.exec("DROP TABLE maintenance_pending_cursors; DROP TABLE maintenance_due_cursors; DROP TABLE maintenance_selectors; DROP INDEX maintenance_payload_due; DROP INDEX maintenance_contact_due; DROP INDEX maintenance_accepted_due; DROP INDEX maintenance_cleanup_due; DROP INDEX maintenance_invalid_due; DROP INDEX maintenance_proposed; DROP INDEX maintenance_completed; DROP INDEX maintenance_diagnostics_expiry; DROP INDEX maintenance_searches_expiry; DROP INDEX maintenance_auth_expiry;");
 }
 export function removeTask11B1bNSchema(db: Database.Database): void {
+  removeTask11CSchema(db);
   db.exec("DROP TABLE cleanup_prune_cursors; DROP TABLE cleanup_maintenance; DROP TABLE cleanup_manifests; DROP INDEX cleanup_inventory_reservation; DROP INDEX cleanup_replay_winner; DROP INDEX erasure_manifest_inventory; DROP TRIGGER cleanup_source_monotonic; DROP TRIGGER cleanup_source_binding_immutable; DROP TRIGGER cleanup_disposition_immutable; DROP TRIGGER cleanup_disposition_valid;");
   db.exec("ALTER TABLE reservations DROP COLUMN cleanupWinner; ALTER TABLE reservations DROP COLUMN cleanupDomain; ALTER TABLE reservations DROP COLUMN cleanupGeneration; ALTER TABLE reservations DROP COLUMN cleanupDisposition; ALTER TABLE reservations DROP COLUMN custodyStarted;");
+}
+export function removeTask11CSchema(db: Database.Database): void {
+  db.exec("DROP TABLE delivery_incident_resolutions; CREATE TABLE old_selectors13 AS SELECT * FROM maintenance_selectors; DROP TABLE maintenance_selectors; CREATE TABLE maintenance_selectors(singleton INTEGER PRIMARY KEY CHECK(singleton=1),duePhase INTEGER NOT NULL CHECK(duePhase BETWEEN 0 AND 7),pendingPhase INTEGER NOT NULL CHECK(pendingPhase BETWEEN 0 AND 1),globalPhase INTEGER NOT NULL CHECK(globalPhase BETWEEN 0 AND 3)); INSERT INTO maintenance_selectors SELECT singleton,0,pendingPhase,globalPhase FROM old_selectors13; DROP TABLE old_selectors13;");
+  db.exec("CREATE TABLE old_cursors13 AS SELECT * FROM maintenance_due_cursors WHERE stream<8; DROP TABLE maintenance_due_cursors; CREATE TABLE maintenance_due_cursors(stream INTEGER PRIMARY KEY CHECK(stream BETWEEN 0 AND 7),keyAt TEXT NOT NULL,keyId TEXT NOT NULL); INSERT INTO maintenance_due_cursors SELECT * FROM old_cursors13; DROP TABLE old_cursors13;");
 }
 // Produce actual pre7 schemas for existing historical-migration regressions.
 export function removeTask10Schema(db: Database.Database): void {

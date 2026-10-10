@@ -315,6 +315,31 @@ it("consumes genuine independently completed payload coverage for incident ident
   expect(f.db.prepare("SELECT * FROM cases").all()).toEqual([]);
   expect(f.db.prepare("SELECT * FROM reservations").all()).toEqual([]);
 });
+it.each(["valid", "missing", "mismatched", "uncompleted"])("rechecks %s covering identity when a preexisting contact scope needs done after parent teardown", async defect => {
+  const f = await setup("incident_identity", true, true);
+  const contact = await f.erasure.withErasureGuard(f.event[1], async () => {
+    const event = f.erasure.prepareCommit(f.accepted.accepted.id, "processing_contact");
+    f.erasure.acknowledge(event, await f.erasure.journal!.append(event)); return event;
+  });
+  await scan(f.owner);
+  await rows({ ...f, event: contact }); await checkpoint(f);
+  await physical(f.owner, f.predecessor![1]); await rows({ ...f, event: f.predecessor! }); await checkpoint(f);
+  await rows(f); await checkpoint(f);
+  expect(f.db.prepare("SELECT 1 FROM cases").get()).toBeUndefined();
+  if (defect === "missing") f.db.prepare("DELETE FROM erasure_scopes WHERE caseId=? AND scope='incident_identity'").run(f.accepted.accepted.id);
+  if (defect === "mismatched") f.db.prepare("UPDATE erasure_scopes SET eventId=? WHERE caseId=? AND scope='incident_identity'").run(f.predecessor![1], f.accepted.accepted.id);
+  if (defect === "uncompleted") f.db.prepare("UPDATE erasure_obligations SET stage='database-maintenance-pending' WHERE commitEventId=?").run(f.event[1]);
+  let done = false;
+  for (let n = 0; n < 20 && !done; n++) {
+    const run = await beginMaintenance(f.owner);
+    try {
+      if (defect !== "valid") { await expect(f.erasure.prepareDone(contact[1], run)).rejects.toThrow(); break; }
+      const result = await f.erasure.prepareDone(contact[1], run);
+      expect(result.consumedItems).toBeLessThanOrEqual(1000); done = result.event !== null;
+    } finally { await settleMaintenance(f.owner); }
+  }
+  if (defect === "valid") expect(done).toBe(true);
+});
 it("finishes later final scope after genuine payload retirement without resurrecting predecessor manifests",async()=>{
   const f=await setup("identifying_register",true,true); await scan(f.owner);
   await physical(f.owner,f.predecessor![1]); await rows({...f,event:f.predecessor!}); await checkpoint(f);

@@ -5,6 +5,8 @@ import { decodeJournalEvent, encodeJournalEvent } from "./ledger-contract";
 import { caseFenceAction, decideCaseAction, validateCaseAction, validateLifecycle } from "./lifecycle";
 import { applicationId, digest, staffId, utcInstant, type ActionGrant, type ApplicationId, type CaseAction, type CaseLifecycle, type CaseRecord, type DurableReceipt, type Instant, type JournalEvent, type LifecycleRecoveryPage, type SafetyJournal, type SensitiveAction, type StaffSession } from "./types";
 import type { AuthRepository } from "./auth-repository";
+import { readIncidentResolution, validateIncidentResolution } from "./incident-resolution";
+import type { DeliveryRecord, IncidentResolutionInput, IncidentResolutionResult, IncidentResolutionRetention } from "./types";
 
 type StoredLifecycle = Omit<CaseLifecycle, "hold" | "externalCopiesConfirmed"> & { caseId: ApplicationId; holdReviewOn: CaseLifecycle["deadline"]; holdReason: string | null; holdActor: CaseLifecycle["externalCopiesActor"]; holdAt: Instant | null; externalCopiesConfirmed: number };
 interface Proposal { eventId: string; caseId: ApplicationId; event: string; actionBytes: string; grantHash: string; phase: "proposed" | "acknowledged" | "applied" | "superseded"; entry: DurableReceipt["entry"] | null; head: DurableReceipt["head"] | null }
@@ -56,7 +58,7 @@ export function readLifecycle(db: Database.Database, row: Omit<CaseRecord, "life
 }
 
 // Internal composition of the sole DB/auth/clock owner; not an RPC port.
-export function createLifecycleRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, auth: AuthRepository, epochNow: () => ReturnType<typeof digest>, clockNow: () => Instant, journal?: SafetyJournal) {
+export function createLifecycleRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, auth: AuthRepository, epochNow: () => ReturnType<typeof digest>, clockNow: () => Instant, journal: SafetyJournal | undefined, incident: Readonly<{ delivery(id: ApplicationId): DeliveryRecord; prepare(id: ApplicationId): void; retention(id: ApplicationId): IncidentResolutionRetention }>) {
   function requireJournal(): SafetyJournal { if (!journal) throw new Error("CASE_JOURNAL_UNAVAILABLE"); return journal; }
   function requireAuthority(row: CaseRecord, pendingId?: string): void {
     const proof = requireJournal().caseAuthority(row.id);
@@ -174,5 +176,36 @@ export function createLifecycleRepository(db: Database.Database, readCase: (id: 
     });
     return { cases, continuation: selected.length > 20 ? selected[19].caseId : null };
   }
-  return { getLifecycleCase: current, applyCaseAction: apply, recoverLifecyclePending: recover };
+  async function recordDeliveryIncidentResolution(id: ApplicationId, input: IncidentResolutionInput, proof: ActionGrant, session: StaffSession): Promise<IncidentResolutionResult> {
+    const action = validateIncidentResolution(input), active = Object.freeze({ ...session });
+    let hash: ReturnType<typeof digest>, binding: SensitiveAction;
+    try {
+      hash = tokenDigest("grant", proof.nonce); binding = Object.freeze({ kind: action.kind, caseId: id, version: proof.action.version });
+      if (proof.staffId !== active.staffId || proof.action.caseId !== id || proof.action.kind !== action.kind) throw new Error();
+    } catch { throw new Error("AUTH_DENIED"); }
+    return auth.withGrant(hash, active, binding, epochNow, clockNow, (row, context) => {
+      if (row.lifecycle.identityState !== "identifying" || row.lifecycle.pendingEventId || row.claimToken !== null || row.claimOwner !== null || row.claimedAt !== null || row.claimKind !== null || row.deliveryState !== "needs_attention" || !requireJournal().observation()) throw new Error("CASE_BLOCKED");
+      requireAuthority(row);
+      if (readIncidentResolution(db, id)) throw new Error("INCIDENT_RESOLUTION_EXISTS");
+      const delivery = incident.delivery(id);
+      if (delivery.category !== "operational" || !delivery.reason || !delivery.determinedAt || delivery.determinedAt < row.acceptedAt || delivery.determinedAt > context.now || delivery.confirmedAt !== null || delivery.copies.length !== 0) throw new Error("CASE_BLOCKED");
+      if (action.contactedAt < row.acceptedAt || action.contactedAt > context.now) throw new Error("INCIDENT_RESOLUTION_INVALID");
+      if (db.prepare("UPDATE cases SET version=version+1,payloadDeleteAfter=min(payloadDeleteAfter,?),contactDeleteAfter=min(contactDeleteAfter,?) WHERE id=? AND version=?").run(context.now, context.now, id, row.version).changes !== 1) throw new Error("CASE_STALE");
+      db.prepare("INSERT INTO delivery_incident_resolutions(caseId,version,actor,recordedAt,contactedAt,contactChannel,agreedResubmissionRoute) VALUES(?,?,?,?,?,?,?)").run(id, row.version + 1, context.actor, context.now, action.contactedAt, action.contactChannel, action.agreedResubmissionRoute);
+      db.prepare("INSERT INTO audit(caseId,event,version,at) VALUES(?,?,?,?)").run(id, "delivery:incident-resolution-recorded", row.version + 1, context.now);
+      // Captured original synchronous erasure seam; its savepoint and grant
+      // consumption roll back with this same original transaction.
+      incident.prepare(id);
+      return Object.freeze({ record: readIncidentResolution(db, id)!, retention: "commit_pending" as const });
+    }, "CASE_STALE").catch((error: unknown) => {
+      if (error instanceof Error && "code" in error && typeof error.code === "string" && error.code.startsWith("SQLITE_")) throw new Error("CASE_STORAGE_FAILED");
+      throw error;
+    });
+  }
+  function getDeliveryIncidentResolution(id: ApplicationId, session: StaffSession): IncidentResolutionResult | null {
+    authorize(session);
+    const record = readIncidentResolution(db, id);
+    return record ? Object.freeze({ record, retention: incident.retention(id) }) : null;
+  }
+  return { getLifecycleCase: current, applyCaseAction: apply, recoverLifecyclePending: recover, recordDeliveryIncidentResolution, getDeliveryIncidentResolution };
 }
