@@ -4,7 +4,7 @@ import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/collection.module.css";
 import { eigenmarken } from "@/data/eigenmarken";
 import AcademyEntry from "@/components/AcademyEntry";
-import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
+import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
 
 export const metadata: Metadata = {
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function EigenmarkePage() {
-  const photo = GOOGLE_MARKET_PHOTOS.ownBrands;
+  const photo = EIGENMARKEN_GROUP_SCENE;
   return (
     <>
     <PageIntro eyebrow="Exklusiv bei Jammers" title="Unsere Eigenmarken" description={`${eigenmarken.length} exklusive Liköre — nur bei Trinkgut Jammers erhältlich.`} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Unsere Eigenmarken" }]} />
@@ -21,7 +21,7 @@ export default function EigenmarkePage() {
         <div><h2 id="own-brand-bottles" className="text-3xl font-bold mb-4">Sechs eigene Charaktere.</h2>
           <p className="max-w-xl">Unsere Eigenmarken zusammen im Bild. Von Kirsche und Haselnuss bis zu Lakritz und Anis: Unter dem Foto findest du die sechs Liköre mit ihren originalen Motiven.</p>
         </div>
-        <figure><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 752px) 90vw, 45vw" loading="lazy" /></figure>
+        <figure><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.altDE} sizes="(max-width: 752px) 90vw, 45vw" loading="lazy" /></figure>
       </section>
 
       <div className={styles.brandStories}>

@@ -49,7 +49,8 @@ describe("complete editorial landings", () => {
     const html = section(home(), "eigenmarken");
     for (const name of ["Pralle Kirsche", "Dicke Nüsse", "Süsse Sünde", "Caramello", "Schwarzer Teufel", "Weisser Engel"]) expect(html).toMatch(new RegExp(`<a[^>]*href="/eigenmarke"[^>]*>[^<]*${name}`));
     for (const poster of ["poster-pralle-kirsche.webp", "poster-schwarzer-teufel.webp", "poster-caramello.webp"]) expect(html).toContain(poster);
-    expect(html).toContain("/images/editorial/google/eigenmarken-flaschen.webp");
+    expect(html).toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
+    expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");
   });
 
   test("provides visible editorial entrances to people, career, market stories and the external TCG shop", () => {

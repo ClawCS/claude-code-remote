@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { SPOTLIGHT_POSTERS } from "@/data/cinematic-editorial";
 import { eigenmarken } from "@/data/eigenmarken";
-import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
+import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
 
 import styles from "./spotlight.module.css";
 
@@ -21,7 +21,7 @@ export default function SpotlightSection(): React.JSX.Element {
       </div>
       <div className={styles.brandStory}>
         <div className={styles.bottleImage}>
-          <Image src={GOOGLE_MARKET_PHOTOS.ownBrands.src} width={GOOGLE_MARKET_PHOTOS.ownBrands.width} height={GOOGLE_MARKET_PHOTOS.ownBrands.height} alt={GOOGLE_MARKET_PHOTOS.ownBrands.alt} sizes="(max-width: 767px) 100vw, 50vw" />
+          <Image src={EIGENMARKEN_GROUP_SCENE.src} width={EIGENMARKEN_GROUP_SCENE.width} height={EIGENMARKEN_GROUP_SCENE.height} alt={EIGENMARKEN_GROUP_SCENE.altDE} sizes="(max-width: 767px) 100vw, 50vw" />
         </div>
         <div className={styles.brandCopy}>
           <p>Sechs Namen. Eine Familie aus Goch. Entdecke unsere Eigenmarken und frag unser Team nach deinem Favoriten.</p>

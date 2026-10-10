@@ -27,6 +27,20 @@ const index: FlyerIndex = {
 beforeEach(() => source.getFlyerIndex.mockResolvedValue(index));
 
 describe("Dutch visitor landing page", () => {
+  it("introduces all six own brands with the separate dark bottle scene and Dutch image description", async () => {
+    const html = renderToStaticMarkup(await NederlandsPage());
+    const brands = html.match(/<section[^>]*aria-labelledby="nl-brands-title"[\s\S]*?<\/section>/)?.[0] ?? "";
+    expect(brands).toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
+    expect(brands).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");
+    expect(brands).toContain('width="1536"');
+    expect(brands).toContain('height="1024"');
+    expect(brands).toContain('alt="Zes Jammers-likeurflessen in een donkere scène met gekleurde lichtaccenten"');
+    for (const name of ["Pralle Kirsche", "Dicke Nüsse", "Süsse Sünde", "Caramello", "Schwarzer Teufel", "Weisser Engel"]) {
+      expect(brands).toContain(name);
+    }
+    expect(brands).not.toMatch(/\bKI\b|AI-gegenereerd|Google-foto/);
+  });
+
   it("keeps the hero names without a decorative photo tagline", async () => {
     const html = renderToStaticMarkup(await NederlandsPage());
     const hero = html.match(/<section\b[\s\S]*?<\/section>/)?.[0] ?? "";

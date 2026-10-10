@@ -7,7 +7,7 @@ import { PEOPLE_STORY, EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
 import NlCurrentSection from "@/components/cinematic/NlCurrentSection";
 import { cinematicHomeTokenStyle } from "@/lib/cinematic/tokens";
 import { USER_MARKET_PHOTOS } from "@/data/user-market-photos";
-import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
+import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
 import { eigenmarken } from "@/data/eigenmarken";
 import { getFlyerIndex } from "@/lib/flyer-index";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
@@ -95,7 +95,7 @@ export default async function NederlandsPage() {
 
         <section className={styles.brands} aria-labelledby="nl-brands-title">
           <div><p className={styles.eyebrow}>Van Jammers. Uit Goch.</p><h2 id="nl-brands-title">Zes eigen karakters.</h2><p>Maak kennis met onze eigen merken. Vraag ons team naar jouw favoriet.</p><ul>{eigenmarken.map(brand => <li key={brand.slug}><Link href="/eigenmarke" prefetch={false}>{brand.name} <span aria-hidden="true">↗</span></Link></li>)}</ul><small>De pagina over onze eigen merken is in het Duits.</small></div>
-          <Image src={GOOGLE_MARKET_PHOTOS.ownBrands.src} width={GOOGLE_MARKET_PHOTOS.ownBrands.width} height={GOOGLE_MARKET_PHOTOS.ownBrands.height} alt="De zes eigen likeurmerken van Trinkgut Jammers" sizes="(max-width: 767px) 100vw, 50vw" />
+          <Image src={EIGENMARKEN_GROUP_SCENE.src} width={EIGENMARKEN_GROUP_SCENE.width} height={EIGENMARKEN_GROUP_SCENE.height} alt={EIGENMARKEN_GROUP_SCENE.altNL} sizes="(max-width: 767px) 100vw, 50vw" />
         </section>
 
         <section id="contact" className={styles.contact} aria-labelledby="contact-title">

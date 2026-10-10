@@ -57,13 +57,19 @@ describe("public side-page presentation", () => {
     }
   });
 
-  it("introduces the six own-brand posters with the local full-frame bottle-group photo", () => {
+  it("introduces all six original posters with the separate full-frame dark bottle scene", () => {
     const html = renderToStaticMarkup(<EigenmarkePage />).replaceAll("%2F", "/");
     const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
     expect(images).toHaveLength(7);
-    expect(images[0]).toContain("/images/editorial/google/eigenmarken-flaschen.webp");
+    expect(images[0]).toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
+    expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");
+    expect(images[0]).toContain('width="1536"');
+    expect(images[0]).toContain('height="1024"');
     expect(images[0]).toContain('loading="lazy"');
     expect(images[0]).not.toMatch(/object-cover|data-nimg="fill"/);
     expect(images.filter(image => image.includes("/images/eigenmarken/"))).toHaveLength(6);
+    for (const poster of ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"]) {
+      expect(images.filter(image => image.includes(`/images/eigenmarken/${poster}.png`))).toHaveLength(1);
+    }
   });
 });

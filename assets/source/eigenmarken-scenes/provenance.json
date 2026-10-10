@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "created": "2026-10-10",
+  "scope": "Local design preview only. Not deployed.",
+  "authorization": "Operator requested generated dark background/group composition matching the individual liqueur posters, preserving bottle designs. Original posters and original Google source remain unchanged.",
+  "generator": "Built-in image generation tool",
+  "process": "Reference-guided image edit, followed by targeted bottle-detail refinement. Separate illustrative composition; not an unedited Google photograph. No claim of pixel-identical label reproduction.",
+  "inputs": [
+    "public/images/editorial/google/eigenmarken-flaschen.webp",
+    "public/images/eigenmarken/uebersicht.png",
+    "public/images/eigenmarken/dicke-nuesse.png",
+    "public/images/eigenmarken/schwarzer-teufel.png",
+    "public/images/eigenmarken/weisser-engel.png",
+    "public/images/eigenmarken/caramello.png"
+  ],
+  "generationPrompt": "Use case: precise-object-edit and product compositing. Create a premium cohesive group product photograph for a drinks retailer website, landscape 3:2.\nImage 1 is the current six-bottle group photo with a pale white background: this is the edit target and establishes the six-product grouping and left-to-right order.\nImage 2 is the source collage of ALL SIX individual bottle advertisements (top row Schwarzer Teufel, Weisser Engel, Caramello; bottom row Süsse Sünde, Dicke Nüsse, Pralle Kirsche). It is the authoritative product-appearance and background-style reference for all six. Images 3, 4 and 5 are additional high-resolution detail references for Schwarzer Teufel, Weisser Engel and Caramello.\nReplace the plain white environment with the shared aesthetic of these individual posters: deep almost-black studio background, subtle amber/gold floating specks and restrained red and green accent glow behind the corresponding bottles, dark polished tabletop with physically plausible soft reflections. Restrained, high-end, editorial, photorealistic product photography; no bar scenery and no bright white background.\nShow exactly SIX complete upright cork-stoppered clear glass 0.7-litre bottles in a single balanced group, all six silhouettes and all labels fully visible, fronts facing camera, no overlap across labels, comfortable margins around corks and bases. Keep the bottle shapes, long neck proportions, cork caps, label typography, mascot illustrations, and liquid appearance faithful to each corresponding individual reference. Do not redesign any label. The individual references take precedence for the look of each bottle. From left to right:\n1 DICKE NÜSSE, hazelnut mascot, golden hazelnut liqueur, 18% VOL., 0,7 LITER.\n2 PRALLE KIRSCHE, cherry mascot, dark ruby liquid, 15% VOL., 0,7 LITER.\n3 SCHWARZER TEUFEL, green-accent devil mascot and black liquid, 20% VOL., 0,7 LITER.\n4 WEISSER ENGEL, angel mascot, clear pale anis liquid as in its individual poster, 21% VOL., 0,7 LITER.\n5 SÜSSE SÜNDE, vanilla flower mascot, creamy pale vanilla liquid, 15% VOL., 0,7 LITER.\n6 CARAMELLO, caramel mascot, golden caramel liquid, 20% VOL., 0,7 LITER.\nFaithfully reproduce existing text ON the labels as seen in the corresponding reference. Product identity preservation is more important than elaborate effects. Do not carry over poster headings, explanatory columns, slogans outside labels, QR codes, icons or borders. No people, hands, glasses, added props, additional bottles, price badges, watermark or invented text. Keep all six bottles convincingly lit as one shared photographic scene.",
+  "refinementPrompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET: the newly created six-bottle group image. Images 2 and 3 are authoritative original individual posters for Dicke Nüsse and Schwarzer Teufel.\nKeep the entire group composition, all six bottle positions, sizes, corks, black background, colored accent dust, lighting, tabletop, and all other four products unchanged. Only fix two product-reference mismatches:\n1. The FIRST bottle DICKE NÜSSE: its liquid must have the creamy cloudy golden appearance shown in Image 2, not the transparent amber in Image 1. Preserve its existing hazelnut label and exact 18% VOL., 0,7 LITER.\n2. The THIRD bottle SCHWARZER TEUFEL: closely reproduce the bottle label from Image 3, including the green friendly devil mascot with its specific drawing, white name, lime lettering. CRITICAL TEXT CORRECTION: replace the small handwritten words \"zwarte duivel\" below TEUFEL with the exact text \"schon probiert?\" in lime green as seen on the actual bottle label in Image 3. Preserve \"Lakritz Likör\" and \"20% VOL.\" and \"0,7 LITER\".\nDo not change the cherry, angel, vanilla or caramel bottles at all. No added objects, no extra text, no new branding. Preserve the polished photographic realism of the existing group. Output the same 3:2 landscape frame, all bottles fully visible.",
+  "source": {
+    "path": "assets/source/generated-visuals/2026-10-10/own-brands-group-dark-v1.png",
+    "sha256": "b81d3cd1f226e67e188ef7f74ae310c2e9743e5cf2b1851b95f8a8c5f98c27af",
+    "tracking": "private local original; excluded from Git"
+  },
+  "output": {
+    "path": "public/images/eigenmarken-scenes/group-dark-v1.webp",
+    "sha256": "4822aa75e3fb983cb90413e344f57f9cb97330ebbd38c9d95ece78a60e54124a",
+    "bytes": 334530,
+    "width": 1536,
+    "height": 1024,
+    "transform": "Sharp WebP quality 90 effort 6; complete frame, no crop"
+  },
+  "consumers": [
+    "/",
+    "/eigenmarke",
+    "/nl"
+  ]
+}
