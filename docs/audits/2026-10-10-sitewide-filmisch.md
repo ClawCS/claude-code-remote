@@ -22,7 +22,7 @@ Dieser Auftrag wird ausschließlich in der bestehenden lokalen Worktree auf `cod
 | Gemeinsame Gestaltung und fünfteilige Navigation | `e51aa76` + `fbb76b7` | Separate Codeprüfung und gezielte Nachprüfung bestanden; Gesamtbuild noch ausstehend |
 | Startseite und niederländische Landingpage | `544e95d` | 63 gezielte Tests und 9 Browserfälle; unabhängige Prüfung bestanden, Gesamtbuild ausstehend |
 | Angebote, Sortiment, Marken, Menschen und Aktionen | `8bc9e74` | 1.596 Webtests, 185 fokussierte Tests, 40 Browserfälle; unabhängige Prüfung bestanden |
-| Rezepte, Akademie und Kundenwerkzeuge | Ausstehend | Ausstehend |
+| Rezepte, Akademie und Kundenwerkzeuge | `5c2a7c1` | 1.614 Webtests vor letzter kleiner Überschriftenergänzung, danach 19 fokussierte Tests; 50 Browserfälle im lokalen Produktionsbuild; unabhängige Prüfung bestanden |
 | Vermietung, Karriere, Listen, Kontakt, Recht und Fehlerseiten | Ausstehend | Ausstehend |
 | Gemeinsamer Build und vollständige lokale Routen-/Medienprüfung | Ausstehend | Ausstehend |
 | Unabhängige Schlussprüfung und Git-Synchronisation | Ausstehend | Ausstehend |
@@ -59,3 +59,16 @@ Die unveränderten nativen Bewerbungsprüfungen werden am Anfang und bei der Ges
 - Ein früher Entwicklungsdurchlauf meldete bei `/produkte` auf Desktop einmal einen Laufzeitfehler während laufender Änderungen. Unveränderter isolierter Nachlauf und komplette Browserwiederholung blieben fehlerfrei. Die Ursache ist nicht bewiesen; der finale Produktionsbuild muss das Fehlen dieses Fehlers nochmals bestätigen.
 - Unabhängige Codeprüfung ohne kritischen, wichtigen oder kleinen Befund. Controller hat Eigenmarken-Einstieg und vollständige untere Motiv-/Textgeschichte zusätzlich angesehen. Daten, Medien, Quellen, APIs und Services weiterhin unverändert.
 - Alte Juli-/September-Annahmen in einer historischen Gewinnspiel-Browsersuite wurden nicht als bestandener aktueller Test ausgegeben. Aktuelle Cover-/Quellen-/Vollständigkeitsverträge sind durch bestehende Unit-Tests und neue datumsrichtige Browserprüfungen abgedeckt.
+
+## Teilabnahme 4 — Lernen und Kundenwerkzeuge
+
+- Rezepte, Akademie/Kurse, Zertifikatsübersicht, Finder, Partyplaner, Partyspiele, Pfandrechner, Öko-Tracker und stillgelegte Community-/Kühlschrankseiten auf den gemeinsamen Look umgestellt. Daten, Berechnungen, Quizregeln, Quellen und Kennzeichnungen unverändert.
+- 159 fokussierte Prüfungen und 98 Dateien mit 1.614 Webtests bestanden. Anschließende kleine Ergänzung für echte Unterüberschriften separat mit 19 Tests sowie TypeScript/Lint geprüft; vollständige integrierte Webprüfung folgt noch.
+- Frischer lokaler Produktionsbuild erfolgreich. Darin 50 Browserfälle bei 390/768/1440 px bestanden: echte Kursnavigation, Prüfungsfreigabe, 60%-Fehlschlag und Wiederholung mit 70%-Erfolg, Finder-/Planer-/Rechnerzustände und Spieldialoge. 105 neue Nachweisbilder unter `audit/screenshots/sitewide-learning-tools-2026-10-10/`.
+- Unabhängige Prüfung: spezifikationskonform, Qualität freigegeben, keine kritischen oder wichtigen Befunde. Nichtblockierender Prüfhinweis: Die automatische Laufzeitfehler-Sammlung erfasst bisher die Erstansichten, nicht jeden separaten Interaktionstest. Deshalb kein pauschaler Nachweis völliger Fehlerfreiheit aus der bestandenen Matrix. Zwei unveränderte Öko-Tracker-Lintwarnungen bleiben dokumentiert.
+- Im Entwicklungsserver wurden zuvor sporadische Syntaxfehler im gemeinsamen Layout-Bundle beobachtet. Ursache nicht bewiesen; derselbe Stand bestand die strengen Browserprüfungen im Produktionsbuild. Keine Fehlerunterdrückung oder Änderung der Geschäftslogik vorgenommen. Dies ist kein Nachweis einer behobenen Entwicklungsserver-Ursache.
+- Controller hat unter anderem mobile Rezept-/Finder-/Planeransichten, Spiel-/Prüfungszustände, den echten Lektionssprung samt Fokus und letzte Whiskey-Lektion zusätzlich geprüft. Weitere gemeinsame Abnahme nach dem letzten Seitenbereich bleibt erforderlich.
+
+## Zusätzliche Prüfgrenze bei Mietartikeln
+
+Alle 19 bestehenden Leihartikel haben einen Preis. Der bislang unbenutzte Zweig für einen Artikel ohne Preis wird deshalb mit ausdrücklich synthetischen Tests des echten Bauteils geprüft; reale Browserprüfung umfasst die tatsächlich vorhandenen Leer-, Waren-, Misch-, Datums- und Fehlerzustände. Keine geschützten Quelldaten oder Produktionsfreigaben werden allein für einen Screenshot verändert. Restrisiko: Für den nicht erreichbaren Zweig gibt es keinen direkten visuellen Browsernachweis.
