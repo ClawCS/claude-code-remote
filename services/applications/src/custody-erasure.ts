@@ -62,6 +62,10 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   const identities = new Map<string, Stats>();
   const failedCloses = new Set<Iterator>();
   let iterator: Iterator | undefined, child: Iterator | undefined, pass: string | undefined, index = 0, invalid = false, invalidated = false;
+  // One outstanding reservation, never a bank of five-credit grants. Its run
+  // identifies the admitting operation that already paid, including across a
+  // dormant continuation; a successor does not receive a fresh allowance.
+  let finishing: { readonly run: MaintenanceRun; readonly pass: string } | undefined;
   const depth = (path: string) => { let n = 0; for (; path !== dirname(path); path = dirname(path)) n++; return n; };
   const ancestryMaximum = roots.reduce((n, root) => n + depth(paths[root]), 0);
   // At most three ancestry walks, iterator stat/read2, journal open/stat/read/stat/pathstat/
@@ -98,28 +102,31 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
       return consumed;
     }));
   }
+  async function finishFailure(run: MaintenanceRun, error: unknown): Promise<never> {
+    try {
+      await hooks.exclusive(async () => {
+        if (!finishing) return;
+        if (finishing.pass !== pass) fail("MAINTENANCE_COMMAND_FAILED");
+        finishing = undefined; // Spend once, even if a write or actual close fails.
+        invalidate(run); // Exactly three fixed-key writes; no query or new work.
+        const io = <T>(operation: () => Promise<T>) => operation();
+        for (const target of [child, iterator]) if (target && !failedCloses.has(target)) try { await close(target, io); } catch { /* Exact failed resource remains retained for charged R105 retry. */ }
+      });
+    } catch { fail("MAINTENANCE_COMMAND_FAILED"); }
+    throw error;
+  }
   // Keep the complete admitted step (including post-command denial/close) in
   // the original custody lifetime. Five finishing credits remain charged even
-  // on success: a final shared held-assertion can fail after the action returns.
+  // on success, and replace (never accumulate with) any prior unspent funding.
   function step(run: MaintenanceRun, maximum: number, action: () => Promise<{ value: boolean; consumedItems: number }>) {
     return hooks.track(async () => {
-      let admitted = false;
       try {
         return await maintenanceCommand(run, repository, maximum, "filesystem", () => {
-          admitted = true;
+          finishing = { run, pass: pass! };
           return hooks.exclusive(action).then(result => ({ ...result, consumedItems: result.consumedItems + 5 }));
         });
       } catch (error) {
-        if (admitted) {
-          try {
-            await hooks.exclusive(async () => {
-              invalidate(run);
-              const io = <T>(operation: () => Promise<T>) => operation();
-              for (const target of [child, iterator]) if (target && !failedCloses.has(target)) try { await close(target, io); } catch { /* Exact failed resource remains retained. */ }
-            });
-          } catch { fail("MAINTENANCE_COMMAND_FAILED"); }
-        }
-        throw error;
+        return finishFailure(run, error);
       }
     });
   }
@@ -178,20 +185,29 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   }
   const owner: CustodyErasure = Object.freeze({
     async scanBatch(run: MaintenanceRun) {
+      // Invalid/stale/foreign callers must never reach another scan's denial.
       assertMaintenanceCustodyIdentity(run, repository, custody);
-      assertMaintenanceSettled(run, repository);
+      try { assertMaintenanceSettled(run, repository); }
+      catch (error) { return hooks.track(() => finishFailure(run, error)); }
+      return hooks.track(async () => { try {
       if (invalid || failedCloses.size) fail("ERASURE_ROOT_CHANGED");
       let consumedItems = 0;
       if (!pass) {
-        const result = await maintenanceCommand(run, repository, 2, "filesystem", () => ({ value: storage.pass(), consumedItems: 2 }));
-        pass = result.value; consumedItems += result.consumedItems;
+        const result = await maintenanceCommand(run, repository, 7, "filesystem", () => {
+          pass = storage.pass();
+          finishing = { run, pass };
+          return { value: pass, consumedItems: 7 };
+        });
+        consumedItems += result.consumedItems;
       }
       let checkedComplete = false;
       while (index < roots.length || !checkedComplete) {
+        if (invalid || failedCloses.size) fail("ERASURE_ROOT_CHANGED");
         if (maintenanceRemaining(run, repository).selections === 0) break;
         const root = roots[index], maximum = !identities.size ? 4 * ancestryMaximum + 10 : entryMaximum;
         if (maintenanceRemaining(run, repository).items < maximum) break;
         const result = await step(run, maximum, async () => {
+          if (invalid || failedCloses.size) fail("ERASURE_ROOT_CHANGED");
           let consumed = 0;
           const io = async <T>(action: () => Promise<T>): Promise<T> => { consumed++; return action(); };
           assertMaintenance(run, repository, "filesystem");
@@ -246,6 +262,7 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
         if (result.value) break;
       }
       return Object.freeze({ complete: index === roots.length && checkedComplete && !invalid, consumedItems });
+      } catch (error) { return finishFailure(run, error); } });
     },
     async invalidateAndClose(run: MaintenanceRun) {
       assertMaintenanceCustodyIdentity(run, repository, custody);
