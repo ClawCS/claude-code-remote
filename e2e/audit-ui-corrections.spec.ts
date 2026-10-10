@@ -30,13 +30,13 @@ test("switching lessons resets selected answer, explanation, question and score"
   const course = courses[0];
   await page.goto(`/akademie/${course.slug}`);
   await answer(page, course.lessons[0].quiz[0].correct, true);
-  await page.getByRole("button", { name: "Nächste Lektion →" }).click();
+  await page.getByRole("button", { name: "Nächste Lektion" }).click();
   await expect(page.getByRole("heading", { name: /Quiz — Frage 1 von/ })).toBeVisible();
-  await expect(page.getByText("✓ Richtig!", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Richtig!", { exact: true })).toHaveCount(0);
   await expect(page.getByText("0/0 richtig", { exact: true })).toBeVisible();
   await answer(page, course.lessons[1].quiz[0].correct, true);
-  await page.getByRole("button", { name: "Nächste Frage →" }).click();
-  await page.getByRole("button", { name: "← Vorherige" }).click();
+  await page.getByRole("button", { name: "Nächste Frage" }).click();
+  await page.getByRole("button", { name: "Vorherige" }).click();
   await expect(page.getByRole("heading", { name: /Quiz — Frage 1 von/ })).toBeVisible();
   await expect(page.getByText("0/0 richtig", { exact: true })).toBeVisible();
 });
@@ -74,7 +74,7 @@ test("academy answer and lesson text and invalid party warnings meet contrast", 
   await assertContrast();
   await answer(page, course.lessons[0].quiz[0].correct, true);
   await assertContrast();
-  await page.getByRole("button", { name: "Nächste Frage →" }).click();
+  await page.getByRole("button", { name: "Nächste Frage" }).click();
   await answer(page, course.lessons[0].quiz[1].correct);
   await assertContrast();
   await page.goto("/partyplaner");
@@ -87,13 +87,13 @@ test("final exam keeps the seventy-percent threshold and can be retried after fa
   const course = courses.find(course => course.slug === "mineralwasser")!;
   await page.goto(`/akademie/${course.slug}`);
   for (const [index, lesson] of course.lessons.entries()) {
-    if (index) await page.getByRole("button", { name: "Nächste Lektion →" }).click();
+    if (index) await page.getByRole("button", { name: "Nächste Lektion" }).click();
     for (const question of lesson.quiz) {
       await answer(page, question.correct);
       await page.getByRole("button", { name: /Nächste Frage|Ergebnis anzeigen/ }).click();
     }
   }
-  await page.getByRole("button", { name: "📝 Zum Abschlusstest", exact: true }).click();
+  await page.getByRole("button", { name: "Zum Abschlusstest", exact: true }).click();
   for (const [index, question] of course.finalExam.entries()) {
     await answer(page, question.correct, index < 6);
     await page.getByRole("button", { name: /Nächste Frage|Ergebnis anzeigen/ }).click();
@@ -102,7 +102,7 @@ test("final exam keeps the seventy-percent threshold and can be retried after fa
   await expect(page.getByText("6 von 10 richtig (60%)")).toBeVisible();
   await page.getByRole("button", { name: "Nochmal lernen", exact: true }).click();
   await expect(page.getByText("Quiz abgeschlossen — 0/3 richtig", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "📝 Abschlusstest", exact: true }).click();
+  await page.getByRole("button", { name: "Abschlusstest", exact: true }).click();
   await expect(page.getByText("0/0 richtig", { exact: true })).toBeVisible();
   for (const [index, question] of course.finalExam.entries()) {
     await answer(page, question.correct, index < 7);
@@ -170,7 +170,7 @@ test("catalogue raw HTML and live controls retain first-query, text and language
   await expect(input).toHaveValue("");
   await page.goBack();
   await expect(input).toHaveValue("Krombacher");
-  await page.getByRole("link", { name: "DE- und NL-Handzettel ansehen →", exact: true }).click();
+  await page.getByRole("link", { name: "DE- und NL-Handzettel ansehen", exact: true }).click();
   await expect(page).toHaveURL(/\/angebote$/);
   await page.goBack();
   await expect(page).toHaveURL(/search=Krombacher&search=Volvic$/);

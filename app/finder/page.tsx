@@ -5,6 +5,9 @@ import ProductGrid from "@/components/ProductGrid";
 import { filterFinderProducts, type FinderType } from "@/lib/finder-products";
 import { assortmentProducts as products } from "@/lib/catalog";
 import Link from "next/link";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/tools.module.css";
+import editorial from "@/components/editorial/editorial.module.css";
 
 type Question = {
   question: string;
@@ -147,23 +150,16 @@ export default function FinderPage() {
   if (!activeFinder) {
     return (
       <>
-      <div className="page-hero-banner py-16 md:py-24">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Getränke-Finder</span></nav>
-          <h1 ref={stateHeading} tabIndex={-1} className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Getränke-Finder</h1>
-          <p className="text-white/80 max-w-xl mx-auto text-lg">
-            Beantworte ein paar Fragen für passende Sortimentsideen. Fehlen uns Angaben zu deiner Auswahl, berät dich unser Team gern persönlich.
-          </p>
-        </div>
+      <div ref={node => { stateHeading.current = node?.querySelector("h1") ?? null; if (stateHeading.current) stateHeading.current.tabIndex = -1; }}>
+        <PageIntro eyebrow="Dein Geschmack" title="Getränke-Finder" description="Beantworte ein paar Fragen für passende Sortimentsideen. Fehlen uns Angaben zu deiner Auswahl, berät dich unser Team gern persönlich." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Getränke-Finder" }]} />
       </div>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-
-        <div className="grid sm:grid-cols-3 gap-6">
+      <div data-tool="finder" className={styles.body}>
+        <div className={styles.choices}>
           {(Object.entries(finderData) as [string, typeof finderData.bier][]).map(([key, finder]) => (
             <button
               key={key}
               onClick={() => setActiveFinder(key as FinderType)}
-              className="group p-8 bg-white border-2 border-border rounded-xl hover:border-primary hover:shadow-lg transition-all text-center"
+              className={styles.choice}
             >
               <span className="text-xs font-semibold uppercase tracking-wide text-primary block mb-4">Persönlicher Geschmack</span>
               <h2 className="text-xl font-bold text-secondary group-hover:text-primary transition-colors">{finder.title}</h2>
@@ -182,29 +178,28 @@ export default function FinderPage() {
   if (showResults) {
     const results = getResults();
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="text-center mb-10">
-          <h1 ref={stateHeading} tabIndex={-1} className="text-3xl font-bold text-secondary mb-2">Unsere Empfehlungen für dich!</h1>
-          <p className="text-muted">Unverbindliche Sortimentsideen – aktuelle Preise und Verfügbarkeit bestätigen wir persönlich.</p>
+      <>
+        <div ref={node => { stateHeading.current = node?.querySelector("h1") ?? null; if (stateHeading.current) stateHeading.current.tabIndex = -1; }}>
+          <PageIntro eyebrow={finder.title} title="Unsere Empfehlungen für dich!" description="Unverbindliche Sortimentsideen – aktuelle Preise und Verfügbarkeit bestätigen wir persönlich." />
         </div>
+        <div data-tool="finder-results" className={styles.body}>
+        {results.length ? <ProductGrid products={results} headingLevel={2} /> : <p role="status" className={editorial.emptyState}>Für diese Auswahl ist kein passendes Sortimentsbeispiel hinterlegt. Frag unser Team nach einer Empfehlung.</p>}
 
-        {results.length ? <ProductGrid products={results} headingLevel={2} /> : <p className="text-center text-muted">Für diese Auswahl ist kein passendes Sortimentsbeispiel hinterlegt. Frag unser Team nach einer Empfehlung.</p>}
-
-        <div className="text-center mt-8 flex gap-4 justify-center">
+        <div className={styles.actions}>
           <button
             onClick={reset}
-            className="px-6 py-3 border border-border text-muted hover:border-primary hover:text-primary rounded-lg transition-colors font-medium"
+            className={editorial.secondaryLink}
           >
             Nochmal versuchen
           </button>
           <Link
             href="/produkte"
-            className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors"
+            className={editorial.primaryLink}
           >
             Alle Produkte ansehen
           </Link>
         </div>
-      </div>
+      </div></>
     );
   }
 
@@ -212,24 +207,13 @@ export default function FinderPage() {
   const currentQuestion = finder.questions[step];
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <button onClick={reset} className="text-sm text-muted hover:text-primary mb-6 flex items-center gap-1">
-        ← Zurück zur Auswahl
-      </button>
-
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-secondary">{finder.title}</h1>
-        <div className="flex gap-1 justify-center mt-4">
-          {finder.questions.map((_, i) => (
-            <div
-              key={i}
-              className={`h-2 w-12 rounded-full ${i <= step ? "bg-primary" : "bg-border"}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-white border border-border rounded-xl p-8">
+    <>
+      <PageIntro eyebrow={`Frage ${step + 1} von ${finder.questions.length}`} title={finder.title} description="Wähle die Antwort, die am besten zu dir passt.">
+        <button onClick={reset} className={editorial.secondaryLink}>Zurück zur Auswahl</button>
+      </PageIntro>
+      <div data-tool="finder-step" className={`${styles.body} ${styles.narrow}`}>
+        <div className={styles.steps} aria-hidden="true">{finder.questions.map((_, i) => <span key={i} data-active={i <= step} />)}</div>
+        <section className={styles.panel} aria-label="Deine Auswahl">
         <h2 ref={stateHeading} tabIndex={-1} className="text-xl font-bold text-secondary mb-6 text-center">
           {currentQuestion.question}
         </h2>
@@ -238,13 +222,13 @@ export default function FinderPage() {
             <button
               key={option.value}
               onClick={() => handleSelect(option.value)}
-              className="w-full p-4 text-left border-2 border-border rounded-lg hover:border-primary hover:bg-red-50 transition-all font-medium text-secondary"
+              className={styles.option}
             >
               {option.label}
             </button>
           ))}
         </div>
-      </div>
-    </div>
+      </section>
+    </div></>
   );
 }

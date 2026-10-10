@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CocktailPhoto as Photo } from "@/data/cocktail-images";
+import styles from "@/components/editorial/learning.module.css";
 
 function Credit({ photo }: { photo: Photo }) {
   return <p className="leading-relaxed">
@@ -13,9 +14,9 @@ function Credit({ photo }: { photo: Photo }) {
 
 export default function CocktailPhoto({ photo, href }: { photo: Photo; href?: string }) {
   const picture = <Image src={photo.src} alt={photo.alt} fill sizes={href ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" : "(max-width: 896px) 100vw, 896px"} className="object-contain" style={{ objectPosition: photo.objectPosition }} />;
-  return <figure data-cocktail-photo={photo.name} className={href ? "" : "mb-8 overflow-hidden rounded-2xl border border-border/70"}>
-    {href ? <Link href={href} aria-label={`${photo.name} – Foto und Rezept`} tabIndex={-1} className="block relative aspect-[4/3] bg-[#f2efea]">{picture}</Link> : <div className="relative aspect-[4/3] bg-[#f2efea]">{picture}</div>}
-    <figcaption className="bg-white px-5 py-3 text-xs text-muted">
+  return <figure data-cocktail-photo={photo.name} className={styles.photo}>
+    {href ? <Link href={href} aria-label={`${photo.name} – Foto und Rezept`} tabIndex={-1} className={styles.photoFrame}>{picture}</Link> : <div className={styles.photoFrame}>{picture}</div>}
+    <figcaption className={styles.credit}>
       {href ? <details><summary className="cursor-pointer w-fit hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">Foto &amp; Lizenz</summary><div className="pt-2"><Credit photo={photo} /></div></details> : <Credit photo={photo} />}
     </figcaption>
   </figure>;

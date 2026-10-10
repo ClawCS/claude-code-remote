@@ -1,13 +1,14 @@
 .entry, .context {
   margin-block: var(--cinematic-spacing-lg);
   padding: var(--cinematic-spacing-lg);
-  border: 1px solid var(--cinematic-color-line);
+  border-block: 1px solid var(--cinematic-color-line);
   background: var(--cinematic-color-surface);
   color: var(--cinematic-color-ink);
 }
 .entry { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cinematic-spacing-md); }
 .entry p, .context h2 { margin: 0; }
-.title { font-family: var(--cinematic-typography-family-display); font-size: var(--cinematic-typography-size-lead); font-weight: var(--cinematic-typography-weight-bold); line-height: var(--cinematic-typography-line-height-heading); }
+.title { font-family: var(--font-jakarta), sans-serif; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 500; letter-spacing: -.035em; line-height: 1.25; }
+.entry .eyebrow, .context .eyebrow { margin: 0 0 1rem; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cinematic-color-muted); }
 .entry p:not(.title) { margin-top: var(--cinematic-spacing-xs); font-size: var(--cinematic-typography-size-small); color: var(--cinematic-color-muted); }
 .entry a, .context a { display: inline-flex; align-items: center; gap: var(--cinematic-spacing-sm); min-height: var(--cinematic-spacing-target); color: var(--cinematic-color-red); font-size: var(--cinematic-typography-size-small); font-weight: var(--cinematic-typography-weight-bold); text-underline-offset: .25em; }
 .entry a:hover, .context a:hover { color: var(--cinematic-color-ink); }
@@ -15,3 +16,4 @@
 .context li { min-width: 0; }
 .context li > span { display: block; font-size: var(--cinematic-typography-size-label); color: var(--cinematic-color-muted); }
 .context .overview { font-weight: var(--cinematic-typography-weight-semibold); }
+.entry a:focus-visible, .context a:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 3px; }

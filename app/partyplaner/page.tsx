@@ -1,5 +1,7 @@
 "use client";
-import Link from "next/link";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/tools.module.css";
+import editorial from "@/components/editorial/editorial.module.css";
 
 import { useState } from "react";
 import { calculateNeeds, distributionValidity, type PartyConfig } from "@/lib/party-planner";
@@ -38,19 +40,11 @@ export default function PartyplanerPage() {
 
   return (
     <>
-    <div className="page-hero-banner py-16 md:py-24">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyplaner</span></nav>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyplaner</h1>
-        <p className="text-white/80 max-w-xl mx-auto text-lg">
-          Wie viele Liter brauchst du für deine Feier? Berechne deinen Getränkebedarf nach Warengruppen – unabhängig von Marken und Wochenangeboten.
-        </p>
-      </div>
-    </div>
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-
+    <PageIntro eyebrow="Gut vorbereitet" title="Partyplaner" description="Wie viele Liter brauchst du für deine Feier? Berechne deinen Getränkebedarf nach Warengruppen – unabhängig von Marken und Wochenangeboten." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Partyplaner" }]} />
+    <div data-tool="planner" className={styles.body}>
+      <div className={styles.planner}>
       {/* Config Form */}
-      <div className="bg-white border border-border rounded-xl p-6 mb-8">
+      <div className={styles.panel}>
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
             <label htmlFor="party-guests" className="block text-sm font-medium text-secondary mb-2">
@@ -89,12 +83,12 @@ export default function PartyplanerPage() {
         <hr className="my-6 border-border" />
 
         <h2 className="utility-heading font-semibold text-secondary mb-4">Was trinken deine Gäste? (Prozent-Verteilung)</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4">
           {[
-            { key: "beerDrinkers" as const, label: "🍺 Bier", color: "text-[#92400E]" },
-            { key: "wineDrinkers" as const, label: "🍷 Wein", color: "text-[#7A1428]" },
-            { key: "softDrinkers" as const, label: "🥤 Softdrinks", color: "text-[#DC2626]" },
-            { key: "spiritDrinkers" as const, label: "🥃 Spirituosen", color: "text-[#B91C1C]" },
+            { key: "beerDrinkers" as const, label: "Bier", color: "text-[#92400E]" },
+            { key: "wineDrinkers" as const, label: "Wein", color: "text-[#7A1428]" },
+            { key: "softDrinkers" as const, label: "Softdrinks", color: "text-[#DC2626]" },
+            { key: "spiritDrinkers" as const, label: "Spirituosen", color: "text-[#B91C1C]" },
           ].map(({ key, label, color }) => (
             <div key={key} className="text-center">
               <label htmlFor={`party-${key}`} className="block text-sm font-medium text-muted mb-1">{label}</label>
@@ -123,7 +117,7 @@ export default function PartyplanerPage() {
         <button
           onClick={handleCalculate}
           disabled={!valid}
-          className="mt-6 w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors text-lg"
+          className={`${editorial.primaryLink} mt-6 w-full`}
         >
           Berechnen
         </button>
@@ -131,7 +125,7 @@ export default function PartyplanerPage() {
 
       {/* Results */}
       {showResults && valid && (
-        <section aria-labelledby="party-results-title" className="bg-white border border-border rounded-xl p-6">
+        <section aria-labelledby="party-results-title" className={styles.results}>
           <h2 id="party-results-title" className="text-xl font-bold text-secondary mb-2">Dein Getränkebedarf</h2>
           <p className="text-sm text-muted mb-6">
             Für {config.guests} Gäste und {config.duration} Stunden · Richtwerte in Litern
@@ -139,7 +133,7 @@ export default function PartyplanerPage() {
 
           <dl className="space-y-3 mb-6">
             {categories.map(({ label, liters }) => (
-              <div key={label} className="flex items-center justify-between gap-4 p-4 bg-light rounded-lg">
+              <div key={label} >
                 <dt className="font-semibold text-secondary">{label}</dt>
                 <dd className="text-xl font-bold text-primary whitespace-nowrap tabular-nums">{litersFormat.format(liters)} l</dd>
               </div>
@@ -153,6 +147,8 @@ export default function PartyplanerPage() {
           </p>
         </section>
       )}
+      {!showResults && <aside className={styles.results}><h2>Eine erste Mengenhilfe</h2><p>Gäste und Dauer festlegen, die Getränke auf insgesamt 100% verteilen und den Literbedarf berechnen. Wasser wird zusätzlich eingeplant.</p></aside>}
+      </div>
     </div>
     </>
   );

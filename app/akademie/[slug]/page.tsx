@@ -1,5 +1,8 @@
 "use client";
 import AcademyCover from "@/components/AcademyCover";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/learning.module.css";
+import editorial from "@/components/editorial/editorial.module.css";
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -32,9 +35,9 @@ function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete
   };
 
   return (
-    <div className="bg-light border border-border rounded-xl p-6 mt-6">
+    <section aria-label="Wissensquiz" className={styles.quiz}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-secondary text-sm">Quiz — Frage {current + 1} von {questions.length}</h3>
+        <h2>Quiz — Frage {current + 1} von {questions.length}</h2>
         <span className="text-xs text-muted">{score}/{current + (showAnswer ? 1 : 0)} richtig</span>
       </div>
 
@@ -42,19 +45,10 @@ function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete
 
       <div className="space-y-2">
         {q.options.map((opt, i) => {
-          let cls = "w-full text-left p-3 rounded-lg border-2 text-sm transition-all ";
-          if (!showAnswer) {
-            cls += "border-border hover:border-primary hover:bg-red-50 cursor-pointer";
-          } else if (i === q.correct) {
-            cls += "border-green-500 bg-green-50 text-green-800 font-medium";
-          } else if (i === selected && i !== q.correct) {
-            cls += "border-red-500 bg-red-50 text-red-800";
-          } else {
-            cls += "border-border opacity-50";
-          }
+          const state = !showAnswer ? undefined : i === q.correct ? "correct" : i === selected ? "wrong" : "inactive";
 
           return (
-            <button key={i} onClick={() => handleSelect(i)} className={cls} disabled={showAnswer}>
+            <button key={i} onClick={() => handleSelect(i)} className={styles.answer} data-state={state} disabled={showAnswer}>
               <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
               {opt}
             </button>
@@ -63,18 +57,18 @@ function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete
       </div>
 
       {showAnswer && (
-        <div className={`mt-4 p-3 rounded-lg text-sm ${selected === q.correct ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-800"}`}>
-          <p className="font-medium mb-1">{selected === q.correct ? "✓ Richtig!" : "✗ Leider falsch."}</p>
+        <div role="status" className={styles.feedback}>
+          <p className="font-medium mb-1">{selected === q.correct ? "Richtig!" : "Leider falsch."}</p>
           <p>{q.explanation}</p>
         </div>
       )}
 
       {showAnswer && (
-        <button onClick={handleNext} className="mt-4 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors text-sm">
-          {current + 1 >= questions.length ? "Ergebnis anzeigen" : "Nächste Frage →"}
+        <button onClick={handleNext} className={editorial.primaryLink}>
+          {current + 1 >= questions.length ? "Ergebnis anzeigen" : "Nächste Frage"}
         </button>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -83,10 +77,7 @@ export default function CoursePage() {
   const course = courses.find((c) => c.slug === slug);
   if (!course) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <h1 className="text-2xl font-bold text-secondary mb-2">Kurs nicht gefunden</h1>
-        <Link href="/akademie" className="text-primary hover:underline">Zurück zur Akademie</Link>
-      </div>
+      <><PageIntro title="Kurs nicht gefunden" eyebrow="Getränkeakademie" /><div data-learning="course" className={styles.body}><Link href="/akademie" className={editorial.secondaryLink}>Zurück zur Akademie</Link></div></>
     );
   }
 
@@ -107,12 +98,10 @@ function CourseBody({ course }: { course: Course }) {
     const percent = Math.round((examScore / totalFinal) * 100);
     const passed = examScore / totalFinal >= 0.7;
     return (
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">Abschlussprüfung</p>
-        <h1 className="text-3xl font-bold text-secondary mb-2">
-          {passed ? "Bestanden!" : "Nicht bestanden"}
-        </h1>
-        <p className="text-lg text-muted mb-2">
+      <><PageIntro eyebrow="Abschlussprüfung" title={passed ? "Bestanden!" : "Nicht bestanden"} description={course.title} />
+      <div data-learning="result" className={`${styles.body} ${styles.exam}`}>
+        <div role="status" className={styles.result}>
+        <p>
           {examScore} von {totalFinal} richtig ({percent}%)
         </p>
         <p className="text-sm text-muted mb-8">
@@ -120,105 +109,91 @@ function CourseBody({ course }: { course: Course }) {
             ? `Du hast den Kurs "${course.title}" erfolgreich abgeschlossen!`
             : "Mindestens 70% richtig nötig. Schau dir die Lektionen nochmal an."}
         </p>
-        <div className="flex gap-3 justify-center">
+        </div>
+        <div className={styles.actions}>
           {!passed && (
-            <button onClick={() => { setExamScore(null); setShowFinalExam(false); setActiveLesson(0); }} className="px-6 py-3 border border-border text-muted hover:border-primary rounded-xl">
+            <button onClick={() => { setExamScore(null); setShowFinalExam(false); setActiveLesson(0); }} className={editorial.secondaryLink}>
               Nochmal lernen
             </button>
           )}
-          <Link href="/akademie" className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors">
+          <Link href="/akademie" className={editorial.primaryLink}>
             Zur Akademie
           </Link>
         </div>
-      </div>
+      </div></>
     );
   }
 
   if (showFinalExam) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-        <div className="bg-[#fff8ee] border border-border rounded-2xl p-8 text-secondary mb-8 text-center">
-          <h1 className="text-2xl font-bold">Abschlusstest: {course.title}</h1>
-          <p className="text-muted mt-1">{course.finalExam.length} Fragen — 70% zum Bestehen</p>
-        </div>
+      <><PageIntro eyebrow="Abschlussprüfung" title={`Abschlusstest: ${course.title}`} description={`${course.finalExam.length} Fragen — 70% zum Bestehen`} />
+      <div data-learning="exam" className={`${styles.body} ${styles.exam}`}>
         <Quiz key={`${course.slug}:final`} questions={course.finalExam} onComplete={(s) => setExamScore(s)} />
-      </div>
+      </div></>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <nav className="text-sm text-muted mb-6 flex gap-2">
-        <Link href="/" className="hover:text-primary">Start</Link><span>/</span>
-        <Link href="/akademie" className="hover:text-primary">Akademie</Link><span>/</span>
-        <span className="text-secondary">{course.title}</span>
-      </nav>
-
-      {/* Course Header */}
-      <figure className="rounded-2xl overflow-hidden border border-border mb-6 max-w-2xl">
-        <AcademyCover slug={course.slug} />
-        <figcaption className="px-4 py-2 text-xs text-muted bg-white">KI-generiertes Themenbild zur Illustration des Kursinhalts.</figcaption>
-      </figure>
-      <div className="bg-[#fff8ee] border border-border rounded-2xl p-6 text-secondary mb-8 relative overflow-hidden">
-        <div className="relative flex items-center gap-4 mb-4">
-          <div>
-            <h1 className="text-2xl font-extrabold">{course.title}</h1>
-            <div className="flex gap-3 mt-1 text-sm text-muted flex-wrap">
-              <span>{course.difficulty}</span>
-              <span>·</span>
-              <span>{course.duration}</span>
-              <span>·</span>
-              <span>{course.lessons.length} Lektionen + Abschlusstest</span>
+    <>
+      <PageIntro eyebrow="Getränkeakademie" title={course.title} description={`${course.difficulty} · ${course.duration} · ${course.lessons.length} Lektionen + Abschlusstest`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Akademie", href: "/akademie" }, { label: course.title }]}>
+        <a href="#course-lesson" className={editorial.secondaryLink}>Zur aktuellen Lektion</a>
+      </PageIntro>
+      <div data-learning="course" className={styles.body}>
+        <div className={styles.courseLead}>
+          <div className={styles.progress}>
+            <p>{course.description}</p>
+            <p>Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz abgeschlossen</p>
+            <div className={styles.progressSteps} aria-label="Lektionsfortschritt">
+              {course.lessons.map((l, i) => <button key={i} onClick={() => setActiveLesson(i)} aria-label={`Lektion ${i + 1}: ${l.title}`} aria-current={i === activeLesson ? "step" : undefined}>{i + 1}{lessonQuizDone[i] !== undefined && <span aria-label="abgeschlossen"> ✓</span>}</button>)}
             </div>
           </div>
+          <figure><AcademyCover slug={course.slug} /><figcaption className={styles.credit}>KI-generiertes Themenbild zur Illustration des Kursinhalts.</figcaption></figure>
         </div>
-        <div className="flex gap-1.5">
-          {course.lessons.map((_, i) => (
-            <button key={i} onClick={() => setActiveLesson(i)} aria-label={`Lektion ${i + 1}: ${course.lessons[i].title}`} aria-current={i === activeLesson ? "step" : undefined} className={`h-2 flex-1 rounded-full transition-colors ${i === activeLesson ? "bg-primary" : lessonQuizDone[i] !== undefined ? "bg-primary/60" : "bg-primary/20"}`} />
-          ))}
-          <div className={`h-2 w-8 rounded-full ${showFinalExam ? "bg-primary" : "bg-primary/20"}`} />
-        </div>
-        <p className="text-xs text-muted mt-2">Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz abgeschlossen</p>
-      </div>
-
-      <div className="grid lg:grid-cols-4 gap-8">
+      <div className={styles.course}>
         {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <h3 className="font-semibold text-secondary text-sm mb-3">Lektionen</h3>
-          <nav className="space-y-1">
+        <aside>
+          <h2 className="font-semibold text-sm mb-3">Lektionen</h2>
+          <nav aria-label="Kurslektionen" className={styles.navigation}>
             {course.lessons.map((l, i) => (
-              <button key={i} onClick={() => setActiveLesson(i)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${i === activeLesson ? "bg-primary text-white font-medium" : "text-muted hover:bg-light hover:text-secondary"}`}>
-                {lessonQuizDone[i] !== undefined ? <span className={`text-xs ${i === activeLesson ? "text-white" : "text-green-800"}`}>✓</span> : <span className={`text-xs ${i === activeLesson ? "text-white" : "text-muted"}`}>{i + 1}.</span>}
-                <span className="truncate">{l.title}</span>
+              <button key={i} onClick={() => setActiveLesson(i)} aria-current={i === activeLesson ? "step" : undefined}>
+                {lessonQuizDone[i] !== undefined ? <span className="text-xs mr-2" aria-label="abgeschlossen">✓</span> : <span className="text-xs mr-2">{i + 1}.</span>}
+                <span>{l.title}</span>
               </button>
             ))}
             <hr className="my-2 border-border" />
             <button
               onClick={() => completedLessons >= course.lessons.length ? setShowFinalExam(true) : null}
               disabled={completedLessons < course.lessons.length}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium ${completedLessons >= course.lessons.length ? "text-primary hover:bg-red-50 cursor-pointer" : "text-muted/30 cursor-not-allowed"}`}
+              className={styles.examButton}
             >
-              📝 Abschlusstest
-              {completedLessons < course.lessons.length && <span className="block text-xs opacity-50">Erst alle Quiz abschließen</span>}
+              Abschlusstest
+              {completedLessons < course.lessons.length && <span className="block text-xs mt-1">Erst alle Quiz abschließen</span>}
             </button>
           </nav>
-        </div>
+        </aside>
 
         {/* Content */}
-        <div className="lg:col-span-3">
-          <div className="bg-white border border-border rounded-2xl p-6 md:p-8">
+        <div>
+          <section id="course-lesson" tabIndex={-1} className={styles.lesson} aria-label="Lektion">
             <h2 className="text-xl font-bold text-secondary mb-6">{lesson.title}</h2>
-            <div className="text-sm text-muted leading-relaxed whitespace-pre-line">
-              {lesson.content.split("**").map((part, i) =>
-                i % 2 === 0 ? <span key={i}>{part}</span> : <strong key={i} className="text-secondary font-semibold">{part}</strong>
-              )}
+            <div className={styles.lessonText}>
+              {lesson.content.split(/\n\n+/).map((block, index) => {
+                const heading = block.match(/^(#{2,3}) (.+)$/);
+                const text = heading ? heading[2] : block;
+                const content = text.split("**").map((part, i) => i % 2 === 0
+                  ? <span key={i}>{part}</span>
+                  : <strong key={i} className="text-secondary font-semibold">{part}</strong>);
+                if (heading?.[1] === "##") return <h3 key={index}>{text}</h3>;
+                if (heading?.[1] === "###") return <h4 key={index}>{text}</h4>;
+                return <p key={index}>{content}</p>;
+              })}
             </div>
-          </div>
+          </section>
 
           {/* Lesson Quiz */}
           {lesson.quiz.length > 0 && (
             lessonQuizDone[activeLesson] !== undefined ? (
-              <div className="mt-6 p-4 bg-light border border-border rounded-xl text-sm text-secondary">
+              <div role="status" className={`${editorial.notice} mt-6`}>
                 Quiz abgeschlossen — {lessonQuizDone[activeLesson]}/{lesson.quiz.length} richtig
               </div>
             ) : (
@@ -227,21 +202,21 @@ function CourseBody({ course }: { course: Course }) {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-6">
+          <div className={styles.actions}>
             <button
               onClick={() => setActiveLesson(Math.max(0, activeLesson - 1))}
               disabled={activeLesson === 0}
-              className="px-5 py-2.5 border border-border text-muted hover:border-primary hover:text-primary rounded-xl transition-colors text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed"
+              className={editorial.secondaryLink}
             >
-              ← Vorherige
+              Vorherige
             </button>
             {activeLesson < course.lessons.length - 1 ? (
-              <button onClick={() => setActiveLesson(activeLesson + 1)} className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors text-sm">
-                Nächste Lektion →
+              <button onClick={() => setActiveLesson(activeLesson + 1)} className={editorial.primaryLink}>
+                Nächste Lektion
               </button>
             ) : completedLessons >= course.lessons.length ? (
-              <button onClick={() => setShowFinalExam(true)} className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors text-sm">
-                📝 Zum Abschlusstest
+              <button onClick={() => setShowFinalExam(true)} className={editorial.primaryLink}>
+                Zum Abschlusstest
               </button>
             ) : (
               <span className="px-5 py-2.5 text-sm text-muted">Schließe erst alle Quiz ab</span>
@@ -249,6 +224,6 @@ function CourseBody({ course }: { course: Course }) {
           </div>
         </div>
       </div>
-    </div>
+    </div></>
   );
 }

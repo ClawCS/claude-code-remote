@@ -1,4 +1,7 @@
 import Link from "next/link";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/learning.module.css";
+import editorial from "@/components/editorial/editorial.module.css";
 import type { Metadata } from "next";
 import { academyCertificates as zertifikatskurse } from "@/data/academy-certificates";
 
@@ -17,24 +20,15 @@ const kategorien = [
 
 export default function ZertifikatePage() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <Link href="/akademie" className="text-sm text-primary hover:underline mb-4 inline-block">&larr; Zurück zur Akademie</Link>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">Professionelle Zertifikatskurse</h1>
-        <p className="text-muted max-w-2xl mx-auto">
-          {zertifikatskurse.length} Weiterbildungshinweise — von der IHK über Doemens bis zum WSET.
-          Informationen zu Qualifikationen und Kursen; aktuelle Termine, Preise und Anmeldung bitte beim jeweiligen Anbieter prüfen.
-        </p>
-      </div>
-
+    <>
+      <PageIntro eyebrow="Weiterführendes Wissen" title="Professionelle Zertifikatskurse" description={`${zertifikatskurse.length} Weiterbildungshinweise — von der IHK über Doemens bis zum WSET. Informationen zu Qualifikationen und Kursen; aktuelle Termine, Preise und Anmeldung bitte beim jeweiligen Anbieter prüfen.`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Akademie", href: "/akademie" }, { label: "Zertifikatskurse" }]} />
+      <div data-learning="certificates" className={styles.body}>
       {/* Kategorien */}
       {kategorien.map((kat) => {
         const kurse = zertifikatskurse.filter((k) => k.kategorie === kat.key);
         return (
           <section key={kat.key} className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-3xl">{kat.icon}</span>
               <h2 className="text-2xl font-bold text-secondary">{kat.label}</h2>
               <span className="text-sm text-muted">({kurse.length} Kurse)</span>
             </div>
@@ -43,29 +37,29 @@ export default function ZertifikatePage() {
               {kurse.map((kurs) => (
                 <div
                   key={kurs.titel}
-                  className={`bg-white border rounded-xl p-5 hover:shadow-lg transition-all ${kurs.highlight ? "border-primary/30 ring-1 ring-primary/10" : "border-gray-200"}`}
+                  className={styles.certificate}
                 >
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-bold text-secondary text-lg">{kurs.titel}</h3>
                         {kurs.highlight && (
-                          <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">Top-Empfehlung</span>
+                          <span className="text-xs text-secondary border border-border px-2 py-1 font-semibold">Top-Empfehlung</span>
                         )}
                       </div>
                       <p className="text-muted text-sm mb-3">{kurs.beschreibung}</p>
-                      <div className="flex flex-wrap gap-3 text-xs text-muted">
-                        <span className="bg-gray-100 px-2 py-1 rounded">🎓 {kurs.abschluss}</span>
-                        <span className="bg-gray-100 px-2 py-1 rounded">🏢 {kurs.anbieter}</span>
-                        <span className="bg-gray-100 px-2 py-1 rounded">⏱ {kurs.dauer}</span>
-                        <span className="bg-gray-100 px-2 py-1 rounded font-semibold">💰 {kurs.kosten}</span>
+                      <div className={styles.certificateMeta}>
+                        <span >Abschluss: {kurs.abschluss}</span>
+                        <span >Anbieter: {kurs.anbieter}</span>
+                        <span >Dauer: {kurs.dauer}</span>
+                        <span >Kosten: {kurs.kosten}</span>
                       </div>
                     </div>
                     <a
                       href={kurs.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-colors text-sm font-semibold"
+                      className={editorial.secondaryLink}
                     >
                       Informationen beim Anbieter &rarr;
                     </a>
@@ -78,11 +72,10 @@ export default function ZertifikatePage() {
       })}
 
       {/* Karrierepfad */}
-      <section className="bg-light rounded-2xl p-8 mb-10">
+      <section className={styles.related}>
         <h2 className="text-2xl font-bold text-secondary mb-6 text-center">Empfohlene Karrierepfade</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="text-center">
-            <span className="text-3xl block mb-2">🍷</span>
             <h3 className="font-bold text-secondary mb-2">Wein-Karriere</h3>
             <div className="text-sm text-muted space-y-1">
               <p>1. WSET Level 1</p>
@@ -97,7 +90,6 @@ export default function ZertifikatePage() {
             </div>
           </div>
           <div className="text-center">
-            <span className="text-3xl block mb-2">🍺</span>
             <h3 className="font-bold text-secondary mb-2">Bier-Karriere</h3>
             <div className="text-sm text-muted space-y-1">
               <p>1. Certified Beer Server</p>
@@ -110,7 +102,6 @@ export default function ZertifikatePage() {
             </div>
           </div>
           <div className="text-center">
-            <span className="text-3xl block mb-2">🥃</span>
             <h3 className="font-bold text-secondary mb-2">Spirituosen-Karriere</h3>
             <div className="text-sm text-muted space-y-1">
               <p>1. WSET Level 2 Spirits</p>
@@ -127,10 +118,10 @@ export default function ZertifikatePage() {
 
       {/* Zurück zur Akademie */}
       <div className="text-center">
-        <Link href="/akademie" className="inline-flex px-6 py-3 bg-[#DC2626] text-white rounded-xl font-semibold hover:bg-[#B91C1C] transition-colors">
+        <Link href="/akademie" className={editorial.primaryLink}>
           Zurück zur Akademie
         </Link>
       </div>
-    </div>
+    </div></>
   );
 }

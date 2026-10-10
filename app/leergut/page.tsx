@@ -3,6 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/tools.module.css";
+import editorial from "@/components/editorial/editorial.module.css";
 import { MARKET } from "@/lib/cinematic/site";
 
 // --- Pfand types & prices ---
@@ -71,17 +74,16 @@ function saveHistory(entries: HistoryEntry[]) {
 
 function CounterCard({ type, count, onChange }: { type: PfandType; count: number; onChange: (val: number) => void }) {
   return (
-    <div className="bg-white border border-border rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-      <span className="text-xl" aria-hidden="true">{type.icon}</span>
+    <div className={styles.counter}>
       <div className="flex-1 min-w-0">
         <div className="font-semibold text-secondary text-sm">{type.label}</div>
         <div className="text-xs text-muted">{type.description}</div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className={styles.counterControls}>
         <button
           onClick={() => onChange(Math.max(0, count - 1))}
-          className="w-8 h-8 rounded-lg bg-light border border-border text-secondary font-bold text-lg flex items-center justify-center hover:bg-border transition-colors active:scale-95"
-          aria-label="Weniger"
+
+          aria-label={`Weniger ${type.label}`}
         >
           -
         </button>
@@ -91,12 +93,12 @@ function CounterCard({ type, count, onChange }: { type: PfandType; count: number
           min={0}
           value={count}
           onChange={(e) => onChange(Math.max(0, parseInt(e.target.value) || 0))}
-          className="w-14 text-center font-bold text-secondary border border-border rounded-lg py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+
         />
         <button
           onClick={() => onChange(count + 1)}
-          className="w-8 h-8 rounded-lg bg-primary text-white font-bold text-lg flex items-center justify-center hover:bg-primary-dark transition-colors active:scale-95"
-          aria-label="Mehr"
+
+          aria-label={`Mehr ${type.label}`}
         >
           +
         </button>
@@ -228,56 +230,38 @@ export default function LeergutRechnerPage() {
 
   return (
     <>
-    {/* Red Hero Banner */}
-    <div className="page-hero-banner py-16 md:py-24">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Leergut-Rechner</span></nav>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Leergut-Rechner</h1>
-        <p className="text-white/80 max-w-lg mx-auto text-lg">
-          Zähle dein Leergut manuell. Der KI-Foto-Scan ist derzeit nicht verfügbar.
-          Wir berechnen deinen Pfandwert sofort.
-        </p>
-      </div>
-    </div>
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-
+    <PageIntro eyebrow="Rückgabe vorbereiten" title="Leergut-Rechner" description="Zähle dein Leergut manuell. Der KI-Foto-Scan ist derzeit nicht verfügbar. Wir berechnen deinen Pfandwert sofort." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Leergut-Rechner" }]} />
+    <div data-tool="deposit" className={`${styles.body} ${styles.workspace}`}>
       {/* Mode Toggle */}
-      <div className="flex justify-center gap-2 mb-8">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setMode("manual")}
-          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-            mode === "manual"
-              ? "bg-green-700 text-white shadow-lg shadow-green-200"
-              : "bg-light text-muted hover:bg-border"
-          }`}
+          aria-pressed={mode === "manual"}
+          className={`${editorial.secondaryLink} ${styles.mode}`}
         >
-          {"\u270B"} Manuell z&auml;hlen
+           Manuell z&auml;hlen
         </button>
         <button
           disabled
           aria-label="Foto-Scan derzeit nicht verfügbar"
-          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-            mode === "photo"
-              ? "bg-green-700 text-white shadow-lg shadow-green-200"
-              : "bg-light text-muted hover:bg-border"
-          }`}
+          className={editorial.secondaryLink}
         >
-          {"\uD83D\uDCF7"} Foto scannen (KI)
+           Foto scannen (KI)
         </button>
       </div>
 
       {/* Scan Success Banner */}
       {scanSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 text-center animate-fade-in">
-          <p className="text-green-700 font-semibold text-sm">
-            {"\u2705"} KI-Scan abgeschlossen! Die Ergebnisse wurden eingetragen. Du kannst sie unten korrigieren.
+        <div className="bg-green-50 border border-green-200 rounded-sm p-4 mb-6 text-center animate-fade-in">
+          <p className="text-secondary font-semibold text-sm">
+             KI-Scan abgeschlossen! Die Ergebnisse wurden eingetragen. Du kannst sie unten korrigieren.
           </p>
         </div>
       )}
 
       {/* Photo Mode */}
       {mode === "photo" && (
-        <div className="bg-white border border-border rounded-xl p-6 mb-8 text-center">
+        <div className="bg-white border border-border rounded-sm p-6 mb-8 text-center">
           <input
             ref={fileInputRef}
             type="file"
@@ -293,7 +277,7 @@ export default function LeergutRechnerPage() {
               <img
                 src={previewUrl}
                 alt="Leergut Foto"
-                className="max-h-64 mx-auto rounded-lg border border-border"
+                className="max-h-64 mx-auto rounded-sm border border-border"
               />
             </div>
           )}
@@ -307,7 +291,7 @@ export default function LeergutRechnerPage() {
             <div className="space-y-3">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-200"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-sm hover:bg-green-700 transition-colors  "
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -324,7 +308,7 @@ export default function LeergutRechnerPage() {
           )}
 
           {scanError && (
-            <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
+            <div className="mt-4 bg-red-50 border border-red-200 rounded-sm p-3 text-red-700 text-sm">
               {scanError}
             </div>
           )}
@@ -332,7 +316,7 @@ export default function LeergutRechnerPage() {
       )}
 
       {/* Manual Counter Grid */}
-      <div className="grid gap-3 sm:grid-cols-2 mb-6">
+      <div className={styles.counterGrid}>
         {PFAND_TYPES.map((type) => (
           <CounterCard
             key={type.key}
@@ -344,14 +328,12 @@ export default function LeergutRechnerPage() {
       </div>
 
       {/* Total & Actions */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 text-white text-center mb-8 shadow-xl">
-        <p className="text-sm font-medium text-green-100 mb-1">
+      <div className={styles.total} aria-live="polite">
+        <p className={styles.eyebrow}>
           Dein Pfandwert ({totalBottles} {totalBottles === 1 ? "Teil" : "Teile"})
         </p>
         <p
-          className={`text-4xl sm:text-5xl font-bold transition-transform ${
-            totalAnimating ? "scale-110" : "scale-100"
-          }`}
+          className={styles.totalValue} data-changing={totalAnimating}
         >
           {formatEuro(total)}
         </p>
@@ -359,27 +341,27 @@ export default function LeergutRechnerPage() {
           <button
             onClick={saveToHistory}
             disabled={total <= 0}
-            className="px-5 py-2.5 bg-white text-green-700 font-semibold rounded-xl hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className={editorial.primaryLink}
           >
-            {"\uD83D\uDCBE"} Speichern & zur&uuml;cksetzen
+             Speichern & zur&uuml;cksetzen
           </button>
           <button
             onClick={resetCounts}
-            className="px-5 py-2.5 bg-green-500/30 text-white font-semibold rounded-xl hover:bg-green-500/50 transition-colors text-sm"
+            className={editorial.secondaryLink}
           >
-            {"\uD83D\uDD04"} Zur&uuml;cksetzen
+             Zur&uuml;cksetzen
           </button>
           <Link
             href="/oeko-tracker"
-            className="px-5 py-2.5 bg-green-500/30 text-white font-semibold rounded-xl hover:bg-green-500/50 transition-colors text-sm"
+            className={editorial.secondaryLink}
           >
-            {"\uD83C\uDF3F"} &Ouml;ko-Tracker
+             &Ouml;ko-Tracker
           </Link>
         </div>
       </div>
 
       {/* CTA */}
-      <div className="bg-red-50 border border-red-100 rounded-xl p-6 text-center mb-10">
+      <div className={editorial.notice}>
         <h2 className="utility-heading text-lg font-bold text-secondary mb-2">
           Jetzt einl&ouml;sen bei Trinkgut Jammers!
         </h2>
@@ -396,9 +378,9 @@ export default function LeergutRechnerPage() {
       </div>
 
       {/* Pfand Info Table */}
-      <div className="bg-white border border-border rounded-xl overflow-hidden mb-10">
+      <div className={styles.history}>
         <div className="bg-light px-6 py-3 border-b border-border">
-          <h2 className="utility-heading font-bold text-secondary text-sm">{"\u2139\uFE0F"} Pfand-&Uuml;bersicht Deutschland</h2>
+          <h2 className="utility-heading font-bold text-secondary text-sm"> Pfand-&Uuml;bersicht Deutschland</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -412,10 +394,9 @@ export default function LeergutRechnerPage() {
               {PFAND_TYPES.map((t) => (
                 <tr key={t.key} className="border-t border-border hover:bg-light/30">
                   <td className="px-6 py-2.5">
-                    <span className="mr-2">{t.icon}</span>
                     {t.label}
                   </td>
-                  <td className="px-6 py-2.5 text-right font-semibold text-green-700">
+                  <td className="px-6 py-2.5 text-right font-semibold text-secondary">
                     {formatEuro(t.price)}
                   </td>
                 </tr>
@@ -427,14 +408,14 @@ export default function LeergutRechnerPage() {
 
       {/* History */}
       {history.length > 0 && (
-        <div className="bg-white border border-border rounded-xl overflow-hidden">
-          <div className="bg-light px-6 py-3 border-b border-border flex items-center justify-between">
+        <div className={styles.history}>
+          <div className={styles.historyHeader}>
             <h2 className="utility-heading font-bold text-secondary text-sm">
-              {"\uD83D\uDCCA"} Meine Leergut-Historie
+               Meine Leergut-Historie
             </h2>
             <div className="flex items-center gap-3">
               <span className="text-xs text-muted">
-                Gesamt: <strong className="text-green-700">{formatEuro(historyTotal)}</strong>
+                Gesamt: <strong className="text-secondary">{formatEuro(historyTotal)}</strong>
               </span>
               <button
                 onClick={clearHistory}
@@ -462,13 +443,13 @@ export default function LeergutRechnerPage() {
                     <div className="text-xs text-secondary flex flex-wrap gap-2">
                       {items.map((t) => (
                         <span key={t.key} className="bg-light px-2 py-0.5 rounded">
-                          {t.icon} {entry.counts[t.key]}x {t.label.split(" ")[0]}
+                          {entry.counts[t.key]}x {t.label.split(" ")[0]}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-green-700 text-sm">{formatEuro(entry.total)}</div>
+                    <div className="font-bold text-secondary text-sm">{formatEuro(entry.total)}</div>
                   </div>
                   <button
                     onClick={() => deleteHistoryEntry(i)}

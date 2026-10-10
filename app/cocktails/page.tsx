@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { RecipeCategories, RecipeGrid, RecipeIntro } from "@/components/recipes/RecipeCollection";
 import { cocktailCatalog } from "@/lib/cocktail-routes";
+import styles from "@/components/editorial/learning.module.css";
 
 export const metadata: Metadata = {
   title: "Cocktail-Rezepte",
@@ -12,7 +13,7 @@ export default function CocktailsPage() {
   return (
     <>
       <RecipeIntro title="Cocktail-Rezepte" description={`${cocktailCatalog.recipes.length} Rezepte in ${cocktailCatalog.categories.length} Kategorien – mit Zutaten, Zubereitung und Tipps für deinen nächsten Drink.`} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-14">
+      <div data-learning="recipes" className={styles.body}>
         <RecipeCategories />
         <RecipeGrid recipes={cocktailCatalog.recipes} />
       </div>

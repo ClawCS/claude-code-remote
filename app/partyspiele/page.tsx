@@ -1,7 +1,9 @@
 "use client";
-import Link from "next/link";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/tools.module.css";
+import { useModalA11y } from "@/lib/useModalA11y";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 /* ═══════════════════════════════════════════════════════════════
    GAME DATA & TYPES
@@ -34,7 +36,7 @@ const GAMES: GameMeta[] = [
    SHARED UI: Modal Wrapper
    ═══════════════════════════════════════════════════════════════ */
 
-function GameModal({ title, icon, onClose, children, alkoholfrei, setAlkoholfrei }: {
+function GameModal({ title, onClose, children, alkoholfrei, setAlkoholfrei }: {
   title: string;
   icon: string;
   onClose: () => void;
@@ -42,27 +44,27 @@ function GameModal({ title, icon, onClose, children, alkoholfrei, setAlkoholfrei
   alkoholfrei: boolean;
   setAlkoholfrei: (v: boolean) => void;
 }) {
+  const panelRef = useModalA11y(true, onClose);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-10">
-        <div className="sticky top-0 bg-white border-b border-border px-5 py-4 flex items-center justify-between rounded-t-2xl z-10">
-          <h2 className="text-lg font-bold text-secondary flex items-center gap-2">
-            <span className="text-2xl">{icon}</span> {title}
+    <div className={styles.modalOverlay} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="game-title" tabIndex={-1} className={styles.modal}>
+        <div className={styles.modalHeader}>
+          <h2 id="game-title">
+            {title}
           </h2>
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-1.5 text-xs cursor-pointer select-none">
               <input type="checkbox" checked={alkoholfrei} onChange={(e) => setAlkoholfrei(e.target.checked)} className="accent-primary w-4 h-4" />
-              <span className={alkoholfrei ? "text-[#F59E0B] font-semibold" : "text-muted"}>Alkoholfrei</span>
+              <span className="text-secondary">Alkoholfrei</span>
             </label>
-            <button onClick={onClose} className="p-1 text-muted hover:text-secondary" aria-label="Schließen">
+            <button onClick={onClose} className="min-w-11 text-secondary" aria-label="Schließen">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
         </div>
-        <div className="p-5">{children}</div>
+        <div className={styles.modalBody}>{children}</div>
       </div>
     </div>
   );
@@ -82,7 +84,7 @@ function ShareButton({ gameName }: { gameName: string }) {
     }
   };
   return (
-    <button onClick={share} className="mt-4 w-full py-2 border border-border rounded-xl text-sm text-muted hover:text-primary hover:border-primary transition-colors flex items-center justify-center gap-2">
+    <button onClick={share} className="mt-4 w-full py-2 border border-border rounded-sm text-sm text-muted hover:text-primary hover:border-primary transition-colors flex items-center justify-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
       </svg>
@@ -157,17 +159,17 @@ function RouletteGame({ alkoholfrei }: { alkoholfrei: boolean }) {
           value={newPlayer}
           onChange={(e) => setNewPlayer(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addPlayer()}
-          placeholder="Spielername..."
-          className="flex-1 px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+          placeholder="Spielername..." aria-label="Spielername"
+          className="flex-1 px-3 py-2 border border-border rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
-        <button onClick={addPlayer} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors">+</button>
+        <button aria-label="Spieler hinzufügen" onClick={addPlayer} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-sm hover:bg-primary-dark transition-colors">+</button>
       </div>
       {players.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {players.map((p, i) => (
             <span key={i} className="inline-flex items-center gap-1 px-3 py-1 bg-light rounded-full text-sm">
               {p}
-              <button onClick={() => setPlayers(players.filter((_, j) => j !== i))} className="text-muted hover:text-red-500 ml-1">&times;</button>
+              <button aria-label={`${p} entfernen`} onClick={() => setPlayers(players.filter((_, j) => j !== i))} className="text-muted hover:text-red-700 ml-1">&times;</button>
             </span>
           ))}
         </div>
@@ -176,14 +178,14 @@ function RouletteGame({ alkoholfrei }: { alkoholfrei: boolean }) {
       {/* Wheel */}
       <div className="flex flex-col items-center my-6">
         <div className="relative w-48 h-48 mb-4">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-10 text-2xl">{"\u{1F53D}"}</div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-10 text-2xl"><span aria-hidden="true">▼</span></div>
           <div
-            className="w-full h-full rounded-full border-4 border-primary shadow-lg transition-transform"
+            className="w-full h-full rounded-full border-4 border-primary  transition-transform"
             style={{ transform: `rotate(${rotation}deg)`, transitionDuration: spinning ? "3s" : "0s", transitionTimingFunction: "cubic-bezier(0.2, 0.8, 0.3, 1)" }}
           >
             {players.map((p, i) => {
               const angle = (360 / players.length) * i;
-              const colors = ["#DC2626", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6", "#EC4899", "#14B8A6", "#F97316", "#6366F1", "#EF4444"];
+              const colors = ["#991B1B", "#191918", "#4B5563", "#7A1428", "#374151"];
               return (
                 <div key={i} className="absolute w-full h-full" style={{ transform: `rotate(${angle}deg)` }}>
                   <div className="absolute top-2 left-1/2 -translate-x-1/2 text-xs font-bold text-white px-1.5 py-0.5 rounded" style={{ backgroundColor: colors[i % colors.length] }}>
@@ -197,14 +199,14 @@ function RouletteGame({ alkoholfrei }: { alkoholfrei: boolean }) {
         <button
           onClick={spin}
           disabled={players.length < 2 || spinning}
-          className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+          className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed "
         >
           {spinning ? "Dreht..." : "Drehen!"}
         </button>
       </div>
 
       {result && (
-        <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl text-center animate-fade-in-up">
+        <div className="mt-4 p-4 bg-light border border-border rounded-sm text-center animate-fade-in-up">
           <p className="text-2xl font-extrabold text-primary">{result.player}</p>
           <p className="text-lg text-secondary mt-2">{result.task}</p>
         </div>
@@ -272,15 +274,15 @@ function WahrheitOderPflichtGame({ alkoholfrei }: { alkoholfrei: boolean }) {
   return (
     <div className="text-center">
       <div className="flex gap-3 justify-center mb-6">
-        <button onClick={() => draw("Wahrheit")} className="px-6 py-3 bg-[#1F2937] hover:bg-[#111827] text-white font-bold rounded-xl transition-colors shadow-md">
+        <button onClick={() => draw("Wahrheit")} className="px-6 py-3 bg-[#1F2937] hover:bg-[#111827] text-white font-bold rounded-sm transition-colors ">
           Wahrheit
         </button>
-        <button onClick={() => draw("Pflicht")} className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors shadow-md">
+        <button onClick={() => draw("Pflicht")} className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm transition-colors ">
           Pflicht
         </button>
       </div>
       {current && (
-        <div className={`p-6 rounded-xl ${current.type === "Wahrheit" ? "bg-[#FFF8F6] border border-[#F0D5CF]" : "bg-red-50 border border-red-200"}`}>
+        <div className={`p-6 rounded-sm ${current.type === "Wahrheit" ? "bg-light border border-border" : "bg-red-50 border border-red-200"}`}>
           <span className="text-xs font-bold uppercase tracking-wider text-muted">{current.type}</span>
           <p className="text-lg font-semibold text-secondary mt-2">{current.text}</p>
         </div>
@@ -354,23 +356,24 @@ function BierPongGame() {
       <div className="text-center mb-6">
         <p className="text-4xl font-mono font-bold text-secondary">{formatTime(timer)}</p>
         <div className="flex gap-2 justify-center mt-2">
-          <button onClick={startTimer} disabled={running} className="px-4 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white text-sm font-medium rounded-lg disabled:opacity-50">Start</button>
-          <button onClick={stopTimer} className="px-4 py-1.5 bg-[#F59E0B] hover:bg-[#D97706] text-white text-sm font-medium rounded-lg">Stopp</button>
-          <button onClick={resetGame} className="px-4 py-1.5 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-lg">Reset</button>
+          <button onClick={startTimer} disabled={running} className="px-4 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white text-sm font-medium rounded-sm disabled:opacity-50">Start</button>
+          <button onClick={stopTimer} className="px-4 py-1.5 bg-light hover:bg-gray-200 text-secondary text-sm font-medium rounded-sm">Stopp</button>
+          <button onClick={resetGame} className="px-4 py-1.5 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-sm">Reset</button>
         </div>
       </div>
       {/* Sieger-Banner */}
       {winner && (
-        <div className="mb-4 rounded-xl bg-gradient-to-r from-[#DC2626] to-[#B91C1C] text-white text-center py-3 px-4 shadow-lg">
-          <p className="text-lg font-extrabold">🏆 {winner} gewinnt!</p>
+        <div className="mb-4 rounded-sm bg-secondary text-white text-center py-3 px-4 ">
+          <p className="text-lg font-extrabold">{winner} gewinnt!</p>
           <p className="text-sm text-white/80">Zeit: {formatTime(timer)} — „Reset&ldquo; für ein neues Spiel</p>
         </div>
       )}
       {/* Scores */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         {[{ team: team1, num: 1 as const }, { team: team2, num: 2 as const }].map(({ team, num }) => (
-          <div key={num} className="bg-light rounded-xl p-4 text-center">
+          <div key={num} className="bg-light rounded-sm p-4 text-center">
             <input
+              aria-label={`Name Team ${num}`}
               value={team.name}
               onChange={(e) => num === 1 ? setTeam1({ ...team1, name: e.target.value }) : setTeam2({ ...team2, name: e.target.value })}
               className="w-full text-center font-bold text-secondary bg-transparent border-b border-border mb-2 focus:outline-none focus:border-primary"
@@ -380,7 +383,7 @@ function BierPongGame() {
             <button
               onClick={() => hitCup(num)}
               disabled={!!winner}
-              className="mt-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-sm transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Treffer!
             </button>
@@ -391,7 +394,7 @@ function BierPongGame() {
         {showRules ? "Regeln ausblenden" : "Regeln anzeigen"}
       </button>
       {showRules && (
-        <div className="mt-2 p-4 bg-light rounded-xl text-sm text-muted space-y-1">
+        <div className="mt-2 p-4 bg-light rounded-sm text-sm text-muted space-y-1">
           <p>1. Jedes Team hat 10 Becher in Pyramidenform</p>
           <p>2. Abwechselnd wirft jedes Team einen Tischtennisball</p>
           <p>3. Trifft man einen Becher, trinkt das gegnerische Team</p>
@@ -444,22 +447,22 @@ function FlunkyballGame() {
           {countdown > 0 ? countdown : "GO!"}
         </p>
         <div className="flex gap-2 justify-center mt-3">
-          <button onClick={() => startCountdown(30)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg">30s</button>
-          <button onClick={() => startCountdown(60)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg">60s</button>
-          <button onClick={() => startCountdown(90)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg">90s</button>
+          <button onClick={() => startCountdown(30)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-sm">30s</button>
+          <button onClick={() => startCountdown(60)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-sm">60s</button>
+          <button onClick={() => startCountdown(90)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-sm">90s</button>
         </div>
       </div>
       {/* Scores */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-[#FFF8F6] border border-[#F0D5CF] rounded-xl p-4">
+        <div className="bg-light border border-border rounded-sm p-4">
           <p className="font-bold text-secondary">Team 1</p>
           <p className="text-4xl font-extrabold text-[#1F2937] my-2">{team1Score}</p>
-          <button onClick={() => setTeam1Score(team1Score + 1)} className="px-4 py-2 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-lg">+1 Punkt</button>
+          <button onClick={() => setTeam1Score(team1Score + 1)} className="px-4 py-2 bg-[#1F2937] hover:bg-[#111827] text-white text-sm font-medium rounded-sm">+1 Punkt</button>
         </div>
-        <div className="bg-red-50 rounded-xl p-4">
+        <div className="bg-red-50 rounded-sm p-4">
           <p className="font-bold text-red-700">Team 2</p>
           <p className="text-4xl font-extrabold text-red-600 my-2">{team2Score}</p>
-          <button onClick={() => setTeam2Score(team2Score + 1)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg">+1 Punkt</button>
+          <button onClick={() => setTeam2Score(team2Score + 1)} className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-sm">+1 Punkt</button>
         </div>
       </div>
       <button onClick={() => { setTeam1Score(0); setTeam2Score(0); }} className="mt-4 text-sm text-muted hover:text-primary">Scores zurücksetzen</button>
@@ -523,19 +526,19 @@ function KingsCupGame({ alkoholfrei }: { alkoholfrei: boolean }) {
       {/* Card display */}
       <div className="flex justify-center mb-6">
         {current ? (
-          <div className={`w-32 h-48 bg-white border-2 ${isRed ? "border-red-300" : "border-gray-300"} rounded-xl shadow-lg flex flex-col items-center justify-center`}>
-            <span className={`text-4xl font-bold ${isRed ? "text-red-500" : "text-gray-800"}`}>{current.value}</span>
-            <span className={`text-3xl ${isRed ? "text-red-500" : "text-gray-800"}`}>{current.suit}</span>
+          <div className={`w-32 h-48 bg-white border-2 ${isRed ? "border-red-300" : "border-gray-300"} rounded-sm  flex flex-col items-center justify-center`}>
+            <span className={`text-4xl font-bold ${isRed ? "text-red-700" : "text-gray-800"}`}>{current.value}</span>
+            <span className={`text-3xl ${isRed ? "text-red-700" : "text-gray-800"}`}>{current.suit}</span>
           </div>
         ) : (
-          <div className="w-32 h-48 bg-gradient-to-br from-primary to-primary-dark rounded-xl shadow-lg flex items-center justify-center">
+          <div className="w-32 h-48 bg-secondary rounded-sm  flex items-center justify-center">
             <span className="text-white text-3xl font-bold">?</span>
           </div>
         )}
       </div>
       {/* Rule */}
       {current && (
-        <div className="p-4 bg-light rounded-xl mb-4">
+        <div className="p-4 bg-light rounded-sm mb-4">
           <p className="text-sm font-semibold text-primary mb-1">{current.value} {current.suit}</p>
           <p className="text-secondary">{alkoholfrei ? KING_RULES[current.value].ruleAf : KING_RULES[current.value].rule}</p>
         </div>
@@ -544,11 +547,11 @@ function KingsCupGame({ alkoholfrei }: { alkoholfrei: boolean }) {
         <button
           onClick={drawCard}
           disabled={deck.length === 0}
-          className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors disabled:opacity-50 shadow-md"
+          className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm transition-colors disabled:opacity-50 "
         >
           Karte ziehen
         </button>
-        <button onClick={resetDeck} className="px-4 py-3 bg-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-300 transition-colors">Neues Deck</button>
+        <button onClick={resetDeck} className="px-4 py-3 bg-gray-200 text-gray-700 font-medium rounded-sm hover:bg-gray-300 transition-colors">Neues Deck</button>
       </div>
     </div>
   );
@@ -611,18 +614,18 @@ function IchHabNochNieGame({ alkoholfrei }: { alkoholfrei: boolean }) {
   return (
     <div className="text-center">
       {current ? (
-        <div className="p-6 bg-gradient-to-br from-[#FFF8F6] to-[#FFE4DC] border border-[#F0D5CF] rounded-xl mb-6">
+        <div className="p-6 bg-light border border-border rounded-sm mb-6">
           <p className="text-xs font-bold uppercase tracking-wider text-[#DC2626] mb-2">Ich hab noch nie...</p>
           <p className="text-xl font-semibold text-secondary">{current}</p>
         </div>
       ) : (
-        <div className="p-6 bg-light rounded-xl mb-6">
+        <div className="p-6 bg-light rounded-sm mb-6">
           <p className="text-muted">Drücke den Button für das erste Statement!</p>
         </div>
       )}
       <button
         onClick={draw}
-        className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors shadow-md"
+        className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm transition-colors "
       >
         Nächstes Statement
       </button>
@@ -726,7 +729,7 @@ function CocktailQuizGame() {
         <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">Quiz-Ergebnis</p>
         <p className="text-2xl font-extrabold text-secondary">{score} Punkte</p>
         <p className="text-muted mt-2">{QUIZ_QUESTIONS.length} Fragen beantwortet</p>
-        <button onClick={handleStart} className="mt-4 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl">Nochmal spielen</button>
+        <button onClick={handleStart} className="mt-4 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm">Nochmal spielen</button>
       </div>
     );
   }
@@ -735,7 +738,7 @@ function CocktailQuizGame() {
     return (
       <div className="text-center">
         <p className="text-muted mb-4">Teste dein Cocktail-Wissen! {QUIZ_QUESTIONS.length} Fragen, je schneller desto mehr Punkte.</p>
-        <button onClick={handleStart} className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-md">Quiz starten</button>
+        <button onClick={handleStart} className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm ">Quiz starten</button>
       </div>
     );
   }
@@ -752,14 +755,14 @@ function CocktailQuizGame() {
         <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
           <div className={`h-full rounded-full transition-all duration-1000 ${timeLeft <= 5 ? "bg-[#DC2626]" : "bg-[#F59E0B]"}`} style={{ width: `${(timeLeft / 15) * 100}%` }} />
         </div>
-        <span className={`text-sm font-bold ${timeLeft <= 5 ? "text-red-500" : "text-muted"}`}>{timeLeft}s</span>
+        <span className={`text-sm font-bold ${timeLeft <= 5 ? "text-red-700" : "text-muted"}`}>{timeLeft}s</span>
       </div>
       <p className="text-lg font-semibold text-secondary mb-4">{q.question}</p>
       <div className="space-y-2">
         {q.options.map((opt, i) => {
-          let cls = "w-full text-left px-4 py-3 rounded-xl border transition-colors text-sm font-medium ";
+          let cls = "w-full text-left px-4 py-3 rounded-sm border transition-colors text-sm font-medium ";
           if (selected !== null) {
-            if (i === q.correct) cls += "bg-[#FFF8F6] border-[#F59E0B] text-[#DC2626]";
+            if (i === q.correct) cls += "bg-light border-[#F59E0B] text-[#DC2626]";
             else if (i === selected) cls += "bg-red-50 border-red-300 text-red-700";
             else cls += "bg-light border-border text-muted";
           } else {
@@ -773,10 +776,10 @@ function CocktailQuizGame() {
         })}
       </div>
       {selected === -1 && (
-        <p className="mt-3 text-center text-sm font-semibold text-red-500">⏱ Zeit abgelaufen — keine Punkte</p>
+        <p className="mt-3 text-center text-sm font-semibold text-red-700">Zeit abgelaufen — keine Punkte</p>
       )}
       {selected !== null && (
-        <button onClick={nextQuestion} className="mt-4 w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-colors">
+        <button onClick={nextQuestion} className="mt-4 w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm transition-colors">
           {questionIndex + 1 >= QUIZ_QUESTIONS.length ? "Ergebnis anzeigen" : "Nächste Frage"}
         </button>
       )}
@@ -869,7 +872,7 @@ function TabuGame() {
         <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-2">Zeit abgelaufen</p>
         <p className="text-xl font-bold text-secondary">Zeit abgelaufen!</p>
         <p className="text-muted mt-2">Richtig: {score.correct} | Übersprungen: {score.skip}</p>
-        <button onClick={start} className="mt-4 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl">Nochmal spielen</button>
+        <button onClick={start} className="mt-4 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm">Nochmal spielen</button>
       </div>
     );
   }
@@ -878,7 +881,7 @@ function TabuGame() {
     return (
       <div className="text-center">
         <p className="text-muted mb-4">Ein Spieler beschreibt das Getränk — aber die verbotenen Wörter dürfen nicht gesagt werden! 60 Sekunden Zeit.</p>
-        <button onClick={start} className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-md">Spiel starten</button>
+        <button onClick={start} className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-sm ">Spiel starten</button>
       </div>
     );
   }
@@ -887,11 +890,11 @@ function TabuGame() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <span className="text-sm text-muted">Richtig: {score.correct}</span>
-        <span className={`text-lg font-bold ${timer <= 10 ? "text-red-500 animate-pulse" : "text-secondary"}`}>{timer}s</span>
+        <span className={`text-lg font-bold ${timer <= 10 ? "text-red-700 animate-pulse" : "text-secondary"}`}>{timer}s</span>
         <span className="text-sm text-muted">Skip: {score.skip}</span>
       </div>
       {currentCard && (
-        <div className="bg-white border-2 border-primary rounded-xl p-6 text-center mb-4">
+        <div className="bg-white border-2 border-primary rounded-sm p-6 text-center mb-4">
           <p className="text-2xl font-extrabold text-primary mb-4">{currentCard.word}</p>
           <div className="space-y-1.5">
             {currentCard.forbidden.map((w) => (
@@ -906,8 +909,8 @@ function TabuGame() {
         </div>
       )}
       <div className="grid grid-cols-2 gap-3">
-        <button onClick={handleCorrect} className="py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-xl transition-colors">Richtig!</button>
-        <button onClick={handleSkip} className="py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold rounded-xl transition-colors">Überspringen</button>
+        <button onClick={handleCorrect} className="py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-sm transition-colors">Richtig!</button>
+        <button onClick={handleSkip} className="py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold rounded-sm transition-colors">Überspringen</button>
       </div>
     </div>
   );
@@ -935,29 +938,20 @@ export default function PartyspielePageContent() {
     }
   };
 
+  const closeGame = useCallback(() => setActiveGame(null), []);
   const activeMeta = GAMES.find((g) => g.id === activeGame);
 
   return (
     <>
-    {/* Red Hero Banner */}
-    <div className="page-hero-banner py-16 md:py-24">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyspiele</span></nav>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyspiele</h1>
-        <p className="text-white/80 max-w-lg mx-auto text-lg">
-          8 Spiele direkt im Browser spielen — perfekt für jede Party! Einfach Spiel wählen und loslegen.
-        </p>
-      </div>
-    </div>
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-
+    <PageIntro eyebrow="Zusammen spielen" title="Partyspiele" description="8 Spiele direkt im Browser spielen — perfekt für jede Party! Einfach Spiel wählen und loslegen." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Partyspiele" }]} />
+    <div data-tool="games" className={styles.body}>
       {/* Game Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className={styles.gameGrid}>
         {GAMES.map((game) => (
           <button
             key={game.id}
             onClick={() => setActiveGame(game.id)}
-            className="group bg-white rounded-2xl border border-border hover:border-primary/30 transition-all overflow-hidden text-left p-5 card-hover-glow"
+            className={styles.choice}
           >
             <span className="text-xs font-semibold uppercase tracking-wide text-primary">{game.difficulty}</span>
             <h2 className="utility-heading font-bold text-secondary mt-3 group-hover:text-primary transition-colors">{game.name}</h2>
@@ -982,7 +976,7 @@ export default function PartyspielePageContent() {
         <GameModal
           title={activeMeta.name}
           icon={activeMeta.icon}
-          onClose={() => setActiveGame(null)}
+          onClose={closeGame}
           alkoholfrei={alkoholfrei}
           setAlkoholfrei={setAlkoholfrei}
         >

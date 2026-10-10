@@ -14,6 +14,7 @@ const categoryCourses: Readonly<Record<string, readonly string[]>> = {
 export default function AcademyEntry({ category }: { category?: string }) {
   if (!category) return <aside className={styles.entry} aria-label="Getränkeakademie">
     <div>
+      <p className={styles.eyebrow}>Getränkeakademie</p>
       <p className={styles.title}>Mehr wissen. Bewusster auswählen.</p>
       <p>{courses.length} Kurse mit Getränkewissen, kurzen Quiz und praktischen Tipps.</p>
     </div>
@@ -27,6 +28,7 @@ export default function AcademyEntry({ category }: { category?: string }) {
   if (relevant.length === 0) return null;
 
   return <aside className={styles.context} data-academy-context aria-label="Passendes Getränkewissen">
+    <p className={styles.eyebrow}>Weiter entdecken</p>
     <h2 className={styles.title}>Passendes Getränkewissen</h2>
     <ul>
       {relevant.map(course => <li key={course.slug}>

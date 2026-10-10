@@ -5,6 +5,7 @@ import { getCocktailPhoto } from "@/data/cocktail-images";
 import CocktailPhoto from "@/components/recipes/CocktailPhoto";
 import { RecipeIntro } from "@/components/recipes/RecipeCollection";
 import { cocktailCatalog, findCocktail } from "@/lib/cocktail-routes";
+import styles from "@/components/editorial/learning.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -25,14 +26,15 @@ export default async function CocktailRecipePage({ params }: Props) {
   return (
     <>
       <RecipeIntro title={cocktail.name} description={`${cocktail.category} · ${cocktail.difficulty} · ${cocktail.ingredients.length} Zutaten`} category={category} />
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 py-10 md:py-14">
+      <article data-learning="recipe" className={styles.body}>
         <div className="flex flex-wrap gap-4 mb-8 text-sm">
           <Link href="/cocktails" className="text-primary underline underline-offset-4">Alle Cocktail-Rezepte</Link>
           <Link href={category.href} className="text-primary underline underline-offset-4">Kategorie: {category.name}</Link>
         </div>
+        <div className={styles.recipe}>
         {photo && <CocktailPhoto photo={photo} />}
-        <div className="grid md:grid-cols-[1fr_1.4fr] gap-8 md:gap-12">
-          <section aria-labelledby="recipe-ingredients" className="bg-white border border-border rounded-2xl p-6 md:p-8">
+        <div className={styles.reading}>
+          <section aria-labelledby="recipe-ingredients" className={styles.ingredients}>
             <h2 id="recipe-ingredients" className="text-2xl font-bold text-secondary mb-5">Zutaten</h2>
             <ul className="list-disc pl-5 space-y-3 text-muted leading-relaxed">{cocktail.ingredients.map((ingredient, index) => <li key={index}>{ingredient}</li>)}</ul>
           </section>
@@ -46,6 +48,7 @@ export default async function CocktailRecipePage({ params }: Props) {
               <p className="text-muted leading-relaxed">{cocktail.tip}</p>
             </aside>
           </div>
+        </div>
         </div>
       </article>
     </>
