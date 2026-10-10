@@ -5,7 +5,7 @@ import path from "node:path";
 import { assortmentProducts } from "../lib/catalog";
 import type { RentalOrder } from "../lib/rental-orders/types";
 
-const evidence = path.resolve("audit/screenshots/sitewide-service-pages-2026-10-10");
+const evidence = path.resolve(process.env.AUDIT_SCREENSHOT_DIR ?? "audit/screenshots/sitewide-service-pages-2026-10-10");
 const issues = new WeakMap<Page, string[]>();
 test.beforeEach(async ({ page, baseURL }) => {
   expect(new URL(baseURL!).hostname).toMatch(/^(127\.0\.0\.1|localhost)$/);

@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import PageIntro from "@/components/editorial/PageIntro";
 import FlyerIndexView from "@/components/FlyerIndexView";
 import type { FlyerIndex } from "@/lib/flyer-index";
+import AcademyEntry from "@/components/AcademyEntry";
 
 describe("subpage visual continuity contracts", () => {
   // A removed intro boundary breaks the shared full-width surface and browser verification.
@@ -39,5 +40,20 @@ describe("subpage visual continuity contracts", () => {
     expect(html).toContain("12.–17.10.2026");
     expect(html).not.toContain("data-flyer-viewer");
     expect(html.match(/<h1\b/g)).toHaveLength(1);
+  });
+
+  // The family refresh must not promote a discovery card to a second page title or lose its destinations.
+  test("academy discovery preserves contextual course links and the shared overview destination", () => {
+    const general = renderToStaticMarkup(<AcademyEntry />);
+    expect(general).toContain('aria-label="Getränkeakademie"');
+    expect(general).toContain("Mehr wissen. Bewusster auswählen.");
+    expect(general).toMatch(/<a[^>]*href="\/akademie"/);
+    expect(general).not.toMatch(/<h1\b/);
+    const contextual = renderToStaticMarkup(<AcademyEntry category="bier" />);
+    expect(contextual).toContain("data-academy-context");
+    expect(contextual).toMatch(/<h2[^>]*>Passendes Getränkewissen<\/h2>/);
+    expect(contextual).toMatch(/<a[^>]*href="\/akademie\/bier"/);
+    expect(contextual).toMatch(/<a[^>]*href="\/akademie"/);
+    expect(renderToStaticMarkup(<AcademyEntry category="unmapped" />)).toBe("");
   });
 });

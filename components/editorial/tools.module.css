@@ -3,11 +3,12 @@
 .narrow { max-width: 850px; }
 .workspace { display: grid; gap: 2rem; }
 .panel { padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--cinematic-color-line); background: white; }
-.panel h2 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 500; letter-spacing: -.03em; margin-bottom: 1rem; }
+.panel h2 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 700; letter-spacing: -.03em; margin-bottom: 1rem; }
 .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
-.choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border-block: 1px solid var(--cinematic-color-line); background: white; }
+.choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border-block: 1px solid var(--cinematic-color-line); background: var(--cinematic-color-assortment-cream); }
 .choice:hover { border-color: var(--cinematic-color-red); }
-.choice h2 { font-size: 1.5rem; font-weight: 500; letter-spacing: -.035em; margin-block: 1rem; }
+.body .choice :global(.text-primary) { color: var(--cinematic-color-burgundy); }
+.choice h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; margin-block: 1rem; }
 .choice p { color: var(--cinematic-color-muted); line-height: 1.7; font-size: .875rem; }
 .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .7rem; color: var(--cinematic-color-muted); font-weight: 600; }
 .steps { display: flex; gap: .5rem; margin-block: 1.5rem; }
@@ -18,8 +19,8 @@
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1.5rem; }
 .mode[aria-pressed="true"] { background: var(--cinematic-color-ink); color: white; border-color: var(--cinematic-color-ink); }
 .planner { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: start; gap: 2rem; }
-.results { padding: 2rem; background: var(--cinematic-color-surface); border-top: 3px solid var(--cinematic-color-red); }
-.results h2 { font-size: 1.5rem; font-weight: 500; margin-bottom: 1rem; }
+.results { padding: 2rem; background: var(--cinematic-color-assortment-cream); border-top: 3px solid var(--cinematic-color-red); }
+.results h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
 .results dl { margin-block: 1.5rem; }
 .results dl > div { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1rem; border-bottom: 1px solid var(--cinematic-color-line); }
 .results dd { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
@@ -29,7 +30,7 @@
 .counterControls { display: flex; align-items: center; gap: .5rem; }
 .counterControls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--cinematic-color-line); background: var(--cinematic-color-surface); }
 .counterControls input { min-height: 44px; width: 4rem; border: 1px solid var(--cinematic-color-line); text-align: center; }
-.total { padding: 2rem; background: var(--cinematic-color-surface); border-block: 1px solid var(--cinematic-color-line); }
+.total { padding: 2rem; background: var(--cinematic-color-assortment-cream); border-block: 1px solid var(--cinematic-color-line); }
 .totalValue { font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -.05em; font-variant-numeric: tabular-nums; margin-top: .5rem; }
 .history { border: 1px solid var(--cinematic-color-line); background: white; }
 .historyHeader { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding: 1.5rem; border-bottom: 1px solid var(--cinematic-color-line); }
@@ -41,7 +42,7 @@
 .modalOverlay { position: fixed; inset: 0; z-index: 110; display: grid; place-items: center; padding: 1rem; background: rgb(25 25 24 / .6); }
 .modal { width: min(100%, 640px); max-height: calc(100dvh - 2rem); overflow-y: auto; background: var(--cinematic-color-paper); border: 1px solid var(--cinematic-color-line); position: relative; }
 .modalHeader { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; justify-content: space-between; padding: 1.25rem; border-bottom: 1px solid var(--cinematic-color-line); background: white; }
-.modalHeader h2 { font-size: 1.25rem; font-weight: 500; }
+.modalHeader h2 { font-size: 1.25rem; font-weight: 700; }
 .modalBody { padding: clamp(1rem, 4vw, 2rem); }
 .modal :is(button, input) { min-height: 44px; }
 .modal input:not([type="checkbox"]) { min-width: 0; }

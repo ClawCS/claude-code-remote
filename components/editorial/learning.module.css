@@ -1,32 +1,34 @@
 .body { width: min(100%, 1280px); margin: auto; padding: 0 var(--cinematic-spacing-gutter) clamp(3rem, 7vw, 6rem); }
 .body :global(.text-muted) { color: var(--cinematic-color-muted); }
+.body[data-learning="academy"] h2 { font-weight: 700; }
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; padding-block: 0 2rem; border-bottom: 1px solid var(--cinematic-color-line); margin-bottom: 2rem; }
 .filters a { display: inline-flex; align-items: center; min-height: 44px; padding: .65rem 1rem; border: 1px solid var(--cinematic-color-line); font-size: .875rem; }
 .filters a[aria-current] { color: white; background: var(--cinematic-color-ink); border-color: var(--cinematic-color-ink); }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 2rem; }
 .card { min-width: 0; border-bottom: 1px solid var(--cinematic-color-line); padding-bottom: 1.5rem; }
-.card h2 { font-size: 1.5rem; line-height: 1.2; font-weight: 600; letter-spacing: -.035em; margin-block: .75rem; }
+.card h2 { font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -.035em; margin-block: .75rem; }
 .card p { color: var(--cinematic-color-muted); line-height: 1.65; }
-.cardBody { padding: 1.5rem .25rem 0; }
+.cardBody { padding: 1.5rem; background: var(--cinematic-color-assortment-cream); }
 .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; font-size: .8rem; color: var(--cinematic-color-muted); }
 .meta a, .textLink { color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .2em; }
+.cardBody .meta a, .cardBody .textLink { color: var(--cinematic-color-burgundy); }
 .photo { margin: 0; min-width: 0; }
 .photoFrame { display: block; position: relative; aspect-ratio: 4 / 3; background: var(--cinematic-color-surface); }
 .credit { padding: .75rem 0; font-size: .75rem; line-height: 1.6; color: var(--cinematic-color-muted); }
 .credit summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
 .cover { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: contain; background: var(--cinematic-color-surface); }
 .recipe { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
-.recipe h2, .lesson h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -.035em; margin-bottom: 1.25rem; }
-.ingredients { padding: 1.5rem; background: var(--cinematic-color-surface); margin-bottom: 2rem; }
+.recipe h2, .lesson h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -.035em; margin-bottom: 1.25rem; }
+.ingredients { padding: 1.5rem; background: white; margin-bottom: 2rem; }
 .ingredients ul { padding-left: 1.25rem; list-style: disc; line-height: 1.8; }
 .reading { line-height: 1.8; color: var(--cinematic-color-muted); }
 .reading section { margin-bottom: 2rem; }
 .reading aside { border-left: 3px solid var(--cinematic-color-red); padding-left: 1.25rem; }
-.related { margin-top: 4rem; padding: 2rem; background: var(--cinematic-color-surface); }
-.related h2 { font-size: 1.75rem; font-weight: 500; margin-bottom: 1rem; }
+.related { margin-top: 4rem; padding: 2rem; background: var(--cinematic-color-assortment-cream); }
+.related h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
 .related p { max-width: 65ch; line-height: 1.7; margin-bottom: 1.5rem; }
 .courseLead { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 2rem; margin-bottom: 3rem; align-items: center; }
-.progress { padding: 1.5rem; border-block: 1px solid var(--cinematic-color-line); }
+.progress { padding: 1.5rem; border-block: 1px solid var(--cinematic-color-line); background: var(--cinematic-color-assortment-cream); }
 .progress p { color: var(--cinematic-color-muted); margin-block: 1rem; line-height: 1.6; }
 .progressSteps { display: flex; flex-wrap: wrap; gap: .5rem; }
 .progressSteps button { min-width: 44px; min-height: 44px; border: 1px solid var(--cinematic-color-line); background: white; }
@@ -34,7 +36,7 @@
 .course { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 3rem; align-items: start; }
 .navigation { display: grid; gap: .35rem; }
 .navigation button { width: 100%; min-height: 48px; text-align: left; padding: .85rem 1rem; border-left: 2px solid transparent; line-height: 1.5; }
-.navigation button[aria-current] { border-color: var(--cinematic-color-red); background: var(--cinematic-color-surface); color: var(--cinematic-color-ink); font-weight: 600; }
+.navigation button[aria-current] { border-color: var(--cinematic-color-red); background: var(--cinematic-color-assortment-cream); color: var(--cinematic-color-ink); font-weight: 600; }
 .navigation button:disabled { color: var(--cinematic-color-muted); cursor: not-allowed; }
 .examButton { border-top: 1px solid var(--cinematic-color-line); }
 .lesson { background: white; padding: clamp(1.25rem, 4vw, 2.5rem); border: 1px solid var(--cinematic-color-line); scroll-margin-top: 8rem; }

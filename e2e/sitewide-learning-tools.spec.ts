@@ -4,7 +4,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { courses } from "../data/akademie";
 
-const evidence = path.resolve("audit/screenshots/sitewide-learning-tools-2026-10-10");
+const evidence = path.resolve(process.env.AUDIT_SCREENSHOT_DIR ?? "audit/screenshots/sitewide-learning-tools-2026-10-10");
 async function ready(page: Page, route: string) {
   await page.goto(route);
   await page.waitForLoadState("networkidle");

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 
-const proof = ".superpowers/sdd/2026-10-10-sitewide-filmisch/screenshots";
+const proof = process.env.AUDIT_SCREENSHOT_DIR ?? ".superpowers/sdd/2026-10-10-sitewide-filmisch/screenshots";
 
 for (const width of [390, 768, 1440]) {
   for (const path of ["/", "/nl"]) {

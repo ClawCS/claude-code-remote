@@ -1,8 +1,11 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { SITEWIDE_DESIGN_CASES } from "./sitewide-design-cases";
+import { courses } from "../data/akademie";
+import AxeBuilder from "@axe-core/playwright";
 
-const proof = ".superpowers/subpage-continuity-2026-10-10/task-1";
+const proof = process.env.AUDIT_SCREENSHOT_DIR ?? ".superpowers/subpage-continuity-2026-10-10/task-1";
+const familyProof = process.env.AUDIT_SCREENSHOT_DIR ?? ".superpowers/subpage-continuity-2026-10-10/task-2";
 const introCases = SITEWIDE_DESIGN_CASES.filter(item => ["/produkte", "/marktleben", "/cocktails", "/kontakt"].includes(item.path));
 const brands = ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"];
 
@@ -106,3 +109,215 @@ test("legal intro keeps the existing narrow reading alignment inside its full-wi
   mkdirSync(proof, { recursive: true });
   await page.screenshot({ path: `${proof}/legal-impressum-1440.png` });
 });
+
+async function familyCapture(page: Page, name: string, target: Locator = page.locator("main")) {
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  mkdirSync(familyProof, { recursive: true });
+  await target.screenshot({ path: `${familyProof}/${name}.png` });
+}
+
+async function familyReady(page: Page, route: string) {
+  await page.goto(route);
+  // Match the established family suites: do not click server-rendered controls before their client is ready.
+  await page.waitForLoadState("networkidle");
+}
+
+for (const width of [360, 390, 768, 1440]) {
+  // These catch lost family heading rules and warm panels without recoloring reading interiors.
+  test(`task2 learning hierarchy keeps recipe and lesson interiors calm at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await familyReady(page, "/cocktails/pi-a-colada");
+    await expect(page.locator("#recipe-ingredients")).toHaveCSS("font-weight", "700");
+    await expect(page.locator('[aria-labelledby="recipe-ingredients"]')).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(page.getByText("Public domain", { exact: false }).first()).toBeVisible();
+    await familyCapture(page, `recipe-${width}`);
+    await familyReady(page, "/akademie/mineralwasser");
+    const lesson = page.getByRole("region", { name: "Lektion", exact: true });
+    await expect(lesson.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(lesson).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(page.locator('[aria-label="Lektionsfortschritt"]').locator("..")).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    const exam = page.getByRole("button", { name: /Abschlusstest/ }).first();
+    await expect(exam).toBeDisabled();
+    const quiz = page.getByRole("region", { name: "Wissensquiz" });
+    const correct = courses.find(course => course.slug === "mineralwasser")!.lessons[0].quiz[0].correct;
+    await quiz.getByRole("button").filter({ hasText: /^[A-Z]\./ }).nth((correct + 1) % 4).click();
+    await expect(quiz.locator('[data-state="wrong"]')).toHaveCSS("background-color", "rgb(255, 243, 243)");
+    await expect(quiz.locator('[data-state="correct"]')).toHaveCSS("color", "rgb(20, 83, 45)");
+    for (const answer of await quiz.locator("button[data-state]").all()) await expect(answer).toBeDisabled();
+    await familyCapture(page, `academy-feedback-${width}`, lesson);
+    const longLesson = courses.find(course => course.slug === "mineralwasser")!.lessons.at(-1)!;
+    await page.getByRole("navigation", { name: "Kurslektionen" }).getByRole("button", { name: new RegExp(longLesson.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }).click();
+    await expect(lesson.locator("h2")).toHaveText(longLesson.title);
+    expect((await lesson.locator("h2").boundingBox())!.width).toBeLessThanOrEqual((await lesson.boundingBox())!.width);
+    await familyCapture(page, `academy-long-lesson-${width}`, lesson);
+    await familyReady(page, "/kategorie/bier");
+    const entry = page.locator("aside[data-academy-context]");
+    await expect(entry).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(entry.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(entry.getByRole("link").first()).toHaveAttribute("href", "/akademie/bier");
+    await familyCapture(page, `academy-entry-${width}`, entry);
+  });
+
+  test(`task2 giveaway hierarchy preserves full original covers at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await familyReady(page, "/gewinnspiel");
+    await expect(page.locator("#agenda-heading")).toHaveCSS("font-weight", "700");
+    const card = page.locator("#jahresagenda [data-giveaway-id]").first();
+    await expect(card.locator("h3")).toHaveCSS("font-weight", "700");
+    await expect(card.locator("h3").locator("..")).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    const cover = card.locator("img");
+    await cover.scrollIntoViewIfNeeded();
+    await expect.poll(() => cover.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    await expect(cover).toHaveCSS("object-fit", "contain");
+    const ratios = await cover.evaluate((node: HTMLImageElement) => ({ natural: node.naturalWidth / node.naturalHeight, shown: node.clientWidth / node.clientHeight }));
+    expect(ratios.shown).toBeCloseTo(ratios.natural, 2);
+    await expect(card.getByRole("link").first()).toHaveAttribute("href", /^https:\/\/www.instagram.com\//);
+    await expect(card.locator("time")).toHaveAttribute("datetime", /^2026-/);
+    await familyCapture(page, `giveaway-original-${width}`, card);
+  });
+
+  test(`task2 rental warm framing preserves errors disabled controls and drawer at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.route("**/api/**", route => ["GET", "HEAD"].includes(route.request().method()) ? route.continue() : route.abort());
+    await familyReady(page, "/vermietung");
+    const dates = page.locator('[aria-labelledby="rental-dates"]');
+    await expect(dates.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(dates).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(dates.locator("input").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    const article = page.locator('article[data-rental-name="Kühlanhänger"]');
+    const decrease = article.getByRole("button", { name: /verringern/ });
+    await expect(decrease).toBeDisabled();
+    await expect(decrease).toHaveCSS("opacity", "0.55");
+    await article.getByRole("spinbutton").fill("999");
+    const error = article.getByRole("alert");
+    await expect(error).toBeVisible();
+    await expect(error).toHaveCSS("background-color", "rgb(255, 246, 245)");
+    await expect(error).toHaveCSS("color", "rgb(165, 21, 34)");
+    await familyCapture(page, `rental-quantity-error-${width}`, article);
+    await article.getByRole("spinbutton").fill("1");
+    await page.getByLabel("Gewünschte Abholung").fill("2026-10-12");
+    await page.getByLabel("Gewünschte Rückgabe").fill("2026-10-11");
+    await expect(dates.getByRole("alert")).toContainText("gültigen Zeitraum");
+    await expect(page.getByRole("button", { name: "In den Warenkorb", exact: true })).toBeDisabled();
+    await familyCapture(page, `rental-date-error-${width}`, dates);
+    await page.getByLabel("Gewünschte Rückgabe").fill("2026-10-14");
+    await page.getByRole("button", { name: "In den Warenkorb", exact: true }).click();
+    const drawer = page.getByRole("dialog", { name: "Dein Mietwarenkorb", exact: true });
+    await expect(drawer.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(drawer).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(drawer).toContainText("150,00");
+    await drawer.getByRole("button", { name: /Menge für Kühlanhänger erhöhen/ }).click();
+    await expect(drawer).toContainText("300,00");
+    await familyCapture(page, `rental-drawer-${width}`, drawer);
+    await page.keyboard.press("Escape");
+    await expect(drawer).toHaveCount(0);
+    await familyReady(page, "/bewerbung");
+    await expect(page.getByText("Der Online-Upload ist zurzeit nicht verfügbar.", { exact: false })).toBeVisible();
+    await expect(page.locator('input[type="file"]')).toHaveCount(0);
+    const posters = page.locator('main a[aria-label$="vollständige Anzeige öffnen"] img');
+    await expect(posters).toHaveCount(3);
+    for (const poster of await posters.all()) await expect(poster).toHaveCSS("object-fit", "contain");
+    await familyCapture(page, `career-disabled-${width}`);
+  });
+
+  test(`task2 active tools retain choices litres errors and game keyboard behavior at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await familyReady(page, "/finder");
+    const finder = page.getByRole("button", { name: /Bierfinder/ });
+    await expect(finder.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(finder).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await finder.click();
+    for (const name of ["Pils – herb & frisch", "Keine Präferenz", "Feierabendbier"]) await page.getByRole("button", { name, exact: true }).click();
+    await expect(page.locator("[data-product-card]").first()).toBeVisible();
+    await familyCapture(page, `finder-results-${width}`);
+    await familyReady(page, "/partyplaner");
+    const calculate = page.getByRole("button", { name: "Berechnen", exact: true });
+    await calculate.click();
+    const results = page.getByRole("region", { name: "Dein Getränkebedarf" });
+    await expect(results.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(results).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(results.locator("dd")).toHaveText(["33 l", "8 l", "10 l", "0,8 l", "20 l"]);
+    await familyCapture(page, `planner-results-${width}`);
+    await page.locator("#party-beerDrinkers").fill("0");
+    await expect(calculate).toBeDisabled();
+    await expect(page.locator("main").getByRole("alert")).toContainText("100%");
+    await expect(page.locator("#party-beerDrinkers")).toHaveAttribute("aria-invalid", "true");
+    await familyCapture(page, `planner-error-${width}`);
+    await familyReady(page, "/partyspiele");
+    const launcher = page.getByRole("button", { name: /Bier-Pong Scoreboard/ });
+    await launcher.click();
+    const dialog = page.getByRole("dialog", { name: "Bier-Pong Scoreboard" });
+    await expect(dialog.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(dialog.getByRole("checkbox", { name: "Alkoholfrei" })).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(dialog.getByRole("button", { name: "Teile dieses Spiel" })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await dialog.getByRole("button", { name: "Treffer!", exact: true }).first().click();
+    await expect(dialog.getByText("Becher übrig: 9", { exact: true })).toBeVisible();
+    await familyCapture(page, `game-dialog-${width}`, dialog);
+    await page.keyboard.press("Escape");
+    await expect(launcher).toBeFocused();
+  });
+
+  test(`task2 Dutch hierarchy wraps with orange accents and readable dark service at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await familyReady(page, "/nl");
+    const title = page.locator("#nl-title");
+    await expect(title).toHaveCSS("font-weight", "800");
+    await expect(title.locator("span")).toHaveCSS("color", "rgb(165, 65, 8)");
+    await expect(title.locator("..").locator("..")).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    expect(await title.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+    if (width === 360) expect((await title.boundingBox())!.height).toBeGreaterThan(80);
+    for (const heading of await page.locator("#bezoek h2, #service h2, #contact h2, #nl-brands-title").all()) await expect(heading).toHaveCSS("font-weight", "700");
+    await expect(page.locator("#service h2")).toHaveCSS("color", "rgb(246, 235, 221)");
+    await expect(page.locator("#service h3").first()).toHaveCSS("font-weight", "700");
+    await expect(page.locator('section[aria-labelledby="nl-brands-title"] img')).toHaveCSS("object-fit", "contain");
+    await page.getByRole("link", { name: "Je bezoek", exact: true }).click();
+    await expect(page).toHaveURL(/#bezoek$/);
+    await expect(page.locator('#bezoek [data-brand-link="maps"]')).toBeVisible();
+    await page.getByText("Maak kennis met ons team", { exact: false }).click();
+    await expect(page.getByText("Onze nieuwe teamfoto volgt", { exact: true })).toBeVisible();
+    await familyCapture(page, `nl-hierarchy-${width}`);
+    await familyCapture(page, `nl-hero-${width}`, page.locator('section[aria-labelledby="nl-title"]'));
+    await familyCapture(page, `nl-dark-service-${width}`, page.locator("#service"));
+  });
+}
+
+test("task2 legal measure and 200 percent reflow preserve readable surfaces", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const route of ["/impressum", "/datenschutz", "/agb"]) {
+    await familyReady(page, route);
+    const legal = page.locator('[data-service="legal"]');
+    await expect(legal.locator("h2").first()).toHaveCSS("font-weight", "700");
+    await expect(legal).toHaveCSS("line-height", "29.6px");
+    expect((await legal.boundingBox())!.width).toBeLessThan(900);
+    await familyCapture(page, `legal-${route.slice(1)}-1440`);
+  }
+  for (const route of ["/akademie/whiskey", "/vermietung", "/partyplaner", "/nl"]) {
+    await familyReady(page, route);
+    await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+    await expect(page.locator("main h1")).toBeVisible();
+    await familyCapture(page, `reflow-200-${route.slice(1).replaceAll("/", "-")}`);
+  }
+});
+
+test("task2 academy overview editorial benefits retain the stronger section hierarchy", async ({ page }) => {
+  await familyReady(page, "/akademie");
+  for (const name of ["In deinem Tempo", "Besser einkaufen", "Mehr genießen"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toHaveCSS("font-weight", "700");
+  }
+});
+
+for (const route of ["/cocktails", "/gewinnspiel", "/kategorie/bier", "/finder"]) {
+  test(`task2 warm-card links meet normal-text contrast on ${route}`, async ({ page }) => {
+    await familyReady(page, route);
+    const result = await new AxeBuilder({ page }).include("main").withRules(["color-contrast"]).analyze();
+    expect(result.violations).toEqual([]);
+  });
+}
