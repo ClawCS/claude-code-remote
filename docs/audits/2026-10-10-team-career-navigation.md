@@ -25,3 +25,15 @@ Der zusätzliche gesamte `relaunch-integrity`-Lauf fand drei nicht durch diesen 
 Bewerbung weiterhin ausschließlich per E-Mail an `info@trinkgut-jammers.de`; Uploadkonfiguration bleibt `enabled:false`, `mode:disabled`. Keine E-Mails, Bewerbungen, Zahlungen oder Löschungen ausgelöst. Keine AppArmor-, Caddy-, Firewall-, Mail- oder Unitkonfiguration verändert. Veröffentlichung ausschließlich als neuer geprüfter Linux-Webrelease; Rückrollziel ist `e5cc5bd750ec70523dcad3b7639fb98b2ed53bde`.
 
 Private Laufprotokolle und Screenshots: `.superpowers/team-career-nav-2026-10-10/`. Fremde Screenshots und der fremde Zwischenbericht zum Bewerbungsupload bleiben unangetastet.
+
+## Veröffentlichung
+
+- App-Commit `dc23203493a1c71cad5a4719dc588ca0a86f2fa0`, lokal und auf `origin/codex/cinematic-production` gespeichert.
+- Linux: 93 Dateien / 1.556 Webtests, Lint, TypeScript, 128 Originalangebote und Produktionsbuild bestanden. Quellarchiv SHA-256 `dc75afbe9d8f7d67bbf909af9d8722308e26b501443041d15b67f8a61c845fbe`.
+- Private Linux-Vorschau vor Umschaltung: 18 Browserfälle sofort bestanden; der zusätzlich lange Mehrseiten-Test lief zunächst in sein Zeitlimit bei einem ausstehenden optimierten Bild. Bild separat erfolgreich geladen, temporäre Vorschau neu gestartet und Mehrseiten-Test mit ausreichendem Gesamtzeitbudget bestanden (16,7 Sekunden). Ein weiterer zwischenzeitlicher Wiederholungsversuch endete am vorgesehenen Ablauf der temporären 180-Sekunden-Vorschau. Keine Funktionsassertion abgeschwächt, keine Produktionslogik dafür verändert.
+- Atomarer Wechsel am **10.10.2026, 12:48:20 UTC / 14:48:20 Europe/Berlin**. Nur bestehende Next-Unit neu gestartet; Caddy- und Unitdatei-Prüfsummen unverändert. Frühere Release-ID bleibt Rückrollziel.
+- Öffentliche Karriere-Regression: **9/9 bestanden**, einschließlich acht Breiten von 360 bis 1440px, Tastatur, Axe, beiden Zielseiten und drei Stellenplakaten. Manuell über den veröffentlichten Menüpunkt auf die Bewerbungsseite gewechselt; Screenshot gespeichert.
+- Öffentliche Contentprüfung um 12:48:55 UTC: `status:ok`, `websiteVerified:true`, `deploymentVerified:true`, keine Fehler oder Warnungen. Wochenpakete unverändert.
+- Abschließende öffentliche HTTP-Prüfung: **117 Seiten, 2.969 lokale Ressourcen, fünf unbekannte Routen und 31 API-Verträge**, null Fehler und null Warnungen. Externe Drittlinks wurden dabei nicht erneut abgerufen.
+- Temporäre private Vorschau samt SSH-Tunnel nach Zeitlimit beendet; keine zusätzlichen öffentlichen Ports oder dauerhaften Dienste eingerichtet. Der eigene lokale Entwicklungsserver bleibt für die Vorschau auf Port 3000 verfügbar.
+- Bewerbungsupload bleibt ausdrücklich deaktiviert. Veröffentlichung des Menüzugangs ist keine Upload-/Versand-/Löschfreigabe und kein vollständiger Abschluss dieses getrennten Vorhabens.
