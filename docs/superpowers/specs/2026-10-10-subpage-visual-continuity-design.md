@@ -4,7 +4,9 @@
 
 Niko verlangt ausdrücklich, dass sich die zuletzt freigegebene kräftigere, wärmere Startseitengestaltung durch alle Unterseiten und Weiterleitungen zieht. Grundlage sind die bestehenden Freigaben in `2026-10-10-sitewide-filmisch-design.md` und `2026-10-10-visual-polish.md`. Keine neue Gestaltungsrichtung, keine neuen Likörbilder und kein weiterer Baukasten. Die vorhandene Next.js-/CSS-Modules-Website bleibt die technische Grundlage.
 
-Dies beschreibt die Erweiterung des Feinschliffs, nicht eine bereits abgeschlossene Umsetzung. Der konkrete Erweiterungsplan wird vor Produktänderungen zur kurzen Bestätigung vorgelegt. Die bisher gewählte subagentengestützte Umsetzung mit unabhängiger Gegenprüfung bleibt bestehen.
+Niko hat den Erweiterungsplan ausdrücklich bestätigt und die anschließende Veröffentlichung beauftragt. Die subagentengestützte Umsetzung mit unabhängiger Gegenprüfung bleibt bestehen. Unter Kontakt zusätzlich „Bewerbungen“ mit `info@trinkgut-jammers.de` und passendem Mailto-Link ergänzen; die allgemeine Marktadresse unverändert erhalten. Dies aktiviert keinen Upload oder Serverversand.
+
+Nach dem geprüften Release folgt ein getrenntes, ausschließlich prüfendes Gesamtaudit durch Sicherheits-, Funktions- und Code-Qualitätsagenten. Neue Befunde nach Schweregrad mit Datei/Zeile, Reproduktion und Verbesserungsvorschlag dokumentieren; keine daraus abgeleiteten Codekorrekturen vor erneuter Betreiberfreigabe. Der bekannte browserabhängige PDF-Viewer-Befund gehört in dieses Audit, nicht ungefragt in den Designumbau.
 
 ## Was durchgängig werden soll
 
@@ -61,7 +63,7 @@ Gemeinsamer Einstieg in `components/editorial/editorial.module.css` und `PageInt
 
 ## Harte Grenzen
 
-- Nur lokal; keine Hetzner-Veröffentlichung, Sicherheits-, Mail-, Upload-, Miet-, Zahlungs- oder Löschaktivierung.
+- Zuerst lokal prüfen, danach freigegebener neuer Linux-Webrelease nach `docs/DEPLOYMENT-RUNBOOK.md`; keine Sicherheits-, Mail-, Upload-, Miet-, Zahlungs- oder Löschaktivierung.
 - Keine Änderung von Datenquellen, Wochenpaketen, Gültigkeit, Preisen, Rezepten, Quizlogik, Mengenberechnungen, Adressen oder Rechtstexten.
 - Keine neuen Bilder; bestehende Originale, Bildnachweise, Personen-Ausschlüsse und interne Provenienz erhalten.
 - Fremde Screenshots, private Quellen und ungeprüfte Auditdateien nicht überschreiben, löschen oder mitcommitten.
@@ -72,4 +74,4 @@ Gemeinsamer Einstieg in `components/editorial/editorial.module.css` und `PageInt
 
 Jede Familie und ihre wesentlichen Zustände erhalten visuelle Nachweise aus einem frisch gebauten lokalen Produktionsstand. Echte Klickpfade, Zurücknavigation, Tastatur und mobile Menüs werden neben GET-Weiterleitungschecks geprüft. Alle 107 Produktalias-Ziele bleiben exakt erhalten; die vollständige Kundenseitenmatrix darf nicht auf wenige Startseitenaufnahmen reduziert werden.
 
-Webtests, TypeScript, Lint, Produktionsbuild sowie lokale Seiten-/API-/Originaldateiprüfung. Keine echten Sendungen; die bekannten nativen Bewerbungs-Testgrenzen getrennt ausweisen. Nur eigene geprüfte Änderungen sichern und mit GitHub synchronisieren. Lokal fertig ist nicht öffentlich veröffentlicht.
+Webtests, TypeScript, Lint, Produktionsbuild sowie lokale Seiten-/API-/Originaldateiprüfung. Keine echten Sendungen; die bekannten nativen Bewerbungs-Testgrenzen getrennt ausweisen. Nur eigene geprüfte Änderungen sichern und mit GitHub synchronisieren. Anschließend frischen Linux-Release separat prüfen, atomar umschalten und öffentlich abnehmen. Lokal fertig oder Git-Push allein ist kein Veröffentlichungsnachweis.

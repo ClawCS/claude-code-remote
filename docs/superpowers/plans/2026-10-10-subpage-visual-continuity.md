@@ -10,12 +10,12 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-10-subpage-visual-continuity-design.md` (extension of the approved sitewide and visual-polish specs).
 
-**Status:** Prepared for user review; no implementation yet. Preserve the previously selected subagent-driven method after confirmation. Baseline `70e0fc2` on `codex/cinematic-production`.
+**Status:** User approved the plan and publication, adding the applications email on Contact. Preserve the selected subagent-driven method. Implementation baseline `4584b77` on `codex/cinematic-production`; after local acceptance the controller handles the Linux release and separate read-only three-agent project audit.
 
 ## Global Constraints
 
-- Only local work; no Hetzner deployment, security, mail, upload, rental, payment or deletion activation.
-- Do not change data sources, weekly packages, validity, prices, recipes, quiz logic, calculations, addresses or legal text.
+- Implement/test locally; only the controller publishes a verified Linux web release under the deployment runbook. No security, mail, upload, rental, payment or deletion activation.
+- Do not change data sources, weekly packages, validity, prices, recipes, quiz logic, calculations or legal text; add only the explicitly requested applications contact `info@trinkgut-jammers.de` without replacing the general market address.
 - No new images; preserve original assets, credits, excluded-person rules and internal provenance.
 - Preserve unrelated screenshots, private sources and audit files; stage explicit own paths only, then commit and push.
 - Preserve the five main navigation groups and external destinations; do not introduce new operational features.
@@ -79,6 +79,7 @@
 
 **Interfaces:**
 - Add real relative contextual anchors exactly as specified: `/produkte` → `/finder`, `/partyplaner` → `/partyspiele`, `/kontakt` → `/leergut` and `/oeko-tracker`, `/angebote` → `/handzettel`.
+- Contact additionally renders heading “Bewerbungen” and visible `info@trinkgut-jammers.de` as `mailto:info@trinkgut-jammers.de`; preserve general market email and existing operational gates. Unit/browser tests assert both distinct recipients and the application label.
 - If needed add optional `showOverviewLink?: boolean` to `FlyerIndexView`, default false, enabled only by `/angebote`; compact NL rendering and `/handzettel` must not show a new self-link or German copy.
 - No changes to `CINEMATIC_NAV`, product redirect targets or external links.
 
@@ -88,10 +89,10 @@
 - [ ] **Step 4: Full static/build verification.** `NODE_ENV=test npx vitest run lib app`; `npx tsc --noEmit`; `npm run lint`; `NODE_ENV=production npm run build`; `npm run offers:check`. Record native application-suite constraints separately; web success is not upload approval. No production fixture flags or test clocks.
 - [ ] **Step 5: Refresh actual local production preview and test it.** Restart only the identified local3110 process using the new build, leaving unrelated servers alone. Run `AUDIT_SCREENSHOT_DIR=.superpowers/subpage-continuity-2026-10-10/screenshots PLAYWRIGHT_BASE_URL=http://127.0.0.1:3110 npx playwright test e2e/subpage-continuity.spec.ts e2e/sitewide-navigation.spec.ts e2e/sitewide-landings.spec.ts e2e/sitewide-collections.spec.ts e2e/sitewide-learning-tools.spec.ts e2e/sitewide-service-pages.spec.ts --grep-invert '\[fixture\]' --workers=1`. Run tagged fixture cases separately on the explicitly marked development fixture server; production fixture URLs must remain 404. Inspect representative full pages and states from every family, not only computed CSS. Report both run targets accurately.
 - [ ] **Step 6: Full URL/original-content acceptance.** GET every canonical public route and 404 state from the sitemap/matrix, plus `/bewerbung` and missing-token state; require expected status, one main/h1 and no legacy shell/cross-loopback customer anchors. Iterate all 107 `data/products.json` aliases with manual redirects and concurrency at most four; require exact 307 and `/kategorie/${categorySlug}`. Run `npm run audit:public -- --url http://127.0.0.1:3110 --output .superpowers/subpage-continuity-2026-10-10/public-audit.json` (local only, its empty unauthenticated rejection probes are not real transactions). Require no new errors; unchanged weekly assets and gates.
-- [ ] **Step 7: Whole-change review, documentation, Git and local handoff.** Independent reviewer checks spec coverage, all family screenshots and current native-test limitations. Record exact scope/results and any genuine remaining issue; update the plan's checkboxes only with evidence. Explicit-path commit/push and verify local/origin SHA. Open the real3110 site, explain local vs live, and give the mandatory cache-refresh hint. Do not deploy.
+- [ ] **Step 7: Whole-change review and controller handoff.** Independent reviewer checks spec coverage, all family screenshots and current native-test limitations. Record exact scope/results and any genuine remaining issue; update checkboxes only with evidence. Explicit-path commit/push and verify local/origin SHA. The controller—not an implementer—then performs the newly authorized Linux web release and public acceptance under the deployment runbook. Keep all service/security settings unchanged, record rollback target and config hashes, and give the mandatory cache-refresh hint.
 
 ## Planning checks
 
 - Independent builder check: no important unanswered question and no spec/plan conflict reported.
 - Controller self-review: every route family is assigned; all five review-focus risks have tests; original aliases and operational gates remain fixed. Existing screenshot suites need the explicit new output directory and fixture segregation above before reuse.
-- Implementation remains pending the short user review; this document is not a completion or release claim.
+- Plan now approved; completion and live status still require evidence. Post-release project-wide audit is read-only until the user approves its findings list.
