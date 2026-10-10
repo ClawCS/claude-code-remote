@@ -4,6 +4,9 @@ import { MAX_SEALED_BYTES } from "./crypto";
 import { artifactLimit,SCRATCH_RESERVE } from "./storage-budget";
 import { createHash } from "node:crypto";
 import { decodeJournalEvent,encodeJournalEvent } from "./ledger-contract";
+import { consumeCustodyObservation, type CustodyObservation } from "./custody-erasure";
+import { assertMaintenance, assertMaintenanceCustodyIdentity, assertOriginalMaintenanceCustody, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
+import type { ApplicationRepository, CustodyLedger } from "./types";
 
 export interface InventoryJournal {
   pass:string;journalId:string;caseId:string|null;kind:"intake"|"artifact"|"processing";version:1|2|3;state:"reserved"|"committed"|"orphan";
@@ -109,6 +112,89 @@ export function validateManifest(value:unknown,journal:Readonly<InventoryJournal
   if(object.presence==="present"&&(r.expectedDevice!==object.device||r.expectedInode!==object.inode||r.expectedSize!==object.size))inventoryInvalid();
   return Object.freeze({...r});
 }
+
+// The original erasure repository retains this fixed writer. No connection,
+// query operand, caller phase or structural DTO grants write authority.
+export function createCustodyInventoryStorage(db: Database.Database, repository: ApplicationRepository, custody: CustodyLedger, config: CustodyConfig) {
+  assertOriginalMaintenanceCustody(custody, repository, config);
+  function pass(): string {
+    const row = db.prepare("SELECT scanPass FROM erasure_maintenance WHERE singleton=1").get() as { scanPass: string };
+    if (!token(row.scanPass, 32)) inventoryInvalid(); return row.scanPass;
+  }
+  function recordObservation(observation: CustodyObservation, run: MaintenanceRun) {
+    assertMaintenanceCustodyIdentity(run, repository, custody);
+    assertMaintenance(run, repository);
+    const value = consumeCustodyObservation(observation, custody, run);
+    if (value.kind === "invalidate") inventoryInvalid();
+    return db.transaction(() => {
+      let consumedItems = 2;
+      if (value.pass !== pass()) inventoryInvalid();
+      if (value.kind === "root-open") {
+        db.prepare("INSERT INTO erasure_scans(pass,root,state,itemCount) VALUES(?,?,'scanning',0)").run(value.pass, value.root);
+        return { caseId: null, consumedItems: consumedItems + 1 };
+      }
+      if (value.kind === "root-eof") {
+        if (db.prepare("UPDATE erasure_scans SET state='complete' WHERE pass=? AND root=? AND state='scanning'").run(value.pass, value.root).changes !== 1) inventoryInvalid();
+        return { caseId: null, consumedItems: consumedItems + 1 };
+      }
+      const entry = value.journal;
+      let caseId: string | null = null, reservation: { id: string; reservedBytes: number } | undefined;
+      if (entry.kind === "intake") {
+        const stored = db.prepare("SELECT id,sessionHash,idempotencyKey,reservedBytes,expiresAt,submission FROM reservations WHERE id=?").get(entry.id) as (ReservationSource | undefined); consumedItems += 2;
+        if (!stored || !entry.reservation || stored.sessionHash !== entry.reservation.sessionHash || stored.idempotencyKey !== entry.reservation.idempotencyKey || stored.reservedBytes !== entry.reservation.reservedBytes || stored.expiresAt !== entry.reservation.expiresAt || stored.submission !== JSON.stringify(entry.reservation.submission)) throw new Error("ERASURE_ASSOCIATION_INVALID");
+        reservation = stored;
+        const accepted = db.prepare("SELECT id,reservationId,encryptedPayloadPath,payloadBytes,submission FROM cases WHERE sessionHash=? AND idempotencyKey=?").get(stored.sessionHash, stored.idempotencyKey) as { id: string; reservationId: string; encryptedPayloadPath: string | null; payloadBytes: number; submission: string } | undefined; consumedItems += 2;
+        // The session/key lookup covers lost replies AND replay reservations.
+        // A replay of another accepted reservation is not orphan authority.
+        if (accepted) {
+          if (accepted.reservationId !== entry.id || accepted.submission !== stored.submission || (accepted.encryptedPayloadPath !== null && accepted.encryptedPayloadPath !== entry.workerPath) || (entry.caseId && accepted.id !== entry.caseId)) throw new Error("ERASURE_ASSOCIATION_INVALID");
+          caseId = accepted.id;
+        } else if (entry.caseId || entry.state === "committed") throw new Error("ERASURE_ASSOCIATION_INVALID");
+      } else {
+        if (!entry.caseId) throw new Error("ERASURE_ASSOCIATION_INVALID");
+        const current = db.prepare("SELECT id FROM cases WHERE id=?").get(entry.caseId); consumedItems += 2;
+        if (!current) throw new Error("ERASURE_ASSOCIATION_INVALID");
+        caseId = entry.caseId;
+        if (entry.kind === "artifact") {
+          const reserve = db.prepare("SELECT bytes FROM artifact_reservations WHERE caseId=? AND kind=?").get(caseId, entry.artifactKind) as { bytes: number } | undefined; consumedItems += 2;
+          const artifact = db.prepare("SELECT path,bytes FROM artifacts WHERE caseId=? AND kind=?").get(caseId, entry.artifactKind) as { path: string; bytes: number } | undefined; consumedItems += 2;
+          if (!reserve || (artifact && (artifact.path !== entry.workerPath || artifact.bytes > reserve.bytes))) throw new Error("ERASURE_ASSOCIATION_INVALID");
+        }
+      }
+      const journal = validateInventoryJournal({ pass: value.pass, journalId: entry.id, caseId, kind: entry.kind, version: entry.version, state: caseId && entry.kind === "intake" ? "committed" : entry.state, artifactKind: entry.artifactKind ?? null, budget: entry.budget, cleanupAfter: entry.cleanupAfter, reservationId: entry.reservation?.id ?? null, generation: entry.lease?.generation ?? null, domain: entry.lease?.domain ?? null, allowance: entry.lease?.allowance ?? null }, reservation);
+      const object = validateInventoryObject(value.object, journal, config);
+      consumedItems += 2; // Fixed journal and object validation.
+      if (caseId) {
+        consumedItems++; // Distinct selection admission, before any mutation.
+        try { selectMaintenance(run, repository, `case:${caseId}`); }
+        catch (error) {
+          if (error instanceof Error && error.message === "MAINTENANCE_SELECTION_LIMIT") return { caseId, consumedItems, deferred: true };
+          throw error;
+        }
+      }
+      const old = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(value.pass, entry.id) as InventoryJournal | undefined; consumedItems += 2;
+      if (old && journalFields.split(" ").some(key => old[key as keyof InventoryJournal] !== journal[key as keyof InventoryJournal])) throw new Error("ERASURE_ASSOCIATION_INVALID");
+      if (!old) { db.prepare(`INSERT INTO erasure_inventory_journals(${journalFields.replaceAll(" ", ",")}) VALUES(${journalFields.split(" ").map(key => `@${key}`).join(",")})`).run(journal); consumedItems++; }
+      const previous = db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=? AND journalId=? AND slot=? AND leaf=?").get(value.pass, entry.id, object.slot, object.leaf) as InventoryObject | undefined; consumedItems += 2;
+      if (previous && objectFields.split(" ").some(key => previous[key as keyof InventoryObject] !== object[key as keyof InventoryObject])) throw new Error("ERASURE_OWNERSHIP_INVALID");
+      if (!previous) { db.prepare(`INSERT INTO erasure_inventory_objects(${objectFields.replaceAll(" ", ",")}) VALUES(${objectFields.split(" ").map(key => `@${key}`).join(",")})`).run(object); consumedItems++; }
+      if (db.prepare("UPDATE erasure_scans SET itemCount=itemCount+1 WHERE pass=? AND root=? AND state='scanning'").run(value.pass, value.root).changes !== 1) inventoryInvalid(); consumedItems++;
+      return { caseId, consumedItems };
+    }).immediate();
+  }
+  function invalidate(observation: CustodyObservation, run: MaintenanceRun): number {
+    assertMaintenanceCustodyIdentity(run, repository, custody);
+    // Already-reserved denial only; deliberately no fresh admission/hold check.
+    const value = consumeCustodyObservation(observation, custody, run);
+    if (value.kind !== "invalidate") inventoryInvalid();
+    db.transaction(() => {
+      for (const root of ["custody", "incoming", "runtime"]) db.prepare("UPDATE erasure_scans SET state='blocked',error='STORAGE_FAILED' WHERE pass=? AND root=? AND state IN('scanning','complete')").run(value.pass, root);
+    }).immediate();
+    return 3;
+  }
+  return Object.freeze({ pass, record: recordObservation, invalidate });
+}
+interface ReservationSource { id: string; sessionHash: string; idempotencyKey: string; reservedBytes: number; expiresAt: string; submission: string }
 
 const payload: readonly ErasureRowPhase[]=["payload-artifacts","payload-reservations","payload-case","payload-send"];
 const identity: readonly ErasureRowPhase[]=["identity-grants","identity-lifecycle-audit","identity-lifecycle-proposals","identity-audit","identity-searches","identity-diagnostics","identity-mail-events","identity-mail-state","identity-delivery-attempts","identity-delivery","identity-lifecycle","identity-replay-reservations","identity-case-reservation"];

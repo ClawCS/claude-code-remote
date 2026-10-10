@@ -3,7 +3,8 @@ import { createHash, randomBytes } from "node:crypto";
 import { decodeJournalEvent, encodeJournalEvent } from "./ledger-contract";
 import { admissionScopeAccepts, registrationAssociation } from "./deletion-association";
 import { externalAttestationAssociation, replayAssociation } from "./erasure-association";
-import { createErasureRowSelector } from "./erasure-storage";
+import { createErasureRowSelector, createCustodyInventoryStorage } from "./erasure-storage";
+import type { CustodyConfig, CustodyLedger } from "./types";
 import { berlinDate, operatorReason } from "./lifecycle";
 import { assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
 import { advanceAuthMaintenanceClock } from "./auth-repository";
@@ -31,6 +32,7 @@ import { applicationId, staffId, utcInstant, type ApplicationId, type Applicatio
 export const ERASURE_COMMAND_ITEMS=Object.freeze({pending:2,currentClear:64,currentFinalEvidence:128,prepareCommit:256,acknowledge:192,withErasureGuard:20});
 
 export interface ErasureOwner {
+  bindCustody(custody: CustodyLedger, config: CustodyConfig): ReturnType<typeof createCustodyInventoryStorage>;
   readonly journal: SafetyJournal | undefined;
   pending(id: ApplicationId): EraseJournalEvent | null;
   prepareCommit(id: ApplicationId, scope: EraseScope): EraseJournalEvent;
@@ -69,6 +71,7 @@ interface Dependencies {
   readonly lockAuthentication: () => void;
 }
 export function createErasureRepository(db: Database.Database, deps: Dependencies): ErasureOwner {
+  const boundCustodies = new WeakSet<CustodyLedger>();
   const selectRows=createErasureRowSelector(db);
   const candidates = new WeakMap<DueCandidate, { run: MaintenanceRun; used: boolean }>();
   const dueStreams = [
@@ -344,6 +347,10 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
   }
   function budget(value:number):void { if(!Number.isSafeInteger(value)||value<1||value>1000) fail("ERASURE_BUDGET_INVALID"); }
   const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue,prepareDue,expireGlobalBatch,listPending,listCommitted,reconcileClaim,
+    bindCustody(custody: CustodyLedger, config: CustodyConfig) {
+      if (boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
+      const storage = createCustodyInventoryStorage(db, deps.repository, custody, config); boundCustodies.add(custody); return storage;
+    },
     async withErasureGuard<T>(commitEventId:string,action:(value:ErasureWork)=>Promise<T>):Promise<T> {
       const initial=work(commitEventId);
       return deps.guarded(initial.caseId,async()=>{ const current=work(commitEventId); const claim=db.prepare("SELECT claimToken,claimOwner,claimedAt FROM cases WHERE id=?").get(current.caseId) as {claimToken:string|null;claimOwner:string|null;claimedAt:string|null}|undefined; if(claim&&Object.values(claim).some(value=>value!==null)) fail("ERASURE_CLAIM_ACTIVE"); return action(current); });

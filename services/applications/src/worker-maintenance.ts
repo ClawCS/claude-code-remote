@@ -1,4 +1,4 @@
-import type { ApplicationRepository, Clock, CustodyLedger, RuntimeMaintenanceExclusion, WorkerOwner, WorkerServices } from "./types";
+import type { ApplicationRepository, Clock, CustodyConfig, CustodyLedger, RuntimeMaintenanceExclusion, WorkerOwner, WorkerServices } from "./types";
 import { utcInstant } from "./types";
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { FileHandle } from "node:fs/promises";
@@ -24,9 +24,9 @@ export async function closeCustodyHandle(handle: FileHandle): Promise<void> {
 }
 
 // Private composition only. Original constructors register these exact objects.
-interface Lifetime { inhibit(): void; settle(): Promise<void>; idle(): boolean }
+interface Lifetime { inhibit(): void; settle(): Promise<void>; idle(): boolean; closeReady?(): boolean; closeScanIterators?(): Promise<number> }
 const repositories = new WeakMap<ApplicationRepository, Lifetime & { clock: Clock }>();
-const custodians = new WeakMap<CustodyLedger, Lifetime & { repository: ApplicationRepository; clock: Clock }>();
+const custodians = new WeakMap<CustodyLedger, Lifetime & { repository: ApplicationRepository; clock: Clock; config?: CustodyConfig }>();
 const bindings = new WeakMap<WorkerOwner, Binding>();
 const repositoryOwners = new WeakMap<ApplicationRepository, WorkerOwner>();
 const custodyOwners = new WeakMap<CustodyLedger, WorkerOwner>();
@@ -47,14 +47,33 @@ interface Binding {
 const runs = new WeakMap<MaintenanceRun, Run>();
 const journals = new WeakMap<ApplicationRepository, { settle(): Promise<void> } | undefined>();
 function fail(code: string): never { throw new Error(code); }
-const commandErrors = new Set(["ERASURE_CLAIM_ACTIVE", "ERASURE_NOT_DUE", "ERASURE_PENDING", "ERASURE_FINAL_EVIDENCE_REQUIRED", "ERASURE_UNVERIFIED", "ERASURE_ADMISSION_UNAVAILABLE", "ERASURE_SANITATION_REQUIRED", "MAINTENANCE_DEADLINE", "MAINTENANCE_HOLD_LOST", "MAINTENANCE_RUN_STOPPED", "MAINTENANCE_SELECTION_LIMIT", "AUTH_DENIED"]);
+const commandErrors = new Set(["ERASURE_UNKNOWN_OBJECT", "ERASURE_OWNERSHIP_INVALID", "ERASURE_JOURNAL_INVALID", "ERASURE_ASSOCIATION_INVALID", "ERASURE_ROOT_CHANGED", "INGRESS_RECOVERY_REQUIRED", "ERASURE_CLAIM_ACTIVE", "ERASURE_NOT_DUE", "ERASURE_PENDING", "ERASURE_FINAL_EVIDENCE_REQUIRED", "ERASURE_UNVERIFIED", "ERASURE_ADMISSION_UNAVAILABLE", "ERASURE_SANITATION_REQUIRED", "MAINTENANCE_DEADLINE", "MAINTENANCE_HOLD_LOST", "MAINTENANCE_RUN_STOPPED", "MAINTENANCE_SELECTION_LIMIT", "AUTH_DENIED"]);
 export function registerMaintenanceRepository(repository: ApplicationRepository, clock: Clock, lifetime: Lifetime, journal?: { settle(): Promise<void> }): void {
   if (repositories.has(repository)) fail("MAINTENANCE_ALREADY_OWNED");
   repositories.set(repository, { ...lifetime, clock }); journals.set(repository, journal);
 }
-export function registerMaintenanceCustody(custody: CustodyLedger, repository: ApplicationRepository, clock: Clock, lifetime: Lifetime): void {
+export function registerMaintenanceCustody(custody: CustodyLedger, repository: ApplicationRepository, clock: Clock, lifetime: Lifetime, config?: CustodyConfig): void {
   if (custodians.has(custody)) fail("MAINTENANCE_ALREADY_OWNED");
-  custodians.set(custody, { ...lifetime, repository, clock });
+  custodians.set(custody, { ...lifetime, repository, clock, config });
+}
+export function assertOriginalMaintenanceCustody(custody: CustodyLedger, repository: ApplicationRepository, config: CustodyConfig): void {
+  const files = custodians.get(custody);
+  if (!files || files.repository !== repository || files.clock !== config.clock || files.config !== config) fail("MAINTENANCE_OWNER_MISMATCH");
+}
+// Finishing only: the original registration supplies this one closed operation.
+// No fresh admission, callback, path, success flag or allowance is accepted.
+export async function closeMaintenanceScanIterators(token: MaintenanceRun, custody: CustodyLedger): Promise<Readonly<{ consumedItems: number }>> {
+  const r = current(token), b = r.binding;
+  if (b.custody !== custody || r.pending.size || b.settlement || !b.files.closeScanIterators) fail("MAINTENANCE_WORK_ACTIVE");
+  held(b);
+  if (1000 - r.consumed < 2) fail("MAINTENANCE_BUDGET_INSUFFICIENT");
+  r.consumed += 2;
+  const task = b.files.closeScanIterators().then(consumedItems => {
+    if (!Number.isSafeInteger(consumedItems) || consumedItems < 0 || consumedItems > 2) fail("MAINTENANCE_ACCOUNTING_INVALID");
+    r.consumed -= 2 - consumedItems; held(b); return Object.freeze({ consumedItems });
+  }).catch(() => { r.failed = true; r.accepting = false; fail("MAINTENANCE_COMMAND_FAILED"); });
+  r.pending.add(task);
+  try { return await task; } finally { r.pending.delete(task); }
 }
 export function bindMaintenance(owner: WorkerOwner, services: WorkerServices, monotonic: () => number = () => performance.now()): void {
   if (bindings.has(owner) || repositoryOwners.has(owner.repository) || custodyOwners.has(owner.custody)) fail("MAINTENANCE_ALREADY_BOUND");
@@ -111,6 +130,9 @@ function current(token: MaintenanceRun, repository?: ApplicationRepository): Run
   const run = runs.get(token);
   if (!run || run.binding.current !== run || (repository && run.binding.repository !== repository)) fail("MAINTENANCE_RUN_INVALID"); return run;
 }
+export function assertMaintenanceCustodyIdentity(run: MaintenanceRun, repository: ApplicationRepository, custody: CustodyLedger): void {
+  if (current(run, repository).binding.custody !== custody) fail("MAINTENANCE_OWNER_MISMATCH");
+}
 export function assertMaintenance(run: MaintenanceRun, repository: ApplicationRepository, phase: "scalar" | "journal" | "filesystem" = "scalar"): void {
   const r = current(run, repository); held(r.binding);
   if (!r.accepting || r.failed) fail("MAINTENANCE_RUN_STOPPED");
@@ -156,7 +178,7 @@ export function settleMaintenance(owner: WorkerOwner): Promise<void> {
 export function assertMaintenanceClose(repository: ApplicationRepository): void {
   const owner = repositoryOwners.get(repository); if (!owner) return;
   const b = binding(owner); if (!b.started) return;
-  if (!b.settled || b.current || b.settlement || !b.repo.idle() || !b.files.idle()) fail("MAINTENANCE_WORK_ACTIVE");
+  if (!b.settled || b.current || b.settlement || !b.repo.idle() || !b.files.idle() || !(b.files.closeReady?.() ?? b.files.idle())) fail("MAINTENANCE_WORK_ACTIVE");
   if (b.hold) held(b);
 }
 export function maintenanceSnapshot(owner: WorkerOwner) {

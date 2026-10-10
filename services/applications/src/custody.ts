@@ -3,7 +3,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { constants } from "node:fs";
 import { mkdir, open, rmdir, unlink, lstat, readdir, rename } from "node:fs/promises";
 import { join } from "node:path";
-import type { ApplicationRepository, ApplicationId, ArtifactRecord, CommittedIntake, PrivateSnapshot, WorkerKeys, ProcessingSnapshot, CustodyLedger, CustodyInventory, CustodyConfig, Reservation, Instant, IngressLease, IngressEvidence, Acceptance } from "./types";
+import type { ApplicationRepository, ApplicationId, ArtifactRecord, CommittedIntake, PrivateSnapshot, WorkerKeys, ProcessingSnapshot, CustodyLedger, CustodyInventory, CustodyConfig, IngressLease, IngressEvidence, Acceptance } from "./types";
 import { applicationId, digest, utcInstant } from "./types";
 import { checkPrivateRoot, checkIncomingRoot, openPrivateFile, decodePayload, decryptEnvelope, payloadDigest, syncRoot, intakePath, MAX_SEALED_BYTES, readBoundedFile, strictObject } from "./crypto";
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, SCRATCH_RESERVE, storageBudget } from "./storage-budget";
@@ -12,20 +12,16 @@ import { submissionKind } from "./intake-admission";
 import { registerMaintenanceCustody, withCustodyResourceTracking, observeCustodyHandle, closeCustodyHandle } from "./worker-maintenance";
 import type { FileHandle } from "node:fs/promises";
 import { custodyUnwindOwner } from "./repository";
+import { bindCustodyErasure, type CustodyJournal } from "./custody-erasure";
 
 // Dedicated incoming, custody and runtime roots; never the registry directory.
 const PHYSICAL_CAP = 250 * 1024 * 1024;
 const JOURNAL_HEADROOM = 8192;
-interface Journal {
-  version: 1 | 2 | 3; id: string; kind: "intake" | "processing" | "artifact"; state: "reserved" | "committed" | "orphan";
-  path: string; workerPath?: string; budget: number; cleanupAfter: Instant; reservation?: Reservation; caseId?: string;
-  lease?: IngressLease; release?: "pending" | "released";
-  settlement?: "expired" | "drain";
-  artifactKind?: "bundle" | "mime";
-}
+type Journal = CustodyJournal;
 const scopeReaders = new WeakMap<CustodyLedger["beginProcessing"], <T>(action: () => Promise<T>) => Promise<T>>();
 export function createCustodyLedger(repo: ApplicationRepository, config: CustodyConfig): CustodyLedger {
   config = Object.freeze({ ...config });
+  const ingressObserve = config.ingressAuthority?.observe;
   const unwind = custodyUnwindOwner(repo);
   // Only created after a repository-origin conflict is proven unaccepted and
   // existing authority-backed terminal cleanup/accounting has succeeded.
@@ -171,7 +167,11 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     const fd = await openPrivateFile(path, config.custodyRoot);
     try {
       if ((await fd.stat()).size > 4096) throw new Error("CUSTODY_ACCOUNTING_FAILED");
-      const entry = JSON.parse((await readBoundedFile(fd, 4096)).toString("utf8")) as Journal;
+      return decodeJournal(await readBoundedFile(fd, 4096));
+    } finally { await closeCustodyHandle(fd); }
+  }
+  function decodeJournal(bytes: Buffer): Journal {
+      const entry = JSON.parse(bytes.toString("utf8")) as Journal;
       const journalVersion = entry.version;
       if (entry.kind === "intake") {
         if (!entry.reservation || entry.reservation.id !== entry.id) throw new Error("CUSTODY_ACCOUNTING_FAILED");
@@ -189,7 +189,6 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       if (entry.version >= 2 && entry.kind === "intake" && (!entry.lease || entry.lease.reservationId !== entry.id || entry.lease.path !== entry.path || entry.lease.allowance !== entry.reservation!.reservedBytes / 2 || !entry.lease.generation || !entry.lease.domain || !["pending","released"].includes(entry.release ?? ""))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       if (entry.settlement !== undefined && (entry.kind !== "intake" || !["expired", "drain"].includes(entry.settlement))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       utcInstant(entry.cleanupAfter); return entry;
-    } finally { await closeCustodyHandle(fd); }
   }
   async function deleteFile(entry: Journal) {
     try { await lstat(entry.path); } catch (error) {
@@ -495,10 +494,23 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     async settle() {
       while (lifetimes.size || processingLifetimes.size) await Promise.allSettled([...lifetimes, ...[...processingLifetimes.values()].map(scope => scope.done)]);
       await queue;
-      if (handles.size || unresolvedReleases.size) throw new Error("CUSTODY_RELEASE_UNCERTAIN");
+      if (handles.size || unresolvedReleases.size || !scanResources.idle()) throw new Error("CUSTODY_RELEASE_UNCERTAIN");
     },
-    idle: () => lifetimes.size === 0 && processingOwners.size === 0 && handles.size === 0 && unresolvedReleases.size === 0,
-  });
+    idle: () => lifetimes.size === 0 && processingOwners.size === 0 && handles.size === 0 && unresolvedReleases.size === 0 && scanResources.idle(),
+    closeReady: () => scanResources.closeReady(),
+    closeScanIterators: () => scanResources.closeIterators(),
+  }, config);
+  const scanResources = bindCustodyErasure(ledger, repo, config, { exclusive, track, decodeJournal, async observeIngress(entry) {
+    const lease = entry.lease;
+    if (!lease || typeof lease.generation !== "string" || !lease.generation || typeof lease.domain !== "string" || !lease.domain || lease.reservationId !== entry.id || lease.path !== entry.path || lease.allowance !== entry.reservation!.reservedBytes / 2) throw new Error("INGRESS_RECOVERY_REQUIRED");
+    try {
+      const port = authority();
+      if (!ingressObserve || port.observe !== ingressObserve) throw new Error("INGRESS_RECOVERY_REQUIRED");
+      const evidence = validateEvidence(entry, await ingressObserve.call(port, lease));
+      if (entry.release === "released" && evidence.state !== "released") throw new Error("INGRESS_RECOVERY_REQUIRED");
+      return evidence;
+    } catch { throw new Error("INGRESS_RECOVERY_REQUIRED"); }
+  } });
   for (const name of Object.keys(ledger) as (keyof CustodyLedger)[]) {
     if (name === "getIntakeReadiness") continue;
     const method = ledger[name] as (...args: unknown[]) => Promise<unknown>;
