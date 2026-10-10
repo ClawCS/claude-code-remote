@@ -14,7 +14,12 @@ import { applicationId, staffId, utcInstant, type ApplicationId, type Applicatio
 // reserve it separately when its callback does not call rowPage.
 // Bounds: raw case/lifecycle <=7 rows; delivery <=16; currentClear <=41
 // including I1 latch, pending lookahead, receipts and projection authority.
-// Hence currentFinalEvidence <=92; prepare <=142; acknowledge <=145.
+// Scope consistency adds two composite-PK range probes (<=1 row each),
+// including when the current replay history is large; no history traversal.
+// currentFinalEvidence <=93: case7 + scope3 + delivery16 + clear64 + audit2
+// + one spare. prepare <=144: reserved final128 + pending2 + scope3 + case7
+// + identity1 + writes3. acknowledge <=147: final128 + phase1 + work4 +
+// scope3 + case7 + identity1 + update1 + two spare bookkeeping credits.
 // Rounded reserves below deliberately charge empty fixed queries as well.
 // R92: lockRestoredAuthentication is instead one mandatory cold bootstrap
 // transaction BEFORE authentication/bounded erasure invocations. Existing auth

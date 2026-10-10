@@ -196,6 +196,32 @@ describe("original erasure owner foundations", () => {
     await s.journal.refresh("refresh");s.scope.associationKey[0]^=1;expect(()=>s.repository.reserve(request())).toThrow("ERASURE_ADMISSION_UNAVAILABLE");
     s.scope.associationKey[0]^=1;expect(()=>s.repository.reserve(request())).toThrow("ERASURE_ADMISSION_UNAVAILABLE");
   });
+  it("bounds replay-scope consistency to indexed existence probes despite a large current history",async()=>{
+    const s=setup();await s.journal.refresh("startup");
+    const insert=s.db.prepare("INSERT INTO erasure_replay VALUES(?,?,?,?,?,NULL)");
+    s.db.transaction(()=>{for(let i=0;i<2001;i++)insert.run(s.scope.ledgerId,s.scope.historyEpoch,s.scope.associationKeyId,i.toString(16).padStart(64,"0"),"c".repeat(32));})();
+    const prepare=s.db.prepare.bind(s.db),calls=vi.spyOn(s.db,"prepare");
+    const now=utcInstant(instant),reservation=s.repository.reserve({...testAdmission(),sessionHash:digest("a".repeat(64)),idempotencyKey:"bounded-scope",reservedBytes:1,now});
+    s.repository.commitIntake({reservationId:reservation.id,digest:digest("b".repeat(64)),encryptedPayloadPath:join(s.dir,"payload.enc"),actualBytes:1,encryptedName:"synthetic",job:"sales-fulltime",now});
+    const checks=calls.mock.calls.map(([sql])=>sql).filter(sql=>sql.startsWith("SELECT 1 FROM erasure_replay WHERE")&&(sql.match(/\?/g)?.length===3));
+    calls.mockRestore();
+    expect(checks.length).toBeGreaterThan(0);
+    for(const sql of checks){
+      const plan=prepare(`EXPLAIN QUERY PLAN ${sql}`).all(s.scope.ledgerId,s.scope.historyEpoch,s.scope.associationKeyId) as {detail:string}[];
+      expect(plan.map(row=>row.detail).join(" ")).toMatch(/^SEARCH erasure_replay USING COVERING INDEX .+\(\(ledgerId,historyEpoch,associationKeyId\)[<>]/);
+      expect(sql).toMatch(/LIMIT 1$/);
+    }
+    expect(checks).toHaveLength(4); // Two bounded probes at reserve and at commit.
+  });
+  it.each(["ledgerId","historyEpoch","associationKeyId"] as const)("denies incompatible restored %s on either side of the current tuple",async field=>{
+    for(const foreign of ["", "z".repeat(64)]){
+      const s=setup();await s.journal.refresh("startup");
+      const tuple={...s.scope,[field]:foreign};
+      s.db.prepare("INSERT INTO erasure_replay VALUES(?,?,?,?,?,NULL)").run(tuple.ledgerId,tuple.historyEpoch,tuple.associationKeyId,"d".repeat(64),"c".repeat(32));
+      expect(()=>s.repository.reserve({...testAdmission(),sessionHash:digest("a".repeat(64)),idempotencyKey:"foreign-scope",reservedBytes:1,now:utcInstant(instant)})).toThrow("ERASURE_ADMISSION_UNAVAILABLE");
+      expect(s.db.prepare("SELECT 1 FROM reservations").get()).toBeUndefined();
+    }
+  });
   it("restored absent-case erasure blocks the original request before any new acceptance",async()=>{
     const s=setup(),sessionHash=digest("a".repeat(64)),idempotencyKey="restore";
     s.fixture.commit(["tj-journal-event-v1","d".repeat(32),instant,"erase_commit",[caseId,"processing_payload","erase-key",replayAssociation(s.scope,sessionHash,idempotencyKey)]]);

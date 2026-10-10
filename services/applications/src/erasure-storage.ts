@@ -128,6 +128,30 @@ export function createErasureRowSelector(db:Database.Database){
     let index=previous?allowed.indexOf(previous[1]):0,last=previous?.[2]??null,consumed=0;
     for(;index<allowed.length;index++,last=null){
       const phase=allowed[index],pair=phase==="identity-case-reservation",cost=pair?2:1;
+      if(phase==="identity-searches"){
+        // R94: admit parents, not joined output rows. Each parent costs one
+        // row + one child point-probe + at most three schema-bounded rounds.
+        // The cursor is the last fully examined parent, including empty ones.
+        if(remaining-consumed<6)return Object.freeze({targets:Object.freeze([]),next:cursor(work.commitEventId,phase,last),consumedItems:consumed});
+        consumed++;
+        const parents=db.prepare("SELECT eventId FROM deletion_events INDEXED BY erasure_mail_events WHERE caseId=? AND eventId>? ORDER BY eventId LIMIT ?").all(work.caseId,Array.isArray(last)?last[0]:"",Math.floor((remaining-consumed)/5)) as {eventId:string}[];
+        consumed+=parents.length;
+        const targets:ErasureRowTarget[]=[];
+        for(const parent of parents){
+          if(!token(parent.eventId,32))fail();
+          consumed++;
+          const children=db.prepare("SELECT round FROM deletion_searches WHERE attemptId=? ORDER BY round LIMIT 3").all(parent.eventId) as {round:string}[];
+          consumed+=children.length;
+          for(const child of children){
+            if(!["1","2","3"].includes(child.round))fail();
+            targets.push(Object.freeze({phase,key:Object.freeze([parent.eventId,child.round]) as readonly [string,string]}));
+          }
+        }
+        // 11B must continue empty-target pages and publish this high-water only
+        // after all selected mutations commit; failures must reselect, not skip.
+        if(parents.length)return Object.freeze({targets:Object.freeze(targets),next:cursor(work.commitEventId,phase,[parents.at(-1)!.eventId,"3"]),consumedItems:consumed});
+        continue;
+      }
       if(remaining-consumed<cost+1)return Object.freeze({targets:Object.freeze([]),next:cursor(work.commitEventId,phase,last),consumedItems:consumed});
       // Reserve one query/empty-phase credit in addition to all selected rows.
       consumed++;const limit=Math.floor((remaining-consumed)/cost),id=work.caseId;
@@ -150,10 +174,6 @@ export function createErasureRowSelector(db:Database.Database){
           const table=phase==="identity-lifecycle-proposals"?"lifecycle_proposals":phase==="identity-mail-events"?"deletion_events":"deletion_diagnostics";
           sql=`SELECT eventId FROM ${table} WHERE caseId=? AND eventId>? ORDER BY eventId LIMIT ?`;operands=[id,last??"",limit];key=r=>r.eventId as string;break;
         }
-        case "identity-searches":{
-          const prior=Array.isArray(last)?last:["","0"];
-          sql="SELECT e.eventId AS attemptId,s.round FROM deletion_events e INDEXED BY erasure_mail_events CROSS JOIN deletion_searches s ON s.attemptId=e.eventId WHERE e.caseId=? AND e.eventId>=? AND (e.eventId,s.round)>(?,?) ORDER BY e.eventId,s.round LIMIT ?";operands=[id,prior[0],prior[0],prior[1],limit];key=r=>[r.attemptId as string,r.round as string];break;
-        }
         case "identity-mail-state":case "identity-delivery":case "identity-lifecycle":{
           const table=phase==="identity-mail-state"?"deletion_state":phase==="identity-delivery"?"deliveries":"case_lifecycle";
           sql=`SELECT caseId FROM ${table} WHERE caseId=? AND caseId>? LIMIT ?`;operands=[id,last??"",limit];key=r=>r.caseId as string;break;
@@ -169,9 +189,8 @@ export function createErasureRowSelector(db:Database.Database){
         if(typeof value==="number"){if(!Number.isSafeInteger(value)||value<1)fail();}
         else if(typeof value==="string"){if(!value||value.length>128)fail();}
         else {
-          if(value[0]!==id&&phase!=="identity-searches")fail();
-          if(phase==="identity-searches"){if(!token(value[0],32)||!["1","2","3"].includes(value[1] as string))fail();}
-          else{applicationId(value[0]);if(phase==="identity-case-reservation")applicationId(value[1] as string);else if(phase==="identity-delivery-attempts"){if(!Number.isSafeInteger(value[1])||Number(value[1])<1||Number(value[1])>3)fail();}else if(!["bundle","mime"].includes(value[1] as string))fail();}
+          if(value[0]!==id)fail();
+          applicationId(value[0]);if(phase==="identity-case-reservation")applicationId(value[1] as string);else if(phase==="identity-delivery-attempts"){if(!Number.isSafeInteger(value[1])||Number(value[1])<1||Number(value[1])>3)fail();}else if(!["bundle","mime"].includes(value[1] as string))fail();
         }
         return Object.freeze({phase,key:Array.isArray(value)?Object.freeze([...value]) as readonly [string,string|number]:value}) as ErasureRowTarget;
       });

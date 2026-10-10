@@ -112,7 +112,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       if(boundScope&&!sameDeletionScope(boundScope,scope)){scopeChanged=true;throw new Error();}
       const applied=db.prepare("SELECT ledgerId,historyEpoch,sequence,hash,observedAt,cursor FROM journal_projection WHERE singleton=1").get() as {ledgerId:string;historyEpoch:string;sequence:string;hash:string;observedAt:string;cursor:string}|undefined;
       if(!applied||applied.ledgerId!==scope.ledgerId||applied.historyEpoch!==scope.historyEpoch||applied.sequence!==observation.sequence||applied.hash!==observation.hash||applied.observedAt!==observation.observedAt||applied.cursor!==observation.cursor)throw new Error();
-      if(db.prepare("SELECT 1 FROM erasure_replay WHERE ledgerId!=? OR historyEpoch!=? OR associationKeyId!=? LIMIT 1").get(scope.ledgerId,scope.historyEpoch,scope.associationKeyId))throw new Error();
+      // Two bounded composite-PK seeks, not a filtered scan of all compatible
+      // replay associations. Any different restored tuple lies on one side.
+      if(db.prepare("SELECT 1 FROM erasure_replay WHERE (ledgerId,historyEpoch,associationKeyId)<(?,?,?) LIMIT 1").get(scope.ledgerId,scope.historyEpoch,scope.associationKeyId)
+        ||db.prepare("SELECT 1 FROM erasure_replay WHERE (ledgerId,historyEpoch,associationKeyId)>(?,?,?) LIMIT 1").get(scope.ledgerId,scope.historyEpoch,scope.associationKeyId))throw new Error();
       boundScope??=scope;return scope;
     }catch{throw new Error("ERASURE_ADMISSION_UNAVAILABLE");}
   }
