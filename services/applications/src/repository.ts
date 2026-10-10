@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import { AsyncLocalStorage } from "node:async_hooks";
-import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID, type KeyObject } from "node:crypto";
 import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import type { PublicStatus } from "../../../lib/applications-contract";
@@ -19,6 +19,7 @@ import { bindErasureOwner, createErasureRepository } from "./erasure-repository"
 import { replayAssociation } from "./erasure-association";
 import { registerMaintenanceRepository, assertMaintenanceClose } from "./worker-maintenance";
 import { createCleanupSource, registerCleanupSource } from "./cleanup-storage";
+import { createAdminReadRepository } from "./admin-read-repository";
 import type { AdmissionScopePort, AuthDependencies, DeletionScope, DeletionScopePort, EraseScope, JournalSafetyProjection, SafetyJournal } from "./types";
 
 const DAY = 86400000;
@@ -34,7 +35,7 @@ export function custodyUnwindOwner(repository: ApplicationRepository): CustodyUn
   const owner = custodyUnwinds.get(repository); if (!owner) throw new Error("CUSTODY_OWNER_MISMATCH"); return owner;
 }
 
-export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journalFactory?: (projection: JournalSafetyProjection) => SafetyJournal; readonly admissionScope?: AdmissionScopePort; readonly deletionScope?: DeletionScopePort; readonly startup?: "ordinary" | "cold-maintenance" } = {}): ApplicationRepository {
+export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journalFactory?: (projection: JournalSafetyProjection) => SafetyJournal; readonly admissionScope?: AdmissionScopePort; readonly deletionScope?: DeletionScopePort; readonly startup?: "ordinary" | "cold-maintenance"; readonly adminPrivateKey?: KeyObject } = {}): ApplicationRepository {
   const startup=lifecycleOptions.startup??"ordinary";
   if(startup!=="ordinary"&&startup!=="cold-maintenance")throw new Error("INVALID_STARTUP_MODE");
   if (!isAbsolute(path) || resolve(path) !== path || path.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part))) throw new Error("UNSAFE_PATH");
@@ -355,6 +356,8 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }).immediate(); }
   catch (error) { db.close(); closed = true; throw error; }
   const repository: ApplicationRepository = {
+    listAdminCases: (after, session) => adminReads.listAdminCases(after, session),
+    getAdminCase: (id, session) => adminReads.getAdminCase(id, session),
     createAuthentication(deps) { authLive(); if (authOwned) throw new Error("AUTH_ALREADY_OWNED"); const auth = createAuthentication(authStore, deps, clock); authDependencies = deps; authOwned = true; return auth; },
     ...delivery,
     ...lifecycle,
@@ -382,6 +385,23 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     lockAuthentication(){live();if(startup!=="cold-maintenance"||authOwned)throw new Error("AUTH_RESTORE_LOCK_UNAVAILABLE");db.transaction(()=>{db.prepare("UPDATE erasure_maintenance SET authLocked=1 WHERE singleton=1").run();db.prepare("DELETE FROM auth_grants").run();db.prepare("DELETE FROM auth_sessions").run();db.prepare("DELETE FROM auth_recovery").run();}).immediate();},
   });
   bindErasureOwner(repository, erasure);
+  const adminReads = createAdminReadRepository(db, lifecycleOptions.adminPrivateKey, Object.freeze({
+    authorize(session: import("./types").StaffSession) {
+      ordinary();
+      const now = utcInstant(clock.now().toISOString());
+      if ((db.prepare("SELECT authLocked FROM erasure_maintenance WHERE singleton=1").get() as { authLocked: number }).authLocked !== 0) throw new Error("ADMIN_UNAVAILABLE");
+      authLive(); if (!authDependencies) throw new Error("AUTH_DENIED");
+      const epoch = trustedAuthEpoch(authDependencies);
+      const last = db.prepare("SELECT lastAt FROM auth_clock WHERE singleton=1").get() as { lastAt: Instant } | undefined;
+      if (last && now < utcInstant(last.lastAt)) throw new Error("AUTH_DENIED");
+      const own = authStore.session(session.sessionId, epoch, now);
+      if (!own || own.staffId !== session.staffId || own.generation !== session.generation || own.issuedAt !== session.issuedAt || own.expiresAt !== session.expiresAt || trustedAuthEpoch(authDependencies) !== epoch) throw new Error("AUTH_DENIED");
+      return now;
+    },
+    ready() { ordinary(); currentErasureScope(); },
+    readCase, denied: scopeDenied, journal,
+    mailbox: deletion.adminMailbox, retention: erasure.adminRetention,
+  }));
   registerMaintenanceRepository(repository, clock, {
     origin: startup,
     finalReady: () => { live(); erasure.assertSanitizedFinalWork(); },

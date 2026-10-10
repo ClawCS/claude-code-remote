@@ -57,6 +57,13 @@ export function readLifecycle(db: Database.Database, row: Omit<CaseRecord, "life
   return result;
 }
 
+export function readAdminPending(db: Database.Database, row: CaseRecord): import("./types").AdminCaseDetail["pending"] {
+  if (!row.lifecycle.pendingEventId) return null;
+  const p = proposal(db, row.lifecycle.pendingEventId);
+  if (p.caseId !== row.id || p.phase !== "proposed" && p.phase !== "acknowledged") fail();
+  return Object.freeze({ eventId: p.eventId, kind: validateCaseAction(JSON.parse(p.actionBytes)).kind, phase: p.phase });
+}
+
 // Internal composition of the sole DB/auth/clock owner; not an RPC port.
 export function createLifecycleRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, auth: AuthRepository, epochNow: () => ReturnType<typeof digest>, clockNow: () => Instant, journal: SafetyJournal | undefined, incident: Readonly<{ delivery(id: ApplicationId): DeliveryRecord; identityDenied(id: ApplicationId): boolean; prepare(id: ApplicationId): void; retention(id: ApplicationId): IncidentResolutionRetention }>) {
   function requireJournal(): SafetyJournal { if (!journal) throw new Error("CASE_JOURNAL_UNAVAILABLE"); return journal; }

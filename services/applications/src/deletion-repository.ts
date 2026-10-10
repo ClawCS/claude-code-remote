@@ -19,7 +19,7 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
   }
   function phase(eventId: string): Phase {
     const p = db.prepare("SELECT * FROM deletion_events WHERE eventId=?").get(eventId) as Phase | undefined;
-    if (!p) fail(); const event = decodeJournalEvent(p.event);
+    if (!p || !["proposed", "acknowledged"].includes(p.phase)) fail(); const event = decodeJournalEvent(p.event);
     if (event[1] !== p.eventId || !["attempt_intent", "copy_mutation_started", "copy_result", "mailbox_clear_observed"].includes(event[3]) || event[4][0] !== p.caseId) fail();
     return p;
   }
@@ -27,9 +27,9 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
     const p = phase(eventId), event = decodeJournalEvent(p.event);
     if (p.caseId !== id || p.phase !== "acknowledged" || event[3] !== kind) fail(); return event;
   }
-  function snapshot(id: ApplicationId) {
-    guard(id); const row = readCase(id), delivery = getDelivery(id);
+  function contradictoryEvidence(id: ApplicationId): { restricted: boolean; needsLatch: boolean } {
     const state = db.prepare("SELECT contradictory FROM deletion_state WHERE caseId=?").get(id) as { contradictory: number } | undefined;
+    if (state && ![0, 1].includes(state.contradictory)) fail();
     let restricted = state?.contradictory === 1;
     if (!restricted) {
       // Older proposed/acknowledged outcomes may predate the atomic latch.
@@ -38,15 +38,21 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
       if (found) {
         const evidence = phase(found.eventId);
         if (evidence.caseId !== id || !isContradictoryResult(decodeJournalEvent(evidence.event))) fail();
-        latchContradiction(id); restricted = true;
+        restricted = true;
       }
     }
+    return { restricted, needsLatch: restricted && state?.contradictory !== 1 };
+  }
+  function snapshot(id: ApplicationId) {
+    guard(id); const row = readCase(id), delivery = getDelivery(id), { restricted, needsLatch } = contradictoryEvidence(id);
+    if (needsLatch) latchContradiction(id);
     return { row, delivery, contradictory: restricted };
   }
-  function pending(id: ApplicationId): MailboxJournalEvent | null {
-    guard(id); const p = db.prepare("SELECT eventId FROM deletion_events WHERE caseId=? AND phase='proposed' LIMIT 2").all(id) as { eventId: string }[];
+  function readPending(id: ApplicationId): MailboxJournalEvent | null {
+    const p = db.prepare("SELECT eventId FROM deletion_events WHERE caseId=? AND phase='proposed' LIMIT 2").all(id) as { eventId: string }[];
     if (p.length > 1) fail(); return p.length ? decodeJournalEvent(phase(p[0].eventId).event) as MailboxJournalEvent : null;
   }
+  function pending(id: ApplicationId): MailboxJournalEvent | null { guard(id); return readPending(id); }
   function prepare(id: ApplicationId, event: MailboxJournalEvent): void {
     guard(id); const wire = encodeJournalEvent(event); if (event[4][0] !== id) fail();
     db.transaction(() => {
@@ -85,10 +91,10 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
       if (isContradictoryResult(event)) latchContradiction(id);
     }).immediate();
   }
-  function currentClear(id: ApplicationId): CurrentMailboxClear | null {
-    const current = snapshot(id);
+  function validatedClear(id: ApplicationId, current: { row: CaseRecord; contradictory: boolean }): CurrentMailboxClear | null {
     const state = db.prepare("SELECT status,clearEventId,clearVersion,clearSafetyRevision FROM deletion_state WHERE caseId=?").get(id) as { status: string; clearEventId: string | null; clearVersion: number | null; clearSafetyRevision: number | null } | undefined;
-    if (!state || state.status !== "mailbox_cleared" || current.contradictory || !state.clearEventId || state.clearVersion !== current.row.version || state.clearSafetyRevision !== current.row.lifecycle.safetyRevision || pending(id)) return null;
+    if (state && !["open", "partial", "blocked", "mailbox_cleared"].includes(state.status)) fail();
+    if (!state || state.status !== "mailbox_cleared" || current.contradictory || !state.clearEventId || state.clearVersion !== current.row.version || state.clearSafetyRevision !== current.row.lifecycle.safetyRevision || readPending(id)) return null;
     const clear = phase(state.clearEventId), clearEvent = decodeJournalEvent(clear.event);
     if (clear.caseId !== id || clear.phase !== "acknowledged" || clearEvent[3] !== "mailbox_clear_observed" || !clear.entry || !clear.head) fail();
     const intent = phase(clearEvent[4][1]), intentEvent = decodeJournalEvent(intent.event);
@@ -99,9 +105,19 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
     if (!authority || payload[2] !== row.lifecycle.authorityKind || payload[3] !== row.lifecycle.authorityId || Number(payload[4]) !== row.version || payload[5] !== row.acceptanceEpochId || (payload[2] === "initial" ? authority.latestFence !== null : authority.latestFence?.eventId !== payload[3])) return null;
     return Object.freeze({ caseId: id, caseVersion: row.version, safetyRevision: row.lifecycle.safetyRevision, head: Object.freeze({ ...authority.head }), clearEvent, clearReceipt, intentEvent, intentReceipt });
   }
+  function currentClear(id: ApplicationId): CurrentMailboxClear | null { return validatedClear(id, snapshot(id)); }
+  function adminMailbox(row: CaseRecord): import("./types").AdminCaseDetail["mailbox"] {
+    const state = db.prepare("SELECT status FROM deletion_state WHERE caseId=?").get(row.id) as { status: string } | undefined;
+    if (state && !["open", "partial", "blocked", "mailbox_cleared"].includes(state.status)) fail();
+    const { restricted: contradictory } = contradictoryEvidence(row.id), outstanding = readPending(row.id);
+    if (contradictory) return Object.freeze({ state: "blocked" });
+    if (!state) { if (outstanding) fail(); return Object.freeze({ state: "not_observed" }); }
+    if (state.status === "blocked" || state.status === "partial") return Object.freeze({ state: state.status });
+    return Object.freeze({ state: validatedClear(row.id, { row, contradictory }) ? "currently_cleared" : "open" });
+  }
   const selector = `FROM cases c JOIN case_lifecycle l ON l.caseId=c.id LEFT JOIN deletion_state d ON d.caseId=c.id WHERE l.deleteFrom IS NOT NULL AND l.deleteFrom<=? AND (d.clearVersion IS NULL OR d.clearVersion!=c.version OR d.clearSafetyRevision!=l.safetyRevision) AND COALESCE(d.selectedCycle,0)<?`;
   return Object.freeze({
-    journal, snapshot, pending, prepare, acknowledge, currentClear,
+    journal, snapshot, pending, prepare, acknowledge, currentClear, adminMailbox,
     listWork() {
       const today = berlinDate(new Date(now()));
       return db.transaction(() => {

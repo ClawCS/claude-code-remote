@@ -93,9 +93,9 @@ export function recoverDelivery(db: Database.Database, now: Instant, erased: (id
   }
 }
 
-export function createDeliveryRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, locked: (id: ApplicationId) => boolean, getArtifact: (id: ApplicationId, kind: "mime") => ArtifactRecord | null, verifyArtifact: (artifact: ArtifactRecord) => void, erased: (id: ApplicationId, scope: "payload" | "contact" | "identity") => boolean = () => false): DeliveryRepository {
-  function getDelivery(id: ApplicationId): DeliveryRecord {
-    const row = readCase(id), stored = db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id) as StoredDelivery | undefined;
+type Erased = (id: ApplicationId, scope: "payload" | "contact" | "identity") => boolean;
+function readDelivery(db: Database.Database, row: CaseRecord, erased: Erased, bounded: boolean): DeliveryRecord {
+    const id = row.id, stored = db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id) as StoredDelivery | undefined;
     const payloadErased=erased(id,"payload");
     if (!stored) return invalid();
     const fixed = stored.messageId === null ? null : identity({ id, messageId: stored.messageId, keyId: stored.keyId!, date: stored.identityDate! }, row);
@@ -115,7 +115,9 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
     for (const value of [stored.sendDueAt, stored.confirmedAt, stored.determinedAt, stored.cleanupDueAt]) if (value !== null) instant(value);
     if ((stored.category === null) !== (stored.reason === null) || (stored.category === "invalid") !== (stored.reason === "INVALID_INPUT" || stored.reason === "MALICIOUS_INPUT")) invalid();
     if (stored.contactEnvelope !== null) { try { assertContactEnvelope(stored.contactEnvelope); } catch { invalid(); } }
-    const attempts = (db.prepare("SELECT ordinal,startedAt,finishedAt,outcome,retryable,mimeDigest,fingerprint FROM delivery_attempts WHERE caseId=? ORDER BY ordinal").all(id) as StoredAttempt[]).map((attempt, index): DeliveryAttempt => {
+    const selected = db.prepare("SELECT ordinal,startedAt,finishedAt,outcome,retryable,mimeDigest,fingerprint FROM delivery_attempts WHERE caseId=? ORDER BY ordinal" + (bounded ? " LIMIT 4" : "")).all(id) as StoredAttempt[];
+    if (selected.length > 3) invalid();
+    const attempts = selected.map((attempt, index): DeliveryAttempt => {
       if (integer(attempt.ordinal, 1, 3) !== index + 1) invalid(); instant(attempt.startedAt);
       if (attempt.mimeDigest !== mimeDigest || attempt.fingerprint !== registered?.fingerprint || attempt.startedAt < row.acceptedAt || attempt.startedAt >= plus(row.acceptedAt, DAY)) invalid();
       let result: SendOutcome | null = null;
@@ -142,6 +144,11 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
     if ((stored.confirmedAt === null) !== (evidence.length === 0) || (row.deliveryState === "delivered" && !stored.confirmedAt)) invalid();
     return { ...(payloadErased?{payloadErased:true as const}:{}), id, identity: fixed, registered, mimeDigest, sendDueAt: payloadErased?null:stored.sendDueAt, receiptStartedAt: stored.receiptStartedAt, receiptSchedule, receiptCursor: stored.receiptCursor, mailboxChecks: stored.mailboxChecks, confirmedAt: stored.confirmedAt, copies: evidence, attempts, category: stored.category, reason: stored.reason, determinedAt: stored.determinedAt, incidentAt: plus(row.acceptedAt, HOUR), manualRequiredAt: plus(row.acceptedAt, DAY), cleanupDueAt: stored.cleanupDueAt, contactEnvelope: erased(id,"contact")?null:stored.contactEnvelope };
   }
+// Only original repository composition calls this bounded variant. Both paths
+// share every metadata validator; ordinary delivery selection is unchanged.
+export function readAdminDelivery(db: Database.Database, row: CaseRecord, erased: Erased): DeliveryRecord { return readDelivery(db, row, erased, true); }
+export function createDeliveryRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, locked: (id: ApplicationId) => boolean, getArtifact: (id: ApplicationId, kind: "mime") => ArtifactRecord | null, verifyArtifact: (artifact: ArtifactRecord) => void, erased: Erased = () => false): DeliveryRepository {
+  function getDelivery(id: ApplicationId): DeliveryRecord { return readDelivery(db, readCase(id), erased, false); }
   function snapshot(id: ApplicationId): DeliverySnapshot { return { case: readCase(id), delivery: getDelivery(id) }; }
   function changed(row: CaseRecord, event: string, now: Instant, state = row.deliveryState, clear = false): DeliverySnapshot {
     const result = db.prepare("UPDATE cases SET version=version+1,deliveryState=?,claimOwner=CASE WHEN ? THEN NULL ELSE claimOwner END,claimedAt=CASE WHEN ? THEN NULL ELSE claimedAt END,claimToken=CASE WHEN ? THEN NULL ELSE claimToken END,claimKind=CASE WHEN ? THEN NULL ELSE claimKind END WHERE id=? AND version=?").run(state, Number(clear), Number(clear), Number(clear), Number(clear), row.id, row.version);

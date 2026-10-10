@@ -1,4 +1,5 @@
-import type { ApplicationInput, JobId, PublicStatus } from "../../../lib/applications-contract";
+import type { AdminCaseDetail, AdminCasePage, ApplicationInput, DeliveryFailureReason, JobId, PublicStatus } from "../../../lib/applications-contract";
+export type { AdminCaseDetail, AdminCasePage, AdminCaseSummary, AdminScopeState, DeliveryFailureReason } from "../../../lib/applications-contract";
 export type { IntakeErrorCode, IntakeErrorResponse, IntakeAcceptanceResponse } from "../../../lib/applications-contract";
 import type { KeyObject } from "node:crypto";
 import type { DocumentFormat } from "./reconstruction-types";
@@ -262,7 +263,6 @@ export interface ClaimedCase extends CaseRecord { claimOwner: string; claimedAt:
 export interface DeliveryTransition { state: DeliveryState }
 export type DeliveryWorkKind = "prepare" | "send" | "reconcile";
 export interface DeliveryClaimAuthority { id: ApplicationId; version: number; token: string }
-export type DeliveryFailureReason = "INVALID_INPUT" | "MALICIOUS_INPUT" | "CONTACT_UNAVAILABLE" | "ARTIFACT_UNAVAILABLE" | "VERIFICATION_FAILED" | "DEPENDENCY_UNAVAILABLE" | "PERMANENT_SEND_FAILURE" | "ATTEMPTS_EXHAUSTED" | "RECEIPT_UNRESOLVED" | "LEGACY_UNVERIFIED" | "PROCESSING_EXPIRED" | "MANUAL_REQUIRED";
 export type DeliveryFailure = { category: "invalid"; reason: "INVALID_INPUT" | "MALICIOUS_INPUT" } | { category: "operational"; reason: Exclude<DeliveryFailureReason, "INVALID_INPUT" | "MALICIOUS_INPUT"> };
 export interface DeliveryAttempt { ordinal: number; startedAt: Instant; finishedAt: Instant | null; outcome: SendOutcome | null; mimeDigest: Digest; fingerprint: Digest }
 export interface DeliveryRecord {
@@ -385,6 +385,8 @@ export interface ArtifactRecord { caseId: ApplicationId; kind: ArtifactKind; pat
 export interface RequestIdentity { id: ApplicationId; digest: Digest; acceptedAt: Instant }
 export interface ArtifactReservation { caseId: ApplicationId; kind: ArtifactKind; bytes: number; expiresAt: Instant }
 export interface ApplicationRepository extends DeliveryRepository {
+  listAdminCases(after: Readonly<{ acceptedAt: Instant; id: ApplicationId }> | null, session: StaffSession): AdminCasePage;
+  getAdminCase(id: ApplicationId, session: StaffSession): AdminCaseDetail | null;
   createAuthentication(deps: AuthDependencies): ApplicationAuth;
   getLifecycleCase(id: ApplicationId, session: StaffSession): CaseRecord;
   applyCaseAction(id: ApplicationId, action: CaseAction, grant: ActionGrant, session: StaffSession, recoveryEventId?: string): Promise<CaseRecord>;

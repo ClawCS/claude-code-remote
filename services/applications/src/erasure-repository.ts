@@ -44,6 +44,7 @@ export interface ErasureOwner {
   prepareCommit(id: ApplicationId, scope: EraseScope): EraseJournalEvent;
   prepareIncidentResolution(id: ApplicationId): void;
   incidentResolutionRetention(id: ApplicationId): IncidentResolutionRetention;
+  adminRetention(id: ApplicationId): import("./types").AdminCaseDetail["retention"];
   acknowledge(event: EraseJournalEvent, receipt: DurableReceipt): void;
   currentFinalEvidence(id: ApplicationId): FinalErasureEvidence | null;
   withErasureGuard<T>(commitEventId: string, action: (work: ErasureWork) => Promise<T>): Promise<T>;
@@ -74,6 +75,18 @@ const owners = new WeakMap<ApplicationRepository, ErasureOwner>();
 export function bindErasureOwner(repository: ApplicationRepository, owner: ErasureOwner): void { if (owners.has(repository)) throw new Error("ERASURE_ALREADY_OWNED"); owners.set(repository, owner); }
 export function erasureOwner(repository: ApplicationRepository): ErasureOwner { const owner = owners.get(repository); if (!owner) throw new Error("ERASURE_UNAVAILABLE"); return owner; }
 function fail(code = "ERASURE_STORAGE_INVALID"): never { throw new Error(code); }
+// Shared exact early-cleanup validation for erasure and the pure admin read.
+export function validatedEarlyCleanup(row: CaseRecord, delivery: DeliveryRecord): number | null {
+  if (delivery.confirmedAt || delivery.category === "invalid") {
+    const determined = delivery.confirmedAt ?? delivery.determinedAt;
+    if (!determined || determined < row.acceptedAt || !delivery.cleanupDueAt) fail();
+    const expected = Math.min(Date.parse(determined) + 23 * 3600000, Date.parse(row.payloadDeleteAfter) - 3600000, Date.parse(row.contactDeleteAfter) - 3600000);
+    if (Date.parse(delivery.cleanupDueAt) !== expected) fail();
+    return expected;
+  }
+  if (delivery.cleanupDueAt !== null) fail();
+  return null;
+}
 const scopes: readonly EraseScope[] = ["processing_payload", "processing_contact", "incident_identity", "public_token", "identifying_register"];
 type Phase = { eventId: string; caseId: ApplicationId; event: string; phase: "proposed" | "acknowledged"; entry: DurableReceipt["entry"] | null; head: DurableReceipt["head"] | null };
 interface Dependencies {
@@ -776,13 +789,7 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     const at = Date.parse(row.acceptedAt), time = Date.parse(now), day = 86400000;
     if (time < at) fail("ERASURE_NOT_DUE");
     if (scope === "public_token") { if (time < at + 7 * day) fail("ERASURE_NOT_DUE"); return; }
-    let early: number | null = null;
-    if (delivery.confirmedAt || delivery.category === "invalid") {
-      const determined = delivery.confirmedAt ?? delivery.determinedAt;
-      if (!determined || determined < row.acceptedAt || !delivery.cleanupDueAt) fail();
-      const expected = Math.min(Date.parse(determined) + 23 * 3600000, Date.parse(row.payloadDeleteAfter) - 3600000, Date.parse(row.contactDeleteAfter) - 3600000);
-      if (Date.parse(delivery.cleanupDueAt) !== expected) fail(); early = expected;
-    } else if (delivery.cleanupDueAt !== null) fail();
+    const early = validatedEarlyCleanup(row, delivery);
     // Fixed proof+parent point reads (4 credits) fit the original conservative
     // prepare256/ack192 admission reserves; no history scan or nested budget.
     const resolution = scope === "incident_identity" ? readIncidentResolution(db, row.id) : null;
@@ -878,7 +885,43 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     if (!payload || !identity) return "commit_pending";
     return [payload, identity].every(value => value.stage === "locally-complete" && locallyCompleted.get(value.commitEventId) === JSON.stringify(value)) ? "local_scopes_complete" : "committed_cleanup_pending";
   }
-  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,prepareIncidentResolution,incidentResolutionRetention,acknowledge,currentFinalEvidence,listDue: (run: MaintenanceRun) => listDue(run),prepareDue,prepareDueBatch,acknowledgeCommit,finalWorkBatch,assertFinalWork,assertSanitizedFinalWork,checkpointFinalDatabase,expireGlobalBatch,listPending,listCommitted,reconcileClaim,applyRowBatch,checkpointDatabase,prepareDone,acknowledgeDone,
+  function adminRetention(id: ApplicationId): import("./types").AdminCaseDetail["retention"] {
+    const scope = deps.scope();
+    const identity = db.prepare("SELECT sessionHash,idempotencyKey FROM cases WHERE id=?").get(id) as { sessionHash: import("./types").Digest; idempotencyKey: string } | undefined;
+    if (!identity) fail();
+    const association = replayAssociation(scope, identity.sessionHash, identity.idempotencyKey);
+    const observed = new Map<EraseScope, import("./types").AdminScopeState>();
+    const selectedEvents = new Set<string>();
+    for (const target of scopes) {
+      const selected = db.prepare("SELECT eventId,committed FROM erasure_scopes WHERE caseId=? AND scope=?").get(id, target) as { eventId: string; committed: number } | undefined;
+      if (!selected) { observed.set(target, "not_committed"); continue; }
+      selectedEvents.add(selected.eventId);
+      if (![0, 1].includes(selected.committed)) fail();
+      if (selected.committed === 0) {
+        const p = db.prepare("SELECT event,phase FROM erasure_events WHERE eventId=? AND caseId=?").get(selected.eventId, id) as { event: string; phase: string } | undefined;
+        if (!p || p.phase !== "proposed") fail();
+        const event = decodeJournalEvent(p.event);
+        if (event[1] !== selected.eventId || event[3] !== "erase_commit" || event[4][0] !== id || event[4][1] !== target || event[4][2] !== scope.associationKeyId || event[4][3] !== association) fail();
+        observed.set(target, "commit_pending"); continue;
+      }
+      const current = work(selected.eventId);
+      if (current.caseId !== id || current.scope !== target || current.ledgerId !== scope.ledgerId || current.historyEpoch !== scope.historyEpoch || current.associationKeyId !== scope.associationKeyId || current.replayAssociation !== association || !["rows-pending", "database-maintenance-pending", "locally-complete"].includes(current.stage)) fail();
+      observed.set(target, current.stage === "locally-complete" && locallyCompleted.get(current.commitEventId) === JSON.stringify(current) ? "local_complete" : "committed_cleanup_pending");
+    }
+    const pending = db.prepare("SELECT eventId,event FROM erasure_events WHERE caseId=? AND phase='proposed' LIMIT 2").all(id) as { eventId: string; event: string }[];
+    if (pending.length > 1) fail();
+    if (pending.length) {
+      const event = decodeJournalEvent(pending[0].event);
+      if (event[1] !== pending[0].eventId || event[4][0] !== id) fail();
+      if (event[3] === "erase_commit") { if (!selectedEvents.has(event[1])) fail(); }
+      else if (event[3] === "erase_done") { if (!selectedEvents.has(event[4][1])) fail(); }
+      else fail();
+    }
+    const covering = observed.get("identifying_register")!;
+    const state = (target: EraseScope) => covering === "local_complete" || covering === "committed_cleanup_pending" ? covering : observed.get(target)!;
+    return Object.freeze({ payload: state("processing_payload"), contact: state("processing_contact"), publicToken: state("public_token"), incidentIdentity: state("incident_identity"), identifyingRegister: covering });
+  }
+  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,prepareIncidentResolution,incidentResolutionRetention,adminRetention,acknowledge,currentFinalEvidence,listDue: (run: MaintenanceRun) => listDue(run),prepareDue,prepareDueBatch,acknowledgeCommit,finalWorkBatch,assertFinalWork,assertSanitizedFinalWork,checkpointFinalDatabase,expireGlobalBatch,listPending,listCommitted,reconcileClaim,applyRowBatch,checkpointDatabase,prepareDone,acknowledgeDone,
     bindCustody(custody: CustodyLedger, config: CustodyConfig) {
       if (boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
       // Captured only by this original composition. Future fixed 1c commands
