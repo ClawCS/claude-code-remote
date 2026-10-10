@@ -52,11 +52,13 @@ export default function CurrentSection({
         <div className={styles.flyers}>
         {view.flyer ? (
           <article className={styles.flyer} data-current-flyer>
+            <div className={styles.flyerCopy}>
             <p className={styles.validity}>
               Gültig {formatDateRange(view.flyer.validFrom, view.flyer.validTo)}
             </p>
             <h3>{view.flyer.title}</h3>
             <p>{formatPageCount(view.flyer.pageCount)}</p>
+            </div>
             <FlyerViewer flyer={view.flyer} />
           </article>
         ) : (
@@ -72,9 +74,11 @@ export default function CurrentSection({
 
         {view.nlFlyer ? (
           <article className={styles.flyer} data-current-nl-flyer lang="nl">
+            <div className={styles.flyerCopy}>
             <p className={styles.validity}>Nederlands · Geldig {formatDateRange(view.nlFlyer.validFrom, view.nlFlyer.validTo)}</p>
             <h3>{view.nlFlyer.title}</h3>
             <p>1 pagina</p>
+            </div>
             <FlyerViewer flyer={view.nlFlyer} locale="nl" />
           </article>
         ) : null}

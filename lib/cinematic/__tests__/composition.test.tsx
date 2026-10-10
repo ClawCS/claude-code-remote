@@ -234,7 +234,7 @@ describe("cinematic homepage composition", () => {
       "Pralle Kirsche",
       "Schwarzer Teufel",
       "Caramello",
-    ].map((name) => spotlight.indexOf(name));
+    ].map((name) => spotlight.slice(spotlight.indexOf('data-rail="cinematic"')).indexOf(name));
     expect(posterOrder.every((position) => position >= 0)).toBe(true);
     expect(posterOrder).toEqual(
       [...posterOrder].sort((left, right) => left - right),
@@ -340,8 +340,8 @@ describe("cinematic homepage composition", () => {
     const html = render(populatedContent);
 
     expect(html).toContain("Wir beraten dich persönlich");
-    expect(count(html, /Termin &amp; Verfügbarkeit anfragen/)).toBe(5);
-    expect(html).toContain("150 €");
+    expect(html).toContain('href="/vermietung"');
+    expect(html).toContain("Eine Anfrage ist noch keine bestätigte Reservierung.");
     expect(html).not.toMatch(/Bestand (?:laut|nach) Liste|Bestandsstand/);
     expect(html).not.toContain("01.01.2026");
     expect(html).not.toContain("06.03.2026");

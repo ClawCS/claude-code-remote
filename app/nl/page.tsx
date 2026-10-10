@@ -1,9 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import SocialLink from "@/components/SocialLink";
 import TeamPhotoPlaceholder from "@/components/TeamPhotoPlaceholder";
 import { PEOPLE_STORY, EDITORIAL_IMAGES } from "@/data/cinematic-editorial";
-import FlyerIndexView from "@/components/FlyerIndexView";
+import NlCurrentSection from "@/components/cinematic/NlCurrentSection";
+import { cinematicHomeTokenStyle } from "@/lib/cinematic/tokens";
+import { USER_MARKET_PHOTOS } from "@/data/user-market-photos";
+import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
+import { eigenmarken } from "@/data/eigenmarken";
 import { getFlyerIndex } from "@/lib/flyer-index";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
@@ -20,9 +25,10 @@ const services = [
 export default async function NederlandsPage() {
   const index = await getFlyerIndex(resolveHomepageNow());
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{ ...cinematicHomeTokenStyle, "--cinematic-color-red": "#a54108" } as CSSProperties} lang="nl">
       <a href="#main-content" className={styles.skipLink}>Naar de inhoud</a>
       <header className={styles.header}>
+        <div className={styles.infoBar}><span>Goch · Ma–za 08–20 uur</span><span className={styles.infoAddress}>{MARKET.street}</span><Link href="/" hrefLang="de" lang="de" prefetch={false}>Deutsch ↗</Link></div>
         <div className={styles.headerInner}>
           <Link href="/" prefetch={false} aria-label="Trinkgut Jammers – Duitse startpagina" className={styles.logo}>
             <Image src="/images/home/brand-logo.webp" alt="Trinkgut Jammers" width={200} height={78} priority />
@@ -32,7 +38,6 @@ export default async function NederlandsPage() {
             <a href="#bezoek">Je bezoek</a>
             <a href="#service">Feest & verhuur</a>
           </nav>
-          <Link href="/" hrefLang="de" lang="de" prefetch={false} className={styles.language}>Deutsch <span aria-hidden="true">↗</span></Link>
         </div>
       </header>
 
@@ -55,7 +60,7 @@ export default async function NederlandsPage() {
         </section>
 
         <div className={styles.flyerBand}>
-          <FlyerIndexView index={index} compact />
+          <NlCurrentSection index={index} />
         </div>
 
         <section id="bezoek" className={styles.visit} aria-labelledby="bezoek-title">
@@ -73,17 +78,24 @@ export default async function NederlandsPage() {
         </section>
 
         <section id="service" className={styles.services} aria-labelledby="service-title">
+          <div className={styles.servicePhoto}><Image src={USER_MARKET_PHOTOS.schneiderWeisse.src} width={USER_MARKET_PHOTOS.schneiderWeisse.width} height={USER_MARKET_PHOTOS.schneiderWeisse.height} alt="Schneider-Weisse-presentatie met blauwe drankkratten bij Jammers" sizes="(max-width: 767px) 100vw, 50vw" /></div>
+          <div className={styles.serviceCopy}>
           <p className={styles.eyebrow}>Voor jouw moment</p>
           <h2 id="service-title">Goed gezelschap.<br />De rest regelen we samen.</h2>
           <div className={styles.serviceGrid}>{services.map((service) => (
             <article key={service.number}>
-              <span className={styles.serviceNumber} aria-hidden="true">{service.number}</span>
               <h3>{service.title}</h3><p>{service.text}</p>
               <Link href={service.href} prefetch={false} className={styles.textLink}>{service.label} <span aria-hidden="true">↗</span></Link>
               {"german" in service && <small>Deze pagina is in het Duits.</small>}
             </article>
           ))}</div>
           <p className={styles.fineprint}>Een aanvraag is nog geen bevestigde reservering. Beschikbaarheid en voorwaarden stemmen we persoonlijk met je af.</p>
+          </div>
+        </section>
+
+        <section className={styles.brands} aria-labelledby="nl-brands-title">
+          <div><p className={styles.eyebrow}>Van Jammers. Uit Goch.</p><h2 id="nl-brands-title">Zes eigen karakters.</h2><p>Maak kennis met onze eigen merken. Vraag ons team naar jouw favoriet.</p><ul>{eigenmarken.map(brand => <li key={brand.slug}><Link href="/eigenmarke" prefetch={false}>{brand.name} <span aria-hidden="true">↗</span></Link></li>)}</ul><small>De pagina over onze eigen merken is in het Duits.</small></div>
+          <Image src={GOOGLE_MARKET_PHOTOS.ownBrands.src} width={GOOGLE_MARKET_PHOTOS.ownBrands.width} height={GOOGLE_MARKET_PHOTOS.ownBrands.height} alt="De zes eigen likeurmerken van Trinkgut Jammers" sizes="(max-width: 767px) 100vw, 50vw" />
         </section>
 
         <section id="contact" className={styles.contact} aria-labelledby="contact-title">
@@ -96,6 +108,7 @@ export default async function NederlandsPage() {
         </section>
 
         <section className={styles.people} aria-label="Ons team">
+          <div className={styles.peopleHeading}><h2>De mensen achter Jammers.</h2><Link href="/galerie" prefetch={false} className={styles.textLink}>Ons team leren kennen ↗ <small>(Duits)</small></Link></div>
           <details>
             <summary>Maak kennis met ons team <span aria-hidden="true">+</span></summary>
             <div className={styles.peopleGrid}>

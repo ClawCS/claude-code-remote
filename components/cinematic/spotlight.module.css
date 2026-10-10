@@ -7,10 +7,19 @@
 .rail{display:grid;grid-template-columns:1fr;gap:var(--cinematic-spacing-xl);}
 .frame{display:block;color:var(--cinematic-color-ink);text-decoration:none;}
 .posterWindow{margin:0;}
-.posterImage{width:100%;height:auto;display:block;transition:transform var(--cinematic-motion-duration-fast) var(--cinematic-motion-easing-standard);}
+.posterImage{width:100%;height:auto;object-fit:contain;display:block;transition:transform var(--cinematic-motion-duration-fast) var(--cinematic-motion-easing-standard);}
 .frame:hover .posterImage{transform:translateY(-4px);}
 .posterMeta{display:grid;gap:var(--cinematic-spacing-two-xs);margin-top:var(--cinematic-spacing-md);}
 .posterName{font-family:var(--cinematic-typography-family-display);font-size:var(--cinematic-typography-size-card);font-weight:var(--cinematic-typography-weight-bold);}
 .posterLabel{font-size:var(--cinematic-typography-size-small);color:var(--cinematic-color-burgundy);}
 @media(min-width:48rem){.rail{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(prefers-reduced-motion:reduce){.posterImage{transition:none;}.frame:hover .posterImage{transform:none;}}
+.brandStory { display:grid; width:min(100%,75rem); margin:0 auto var(--cinematic-spacing-section); gap:var(--cinematic-spacing-two-xl); align-items:center; }
+.bottleImage { min-width:0; background:var(--cinematic-color-surface); }
+.bottleImage img { display:block; width:100%; height:auto; max-height:38rem; object-fit:contain; }
+.brandCopy > p { max-width:40ch; font-size:var(--cinematic-typography-size-lead); line-height:var(--cinematic-typography-line-height-body); }
+.brandNames { list-style:none; margin:var(--cinematic-spacing-xl) 0; padding:0; border-top:1px solid var(--cinematic-color-line); }
+.brandNames a { display:flex; justify-content:space-between; gap:var(--cinematic-spacing-md); align-items:center; min-height:var(--cinematic-spacing-target); padding:var(--cinematic-spacing-sm) 0; border-bottom:1px solid var(--cinematic-color-line); color:var(--cinematic-color-ink); font-size:var(--cinematic-typography-size-body); text-decoration:none; }
+.brandNames a:hover { text-decoration:underline; text-underline-offset:.3em; }
+.allBrands { display:inline-flex; min-height:var(--cinematic-spacing-target); align-items:center; color:var(--cinematic-color-ink); font-size:var(--cinematic-typography-size-small); text-underline-offset:.3em; }
+@media(min-width:48rem) { .brandStory { grid-template-columns:1fr 1fr; gap:var(--cinematic-spacing-three-xl); } }

@@ -56,10 +56,11 @@ describe("source-backed rental catalog", () => {
     expect(counter).toContain("35,00");
     expect(counter).not.toContain("0,00");
   });
-  it("shows the same confirmed price unit in the homepage rental section", () => {
+  it("links the homepage service story to the full rental catalog without implying a reservation", () => {
     const result = renderToStaticMarkup(<ServiceSection />);
-    expect(result).toContain("Referenzpreise je 3 Werktage");
-    expect(result).not.toContain("kein bestätigter Mietzeitraum");
+    expect(result).toContain('href="/vermietung"');
+    expect(result).toContain("Eine Anfrage ist noch keine bestätigte Reservierung.");
+    expect(result).toContain("Verfügbarkeit und Konditionen klären wir persönlich.");
   });
   it("lets visitors choose dates directly without the removed long conditions block", () => {
     const result = html();

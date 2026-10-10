@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { CSSProperties } from "react";
 import TeamPhotoPlaceholder from "@/components/TeamPhotoPlaceholder";
 
@@ -19,8 +20,14 @@ export default function PeopleSection(): React.JSX.Element {
         <p className={styles.eyebrow}>Unser Markt. Unser Team.</p>
         <h2 id="menschen-title">Menschen hinter Jammers</h2>
         <p>Dein Lieblingsgetränk finden, eine Feier planen oder einfach kurz schnacken: Wir sind für dich da.</p>
+        <div className={styles.actionLinks}>
+          <Link href="/galerie" prefetch={false}>Unser Team kennenlernen ↗</Link>
+          <Link href="/bewerbung" prefetch={false}>Offene Stellen &amp; Bewerbung ↗</Link>
+        </div>
       </div>
       </div>
+      <details className={styles.peopleDetails}>
+      <summary>Die Menschen im Team <span aria-hidden="true">+</span></summary>
       <div className={styles.peopleGrid} data-people-story>
         <TeamPhotoPlaceholder />
         {PEOPLE_STORY.map((person) => {
@@ -48,6 +55,7 @@ export default function PeopleSection(): React.JSX.Element {
           );
         })}
       </div>
+      </details>
     </section>
   );
 }
