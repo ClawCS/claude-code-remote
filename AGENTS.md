@@ -10,6 +10,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Sync-Workflow (MANDATORY — Variante A)
 
+**Textkorrektur, 10.10.2026:** Öffentlich läuft seit 11:56:32 UTC / 13:56:32 Europe/Berlin App-Commit `c6f159a959564983d9bdc0f717d58590d0281d2c`. Nicht bestätigtes Weiterbildungs-/Bildungsgutschein-Banner sowie Förderungs-Kontaktaufforderung auf `/akademie/zertifikate` vollständig entfernt; externe Kursinformationen unverändert. Rückrollziel: `40b58c38b28cf840a0d94633cf12a94fd7da6c54`. Keine Sicherheits-/Bewerbungs-/Mailaktivierung. Nachweis: `docs/audits/2026-10-10-academy-claim-removal.md`. Die folgenden Releaseangaben sind historisch.
+
 **Foto-Release, 10.10.2026:** Öffentlich läuft seit 10:46:22 UTC / 12:46:22 Europe/Berlin App-Commit `40b58c38b28cf840a0d94633cf12a94fd7da6c54`: 17 freigegebene Desktop-Motive für Startseite, Marktleben, Gewinnmomente und Stellenanzeigen. Bewerbungsadresse auf allen drei Plakaten `info@trinkgut-jammers.de`; Ausbildung ausschließlich als E-Mail-Kontakt, kein neuer Upload-Beruf. Das vermeintliche TCG-Regalfoto zeigte Tabakwaren und bleibt ausgeschlossen. Rückrollziel: `ef95c0204c2679660ed0fca684ebb5e81069a603`. Lokal 3.135 Tests, Linux-Webprüfung 1.556 Tests, Lint/TypeScript/Build sowie 128 Originalangebote bestanden. Öffentliche Abnahme: 117 Seiten, 2.969 lokale Ressourcen, 31 API-Verträge, 17 Bilddownloads mit identischen SHA-256, Contentprüfung und Desktop-/Mobilansicht ohne Befund. Caddy-/Unit-Konfiguration unverändert; Bewerbung bleibt `enabled:false`, keine Sicherheits-, Mail-, Zahlungs- oder Löschaktivierung. Nachweis: `docs/audits/2026-10-10-desktop-photo-integration.md`. Folgende Releaseangaben sind historisch.
 
 **Release-Aktualisierung, 10.10.2026:** Öffentlich läuft seit 09:52 UTC / 11:52 Europe/Berlin App-Commit `ef95c0204c2679660ed0fca684ebb5e81069a603`: geprüfte Website-Korrekturen an Sortiment, Partyplaner, Akademie und Bewerbungsinformation. Rückrollziel ist der unveränderte Release `b2383232fb5dfdb3a25a96d01995d470b0a54889`. Linux-Webprüfung: 1.529 Tests, Lint, TypeScript, 128 Originalangebote und Produktionsbuild bestanden; öffentliche Abnahme: 117 Seiten, 2.820 lokale Dateien und 31 API-Verträge ohne Befund. Bewerbungsupload bleibt ausdrücklich deaktiviert; keine Bewerbungsdienste, Postfach-/Löschtests oder weitere Sicherheitskonfiguration aktiviert. Nikos „Vorerst keine Sicherheitskonfiguration ändern“ bleibt verbindlich. Konfigurationshashes vor/nach Release identisch. Nachweis: `docs/audits/2026-10-10-website-release.md`. Die folgenden älteren Releaseangaben sind historisch.
@@ -46,7 +48,7 @@ Nach jeder Code-Aenderung an UI/Seiten (`app/**`, `components/**`, `lib/**`, `pu
 
 Gilt fuer alle UI-/Seiten-Aenderungen. Reine Doku-/Konfig-Edits sind ausgenommen.
 
-# Weiterbildungsaussagen – ausdrücklicher Widerruf, 10.10.2026
+# Weiterbildungsaussagen – ausdrückliche Entfernung, 10.10.2026
 
 Niko verlangt die vollständige Entfernung des Akademie-Banners „Du willst dich weiterbilden?“ einschließlich der nicht bestätigten Zusagen zur Mitarbeiterunterstützung und Förderung über Bildungsgutscheine. Auch keine Kontaktaufforderung zu Förderberatung durch den Markt daraus ableiten. Eine ältere Git-Version oder ein allgemeiner Homepageauftrag ist keine Freigabe für solche Arbeitgeberleistungen. Externe Weiterbildungshinweise bleiben davon getrennt; keine Wiedereinführung dieser Aussagen ohne ausdrückliche Betreiberbestätigung.
 

@@ -194,6 +194,8 @@ ss -ltnp
 
 Bei `Type=simple` bestätigt `systemctl is-active` nur den gestarteten Prozess, nicht die HTTP-Bereitschaft. Erst die erfolgreiche HTTP-Probe erlaubt den nächsten Prüfschritt. Sie wiederholt höchstens zehnmal, startet nach 45 Sekunden keinen weiteren Versuch und begrenzt jeden Versuch auf fünf Sekunden (insgesamt höchstens etwa 50 Sekunden). Bei einem Fehlercode abbrechen und den vorherigen geprüften Release wieder aktivieren; keine endlose Warteschleife. Dieselbe Bereitschaftsprobe nach Rollback und weiteren Dienstneustarts ausführen.
 
+Wenn ein Bash-Umschaltskript hierfür einen `ERR`-Trap verwendet, vor Funktionsaufrufen `set -Eeuo pipefail` setzen. Ohne `-E` wird der Trap nicht in Funktionen wie Bereitschaftsprüfung oder Umschaltung vererbt; ein Fehler kann dann ohne Rückrollen beenden. Den Fehlerpfad vor Einsatz isoliert prüfen, ohne den laufenden Dienst absichtlich ausfallen zu lassen. Befund und Gegenprüfung: `docs/audits/2026-10-10-academy-claim-removal.md`.
+
 Erwartet: App nur `127.0.0.1:3000`; Mietkonfiguration `enabled:false`, `testMode:false`, `onlinePayment:false`. Flyerindex während des belegten Angebotszeitraums nicht `degraded`. Fehlgeschlagenen Start nicht als veröffentlicht melden: direkt vorherigen geprüften Release wieder aktivieren.
 
 Caddy-Konfiguration vor Installation mit der tatsächlich installierten Version prüfen, dann root-eigen installieren und den Dienst kontrolliert starten/reloaden:
