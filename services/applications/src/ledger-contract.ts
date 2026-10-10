@@ -68,6 +68,18 @@ function eventTuple(value: unknown): JournalEvent {
     else if (body[2] === "blocked") requireValue(["DEPENDENCY_UNAVAILABLE", "CONNECTION_FAILED", "OPERATION_TIMEOUT", "PROTOCOL_LIMIT", "FOLDER_UNAVAILABLE", "CANDIDATE_LIMIT", "INCOMPLETE_CONTENT", "UNSAFE_DELETE_CAPABILITY", "WRITE_UNAVAILABLE"].includes(body[3] as string));
     else if (body[2] === "uncertain") requireValue(body[3] === "DELETE_UNCERTAIN");
     else invalid();
+  } else if (e[3] === "erase_commit") {
+    requireValue(Array.isArray(e[4]));
+    const body = tuple(e[4], e[4][1] === "identifying_register" ? 9 : 4);
+    requireValue(typeof body[0] === "string"); applicationId(body[0]);
+    matches(body[2], /^[a-z0-9-]{1,32}$/); matches(body[3], digest);
+    if (body[1] === "identifying_register") {
+      requireValue(body[4] === "initial" || body[4] === "fence"); matches(body[5], id);
+      sequence(body[6]); requireValue(BigInt(body[6]) <= BigInt(Number.MAX_SAFE_INTEGER));
+      matches(body[7], id); matches(body[8], digest);
+    } else requireValue(["processing_payload", "processing_contact", "incident_identity", "public_token"].includes(body[1] as string));
+  } else if (e[3] === "erase_done") {
+    const body = tuple(e[4], 2); requireValue(typeof body[0] === "string"); applicationId(body[0]); matches(body[1], id);
   } else invalid();
   const payload = Object.freeze([...(e[4] as unknown[])]);
   return Object.freeze([e[0], e[1], e[2], e[3], payload]) as unknown as JournalEvent;

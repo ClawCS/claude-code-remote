@@ -41,9 +41,49 @@ export type MailboxJournalEvent = readonly ["tj-journal-event-v1", string, strin
   | readonly ["tj-journal-event-v1", string, string, "copy_mutation_started", readonly [ApplicationId, string, "1" | "2" | "3", string]]
   | readonly ["tj-journal-event-v1", string, string, "copy_result", CopyResultPayload]
   | readonly ["tj-journal-event-v1", string, string, "mailbox_clear_observed", readonly [ApplicationId, string, "1" | "2" | "3", string, string, "listed-selectable-v1"]];
+export type TechnicalEraseScope = "processing_payload" | "processing_contact" | "incident_identity" | "public_token";
+export type EraseScope = TechnicalEraseScope | "identifying_register";
+export type EraseJournalEvent = readonly ["tj-journal-event-v1", string, string, "erase_commit", readonly [ApplicationId, TechnicalEraseScope, string, string]]
+  | readonly ["tj-journal-event-v1", string, string, "erase_commit", readonly [ApplicationId, "identifying_register", string, string, "initial" | "fence", string, string, string, string]]
+  | readonly ["tj-journal-event-v1", string, string, "erase_done", readonly [ApplicationId, string]];
+export interface CurrentExternalAttestation {
+  readonly sequence: number;
+  readonly version: number;
+  readonly actor: StaffId;
+  readonly at: Instant;
+  readonly reason: string;
+}
+export interface CurrentMailboxClear {
+  readonly caseId: ApplicationId;
+  readonly caseVersion: number;
+  readonly safetyRevision: number;
+  readonly head: JournalCheckpoint;
+  readonly clearEvent: Extract<MailboxJournalEvent, readonly [string, string, string, "mailbox_clear_observed", unknown]>;
+  readonly clearReceipt: DurableReceipt;
+  readonly intentEvent: Extract<MailboxJournalEvent, readonly [string, string, string, "attempt_intent", unknown]>;
+  readonly intentReceipt: DurableReceipt;
+}
+export interface FinalErasureEvidence {
+  readonly caseId: ApplicationId; readonly caseVersion: number; readonly safetyRevision: number;
+  readonly clear: CurrentMailboxClear; readonly attestation: CurrentExternalAttestation; readonly externalAttestationAssociation: string;
+}
+export interface ErasureWork {
+  readonly commitEventId: string; readonly caseId: ApplicationId; readonly scope: EraseScope;
+  readonly ledgerId: string; readonly historyEpoch: string; readonly associationKeyId: string; readonly replayAssociation: string;
+  readonly sequence: string; readonly entryHash: string; readonly stage: "rows-pending" | "database-maintenance-pending" | "locally-complete";
+}
+export type ErasureRowPhase = "scope-contact" | "scope-proofs" | "payload-artifacts" | "payload-reservations" | "payload-case" | "payload-send"
+  | "identity-grants" | "identity-lifecycle-audit" | "identity-lifecycle-proposals" | "identity-audit" | "identity-searches"
+  | "identity-diagnostics" | "identity-mail-events" | "identity-mail-state" | "identity-delivery-attempts" | "identity-delivery"
+  | "identity-lifecycle" | "identity-replay-reservations" | "identity-case-reservation";
+export type ErasureRowKey = string | number | readonly [string, string | number];
+export type ErasureRowCursor = readonly [string, ErasureRowPhase, ErasureRowKey | null];
+export interface ErasureRowTarget { readonly phase: ErasureRowPhase; readonly key: ErasureRowKey }
+export interface ErasureRowPage { readonly targets: readonly ErasureRowTarget[]; readonly next: ErasureRowCursor | null; readonly consumedItems: number }
+export interface ErasureWorkPage { readonly items: readonly ErasureWork[]; readonly hasMore: boolean; readonly consumedItems: number }
 export type JournalEvent = readonly ["tj-journal-event-v1", string, string, "case_fence", readonly [ApplicationId, "initial" | "fence", string, string, FenceAction]]
   | readonly ["tj-journal-event-v1", string, string, "barrier", readonly [string, string, "startup" | "restore" | "refresh"]]
-  | MailboxJournalEvent;
+  | MailboxJournalEvent | EraseJournalEvent;
 export type Tombstone = JournalEvent;
 export type SignedEntry = string & { readonly __signedJournalEntry: unique symbol };
 export type SignedHead = string & { readonly __signedJournalHead: unique symbol };
@@ -92,6 +132,7 @@ export interface AuthDependencies {
   readonly keys: { readonly privateKey: KeyObject; readonly publicKey: KeyObject };
   readonly rateKey: Buffer;
   readonly trust: AuthTrustPort;
+  readonly initialEnrollmentEpoch?: () => Digest | null;
 }
 export interface LoginInput { readonly username: string; readonly password: string; readonly otp: string; readonly trustedIp: string }
 export interface StaffSession { readonly sessionId: Digest; readonly staffId: StaffId; readonly generation: number; readonly issuedAt: Instant; readonly expiresAt: Instant }
@@ -213,6 +254,7 @@ export type DeliveryFailureReason = "INVALID_INPUT" | "MALICIOUS_INPUT" | "CONTA
 export type DeliveryFailure = { category: "invalid"; reason: "INVALID_INPUT" | "MALICIOUS_INPUT" } | { category: "operational"; reason: Exclude<DeliveryFailureReason, "INVALID_INPUT" | "MALICIOUS_INPUT"> };
 export interface DeliveryAttempt { ordinal: number; startedAt: Instant; finishedAt: Instant | null; outcome: SendOutcome | null; mimeDigest: Digest; fingerprint: Digest }
 export interface DeliveryRecord {
+  readonly payloadErased?: true;
   readonly id: ApplicationId; readonly identity: DeliveryIdentity | null; readonly registered: RegisteredMail | null;
   readonly mimeDigest: Digest | null; readonly sendDueAt: Instant | null; readonly receiptStartedAt: Instant | null;
   readonly receiptSchedule: readonly Instant[]; readonly receiptCursor: number; readonly mailboxChecks: number;

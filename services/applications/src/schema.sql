@@ -237,3 +237,122 @@ CREATE INDEX deletion_contradictory_result ON deletion_events(caseId)
  AND json_extract(event,'$[4][2]')='mismatch'
  AND json_extract(event,'$[4][3]') IN ('INVALID_IDENTITY','CONTENT_MISMATCH','IDENTITY_CHANGED');
 PRAGMA user_version = 8;
+-- Task11A migration9: fixed erasure obligations survive removal of live parents.
+CREATE TABLE erasure_events(
+ eventId TEXT PRIMARY KEY CHECK(length(eventId)=32 AND eventId NOT GLOB '*[^a-f0-9]*'),
+ caseId TEXT NOT NULL, event TEXT NOT NULL CHECK(length(CAST(event AS BLOB))<=2048 AND json_valid(event)),
+ phase TEXT NOT NULL CHECK(phase IN('proposed','acknowledged')),
+ entry TEXT CHECK(length(CAST(entry AS BLOB))<=4096), head TEXT CHECK(length(CAST(head AS BLOB))<=1024),
+ CHECK(json_array_length(event)=5 AND json_extract(event,'$[0]')='tj-journal-event-v1' AND json_extract(event,'$[1]')=eventId AND json_extract(event,'$[4][0]')=caseId),
+ CHECK(json_extract(event,'$[3]') IN('erase_commit','erase_done')),
+ CHECK((phase='proposed' AND entry IS NULL AND head IS NULL) OR (phase='acknowledged' AND entry IS NOT NULL AND head IS NOT NULL))
+);
+CREATE UNIQUE INDEX erasure_one_pending ON erasure_events(caseId) WHERE phase='proposed';
+CREATE TRIGGER erasure_event_immutable BEFORE UPDATE OF eventId,caseId,event ON erasure_events
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_ERASURE_EVENT'); END;
+CREATE TABLE erasure_replay(
+ ledgerId TEXT NOT NULL, historyEpoch TEXT NOT NULL, associationKeyId TEXT NOT NULL,
+ replayAssociation TEXT NOT NULL CHECK(length(replayAssociation)=64 AND replayAssociation NOT GLOB '*[^a-f0-9]*'),
+ stagedEventId TEXT NOT NULL, committedEventId TEXT,
+ PRIMARY KEY(ledgerId,historyEpoch,associationKeyId,replayAssociation)
+);
+CREATE TABLE erasure_obligations(
+ commitEventId TEXT PRIMARY KEY, caseId TEXT NOT NULL,
+ scope TEXT NOT NULL CHECK(scope IN('processing_payload','processing_contact','public_token','incident_identity','identifying_register')),
+ ledgerId TEXT NOT NULL, historyEpoch TEXT NOT NULL, associationKeyId TEXT NOT NULL, replayAssociation TEXT NOT NULL,
+ sequence TEXT NOT NULL, entryHash TEXT NOT NULL, inspectionGeneration TEXT NOT NULL,
+ stage TEXT NOT NULL DEFAULT 'rows-pending' CHECK(stage IN('rows-pending','database-maintenance-pending','locally-complete')),
+ historicalDone TEXT UNIQUE, selectedCycle INTEGER NOT NULL DEFAULT 0 CHECK(selectedCycle BETWEEN 0 AND 9007199254740991)
+);
+CREATE INDEX erasure_work_order ON erasure_obligations(inspectionGeneration,selectedCycle,length(sequence),sequence,caseId,commitEventId) WHERE stage!='locally-complete';
+CREATE INDEX erasure_case_scope ON erasure_obligations(caseId,scope);
+CREATE TRIGGER erasure_obligation_immutable BEFORE UPDATE OF commitEventId,caseId,scope,ledgerId,historyEpoch,associationKeyId,replayAssociation,sequence,entryHash ON erasure_obligations
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_ERASURE_OBLIGATION'); END;
+CREATE TABLE erasure_scopes(
+ caseId TEXT NOT NULL, scope TEXT NOT NULL CHECK(scope IN('processing_payload','processing_contact','public_token','incident_identity','identifying_register')),
+ eventId TEXT NOT NULL, committed INTEGER NOT NULL CHECK(committed IN(0,1)), PRIMARY KEY(caseId,scope)
+);
+CREATE TRIGGER erasure_scope_monotonic BEFORE UPDATE OF committed ON erasure_scopes WHEN NEW.committed<OLD.committed
+BEGIN SELECT RAISE(ABORT,'MONOTONIC_ERASURE_SCOPE'); END;
+CREATE TABLE erasure_progress(singleton INTEGER PRIMARY KEY CHECK(singleton=1),cycle INTEGER NOT NULL CHECK(cycle BETWEEN 1 AND 9007199254740991));
+INSERT INTO erasure_progress VALUES(1,1);
+CREATE TABLE erasure_maintenance(
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1), authLocked INTEGER NOT NULL DEFAULT 0 CHECK(authLocked IN(0,1)),
+ sanitation TEXT NOT NULL DEFAULT 'unqualified' CHECK(sanitation IN('unqualified','required','pending')),
+ scanPass TEXT NOT NULL CHECK(length(scanPass)=32 AND scanPass NOT GLOB '*[^a-f0-9]*')
+);
+INSERT INTO erasure_maintenance(singleton,scanPass) VALUES(1,lower(hex(randomblob(16))));
+CREATE TRIGGER erasure_auth_lock_monotonic BEFORE UPDATE OF authLocked ON erasure_maintenance WHEN NEW.authLocked<OLD.authLocked
+BEGIN SELECT RAISE(ABORT,'AUTH_RESTORE_LOCKED'); END;
+CREATE TABLE erasure_safety_carry(
+ eventId TEXT PRIMARY KEY, caseId TEXT NOT NULL, source TEXT NOT NULL CHECK(source IN('lifecycle','mailbox')),
+ event TEXT NOT NULL CHECK(length(CAST(event AS BLOB))<=2048 AND json_valid(event)),
+ phase TEXT NOT NULL CHECK(phase IN('proposed','acknowledged')),
+ entry TEXT CHECK(length(CAST(entry AS BLOB))<=4096), head TEXT CHECK(length(CAST(head AS BLOB))<=1024),
+ coveringCommit TEXT NOT NULL REFERENCES erasure_obligations(commitEventId), UNIQUE(caseId,source),
+ CHECK(json_array_length(event)=5 AND json_extract(event,'$[1]')=eventId AND json_extract(event,'$[4][0]')=caseId),
+ CHECK((source='lifecycle' AND json_extract(event,'$[3]')='case_fence') OR (source='mailbox' AND json_extract(event,'$[3]') IN('attempt_intent','copy_mutation_started','copy_result','mailbox_clear_observed'))),
+ CHECK((phase='proposed' AND entry IS NULL AND head IS NULL) OR (phase='acknowledged' AND entry IS NOT NULL AND head IS NOT NULL))
+);
+CREATE TABLE erasure_scans(
+ pass TEXT NOT NULL CHECK(length(pass)=32 AND pass NOT GLOB '*[^a-f0-9]*'), root TEXT NOT NULL CHECK(root IN('incoming','custody','runtime')),
+ state TEXT NOT NULL CHECK(state IN('scanning','complete','blocked')), itemCount INTEGER NOT NULL CHECK(itemCount BETWEEN 0 AND 9007199254740991),
+ error TEXT CHECK(error IN('UNKNOWN_OBJECT','OWNERSHIP_INVALID','JOURNAL_INVALID','INGRESS_RECOVERY_REQUIRED','STORAGE_FAILED')),
+ PRIMARY KEY(pass,root), CHECK((state='blocked')=(error IS NOT NULL))
+);
+CREATE TABLE erasure_inventory_journals(
+ pass TEXT NOT NULL CHECK(length(pass)=32 AND pass NOT GLOB '*[^a-f0-9]*'), journalId TEXT NOT NULL CHECK(length(journalId)=36 AND journalId NOT GLOB '*[^a-f0-9-]*'), caseId TEXT,
+ kind TEXT NOT NULL CHECK(kind IN('intake','artifact','processing')), version INTEGER NOT NULL CHECK(version IN(1,2,3)),
+ state TEXT NOT NULL CHECK(state IN('reserved','committed','orphan')), artifactKind TEXT CHECK(artifactKind IN('bundle','mime')),
+ budget INTEGER NOT NULL CHECK(budget BETWEEN 1 AND 134217728), cleanupAfter TEXT NOT NULL,
+ reservationId TEXT, generation TEXT, domain TEXT, allowance INTEGER CHECK(allowance BETWEEN 1 AND 9007199254740991),
+ PRIMARY KEY(pass,journalId), CHECK((kind='artifact')=(artifactKind IS NOT NULL)),
+ CHECK((kind='intake' AND reservationId IS NOT NULL AND reservationId=journalId) OR (kind!='intake' AND reservationId IS NULL AND generation IS NULL AND domain IS NULL AND allowance IS NULL)),
+ CHECK((generation IS NULL AND domain IS NULL AND allowance IS NULL AND (kind!='intake' OR version=1)) OR (kind='intake' AND generation IS NOT NULL AND domain IS NOT NULL AND length(generation)>0 AND length(domain)>0 AND allowance BETWEEN 1 AND 14747648)),
+ CHECK(kind='processing' OR (kind='intake' AND budget<=29495296) OR (kind='artifact' AND ((artifactKind='bundle' AND budget<=10553344) OR (artifactKind='mime' AND budget<=16779264)))),
+ CHECK(length(CAST(COALESCE(generation,'') AS BLOB))+length(CAST(COALESCE(domain,'') AS BLOB))<=4096)
+);
+CREATE TABLE erasure_inventory_objects(
+ pass TEXT NOT NULL, journalId TEXT NOT NULL, slot TEXT NOT NULL CHECK(slot IN('incoming-sealed','original-sealed','artifact-staging','artifact-sealed','processing-directory','processing-file','journal','journal-temp')),
+ leaf TEXT NOT NULL DEFAULT '', root TEXT NOT NULL CHECK(root IN('incoming','custody','runtime')),
+ presence TEXT NOT NULL CHECK(presence IN('present','absent')), device INTEGER, inode INTEGER, size INTEGER,
+ type TEXT CHECK(type IN('file','directory')), uid INTEGER, gid INTEGER, mode INTEGER, nlink INTEGER,
+ leaseState TEXT CHECK(leaseState IN('prepared','bounded','quiescent','released')), chargedBytes INTEGER,
+ leaseDevice INTEGER, leaseInode INTEGER,
+ PRIMARY KEY(pass,journalId,slot,leaf), FOREIGN KEY(pass,journalId) REFERENCES erasure_inventory_journals(pass,journalId),
+ CHECK((slot='incoming-sealed' AND root='incoming') OR (slot IN('processing-directory','processing-file') AND root='runtime') OR (slot IN('original-sealed','artifact-staging','artifact-sealed','journal','journal-temp') AND root='custody')),
+ CHECK((slot='processing-file' AND (leaf GLOB '[0-4].data' OR leaf GLOB 'document-[1-5].pdf' OR leaf GLOB 'document-[1-5].jpg' OR leaf GLOB 'document-[1-5].png')) OR (slot='journal-temp' AND length(leaf)=36 AND leaf NOT GLOB '*[^a-f0-9-]*') OR (slot NOT IN('processing-file','journal-temp') AND leaf='')),
+ CHECK((presence='absent' AND device IS NULL AND inode IS NULL AND size IS NULL AND type IS NULL AND uid IS NULL AND gid IS NULL AND mode IS NULL AND nlink IS NULL) OR (presence='present' AND device IS NOT NULL AND inode IS NOT NULL AND size IS NOT NULL AND type IS NOT NULL AND uid IS NOT NULL AND gid IS NOT NULL AND mode IS NOT NULL AND nlink IS NOT NULL AND device BETWEEN 0 AND 9007199254740991 AND inode BETWEEN 0 AND 9007199254740991 AND size BETWEEN 0 AND 9007199254740991 AND uid BETWEEN 0 AND 9007199254740991 AND gid BETWEEN 0 AND 9007199254740991 AND mode BETWEEN 0 AND 4095 AND ((slot='processing-directory' AND type='directory' AND nlink BETWEEN 1 AND 9007199254740991) OR (slot!='processing-directory' AND type='file' AND nlink=1)))),
+ CHECK((leaseState IS NULL AND chargedBytes IS NULL AND leaseDevice IS NULL AND leaseInode IS NULL) OR (leaseState IS NOT NULL AND slot='incoming-sealed' AND chargedBytes IS NOT NULL AND chargedBytes BETWEEN 0 AND 9007199254740991 AND ((leaseDevice IS NULL AND leaseInode IS NULL) OR (leaseDevice IS NOT NULL AND leaseInode IS NOT NULL AND leaseDevice BETWEEN 0 AND 9007199254740991 AND leaseInode BETWEEN 0 AND 9007199254740991)))),
+ CHECK(leaseState!='released' OR (chargedBytes=0 AND leaseDevice IS NULL AND leaseInode IS NULL))
+);
+CREATE TRIGGER erasure_object_kind_insert BEFORE INSERT ON erasure_inventory_objects
+WHEN NOT EXISTS(SELECT 1 FROM erasure_inventory_journals j WHERE j.pass=NEW.pass AND j.journalId=NEW.journalId
+ AND ((NEW.slot IN('incoming-sealed','original-sealed') AND j.kind='intake') OR (NEW.slot IN('artifact-staging','artifact-sealed') AND j.kind='artifact') OR (NEW.slot IN('processing-directory','processing-file') AND j.kind='processing') OR NEW.slot IN('journal','journal-temp'))
+ AND (NEW.leaseState IS NULL OR (j.allowance IS NOT NULL AND NEW.chargedBytes<=j.allowance)))
+BEGIN SELECT RAISE(ABORT,'ERASURE_INVENTORY_INVALID');END;
+CREATE TRIGGER erasure_object_binding_immutable BEFORE UPDATE OF pass,journalId,slot,leaf,root ON erasure_inventory_objects
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_ERASURE_OBJECT');END;
+CREATE TRIGGER erasure_journal_binding_immutable BEFORE UPDATE OF pass,journalId,kind,version,artifactKind,reservationId,generation,domain,allowance ON erasure_inventory_journals
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_ERASURE_JOURNAL');END;
+CREATE TABLE erasure_manifests(
+ eraseCommitId TEXT NOT NULL REFERENCES erasure_obligations(commitEventId), scanPass TEXT NOT NULL, journalId TEXT NOT NULL,
+ slot TEXT NOT NULL, leaf TEXT NOT NULL DEFAULT '', expectedDevice INTEGER, expectedInode INTEGER,
+ expectedSize INTEGER NOT NULL CHECK(expectedSize BETWEEN 0 AND 9007199254740991), remainingCharge INTEGER NOT NULL CHECK(remainingCharge BETWEEN 0 AND 9007199254740991),
+ phase TEXT NOT NULL CHECK(phase IN('planned','holders-released','absent-synced','metadata-finalized')),
+ PRIMARY KEY(eraseCommitId,journalId,slot,leaf), FOREIGN KEY(scanPass,journalId,slot,leaf) REFERENCES erasure_inventory_objects(pass,journalId,slot,leaf),
+ CHECK((expectedDevice IS NULL AND expectedInode IS NULL) OR (expectedDevice IS NOT NULL AND expectedInode IS NOT NULL AND expectedDevice BETWEEN 0 AND 9007199254740991 AND expectedInode BETWEEN 0 AND 9007199254740991))
+);
+CREATE TRIGGER erasure_manifest_binding_immutable BEFORE UPDATE OF eraseCommitId,scanPass,journalId,slot,leaf,expectedDevice,expectedInode,expectedSize ON erasure_manifests
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_ERASURE_MANIFEST');END;
+CREATE INDEX erasure_status_proofs ON status_proofs(caseId,proofHash);
+CREATE INDEX erasure_audit ON audit(caseId,sequence);
+CREATE INDEX erasure_grants ON auth_grants(caseId,hash);
+CREATE INDEX erasure_lifecycle_audit ON lifecycle_audit(caseId,sequence);
+CREATE INDEX erasure_positive_audit ON lifecycle_audit(caseId,sequence DESC) WHERE kind='confirm-external-copies';
+CREATE INDEX erasure_invalidated_audit ON lifecycle_audit(caseId,sequence) WHERE newExternalConfirmed=0;
+CREATE INDEX erasure_lifecycle_proposals ON lifecycle_proposals(caseId,eventId);
+CREATE INDEX erasure_mail_events ON deletion_events(caseId,eventId);
+CREATE INDEX erasure_diagnostics ON deletion_diagnostics(caseId,eventId);
+CREATE INDEX erasure_reservations ON reservations(sessionHash,idempotencyKey,id);
+PRAGMA user_version = 9;

@@ -29,6 +29,10 @@ export function createAuthentication(store: AuthRepository, deps: AuthDependenci
   const rateKey = Buffer.from(deps.rateKey), hasher = createPasswordHasher();
   const now = () => utcInstant(clock.now().toISOString());
   const epoch = () => trustedAuthEpoch(deps);
+  function initialPermit(authority: Digest): void {
+    try { const permit = deps.initialEnrollmentEpoch?.(); if (typeof permit !== "string" || digest(permit) !== authority || epoch() !== authority) throw new Error(); }
+    catch { throw new Error("AUTH_DENIED"); }
+  }
   type Pending = { hash: Digest; secret: Secret; staff: AuthStaff; epoch: Digest; issuedAt: Instant; expiresAt: Instant; proof?: { step: number } | { recovery: Digest } };
   let pending: Pending | undefined;
   function stage(staff: AuthStaff, authority: Digest, issuedAt: Instant, proof?: Pending["proof"]) {
@@ -40,9 +44,11 @@ export function createAuthentication(store: AuthRepository, deps: AuthDependenci
   function finish(handle: string, otp: string, replacement: boolean) {
     const at = now(), authority = epoch(), item = pending;
     if (!item || item.hash !== tokenDigest("replacement", handle) || item.epoch !== authority || at < item.issuedAt || at >= item.expiresAt || !!item.proof !== replacement) throw new Error("AUTH_DENIED");
+    if (!replacement) initialPermit(item.epoch);
     const generation = item.staff.generation + (replacement ? 1 : 0), step = verifyFactor(item.secret, otp, Date.parse(at));
     const codes = newRecoveryCodes(), row = { ...item.staff, generation, lastStep: step, factor: sealFactor(item.secret, item.staff.id, generation, deps.keys.publicKey) };
     if (epoch() !== authority) throw new Error("AUTH_DENIED");
+    if (!replacement) initialPermit(item.epoch);
     const hashes = codes.map(code => recoveryDigest(code, row.id, generation));
     if (replacement) store.replace(item.staff, row, item.proof!, hashes, at); else store.enroll(row, hashes, at);
     pending = undefined; item.secret.bytes.fill(0);
@@ -51,9 +57,9 @@ export function createAuthentication(store: AuthRepository, deps: AuthDependenci
   const service: ApplicationAuth = {
     async beginEnrollment(password, confirmation) {
       try {
-        const authority = epoch(); if (!validPassword(password) || !validPassword(confirmation) || password !== confirmation || store.staff("niko")) throw new Error();
+        const authority = epoch(); initialPermit(authority); if (!validPassword(password) || !validPassword(confirmation) || password !== confirmation || store.staff("niko")) throw new Error();
         const hashed = await hasher.hash(password), at = now();
-        if (epoch() !== authority || store.staff("niko")) throw new Error();
+        initialPermit(authority); if (epoch() !== authority || store.staff("niko")) throw new Error();
         return stage({ id: staffId(randomUUID()), login: "niko", displayName: "Nikolaos Jammers", enabled: 1, generation: 1, password: hashed, factor: "", lastStep: 0 }, authority, at);
       } catch { throw new Error("AUTH_DENIED"); }
     },

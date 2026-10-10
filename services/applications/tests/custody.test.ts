@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { sealIncoming, encodePayload, payloadDigest, readBoundedFile } from "../src/crypto";
 import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
 import { createTestCustodyLedger as createCustodyLedger, testIngressAuthority } from "./fixtures/ingress-authority";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openReadyTestRepository } from "./fixtures/admission";
 import { digest, utcInstant, type WorkerKeys, type ApplicationRepository, type CommittedIntake } from "../src/types";
 import { makeArtifactHarness, claimArtifactPreparation } from "./fixtures/artifacts";
 import { createArtifactStore } from "../src/artifact-store";
@@ -27,7 +27,7 @@ beforeEach(async () => {
   const pair = generateKeyPairSync("rsa", { modulusLength: 2048 });
   const intakeRoot = join(root, "intake"), privateRoot = join(root, "worker"), runtimeRoot = join(root, "run");
   await Promise.all([intakeRoot, privateRoot, runtimeRoot].map(path => mkdir(path, { mode: 0o700 })));
-  repo = openRepository(join(root, "registry.sqlite"));
+  repo = await openReadyTestRepository(join(root, "registry.sqlite"));
   const custody = createCustodyLedger(repo, { intakeRoot, custodyRoot: privateRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock: { now: () => new Date("2026-10-09T10:00:00.000Z") } });
   await custody.reconcile();
   keys = { ...pair, intakeRoot, privateRoot, runtimeRoot, custody }; records = new Map();
@@ -79,7 +79,7 @@ describe("terminal idempotency conflict", () => {
       expect(afterRecovery.orphans).toEqual([]);
       expect(await readFile(bundle.path)).toEqual(bundleBytes);
 
-      h.repo.close(); reopened = openRepository(join(h.root, "registry.sqlite"), h.config.clock);
+      h.repo.close(); reopened = await openReadyTestRepository(join(h.root, "registry.sqlite"), h.config.clock);
       let recovered = createCustodyLedger(reopened, h.config);
       await recovered.reconcile();
       const afterRestart = await recovered.cleanupOrphans();
@@ -89,7 +89,7 @@ describe("terminal idempotency conflict", () => {
 
       const unaccepted = await recovered.reserve({ ...testAdmission(), sessionHash: digest("c".repeat(64)), idempotencyKey: "genuine-orphan", reservedBytes: 20000, now: utcInstant(time.toISOString()) });
       const orphan = await sealIncoming((async function* () { yield encodePayload(h.payload); })(), { root: h.keys.intakeRoot, maxBytes: 10000, reservationId: unaccepted.id }, h.keys.publicKey);
-      reopened.close(); reopened = openRepository(join(h.root, "registry.sqlite"), h.config.clock);
+      reopened.close(); reopened = await openReadyTestRepository(join(h.root, "registry.sqlite"), h.config.clock);
       recovered = createCustodyLedger(reopened, h.config);
       expect((await recovered.reconcile()).orphans).toEqual([{ path: orphan.path, cleanupAfter: "2026-10-11T10:00:00.000Z" }]);
       time = new Date("2026-10-11T10:00:00.000Z");
@@ -177,7 +177,7 @@ describe("terminal idempotency conflict", () => {
       expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
       await holder.write(Buffer.from("live"), 0, 4, 0);
       expect((await holder.stat()).ino).toBe((await stat(pending.file.path)).ino);
-      repo.close(); repo = openRepository(join(root, "registry.sqlite"));
+      repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite"));
       keys.custody = createCustodyLedger(repo, { intakeRoot: keys.intakeRoot, custodyRoot: keys.privateRoot, runtimeRoot: keys.runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock: { now: () => new Date("2026-10-09T10:00:00.000Z") } });
       await keys.custody.reconcile();
       expect(keys.custody.getIntakeReadiness()).toEqual({ ready: false });
@@ -278,14 +278,14 @@ describe("bounded wire payload", () => {
   it("removes journal-owned plaintext after an actual SIGKILL before reopening healthy custody", async () => {
     repo.close();
     const parameters = { root, intakeRoot: keys.intakeRoot, privateRoot: keys.privateRoot, runtimeRoot: keys.runtimeRoot, sourceRoot: process.cwd(), body };
-    const code = `const {join}=require('node:path'); const {testAdmission}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {generateKeyPairSync}=require('node:crypto'); const {openTestRepository:openRepository}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {createCustodyLedger,takePrivateSnapshot,withPrivateFiles}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {encodePayload,payloadDigest,sealIncoming}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const clock={now:()=>new Date(now)}; const custody=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.privateRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock}); await custody.reconcile(); const keys={...generateKeyPairSync('rsa',{modulusLength:2048}),intakeRoot:p.intakeRoot,privateRoot:p.privateRoot,runtimeRoot:p.runtimeRoot,custody}; const reservation=await custody.reserve({ ...testAdmission(), sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); const file=await sealIncoming((async function*(){yield encodePayload(p.body)})(),{root:p.intakeRoot,maxBytes:reservation.reservedBytes,reservationId:reservation.id},keys.publicKey); const accepted=await custody.commitIntake({reservationId:reservation.id,encryptedPayloadPath:file.path,actualBytes:file.bytes,digest:payloadDigest(p.body),encryptedName:'ciphertext',job:'sales-fulltime',now}); const snapshot=await takePrivateSnapshot(repo.getCommittedIntake(accepted.id),keys); await withPrivateFiles(snapshot,keys,async()=>{process.stdout.write('ready');await new Promise(()=>{});}); })().catch(e=>{console.error(e);process.exit(1)}); setInterval(()=>{},1000);`;
+    const code = `const {join}=require('node:path'); const {testAdmission}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {generateKeyPairSync}=require('node:crypto'); const {openReadyTestRepository:openRepository}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {createCustodyLedger,takePrivateSnapshot,withPrivateFiles}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {encodePayload,payloadDigest,sealIncoming}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=await openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const clock={now:()=>new Date(now)}; const custody=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.privateRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock}); await custody.reconcile(); const keys={...generateKeyPairSync('rsa',{modulusLength:2048}),intakeRoot:p.intakeRoot,privateRoot:p.privateRoot,runtimeRoot:p.runtimeRoot,custody}; const reservation=await custody.reserve({ ...testAdmission(), sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); const file=await sealIncoming((async function*(){yield encodePayload(p.body)})(),{root:p.intakeRoot,maxBytes:reservation.reservedBytes,reservationId:reservation.id},keys.publicKey); const accepted=await custody.commitIntake({reservationId:reservation.id,encryptedPayloadPath:file.path,actualBytes:file.bytes,digest:payloadDigest(p.body),encryptedName:'ciphertext',job:'sales-fulltime',now}); const snapshot=await takePrivateSnapshot(repo.getCommittedIntake(accepted.id),keys); await withPrivateFiles(snapshot,keys,async()=>{process.stdout.write('ready');await new Promise(()=>{});}); })().catch(e=>{console.error(e);process.exit(1)}); setInterval(()=>{},1000);`;
     const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(parameters)};${code.replace("services/applications/src/custody.ts","services/applications/tests/fixtures/ingress-authority.ts")}`], { stdio: ["ignore", "pipe", "pipe"] });
     try {
       await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("child failed before plaintext scope"); })]);
       expect(await readdir(keys.runtimeRoot)).toHaveLength(1);
       const exited = once(child, "exit"); child.kill("SIGKILL"); await exited;
       await testIngressAuthority(keys.intakeRoot).recoverExitedHarness(child,keys.privateRoot);
-      repo = openRepository(join(root, "registry.sqlite"));
+      repo = await openReadyTestRepository(join(root, "registry.sqlite"));
       const recovered = createCustodyLedger(repo, { intakeRoot: keys.intakeRoot, custodyRoot: keys.privateRoot, runtimeRoot: keys.runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock: { now: () => new Date("2026-10-09T10:00:00.000Z") } });
       await recovered.reconcile(); expect(await readdir(keys.runtimeRoot)).toEqual([]);
     } finally { child.kill("SIGKILL"); }

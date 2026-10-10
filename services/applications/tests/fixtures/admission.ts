@@ -1,15 +1,33 @@
 import { randomBytes } from "node:crypto";
-import { digest, type AdmissionScope } from "../../src/types";
+import { digest, type AdmissionScope, type ApplicationRepository, type SafetyJournal } from "../../src/types";
 import { openRepository } from "../../src/repository";
+import { createSafetyJournal } from "../../src/ledger";
+import { syntheticJournal } from "./ledger";
 import type Database from "better-sqlite3";
 // Explicit synthetic configuration used only by local legacy test fixtures.
 export const testAdmissionScope: AdmissionScope = ["a".repeat(32), "application", null, "2020-01-01T00:00:00.000Z", "2035-01-01T00:00:00.000Z"];
+const journals=new WeakMap<ApplicationRepository,SafetyJournal>();
 export function openTestRepository(path: string, clock = { now: () => new Date("2026-10-09T10:00:00.000Z") }, options: Parameters<typeof openRepository>[2] = {}) {
   if (process.env.NODE_ENV !== "test") throw new Error("TEST_ONLY");
-  return openRepository(path, clock, { admissionScope: { currentScope: () => testAdmissionScope }, ...options });
+  const fixture=syntheticJournal();let journal!:SafetyJournal;
+  const repo=openRepository(path, clock, { admissionScope: { currentScope: () => testAdmissionScope },deletionScope:{currentScope:()=>({ledgerId:fixture.context.ledgerId,historyEpoch:fixture.context.historyEpoch,associationKeyId:"fixture-erasure",associationKey:Buffer.alloc(32,17),approvedScopes:[testAdmissionScope]})},...options,
+    journalFactory:projection=>journal=options.journalFactory?options.journalFactory(projection):createSafetyJournal({port:fixture.port,trust:{currentContext:()=>fixture.context},clock:{wallNow:()=>clock.now(),monotonicNow:()=>Date.now()},projection}),
+  });journals.set(repo,journal);return repo;
+}
+export async function refreshTestRepository(repo:ApplicationRepository):Promise<void>{
+  const journal=journals.get(repo);if(!journal)throw new Error("FIXTURE_JOURNAL_REQUIRED");
+  const result=await journal.refresh("startup");if(result.kind!=="observed")throw new Error("FIXTURE_JOURNAL_INCOMPLETE");
+}
+export async function openReadyTestRepository(...args:Parameters<typeof openTestRepository>){
+  const repo=openTestRepository(...args);try{await refreshTestRepository(repo);return repo;}catch(error){repo.close();throw error;}
+}
+export function removeTask11Schema(db:Database.Database):void{
+  db.exec("DROP INDEX erasure_positive_audit;DROP INDEX erasure_invalidated_audit;");
+  db.exec("DROP TABLE erasure_manifests;DROP TABLE erasure_inventory_objects;DROP TABLE erasure_inventory_journals;DROP TABLE erasure_scans;DROP TABLE erasure_safety_carry;DROP TABLE erasure_maintenance;DROP TABLE erasure_progress;DROP TABLE erasure_scopes;DROP TABLE erasure_obligations;DROP TABLE erasure_replay;DROP TABLE erasure_events;DROP INDEX erasure_status_proofs;DROP INDEX erasure_audit;DROP INDEX erasure_grants;DROP INDEX erasure_lifecycle_audit;DROP INDEX erasure_lifecycle_proposals;DROP INDEX erasure_mail_events;DROP INDEX erasure_diagnostics;DROP INDEX erasure_reservations;");
 }
 // Produce actual pre7 schemas for existing historical-migration regressions.
 export function removeTask10Schema(db: Database.Database): void {
+  removeTask11Schema(db);
   db.exec("DROP TABLE deletion_diagnostics; DROP TABLE deletion_searches; DROP TABLE deletion_events; DROP TABLE deletion_state; DROP TABLE deletion_progress; DROP INDEX deletion_due; DROP TABLE journal_fences; DROP TABLE journal_facts; DROP TABLE journal_projection; DROP TRIGGER case_acceptance_epoch_immutable; ALTER TABLE cases DROP COLUMN acceptanceEpochId;");
 }
 // Unrelated capacity/custody regressions use independent local quota subjects.

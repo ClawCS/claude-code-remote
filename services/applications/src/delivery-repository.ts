@@ -70,10 +70,11 @@ interface StoredDelivery {
 }
 interface StoredAttempt { ordinal: number; startedAt: Instant; finishedAt: Instant | null; outcome: SendOutcome["kind"] | null; retryable: number | null; mimeDigest: string; fingerprint: string }
 
-export function recoverDelivery(db: Database.Database, now: Instant): void {
+export function recoverDelivery(db: Database.Database, now: Instant, erased: (id: ApplicationId) => boolean = () => false): void {
   utcInstant(now);
   const rows = db.prepare("SELECT id,acceptedAt,deliveryState,version,claimToken,claimOwner FROM cases ORDER BY rowid").all() as CaseRecord[];
   for (const row of rows) {
+    if(erased(row.id))continue;
     db.prepare("INSERT OR IGNORE INTO deliveries(caseId) VALUES(?)").run(row.id);
     const delivery = db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(row.id) as StoredDelivery;
     const unfinished = db.prepare("SELECT 1 FROM delivery_attempts WHERE caseId=? AND finishedAt IS NULL").get(row.id);
@@ -92,9 +93,10 @@ export function recoverDelivery(db: Database.Database, now: Instant): void {
   }
 }
 
-export function createDeliveryRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, locked: (id: ApplicationId) => boolean, getArtifact: (id: ApplicationId, kind: "mime") => ArtifactRecord | null, verifyArtifact: (artifact: ArtifactRecord) => void): DeliveryRepository {
+export function createDeliveryRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, locked: (id: ApplicationId) => boolean, getArtifact: (id: ApplicationId, kind: "mime") => ArtifactRecord | null, verifyArtifact: (artifact: ArtifactRecord) => void, erased: (id: ApplicationId, scope: "payload" | "contact" | "identity") => boolean = () => false): DeliveryRepository {
   function getDelivery(id: ApplicationId): DeliveryRecord {
     const row = readCase(id), stored = db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id) as StoredDelivery | undefined;
+    const payloadErased=erased(id,"payload");
     if (!stored) return invalid();
     const fixed = stored.messageId === null ? null : identity({ id, messageId: stored.messageId, keyId: stored.keyId!, date: stored.identityDate! }, row);
     if (!fixed && (stored.keyId !== null || stored.identityDate !== null)) invalid();
@@ -127,8 +129,8 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
     if (attempts.length > 3 || attempts.some((attempt, index) => index < attempts.length - 1 && (attempt.outcome?.kind !== "definitely_failed" || !attempt.outcome.retryable))) invalid();
     const last = attempts.at(-1);
     if (row.deliveryState === "ready") {
-      if (!registered || !mimeDigest || !stored.sendDueAt || stored.sendDueAt >= plus(row.acceptedAt, DAY)) invalid();
-      if (last && (last.outcome?.kind !== "definitely_failed" || !last.outcome.retryable || last.ordinal >= 3 || stored.sendDueAt !== plus(last.finishedAt!, (last.ordinal === 1 ? 5 : 30) * 60000))) invalid();
+      if (!registered || !mimeDigest || (!stored.sendDueAt&&!payloadErased) || (stored.sendDueAt!==null&&stored.sendDueAt >= plus(row.acceptedAt, DAY))) invalid();
+      if (last && (last.outcome?.kind !== "definitely_failed" || !last.outcome.retryable || last.ordinal >= 3 || (stored.sendDueAt!==null&&stored.sendDueAt !== plus(last.finishedAt!, (last.ordinal === 1 ? 5 : 30) * 60000)))) invalid();
     } else if (stored.sendDueAt !== null) invalid();
     if (row.deliveryState === "sending" && (!mimeDigest || !last || last.finishedAt !== null)) invalid();
     if (["smtp_accepted", "uncertain", "delivered"].includes(row.deliveryState) && (!registered || !mimeDigest || !stored.receiptStartedAt || !receiptSchedule.length)) invalid();
@@ -138,7 +140,7 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
     for (let index = 1; index < attempts.length; index++) if (attempts[index].startedAt < plus(attempts[index - 1].finishedAt!, (index === 1 ? 5 : 30) * 60000)) invalid();
     const evidence = copies(parse(stored.copies, 90000), registered);
     if ((stored.confirmedAt === null) !== (evidence.length === 0) || (row.deliveryState === "delivered" && !stored.confirmedAt)) invalid();
-    return { id, identity: fixed, registered, mimeDigest, sendDueAt: stored.sendDueAt, receiptStartedAt: stored.receiptStartedAt, receiptSchedule, receiptCursor: stored.receiptCursor, mailboxChecks: stored.mailboxChecks, confirmedAt: stored.confirmedAt, copies: evidence, attempts, category: stored.category, reason: stored.reason, determinedAt: stored.determinedAt, incidentAt: plus(row.acceptedAt, HOUR), manualRequiredAt: plus(row.acceptedAt, DAY), cleanupDueAt: stored.cleanupDueAt, contactEnvelope: stored.contactEnvelope };
+    return { ...(payloadErased?{payloadErased:true as const}:{}), id, identity: fixed, registered, mimeDigest, sendDueAt: payloadErased?null:stored.sendDueAt, receiptStartedAt: stored.receiptStartedAt, receiptSchedule, receiptCursor: stored.receiptCursor, mailboxChecks: stored.mailboxChecks, confirmedAt: stored.confirmedAt, copies: evidence, attempts, category: stored.category, reason: stored.reason, determinedAt: stored.determinedAt, incidentAt: plus(row.acceptedAt, HOUR), manualRequiredAt: plus(row.acceptedAt, DAY), cleanupDueAt: stored.cleanupDueAt, contactEnvelope: erased(id,"contact")?null:stored.contactEnvelope };
   }
   function snapshot(id: ApplicationId): DeliverySnapshot { return { case: readCase(id), delivery: getDelivery(id) }; }
   function changed(row: CaseRecord, event: string, now: Instant, state = row.deliveryState, clear = false): DeliverySnapshot {
@@ -149,6 +151,7 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
   function authority(claim: DeliveryClaimAuthority, now: Instant, kinds: readonly DeliveryWorkKind[]): CaseRecord {
     exact(claim, ["id", "version", "token"]); applicationId(claim.id); utcInstant(now); integer(claim.version, 1, Number.MAX_SAFE_INTEGER);
     const row = readCase(claim.id); if (row.version !== claim.version) throw new Error("STALE_VERSION");
+    if(erased(claim.id,"payload")||erased(claim.id,"identity"))throw new Error("PAYLOAD_ERASED");
     if (typeof claim.token !== "string" || !/^[a-f0-9]{64}$/.test(claim.token) || row.claimToken !== claim.token) throw new Error("STALE_CLAIM");
     if (!row.claimKind || !kinds.includes(row.claimKind)) throw new Error("INVALID_DELIVERY_WORK");
     if (now < row.acceptedAt || now < row.claimedAt!) throw new Error("INVALID_DELIVERY_TIME");
@@ -185,13 +188,13 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
     getDelivery,
     listWorkerSchedule(now) {
       utcInstant(now);
-      const ids = db.prepare("SELECT id FROM cases WHERE deliveryState <> 'delivered' ORDER BY acceptedAt,rowid LIMIT 21").all() as { id: ApplicationId }[];
+      const ids = db.prepare("SELECT id FROM cases c WHERE deliveryState <> 'delivered' AND NOT EXISTS(SELECT 1 FROM erasure_scopes e WHERE e.caseId=c.id AND e.committed=1 AND e.scope IN('incident_identity','identifying_register')) ORDER BY acceptedAt,rowid LIMIT 21").all() as { id: ApplicationId }[];
       if (ids.length > 20) throw new Error("WORKER_SCHEDULE_OVERFLOW");
       return ids.map(({ id }) => {
         const row = readCase(id), delivery = getDelivery(id), busy = row.claimToken !== null || locked(id);
         if (!/^TJ-[A-F0-9]{24}$/.test(row.reference)) invalid();
         let dispatchDueAt: Instant | null = null;
-        if (!busy) {
+        if (!busy&&!erased(id,"payload")) {
           if (row.deliveryState === "queued") dispatchDueAt = row.acceptedAt;
           else if (row.deliveryState === "ready") dispatchDueAt = delivery.sendDueAt;
           else if (["smtp_accepted", "uncertain"].includes(row.deliveryState)) dispatchDueAt = delivery.receiptSchedule[delivery.receiptCursor] ?? null;
@@ -209,7 +212,7 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
       return db.transaction(() => {
         const rows = db.prepare("SELECT id FROM cases WHERE claimToken IS NULL AND deliveryState IN ('queued','ready','smtp_accepted','uncertain') ORDER BY acceptedAt,rowid").all() as { id: ApplicationId }[];
         for (const item of rows) {
-          if (locked(item.id)) continue;
+          if (locked(item.id)||erased(item.id,"payload")||erased(item.id,"identity")) continue;
           const row = readCase(item.id), delivery = getDelivery(row.id);
           if (now < row.acceptedAt) continue;
           const work: DeliveryWorkKind = row.deliveryState === "queued" ? "prepare" : row.deliveryState === "ready" ? "send" : "reconcile";
@@ -286,6 +289,7 @@ export function createDeliveryRepository(db: Database.Database, readCase: (id: A
       return changed(row, "delivery:receipt-unresolved", now, row.deliveryState, true);
     }); },
     storeContact(claim, envelope, privateKey: KeyObject, now) { return mutate(claim, now, ["prepare"], (row, delivery) => {
+      if(erased(row.id,"contact"))throw new Error("CONTACT_ERASED");
       permitted(row, now); if (now >= row.contactDeleteAfter) throw new Error("CONTACT_EXPIRED");
       const binding = { caseId: row.id, acceptedAt: row.acceptedAt, version: 1 };
       const email = openContact(envelope, binding, privateKey);

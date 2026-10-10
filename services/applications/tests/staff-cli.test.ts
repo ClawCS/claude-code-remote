@@ -69,7 +69,7 @@ describe("stopped-worker maintenance ownership", () => {
       if (text === "New OTP: ") queueMicrotask(() => input.write(TOTP.generate({ secret: Secret.fromBase32(new URL(uri).searchParams.get("secret")!), algorithm: "SHA1", digits: 6, period: 30, timestamp: now }) + "\r"));
       next();
     } }), { isTTY: true });
-    const dependencies = { keys: generateKeyPairSync("rsa", { modulusLength: 2048 }), rateKey: randomBytes(32), trust: { currentEpoch: () => digest("a".repeat(64)) } };
+    const dependencies = { keys: generateKeyPairSync("rsa", { modulusLength: 2048 }), rateKey: randomBytes(32), trust: { currentEpoch: () => digest("a".repeat(64)) }, initialEnrollmentEpoch: () => digest("a".repeat(64)) };
     try {
       const cli = createStaffCli({ input, output, databasePath: path, workerUid: process.getuid!(), dependencies, clock: { now: () => new Date(now) } });
       await cli.run("enroll");

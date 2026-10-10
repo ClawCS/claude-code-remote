@@ -7,7 +7,7 @@ import { createHash, generateKeyPairSync } from "node:crypto";
 import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openReadyTestRepository } from "./fixtures/admission";
 import { createWorkerRpc, createWorkerRpcClient } from "../src/worker-rpc";
 import { digest, utcInstant, type ApplicationRepository, type CustodyLedger, type IntakeCommit } from "../src/types";
 import { createTestCustodyLedger as createCustodyLedger, testIngressAuthority } from "./fixtures/ingress-authority";
@@ -20,7 +20,7 @@ const now = utcInstant("2026-10-09T10:00:00.000Z");
 const publicKey = generateKeyPairSync("rsa", { modulusLength: 2048 }).publicKey;
 const clock = { now: () => new Date(time) };
 beforeEach(async () => {
-  root = await mkdtemp(join(await realpath(tmpdir()), "applications-rpc-")); repo = openRepository(join(root, "registry.sqlite"));
+  root = await mkdtemp(join(await realpath(tmpdir()), "applications-rpc-")); repo = await openReadyTestRepository(join(root, "registry.sqlite"));
   intakeRoot = join(root, "intake"); custodyRoot = join(root, "custody"); runtimeRoot = join(root, "run"); time = new Date(now);
   await Promise.all([intakeRoot, custodyRoot, runtimeRoot].map(path => mkdir(path, { mode: 0o700 })));
   ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
@@ -87,7 +87,7 @@ describe("rpc-no-admin", () => {
       await holder.write(Buffer.from("mutated"), 0, 7, 0);
       expect(await readFile(accepted.encryptedPayloadPath)).toEqual(before);
       await new Promise<void>(resolve => server.close(() => resolve()));
-      repo.close(); repo = openRepository(join(root, "registry.sqlite"));
+      repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite"));
       ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
       await ledger.reconcile();
       expect(ledger.getIntakeReadiness()).toEqual({ ready: false });
@@ -262,7 +262,7 @@ describe("durable custody accounting", () => {
   });
   it("does not extend the first orphan cleanup deadline when recovery occurs after ticket expiry", async () => {
     await ledger.reconcile(); const pending = await admitted();
-    repo.close(); repo = openRepository(join(root, "registry.sqlite")); time = new Date("2026-10-11T10:00:00.000Z");
+    repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite")); time = new Date("2026-10-11T10:00:00.000Z");
     ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
     expect((await ledger.reconcile()).orphans[0].cleanupAfter).toBe("2026-10-10T10:00:00.000Z");
     expect((await ledger.cleanupOrphans()).physicalBytes).toBe(0); expect(await readdir(intakeRoot)).toEqual([]); expect(pending.file.bytes).toBeGreaterThan(0);
@@ -287,13 +287,13 @@ describe("durable custody accounting", () => {
   for (const stage of ["partial-before-fsync", "sealed-before-db", "after-db"] as const) it(`recovers after an actual killed worker at ${stage}`, async () => {
     repo.close();
     const paths = { root, intakeRoot, custodyRoot, runtimeRoot, stage, sourceRoot: process.cwd() };
-    const code = `const {join}=require('node:path'); const {testAdmission}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {writeFile,readFile,open}=require('node:fs/promises'); const {generateKeyPairSync}=require('node:crypto'); const {openTestRepository:openRepository}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {createCustodyLedger}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {sealIncoming,intakePath}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const ledger=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.custodyRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock:{now:()=>new Date(now)}}); await ledger.reconcile(); const r=await ledger.reserve({ ...testAdmission(), sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); if(p.stage==='partial-before-fsync') await writeFile(intakePath(p.intakeRoot,r.id),'partial',{mode:0o600}); else { const {publicKey}=generateKeyPairSync('rsa',{modulusLength:2048}); const file=await sealIncoming((async function*(){yield Buffer.from('synthetic')})(),{root:p.intakeRoot,maxBytes:r.reservedBytes,reservationId:r.id},publicKey); if(p.stage==='after-db') { const privatePath=intakePath(p.custodyRoot,r.id); const fd=await open(privatePath,'wx',0o600); await fd.writeFile(await readFile(file.path)); await fd.sync(); await fd.close(); repo.commitIntake({reservationId:r.id,encryptedPayloadPath:privatePath,actualBytes:file.bytes,digest:'a'.repeat(64),encryptedName:'ciphertext',job:'sales-fulltime',now}); } } process.stdout.write('ready'); setInterval(()=>{},1000); })().catch(e=>{console.error(e);process.exit(1)});`;
+    const code = `const {join}=require('node:path'); const {testAdmission}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {writeFile,readFile,open}=require('node:fs/promises'); const {generateKeyPairSync}=require('node:crypto'); const {openReadyTestRepository:openRepository}=require(join(p.sourceRoot,'services/applications/tests/fixtures/admission.ts')); const {createCustodyLedger}=require(join(p.sourceRoot,'services/applications/src/custody.ts')); const {sealIncoming,intakePath}=require(join(p.sourceRoot,'services/applications/src/crypto.ts')); (async()=>{ const repo=await openRepository(join(p.root,'registry.sqlite')); const now='2026-10-09T10:00:00.000Z'; const ledger=createCustodyLedger(repo,{intakeRoot:p.intakeRoot,custodyRoot:p.custodyRoot,runtimeRoot:p.runtimeRoot,intakeUid:process.getuid(),sharedGid:process.getgid(),clock:{now:()=>new Date(now)}}); await ledger.reconcile(); const r=await ledger.reserve({ ...testAdmission(), sessionHash:'b'.repeat(64),idempotencyKey:'crash',reservedBytes:20000,now}); if(p.stage==='partial-before-fsync') await writeFile(intakePath(p.intakeRoot,r.id),'partial',{mode:0o600}); else { const {publicKey}=generateKeyPairSync('rsa',{modulusLength:2048}); const file=await sealIncoming((async function*(){yield Buffer.from('synthetic')})(),{root:p.intakeRoot,maxBytes:r.reservedBytes,reservationId:r.id},publicKey); if(p.stage==='after-db') { const privatePath=intakePath(p.custodyRoot,r.id); const fd=await open(privatePath,'wx',0o600); await fd.writeFile(await readFile(file.path)); await fd.sync(); await fd.close(); repo.commitIntake({reservationId:r.id,encryptedPayloadPath:privatePath,actualBytes:file.bytes,digest:'a'.repeat(64),encryptedName:'ciphertext',job:'sales-fulltime',now}); } } process.stdout.write('ready'); setInterval(()=>{},1000); })().catch(e=>{console.error(e);process.exit(1)});`;
     const child = spawn(process.execPath, ["--import", "tsx", "--eval", `const p=${JSON.stringify(paths)};${code.replace("services/applications/src/custody.ts","services/applications/tests/fixtures/ingress-authority.ts")}`], { stdio: ["ignore", "pipe", "pipe"] });
     try {
       await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("child failed before crash boundary"); })]);
       const exited = once(child, "exit"); child.kill("SIGKILL"); await exited;
       await testIngressAuthority(intakeRoot).recoverExitedHarness(child,custodyRoot);
-      repo = openRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
+      repo = await openReadyTestRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
       const inventory = await ledger.reconcile(); expect(inventory.orphans).toHaveLength(stage === "after-db" ? 0 : 1); expect(repo.listRetainedIntakes()).toHaveLength(stage === "after-db" ? 1 : 0);
     } finally { child.kill("SIGKILL"); }
   });
@@ -319,13 +319,13 @@ describe("durable custody accounting", () => {
   it("reconciles a crash before fsync or DB commit as a bounded orphan", async () => {
     await ledger.reconcile(); const reservation = await ledger.reserve(reserveInput());
     await writeFile(intakePath(intakeRoot, reservation.id), "partial", { mode: 0o600 });
-    repo.close(); repo = openRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
+    repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
     const inventory = await ledger.reconcile(); expect(inventory.orphans).toHaveLength(1); expect(inventory.orphans[0].cleanupAfter).toBe("2026-10-10T10:00:00.000Z");
     time = new Date("2026-10-10T10:00:00.000Z"); expect((await ledger.cleanupOrphans()).physicalBytes).toBe(0);
   });
   it("reconciles a crash after fsync and DB commit using the authoritative retained manifest", async () => {
     await ledger.reconcile(); const pending = await admitted(); const privatePath = intakePath(custodyRoot, pending.reservation.id); await copyFile(pending.file.path, privatePath); const fd = await open(privatePath, "r+"); await fd.sync(); await fd.close(); const accepted = repo.commitIntake({ ...pending.input, encryptedPayloadPath: privatePath });
-    repo.close(); repo = openRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
+    repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite")); ledger = createCustodyLedger(repo, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock });
     expect((await ledger.reconcile()).orphans).toHaveLength(0); expect(repo.getCommittedIntake(accepted.id)?.actualBytes).toBe(pending.file.bytes);
   });
   it("counts physical orphan bytes after ticket expiry and cannot evade 250 MiB via registry restart", async () => {

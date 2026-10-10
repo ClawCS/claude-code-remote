@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import Database from "better-sqlite3";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openTestRepository as openRepository, openReadyTestRepository } from "./fixtures/admission";
 import { sealContact } from "../src/contact-crypto";
 import type { ApplicationId, ApplicationRepository, CaseRecord, Digest, Instant, IntakeCommit } from "../src/types";
 
@@ -18,7 +18,7 @@ const MiB = 1024 * 1024;
 const contactKeys = generateKeyPairSync("rsa", { modulusLength: 2048 });
 let dir: string;
 let repo: ApplicationRepository;
-beforeEach(() => { dir = mkdtempSync(join(realpathSync(tmpdir()), "applications-registry-")); repo = openRepository(join(dir, "registry.sqlite")); });
+beforeEach(async () => { dir = mkdtempSync(join(realpathSync(tmpdir()), "applications-registry-")); repo = await openReadyTestRepository(join(dir, "registry.sqlite")); });
 afterEach(() => { repo?.close(); rmSync(dir, { recursive: true, force: true }); });
 function reserve(key: string, bytes = 1) { return repo.reserve({ ...testAdmission(),  sessionHash: session, idempotencyKey: key, reservedBytes: bytes, now }); }
 function commit(key: string, bytes = 1): IntakeCommit {
@@ -119,7 +119,7 @@ describe("registry lifecycle", () => {
   it("migrates v1 transactionally without changing acceptance, request digest, or public proofs",async()=>{
     const accepted=repo.commitIntake(commit("legacy"));repo.close();
     const legacy=new Database(join(dir,"registry.sqlite"));removeV4(legacy);legacy.exec("DROP TABLE artifacts; DROP TABLE artifact_reservations; DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=1;");legacy.close();
-    repo=openRepository(join(dir,"registry.sqlite"));
+    repo=await openReadyTestRepository(join(dir,"registry.sqlite"));
     expect(repo.getRequestIdentity(accepted.id)).toEqual({id:accepted.id,digest,acceptedAt:now});
     expect(repo.listArtifactReservations()).toEqual([
       {caseId:accepted.id,kind:"bundle",bytes:10553344,expiresAt:"2026-10-16T10:00:00.000Z"},
@@ -135,14 +135,14 @@ describe("registry lifecycle", () => {
     await repo.adoptArtifact(artifact, 1); const reserves = repo.listArtifactReservations();
     repo.close(); const legacy = new Database(join(dir, "registry.sqlite"));
     removeV4(legacy); legacy.exec("DROP TABLE abuse_events; DROP TRIGGER reservation_submission_immutable; DROP TRIGGER case_submission_immutable; ALTER TABLE reservations DROP COLUMN submission; ALTER TABLE cases DROP COLUMN submission; PRAGMA user_version=2;"); legacy.close();
-    repo = openRepository(join(dir, "registry.sqlite"));
+    repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
     expect(repo.getArtifact(accepted.id, "bundle")).toEqual(artifact); expect(repo.listArtifactReservations()).toEqual(reserves);
     expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
     expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest, now)?.reference).toBe(accepted.reference);
     await repo.withCaseLock(accepted.id, async row => { expect(row.submission).toEqual({ kind: "application" }); });
-    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(8);
+    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(9);
     expect(() => inspect.prepare("UPDATE cases SET submission=? WHERE id=?").run('{"kind":"synthetic","pilotRunId":"invented"}', accepted.id)).toThrow("IMMUTABLE_SUBMISSION"); inspect.close();
-    repo = openRepository(join(dir, "registry.sqlite"));
+    repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
   });
   it("keeps artifact identity and original request proof through original retirement and restart", async () => {
     const accepted = repo.commitIntake(commit("artifacts"));
@@ -157,7 +157,7 @@ describe("registry lifecycle", () => {
     await repo.retireOriginal(accepted.id, contact.case.version);
     expect(repo.getCommittedIntake(accepted.id)).toBeNull();
     expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
-    repo.close(); repo = openRepository(join(dir, "registry.sqlite"));
+    repo.close(); repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
     expect(repo.getArtifact(accepted.id, "bundle")).toEqual(record);
     expect(repo.commitIntake(commit("artifacts")).reference).toBe(accepted.reference);
   });
@@ -184,19 +184,19 @@ describe("registry lifecycle", () => {
       const ready = await Promise.race([once(child.stdout!, "data"), once(child, "exit").then(() => { throw new Error("worker failed to start"); })]);
       expect(String(ready[0])).toBe("ready");
       const exited = once(child, "exit"); child.kill("SIGKILL"); await exited;
-      repo = openRepository(join(dir, "registry.sqlite"));
+      repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
       expect(reserve("after-crash").reservedBytes).toBe(1);
     } finally { child.kill("SIGKILL"); }
   });
-  it("persists references and recovers interrupted pre-send claims on restart", () => {
+  it("persists references and recovers interrupted pre-send claims on restart", async () => {
     const first = repo.commitIntake(commit("durable")); repo.claimNext("before-crash", now); repo.close();
-    repo = openRepository(join(dir, "registry.sqlite"));
+    repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
     expect(repo.claimNext("after-crash", now)?.reference).toBe(first.reference);
     expect(repo.commitIntake({ ...commit("durable") }).reference).toBe(first.reference);
   });
-  it("audits the version change caused by crash recovery", () => {
+  it("audits the version change caused by crash recovery", async () => {
     const accepted = repo.commitIntake(commit("audit-recovery")); repo.claimNext("worker", now); repo.close();
-    repo = openRepository(join(dir, "registry.sqlite")); repo.close();
+    repo = await openReadyTestRepository(join(dir, "registry.sqlite")); repo.close();
     const inspection = new Database(join(dir, "registry.sqlite"), { readonly: true });
     try {
       expect(inspection.prepare("SELECT event, version FROM audit WHERE caseId = ? ORDER BY sequence").all(accepted.id)).toEqual([{ event: "accepted", version: 1 }, { event: "claimed", version: 2 }, { event: "recovered", version: 3 }]);
@@ -204,7 +204,7 @@ describe("registry lifecycle", () => {
   });
   it("never requeues a potentially sent case after restart", async () => {
     const first = repo.commitIntake(commit("uncertain")); await beginSyntheticSend(first.id);
-    repo.close(); repo = openRepository(join(dir, "registry.sqlite"));
+    repo.close(); repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
     expect(repo.claimNext("new-worker", now)).toBeNull();
     const state = await repo.withCaseLock(first.id, async row => row.deliveryState);
     expect(state).toBe("uncertain");

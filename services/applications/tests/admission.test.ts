@@ -3,7 +3,7 @@ import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openReadyTestRepository } from "./fixtures/admission";
 import { digest, utcInstant, type ApplicationRepository } from "../src/types";
 
 let root: string, repo: ApplicationRepository;
@@ -11,13 +11,13 @@ const now = utcInstant("2026-10-09T10:00:00.000Z");
 const sessionHash = digest("a".repeat(64));
 const abuse = { sessionKey: digest("b".repeat(64)), ipKey: digest("c".repeat(64)) };
 function input(key: string, at = now) { return { sessionHash, idempotencyKey: key, reservedBytes: 1, now: at, abuse, submission: { kind: "application" as const } }; }
-beforeEach(() => { root = mkdtempSync(join(realpathSync(tmpdir()), "admission-")); repo = openRepository(join(root, "registry.sqlite")); });
+beforeEach(async () => { root = mkdtempSync(join(realpathSync(tmpdir()), "admission-")); repo = await openReadyTestRepository(join(root, "registry.sqlite")); });
 afterEach(() => { repo.close(); rmSync(root, { recursive: true, force: true }); });
 function attempt(key: string, at = now) { const reservation = repo.reserve(input(key, at)); repo.releaseReservation(reservation.id); }
 describe("durable admission", () => {
-  it("charges aborted bodies and preserves exact hour eligibility across restart", () => {
+  it("charges aborted bodies and preserves exact hour eligibility across restart", async () => {
     for (let i = 0; i < 6; i++) attempt(`attempt-${i}`);
-    repo.close(); repo = openRepository(join(root, "registry.sqlite"));
+    repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite"));
     expect(() => attempt("denied")).toThrow("RATE_LIMITED");
     let denial: unknown;
     try { attempt("denied", utcInstant("2026-10-09T10:59:59.001Z")); } catch (error) { denial = error; }
@@ -30,8 +30,8 @@ describe("durable admission", () => {
     repo.releaseReservation(first.id);
     expect(() => repo.reserve(input("rate-denied"))).toThrow("RATE_LIMITED");
   });
-  it("rejects changed synthetic run before accepting an identical-content replay", () => {
-    repo.close(); repo = openRepository(join(root, "registry.sqlite"), { now: () => new Date(now) }, { admissionScope: { currentScope: () => ["b".repeat(32), "synthetic", "run-one", "2026-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z"] } });
+  it("rejects changed synthetic run before accepting an identical-content replay", async () => {
+    repo.close(); repo = await openReadyTestRepository(join(root, "registry.sqlite"), { now: () => new Date(now) }, { admissionScope: { currentScope: () => ["b".repeat(32), "synthetic", "run-one", "2026-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z"] } });
     const original = repo.reserve({ ...input("pilot"), submission: { kind: "synthetic" as const, pilotRunId: "run-one" } });
     repo.commitIntake({ reservationId: original.id, digest: sessionHash, encryptedPayloadPath: join(root, "original.enc"), actualBytes: 1, encryptedName: "encrypted", job: "sales-fulltime", now });
     expect(() => repo.reserve({ ...input("pilot"), submission: { kind: "synthetic" as const, pilotRunId: "run-two" } })).toThrow("IDEMPOTENCY_CONFLICT");
@@ -67,22 +67,22 @@ describe("durable admission", () => {
     for (let i = 0; i < 6; i++) attempt(`future-${i}`);
     expect(() => attempt("earlier", utcInstant("2026-10-09T09:59:59.999Z"))).not.toThrow();
   });
-  it("fails closed at the event bound instead of evicting live subjects", () => {
+  it("fails closed at the event bound instead of evicting live subjects", async () => {
     repo.close(); const db = new Database(join(root, "registry.sqlite"));
     db.transaction(() => { const insert = db.prepare("INSERT INTO abuse_events VALUES ('session',?,?,?)"); for (let i = 0; i < 100000; i++) insert.run(i.toString(16).padStart(64, "0"), now, "2026-10-09T11:00:00.000Z"); })(); db.close();
-    repo = openRepository(join(root, "registry.sqlite"));
+    repo = await openReadyTestRepository(join(root, "registry.sqlite"));
     expect(() => attempt("bounded")).toThrow("ADMISSION_UNAVAILABLE");
     expect(repo.pruneAdmissionEvents(utcInstant("2026-10-09T11:00:00.000Z"))).toBe(100000);
     expect(() => attempt("after-prune", utcInstant("2026-10-09T11:00:00.000Z"))).not.toThrow();
   });
-  it("rolls back the first scope charge if persistence of the second fails", () => {
+  it("rolls back the first scope charge if persistence of the second fails", async () => {
     repo.close(); const db = new Database(join(root, "registry.sqlite"));
     db.exec("CREATE TRIGGER reject_ip BEFORE INSERT ON abuse_events WHEN NEW.scope='ip' BEGIN SELECT RAISE(ABORT,'SYNTHETIC_SQL_FAILURE'); END;"); db.close();
-    repo = openRepository(join(root, "registry.sqlite"));
+    repo = await openReadyTestRepository(join(root, "registry.sqlite"));
     expect(() => attempt("sql-failed")).toThrow("SYNTHETIC_SQL_FAILURE");
     repo.close(); const inspect = new Database(join(root, "registry.sqlite"));
     expect(inspect.prepare("SELECT COUNT(*) AS count FROM abuse_events").get()).toEqual({ count: 0 }); inspect.exec("DROP TRIGGER reject_ip"); inspect.close();
-    repo = openRepository(join(root, "registry.sqlite"));
+    repo = await openReadyTestRepository(join(root, "registry.sqlite"));
     for (let i = 0; i < 6; i++) attempt(`successful-${i}`);
     expect(() => attempt("seventh")).toThrow("RATE_LIMITED");
   });

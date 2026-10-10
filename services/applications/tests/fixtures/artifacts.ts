@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCustodyLedger } from "../../src/custody";
-import { openTestRepository as openRepository } from "./admission";
+import { openReadyTestRepository } from "./admission";
 import { encodePayload, payloadDigest, sealIncoming } from "../../src/crypto";
 import { digest, utcInstant, type WorkerKeys, type PayloadFile } from "../../src/types";
 import { testIngressAuthority } from "./ingress-authority";
@@ -15,7 +15,7 @@ export async function makeArtifactHarness(files:PayloadFile[]=[]) {
   const root = await mkdtemp(join(await realpath(tmpdir()),"applications-artifacts-"));
   const intakeRoot=join(root,"intake"), privateRoot=join(root,"custody"), runtimeRoot=join(root,"runtime");
   await Promise.all([intakeRoot,privateRoot,runtimeRoot].map(path=>mkdir(path,{mode:0o700})));
-  const repo=openRepository(join(root,"registry.sqlite")), now=utcInstant("2026-10-09T10:00:00.000Z");
+  const repo=await openReadyTestRepository(join(root,"registry.sqlite")), now=utcInstant("2026-10-09T10:00:00.000Z");
   const authority=testIngressAuthority(intakeRoot);
   const config={ intakeRoot,custodyRoot:privateRoot,runtimeRoot,intakeUid:process.getuid!(),sharedGid:process.getgid!(),clock:{now:()=>new Date(now)},ingressAuthority:authority };
   const custody=createCustodyLedger(repo,config); await custody.reconcile();

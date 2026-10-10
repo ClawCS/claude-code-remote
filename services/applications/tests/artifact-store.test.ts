@@ -15,7 +15,7 @@ import { createCustodyLedger } from "../src/custody";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { join } from "node:path";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openTestRepository as openRepository, openReadyTestRepository } from "./fixtures/admission";
 import { testIngressAuthority } from "./fixtures/ingress-authority";
 import type { Acceptance } from "../src/types";
 
@@ -288,7 +288,7 @@ it.each(["before-fsync","after-fsync","before-rename","after-rename","before-db"
     const exited=once(child,"exit");child.kill("SIGKILL");await exited;
     const intakeRoot=join(root,"intake"),custodyRoot=join(root,"custody"),runtimeRoot=join(root,"runtime"),authority=testIngressAuthority(intakeRoot);
     await authority.recoverExitedHarness(child,custodyRoot);
-    repo=openRepository(join(root,"registry.sqlite"));
+    repo=await openReadyTestRepository(join(root,"registry.sqlite"));
     const ledger=createCustodyLedger(repo,{intakeRoot,custodyRoot,runtimeRoot,intakeUid:process.getuid!(),sharedGid:process.getgid!(),clock:{now:()=>new Date("2026-10-09T10:00:00.000Z")},ingressAuthority:authority});
     const inventory=await ledger.reconcile();
     const artifact=repo.getArtifact(result.accepted.id,"bundle");

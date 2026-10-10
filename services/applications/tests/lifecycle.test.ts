@@ -46,13 +46,13 @@ async function setup(initial = "2026-10-10T12:00:00.000Z") {
   let time = Date.parse(initial), monotonic = 0, epoch: ReturnType<typeof digest> | null = digest("a".repeat(64));
   const fixture = syntheticJournal();
   let journal!: ReturnType<typeof createSafetyJournal>;
-  const options = { admissionScope: { currentScope: () => testAdmissionScope }, journalFactory: (projection: Parameters<typeof createSafetyJournal>[0]["projection"]) => {
+  const options = { admissionScope: { currentScope: () => testAdmissionScope },deletionScope:{currentScope:()=>({ledgerId:fixture.context.ledgerId,historyEpoch:fixture.context.historyEpoch,associationKeyId:"lifecycle-erasure",associationKey:Buffer.alloc(32,7),approvedScopes:[testAdmissionScope]})}, journalFactory: (projection: Parameters<typeof createSafetyJournal>[0]["projection"]) => {
     journal = createSafetyJournal({ port: { append: event => fixture.port.append(event), readSince: cursor => fixture.port.readSince(cursor) }, trust: { currentContext: () => fixture.context }, clock: { wallNow: () => new Date(time), monotonicNow: () => monotonic }, projection }); return journal;
   } };
   let repository: ApplicationRepository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }, options);
   await journal.refresh("startup");
   cleanups.push(() => { repository.close(); rmSync(directory, { recursive: true, force: true }); });
-  let service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch } });
+  let service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch }, initialEnrollmentEpoch: () => epoch });
   const stage = await service.beginEnrollment(password, password);
   const otp = () => TOTP.generate({ secret: Secret.fromBase32(new URL(stage.provisioningUri).searchParams.get("secret")!), algorithm: "SHA1", digits: 6, period: 30, timestamp: time });
   service.finishEnrollment(stage.handle, otp()); time += 30000;
@@ -291,12 +291,12 @@ describe("actual lifecycle commits", () => {
     legacy.exec("DROP TABLE lifecycle_audit; DROP TABLE lifecycle_proposals; DROP TABLE case_lifecycle;");
     if (version === 4) legacy.exec("DROP TABLE auth_grants; DROP TABLE auth_sessions; DROP TABLE auth_recovery; DROP TABLE auth_staff; DROP TABLE auth_attempts; DROP TABLE auth_clock;");
     legacy.pragma(`user_version=${version}`); legacy.close();
-    s.reopenOwner();
+    s.reopenOwner(); await s.journal.refresh("startup");
     const row = await s.repository.withCaseLock(s.accepted.id, async row => row);
     expect(row.lifecycle).toMatchObject({ initialAuthority: null, authorityKind: null, authorityId: null, identityState: "identifying" });
     expect(row.acceptedAt).toBe(acceptedAt); expect(deletionEligibility(row, dateOnly("2028-01-01"))).toBe("blocked");
     expect(s.repository.commitIntake(s.accepted.input).replayed).toBe(true);
-    expect(s.db.pragma("user_version", { simple: true })).toBe(8);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(9);
     expect(s.db.prepare("SELECT COUNT(*) AS n FROM case_lifecycle").get()).toEqual({ n: 1 });
     expect(s.repository.getPublicStatus(digest((await import("node:crypto")).createHash("sha256").update(s.accepted.statusProof).digest("hex")), utcInstant(new Date(s.time).toISOString()))).toEqual(publicBefore);
     if (version === 5) {

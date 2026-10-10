@@ -3,7 +3,7 @@ import { generateKeyPairSync, randomBytes } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openTestRepository as openRepository, openReadyTestRepository } from "./fixtures/admission";
 import { digest } from "../src/types";
 import { TOTP, Secret } from "otpauth";
 import { createPasswordHasher, newFactor, openFactor, sealFactor, validPassword } from "../src/auth-crypto";
@@ -28,10 +28,25 @@ let directory: string;
 let repository: ReturnType<typeof openRepository>;
 let time = Date.parse("2026-10-09T12:00:00.000Z");
 let epoch: ReturnType<typeof digest> | null;
-beforeEach(() => { time = Date.parse("2026-10-09T12:00:00.000Z"); epoch = digest("a".repeat(64)); directory = mkdtempSync(join(realpathSync(tmpdir()), "auth-synthetic-")); repository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }); });
+beforeEach(async () => { time = Date.parse("2026-10-09T12:00:00.000Z"); epoch = digest("a".repeat(64)); directory = mkdtempSync(join(realpathSync(tmpdir()), "auth-synthetic-")); repository = await openReadyTestRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }); });
 afterEach(() => { repository.close(); rmSync(directory, { recursive: true, force: true }); });
 
 describe("named authentication ownership", () => {
+  it.each([undefined, () => null, () => "bad", () => { throw new Error("private permit canary"); }])("denies initial enrollment without an independently matching permit", async permit => {
+    const service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch }, initialEnrollmentEpoch: permit } as Parameters<typeof repository.createAuthentication>[0]);
+    await expect(service.beginEnrollment(password, password)).rejects.toThrow("AUTH_DENIED");
+    expect(connections.current!.prepare("SELECT 1 FROM auth_staff").get()).toBeUndefined();
+  });
+  it("rechecks the initial permit after KDF and rejects revoked staged enrollment", async () => {
+    let permit = epoch;
+    const service = repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch }, initialEnrollmentEpoch: () => permit } as Parameters<typeof repository.createAuthentication>[0]);
+    const result = service.beginEnrollment(password, password); permit = null;
+    await expect(result).rejects.toThrow("AUTH_DENIED");
+    permit = epoch;
+    const stage = await service.beginEnrollment(password, password); permit = null;
+    expect(() => service.finishEnrollment(stage.handle, otp(stage.provisioningUri))).toThrow("AUTH_DENIED");
+    expect(connections.current!.prepare("SELECT 1 FROM auth_staff").get()).toBeUndefined();
+  });
   it("creates authentication only on the existing exclusive repository owner", () => {
     expect(repository.createAuthentication).toBeTypeOf("function");
     const options = { keys, rateKey: randomBytes(32), trust: { currentEpoch: () => digest("a".repeat(64)) } };
@@ -119,7 +134,7 @@ describe("session and HTTP policies", () => {
   it("keeps successful and failed attempts charged across restart, on staff and on IP", async () => {
     let service = auth(); const setup = await enrolled(service);
     for (let i = 0; i < 5; i++) { time += 30000; expect((await service.authenticate({ username: "niko", password, otp: otp(setup.provisioningUri), trustedIp: `127.0.0.${i + 1}` })).kind).toBe("authenticated"); }
-    repository.close(); repository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }); service = auth(); time += 30000;
+    repository.close(); repository = await openReadyTestRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }); service = auth(); time += 30000;
     expect(await service.authenticate({ username: "niko", password, otp: otp(setup.provisioningUri), trustedIp: "127.0.0.9" })).toEqual({ kind: "denied" });
     for (let i = 0; i < 4; i++) expect(await service.authenticate({ username: `unknown-${i}`, password, otp: "000000", trustedIp: "127.0.0.1" })).toEqual({ kind: "denied" });
     time += 900000;
@@ -297,7 +312,7 @@ describe("case-bound atomic reauthentication", () => {
 });
 
 const password = "Synthetic password only 2026";
-function auth() { return repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch } }); }
+function auth() { return repository.createAuthentication({ keys, rateKey: Buffer.alloc(32, 7), trust: { currentEpoch: () => epoch }, initialEnrollmentEpoch: () => epoch }); }
 function otp(uri: string) { return TOTP.generate({ secret: Secret.fromBase32(new URL(uri).searchParams.get("secret")!), algorithm: "SHA1", digits: 6, period: 30, timestamp: time }); }
 async function enrolled(service: ReturnType<typeof auth>) {
   const stage = await service.beginEnrollment(password, password);
@@ -312,7 +327,7 @@ describe("real password and factor proof", () => {
     db.exec("CREATE TRIGGER synthetic_session_failure BEFORE INSERT ON auth_sessions BEGIN SELECT RAISE(ABORT,'synthetic failure'); END;");
     expect(await service.authenticate({ username: "niko", password, otp: otp(setup.provisioningUri), trustedIp: "127.0.0.1" })).toEqual({ kind: "denied" });
     db.exec("DROP TRIGGER synthetic_session_failure;"); const logged = await login(service, setup.provisioningUri);
-    repository.close(); repository = openRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }); service = auth();
+    repository.close(); repository = await openReadyTestRepository(join(directory, "registry.sqlite"), { now: () => new Date(time) }); service = auth();
     expect(service.authorizeSession(logged.token, utcInstant(new Date(time).toISOString()))).not.toBeNull();
     expect(await service.authenticate({ username: "niko", password, otp: otp(setup.provisioningUri), trustedIp: "127.0.0.2" })).toEqual({ kind: "denied" });
   });

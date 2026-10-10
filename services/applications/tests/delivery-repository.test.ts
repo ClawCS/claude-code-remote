@@ -4,7 +4,7 @@ import { mkdtempSync, realpathSync, rmSync, unlinkSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openTestRepository as openRepository, openReadyTestRepository } from "./fixtures/admission";
 import { sealContact } from "../src/contact-crypto";
 import { testAdmission, removeTask10Schema } from "./fixtures/admission";
 import { digest, utcInstant, type ApplicationId, type ApplicationRepository, type ArtifactRecord, type CaseRecord, type DeliverySnapshot, type RegisteredMail } from "../src/types";
@@ -12,8 +12,8 @@ import { digest, utcInstant, type ApplicationId, type ApplicationRepository, typ
 const now = utcInstant("2026-10-09T10:00:00.000Z"), hash = digest("a".repeat(64));
 const keys = generateKeyPairSync("rsa", { modulusLength: 2048 });
 let dir: string, repo: ApplicationRepository, id: ApplicationId;
-beforeEach(() => {
-  dir = mkdtempSync(join(realpathSync(tmpdir()), "application-delivery-")); repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
+beforeEach(async () => {
+  dir = mkdtempSync(join(realpathSync(tmpdir()), "application-delivery-")); repo = await openReadyTestRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
   const r = repo.reserve({ ...testAdmission(), sessionHash: hash, idempotencyKey: "synthetic", reservedBytes: 1, now });
   id = repo.commitIntake({ reservationId: r.id, digest: hash, actualBytes: 1, encryptedPayloadPath: join(dir, "original.enc"), encryptedName: "synthetic-encrypted-name", job: "sales-fulltime", now }).id;
 });
@@ -37,9 +37,9 @@ async function sending(time = now) {
   const claimed = repo.claimDispatchWork("smtp-worker", time, "send")!;
   return { row: await repo.beginSendAttempt(authority(claimed.case), ready.artifact, { kind: "verified" }, time), artifact: ready.artifact };
 }
-function reopen() { repo.close(); repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) }); }
+async function reopen() { repo.close(); repo = await openReadyTestRepository(join(dir, "db.sqlite"), { now: () => new Date(now) }); }
 describe("durable delivery authority", () => {
-  it("refuses an oversized unresolved schedule rather than silently dropping cases", () => {
+  it("refuses an oversized unresolved schedule rather than silently dropping cases", async () => {
     repo.close(); const db = new Database(join(dir, "db.sqlite"));
     for (let index = 0; index < 20; index++) {
       const next = randomUUID(), reservation = randomUUID();
@@ -48,12 +48,12 @@ describe("durable delivery authority", () => {
       db.prepare("INSERT INTO deliveries(caseId) VALUES(?)").run(next);
       db.prepare("INSERT INTO case_lifecycle(caseId) VALUES(?)").run(next);
     }
-    db.close(); repo = openRepository(join(dir, "db.sqlite"));
+    db.close(); repo = await openReadyTestRepository(join(dir, "db.sqlite"));
     expect(() => repo.listWorkerSchedule(now)).toThrow("WORKER_SCHEDULE_OVERFLOW");
   });
-  it("refuses a corrupted non-random reference rather than projecting it into worker logs", () => {
+  it("refuses a corrupted non-random reference rather than projecting it into worker logs", async () => {
     repo.close(); const db = new Database(join(dir, "db.sqlite")); db.prepare("UPDATE cases SET reference='private@example.invalid' WHERE id=?").run(id); db.close();
-    repo = openRepository(join(dir, "db.sqlite"));
+    repo = await openReadyTestRepository(join(dir, "db.sqlite"));
     expect(() => repo.listWorkerSchedule(now)).toThrow("INVALID_DELIVERY_METADATA");
   });
   it("requires durable authenticated contact before retiring the last original authority", async () => {
@@ -68,7 +68,7 @@ describe("durable delivery authority", () => {
     repo.close(); const db = new Database(join(dir, "db.sqlite"));
     db.prepare("UPDATE cases SET deliveryState=? WHERE id=?").run(state, id);
     if (state === "ready") db.prepare("INSERT INTO artifacts VALUES(?, 'mime', ?, 1, ?, ?, ?)").run(id, join(dir, "legacy.enc"), hash, hash, at(7 * 1440));
-    db.close(); repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
+    db.close(); repo = await openReadyTestRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
     expect(await repo.withCaseLock(id, async row => row.deliveryState)).toBe("needs_attention"); expect(repo.getDelivery(id).identity).toBeNull(); expect(repo.claimDispatchWork("worker", now)).toBeNull();
   });
   it("rejects runtime enum coercion and unknown SMTP provider metadata", async () => {
@@ -89,14 +89,14 @@ describe("durable delivery authority", () => {
     legacy.exec("DROP TABLE lifecycle_audit; DROP TABLE lifecycle_proposals; DROP TABLE case_lifecycle;");
     legacy.exec("DROP TABLE auth_grants; DROP TABLE auth_sessions; DROP TABLE auth_recovery; DROP TABLE auth_staff; DROP TABLE auth_attempts; DROP TABLE auth_clock; DROP TABLE delivery_attempts; DROP TABLE deliveries; DROP INDEX delivery_claim_token; DROP TRIGGER case_accepted_at_immutable; ALTER TABLE cases DROP COLUMN claimToken; ALTER TABLE cases DROP COLUMN claimKind; PRAGMA user_version=3;");
     legacy.prepare("UPDATE cases SET deliveryState='smtp_accepted' WHERE id=?").run(id); legacy.close();
-    repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
+    repo = await openReadyTestRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
     expect(await repo.withCaseLock(id, async row => row.deliveryState)).toBe("needs_attention");
     expect(repo.getDelivery(id).identity).toBeNull(); expect(repo.getDelivery(id).reason).toBe("LEGACY_UNVERIFIED"); expect(repo.getDelivery(id).attempts).toEqual([]);
     expect(repo.getRequestIdentity(id).acceptedAt).toBe(now); expect(repo.listArtifactReservations()).toHaveLength(2);
     repo.close(); const inspection = new Database(join(dir, "db.sqlite"));
-    expect(inspection.pragma("user_version", { simple: true })).toBe(8);
+    expect(inspection.pragma("user_version", { simple: true })).toBe(9);
     expect(() => inspection.prepare("UPDATE cases SET acceptedAt=? WHERE id=?").run(at(1), id)).toThrow("IMMUTABLE_ACCEPTED_AT"); inspection.close();
-    repo = openRepository(join(dir, "db.sqlite"));
+    repo = await openReadyTestRepository(join(dir, "db.sqlite"));
   });
   it("rejects sensitive/unknown registration fields and malformed stored registration", async () => {
     const staged = await prepare();
@@ -104,7 +104,7 @@ describe("durable delivery authority", () => {
     await expect(repo.stageRegisteredMail(authority(staged.case), { ...staged.delivery.registered!, shape: { kind: "mixed", parts: 3, attachments: [{ name: "original-private-name.pdf", mediaType: "application/pdf", digest: hash, bytes: 1 }] } }, now)).rejects.toThrow("INVALID_DELIVERY_METADATA");
     repo.close(); const db = new Database(join(dir, "db.sqlite")); db.prepare("UPDATE deliveries SET registered=? WHERE caseId=?").run('{"body":"private"}', id); db.close();
     expect(() => openRepository(join(dir, "db.sqlite"))).toThrow("INVALID_DELIVERY_METADATA");
-    const repair = new Database(join(dir, "db.sqlite")); repair.prepare("UPDATE deliveries SET registered=? WHERE caseId=?").run(JSON.stringify(staged.delivery.registered), id); repair.close(); repo = openRepository(join(dir, "db.sqlite"));
+    const repair = new Database(join(dir, "db.sqlite")); repair.prepare("UPDATE deliveries SET registered=? WHERE caseId=?").run(JSON.stringify(staged.delivery.registered), id); repair.close(); repo = await openReadyTestRepository(join(dir, "db.sqlite"));
   });
   it("stages fixed identity and canonical registration before allowing MIME adoption", async () => {
     const first = await prepare(), again = await repo.stageRegisteredMail(authority(first.case), { ...first.delivery.registered!, shape: { attachments: [], parts: 1, kind: "text" } }, now);
@@ -135,7 +135,7 @@ describe("durable delivery authority", () => {
   it("preserves ready retries, exact failure-anchored due times and at most three attempts", async () => {
     let current = await sending();
     let failed = await repo.finishSendAttempt(authority(current.row.case), { kind: "definitely_failed", retryable: true }, at(2));
-    expect(failed.delivery.sendDueAt).toBe("2026-10-09T10:07:00.000Z"); reopen();
+    expect(failed.delivery.sendDueAt).toBe("2026-10-09T10:07:00.000Z"); await reopen();
     expect(repo.getDelivery(id).sendDueAt).toBe("2026-10-09T10:07:00.000Z"); expect(repo.claimDispatchWork("early", at(6))).toBeNull();
     let claim = repo.claimDispatchWork("retry", at(7), "send")!;
     current = { row: await repo.beginSendAttempt(authority(claim.case), current.artifact, { kind: "verified" }, at(7)), artifact: current.artifact };
@@ -148,19 +148,19 @@ describe("durable delivery authority", () => {
     expect(failed.delivery.attempts).toHaveLength(3); expect(repo.claimDispatchWork("fourth", at(100))).toBeNull();
   });
   it("recovers send intent as mailbox-only uncertainty without inventing an outcome", async () => {
-    const current = await sending(); reopen();
+    const current = await sending(); await reopen();
     const recovered = repo.getDelivery(id); expect(recovered.attempts[0].outcome).toBeNull(); expect(recovered.attempts[0].finishedAt).toBeNull();
     const claim = repo.claimDispatchWork("mailbox", now)!; expect(claim.case.claimKind).toBe("reconcile"); expect(claim.case.deliveryState).toBe("uncertain");
     await expect(repo.beginSendAttempt(authority(claim.case), current.artifact, { kind: "verified" }, now)).rejects.toThrow("INVALID_DELIVERY_WORK");
     expect(recovered.receiptSchedule).toEqual([now, at(5), at(30), at(60), at(1440)]);
   });
   it("preserves confirmed delivery across restart despite an unfinished original SMTP attempt", async () => {
-    await sending(); reopen();
+    await sending(); await reopen();
     const claim = repo.claimDispatchWork("receipt", now, "reconcile")!;
     const done = await repo.recordMailboxCheck(authority(claim.case), claim.delivery.registered!, { complete: true, copies: [{ mailbox: "INBOX", uidValidity: "17", uid: 42, fingerprint: hash }], issues: [] }, now);
     expect(done.case.deliveryState).toBe("delivered");
     expect(done.delivery.attempts[0]).toMatchObject({ outcome: null, finishedAt: null });
-    reopen();
+    await reopen();
     const recovered = await repo.withCaseLock(id, async row => row);
     expect(recovered.deliveryState).toBe("delivered");
     expect(recovered).toEqual(done.case);
@@ -168,7 +168,7 @@ describe("durable delivery authority", () => {
     expect(repo.claimDispatchWork("again", at(5))).toBeNull();
   });
   it.each(["final unresolved", "manual"] as const)("preserves %s attention across restart despite an unfinished original SMTP attempt", async resolution => {
-    await sending(); reopen();
+    await sending(); await reopen();
     const time = resolution === "final unresolved" ? at(1440) : now;
     const claim = repo.claimDispatchWork("receipt", time, "reconcile")!;
     const done = resolution === "final unresolved"
@@ -177,7 +177,7 @@ describe("durable delivery authority", () => {
     expect(done.case.deliveryState).toBe("needs_attention");
     expect(done.delivery.reason).toBe(resolution === "final unresolved" ? "RECEIPT_UNRESOLVED" : "MANUAL_REQUIRED");
     expect(done.delivery.attempts[0]).toMatchObject({ outcome: null, finishedAt: null });
-    reopen();
+    await reopen();
     const recovered = await repo.withCaseLock(id, async row => row);
     expect(recovered.deliveryState).toBe("needs_attention");
     expect(recovered).toEqual(done.case);
@@ -185,7 +185,7 @@ describe("durable delivery authority", () => {
     expect(repo.claimDispatchWork("again", at(1500))).toBeNull();
   });
   it("persists accepted outcomes and never converts them to ordinary sending after restart", async () => {
-    const current = await sending(); await repo.finishSendAttempt(authority(current.row.case), { kind: "accepted" }, at(1)); reopen();
+    const current = await sending(); await repo.finishSendAttempt(authority(current.row.case), { kind: "accepted" }, at(1)); await reopen();
     expect(repo.claimDispatchWork("send", at(2), "send")).toBeNull();
     const claim = repo.claimDispatchWork("receipt", at(2), "reconcile")!; expect(claim.case.deliveryState).toBe("smtp_accepted");
     expect(repo.getDelivery(id).attempts[0].outcome).toEqual({ kind: "accepted" });
@@ -195,7 +195,7 @@ describe("durable delivery authority", () => {
     const claimed = repo.claimDispatchWork("receipt", at(31), "reconcile")!;
     pending = await repo.recordMailboxCheck(authority(claimed.case), pending.delivery.registered!, { complete: false, copies: [], issues: ["CANDIDATE_LIMIT"] }, at(31));
     expect(pending.delivery.mailboxChecks).toBe(1); expect(pending.delivery.receiptCursor).toBe(3);
-    expect(repo.claimDispatchWork("burst", at(31))).toBeNull(); reopen();
+    expect(repo.claimDispatchWork("burst", at(31))).toBeNull(); await reopen();
     const next = repo.claimDispatchWork("receipt", at(60), "reconcile")!;
     const copies = [{ mailbox: "INBOX", uidValidity: "17", uid: 42, fingerprint: hash }];
     const done = await repo.recordMailboxCheck(authority(next.case), pending.delivery.registered!, { complete: true, copies, issues: [] }, at(60));
@@ -226,14 +226,14 @@ describe("durable delivery authority", () => {
   });
   it("honors the stricter effective document deadline without extending immutable artifact metadata", async () => {
     const ready = await adopt(await prepare()); repo.close(); const db = new Database(join(dir, "db.sqlite")); db.prepare("UPDATE cases SET payloadDeleteAfter=? WHERE id=?").run(at(1), id); db.close();
-    repo = openRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
+    repo = await openReadyTestRepository(join(dir, "db.sqlite"), { now: () => new Date(now) });
     expect(repo.claimDispatchWork("expired", at(1), "send")).toBeNull(); expect(repo.getDelivery(id).reason).toBe("PROCESSING_EXPIRED");
     expect(repo.getArtifact(id, "mime")).toEqual(ready.artifact); expect(repo.getRequestIdentity(id).acceptedAt).toBe(now);
   });
   it("classifies permanent SMTP failure without a retry or 24h contact-shortening shortcut", async () => {
     const intent = await sending(); const failed = await repo.finishSendAttempt(authority(intent.row.case), { kind: "definitely_failed", retryable: false }, at(1));
     expect(failed.case.deliveryState).toBe("needs_attention"); expect(failed.delivery.reason).toBe("PERMANENT_SEND_FAILURE"); expect(failed.delivery.sendDueAt).toBeNull();
-    expect(failed.case.contactDeleteAfter).toBe("2026-11-08T10:00:00.000Z"); reopen(); expect(repo.claimDispatchWork("retry", at(100))).toBeNull();
+    expect(failed.case.contactDeleteAfter).toBe("2026-11-08T10:00:00.000Z"); await reopen(); expect(repo.claimDispatchWork("retry", at(100))).toBeNull();
   });
   it("rejects send mismatches, false verification and expired permission without allocating an attempt", async () => {
     const ready = await adopt(await prepare()), claim = repo.claimDispatchWork("send", now, "send")!;
@@ -269,10 +269,10 @@ describe("durable delivery authority", () => {
     const intent = await sending(); await repo.finishSendAttempt(authority(intent.row.case), { kind: "definitely_failed", retryable: true }, at(1));
     repo.close(); const db = new Database(join(dir, "db.sqlite")); db.prepare("UPDATE deliveries SET sendDueAt=? WHERE caseId=?").run(at(2), id); db.close();
     expect(() => openRepository(join(dir, "db.sqlite"), { now: () => new Date(at(2)) })).toThrow("INVALID_DELIVERY_METADATA");
-    const repair = new Database(join(dir, "db.sqlite")); repair.prepare("UPDATE deliveries SET sendDueAt=? WHERE caseId=?").run(at(6), id); repair.close(); repo = openRepository(join(dir, "db.sqlite"));
+    const repair = new Database(join(dir, "db.sqlite")); repair.prepare("UPDATE deliveries SET sendDueAt=? WHERE caseId=?").run(at(6), id); repair.close(); repo = await openReadyTestRepository(join(dir, "db.sqlite"));
   });
   it("preserves safe queued and staged scanning recovery without a MIME rewrite", async () => {
-    const prepared = await prepare(); const fixed = prepared.delivery.identity; reopen();
+    const prepared = await prepare(); const fixed = prepared.delivery.identity; await reopen();
     const claim = repo.claimDispatchWork("resume", now, "prepare")!;
     expect(claim.case.deliveryState).toBe("scanning"); expect(claim.delivery.identity).toEqual(fixed); expect(claim.delivery.registered).toEqual(prepared.delivery.registered);
     expect(claim.case.version).toBeGreaterThan(prepared.case.version); expect(claim.case.claimToken).not.toBe(prepared.case.claimToken);
@@ -297,12 +297,12 @@ describe("durable delivery authority", () => {
     await expect(repo.storeContact(authority(saved.case), "bad", keys.privateKey, now)).rejects.toThrow("CONTACT_AUTHENTICATION_FAILED");
     repo.close(); const db = new Database(join(dir, "db.sqlite"));
     expect(JSON.stringify(db.prepare("SELECT * FROM deliveries").all())).not.toContain("example.test"); expect(JSON.stringify(db.prepare("SELECT * FROM audit").all())).not.toContain("example.test"); db.close();
-    repo = openRepository(join(dir, "db.sqlite"));
+    repo = await openReadyTestRepository(join(dir, "db.sqlite"));
   });
-  it("rejects a malformed persisted contact envelope before exposing retirement authority", () => {
+  it("rejects a malformed persisted contact envelope before exposing retirement authority", async () => {
     repo.close(); const db = new Database(join(dir, "db.sqlite")); db.prepare("UPDATE deliveries SET contactEnvelope='AAAA' WHERE caseId=?").run(id); db.close();
     expect(() => openRepository(join(dir, "db.sqlite"))).toThrow("INVALID_DELIVERY_METADATA");
-    const repair = new Database(join(dir, "db.sqlite")); repair.prepare("UPDATE deliveries SET contactEnvelope=NULL WHERE caseId=?").run(id); repair.close(); repo = openRepository(join(dir, "db.sqlite"));
+    const repair = new Database(join(dir, "db.sqlite")); repair.prepare("UPDATE deliveries SET contactEnvelope=NULL WHERE caseId=?").run(id); repair.close(); repo = await openReadyTestRepository(join(dir, "db.sqlite"));
   });
   it.each(["invalid", "operational"] as const)("distinguishes %s determination and its cleanup policy", async category => {
     const prepared = await prepare(); const result = await repo.recordDeliveryFailure(authority(prepared.case), category === "invalid" ? { category, reason: "MALICIOUS_INPUT" } : { category, reason: "DEPENDENCY_UNAVAILABLE" }, at(60));

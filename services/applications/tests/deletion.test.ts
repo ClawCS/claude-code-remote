@@ -12,11 +12,12 @@ import { imapServer } from "./helpers/imap-server";
 import { Secret, TOTP } from "otpauth";
 import { runDeletionOnce, hasRetainedDeletion, awaitDeletionSettlement } from "../src/deletion";
 import { deletionOwner } from "../src/deletion-repository";
+import { erasureOwner } from "../src/erasure-repository";
 import { openRepository } from "../src/repository";
 import { createSafetyJournal } from "../src/ledger";
 import { dateOnly, digest, utcInstant, type AdmissionScope, type ApplicationRepository, type JournalEvent, type SafetyJournal, type MailboxPort, type RegisteredMail } from "../src/types";
 import { caseId, fence, instant, syntheticJournal } from "./fixtures/ledger";
-import { testAdmission, removeTask10Schema } from "./fixtures/admission";
+import { testAdmission, removeTask10Schema, removeTask11Schema } from "./fixtures/admission";
 
 const connection = vi.hoisted(() => ({ current: undefined as Database.Database | undefined }));
 vi.mock("better-sqlite3", async original => {
@@ -30,13 +31,14 @@ function setup() {
   const dir = mkdtempSync(join(realpathSync(tmpdir()), "deletion-synthetic-")), fixture = syntheticJournal();
   let time = Date.parse(instant), mono = 0, admission: AdmissionScope | null = scope, calls = 0;
   let journal!: SafetyJournal, repository!: ApplicationRepository;
-  const options = { admissionScope: { currentScope: () => admission }, journalFactory: (projection: Parameters<typeof createSafetyJournal>[0]["projection"]) => {
+  const options = { admissionScope: { currentScope: () => admission },deletionScope:{currentScope:()=>({ledgerId:fixture.context.ledgerId,historyEpoch:fixture.context.historyEpoch,associationKeyId:"deletion-key",associationKey:Buffer.alloc(32,6),approvedScopes:[scope]})}, journalFactory: (projection: Parameters<typeof createSafetyJournal>[0]["projection"]) => {
     calls++; journal = createSafetyJournal({ port: { append: event => fixture.port.append(event), readSince: cursor => fixture.port.readSince(cursor) }, trust: { currentContext: () => fixture.context }, clock: { wallNow: () => new Date(time), monotonicNow: () => mono }, projection }); return journal;
   } };
   function open() { repository = openRepository(join(dir, "registry.sqlite"), { now: () => new Date(time) }, options); }
   open(); cleanup.push(() => { repository.close(); rmSync(dir, { recursive: true, force: true }); });
   let acceptedCount = 0;
-  function accept() {
+  async function accept() {
+    await journal.refresh("startup");
     const now = utcInstant(new Date(time).toISOString()), reservation = repository.reserve({ ...testAdmission(), sessionHash: digest("a".repeat(64)), idempotencyKey: `case-${++acceptedCount}`, reservedBytes: 1, now });
     const input = { reservationId: reservation.id, digest: digest("b".repeat(64)), encryptedPayloadPath: join(dir, "payload.enc"), actualBytes: 1, encryptedName: "synthetic", job: "sales-fulltime" as const, now };
     return { value: repository.commitIntake(input), input };
@@ -44,8 +46,8 @@ function setup() {
   return { fixture, dir, accept, get repository() { return repository; }, get journal() { return journal; }, get db() { return connection.current!; }, get calls() { return calls; }, get time() { return time; }, clock: { wallNow: () => new Date(time), monotonicNow: () => mono }, setAdmission(value: AdmissionScope | null) { admission = value; }, advance(ms: number) { time += ms; mono += ms; }, restart() { repository.close(); open(); } };
 }
 const authKeys = generateKeyPairSync("rsa", { modulusLength: 2048 }), mimeKey = createSecretKey(Buffer.alloc(32, 7));
-async function due() {
-  const s = setup(), accepted = s.accept().value, at = utcInstant(new Date(s.time).toISOString());
+async function due(confirmed=false) {
+  const s = setup(), accepted = (await s.accept()).value, at = utcInstant(new Date(s.time).toISOString());
   await s.journal.refresh("startup");
   const claim = s.repository.claimNext("fixture", at)!;
   const identity = await s.repository.stageDeliveryIdentity({ id: claim.id, version: claim.version, token: claim.claimToken }, "mime", at);
@@ -57,7 +59,7 @@ async function due() {
   const raw = Buffer.concat([Buffer.from(`X-TJ-Fingerprint: ${mail.fingerprint}\r\nX-TJ-Signature: ${signature}\r\n`), unsigned]);
   const staged = await s.repository.stageRegisteredMail({ id: claim.id, version: identity.case.version, token: claim.claimToken }, mail, at);
   await s.repository.releaseDeliveryClaim({ id: claim.id, version: staged.case.version, token: claim.claimToken }, at);
-  const service = s.repository.createAuthentication({ keys: authKeys, rateKey: Buffer.alloc(32, 8), trust: { currentEpoch: () => digest("9".repeat(64)) } });
+  const service = s.repository.createAuthentication({ keys: authKeys, rateKey: Buffer.alloc(32, 8), trust: { currentEpoch: () => digest("9".repeat(64)) }, initialEnrollmentEpoch: () => digest("9".repeat(64)) });
   const password = "Synthetic deletion fixture password", stage = await service.beginEnrollment(password, password);
   const otp = () => TOTP.generate({ secret: Secret.fromBase32(new URL(stage.provisioningUri).searchParams.get("secret")!), algorithm: "SHA1", digits: 6, period: 30, timestamp: s.time });
   service.finishEnrollment(stage.handle, otp()); s.advance(30000);
@@ -66,15 +68,82 @@ async function due() {
   const row = s.repository.getLifecycleCase(accepted.id, login.session);
   const grant = await service.authorizeSensitiveAction(login.session, { password, otp: otp(), trustedIp: "127.0.0.1" }, { kind: "reject", caseId: row.id, version: row.version });
   await s.journal.refresh("refresh"); await s.repository.applyCaseAction(row.id, { kind: "reject", closedOn: dateOnly("2026-10-10") }, grant, login.session);
+  async function confirmExternal(value:boolean){
+    s.advance(30000);
+    const logged=await service.authenticate({username:"niko",password,otp:otp(),trustedIp:"127.0.0.1"});if(logged.kind!=="authenticated")throw new Error("FIXTURE_LOGIN");
+    s.advance(30000);const current=s.repository.getLifecycleCase(accepted.id,logged.session);
+    const proof=await service.authorizeSensitiveAction(logged.session,{password,otp:otp(),trustedIp:"127.0.0.1"},{kind:"confirm-external-copies",caseId:accepted.id,version:current.version});
+    await s.journal.refresh("refresh");await s.repository.applyCaseAction(accepted.id,{kind:"confirm-external-copies",confirmed:value,reason:"Synthetic copies checked"},proof,logged.session);
+  }
+  if(confirmed)await confirmExternal(true);
   s.advance(Date.parse("2027-04-11T12:00:00.000Z") - s.time); await s.journal.refresh("refresh");
   const deletionScope = { ledgerId: s.fixture.context.ledgerId, historyEpoch: s.fixture.context.historyEpoch, associationKeyId: "deletion-key", associationKey: Buffer.alloc(32, 6), approvedScopes: [scope] };
   let searches = 0, deletions = 0, exists = true;
   const mailbox: MailboxPort = { findVerified: async () => { searches++; return { complete: true, issues: [], copies: exists ? [{ mailbox: "canary@example.invalid/Archive", uid: 1, uidValidity: "1", fingerprint: mail.fingerprint }] : [] }; }, deleteVerified: async () => { deletions++; exists = false; return { kind: "deleted" }; }, disconnect: async () => {}, settle: async () => {} };
   const deps = { repository: s.repository, clock: s.clock, scope: { currentScope: () => deletionScope }, verificationKeys: () => new Map([["mime", mimeKey]]), createMailbox: () => mailbox };
-  return { ...s, get repository() { return s.repository; }, get journal() { return s.journal; }, get db() { return s.db; }, accepted, mail, raw, mailbox, deps, deletionScope, get searches() { return searches; }, get deletions() { return deletions; } };
+  return { ...s, confirmExternal,get repository() { return s.repository; }, get journal() { return s.journal; }, get db() { return s.db; }, accepted, mail, raw, mailbox, deps, deletionScope, get searches() { return searches; }, get deletions() { return deletions; } };
 }
 
 describe("finite guarded deletion", () => {
+  it("binds final erasure to the actual positive audit followed by a fresh clear and original receipt",async()=>{
+    const s=await due(true),owner=erasureOwner(s.repository);
+    s.mailbox.findVerified=async()=>({copies:[],complete:true,issues:[]});
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("mailbox_cleared");
+    await s.repository.withCaseLock(s.accepted.id,async()=>{
+      const evidence=owner.currentFinalEvidence(s.accepted.id)!;expect(evidence).not.toBeNull();
+      expect(evidence.attestation).toEqual(s.db.prepare("SELECT sequence,version,actor,at,reason FROM lifecycle_audit WHERE kind='confirm-external-copies' ORDER BY sequence DESC LIMIT 1").get());
+      s.db.prepare("UPDATE lifecycle_audit SET reason='different evidence' WHERE sequence=?").run(evidence.attestation.sequence);
+      expect(owner.currentFinalEvidence(s.accepted.id)).toBeNull();
+      s.db.prepare("UPDATE lifecycle_audit SET reason=? WHERE sequence=?").run(evidence.attestation.reason,evidence.attestation.sequence);
+      const event=owner.prepareCommit(s.accepted.id,"identifying_register"),receipt=await s.journal.append(event);
+      expect(event[4]).toHaveLength(9);expect(event[4][7]).toBe(evidence.clear.clearEvent[1]);
+      const refreshed=await s.journal.refresh("refresh");if(refreshed.kind!=="observed")throw new Error("FIXTURE_INCOMPLETE");
+      expect(()=>owner.acknowledge(event,refreshed.receipt)).toThrow();
+      owner.acknowledge(event,receipt);expect(owner.pending(s.accepted.id)).toBeNull();
+    });
+    expect(()=>s.repository.getDelivery(s.accepted.id)).toThrow("CASE_ERASED");
+  });
+  it("does not reuse a clear when positive attestation occurs afterward or is withdrawn",async()=>{
+    const s=await due(),owner=erasureOwner(s.repository);s.mailbox.findVerified=async()=>({copies:[],complete:true,issues:[]});
+    await runDeletionOnce(s.deps);await s.confirmExternal(true);
+    expect(await s.repository.withCaseLock(s.accepted.id,async()=>owner.currentFinalEvidence(s.accepted.id))).toBeNull();
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("mailbox_cleared");
+    expect(await s.repository.withCaseLock(s.accepted.id,async()=>owner.currentFinalEvidence(s.accepted.id))).not.toBeNull();
+    await s.confirmExternal(false);
+    expect(await s.repository.withCaseLock(s.accepted.id,async()=>owner.currentFinalEvidence(s.accepted.id))).toBeNull();
+  });
+  it("rejects a recovery barrier substituted for the original clear receipt", async () => {
+    const s = await due(), owner = deletionOwner(s.repository);
+    s.mailbox.findVerified = async () => ({ copies: [], complete: true, issues: [] });
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("mailbox_cleared");
+    const progress = await s.journal.refresh("refresh");
+    if (progress.kind !== "observed") throw new Error("FIXTURE_INCOMPLETE");
+    s.db.prepare("UPDATE deletion_events SET entry=?,head=? WHERE eventId=(SELECT clearEventId FROM deletion_state WHERE caseId=?)").run(progress.receipt.entry, progress.receipt.head, s.accepted.id);
+    await expect(s.repository.withCaseLock(s.accepted.id, async () => owner.currentClear(s.accepted.id))).rejects.toThrow("DELETION_STORAGE_INVALID");
+  });
+  it("returns only guarded current clear evidence with the original phase receipts", async () => {
+    const s = await due(), owner = deletionOwner(s.repository);
+    expect(() => owner.currentClear(s.accepted.id)).toThrow("DELETION_GUARD_REQUIRED");
+    expect(await s.repository.withCaseLock(s.accepted.id, async () => owner.currentClear(s.accepted.id))).toBeNull();
+    s.mailbox.findVerified = async () => ({ copies: [], complete: true, issues: [] });
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("mailbox_cleared");
+    const evidence = await s.repository.withCaseLock(s.accepted.id, async () => owner.currentClear(s.accepted.id));
+    expect(evidence?.caseId).toBe(s.accepted.id);
+    expect(evidence?.clearEvent[3]).toBe("mailbox_clear_observed");
+    expect(evidence?.intentEvent[3]).toBe("attempt_intent");
+    expect(evidence?.clearEvent[4][1]).toBe(evidence?.intentEvent[1]);
+    expect(JSON.parse(evidence!.clearReceipt.entry)[0][7]).toEqual(evidence!.clearEvent);
+    expect(JSON.parse(evidence!.intentReceipt.entry)[0][7]).toEqual(evidence!.intentEvent);
+    expect(Object.isFrozen(evidence)).toBe(true);
+    expect(Object.isFrozen(evidence!.clearReceipt)).toBe(true);
+    expect(Object.isFrozen(evidence!.head)).toBe(true);
+    await s.journal.refresh("refresh");
+    const refreshed = await s.repository.withCaseLock(s.accepted.id, async () => owner.currentClear(s.accepted.id));
+    expect(refreshed!.clearReceipt).toEqual(evidence!.clearReceipt);
+    expect(refreshed!.head).not.toEqual(evidence!.head);
+    s.db.prepare("UPDATE cases SET version=version+1 WHERE id=?").run(s.accepted.id);
+    expect(await s.repository.withCaseLock(s.accepted.id, async () => owner.currentClear(s.accepted.id))).toBeNull();
+  });
   it.each(["CONTENT_MISMATCH", "INVALID_IDENTITY", "IDENTITY_CHANGED"] as const)("keeps %s blocked across diagnostic SQL failure and exact restart recovery", async issue => {
     const s = await due();
     s.mailbox.deleteVerified = async () => ({ kind: "mismatch", issue });
@@ -307,16 +376,16 @@ describe("original-owner safety projection and acceptance", () => {
     const s = await due(); s.mailbox.deleteVerified = async () => ({ kind: "mismatch", issue: "CONTENT_MISMATCH" }); await runDeletionOnce(s.deps);
     const tables = ["cases", "case_lifecycle", "lifecycle_proposals", "auth_grants", "deliveries", "deletion_events", "deletion_state", "deletion_diagnostics"];
     const before = tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all());
-    s.db.exec("DROP INDEX IF EXISTS deletion_contradictory_result; PRAGMA user_version=7;"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(8);
+    removeTask11Schema(s.db);s.db.exec("DROP INDEX IF EXISTS deletion_contradictory_result; PRAGMA user_version=7;"); s.restart();
+    expect(s.db.pragma("user_version", { simple: true })).toBe(9);
     expect(tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all())).toEqual(before);
     const plan = s.db.prepare("EXPLAIN QUERY PLAN SELECT eventId FROM deletion_events WHERE caseId=? AND json_extract(event,'$[3]')='copy_result' AND json_extract(event,'$[4][2]')='mismatch' AND json_extract(event,'$[4][3]') IN ('INVALID_IDENTITY','CONTENT_MISMATCH','IDENTITY_CHANGED') LIMIT 1").all(s.accepted.id) as { detail: string }[];
     expect(plan.some(row => row.detail.includes("USING INDEX deletion_contradictory_result"))).toBe(true);
-    s.restart(); expect(s.db.pragma("user_version", { simple: true })).toBe(8);
+    s.restart(); expect(s.db.pragma("user_version", { simple: true })).toBe(9);
     expect(tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all())).toEqual(before);
   });
   it.each(["cross-case", "duplicate-result"] as const)("rejects independently signed %s causal facts", async fault => {
-    const s = setup(), first = s.accept().value, second = s.accept().value; await s.journal.refresh("startup");
+    const s = setup(), first = (await s.accept()).value, second = (await s.accept()).value; await s.journal.refresh("startup");
     const row = await s.repository.withCaseLock(first.id, async value => value);
     await s.journal.append(["tj-journal-event-v1", "a".repeat(32), instant, "attempt_intent", [first.id, "b".repeat(32), "initial", row.lifecycle.initialAuthority!, "1", scope[0], "deletion-key", "c".repeat(64)]]);
     if (fault === "cross-case") {
@@ -328,33 +397,33 @@ describe("original-owner safety projection and acceptance", () => {
     }
     expect(s.journal.caseAuthority(first.id)).toBeNull();
   });
-  it("migrates schema6 acceptance to null once and never backfills it on replay", () => {
-    const s = setup(), accepted = s.accept();
+  it("migrates schema6 acceptance to null once and never backfills it on replay", async () => {
+    const s = setup(), accepted = (await s.accept());
     removeTask10Schema(s.db); s.db.pragma("user_version=6"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(8);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(9);
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: null });
-    s.setAdmission(null); expect(s.repository.commitIntake(accepted.input).replayed).toBe(true); s.restart();
+    s.setAdmission(null); await s.journal.refresh("startup"); expect(s.repository.commitIntake(accepted.input).replayed).toBe(true); s.restart();
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: null });
   });
-  it("rolls acceptance epoch, lifecycle authority, delivery and audit back together on actual SQL failure", () => {
+  it("rolls acceptance epoch, lifecycle authority, delivery and audit back together on actual SQL failure", async () => {
     const s = setup(); s.db.exec("CREATE TRIGGER synthetic_acceptance_fault BEFORE INSERT ON audit WHEN NEW.event='accepted' BEGIN SELECT RAISE(ABORT,'synthetic fault'); END;");
-    expect(() => s.accept()).toThrow("synthetic fault");
+    await expect(s.accept()).rejects.toThrow("synthetic fault");
     for (const table of ["cases", "case_lifecycle", "deliveries", "audit"]) expect(s.db.prepare(`SELECT count(*) n FROM ${table}`).get()).toEqual({ n: 0 });
   });
   it.each([
     [scope[0], "application", null, "2026-10-10T12:00:00.001Z", null],
     [scope[0], "application", null, "2026-01-01T00:00:00.000Z", instant],
     [scope[0], "synthetic", "pilot-1", "2026-01-01T00:00:00.000Z", null],
-  ] as const)("blocks original acceptance outside the exact approved interval or submission kind %j", (...input) => {
-    const s = setup(); s.setAdmission(input as AdmissionScope); expect(() => s.accept()).toThrow("ADMISSION_SCOPE_UNAVAILABLE");
+  ] as const)("blocks original acceptance outside the exact approved interval or submission kind %j", async (...input) => {
+    const s = setup(); s.setAdmission(input as AdmissionScope); await expect(s.accept()).rejects.toThrow("ADMISSION_SCOPE_UNAVAILABLE");
   });
-  it("enumerates at most20 using durable continuation and does not silently drop unvisited due rows", () => {
+  it("enumerates at most20 using durable continuation and does not silently drop unvisited due rows", async () => {
     const s = setup(), ids: string[] = [];
     // Minimal synthetic candidate rows are intentionally not deletion authority;
     // this tests the bounded indexed selector independently of actual mutations.
     for (let i = 0; i < 25; i++) {
       if (i) { s.db.prepare("UPDATE cases SET deliveryState='delivered'").run(); s.db.prepare("DELETE FROM artifact_reservations").run(); }
-      const accepted = s.accept(); ids.push(accepted.value.id);
+      const accepted = (await s.accept()); ids.push(accepted.value.id);
       s.db.prepare("UPDATE cases SET caseState='rejected_closed',closedOn='2026-10-10' WHERE id=?").run(accepted.value.id);
       s.db.prepare("UPDATE case_lifecycle SET authorityKind=NULL,authorityId=NULL,deadline='2027-04-10',deleteFrom='2027-04-11' WHERE caseId=?").run(accepted.value.id);
     }
@@ -381,7 +450,7 @@ describe("original-owner safety projection and acceptance", () => {
     s.restart(); await expect(s.journal.refresh("startup")).rejects.toThrow(); expect(s.journal.caseAuthority(caseId)).toBeNull();
   });
   it("applies another guarded case's fence without waiting for that case guard", async () => {
-    const s = setup(), first = s.accept().value, second = s.accept().value; await s.journal.refresh("startup");
+    const s = setup(), first = (await s.accept()).value, second = (await s.accept()).value; await s.journal.refresh("startup");
     let release!: () => void, entered!: () => void;
     const gate = new Promise<void>(resolve => { release = resolve; }), seen = new Promise<void>(resolve => { entered = resolve; });
     const locked = s.repository.withCaseLock(second.id, async row => {
@@ -426,15 +495,15 @@ describe("original-owner safety projection and acceptance", () => {
     s.fixture.commit(wrong);
     await expect(s.journal.refresh("refresh")).rejects.toThrow(); expect(s.journal.caseAuthority(caseId)).toBeNull();
   });
-  it("atomically assigns server-owned acceptance provenance and preserves it on replay", () => {
-    const s = setup(), accepted = s.accept();
+  it("atomically assigns server-owned acceptance provenance and preserves it on replay", async () => {
+    const s = setup(), accepted = (await s.accept());
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: scope[0] });
     s.setAdmission(null); s.advance(1000);
     expect(s.repository.commitIntake({ ...accepted.input, now: utcInstant("2026-01-01T00:00:00.000Z") })).toMatchObject({ id: accepted.value.id, replayed: true, acceptedAt: instant });
     expect(() => s.db.prepare("UPDATE cases SET acceptanceEpochId=NULL WHERE id=?").run(accepted.value.id)).toThrow("IMMUTABLE_ACCEPTANCE_EPOCH");
   });
-  it("rejects original acceptance without a valid matching current admission scope", () => {
-    const s = setup(); s.setAdmission(null); expect(() => s.accept()).toThrow("ADMISSION_SCOPE_UNAVAILABLE");
+  it("rejects original acceptance without a valid matching current admission scope", async () => {
+    const s = setup(); s.setAdmission(null); await expect(s.accept()).rejects.toThrow("ADMISSION_SCOPE_UNAVAILABLE");
     expect(s.db.prepare("SELECT count(*) n FROM cases").get()).toEqual({ n: 0 });
     expect(s.db.prepare("SELECT count(*) n FROM case_lifecycle").get()).toEqual({ n: 0 });
   });

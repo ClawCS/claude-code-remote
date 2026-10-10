@@ -5,6 +5,35 @@ import { caseId, entryHash, fence, instant, syntheticJournal } from "./fixtures/
 import type { JournalEvent, LedgerCursor, SignedEntry } from "../src/types";
 
 describe("bounded canonical journal contract", () => {
+  const erased = (kind: string, body: unknown[]): JournalEvent => ["tj-journal-event-v1", "e".repeat(32), instant, kind, body] as unknown as JournalEvent;
+  it.each(["processing_payload", "processing_contact", "incident_identity", "public_token"])("authenticates the exact technical erasure scope %s", scope => {
+    const event = erased("erase_commit", [caseId, scope, "association-key", "6".repeat(64)]), s = syntheticJournal();
+    expect(decodeJournalEvent(JSON.stringify(event))).toEqual(event);
+    expect(verifyJournalReceipt(event, s.commit(event), s.context).event).toEqual(event);
+  });
+  it("authenticates final erasure and its exact completion reference without changing signed receipt binding", () => {
+    const s = syntheticJournal(), event = erased("erase_commit", [caseId, "identifying_register", "association-key", "6".repeat(64), "fence", "7".repeat(32), "9007199254740991", "8".repeat(32), "9".repeat(64)]);
+    const receipt = s.commit(event);
+    expect(verifyJournalReceipt(event, receipt, s.context).event).toEqual(event);
+    const done = [...erased("erase_done", [caseId, event[1]])] as unknown as JournalEvent;
+    (done as unknown as unknown[])[1] = "f".repeat(32);
+    expect(verifyJournalReceipt(done, s.commit(done), s.context).event).toEqual(done);
+    expect(() => verifyJournalReceipt(event, { entry: receipt.entry, head: s.receipts[1].head }, s.context)).toThrow();
+  });
+  it.each([
+    [caseId, "all_deleted", "association-key", "6".repeat(64)],
+    [caseId, "processing_payload", "association-key", "6".repeat(64), null],
+    [caseId, "identifying_register", "association-key", "6".repeat(64)],
+    [caseId, "public_token", "Association", "6".repeat(64)],
+    [caseId, "public_token", "association-key", "G".repeat(64)],
+    [caseId, "public_token", "association-key", "ü".repeat(64)],
+    ...["0", "01", "-1", "1.0", "9007199254740992", 1].map(version => [caseId, "identifying_register", "association-key", "6".repeat(64), "fence", "7".repeat(32), version, "8".repeat(32), "9".repeat(64)]),
+  ])("rejects unsupported or malformed erasure payload %j", (...body) => {
+    expect(() => decodeJournalEvent(JSON.stringify(erased("erase_commit", body)))).toThrow();
+  });
+  it.each([[caseId], [caseId, "x"], [caseId, "a".repeat(32), "extra"], ["not-a-case", "a".repeat(32)]])("rejects malformed erase_done reference %j", (...body) => {
+    expect(() => decodeJournalEvent(JSON.stringify(erased("erase_done", body)))).toThrow();
+  });
   const intent = [caseId, "1".repeat(32), "fence", "2".repeat(32), "3", "4".repeat(32), "association-key", "5".repeat(64)];
   const marker = [caseId, "6".repeat(32), "1", "7".repeat(64)];
   const clear = [caseId, "6".repeat(32), "3", "2026-10-10T11:59:00.000Z", instant, "listed-selectable-v1"];

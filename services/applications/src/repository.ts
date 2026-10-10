@@ -13,9 +13,11 @@ import { createAuthRepository, pruneAuthAttempts } from "./auth-repository";
 import { createAuthentication, trustedAuthEpoch } from "./auth";
 import { createLifecycleRepository, readLifecycle } from "./lifecycle-repository";
 import { createJournalProjection } from "./journal-projection";
-import { admissionScopeAccepts, snapshotAdmissionScope } from "./deletion-association";
+import { admissionScopeAccepts, snapshotAdmissionScope, snapshotDeletionScope, sameDeletionScope } from "./deletion-association";
 import { bindDeletionOwner, createDeletionRepository } from "./deletion-repository";
-import type { AdmissionScopePort, AuthDependencies, JournalSafetyProjection, SafetyJournal } from "./types";
+import { bindErasureOwner, createErasureRepository } from "./erasure-repository";
+import { replayAssociation } from "./erasure-association";
+import type { AdmissionScopePort, AuthDependencies, DeletionScope, DeletionScopePort, EraseScope, JournalSafetyProjection, SafetyJournal } from "./types";
 
 const DAY = 86400000;
 function addDays(value: Instant, days: number): Instant { return utcInstant(new Date(Date.parse(value) + days * DAY).toISOString()); }
@@ -24,7 +26,9 @@ interface StoredReservation extends Omit<Reservation, "submission"> { active: nu
 interface StoredCase extends Omit<CaseRecord, "submission"> { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string; submission: string }
 interface Guard { id: ApplicationId; active: boolean }
 
-export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journalFactory?: (projection: JournalSafetyProjection) => SafetyJournal; readonly admissionScope?: AdmissionScopePort } = {}): ApplicationRepository {
+export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journalFactory?: (projection: JournalSafetyProjection) => SafetyJournal; readonly admissionScope?: AdmissionScopePort; readonly deletionScope?: DeletionScopePort; readonly startup?: "ordinary" | "cold-maintenance" } = {}): ApplicationRepository {
+  const startup=lifecycleOptions.startup??"ordinary";
+  if(startup!=="ordinary"&&startup!=="cold-maintenance")throw new Error("INVALID_STARTUP_MODE");
   if (!isAbsolute(path) || resolve(path) !== path || path.split(sep).some(part => ["public", ".git", "releases", ".build"].includes(part))) throw new Error("UNSAFE_PATH");
   for (let part = dirname(path); part !== dirname(part); part = dirname(part)) {
     const stat = lstatSync(part); if (stat.isSymbolicLink()) throw new Error("UNSAFE_PATH");
@@ -42,6 +46,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
     db.pragma("synchronous = FULL");
+    db.pragma("secure_delete = ON");
     // An eager write transaction obtains ownership; the pragma alone does not.
     db.exec("BEGIN IMMEDIATE; COMMIT;");
     let version = db.pragma("user_version", { simple: true });
@@ -59,7 +64,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -75,7 +80,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 migration7"), schema.indexOf("-- Task10 fix1 migration8")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 7) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 fix1 migration8")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 fix1 migration8"), schema.indexOf("-- Task11A migration9")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 8) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11A migration9")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -87,9 +95,34 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   let closed = false;
   let authOwned = false;
   let authDependencies: AuthDependencies | undefined;
+  let erasureReadId: ApplicationId | undefined;
+  let boundScope: DeletionScope | undefined;
+  let scopeChanged=false;
   function live(): void { if (closed) throw new Error("REPOSITORY_CLOSED"); }
+  function ordinary():void { live();if(startup==="cold-maintenance")throw new Error("REPOSITORY_COLD"); }
+  function authLive():void { ordinary();if((db.prepare("SELECT authLocked FROM erasure_maintenance WHERE singleton=1").get() as {authLocked:number}).authLocked)throw new Error("AUTH_DENIED"); }
+  function scopeDenied(id:ApplicationId,scope: "payload"|"contact"|"identity"|"proof"):boolean {
+    const accepted:readonly EraseScope[]=scope==="payload"?["processing_payload","identifying_register"]:scope==="contact"?["processing_contact","incident_identity","identifying_register"]:scope==="proof"?["public_token","incident_identity","identifying_register"]:["incident_identity","identifying_register"];
+    return accepted.some(kind=>!!db.prepare("SELECT 1 FROM erasure_scopes WHERE caseId=? AND scope=? AND committed=1").get(id,kind));
+  }
+  function currentErasureScope():DeletionScope {
+    try {
+      live();const scope=snapshotDeletionScope(lifecycleOptions.deletionScope?.currentScope()),observation=journal?.observation();
+      if(scopeChanged||!observation)throw new Error();
+      if(boundScope&&!sameDeletionScope(boundScope,scope)){scopeChanged=true;throw new Error();}
+      const applied=db.prepare("SELECT ledgerId,historyEpoch,sequence,hash,observedAt,cursor FROM journal_projection WHERE singleton=1").get() as {ledgerId:string;historyEpoch:string;sequence:string;hash:string;observedAt:string;cursor:string}|undefined;
+      if(!applied||applied.ledgerId!==scope.ledgerId||applied.historyEpoch!==scope.historyEpoch||applied.sequence!==observation.sequence||applied.hash!==observation.hash||applied.observedAt!==observation.observedAt||applied.cursor!==observation.cursor)throw new Error();
+      if(db.prepare("SELECT 1 FROM erasure_replay WHERE ledgerId!=? OR historyEpoch!=? OR associationKeyId!=? LIMIT 1").get(scope.ledgerId,scope.historyEpoch,scope.associationKeyId))throw new Error();
+      boundScope??=scope;return scope;
+    }catch{throw new Error("ERASURE_ADMISSION_UNAVAILABLE");}
+  }
+  function assertReplayAdmission(sessionHash:Digest,idempotencyKey:string):void {
+    const scope=currentErasureScope(),association=replayAssociation(scope,sessionHash,idempotencyKey);
+    if(db.prepare("SELECT 1 FROM erasure_replay WHERE ledgerId=? AND historyEpoch=? AND associationKeyId=? AND replayAssociation=?").get(scope.ledgerId,scope.historyEpoch,scope.associationKeyId,association))throw new Error("ERASURE_REPLAY_DENIED");
+  }
   function readCase(id: ApplicationId): CaseRecord {
     live(); applicationId(id); const row = db.prepare("SELECT id, reference, encryptedName, job, acceptedAt, acceptanceEpochId, deliveryState, caseState, version, encryptedPayloadPath, payloadBytes, closedOn, payloadDeleteAfter, contactDeleteAfter, claimOwner, claimedAt, claimToken, claimKind, submission FROM cases WHERE id = ?").get(id) as (Omit<CaseRecord, "submission" | "lifecycle"> & { submission: string }) | undefined;
+    if(erasureReadId!==id&&scopeDenied(id,"identity"))throw new Error("CASE_ERASED");
     if (!row) throw new Error("CASE_NOT_FOUND");
     utcInstant(row.acceptedAt); utcInstant(row.payloadDeleteAfter); utcInstant(row.contactDeleteAfter);
     if (row.acceptanceEpochId !== null && !/^[a-f0-9]{32}$/.test(row.acceptanceEpochId)) throw new Error("INVALID_ACCEPTANCE_EPOCH");
@@ -99,7 +132,8 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       utcInstant(row.claimedAt!);
       if (!/^[A-Za-z0-9_-]{1,128}$/.test(row.claimOwner!) || (row.claimKind === "prepare" && row.deliveryState !== "scanning") || (row.claimKind === "send" && !["ready", "sending"].includes(row.deliveryState)) || (row.claimKind === "reconcile" && !["smtp_accepted", "uncertain"].includes(row.deliveryState))) throw new Error("INVALID_DELIVERY_METADATA");
     }
-    return readLifecycle(db, { ...row, submission: submissionKind(JSON.parse(row.submission)) });
+    const result=readLifecycle(db, { ...row, submission: submissionKind(JSON.parse(row.submission)) });
+    return erasureReadId!==id&&scopeDenied(id,"payload")?{...result,encryptedPayloadPath:null,payloadBytes:0}:result;
   }
   async function guarded<T>(id: ApplicationId, action: () => Promise<T>): Promise<T> {
     live(); const own = context.getStore();
@@ -148,6 +182,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       if (count.count + 2 > ADMISSION_EVENT_CAP) throw new Error("ADMISSION_UNAVAILABLE");
       const expiresAt = new Date(Date.parse(input.now) + ADMISSION_WINDOW_MS).toISOString();
       for (const [scope, key] of [["session", keys.sessionKey], ["ip", keys.ipKey]]) db.prepare("INSERT INTO abuse_events VALUES (?,?,?,?)").run(scope, key, input.now, expiresAt);
+      try{assertReplayAdmission(input.sessionHash,input.idempotencyKey);}catch(error){return error instanceof Error?error:new Error("ERASURE_ADMISSION_UNAVAILABLE");}
       db.prepare("DELETE FROM reservations WHERE active = 1 AND expiresAt <= ?").run(input.now);
       const accepted = db.prepare("SELECT submission FROM cases WHERE sessionHash=? AND idempotencyKey=?").get(input.sessionHash, input.idempotencyKey) as { submission: string } | undefined;
       if (accepted && accepted.submission !== serialized) return new Error("IDEMPOTENCY_CONFLICT");
@@ -178,6 +213,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(now)) throw new Error("INVALID_INSTANT");
       const reservation = db.prepare("SELECT * FROM reservations WHERE id = ?").get(input.reservationId) as StoredReservation | undefined;
       if (!reservation || (reservation.active && reservation.expiresAt <= now)) throw new Error("RESERVATION_NOT_FOUND");
+      assertReplayAdmission(reservation.sessionHash,reservation.idempotencyKey);
       if (input.actualBytes > reservation.reservedBytes) throw new Error("RESERVATION_EXCEEDED");
       const existing = db.prepare("SELECT * FROM cases WHERE sessionHash = ? AND idempotencyKey = ?").get(reservation.sessionHash, reservation.idempotencyKey) as StoredCase | undefined;
       if (existing) {
@@ -207,7 +243,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }
   function getPublicStatus(proofHash: Digest, now: Instant): PublicStatus | null {
     live(); digest(proofHash); utcInstant(now);
-    const row = db.prepare("SELECT c.reference, c.deliveryState, c.acceptedAt FROM status_proofs p JOIN cases c ON c.id = p.caseId WHERE p.proofHash = ? AND p.expiresAt > ?").get(proofHash, now) as Pick<CaseRecord, "reference" | "deliveryState" | "acceptedAt"> | undefined;
+    const row = db.prepare("SELECT c.reference, c.deliveryState, c.acceptedAt FROM status_proofs p JOIN cases c ON c.id = p.caseId WHERE p.proofHash = ? AND p.expiresAt > ? AND NOT EXISTS(SELECT 1 FROM erasure_scopes e WHERE e.caseId=c.id AND e.committed=1 AND e.scope IN('public_token','incident_identity','identifying_register'))").get(proofHash, now) as Pick<CaseRecord, "reference" | "deliveryState" | "acceptedAt"> | undefined;
     return row ? { reference: row.reference, acceptedAt: row.acceptedAt, state: row.deliveryState === "delivered" ? "delivered" : ["uncertain", "needs_attention"].includes(row.deliveryState) ? "needs_attention" : "processing" } : null;
   }
   async function transitionDelivery(id: ApplicationId, expectedVersion: number, next: DeliveryTransition): Promise<CaseRecord> {
@@ -221,6 +257,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }
   function getArtifact(id: ApplicationId, kind: ArtifactKind): ArtifactRecord | null {
     live(); applicationId(id); if (!["bundle", "mime"].includes(kind)) throw new Error("INVALID_ARTIFACT");
+    if(scopeDenied(id,"payload")||scopeDenied(id,"identity"))return null;
     return (db.prepare("SELECT * FROM artifacts WHERE caseId=? AND kind=?").get(id, kind) as ArtifactRecord | undefined) ?? null;
   }
   function verifyArtifact(record: ArtifactRecord): void {
@@ -237,6 +274,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }
   async function adoptArtifact(record: ArtifactRecord, expectedVersion: number): Promise<CaseRecord> {
     return guarded(record.caseId, async () => db.transaction(() => {
+      if(scopeDenied(record.caseId,"payload")||scopeDenied(record.caseId,"identity"))throw new Error("PAYLOAD_ERASED");
       const current = readCase(record.caseId), existing = getArtifact(record.caseId, record.kind);
       if (existing) {
         verifyArtifact(existing);
@@ -268,38 +306,47 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       return readCase(id);
     }).immediate());
   }
-  const delivery = createDeliveryRepository(db, readCase, guarded, id => locks.has(id), getArtifact, verifyArtifact);
-  const authStore = createAuthRepository(db, live, readCase, guarded);
+  const delivery = createDeliveryRepository(db, readCase, guarded, id => locks.has(id), getArtifact, verifyArtifact, scopeDenied);
+  const authStore = createAuthRepository(db, authLive, readCase, guarded);
   let journal: SafetyJournal | undefined;
   try { journal = lifecycleOptions.journalFactory?.(createJournalProjection(db)); }
   catch (error) { db.close(); closed = true; throw error; }
   const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), journal);
   // Validate every persisted ledger before exposing this exclusively-owned DB.
-  try { db.transaction(() => {
+  try { db.prepare("UPDATE erasure_maintenance SET scanPass=? WHERE singleton=1").run(randomBytes(16).toString("hex")); if(startup==="ordinary")db.transaction(() => {
     db.prepare("DELETE FROM reservations WHERE active = 1").run();
-    recoverDelivery(db, utcInstant(clock.now().toISOString()));
-    for (const row of db.prepare("SELECT id FROM cases").all() as { id: ApplicationId }[]) delivery.getDelivery(row.id);
+    recoverDelivery(db, utcInstant(clock.now().toISOString()),id=>scopeDenied(id,"payload")||scopeDenied(id,"identity"));
+    for (const row of db.prepare("SELECT id FROM cases").all() as { id: ApplicationId }[]) if(!scopeDenied(row.id,"identity"))delivery.getDelivery(row.id);
   }).immediate(); }
   catch (error) { db.close(); closed = true; throw error; }
   const repository: ApplicationRepository = {
-    createAuthentication(deps) { live(); if (authOwned) throw new Error("AUTH_ALREADY_OWNED"); const auth = createAuthentication(authStore, deps, clock); authDependencies = deps; authOwned = true; return auth; },
+    createAuthentication(deps) { authLive(); if (authOwned) throw new Error("AUTH_ALREADY_OWNED"); const auth = createAuthentication(authStore, deps, clock); authDependencies = deps; authOwned = true; return auth; },
     ...delivery,
     ...lifecycle,
     getRequestIdentity(id) { readCase(id); return db.prepare("SELECT id,digest,acceptedAt FROM cases WHERE id=?").get(id) as RequestIdentity; },
     getSubmissionKind(id) { return readCase(id).submission; },
     getArtifact, adoptArtifact, retireOriginal,
-    listRetainedArtifacts() { live(); return db.prepare("SELECT * FROM artifacts ORDER BY caseId,kind").all() as ArtifactRecord[]; },
-    listArtifactReservations() { live(); return db.prepare("SELECT * FROM artifact_reservations ORDER BY caseId,kind").all() as ArtifactReservation[]; },
+    listRetainedArtifacts() { live(); return db.prepare("SELECT a.* FROM artifacts a WHERE NOT EXISTS(SELECT 1 FROM erasure_scopes e WHERE e.caseId=a.caseId AND e.committed=1 AND e.scope IN('processing_payload','incident_identity','identifying_register')) ORDER BY a.caseId,a.kind").all() as ArtifactRecord[]; },
+    listArtifactReservations() { live(); return db.prepare("SELECT a.* FROM artifact_reservations a WHERE NOT EXISTS(SELECT 1 FROM erasure_scopes e WHERE e.caseId=a.caseId AND e.committed=1 AND e.scope IN('processing_payload','incident_identity','identifying_register')) ORDER BY a.caseId,a.kind").all() as ArtifactReservation[]; },
     isReplayReservation(id) { live(); return !!db.prepare("SELECT 1 FROM reservations r JOIN cases c ON c.sessionHash=r.sessionHash AND c.idempotencyKey=r.idempotencyKey WHERE r.id=?").get(id); },
-    getCommittedIntake(id) { live(); applicationId(id); return (db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE id = ? AND encryptedPayloadPath IS NOT NULL").get(id) as import("./types").CommittedIntake | undefined) ?? null; },
-    listRetainedIntakes() { live(); return db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE encryptedPayloadPath IS NOT NULL ORDER BY acceptedAt, rowid").all() as import("./types").CommittedIntake[]; },
+    getCommittedIntake(id) { live(); applicationId(id); if(scopeDenied(id,"payload")||scopeDenied(id,"identity"))return null;return (db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE id = ? AND encryptedPayloadPath IS NOT NULL").get(id) as import("./types").CommittedIntake | undefined) ?? null; },
+    listRetainedIntakes() { live(); return db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases c WHERE encryptedPayloadPath IS NOT NULL AND NOT EXISTS(SELECT 1 FROM erasure_scopes e WHERE e.caseId=c.id AND e.committed=1 AND e.scope IN('processing_payload','incident_identity','identifying_register')) ORDER BY acceptedAt, c.rowid").all() as import("./types").CommittedIntake[]; },
     reserve, pruneAdmissionEvents, commitIntake, claimNext, getPublicStatus, transitionDelivery,
     releaseReservation(id) { live(); db.prepare("DELETE FROM reservations WHERE id = ? AND active = 1").run(id); },
     withCaseLock: (id, action) => guarded(id, () => action(Object.freeze(readCase(id)))),
     close() { if (closed) return; if (locks.size) throw new Error("CASE_LOCK_ACTIVE"); db.close(); closed = true; },
   };
-  bindDeletionOwner(repository, createDeletionRepository(db, readCase, delivery.getDelivery, id => {
+  const deletion=createDeletionRepository(db, readCase, delivery.getDelivery, id => {
     live(); const own = context.getStore(); if (!own?.active || own.id !== id) throw new Error("DELETION_GUARD_REQUIRED");
-  }, journal, () => utcInstant(clock.now().toISOString())));
+  }, journal, () => utcInstant(clock.now().toISOString()));
+  bindDeletionOwner(repository,deletion);
+  function erasureRead<T>(id:ApplicationId,read:()=>T):T {const previous=erasureReadId;erasureReadId=id;try{return read();}finally{erasureReadId=previous;}}
+  bindErasureOwner(repository,createErasureRepository(db,{journal,now:()=>utcInstant(clock.now().toISOString()),scope:currentErasureScope,
+    guard(id){live();const own=context.getStore();if(!own?.active||own.id!==id)throw new Error("ERASURE_GUARD_REQUIRED");},guarded,
+    readCase:id=>erasureRead(id,()=>readCase(id)),delivery:id=>erasureRead(id,()=>delivery.getDelivery(id)),currentClear:id=>erasureRead(id,()=>deletion.currentClear(id)),
+    lockAuthentication(){live();if(startup!=="cold-maintenance"||authOwned)throw new Error("AUTH_RESTORE_LOCK_UNAVAILABLE");db.transaction(()=>{db.prepare("UPDATE erasure_maintenance SET authLocked=1 WHERE singleton=1").run();db.prepare("DELETE FROM auth_grants").run();db.prepare("DELETE FROM auth_sessions").run();db.prepare("DELETE FROM auth_recovery").run();}).immediate();},
+  }));
+  // Every original capability retains its construction-time denial boundary.
+  for(const name of Object.keys(repository) as (keyof ApplicationRepository)[]){if(name==="close")continue;const method=repository[name] as (...args:unknown[])=>unknown;Object.defineProperty(repository,name,{value:(...args:unknown[])=>{ordinary();return method(...args);},writable:true});}
   return repository;
 }

@@ -1,8 +1,8 @@
 import type Database from "better-sqlite3";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { decodeJournalEvent, encodeJournalEvent } from "./ledger-contract";
 import { berlinDate } from "./lifecycle";
-import { applicationId, utcInstant, type ApplicationId, type ApplicationRepository, type CaseRecord, type DeletionReason, type DeliveryRecord, type DurableReceipt, type JournalEvent, type MailboxJournalEvent, type SafetyJournal } from "./types";
+import { applicationId, utcInstant, type ApplicationId, type ApplicationRepository, type CaseRecord, type CurrentMailboxClear, type DeletionReason, type DeliveryRecord, type DurableReceipt, type JournalEvent, type MailboxJournalEvent, type SafetyJournal } from "./types";
 
 type Phase = { eventId: string; caseId: ApplicationId; event: string; phase: "proposed" | "acknowledged"; entry: DurableReceipt["entry"] | null; head: DurableReceipt["head"] | null };
 const owners = new WeakMap<ApplicationRepository, ReturnType<typeof createDeletionRepository>>();
@@ -20,7 +20,7 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
   function phase(eventId: string): Phase {
     const p = db.prepare("SELECT * FROM deletion_events WHERE eventId=?").get(eventId) as Phase | undefined;
     if (!p) fail(); const event = decodeJournalEvent(p.event);
-    if (event[1] !== p.eventId || event[3] === "barrier" || event[3] === "case_fence" || event[4][0] !== p.caseId) fail();
+    if (event[1] !== p.eventId || !["attempt_intent", "copy_mutation_started", "copy_result", "mailbox_clear_observed"].includes(event[3]) || event[4][0] !== p.caseId) fail();
     return p;
   }
   function predecessor(id: ApplicationId, eventId: string, kind: JournalEvent[3]): JournalEvent {
@@ -68,21 +68,40 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
       if (isContradictoryResult(event)) latchContradiction(id);
     }).immediate();
   }
+  function checkedReceipt(p: Phase, event: MailboxJournalEvent, receipt: DurableReceipt): void {
+    if (typeof receipt.entry !== "string" || typeof receipt.head !== "string" || Buffer.byteLength(receipt.entry) > 4096 || Buffer.byteLength(receipt.head) > 1024 || Buffer.byteLength(JSON.stringify([receipt.entry, receipt.head])) > 6144) fail();
+    let e: unknown,h: unknown;try{e=JSON.parse(receipt.entry);h=JSON.parse(receipt.head);}catch{fail();}
+    if(!Array.isArray(e)||!Array.isArray(h)||e.length!==2||h.length!==2||!Array.isArray(e[0])||!Array.isArray(h[0])||e[0].length!==8||h[0].length!==9||typeof e[1]!=="string"||typeof h[1]!=="string"||!/^[A-Za-z0-9_-]{86}$/.test(e[1])||!/^[A-Za-z0-9_-]{86}$/.test(h[1]))fail();
+    const fact = db.prepare("SELECT f.sequence,f.entryHash,f.event,p.ledgerId,p.historyEpoch FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(event[1]) as { sequence: string; entryHash: string; event: string; ledgerId: string; historyEpoch: string } | undefined;
+    if (!fact || JSON.stringify(e) !== receipt.entry || JSON.stringify(h) !== receipt.head || e[0]?.[0] !== "tj-journal-entry-v1" || h[0]?.[0] !== "tj-journal-head-v1" || encodeJournalEvent(e[0][7]) !== p.event || fact.event !== p.event || e[0][4] !== fact.sequence || h[0][4] !== fact.sequence || h[0][5] !== fact.entryHash || h[0][6] !== event[1] || h[0][7] !== event[2] || e[0][1] !== h[0][1] || e[0][2] !== h[0][2]) fail();
+    if (e[0][1] !== fact.ledgerId || e[0][2] !== fact.historyEpoch || createHash("sha256").update("tj-journal-entry-hash-v1\n" + JSON.stringify(e[0])).digest("hex") !== fact.entryHash) fail();
+  }
   function acknowledge(id: ApplicationId, event: MailboxJournalEvent, receipt: DurableReceipt): void {
     guard(id); const p = phase(event[1]); if (p.caseId !== id || p.event !== encodeJournalEvent(event)) fail();
-    if (typeof receipt.entry !== "string" || typeof receipt.head !== "string" || Buffer.byteLength(receipt.entry) > 4096 || Buffer.byteLength(receipt.head) > 1024 || Buffer.byteLength(JSON.stringify([receipt.entry, receipt.head])) > 6144) fail();
-    const e = JSON.parse(receipt.entry), h = JSON.parse(receipt.head);
-    const fact = db.prepare("SELECT f.sequence,f.entryHash,f.event FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(event[1]) as { sequence: string; entryHash: string; event: string } | undefined;
-    if (!fact || JSON.stringify(e) !== receipt.entry || JSON.stringify(h) !== receipt.head || e[0]?.[0] !== "tj-journal-entry-v1" || h[0]?.[0] !== "tj-journal-head-v1" || encodeJournalEvent(e[0][7]) !== p.event || fact.event !== p.event || e[0][4] !== fact.sequence || h[0][4] !== fact.sequence || h[0][5] !== fact.entryHash || h[0][6] !== event[1] || h[0][7] !== event[2] || e[0][1] !== h[0][1] || e[0][2] !== h[0][2]) fail();
+    checkedReceipt(p, event, receipt);
     db.transaction(() => {
       if (p.phase === "acknowledged") { if (p.entry !== receipt.entry || p.head !== receipt.head) fail(); }
       else db.prepare("UPDATE deletion_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry, receipt.head, event[1]);
       if (isContradictoryResult(event)) latchContradiction(id);
     }).immediate();
   }
+  function currentClear(id: ApplicationId): CurrentMailboxClear | null {
+    const current = snapshot(id);
+    const state = db.prepare("SELECT status,clearEventId,clearVersion,clearSafetyRevision FROM deletion_state WHERE caseId=?").get(id) as { status: string; clearEventId: string | null; clearVersion: number | null; clearSafetyRevision: number | null } | undefined;
+    if (!state || state.status !== "mailbox_cleared" || current.contradictory || !state.clearEventId || state.clearVersion !== current.row.version || state.clearSafetyRevision !== current.row.lifecycle.safetyRevision || pending(id)) return null;
+    const clear = phase(state.clearEventId), clearEvent = decodeJournalEvent(clear.event);
+    if (clear.caseId !== id || clear.phase !== "acknowledged" || clearEvent[3] !== "mailbox_clear_observed" || !clear.entry || !clear.head) fail();
+    const intent = phase(clearEvent[4][1]), intentEvent = decodeJournalEvent(intent.event);
+    if (intent.caseId !== id || intent.phase !== "acknowledged" || intentEvent[3] !== "attempt_intent" || !intent.entry || !intent.head) fail();
+    const clearReceipt = Object.freeze({ entry: clear.entry, head: clear.head }), intentReceipt = Object.freeze({ entry: intent.entry, head: intent.head });
+    checkedReceipt(clear, clearEvent, clearReceipt); checkedReceipt(intent, intentEvent, intentReceipt);
+    const authority = journal?.caseAuthority(id), payload = intentEvent[4], row = current.row;
+    if (!authority || payload[2] !== row.lifecycle.authorityKind || payload[3] !== row.lifecycle.authorityId || Number(payload[4]) !== row.version || payload[5] !== row.acceptanceEpochId || (payload[2] === "initial" ? authority.latestFence !== null : authority.latestFence?.eventId !== payload[3])) return null;
+    return Object.freeze({ caseId: id, caseVersion: row.version, safetyRevision: row.lifecycle.safetyRevision, head: Object.freeze({ ...authority.head }), clearEvent, clearReceipt, intentEvent, intentReceipt });
+  }
   const selector = `FROM cases c JOIN case_lifecycle l ON l.caseId=c.id LEFT JOIN deletion_state d ON d.caseId=c.id WHERE l.deleteFrom IS NOT NULL AND l.deleteFrom<=? AND (d.clearVersion IS NULL OR d.clearVersion!=c.version OR d.clearSafetyRevision!=l.safetyRevision) AND COALESCE(d.selectedCycle,0)<?`;
   return Object.freeze({
-    journal, snapshot, pending, prepare, acknowledge,
+    journal, snapshot, pending, prepare, acknowledge, currentClear,
     listWork() {
       const today = berlinDate(new Date(now()));
       return db.transaction(() => {

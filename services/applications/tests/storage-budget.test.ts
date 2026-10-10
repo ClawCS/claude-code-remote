@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCustodyLedger } from "../src/custody";
 import { encodePayload, payloadDigest, sealIncoming } from "../src/crypto";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openTestRepository as openRepository, openReadyTestRepository } from "./fixtures/admission";
 import { digest, utcInstant, type ApplicationRepository } from "../src/types";
 import { testIngressAuthority, TestIngressAuthority } from "./fixtures/ingress-authority";
 import { makeArtifactHarness } from "./fixtures/artifacts";
@@ -18,7 +18,7 @@ afterEach(async () => { repository?.close(); if (root) await rm(root, { recursiv
 
 it("reserves future output and scratch capacity before accepting another case", async () => {
   root = await mkdtemp(join(await realpath(tmpdir()), "applications-budget-"));
-  repository = openRepository(join(root, "registry.sqlite"));
+  repository = await openReadyTestRepository(join(root, "registry.sqlite"));
   const now = utcInstant("2026-10-09T10:00:00.000Z"), sessionHash = digest("a".repeat(64));
   for (let index = 0; index < 4; index++) {
     const reservation = repository.reserve({ ...testAdmission(),  sessionHash, idempotencyKey: String(index), reservedBytes: 2, now });
@@ -35,7 +35,7 @@ it("accounts for an ingress inode until its retained descriptor is closed", asyn
   root = await mkdtemp(join(await realpath(tmpdir()), "applications-budget-"));
   const intakeRoot = join(root, "intake"), custodyRoot = join(root, "custody"), runtimeRoot = join(root, "runtime");
   await Promise.all([intakeRoot, custodyRoot, runtimeRoot].map(path => mkdir(path, { mode: 0o700 })));
-  repository = openRepository(join(root, "registry.sqlite"));
+  repository = await openReadyTestRepository(join(root, "registry.sqlite"));
   const now = utcInstant("2026-10-09T10:00:00.000Z");
   const authority = testIngressAuthority(intakeRoot);
   const custody = createCustodyLedger(repository, { intakeRoot, custodyRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock: { now: () => new Date(now) }, ingressAuthority: authority });
@@ -172,7 +172,7 @@ it("retains the two producer slots across repository restart while real child ho
       await sealIncoming((async function*(){yield encodePayload(h.payload);})(),{root:h.keys.intakeRoot,maxBytes:10000,reservationId:reservation.id},h.keys.publicKey);
       holders.push(await h.authority.holdInChild(reservation.id));
     }
-    h.repo.close();reopened=openRepository(join(h.root,"registry.sqlite"));
+    h.repo.close();reopened=await openReadyTestRepository(join(h.root,"registry.sqlite"));
     const recovered=createCustodyLedger(reopened,h.config);await recovered.reconcile();
     await expect(recovered.reserve({ ...testAdmission(), sessionHash:digest("d".repeat(64)),idempotencyKey:"third-holder",reservedBytes:20000,now}, testReadiness)).rejects.toThrow("CAPACITY_EXCEEDED");
     expect(await holders[0].grow(9000)).toBe(9000);

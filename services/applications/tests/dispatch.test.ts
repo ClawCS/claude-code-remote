@@ -10,7 +10,7 @@ import sharp from "sharp";
 import { runDispatchOnce } from "../src/dispatch";
 import { createArtifactStore } from "../src/artifact-store";
 import { createCustodyLedger } from "../src/custody";
-import { openTestRepository as openRepository } from "./fixtures/admission";
+import { openReadyTestRepository } from "./fixtures/admission";
 import { openContact } from "../src/contact-crypto";
 import { verifyMail, fingerprintMime, MIME_LIMITS } from "../src/mail-manifest";
 import { utcInstant, type Acceptance, type ArtifactRecord, type DispatchDependencies, type MailboxSearch, type RegisteredMail } from "../src/types";
@@ -65,7 +65,7 @@ async function harness(withFile = false, resumed?: StorageHarness) {
     row: () => repo.withCaseLock(h.accepted.id, async row => row),
     delivery: () => repo.getDelivery(h.accepted.id),
     restart: async () => {
-      repo.close(); repo = openRepository(join(h.root, "registry.sqlite"), clock);
+      repo.close(); repo = await openReadyTestRepository(join(h.root, "registry.sqlite"), clock);
       custody = createCustodyLedger(repo, h.config); await custody.reconcile(); h.keys.custody = custody;
       Object.assign(deps, { repository: repo, custody, artifacts: createArtifactStore(repo, h.keys, custody), reconstruction: { ...deps.reconstruction, scope: custody } });
     },
@@ -271,7 +271,7 @@ it.each(["bundle", "registration", "mime", "intent", "outcome"])("recovers an ac
     const intakeRoot = join(root, "intake"), privateRoot = join(root, "custody"), runtimeRoot = join(root, "runtime");
     const authority = testIngressAuthority(intakeRoot); await authority.recoverExitedHarness(child, privateRoot);
     const clock = { now: () => new Date(result.accepted.acceptedAt) };
-    const repo = openRepository(join(root, "registry.sqlite"), clock);
+    const repo = await openReadyTestRepository(join(root, "registry.sqlite"), clock);
     const config = { intakeRoot, custodyRoot: privateRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock, ingressAuthority: authority };
     const custody = createCustodyLedger(repo, config);
     const f = await harness(false, { root, repo, accepted: result.accepted, config, keys: { privateKey: createPrivateKey(result.privateKey), publicKey: createPublicKey(result.publicKey), intakeRoot, privateRoot, runtimeRoot, custody } }); adopted = true;
@@ -299,7 +299,7 @@ it("integrates actual synthetic HTTP and Unix RPC intake with cleaned stored MIM
   const intakeRoot = join(root, "intake"), privateRoot = join(root, "custody"), runtimeRoot = join(root, "runtime");
   await Promise.all([intakeRoot, privateRoot, runtimeRoot].map(path => mkdir(path, { mode: 0o700 })));
   const pair = generateKeyPairSync("rsa", { modulusLength: 2048 }), clock = { now: () => new Date("2026-10-09T10:00:00.000Z") };
-  const repo = openRepository(join(root, "registry.sqlite"), clock);
+  const repo = await openReadyTestRepository(join(root, "registry.sqlite"), clock);
   const config = { intakeRoot, custodyRoot: privateRoot, runtimeRoot, intakeUid: process.getuid!(), sharedGid: process.getgid!(), clock, ingressAuthority: testIngressAuthority(intakeRoot) };
   const custody = createCustodyLedger(repo, config); await custody.reconcile();
   const socketPath = join(root, "worker.sock");
