@@ -8,6 +8,14 @@ Nur der neue Server `trinkgut-jammers-web-01`, ID `169370648`, Ubuntu 24.04 x86_
 
 Der Betreiber hat Informationsbetrieb und Impressumsangaben bestätigt. `RENTAL_MODE=disabled` bleibt zwingend: Der Leihwarenkorb erstellt eine unverbindliche E-Mail-Anfrage an `jammers-goch@trinkgut.de` bzw. öffnet den vorhandenen WhatsApp-Anfrageweg. Der Kunde versendet selbst; der Server versendet keine E-Mail, legt keine verbindliche Bestellung an und verarbeitet keine Zahlung. Miet-/Admin-, SMTP-, Zahlungs- und Gemini-Zugänge werden nicht eingerichtet. Die pausierten Upload-/KI-/Community-Endpunkte bleiben gesperrt.
 
+### Aktuelle Grenze für Website-Releases, 10.10.2026
+
+Niko hat die Veröffentlichung fertig geprüfter Website-Änderungen erneut beauftragt, zugleich aber weitere Änderungen an der Server-Sicherheitskonfiguration ausdrücklich ausgesetzt. Für ein solches Folge-Release **nur** ein neues Quell-/Buildverzeichnis erstellen, prüfen und die bestehende Next-Unit nach atomarem Releasewechsel neu starten. Installierte Caddy-/Unit-/AppArmor-/Firewall-/Logging-/SSH-Konfigurationen unverändert lassen; die untenstehenden Einrichtungsabschnitte sind keine Erlaubnis, Bootstrap oder Härtung erneut auszuführen. Vor und nach dem Wechsel die bestehenden Konfigurationshashes vergleichen. Kein Caddy-Neustart, `daemon-reload` oder erneutes `enable` nötig, wenn keine Unit geändert wird.
+
+Die Bewerbungsvorbereitung enthält inzwischen gesonderte Backend- und native Dokumenttests. Diese gehören **nicht** zur freigegebenen Web-Veröffentlichung: keine Bewerbungsdienste starten oder bauen, keine Scanner-/QPDF-/Poppler-Qualifikation ausführen und keine Mail-/Löschtests auslösen. Die Web-Konfiguration liefert weiterhin fest `enabled:false`; ohne gesonderte geprüfte Proxy-/Betriebsintegration bleiben Upload und Verwaltungs-Backend unerreichbar. Lokale Gesamtprojekttests sind kein Linux-Betriebsnachweis dieser Dienste.
+
+Das Quellarchiv muss zusätzlich `patches` enthalten, weil der bestehende Installations-/Prebuild-Schritt den versions- und hashgebundenen ImapFlow-Patch benötigt. `services/applications` wird für vollständige statische Typ-/Lintprüfung mitgeführt, nicht aktiviert. Abhängigkeiten zunächst mit `--ignore-scripts` installieren, ausschließlich den geprüften lokalen Patch explizit ausführen und die Web-Abhängigkeiten durch Tests/Build prüfen. Der folgende Linux-Ablauf ist ausdrücklich eine **Web-Teilprüfung**; kein ungefiltertes `npm test` und keine `APPLICATIONS_TEST_QPDF`-/`APPLICATIONS_TEST_POPPLER`-Vorgaben auf dem Server, solange die gesonderte Betriebsprüfung ausgesetzt ist.
+
 ## Dateien und Voraussetzungen
 
 | Repositorydatei unter `deploy/hetzner/` | Installationsziel |
@@ -113,7 +121,7 @@ ARCHIVE="/tmp/jammers-${RELEASE_ID}.tar.gz"
 git archive --format=tar.gz --output="$ARCHIVE" "$RELEASE_ID" -- \
   .gitignore .gitattributes AGENTS.md package.json package-lock.json next.config.ts tsconfig.json \
   postcss.config.mjs eslint.config.mjs vitest.config.mts playwright.config.ts \
-  app components config context data lib public scripts e2e deploy docs \
+  app components config context data lib public scripts e2e deploy docs patches services/applications \
   assets/fonts assets/source/market-photos assets/source/google-market-photos assets/source/team-photos-safe \
   assets/source/preislisten assets/source/contact-brands
 tar -tzf "$ARCHIVE"
@@ -130,11 +138,12 @@ Aus dem neuen Releaseverzeichnis als `jammers`, mit `/opt/node/bin` im `PATH`:
 
 ```sh
 export PATH=/opt/node/bin:/usr/bin:/bin
-unset CINEMATIC_E2E CINEMATIC_TEST_NOW
+unset CINEMATIC_E2E CINEMATIC_TEST_NOW APPLICATIONS_TEST_QPDF APPLICATIONS_TEST_POPPLER
 export NODE_ENV=production RENTAL_MODE=disabled NEXT_TELEMETRY_DISABLED=1
 node --version
-npm ci --include=dev
-NODE_ENV=test npm test
+npm ci --include=dev --ignore-scripts
+npm run applications:imap-patch
+NODE_ENV=test npm test -- lib/ --maxWorkers=2
 npm run lint -- --quiet
 npx next typegen
 npx tsc --noEmit
