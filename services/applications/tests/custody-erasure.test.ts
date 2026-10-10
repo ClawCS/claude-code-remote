@@ -93,10 +93,10 @@ describe("bounded original-custody erasure", () => {
     await settleMaintenance(f.owner);
     await expect(custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).rejects.toThrow("ERASURE_ROOT_CHANGED");
   });
-  it("does not invalidate a truly untouched scanner when its first run expires before admission", async () => {
+  it.each(["scanBatch", "invalidateAndClose"] as const)("does not invalidate a truly untouched scanner when its first %s expires before admission", async operation => {
     const f = await setup(); bindMaintenance(f.owner, f.services, f.monotonicNow); const run = await beginMaintenance(f.owner);
     f.advance(120001);
-    await expect(custodyErasureOwner(f.owner.custody).scanBatch(run)).rejects.toThrow("MAINTENANCE_DEADLINE");
+    await expect(custodyErasureOwner(f.owner.custody)[operation](run)).rejects.toThrow("MAINTENANCE_DEADLINE");
     expect(maintenanceSnapshot(f.owner).consumedItems).toBe(0);
     expect(f.db.prepare("SELECT count(*) n FROM erasure_scans").get()).toEqual({ n: 0 });
     await settleMaintenance(f.owner);
@@ -121,19 +121,19 @@ describe("bounded original-custody erasure", () => {
     await settleMaintenance(f.owner);
     await expect(scanner.scanBatch(await beginMaintenance(f.owner))).rejects.toThrow("ERASURE_ROOT_CHANGED");
   });
-  it("does not let forged, stale or foreign runs spend another scanner's outstanding reservation", async () => {
+  it.each(["scanBatch", "invalidateAndClose"] as const)("does not let forged, stale or foreign runs spend another scanner's outstanding reservation through %s", async operation => {
     const f = await setup(), other = await setup();
     bindMaintenance(f.owner, f.services, f.monotonicNow); bindMaintenance(other.owner, other.services, other.monotonicNow);
     const first = await beginMaintenance(f.owner), foreign = await beginMaintenance(other.owner), scanner = custodyErasureOwner(f.owner.custody);
     expect((await scanner.scanBatch(first)).complete).toBe(true);
     await settleMaintenance(f.owner); const next = await beginMaintenance(f.owner);
-    for (const invalid of [Object.freeze({}) as MaintenanceRun, first, foreign]) await expect(scanner.scanBatch(invalid)).rejects.toThrow("MAINTENANCE_RUN_INVALID");
+    for (const invalid of [Object.freeze({}) as MaintenanceRun, first, foreign]) await expect(scanner[operation](invalid)).rejects.toThrow("MAINTENANCE_RUN_INVALID");
     expect(f.db.prepare("SELECT count(*) n FROM erasure_scans WHERE state='complete'").get()).toEqual({ n: 3 });
     expect(maintenanceSnapshot(f.owner).consumedItems).toBe(0);
     f.advance(120001); await expect(scanner.scanBatch(next)).rejects.toThrow("MAINTENANCE_DEADLINE");
     expect(f.db.prepare("SELECT count(*) n FROM erasure_scans WHERE state='blocked'").get()).toEqual({ n: 3 });
   });
-  it("uses exactly three denial writes and two retained closes once at the exhausted 1000-credit boundary", async () => {
+  it.each(["scanBatch", "invalidateAndClose"] as const)("uses exactly three denial writes and two retained closes once at the exhausted 1000-credit %s boundary", async operation => {
     const f = await setup(), first = await f.accept(), id = randomUUID(), path = join(f.config.runtimeRoot, id), live = new Set<Dir>();
     await mkdir(path, { mode: 0o700 });
     for (let n = 0; n < 5; n++) await writeFile(join(path, `${n}.data`), "x", { mode: 0o600 });
@@ -168,11 +168,11 @@ describe("bounded original-custody erasure", () => {
       }
       return statement;
     });
-    f.advance(120001); await expect(scanner.scanBatch(run)).rejects.toThrow("MAINTENANCE_DEADLINE");
+    f.advance(120001); await expect(scanner[operation](run)).rejects.toThrow("MAINTENANCE_DEADLINE");
     expect(writes.map(args => args[1])).toEqual(["custody", "incoming", "runtime"]);
     expect(closes - beforeCloses).toBe(2); expect(live.size).toBe(0);
     for (const dir of retained) await expect(dir.read()).rejects.toMatchObject({ code: "ERR_DIR_CLOSED" });
-    await expect(scanner.scanBatch(run)).rejects.toThrow("MAINTENANCE_RUN_STOPPED");
+    await expect(scanner[operation](run)).rejects.toThrow(operation === "scanBatch" ? "MAINTENANCE_RUN_STOPPED" : "MAINTENANCE_BUDGET_INSUFFICIENT");
     expect(writes).toHaveLength(3); expect(closes - beforeCloses).toBe(2);
     expect(maintenanceSnapshot(f.owner).consumedItems).toBe(1000);
     expect(f.db.prepare("SELECT count(*) n FROM erasure_scans WHERE state!='blocked'").get()).toEqual({ n: 0 });
@@ -184,7 +184,55 @@ describe("bounded original-custody erasure", () => {
     expect(maintenanceSnapshot(f.owner).consumedItems).toBe(7);
     expect(f.db.prepare("SELECT count(*) n FROM erasure_scans").get()).toEqual({ n: 0 });
   });
-  it("retains an outer-failure native close error without spending again until charged R105 retry", async () => {
+  it.each([
+    { partial: false, failure: "deadline" }, { partial: true, failure: "deadline" },
+    { partial: false, failure: "hold" }, { partial: true, failure: "hold" },
+  ])("revokes coverage on cleanup-boundary $failure loss (partial=$partial)", async ({ partial, failure }) => {
+    const f = await setup(), originalOpen = fs.opendir, opened: Dir[] = [];
+    if (partial) {
+      await f.accept(); const name = (await readdir(f.config.custodyRoot)).find(name => name.endsWith(".journal"))!;
+      for (let n = 0; n < 40; n++) await copyFile(join(f.config.custodyRoot, name), join(f.config.custodyRoot, `${name}.${randomUUID()}.tmp`));
+    }
+    vi.spyOn(fs, "opendir").mockImplementation(async (...args) => { const dir = await originalOpen(...args); opened.push(dir); return dir; });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); const run = await beginMaintenance(f.owner), scanner = custodyErasureOwner(f.owner.custody);
+    expect((await scanner.scanBatch(run)).complete).toBe(!partial);
+    const charged = maintenanceSnapshot(f.owner).consumedItems;
+    if (failure === "deadline") f.advance(120001); else f.loseHold();
+    await expect(scanner.invalidateAndClose(run)).rejects.toThrow(failure === "deadline" ? "MAINTENANCE_DEADLINE" : "MAINTENANCE_HOLD_LOST");
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_scans WHERE state!='blocked'").get()).toEqual({ n: 0 });
+    expect(maintenanceSnapshot(f.owner).consumedItems).toBe(charged);
+    for (const dir of opened) await expect(dir.read()).rejects.toMatchObject({ code: "ERR_DIR_CLOSED" });
+    if (failure === "deadline") {
+      await settleMaintenance(f.owner);
+      await expect(scanner.scanBatch(await beginMaintenance(f.owner))).rejects.toThrow("ERASURE_ROOT_CHANGED");
+    } else {
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+    }
+  });
+  it("tracks the whole cleanup-boundary finishing close through concurrent settlement", async () => {
+    const f = await setup(); await f.accept(); const name = (await readdir(f.config.custodyRoot)).find(name => name.endsWith(".journal"))!;
+    for (let n = 0; n < 40; n++) await copyFile(join(f.config.custodyRoot, name), join(f.config.custodyRoot, `${name}.${randomUUID()}.tmp`));
+    const originalOpen = fs.opendir, closing = deferred(), release = deferred();
+    vi.spyOn(fs, "opendir").mockImplementation(async (...args) => {
+      const dir = await originalOpen(...args), close = dir.close.bind(dir);
+      dir.close = async () => { closing.resolve(); await release.promise; await close(); }; return dir;
+    });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); const run = await beginMaintenance(f.owner), scanner = custodyErasureOwner(f.owner.custody);
+    expect((await scanner.scanBatch(run)).complete).toBe(false);
+    const charged = maintenanceSnapshot(f.owner).consumedItems;
+    f.advance(120001); const cleanup = scanner.invalidateAndClose(run).catch(error => error);
+    await closing.promise; let settled = false;
+    const settling = settleMaintenance(f.owner).then(() => { settled = true; });
+    await Promise.resolve(); expect(settled).toBe(false);
+    expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+    expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+    release.resolve(); expect((await cleanup).message).toBe("MAINTENANCE_DEADLINE"); await settling;
+    expect(maintenanceSnapshot(f.owner).consumedItems).toBe(charged);
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_scans WHERE state!='blocked'").get()).toEqual({ n: 0 });
+    expect(() => f.owner.repository.close()).not.toThrow();
+  });
+  it.each(["scanBatch", "invalidateAndClose"] as const)("retains an outer-failure native close error from %s without spending again until charged R105 retry", async operation => {
     const f = await setup(); await f.accept(); const name = (await readdir(f.config.custodyRoot)).find(name => name.endsWith(".journal"))!;
     for (let n = 0; n < 40; n++) await copyFile(join(f.config.custodyRoot, name), join(f.config.custodyRoot, `${name}.${randomUUID()}.tmp`));
     const originalOpen = fs.opendir; let failClose = true, attempts = 0;
@@ -194,7 +242,7 @@ describe("bounded original-custody erasure", () => {
     });
     bindMaintenance(f.owner, f.services, f.monotonicNow); const run = await beginMaintenance(f.owner), scanner = custodyErasureOwner(f.owner.custody);
     expect((await scanner.scanBatch(run)).complete).toBe(false); const before = maintenanceSnapshot(f.owner).consumedItems;
-    f.advance(120001); await expect(scanner.scanBatch(run)).rejects.toThrow("MAINTENANCE_DEADLINE");
+    f.advance(120001); await expect(scanner[operation](run)).rejects.toThrow("MAINTENANCE_DEADLINE");
     expect(attempts).toBe(1);
     await expect(scanner.scanBatch(run)).rejects.toThrow("MAINTENANCE_RUN_STOPPED");
     expect(attempts).toBe(1); expect(maintenanceSnapshot(f.owner).consumedItems).toBe(before);

@@ -266,13 +266,20 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     },
     async invalidateAndClose(run: MaintenanceRun) {
       assertMaintenanceCustodyIdentity(run, repository, custody);
-      let consumedItems = 0;
-      if (!invalidated) {
-        const result = await maintenanceCommand(run, repository, 3, "filesystem", () => hooks.track(() => hooks.exclusive(async () => ({ value: undefined, consumedItems: invalidate(run) }))));
-        consumedItems += result.consumedItems;
-      }
-      const result = await closeMaintenanceScanIterators(run, custody);
-      return Object.freeze({ consumedItems: consumedItems + result.consumedItems });
+      // Track the whole boundary, including rejection before normal admission.
+      // This is custody lifetime tracking, not an extra pending maintenance
+      // command: R105 must still check all prior commands without self-blocking.
+      return hooks.track(async () => {
+        try {
+          let consumedItems = 0;
+          if (!invalidated) {
+            const result = await maintenanceCommand(run, repository, 3, "filesystem", () => hooks.exclusive(async () => ({ value: undefined, consumedItems: invalidate(run) })));
+            consumedItems += result.consumedItems;
+          }
+          const result = await closeMaintenanceScanIterators(run, custody);
+          return Object.freeze({ consumedItems: consumedItems + result.consumedItems });
+        } catch (error) { return finishFailure(run, error); }
+      });
     },
   });
   owners.set(custody, owner);
