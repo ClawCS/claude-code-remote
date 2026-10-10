@@ -65,7 +65,7 @@ test("assortment, finder and party list do not recycle expired prices or promoti
   expect(await page.locator("main").innerText()).not.toMatch(/€|gratis|zugabe|im angebot|trinkgut app/i);
   await page.goto("/partyplaner");
   await page.getByRole("button",{name:"Berechnen",exact:true}).click();
-  await expect(page.getByText("Preis und Verfügbarkeit auf Anfrage",{exact:true})).toBeVisible();
+  await expect(page.getByRole("region",{name:"Dein Getränkebedarf"})).toBeVisible();
   expect(await page.locator("main").innerText()).not.toMatch(/€|Gesamtpreis/);
   for(const slug of ["franziskaner-weissbier","jim-beam","beck-s"]){
     const response=await request.get(`/produkte/${slug}`);expect(response.status()).toBe(200);

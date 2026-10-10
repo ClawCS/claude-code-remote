@@ -32,9 +32,12 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
       await page.goto("/");
       await page.locator(selector).click();
       await expect(page).toHaveURL(/\/partyplaner$/);
+      // Home uses ordinary links: the destination HTML can be visible before
+      // its scripts have loaded. Wait for that document before using controls.
+      await page.waitForLoadState("load");
       await expect(page.getByRole("heading", { level: 1, name: "Partyplaner", exact: true })).toBeVisible();
       await page.getByRole("button", { name: "Berechnen", exact: true }).click();
-      await expect(page.getByRole("heading", { name: "Deine Party-Einkaufsliste", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Dein Getränkebedarf", exact: true })).toBeVisible();
     }
   });
 }

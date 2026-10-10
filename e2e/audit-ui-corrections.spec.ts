@@ -41,25 +41,26 @@ test("switching lessons resets selected answer, explanation, question and score"
   await expect(page.getByText("0/0 richtig", { exact: true })).toBeVisible();
 });
 
-test("party water is evidenced plain mineral water and twenty liters needs three cases", async ({ page }) => {
+test("party water remains an additional litre estimate without choosing a product", async ({ page }) => {
   await page.goto("/partyplaner");
   await page.getByRole("button", { name: "Berechnen", exact: true }).click();
-  await expect(page.getByText(/ca\. 200 Getränke gesamt/)).toBeVisible();
-  const water = page.getByText("Landpark Bio-Quelle Mineralwasser", { exact: true }).locator("../..");
-  await expect(water).toContainText("~20 l Wasser");
-  await expect(water).toContainText("3 Packungen");
+  const result = page.getByRole("region", { name: "Dein Getränkebedarf" });
+  const water = result.getByText("Wasser", { exact: true }).locator("..");
+  await expect(water.locator("dd")).toHaveText("20 l");
+  await expect(result.locator("img")).toHaveCount(0);
 });
 
-test("invalid percentages disable calculations and remove previously authorized bulk add", async ({ page }) => {
+test("invalid percentages disable calculations and remove previous litre results", async ({ page }) => {
   await page.goto("/partyplaner");
   await page.getByRole("button", { name: "Berechnen", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Alles zur Anfrageliste" })).toBeVisible();
+  const result = page.getByRole("region", { name: "Dein Getränkebedarf" });
+  await expect(result).toBeVisible();
   await share(page, "beerDrinkers", 45);
   await expect(page.getByRole("button", { name: "Berechnen", exact: true })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Alles zur Anfrageliste" })).toHaveCount(0);
+  await expect(result).toHaveCount(0);
   await expect(page.locator("main").getByRole("alert")).toContainText("95%");
   await share(page, "beerDrinkers", 50);
-  await expect(page.getByRole("button", { name: "Alles zur Anfrageliste" })).toHaveCount(0);
+  await expect(result).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Berechnen", exact: true })).toBeEnabled();
 });
 
@@ -119,7 +120,7 @@ test("invalid calculation handler cannot authorize results even if a disabled bu
   await calculate.evaluate(button => { (button as HTMLButtonElement).disabled = false; });
   await calculate.click();
   await expect(page.getByRole("button", { name: "Alles zur Anfrageliste" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Deine Party-Einkaufsliste" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Dein Getränkebedarf" })).toHaveCount(0);
 });
 
 for (const [path, canonical, title, description] of [

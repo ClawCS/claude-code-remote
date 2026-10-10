@@ -2,13 +2,11 @@
 import Link from "next/link";
 
 import { useState } from "react";
-import Image from "next/image";
-import { useCart } from "@/context/CartContext";
-import { calculateNeeds, distributionValidity, getRecommendations, type PartyConfig } from "@/lib/party-planner";
-import { assortmentProducts as products } from "@/lib/catalog";
+import { calculateNeeds, distributionValidity, type PartyConfig } from "@/lib/party-planner";
+
+const litersFormat = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 });
 
 export default function PartyplanerPage() {
-  const { addItem } = useCart();
   const [config, setConfig] = useState<PartyConfig>({
     guests: 20,
     duration: 5,
@@ -30,12 +28,13 @@ export default function PartyplanerPage() {
   };
 
   const needs = calculateNeeds(config);
-  const recommendations = getRecommendations(needs, products);
-
-  const handleAddAll = () => {
-    if (!valid || !showResults) return;
-    recommendations.forEach((r) => addItem(r.product, r.quantity));
-  };
+  const categories = [
+    { label: "Bier", liters: needs.beerLiters },
+    { label: "Wein", liters: needs.wineLiters },
+    { label: "Softdrinks", liters: needs.softLiters },
+    { label: "Spirituosen", liters: needs.spiritLiters },
+    { label: "Wasser", liters: needs.waterLiters },
+  ];
 
   return (
     <>
@@ -44,7 +43,7 @@ export default function PartyplanerPage() {
         <nav className="text-sm text-white/60 mb-4"><Link href="/" className="hover:text-white">Home</Link> <span className="mx-1">/</span> <span className="text-white">Partyplaner</span></nav>
         <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Partyplaner</h1>
         <p className="text-white/80 max-w-xl mx-auto text-lg">
-          Plane deine Getränke als unverbindliche Mengenhilfe. Die passende Auswahl und deinen Bedarf stimmen wir persönlich mit dir ab.
+          Wie viele Liter brauchst du für deine Feier? Berechne deinen Getränkebedarf nach Warengruppen – unabhängig von Marken und Wochenangeboten.
         </p>
       </div>
     </div>
@@ -132,49 +131,27 @@ export default function PartyplanerPage() {
 
       {/* Results */}
       {showResults && valid && (
-        <div className="bg-white border border-border rounded-xl p-6">
-          <h2 className="text-xl font-bold text-secondary mb-2">Deine Party-Einkaufsliste</h2>
+        <section aria-labelledby="party-results-title" className="bg-white border border-border rounded-xl p-6">
+          <h2 id="party-results-title" className="text-xl font-bold text-secondary mb-2">Dein Getränkebedarf</h2>
           <p className="text-sm text-muted mb-6">
-            Für {config.guests} Gäste, {config.duration} Stunden – ca. {needs.totalDrinks} Getränke gesamt
+            Für {config.guests} Gäste und {config.duration} Stunden · Richtwerte in Litern
           </p>
 
-          <div className="space-y-4 mb-6">
-            {!recommendations.some(rec => rec.reason.endsWith(" Wasser")) && <p className="text-sm text-muted">Zusätzlich ca. {Math.round(needs.waterLiters)} l Wasser einplanen. Passendes Mineralwasser und Packungsgrößen bitte im Markt abstimmen; kein Wasserartikel zur Anfrageliste hinzugefügt.</p>}
-            {recommendations.map((rec, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 bg-light rounded-lg">
-                {rec.product.image && rec.product.image !== "/images/home/brand-logo.webp" && <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
-                  <Image src={rec.product.image} alt={rec.product.name} fill sizes="64px" className="object-contain p-1" />
-                </div>}
-                <div className="flex-1">
-                  <p className="font-semibold text-secondary">{rec.product.name}</p>
-                  <p className="text-sm text-muted">{rec.reason}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-primary">{rec.quantity} Packungen</p>
-                  <p className="text-xs text-muted">{rec.product.unit}</p>
-                </div>
+          <dl className="space-y-3 mb-6">
+            {categories.map(({ label, liters }) => (
+              <div key={label} className="flex items-center justify-between gap-4 p-4 bg-light rounded-lg">
+                <dt className="font-semibold text-secondary">{label}</dt>
+                <dd className="text-xl font-bold text-primary whitespace-nowrap tabular-nums">{litersFormat.format(liters)} l</dd>
               </div>
             ))}
-          </div>
+          </dl>
 
-          <div className="border-t border-border pt-4 flex items-center justify-between">
-            <div>
-              <p className="font-semibold text-secondary">Preis und Verfügbarkeit auf Anfrage</p>
-              <p className="text-sm text-muted">Noch keine Bestellung oder Reservierung.</p>
-            </div>
-            <button
-              onClick={handleAddAll}
-              className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors"
-            >
-              Alles zur Anfrageliste
-            </button>
-          </div>
-
-          <p className="text-xs text-muted mt-4">
-            * Berechnung basiert auf ca. 2 Getränken pro Person pro Stunde. Dazu empfehlen wir immer genug Wasser!
-            Gerne beraten wir dich persönlich im Markt.
+          <p className="text-sm text-muted border-t border-border pt-4">
+            Unverbindliche Mengenhilfe auf Basis von ca. 2 Getränken pro Gast und Stunde.
+            Wasser ist zusätzlich mit 0,2 Litern pro Gast und Stunde eingeplant.
+            Den passenden Bedarf stimmen wir gerne persönlich mit dir ab.
           </p>
-        </div>
+        </section>
       )}
     </div>
     </>
