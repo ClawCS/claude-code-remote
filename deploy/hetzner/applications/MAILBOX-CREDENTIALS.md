@@ -18,3 +18,5 @@ Der Host-Schlüssel liegt unter `/var/lib/systemd/credential.secret`. Beide Date
 ## Prüfstand 10.10.2026
 
 Shell-Syntax, nichtinteraktive Ablehnung und feste Ziel-/No-Clobber-/Pipeline-Regeln sind lokal getestet und unabhängig im Quelltext geprüft. Ein synthetischer Verschlüsselungs-/Entschlüsselungslauf mit tatsächlich installiertem `systemd-creds` auf dem Server war erfolgreich; die Testdatei wurde entfernt. Das ist kein Nachweis eines richtigen Mailboxpassworts, einer Zustellung oder einer funktionierenden Postfachlöschung. Der tatsächliche Betreiber-Eingabelauf und spätere begrenzte Mailpilot werden separat nachgewiesen. Keine Geheimnisse oder deren Hashes in Prüfberichte übernehmen.
+
+Niko bestätigte anschließend „Passwort sicher hinterlegt“. Die ausschließlich lesende Metadatenkontrolle vor und nach der freigegebenen CX33-Erweiterung belegt eine reguläre Datei am festen Ziel, root:root, 0600, einen Hardlink. Der Betreiber-Eingabeschritt ist damit erfolgt; das Passwort wurde nicht ausgelesen und noch nicht gegen SMTP/IMAP getestet. Kein Dienst ist dadurch aktiviert.
