@@ -11,7 +11,7 @@
 .public-subpage nav[aria-label^="Brot"] a, .public-subpage .page-hero-banner nav a { text-decoration: underline; text-underline-offset: .2em; }
 .public-subpage .page-hero-banner a:not(nav a) { color: var(--cinematic-color-burgundy); border-color: var(--cinematic-color-red); }
 .public-site a:focus-visible, .public-site button:focus-visible, .public-site input:focus-visible, .public-site summary:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 3px; }
-.public-site section[id], .public-site main { scroll-margin-top: 6rem; }
+.public-site section[id], .public-site main { scroll-margin-top: 9rem; }
 .category-intro { display: grid; gap: 2rem; align-items: center; max-width: 82rem; margin: auto; padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 4rem); border-bottom: 1px solid var(--cinematic-color-line); }
 .category-intro h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); color: var(--cinematic-color-red); line-height: 1.1; margin: 1rem 0; }
 .category-intro p { max-width: 58ch; color: var(--cinematic-color-muted); }

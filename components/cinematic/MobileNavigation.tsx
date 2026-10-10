@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import type { NavItem } from "@/lib/cinematic/site";
+import NavigationDisclosure from "./NavigationDisclosure";
 
 import styles from "./chrome.module.css";
 
@@ -20,7 +22,7 @@ export default function MobileNavigation({
       details.open = false;
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && details.open) {
+      if (event.key === "Escape" && !event.defaultPrevented && details.open) {
         event.preventDefault();
         close();
         details.querySelector("summary")?.focus();
@@ -50,30 +52,24 @@ export default function MobileNavigation({
       className={styles.mobileDetails}
       data-mobile-navigation
     >
-      <summary role="button" aria-label="Menü öffnen">
+      <summary role="button" aria-label="Menü öffnen" className={styles.mobileToggle}>
         Menü
       </summary>
       <nav className={styles.mobilePanel} aria-label="Mobile Navigation">
         <ul className={styles.mobileList}>
           {items.map((item) => (
             <li key={item.label}>
-              {"children" in item ? <>
-                <span className={styles.mobileGroupLabel}>{item.label}</span>
-                <ul className={styles.mobileChildren}>
-                  {item.children.map(child => <li key={child.href}>
-                    <a href={child.href} onClick={() => { if (detailsRef.current) detailsRef.current.open = false; }}>{child.label}</a>
-                  </li>)}
-                </ul>
-              </> :
-              <a
+              {"children" in item || "groups" in item ? <NavigationDisclosure item={item} onNavigate={() => { if (detailsRef.current) detailsRef.current.open = false; }} /> :
+              <Link
                 href={item.href}
+                prefetch={false}
                 {...(item.href.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => {
                   if (detailsRef.current) detailsRef.current.open = false;
                 }}
               >
                 {item.label}
-              </a>}
+              </Link>}
             </li>
           ))}
         </ul>

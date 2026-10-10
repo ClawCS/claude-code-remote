@@ -3,7 +3,7 @@ import SocialLink from "@/components/SocialLink";
 
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
-import styles from "./editorial.module.css";
+import styles from "../editorial/editorial.module.css";
 
 const legalLinks = [
   { href: "/kontakt", label: "Kontakt" },

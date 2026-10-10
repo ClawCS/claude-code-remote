@@ -7,7 +7,7 @@ import {
 } from "@/lib/cinematic/tokens";
 
 describe("cinematic token contract", () => {
-  test("keeps the brand palette with warm paper and readable ink", () => {
+  test("keeps the brand palette with neutral paper and readable ink", () => {
     expect(CINEMATIC_TOKENS.color).toMatchObject({
       yellow: "#FEE005",
       red: "#E20F1D",
@@ -15,8 +15,8 @@ describe("cinematic token contract", () => {
       gray: "#414045",
       black: "#000000",
       white: "#FFFFFF",
-      paper: "#FFF8F0",
-      ink: "#302923",
+      paper: "#FAF9F6",
+      ink: "#191918",
     });
   });
 

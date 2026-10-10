@@ -23,14 +23,14 @@ export const CINEMATIC_TOKENS = deepFreeze({
     gray: "#414045",
     black: "#000000",
     white: "#FFFFFF",
-    paper: "#FFF8F0",
-    ink: "#302923",
-    surface: "#FFFDFA",
-    line: "#DFD2C5",
-    warm: "#FFF1DF",
-    hero: "#FFF2E1",
-    charcoal: "#292421",
-    muted: "#655B53",
+    paper: "#FAF9F6",
+    ink: "#191918",
+    surface: "#F2F0EC",
+    line: "#E2DED8",
+    warm: "#F2F0EC",
+    hero: "#FAF9F6",
+    charcoal: "#211E1C",
+    muted: "#625F59",
     burgundy: "#A51522",
     sage: "#F2E9DE",
     success: "#28813C",
@@ -39,14 +39,17 @@ export const CINEMATIC_TOKENS = deepFreeze({
     editorialPaper: "#FAF9F6",
     editorialSurface: "#F2F0EC",
     editorialLine: "#E2DED8",
+    nlText: "#784700",
   },
   typography: {
     family: {
       sans: "var(--font-jakarta)",
-      display: "var(--font-display)",
+      display: "var(--font-jakarta)",
     },
     size: {
       label: "0.75rem",
+      micro: "0.6875rem",
+      navigation: "0.8125rem",
       small: "0.875rem",
       body: "1rem",
       lead: "clamp(1.0625rem, 1.8vw, 1.25rem)",
@@ -55,9 +58,9 @@ export const CINEMATIC_TOKENS = deepFreeze({
       mobileDisplay: "clamp(3.4rem, 12vw, 5.5rem)",
       card: "1.35rem",
     },
-    lineHeight: { display: "0.98", heading: "1.08", body: "1.6" },
+    lineHeight: { display: "0.98", heading: "1.08", compact: "1.5", body: "1.6" },
     weight: { regular: "400", medium: "500", semibold: "600", bold: "700", extraBold: "800" },
-    tracking: { tight: "-0.045em", normal: "0em", wide: "0.14em" },
+    tracking: { tight: "-0.045em", normal: "0em", label: "0.08em", wide: "0.14em" },
   },
   spacing: {
     none: "0rem",
@@ -78,7 +81,7 @@ export const CINEMATIC_TOKENS = deepFreeze({
   layout: {
     contentMax: "82rem",
     textMeasure: "54ch",
-    headerHeight: "4.5rem",
+    headerHeight: "5.75rem",
     posterWidth: "min(clamp(34rem, 64vw, 65.875rem), 1054px)",
   },
   motion: {
@@ -142,10 +145,5 @@ export function createTokenStyle<
 
 export const cinematicTokenStyle = createTokenStyle(CINEMATIC_TOKENS);
 
-/** Homepage-only composition; transactional pages keep the shared palette. */
-export const cinematicHomeTokenStyle = Object.freeze({
-  ...cinematicTokenStyle,
-  "--cinematic-color-paper": CINEMATIC_TOKENS.color.editorialPaper,
-  "--cinematic-color-warm": CINEMATIC_TOKENS.color.editorialSurface,
-  "--cinematic-color-line": CINEMATIC_TOKENS.color.editorialLine,
-});
+/** Compatibility export: every public family now shares the editorial palette. */
+export const cinematicHomeTokenStyle = cinematicTokenStyle;

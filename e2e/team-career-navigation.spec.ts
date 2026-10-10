@@ -10,10 +10,11 @@ for (const width of [360, 390, 768, 1024, 1151, 1152, 1280, 1440]) {
     const mobile = width < 1152;
     if (mobile) await header.getByRole("button", { name: "Menü öffnen", exact: true }).click();
     const nav = header.getByRole("navigation", { name: mobile ? "Mobile Navigation" : "Hauptnavigation", exact: true });
-    await expect(nav.locator(":scope > ul > li")).toHaveCount(9);
-    const group = nav.locator(":scope > ul > li").filter({ hasText: "Team & Karriere" });
+    await expect(nav.locator(":scope > ul > li")).toHaveCount(5);
+    const discover = nav.locator("summary").filter({ hasText: "Jammers entdecken" });
+    await discover.click();
+    const group = nav.getByRole("region", { name: "Team & Karriere", exact: true });
     await expect(group).toBeVisible();
-    if (!mobile) await group.locator("summary").click();
     const team = group.getByRole("link", { name: "Unser Team", exact: true });
     const jobs = group.getByRole("link", { name: "Offene Stellen & Bewerbung", exact: true });
     await expect(team).toBeVisible();
@@ -44,10 +45,9 @@ for (const width of [360, 390, 768, 1024, 1151, 1152, 1280, 1440]) {
     if (mobile) {
       await expect(header.locator("[data-mobile-navigation]")).not.toHaveAttribute("open");
       await header.getByRole("button", { name: "Menü öffnen", exact: true }).click();
-    } else {
-      await expect(group.locator("details")).not.toHaveAttribute("open");
-      await group.locator("summary").click();
     }
+    await expect(nav.locator("details[open]")).toHaveCount(0);
+    await discover.click();
     await team.click();
     await expect(page).toHaveURL(/\/galerie$/);
     await expect(page.getByRole("heading", { name: "Team Jammers", exact: true })).toBeVisible();
@@ -57,25 +57,25 @@ for (const width of [360, 390, 768, 1024, 1151, 1152, 1280, 1440]) {
   });
 }
 
-test("career menu supports keyboard and does not collide with knowledge navigation", async ({ page }) => {
+test("discover menu groups career and knowledge without colliding with party navigation", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
   const header = page.locator("[data-cinematic-header]");
   const nav = header.getByRole("navigation", { name: "Hauptnavigation", exact: true });
-  const career = nav.locator("details").filter({ has: page.locator("summary").filter({ hasText: "Team & Karriere" }) });
+  await page.waitForLoadState("networkidle");
+  const career = nav.locator("details").filter({ has: page.locator("summary").filter({ hasText: "Jammers entdecken" }) });
   const summary = career.locator("summary");
   await summary.focus();
   await summary.press("Enter");
   await expect(career).toHaveAttribute("open");
-  await page.keyboard.press("Tab");
-  await expect(career.getByRole("link", { name: "Unser Team", exact: true })).toBeFocused();
+  await career.getByRole("link", { name: "Unser Team", exact: true }).focus();
   await page.keyboard.press("Tab");
   await expect(career.getByRole("link", { name: "Offene Stellen & Bewerbung", exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(career).not.toHaveAttribute("open");
   await expect(summary).toBeFocused();
   await summary.press("Space");
-  await nav.locator("summary").filter({ hasText: "Rezepte & Wissen" }).click();
+  await nav.locator('summary[aria-label="Party & Miete – Untermenü öffnen"]').click();
   await expect(career).not.toHaveAttribute("open");
   await summary.click();
   expect((await new AxeBuilder({ page }).include("[data-cinematic-header]").withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze()).violations).toEqual([]);

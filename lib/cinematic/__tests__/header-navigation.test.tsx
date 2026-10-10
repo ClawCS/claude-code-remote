@@ -29,11 +29,8 @@ describe("public header recipes and knowledge navigation", () => {
       const academyLinks = [...navigation![1].matchAll(/<a\b([^>]*)>Getränkeakademie<\/a>/g)];
       expect(academyLinks).toHaveLength(1);
       expect(academyLinks[0][1]).toContain('href="/akademie"');
-      if (navigationName === "Hauptnavigation") {
-        expect(navigation![1]).toMatch(/<summary\b[^>]*>Rezepte &amp; Wissen/);
-      } else {
-        expect(navigation![1]).not.toContain("<details");
-      }
+      expect(navigation![1]).toMatch(/<summary\b[^>]*>Jammers entdecken/);
+      expect(navigation![1]).toContain('aria-label="Rezepte &amp; Wissen"');
     },
   );
 });

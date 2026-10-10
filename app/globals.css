@@ -2,7 +2,7 @@
 
 @theme inline {
   --font-sans: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: var(--font-display), var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
   --color-primary: #DC2626;
   --color-primary-dark: #B91C1C;
   --color-primary-light: #EF4444;
@@ -67,7 +67,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ═══ Display-Schrift für alle Headlines — premium, technisch (Apple/SpaceX) ═══ */
+/* Shared editorial typography; family layouts provide their own scale. */
 h1, h2 {
   font-family: var(--font-display);
   letter-spacing: -0.02em;

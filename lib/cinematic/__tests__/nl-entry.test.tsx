@@ -17,11 +17,10 @@ describe("public header Dutch entry", () => {
     const [link, attributes, content] = links[0];
     expect(attributes).toContain('lang="nl"');
     expect(attributes).toContain('hrefLang="nl"');
-    expect(attributes).toContain('aria-label="Nederlands · Click here"');
+    expect(attributes).toContain('aria-label="Nederlands"');
     expect(content).toContain("Nederlands");
-    expect(content).toContain("Click here");
     expect(content).toMatch(/<span\b[^>]*aria-hidden="true"[^>]*>🇳🇱<\/span>/);
-    expect(content).toMatch(/<span\b[^>]*aria-hidden="true"[^>]*>→<\/span>/);
+    expect(content).toMatch(/<span\b[^>]*aria-hidden="true"[^>]*>↗<\/span>/);
     expect(html.indexOf(link)).toBeLessThan(html.indexOf('aria-label="Hauptnavigation"'));
     expect(html.indexOf(link)).toBeLessThan(html.indexOf("<details"));
     expect(attributes).not.toMatch(/(?:^|\s)hidden(?:[=\s]|$)/);

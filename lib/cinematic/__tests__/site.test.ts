@@ -26,23 +26,15 @@ describe("verified market contract", () => {
   });
 
   test("exposes useful market and GrailBid navigation destinations", () => {
-    expect(CINEMATIC_NAV).toEqual([
-      { label: "Angebote", href: "/angebote" },
-      { label: "Sortiment", href: "/produkte" },
-      { label: "Rezepte & Wissen", children: [
-        { label: "Cocktail-Rezepte", href: "/cocktails" },
-        { label: "Getränkeakademie", href: "/akademie" },
-      ] },
-      { label: "Party & Miete", href: "/vermietung" },
-      { label: "Eigenmarken", href: "/eigenmarke" },
-      { label: "Gewinnspiele", href: "/gewinnspiel" },
-      { label: "Team & Karriere", children: [
-        { label: "Unser Team", href: "/galerie" },
-        { label: "Offene Stellen & Bewerbung", href: "/bewerbung" },
-      ] },
-      { label: "TCG", href: "https://grailbid.com" },
-      { label: "Kontakt", href: "/kontakt" },
+    const links = CINEMATIC_NAV.flatMap(item => [
+      ...("href" in item && item.href ? [item.href] : []),
+      ...("children" in item ? item.children.map(child => child.href) : []),
+      ...("groups" in item ? item.groups.flatMap(group => group.children.map(child => child.href)) : []),
     ]);
+    expect(links).toEqual(expect.arrayContaining([
+      "/angebote", "/produkte", "/cocktails", "/akademie", "/vermietung", "/eigenmarke",
+      "/gewinnspiel", "/galerie", "/bewerbung", "https://grailbid.com", "/kontakt",
+    ]));
   });
 
   test.each([

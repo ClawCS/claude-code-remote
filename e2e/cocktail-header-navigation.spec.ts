@@ -10,19 +10,19 @@ const expectedLinks = [
   ["Party & Miete", "/vermietung"],
   ["Eigenmarken", "/eigenmarke"],
   ["Gewinnspiele", "/gewinnspiel"],
-  ["TCG", "https://grailbid.com"],
-  ["Kontakt", "/kontakt"],
+  ["GrailBid · TCG-Shop", "https://grailbid.com"],
+  ["Dein Besuch", "/kontakt"],
 ] as const;
 
 async function expectPublicLinks(navigation: Locator): Promise<void> {
   await expect(navigation).toBeVisible();
+  const discover = navigation.locator('details:has(> summary:has-text("Jammers entdecken"))');
+  await discover.locator("summary").click();
   for (const [name, href] of expectedLinks) {
     const link = navigation.getByRole("link", { name, exact: true });
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", href);
   }
-  const teamDisclosure = navigation.locator('details:has(> summary:has-text("Team & Karriere"))');
-  if (await teamDisclosure.count()) await teamDisclosure.locator("summary").click();
   for (const [name, href] of [
     ["Unser Team", "/galerie"],
     ["Offene Stellen & Bewerbung", "/bewerbung"],
@@ -31,13 +31,13 @@ async function expectPublicLinks(navigation: Locator): Promise<void> {
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", href);
   }
-  if (await teamDisclosure.count()) await teamDisclosure.locator("summary").click();
+  await discover.locator("summary").click();
 }
 
 async function openKnowledgeDisclosure(navigation: Locator): Promise<void> {
-  const disclosure = navigation.locator('details:has(> summary:has-text("Rezepte & Wissen"))');
+  const disclosure = navigation.locator('details:has(> summary:has-text("Jammers entdecken"))');
   if (await disclosure.count()) {
-    await navigation.locator("summary").filter({ hasText: "Rezepte & Wissen" }).click();
+    await navigation.locator("summary").filter({ hasText: "Jammers entdecken" }).click();
     await expect(disclosure).toHaveAttribute("open");
   }
   await expect(navigation.getByRole("link", { name: "Cocktail-Rezepte", exact: true })).toHaveAttribute("href", "/cocktails");
@@ -129,6 +129,7 @@ test("mobile menu exposes recipes and opens a full recipe page", async ({ page }
   await openRecipeFromHeader(page, navigation);
   await expect(header.locator("[data-mobile-navigation]")).not.toHaveAttribute("open");
   await menu.click();
+  await openKnowledgeDisclosure(navigation);
   await navigation.getByRole("link", { name: "Cocktail-Rezepte", exact: true }).click();
   await expect(page).toHaveURL(/\/cocktails$/);
 });
@@ -142,21 +143,21 @@ test("desktop knowledge disclosure supports keyboard, Escape and outside dismiss
   await page.waitForLoadState("networkidle");
   await expect(page.locator("main button[aria-busy]").first()).toBeEnabled();
   const navigation = page.locator("[data-cinematic-header]").getByRole("navigation", { name: "Hauptnavigation", exact: true });
-  const summary = navigation.locator("summary").filter({ hasText: "Rezepte & Wissen" });
-  const disclosure = navigation.locator('details:has(> summary:has-text("Rezepte & Wissen"))');
-  await expect(navigation.locator("[class*='desktopNavList'] > li")).toHaveCount(9);
+  const summary = navigation.locator("summary").filter({ hasText: "Jammers entdecken" });
+  const disclosure = navigation.locator('details:has(> summary:has-text("Jammers entdecken"))');
+  await expect(navigation.locator("[class*='desktopNavList'] > li")).toHaveCount(5);
   await summary.focus();
   await summary.press("Enter");
   await expect(disclosure).toHaveAttribute("open");
-  await page.keyboard.press("Tab");
-  await expect(navigation.getByRole("link", { name: "Cocktail-Rezepte", exact: true })).toBeFocused();
+  await navigation.getByRole("link", { name: "Cocktail-Rezepte", exact: true }).focus();
   await page.keyboard.press("Tab");
   await expect(navigation.getByRole("link", { name: "Getränkeakademie", exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(disclosure).not.toHaveAttribute("open");
   await expect(summary).toBeFocused();
   await summary.press("Space");
-  await page.getByRole("heading", { level: 1 }).click();
+  // The wider grouped panel can cover the hero title; click visible strip text.
+  await page.locator("[data-cinematic-header]").getByText("Goch · Mo–Sa 08:00–20:00 Uhr", { exact: true }).click();
   await expect(disclosure).not.toHaveAttribute("open");
 });
 

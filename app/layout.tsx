@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 import PublicChrome from "@/components/PublicChrome";
 import JsonLdScript from "@/components/JsonLdScript";
@@ -23,15 +23,6 @@ const jakarta = Plus_Jakarta_Sans({
   preload: false,
 });
 
-// Display-Schrift für Headlines (modern/technisch — Apple/SpaceX-Anmutung)
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
-  display: "swap",
-  preload: false,
-});
-
 export const metadata = SITE_METADATA;
 
 export default function RootLayout({
@@ -43,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`h-full antialiased ${jakarta.variable} ${spaceGrotesk.variable}`}
+      className={`h-full antialiased ${jakarta.variable}`}
     >
       <body className="min-h-full flex flex-col font-sans">
         <JsonLdScript value={LOCAL_BUSINESS_JSON_LD} />

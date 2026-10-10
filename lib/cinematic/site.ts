@@ -29,24 +29,40 @@ export const SITE_LINKS = Object.freeze({
 } as const);
 
 export type NavLink = Readonly<{ label: string; href: string }>;
-export type NavItem = NavLink | Readonly<{ label: string; children: readonly NavLink[] }>;
+export type NavGroup = Readonly<{ label: string; children: readonly NavLink[] }>;
+export type NavDisclosure = Readonly<{ label: string; href?: string }> &
+  (Readonly<{ children: readonly NavLink[] }> | Readonly<{ groups: readonly NavGroup[] }>);
+export type NavItem = NavLink | NavDisclosure;
 
 export const CINEMATIC_NAV: readonly NavItem[] = Object.freeze([
   { label: "Angebote", href: "/angebote" },
   { label: "Sortiment", href: "/produkte" },
-  { label: "Rezepte & Wissen", children: [
-    { label: "Cocktail-Rezepte", href: "/cocktails" },
-    { label: "Getränkeakademie", href: "/akademie" },
+  { label: "Party & Miete", href: "/vermietung", children: [
+    { label: "Partyplaner", href: "/partyplaner" },
+    { label: "Mietauswahl", href: "/vermietung" },
+    { label: "Anfrageliste", href: "/warenkorb" },
   ] },
-  { label: "Party & Miete", href: "/vermietung" },
-  { label: "Eigenmarken", href: "/eigenmarke" },
-  { label: "Gewinnspiele", href: "/gewinnspiel" },
-  { label: "Team & Karriere", children: [
-    { label: "Unser Team", href: "/galerie" },
-    { label: "Offene Stellen & Bewerbung", href: "/bewerbung" },
+  { label: "Jammers entdecken", groups: [
+    { label: "Getränke", children: [
+      { label: "Eigenmarken", href: "/eigenmarke" },
+      { label: "Regionale Spezialitäten", href: "/regionale-spirituosen" },
+      { label: "Geschenkideen", href: "/geschenkideen" },
+    ] },
+    { label: "Erleben", children: [
+      { label: "Marktleben", href: "/marktleben" },
+      { label: "Gewinnspiele", href: "/gewinnspiel" },
+      { label: "GrailBid · TCG-Shop", href: SITE_LINKS.grailbid },
+    ] },
+    { label: "Rezepte & Wissen", children: [
+      { label: "Cocktail-Rezepte", href: "/cocktails" },
+      { label: "Getränkeakademie", href: "/akademie" },
+    ] },
+    { label: "Team & Karriere", children: [
+      { label: "Unser Team", href: "/galerie" },
+      { label: "Offene Stellen & Bewerbung", href: "/bewerbung" },
+    ] },
   ] },
-  { label: "TCG", href: "https://grailbid.com" },
-  { label: "Kontakt", href: "/kontakt" },
+  { label: "Dein Besuch", href: "/kontakt" },
 ] as const);
 
 export type MarketStatus = Readonly<{ isOpen: boolean; label: "Heute bis 20 Uhr" | "Heute geschlossen" }>;

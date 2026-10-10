@@ -1,0 +1,51 @@
+/** All 37 rendered customer templates. Examples come from the current catalog.
+ * Rental order is deliberately a missing-token error state, never a real order. */
+export const SITEWIDE_DESIGN_CASES = [
+  { family: "entry", template: "/", path: "/" },
+  { family: "entry", template: "/nl", path: "/nl" },
+  { family: "offers", template: "/angebote", path: "/angebote" },
+  { family: "offers", template: "/handzettel", path: "/handzettel" },
+  { family: "offers", template: "/produkte", path: "/produkte" },
+  { family: "offers", template: "/kategorie/[slug]", path: "/kategorie/bier" },
+  { family: "brands", template: "/eigenmarke", path: "/eigenmarke" },
+  { family: "brands", template: "/regionale-spirituosen", path: "/regionale-spirituosen" },
+  { family: "brands", template: "/geschenkideen", path: "/geschenkideen" },
+  { family: "recipes", template: "/cocktails", path: "/cocktails" },
+  { family: "recipes", template: "/cocktails/kategorie/[slug]", path: "/cocktails/kategorie/rum" },
+  { family: "recipes", template: "/cocktails/[slug]", path: "/cocktails/mojito" },
+  { family: "academy", template: "/akademie", path: "/akademie" },
+  { family: "academy", template: "/akademie/[slug]", path: "/akademie/bier" },
+  { family: "academy", template: "/akademie/zertifikate", path: "/akademie/zertifikate" },
+  { family: "people", template: "/marktleben", path: "/marktleben" },
+  { family: "people", template: "/galerie", path: "/galerie" },
+  { family: "people", template: "/gewinnspiel", path: "/gewinnspiel" },
+  { family: "people", template: "/gewinnspiel/archiv", path: "/gewinnspiel/archiv" },
+  { family: "career", template: "/bewerbung", path: "/bewerbung" },
+  { family: "rental", template: "/partyplaner", path: "/partyplaner" },
+  { family: "rental", template: "/vermietung", path: "/vermietung" },
+  { family: "rental", template: "/warenkorb", path: "/warenkorb" },
+  { family: "rental", template: "/checkout", path: "/checkout" },
+  { family: "rental", template: "/bestellungen", path: "/bestellungen" },
+  { family: "rental", template: "/mietbestellung/[id]", path: "/mietbestellung/design-missing-token" },
+  { family: "tools", template: "/finder", path: "/finder" },
+  { family: "tools", template: "/merkzettel", path: "/merkzettel" },
+  { family: "tools", template: "/partyspiele", path: "/partyspiele" },
+  { family: "tools", template: "/leergut", path: "/leergut" },
+  { family: "tools", template: "/oeko-tracker", path: "/oeko-tracker" },
+  { family: "information", template: "/community", path: "/community" },
+  { family: "information", template: "/kuehlschrank", path: "/kuehlschrank" },
+  { family: "visit-legal", template: "/kontakt", path: "/kontakt" },
+  { family: "visit-legal", template: "/impressum", path: "/impressum" },
+  { family: "visit-legal", template: "/datenschutz", path: "/datenschutz" },
+  { family: "visit-legal", template: "/agb", path: "/agb" },
+] as const;
+
+export const SITEWIDE_DESIGN_EXCLUSIONS = [
+  { template: "/produkte/[slug]", reason: "redirect" },
+  { template: "/bewerbung/verwaltung", reason: "protected-admin" },
+  { template: "/markt/bestellungen", reason: "protected-admin" },
+  { template: "/test-fixtures/weekly-offers", reason: "fixture" },
+  { template: "/test-fixtures/weekly-flyer", reason: "fixture" },
+] as const;
+
+export const SITEWIDE_SYSTEM_CASES = [{ family: "system", template: "404", path: "/design-not-found" }] as const;
