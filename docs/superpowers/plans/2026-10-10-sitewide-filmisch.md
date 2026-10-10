@@ -133,7 +133,7 @@
 
 - [ ] Run `NODE_ENV=test npm test -- lib --maxWorkers=2`, `npx tsc --noEmit`, `npm run lint`, one full project test run with known native prerequisites reported, `npm run offers:check`, `npm run build` (serialized).
 - [ ] Stop only the controller-owned local production preview, restart the newly built app on loopback port 3110, keep dev 3000 available; no public server actions.
-- [ ] Run the five new sitewide E2E files plus compatible original contact/film/functional suites against local production. No external HTTP-origin/test-clock substitution.
+- [ ] Run real-page tests from the five new sitewide E2E files plus compatible original contact/film/functional suites against local production. Tests labelled `[fixture]` run separately on the explicitly marked development server, never against production (whose fixture gates must remain closed). Run both groups; do not silently skip coverage. No external HTTP-origin/test-clock substitution.
 - [ ] Run `npm run audit:public -- --url http://127.0.0.1:3110 --output audit/evidence/sitewide-filmisch-2026-10-10.json` and local content check. Check actual original hashes and offer counts unchanged.
 - [ ] Controller uses CUA to inspect and capture every page family and major interaction states; compare header directly to screenshot/prototype and full-page flow to approved design, with proof inventory by route. Unknown/legacy routes and same-origin menu clicks tested explicitly.
 - [ ] Fresh whole-change reviewer sees complete diff from `6d60875` plus per-task reports and coverage evidence. Fix reproduced issues through scoped implementation/re-review.

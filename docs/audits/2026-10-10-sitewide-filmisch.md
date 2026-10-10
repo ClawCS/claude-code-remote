@@ -20,7 +20,7 @@ Dieser Auftrag wird ausschließlich in der bestehenden lokalen Worktree auf `cod
 | Bereich | Umsetzung | Funktions-/Darstellungsprüfung |
 | --- | --- | --- |
 | Gemeinsame Gestaltung und fünfteilige Navigation | `e51aa76` + `fbb76b7` | Separate Codeprüfung und gezielte Nachprüfung bestanden; Gesamtbuild noch ausstehend |
-| Startseite und niederländische Landingpage | Ausstehend | Ausstehend |
+| Startseite und niederländische Landingpage | `544e95d` | 63 gezielte Tests und 9 Browserfälle; unabhängige Prüfung bestanden, Gesamtbuild ausstehend |
 | Angebote, Sortiment, Marken, Menschen und Aktionen | Ausstehend | Ausstehend |
 | Rezepte, Akademie und Kundenwerkzeuge | Ausstehend | Ausstehend |
 | Vermietung, Karriere, Listen, Kontakt, Recht und Fehlerseiten | Ausstehend | Ausstehend |
@@ -42,3 +42,12 @@ Noch kein Abschlussnachweis: Die Prüfung muss alle öffentlichen Seitentypen ei
 ## Prüfentscheidung
 
 Die unveränderten nativen Bewerbungsprüfungen werden am Anfang und bei der Gesamtprüfung ausgeführt, nicht nach jeder rein visuellen Seitengruppe. Jede Gruppe erhält weiterhin die vollständige Websuite. Risiko dieser Bündelung: Eine versehentlich eingeschleuste native Änderung würde gegebenenfalls erst bei der Gesamtprüfung auffallen; deshalb wird zusätzlich der Diff aller ausgeschlossenen Daten-/API-/Servicebereiche kontrolliert.
+
+## Teilabnahme 2 — Startseite und NL
+
+- Vollständige Komposition unterhalb des unveränderten Films: gleichwertige DE-/NL-Originale, zusammengefasste Servicegeschichte, große Markt-/Geschenkmotive, sechs Eigenmarken, Aktionen, Team/Karriere und GrailBid.
+- Niederländischer Einstieg mit gemeinsamer heller Gestaltung und zurückhaltendem Orange; Originalzeiträume, lokale Dateien, fehlende und vorbereitete Ausgaben bleiben korrekt abgebildet.
+- 63 gezielte Tests, 9 Browserprüfungen bei 390/768/1440 px, TypeScript, Lint und Diff-Prüfung bestanden. Die einmalige vollständige Websuite ergab 1.585 bestandene Tests und eine überholte Erwartung an die ausdrücklich entfernte Preisleiste. Nur diese Startseiten-Erwartung korrigiert; der betroffene Test und alle Mietkatalog-Preisprüfungen bestanden anschließend. Gesamtprüfung wird nicht als bereits grün behauptet.
+- Unabhängige Prüfung ohne kritischen oder wichtigen Befund. Alte Metadata-/Chrome-Browsertests mit Dreier-Eigenmarken- und offenem Teamraster müssen bei der Integration an den freigegebenen Aufbau angepasst werden; ihre Metadaten-, Datenschutz- und Bildprüfungen bleiben erhalten.
+- Controller hat den realen Kopf-/Film-/Angebotsbereich und NL-Einstieg zusätzlich visuell geprüft. Eine zuvor überhohe Serviceaufnahme wurde mit reproduzierbarem Layouttest korrigiert. Kein Film, Preis, Quellenbestand oder Betriebsmodus geändert.
+- Klar markierte synthetische Browserfälle laufen separat auf dem Entwicklungsserver; echte Seiten werden im abschließenden Produktionsbuild geprüft. Die Fixture-Routen müssen dort 404 bleiben. Risiko falscher Testzuordnung: Ein produktionsspezifischer Fehler könnte im betreffenden Fall unentdeckt bleiben; deshalb werden beide Testgruppen und die geschlossenen Produktionszugänge ausdrücklich geprüft.
