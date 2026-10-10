@@ -118,6 +118,7 @@
 - Modify: `app/vermietung/page.tsx`, `app/warenkorb/page.tsx`, `app/merkzettel/page.tsx`, `app/bewerbung/page.tsx`, `app/bestellungen/page.tsx`, `app/kontakt/page.tsx`, `app/impressum/page.tsx`, `app/datenschutz/page.tsx`, `app/agb/page.tsx`, `app/not-found.tsx`; `components/rentals/InquiryCheckout.tsx`, `RentalCheckout.tsx`, `RentalOrderStatus.tsx`, `components/applications/ApplicationForm.tsx`, `components/CartDrawer.tsx`, `WishlistDrawer.tsx`.
 - `/checkout`, `/mietbestellung/[id]` wrappers may stay thin if actual rendered components migrate.
 - Create: `components/editorial/transaction.module.css`, `e2e/sitewide-service-pages.spec.ts`, `lib/cinematic/__tests__/sitewide-service-pages.test.tsx`.
+- Reconcile: `e2e/metadata-chrome.spec.ts` after all page families have migrated. Preserve metadata, exact JSON-LD, bundle/privacy, source/image and list/drawer behavior contracts; replace only obsolete July publication assumptions, prior section order/headings, closed-portrait visibility and old navigation selectors. Real publication assertions use real verified current data; synthetic cases remain marked development-only.
 
 **Interfaces:**
 - Consume Task 1 editorial primitives and Task 4 ProductCard. Keep all props, event handlers, form attributes, API calls and request types unchanged.
@@ -128,6 +129,7 @@
 - [ ] **Step 3: Implement.** Rental product choice and summary become a calm useful catalogue/form, consistent controls and mobile stacking. Career job originals remain full and prominent with clear info mailbox CTA and unchanged gates. Lists/drawers/checkout states consistent. Contact receives useful grouped information, legal pages comfortable reading widths, 404 straightforward links rather than emoji cards.
 - [ ] **Step 4: Browser verify.** All listed families at 390/768/1440, important form/empty/error states, Escape drawer close/focus; no business mutation or inferred activation. Inspect inherited admin shell read-only for layout regression without admin login or protected data.
 - [ ] **Step 5: Focused tests, existing rental/application/read-only web tests, TypeScript, changed-file lint, diff check, full web tests once, commit.** Use `NODE_ENV=test npm test -- lib --maxWorkers=2`; unchanged native application suites are consolidated in final acceptance. Report residual native prerequisites honestly; no service/security fixes from this scope.
+- [ ] **Step 6: Cross-family acceptance maintenance.** Rebase and run the existing metadata/chrome suite against the integrated local pages, retaining all nonvisual contracts above. Use the controller's `browser-acceptance-prep.md` and Task2 review findings as the explicit scope. Report every original invariant retained; no skipped tests or production fixture enablement.
 
 ## Controller final acceptance
 

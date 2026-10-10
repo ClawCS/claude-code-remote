@@ -21,7 +21,7 @@ Dieser Auftrag wird ausschließlich in der bestehenden lokalen Worktree auf `cod
 | --- | --- | --- |
 | Gemeinsame Gestaltung und fünfteilige Navigation | `e51aa76` + `fbb76b7` | Separate Codeprüfung und gezielte Nachprüfung bestanden; Gesamtbuild noch ausstehend |
 | Startseite und niederländische Landingpage | `544e95d` | 63 gezielte Tests und 9 Browserfälle; unabhängige Prüfung bestanden, Gesamtbuild ausstehend |
-| Angebote, Sortiment, Marken, Menschen und Aktionen | Ausstehend | Ausstehend |
+| Angebote, Sortiment, Marken, Menschen und Aktionen | `8bc9e74` | 1.596 Webtests, 185 fokussierte Tests, 40 Browserfälle; unabhängige Prüfung bestanden |
 | Rezepte, Akademie und Kundenwerkzeuge | Ausstehend | Ausstehend |
 | Vermietung, Karriere, Listen, Kontakt, Recht und Fehlerseiten | Ausstehend | Ausstehend |
 | Gemeinsamer Build und vollständige lokale Routen-/Medienprüfung | Ausstehend | Ausstehend |
@@ -51,3 +51,11 @@ Die unveränderten nativen Bewerbungsprüfungen werden am Anfang und bei der Ges
 - Unabhängige Prüfung ohne kritischen oder wichtigen Befund. Alte Metadata-/Chrome-Browsertests mit Dreier-Eigenmarken- und offenem Teamraster müssen bei der Integration an den freigegebenen Aufbau angepasst werden; ihre Metadaten-, Datenschutz- und Bildprüfungen bleiben erhalten.
 - Controller hat den realen Kopf-/Film-/Angebotsbereich und NL-Einstieg zusätzlich visuell geprüft. Eine zuvor überhohe Serviceaufnahme wurde mit reproduzierbarem Layouttest korrigiert. Kein Film, Preis, Quellenbestand oder Betriebsmodus geändert.
 - Klar markierte synthetische Browserfälle laufen separat auf dem Entwicklungsserver; echte Seiten werden im abschließenden Produktionsbuild geprüft. Die Fixture-Routen müssen dort 404 bleiben. Risiko falscher Testzuordnung: Ein produktionsspezifischer Fehler könnte im betreffenden Fall unentdeckt bleiben; deshalb werden beide Testgruppen und die geschlossenen Produktionszugänge ausdrücklich geprüft.
+
+## Teilabnahme 3 — Angebote, Marken, Markt und Menschen
+
+- Alle vorgesehenen Sammlungs-/Geschichtenseiten auf gemeinsame redaktionelle Einleitungen, strukturierte Suche/Filter und großzügige Bild-/Textkompositionen umgestellt. Eigene Klassen statt globaler Übermalung; vollständige Originalbilder, sieben Namenportraits und reales Gewinnspielarchiv erhalten.
+- 97 Dateien mit 1.596 Webtests, 185 fokussierte Prüfungen und 40 Browserfälle bestanden. Drei Breiten (390/768/1440 px), Such-Leerzustand, ungültige Kategorie, beide echten Handzettel-Dialoge und Seitenwechsel zwischen Rubriken geprüft. TypeScript, Lint und Diff-Prüfung grün.
+- Ein früher Entwicklungsdurchlauf meldete bei `/produkte` auf Desktop einmal einen Laufzeitfehler während laufender Änderungen. Unveränderter isolierter Nachlauf und komplette Browserwiederholung blieben fehlerfrei. Die Ursache ist nicht bewiesen; der finale Produktionsbuild muss das Fehlen dieses Fehlers nochmals bestätigen.
+- Unabhängige Codeprüfung ohne kritischen, wichtigen oder kleinen Befund. Controller hat Eigenmarken-Einstieg und vollständige untere Motiv-/Textgeschichte zusätzlich angesehen. Daten, Medien, Quellen, APIs und Services weiterhin unverändert.
+- Alte Juli-/September-Annahmen in einer historischen Gewinnspiel-Browsersuite wurden nicht als bestandener aktueller Test ausgegeben. Aktuelle Cover-/Quellen-/Vollständigkeitsverträge sind durch bestehende Unit-Tests und neue datumsrichtige Browserprüfungen abgedeckt.
