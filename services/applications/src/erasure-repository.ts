@@ -3,7 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { decodeJournalEvent, encodeJournalEvent } from "./ledger-contract";
 import { admissionScopeAccepts, registrationAssociation } from "./deletion-association";
 import { externalAttestationAssociation, replayAssociation } from "./erasure-association";
-import { createErasureRowSelector, createCustodyInventoryStorage } from "./erasure-storage";
+import { createErasureRowSelector, createCustodyInventoryStorage, type PhysicalVerifier } from "./erasure-storage";
 import type { CustodyConfig, CustodyLedger } from "./types";
 import { berlinDate, operatorReason } from "./lifecycle";
 import { assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
@@ -62,7 +62,7 @@ interface Dependencies {
   readonly repository: ApplicationRepository;
   readonly journal: SafetyJournal | undefined;
   readonly now: () => string;
-  readonly guard: (id: ApplicationId) => void;
+  readonly guard: (id: ApplicationId) => object;
   readonly guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>;
   readonly readCase: (id: ApplicationId) => CaseRecord;
   readonly delivery: (id: ApplicationId) => DeliveryRecord;
@@ -72,6 +72,7 @@ interface Dependencies {
 }
 export function createErasureRepository(db: Database.Database, deps: Dependencies): ErasureOwner {
   const boundCustodies = new WeakSet<CustodyLedger>();
+  const physicalVerifiers = new WeakMap<CustodyLedger, PhysicalVerifier>();
   const selectRows=createErasureRowSelector(db);
   const candidates = new WeakMap<DueCandidate, { run: MaintenanceRun; used: boolean }>();
   const dueStreams = [
@@ -349,7 +350,15 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
   const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue,prepareDue,expireGlobalBatch,listPending,listCommitted,reconcileClaim,
     bindCustody(custody: CustodyLedger, config: CustodyConfig) {
       if (boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
-      const storage = createCustodyInventoryStorage(db, deps.repository, custody, config); boundCustodies.add(custody); return storage;
+      // Captured only by this original composition. Future fixed 1c commands
+      // invoke verify under their existing guard and consume immediately before
+      // their synchronous transaction; no public getter/callback is exposed.
+      const storage = createCustodyInventoryStorage(db, deps.repository, custody, config, { resolve: work, guard: deps.guard,
+        registerPhysicalVerifier(verifier) {
+          if (physicalVerifiers.has(custody) || !boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
+          physicalVerifiers.set(custody, verifier);
+        },
+      }); boundCustodies.add(custody); return storage;
     },
     async withErasureGuard<T>(commitEventId:string,action:(value:ErasureWork)=>Promise<T>):Promise<T> {
       const initial=work(commitEventId);

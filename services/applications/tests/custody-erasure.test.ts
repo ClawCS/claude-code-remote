@@ -6,24 +6,30 @@ import { randomUUID } from "node:crypto";
 import * as fs from "node:fs/promises";
 import type { Dir } from "node:fs";
 import { maintenanceFixture, deferred } from "./fixtures/maintenance";
-import { beginMaintenance, bindMaintenance, maintenanceSnapshot, settleMaintenance, selectMaintenance, closeCustodyHandle, closeMaintenanceScanIterators } from "../src/worker-maintenance";
+import { beginMaintenance, bindMaintenance, maintenanceSnapshot, settleMaintenance, selectMaintenance, closeCustodyHandle, closeMaintenanceScanIterators, finishMaintenanceAcceptedResources } from "../src/worker-maintenance";
 import { custodyErasureOwner, consumeCustodyObservation, type CustodyObservation } from "../src/custody-erasure";
 import { createCustodyLedger } from "../src/custody";
 import { createCustodyInventoryStorage } from "../src/erasure-storage";
 import type { FileHandle } from "node:fs/promises";
 import type { MaintenanceRun } from "../src/worker-maintenance";
 import type { CustodyLedger, WorkerOwner } from "../src/types";
-import { digest, utcInstant } from "../src/types";
-import { testAdmission, testReadiness } from "./fixtures/admission";
+import { applicationId, digest, utcInstant } from "../src/types";
+import { testAdmission, testReadiness, refreshTestRepository } from "./fixtures/admission";
+import { erasureOwner } from "../src/erasure-repository";
 import * as maintenance from "../src/worker-maintenance";
+import type { PhysicalVerifier, PhysicalCompletion } from "../src/erasure-storage";
+import { TestIngressAuthority } from "./fixtures/ingress-authority";
 
 const connections = vi.hoisted(() => ({ all: [] as Database.Database[] }));
-const observationProbe = vi.hoisted(() => ({ record: undefined as ((token: CustodyObservation, run: MaintenanceRun, custody: CustodyLedger) => void) | undefined }));
+const observationProbe = vi.hoisted(() => ({ record: undefined as ((token: CustodyObservation, run: MaintenanceRun, custody: CustodyLedger) => void) | undefined, completion: undefined as (() => void) | undefined, completionRead: undefined as (() => void) | undefined }));
+const verifierProbe = vi.hoisted(() => ({ all: [] as { custody: CustodyLedger; verifier: PhysicalVerifier; register: (value: PhysicalVerifier) => void }[] }));
 vi.mock("../src/erasure-storage", async original => {
   const actual = await original<typeof import("../src/erasure-storage")>();
   return { ...actual, createCustodyInventoryStorage(...args: Parameters<typeof actual.createCustodyInventoryStorage>) {
+    const authority = args[4];
+    if (authority) args[4] = { ...authority, registerPhysicalVerifier(verifier) { authority.registerPhysicalVerifier(verifier); verifierProbe.all.push({ custody: args[2], verifier, register: authority.registerPhysicalVerifier }); } };
     const storage = actual.createCustodyInventoryStorage(...args);
-    return { ...storage, record(token: CustodyObservation, run: MaintenanceRun) { observationProbe.record?.(token, run, args[2]); return storage.record(token, run); } };
+    return { ...storage, record(token: CustodyObservation, run: MaintenanceRun) { observationProbe.record?.(token, run, args[2]); return storage.record(token, run); }, verifyCompletionWork(...operands: Parameters<typeof storage.verifyCompletionWork>) { observationProbe.completionRead?.(); const result = storage.verifyCompletionWork(...operands); observationProbe.completion?.(); return result; } };
   } };
 });
 vi.mock("node:fs/promises", async original => ({ ...await original<typeof import("node:fs/promises")>() }));
@@ -36,6 +42,9 @@ const fixtures: Awaited<ReturnType<typeof maintenanceFixture>>[] = [];
 afterEach(async () => {
   vi.restoreAllMocks();
   observationProbe.record = undefined;
+  observationProbe.completion = undefined;
+  observationProbe.completionRead = undefined;
+  verifierProbe.all.length = 0;
   for (const f of fixtures) await settleMaintenance(f.owner).catch(() => {});
   for (const db of connections.all.splice(0)) if (db.open) db.close();
   for (const f of fixtures.splice(0)) await rm(f.root, { recursive: true, force: true });
@@ -44,7 +53,620 @@ async function setup(startup?: "ordinary" | "cold-maintenance") {
   const f = await maintenanceFixture(startup); fixtures.push(f);
   return { ...f, db: connections.all.at(-1)! };
 }
+async function acknowledgedPayload(f: Awaited<ReturnType<typeof setup>>) {
+  const accepted = await f.accept(); f.advance(7 * 86400000); await refreshTestRepository(f.owner.repository);
+  const erasure = erasureOwner(f.owner.repository);
+  const event = await f.owner.repository.withCaseLock(accepted.accepted.id, async () => {
+    const event = erasure.prepareCommit(accepted.accepted.id, "processing_payload");
+    erasure.acknowledge(event, await erasure.journal!.append(event)); return event;
+  });
+  return { accepted, event };
+}
+async function eraseAll(owner: WorkerOwner, event: string) {
+  let complete = false;
+  for (let n = 0; !complete && n < 200; n++) {
+    const run = await beginMaintenance(owner);
+    try { complete = (await custodyErasureOwner(owner.custody).eraseScopeBatch(event, run)).complete; }
+    finally { await settleMaintenance(owner); }
+  }
+  expect(complete).toBe(true);
+}
+async function scanAll(owner: WorkerOwner) {
+  let complete = false;
+  for (let n = 0; !complete && n < 100; n++) {
+    try { complete = (await custodyErasureOwner(owner.custody).scanBatch(await beginMaintenance(owner))).complete; }
+    finally { await settleMaintenance(owner); }
+  }
+  expect(complete).toBe(true);
+}
 describe("bounded original-custody erasure", () => {
+  it("covers actual twenty-leaf native and SQLite work with the single charged physical allowance", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), path = join(f.config.runtimeRoot, id);
+    await mkdir(path, { mode: 0o700 });
+    const leaves = [...Array.from({ length: 5 }, (_, n) => `${n}.data`), ...Array.from({ length: 5 }, (_, n) => ["pdf", "jpg", "png"].map(ext => `document-${n + 1}.${ext}`)).flat()];
+    for (const leaf of leaves) await writeFile(join(path, leaf), "real residue", { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "processing", state: "committed", path, budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    let native = 0, rows = 0, total = 0;
+    const stat = fs.lstat, open = fs.open, opendir = fs.opendir, unlink = fs.unlink, rmdir = fs.rmdir, prepare = f.db.prepare.bind(f.db);
+    vi.spyOn(fs, "lstat").mockImplementation(async (...args) => { native++; return stat(...args); });
+    vi.spyOn(fs, "unlink").mockImplementation(async (...args) => { native++; return unlink(...args); });
+    vi.spyOn(fs, "rmdir").mockImplementation(async (...args) => { native++; return rmdir(...args); });
+    vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      native++; const fd = await open(...args), stat = fd.stat.bind(fd), sync = fd.sync.bind(fd), close = fd.close.bind(fd);
+      vi.spyOn(fd, "stat").mockImplementation(async (...args) => { native++; return stat(...args); });
+      vi.spyOn(fd, "sync").mockImplementation(async () => { native++; return sync(); });
+      vi.spyOn(fd, "close").mockImplementation(async () => { native++; return close(); }); return fd;
+    });
+    vi.spyOn(fs, "opendir").mockImplementation(async (...args) => {
+      native++; const dir = await opendir(...args), read = dir.read.bind(dir), close = dir.close.bind(dir);
+      dir.read = async () => { native++; return read(); }; dir.close = async () => { native++; return close(); }; return dir;
+    });
+    vi.spyOn(f.db, "prepare").mockImplementation(sql => {
+      const statement = prepare(sql), get = statement.get.bind(statement), all = statement.all.bind(statement), run = statement.run.bind(statement);
+      vi.spyOn(statement, "get").mockImplementation((...args: unknown[]) => { const result = get(...args); rows += result ? 2 : 1; return result; });
+      vi.spyOn(statement, "all").mockImplementation((...args: unknown[]) => { const result = all(...args); rows += result.length + 1; return result; });
+      vi.spyOn(statement, "run").mockImplementation((...args: unknown[]) => { rows++; return run(...args); }); return statement;
+    });
+    let complete = false;
+    for (let n = 0; !complete && n < 200; n++) {
+      const before = native + rows, result = await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], await beginMaintenance(f.owner));
+      complete = result.complete; total += result.consumedItems;
+      expect(result.consumedItems).toBeGreaterThanOrEqual(native + rows - before); expect(maintenanceSnapshot(f.owner).consumedItems).toBeLessThanOrEqual(1000);
+      await settleMaintenance(f.owner);
+    }
+    expect(complete).toBe(true); expect(native).toBeGreaterThan(500); expect(total).toBeGreaterThan(1000); expect(await readdir(f.config.runtimeRoot)).toEqual([]);
+  });
+  it.each([false, true])("uses one existing reservation for combined staging/sealed artifacts (overflow=%s)", async overflow => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), stage = join(f.config.custodyRoot, `${id}.bundle.staging`), sealed = join(f.config.custodyRoot, `${id}.bundle.enc`), size = overflow ? 6 * 1024 * 1024 : 13;
+    await writeFile(stage, Buffer.alloc(size, 1), { mode: 0o600 }); await writeFile(sealed, Buffer.alloc(size, 2), { mode: 0o600 });
+    f.db.prepare("INSERT INTO artifacts(caseId,kind,path,bytes,plaintextDigest,ciphertextDigest,expiresAt) VALUES(?,'bundle',?,?,?,?,'2026-10-18T12:00:00.000Z')").run(accepted.accepted.id, sealed, size, "1".repeat(64), "2".repeat(64));
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "artifact", artifactKind: "bundle", state: "committed", path: stage, workerPath: sealed, budget: size, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    if (overflow) { await expect(eraseAll(f.owner, event[1])).rejects.toThrow(); expect((await lstat(stage)).size).toBe(size); expect((await lstat(sealed)).size).toBe(size); }
+    else { await eraseAll(f.owner, event[1]); expect(await readdir(f.config.custodyRoot)).toEqual([]); expect(f.db.prepare("SELECT bytes FROM artifacts WHERE caseId=?").get(accepted.accepted.id)).toEqual({ bytes: size }); }
+  });
+  it("keeps a lost-acceptance-reply journal associated with its accepted case through physical finalization", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), path = accepted.record.encryptedPayloadPath.replace(/\.enc$/, ".journal");
+    const journal = JSON.parse(await readFile(path, "utf8")); delete journal.caseId; journal.state = "orphan";
+    await writeFile(path, JSON.stringify(journal), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner); await eraseAll(f.owner, event[1]);
+    expect(f.db.prepare("SELECT DISTINCT caseId FROM erasure_inventory_journals").all()).toEqual([{ caseId: accepted.accepted.id }]);
+    expect(await readdir(f.config.custodyRoot)).toEqual([]);
+  });
+  it("denies source charge changes between admitted batches while preserving the original native object", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), unlink = fs.unlink;
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    vi.spyOn(fs, "unlink").mockImplementation(async path => { if (path === accepted.record.encryptedPayloadPath) throw new Error("source change boundary"); await unlink(path); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); vi.restoreAllMocks();
+    const before = f.db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get();
+    f.db.prepare("UPDATE cases SET payloadBytes=payloadBytes+1 WHERE id=?").run(accepted.accepted.id);
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow();
+    expect(f.db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual(before); expect((await lstat(accepted.record.encryptedPayloadPath)).size).toBe(accepted.record.actualBytes);
+  });
+  it("retains positive charge across an original terminal-release failure and finishing-only retry", async () => {
+    let armed = false, calls = 0, failed = false;
+    const released = TestIngressAuthority.prototype.released;
+    vi.spyOn(TestIngressAuthority.prototype, "released").mockImplementation(async function (this: TestIngressAuthority, lease) {
+      if (armed && ++calls === 2) { failed = true; throw new Error("private terminal-release canary"); }
+      return released.call(this, lease);
+    });
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner); armed = true;
+    let stopped: MaintenanceRun | undefined;
+    for (let n = 0; !stopped && n < 30; n++) {
+      const run = await beginMaintenance(f.owner);
+      try { await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], run); }
+      catch (error) { expect(error).toMatchObject({ message: "INGRESS_RECOVERY_REQUIRED" }); stopped = run; }
+      if (!stopped) await settleMaintenance(f.owner);
+    }
+    expect(failed).toBe(true); await expect(lstat(accepted.record.encryptedPayloadPath)).rejects.toMatchObject({ code: "ENOENT" });
+    const old = f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get();
+    expect(old).toEqual({ phase: "holders-released", remainingCharge: accepted.record.actualBytes });
+    expect(await finishMaintenanceAcceptedResources(stopped!, f.owner.custody)).toEqual({ consumedItems: 2 });
+    expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual(old);
+    await settleMaintenance(f.owner); await eraseAll(f.owner, event[1]);
+  });
+  it("tracks a late admitted unlink through settlement and requires fresh recovery before finalization", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), started = deferred(), release = deferred();
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const unlink = fs.unlink; let armed = true;
+    vi.spyOn(fs, "unlink").mockImplementation(async path => {
+      if (armed && path === accepted.record.encryptedPayloadPath) { armed = false; started.resolve(); await release.promise; }
+      await unlink(path);
+    });
+    const task = (async () => {
+      for (let n = 0; n < 30; n++) { await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], await beginMaintenance(f.owner)); await settleMaintenance(f.owner); }
+    })();
+    const rejection = expect(task).rejects.toThrow(); await started.promise;
+    f.advance(120001); let settled = false; const settling = settleMaintenance(f.owner).then(() => { settled = true; });
+    await Promise.resolve(); expect(settled).toBe(false); release.resolve(); await rejection; await settling;
+    expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual({ phase: "holders-released", remainingCharge: accepted.record.actualBytes });
+    vi.restoreAllMocks(); const restarted = await f.restart(); bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try { await scanAll(restarted.owner); await eraseAll(restarted.owner, event[1]); }
+    finally { await settleMaintenance(restarted.owner); }
+  });
+  it("bounds real accepted execution and all-manifest recovery across more than1000 credits and20 cases", async () => {
+    const f = await setup(), first = await acknowledgedPayload(f), events = [first.event[1]];
+    const source = f.db.prepare("SELECT * FROM cases WHERE id=?").get(first.accepted.accepted.id) as Record<string, unknown>;
+    const reservation = f.db.prepare("SELECT * FROM reservations WHERE id=?").get(source.reservationId) as Record<string, unknown>;
+    const journal = JSON.parse(await readFile(first.accepted.record.encryptedPayloadPath.replace(/\.enc$/, ".journal"), "utf8"));
+    for (let n = 0; n < 20; n++) {
+      const id = randomUUID(), reservationId = randomUUID(), sessionHash = n.toString(16).padStart(64, "0"), path = join(f.config.custodyRoot, `${reservationId}.enc`);
+      const records: [string, Record<string, unknown>][] = [["reservations", { ...reservation, id: reservationId, sessionHash }], ["cases", { ...source, id, reference: `bounded-${n}`, reservationId, sessionHash, encryptedPayloadPath: path }]];
+      for (const table of ["case_lifecycle", "deliveries"]) records.push([table, { ...f.db.prepare(`SELECT * FROM ${table} WHERE caseId=?`).get(source.id) as Record<string, unknown>, caseId: id }]);
+      for (const [table, value] of records) f.db.prepare(`INSERT INTO ${table}(${Object.keys(value).join(",")}) VALUES(${Object.keys(value).map(key => `@${key}`).join(",")})`).run(value);
+      const lease = await f.authority.prepare(reservationId, join(f.config.intakeRoot, `${reservationId}.enc`), 10000); await f.authority.grant(lease);
+      await copyFile(first.accepted.record.encryptedPayloadPath, path);
+      await writeFile(join(f.config.custodyRoot, `${reservationId}.journal`), JSON.stringify({ ...journal, id: reservationId, caseId: id, path: lease.path, workerPath: path, lease, release: "pending", reservation: { ...journal.reservation, id: reservationId, sessionHash } }), { mode: 0o600 });
+      const erasure = erasureOwner(f.owner.repository), event = await f.owner.repository.withCaseLock(applicationId(id), async () => {
+        const proposed = erasure.prepareCommit(applicationId(id), "processing_payload"); erasure.acknowledge(proposed, await erasure.journal!.append(proposed)); return proposed;
+      }); events.push(event[1]);
+    }
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    let total = 0, batches = 0;
+    for (const event of events) {
+      let complete = false;
+      for (let n = 0; !complete && n < 100; n++) {
+        const result = await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event, await beginMaintenance(f.owner));
+        complete = result.complete; total += result.consumedItems; batches++;
+        expect(maintenanceSnapshot(f.owner).consumedItems).toBeLessThanOrEqual(1000); expect(maintenanceSnapshot(f.owner).selectedCount).toBeLessThanOrEqual(20);
+        await settleMaintenance(f.owner);
+      }
+      expect(complete).toBe(true);
+    }
+    expect(total).toBeGreaterThan(1000); expect(batches).toBeGreaterThan(21);
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_manifests WHERE phase='metadata-finalized' AND remainingCharge=0").get()).toEqual({ n: 63 });
+    const restarted = await f.restart(), db = connections.all.at(-1)!; bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      const run = await beginMaintenance(restarted.owner);
+      for (let n = 0; n < 19; n++) selectMaintenance(run, restarted.owner.repository, `occupied-selection:${n}`);
+      expect((await custodyErasureOwner(restarted.owner.custody).scanBatch(run)).complete).toBe(false);
+      expect(maintenanceSnapshot(restarted.owner).selectedCount).toBe(20); expect(maintenanceSnapshot(restarted.owner).consumedItems).toBeLessThanOrEqual(1000);
+      await settleMaintenance(restarted.owner); await scanAll(restarted.owner);
+      const pass = (db.prepare("SELECT scanPass FROM erasure_maintenance").get() as { scanPass: string }).scanPass;
+      expect(db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE pass=? AND presence='absent'").get(pass)).toEqual({ n: 63 });
+    } finally { await settleMaintenance(restarted.owner); }
+  }, 20000);
+  it("uses indexed bounded accepted selectors and native identity probes", async () => {
+    const f = await setup();
+    const queries: [string, unknown[]][] = [
+      ["SELECT journalId FROM erasure_inventory_journals INDEXED BY erasure_inventory_case WHERE pass=? AND caseId=? AND journalId>? ORDER BY journalId LIMIT 1", ["", "", ""]],
+      ["SELECT * FROM erasure_manifests INDEXED BY erasure_manifest_execution WHERE eraseCommitId=? AND slot=? AND (journalId,leaf)>(?,?) ORDER BY journalId,leaf LIMIT 1", ["", "", "", ""]],
+      ["SELECT * FROM erasure_manifests WHERE (eraseCommitId,journalId,slot,leaf)>(?,?,?,?) ORDER BY eraseCommitId,journalId,slot,leaf LIMIT 1", ["", "", "", ""]],
+      ["SELECT journalId,slot,leaf FROM erasure_inventory_objects INDEXED BY erasure_inventory_identity WHERE pass=? AND device=? AND inode=? LIMIT 2", ["", 1, 1]],
+      ["SELECT leaf,phase,remainingCharge FROM erasure_manifests WHERE eraseCommitId=? AND journalId=? AND slot='processing-file' ORDER BY leaf LIMIT 21", ["", ""]],
+    ];
+    for (const [sql, args] of queries) {
+      const rows = f.db.prepare(`EXPLAIN QUERY PLAN ${sql}`).all(...args) as { detail: string }[];
+      expect(rows.every(row => !/SCAN |TEMP B-TREE/.test(row.detail))).toBe(true); expect(rows.some(row => /SEARCH .*INDEX/.test(row.detail))).toBe(true);
+    }
+  });
+  it.each(["same-pass", "cold-restart"] as const)("keeps fresh empty resources distinct from restored zero in %s continuation", async continuation => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), artifact = randomUUID(), directory = join(f.config.runtimeRoot, id), empty = join(directory, "0.data"), stage = join(f.config.custodyRoot, `${artifact}.bundle.staging`);
+    await mkdir(directory, { mode: 0o700 }); await writeFile(empty, "", { mode: 0o600 }); await writeFile(stage, "", { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "processing", state: "committed", path: directory, budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${artifact}.journal`), JSON.stringify({ version: 3, id: artifact, kind: "artifact", artifactKind: "bundle", state: "reserved", path: stage, workerPath: stage.replace(/\.staging$/, ".enc"), budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const unlink = fs.unlink; vi.spyOn(fs, "unlink").mockImplementation(async path => { if (path === empty) throw new Error("empty unlink interruption"); await unlink(path); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED");
+    expect(f.db.prepare("SELECT phase,remainingCharge,expectedSize FROM erasure_manifests WHERE journalId=? AND slot='processing-file'").get(id)).toEqual({ phase: "holders-released", remainingCharge: 0, expectedSize: 0 });
+    vi.restoreAllMocks();
+    if (continuation === "same-pass") {
+      await eraseAll(f.owner, event[1]); expect(await readdir(f.config.custodyRoot)).toEqual([]); expect(await readdir(f.config.runtimeRoot)).toEqual([]);
+    } else {
+      const restarted = await f.restart(); bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+      try { await expect(scanAll(restarted.owner)).rejects.toThrow(); expect((await lstat(empty)).size).toBe(0); }
+      finally { await settleMaintenance(restarted.owner); }
+    }
+  });
+  it("recovers surviving native bytes from the exact normalized plans when their journal is absent", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const unlink = fs.unlink; vi.spyOn(fs, "unlink").mockImplementation(async path => { if (path === accepted.record.encryptedPayloadPath) throw new Error("planned original interruption"); await unlink(path); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); vi.restoreAllMocks();
+    await fs.unlink(accepted.record.encryptedPayloadPath.replace(/\.enc$/, ".journal"));
+    const restarted = await f.restart(); bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try { await scanAll(restarted.owner); await eraseAll(restarted.owner, event[1]); expect(await readdir(f.config.custodyRoot)).toEqual([]); }
+    finally { await settleMaintenance(restarted.owner); }
+  });
+  it.each(["absent-synced", "metadata-finalized"] as const)("does not rearm a genuinely empty resource restored after %s", async phase => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), path = join(f.config.custodyRoot, `${id}.bundle.staging`);
+    await writeFile(path, "", { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "artifact", artifactKind: "bundle", state: "reserved", path, workerPath: path.replace(/\.staging$/, ".enc"), budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    if (phase === "absent-synced") {
+      const prepare = f.db.prepare.bind(f.db);
+      vi.spyOn(f.db, "prepare").mockImplementation(sql => {
+        const statement = prepare(sql);
+        if (sql.startsWith("UPDATE erasure_manifests SET phase=")) {
+          const run = statement.run.bind(statement);
+          vi.spyOn(statement, "run").mockImplementation((...args: unknown[]) => { if (args[0] === "metadata-finalized" && args[4] === "artifact-staging") throw new Error("final write interrupted"); return run(...args); });
+        }
+        return statement;
+      });
+      await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); vi.restoreAllMocks();
+    } else await eraseAll(f.owner, event[1]);
+    expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE journalId=? AND slot='artifact-staging'").get(id)).toEqual({ phase, remainingCharge: 0 });
+    await expect(lstat(path)).rejects.toMatchObject({ code: "ENOENT" }); await writeFile(path, "", { mode: 0o600 });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow(); expect((await lstat(path)).size).toBe(0);
+    expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE journalId=? AND slot='artifact-staging'").get(id)).toEqual({ phase, remainingCharge: 0 });
+  });
+  it("rejects an acknowledged non-payload scope before planning or native deletion", async () => {
+    const f = await setup(), accepted = await f.accept(); f.advance(7 * 86400000); await refreshTestRepository(f.owner.repository);
+    const erasure = erasureOwner(f.owner.repository), event = await f.owner.repository.withCaseLock(accepted.accepted.id, async () => {
+      const proposed = erasure.prepareCommit(accepted.accepted.id, "public_token"); erasure.acknowledge(proposed, await erasure.journal!.append(proposed)); return proposed;
+    });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("ERASURE_UNVERIFIED");
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_manifests").get()).toEqual({ n: 0 }); expect((await lstat(accepted.record.encryptedPayloadPath)).size).toBe(accepted.record.actualBytes);
+  });
+  it("does not advance its private cursor when SQLite COMMIT rolls back a finalized phase", async () => {
+    const f = await setup(), { event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const prepare = f.db.prepare.bind(f.db); let fired = false;
+    vi.spyOn(f.db, "prepare").mockImplementation(sql => {
+      const statement = prepare(sql);
+      if (sql.startsWith("UPDATE erasure_manifests SET phase=")) {
+        const run = statement.run.bind(statement);
+        vi.spyOn(statement, "run").mockImplementation((...args: unknown[]) => {
+          const result = run(...args);
+          if (!fired && args[0] === "metadata-finalized" && args[4] === "original-sealed") {
+            fired = true; f.db.pragma("defer_foreign_keys=ON");
+            prepare("INSERT INTO erasure_manifests SELECT ?,scanPass,journalId,slot,leaf,expectedDevice,expectedInode,expectedSize,remainingCharge,phase FROM erasure_manifests WHERE slot='original-sealed'").run("f".repeat(32));
+          }
+          return result;
+        });
+      }
+      return statement;
+    });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); expect(fired).toBe(true);
+    expect(f.db.prepare("SELECT remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get()).toMatchObject({ remainingCharge: expect.any(Number) });
+    vi.restoreAllMocks(); await eraseAll(f.owner, event[1]);
+    expect(f.db.prepare("SELECT 1 FROM erasure_manifests WHERE remainingCharge!=0 OR phase!='metadata-finalized'").get()).toBeUndefined();
+  });
+  it("keeps physical completion private, execution-minted, one-use and exact-guard/run bound", async () => {
+    const f = await setup(), { event } = await acknowledgedPayload(f);
+    const binding = verifierProbe.all.find(value => value.custody === f.owner.custody)!, verifier = binding.verifier;
+    expect(() => binding.register(verifier)).toThrow("ERASURE_ALREADY_OWNED");
+    expect("assertPhysicalComplete" in custodyErasureOwner(f.owner.custody)).toBe(false);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    let run = await beginMaintenance(f.owner);
+    await expect(maintenance.maintenanceCommand(run, f.owner.repository, 20 + verifier.maximumItems, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+      const result = await verifier.verify(event[1], run); return { value: result.proof, consumedItems: 20 + result.consumedItems };
+    }))).rejects.toThrow("ERASURE_OWNERSHIP_INVALID");
+    await settleMaintenance(f.owner); await eraseAll(f.owner, event[1]); run = await beginMaintenance(f.owner);
+    const issue = () => maintenance.maintenanceCommand(run, f.owner.repository, 20 + verifier.maximumItems, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+      const result = await verifier.verify(event[1], run); return { value: result.proof, consumedItems: 20 + result.consumedItems };
+    }));
+    const staleGuard = (await issue()).value;
+    await maintenance.maintenanceCommand(run, f.owner.repository, 20 + verifier.maximumItems + 68, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+      expect(() => verifier.consume(staleGuard, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID");
+      expect(() => verifier.consume({} as PhysicalCompletion, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID");
+      const result = await verifier.verify(event[1], run);
+      expect(verifier.consume(result.proof, event[1], run)).toBe(17);
+      expect(() => verifier.consume(result.proof, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID");
+      return { value: undefined, consumedItems: 20 + result.consumedItems + 68 };
+    }));
+    const staleRun = (await issue()).value; await settleMaintenance(f.owner); run = await beginMaintenance(f.owner);
+    await maintenance.maintenanceCommand(run, f.owner.repository, 37, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+      expect(() => verifier.consume(staleRun, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID"); return { value: undefined, consumedItems: 37 };
+    }));
+  });
+  it("permanently denies same-owner recovery after the final held assertion rejects execution EOF", async () => {
+    const f = await setup(), { event } = await acknowledgedPayload(f), assertHeld = f.services.assertMaintenanceHeld!;
+    let failFinal = false, rejected = false;
+    f.services.assertMaintenanceHeld = function(owner, handle) {
+      assertHeld.call(this, owner, handle);
+      if (failFinal) { failFinal = false; rejected = true; throw new Error("synthetic final held assertion"); }
+    };
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    observationProbe.completion = () => { observationProbe.completion = undefined; failFinal = true; };
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN"); expect(rejected).toBe(true);
+    await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+    expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+  });
+  it("replays actual manifests after a transient final current-work query failure at execution EOF", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), prepare = f.db.prepare.bind(f.db);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    let failRead = false, rejected = false;
+    observationProbe.completionRead = () => { observationProbe.completionRead = undefined; failRead = true; };
+    vi.spyOn(f.db, "prepare").mockImplementation(sql => {
+      const statement = prepare(sql), get = statement.get.bind(statement);
+      vi.spyOn(statement, "get").mockImplementation((...args: unknown[]) => { const result = get(...args); if (failRead) { failRead = false; rejected = true; throw new Error("synthetic SQLite read interruption"); } return result; });
+      return statement;
+    });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); expect(rejected).toBe(true); vi.restoreAllMocks();
+    const stat = fs.lstat; let objectProbes = 0;
+    vi.spyOn(fs, "lstat").mockImplementation(async (...args) => { if (args[0] === accepted.record.encryptedPayloadPath) objectProbes++; return stat(...args); });
+    await eraseAll(f.owner, event[1]); expect(objectProbes).toBeGreaterThan(0);
+  });
+  it.each(["roots", "private-copy-revision", "scan-invalidation"] as const)("invalidates the private physical gate after %s changes", async mutation => {
+    const f = await setup(), { event } = await acknowledgedPayload(f), verifier = verifierProbe.all.find(value => value.custody === f.owner.custody)!.verifier;
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner); await eraseAll(f.owner, event[1]);
+    const run = await beginMaintenance(f.owner);
+    if (mutation === "roots") { await rename(f.config.custodyRoot, `${f.config.custodyRoot}-old`); await mkdir(f.config.custodyRoot, { mode: 0o700 }); }
+    if (mutation === "private-copy-revision") await f.owner.custody.abortIntake(randomUUID(), digest("f".repeat(64))).catch(() => {});
+    if (mutation === "scan-invalidation") await custodyErasureOwner(f.owner.custody).invalidateAndClose(run);
+    await expect(maintenance.maintenanceCommand(run, f.owner.repository, 20 + verifier.maximumItems, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+      const result = await verifier.verify(event[1], run); return { value: undefined, consumedItems: 20 + result.consumedItems };
+    }))).rejects.toThrow();
+  });
+  it.each(["changed-inode", "moved", "hardlink", "restored-zero"] as const)("denies %s recovery without rearming or discarding the old binding", async mutation => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), path = accepted.record.encryptedPayloadPath;
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const unlink = fs.unlink; vi.spyOn(fs, "unlink").mockImplementation(async candidate => { if (candidate === path) throw new Error("interrupt before removal"); await unlink(candidate); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); vi.restoreAllMocks();
+    if (mutation === "changed-inode") { await rename(path, join(f.root, "retained-original")); await copyFile(join(f.root, "retained-original"), path); }
+    if (mutation === "moved") await rename(path, join(f.config.custodyRoot, `${randomUUID()}.enc`));
+    if (mutation === "hardlink") await fs.link(path, join(f.root, "retained-link"));
+    if (mutation === "restored-zero") f.db.prepare("UPDATE erasure_manifests SET remainingCharge=0,phase='metadata-finalized' WHERE slot='original-sealed'").run();
+    const old = f.db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get();
+    const restarted = await f.restart(), db = connections.all.at(-1)!; bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      await expect(scanAll(restarted.owner)).rejects.toThrow();
+      expect(db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual(old);
+      expect(db.prepare("SELECT payloadBytes FROM cases WHERE id=?").get(accepted.accepted.id)).toEqual({ payloadBytes: accepted.record.actualBytes });
+    } finally { await settleMaintenance(restarted.owner); }
+  });
+  it.each(["changed-directory", "unknown-child", "growth", "zero-directory"] as const)("denies %s after child removal instead of relaxing directory identity", async mutation => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), path = join(f.config.runtimeRoot, id);
+    await mkdir(path, { mode: 0o700 }); await writeFile(join(path, "0.data"), "native child", { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "processing", state: "committed", path, budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const rmdir = fs.rmdir; vi.spyOn(fs, "rmdir").mockImplementation(async (...args) => { if (args[0] === path) throw new Error("interrupt directory removal"); await rmdir(...args); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); vi.restoreAllMocks();
+    if (mutation === "changed-directory") { await rename(path, join(f.root, "retained-directory")); await mkdir(path, { mode: 0o700 }); }
+    if (mutation === "unknown-child") await writeFile(join(path, "unknown"), "untouched", { mode: 0o600 });
+    if (mutation === "growth") for (let n = 0; n < 40; n++) await writeFile(join(path, `unknown-${n}`), "untouched", { mode: 0o600 });
+    if (mutation === "zero-directory") f.db.prepare("UPDATE erasure_manifests SET remainingCharge=0,phase='metadata-finalized' WHERE journalId=? AND slot='processing-directory'").run(id);
+    const old = f.db.prepare("SELECT * FROM erasure_manifests WHERE journalId=? AND slot='processing-directory'").get(id);
+    const restarted = await f.restart(), db = connections.all.at(-1)!; bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try { await expect(scanAll(restarted.owner)).rejects.toThrow(); expect(db.prepare("SELECT * FROM erasure_manifests WHERE journalId=? AND slot='processing-directory'").get(id)).toEqual(old); expect((await lstat(path)).isDirectory()).toBe(true); }
+    finally { await settleMaintenance(restarted.owner); }
+  });
+  it("finishes only an admitted failed native close on the same stopped run before fresh phase admission", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    const originalOpen = fs.open; let retained: FileHandle | undefined, failClose = true;
+    vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      const fd = await originalOpen(...args);
+      if (args[0] === accepted.record.encryptedPayloadPath) {
+        retained = fd; const close = fd.close.bind(fd);
+        vi.spyOn(fd, "close").mockImplementation(async () => { if (failClose) { failClose = false; throw new Error("private close canary"); } return close(); });
+      }
+      return fd;
+    });
+    let failed: MaintenanceRun | undefined;
+    for (let n = 0; !failed && n < 30; n++) {
+      const run = await beginMaintenance(f.owner);
+      try { await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], run); }
+      catch (error) { expect(error).toMatchObject({ message: "MAINTENANCE_COMMAND_FAILED" }); failed = run; }
+      if (!failed) await settleMaintenance(f.owner);
+    }
+    expect(failed).toBeDefined(); expect((await retained!.stat()).size).toBe(accepted.record.actualBytes);
+    const before = f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get();
+    await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+    const charged = maintenanceSnapshot(f.owner).consumedItems;
+    expect(await finishMaintenanceAcceptedResources(failed!, f.owner.custody)).toEqual({ consumedItems: 1 });
+    expect(maintenanceSnapshot(f.owner).consumedItems).toBe(charged + 1);
+    expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual(before);
+    await expect(retained!.stat()).rejects.toMatchObject({ code: "EBADF" });
+    await expect(custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], failed!)).rejects.toThrow("MAINTENANCE_RUN_STOPPED");
+    await settleMaintenance(f.owner); vi.restoreAllMocks(); await eraseAll(f.owner, event[1]);
+  });
+  it.each(["unlink-after-success", "parent-fsync", "holders-released", "absent-synced", "metadata-finalized", "journal-scrub"] as const)("recovers actual %s interruption without losing the retained plan", async fault => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    let fired = false;
+    const unlink = fs.unlink, open = fs.open, prepare = f.db.prepare.bind(f.db);
+    if (fault === "unlink-after-success" || fault === "journal-scrub") vi.spyOn(fs, "unlink").mockImplementation(async path => {
+      await unlink(path);
+      if (!fired && path === (fault === "journal-scrub" ? accepted.record.encryptedPayloadPath.replace(/\.enc$/, ".journal") : accepted.record.encryptedPayloadPath)) { fired = true; throw new Error("private unlink canary"); }
+    });
+    else if (fault === "parent-fsync") vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      const fd = await open(...args);
+      if (args[0] === f.config.custodyRoot) { const sync = fd.sync.bind(fd); vi.spyOn(fd, "sync").mockImplementation(async () => { if (!fired) { fired = true; throw new Error("private fsync canary"); } await sync(); }); }
+      return fd;
+    });
+    else vi.spyOn(f.db, "prepare").mockImplementation(sql => {
+      const statement = prepare(sql);
+      if (sql.startsWith("UPDATE erasure_manifests SET phase=")) {
+        const run = statement.run.bind(statement);
+        vi.spyOn(statement, "run").mockImplementation((...args: unknown[]) => { if (!fired && args[0] === fault && args[4] === "original-sealed") { fired = true; throw new Error("private transaction canary"); } return run(...args); });
+      }
+      return statement;
+    });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); expect(fired).toBe(true);
+    const slot = fault === "journal-scrub" ? "journal" : "original-sealed";
+    const old = f.db.prepare("SELECT remainingCharge FROM erasure_manifests WHERE slot=?").get(slot) as { remainingCharge: number };
+    expect(old.remainingCharge).toBeGreaterThan(0);
+    vi.restoreAllMocks(); const restarted = await f.restart(); bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try { await scanAll(restarted.owner); await eraseAll(restarted.owner, event[1]); expect(await readdir(f.config.custodyRoot)).toEqual([]); }
+    finally { await settleMaintenance(restarted.owner); }
+  });
+  it("preserves over-budget processing residues instead of treating each leaf as an independent budget", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), path = join(f.config.runtimeRoot, id);
+    await mkdir(path, { mode: 0o700 });
+    for (const leaf of ["0.data", "1.data"]) await writeFile(join(path, leaf), Buffer.alloc(3000), { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "processing", state: "committed", path, budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    let complete = false;
+    for (let n = 0; !complete && n < 10; n++) { complete = (await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+    expect(complete).toBe(true);
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow();
+    expect(await readdir(path)).toEqual(["0.data", "1.data"]);
+  });
+  it("does not call a missing initial worker copy complete without a durable old manifest", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    await fs.unlink(accepted.record.encryptedPayloadPath);
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner)); await settleMaintenance(f.owner);
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow();
+    expect(f.db.prepare("SELECT payloadBytes FROM cases WHERE id=?").get(accepted.accepted.id)).toEqual({ payloadBytes: accepted.record.actualBytes });
+    expect((await lstat(accepted.record.encryptedPayloadPath.replace(/\.enc$/, ".journal"))).isFile()).toBe(true);
+  });
+  it.each(["before-rmdir", "after-rmdir"] as const)("retains the old directory charge across owned child removal and %s interruption/restart", async interruption => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), path = join(f.config.runtimeRoot, id);
+    await mkdir(path, { mode: 0o700 }); await writeFile(join(path, "0.data"), "real child residue", { mode: 0o600 });
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "processing", state: "committed", path, budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    const initial = await lstat(path);
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    let scanned = false;
+    for (let n = 0; !scanned && n < 10; n++) { scanned = (await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+    expect(scanned).toBe(true);
+    const rmdir = fs.rmdir, denied = vi.spyOn(fs, "rmdir").mockImplementation(async (...args) => { if (args[0] === path) { if (interruption === "after-rmdir") await rmdir(...args); throw new Error("synthetic directory interruption"); } return rmdir(...args); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED");
+    expect(denied).toHaveBeenCalledWith(path);
+    if (interruption === "before-rmdir") expect(await readdir(path)).toEqual([]); else await expect(lstat(path)).rejects.toMatchObject({ code: "ENOENT" });
+    const old = f.db.prepare("SELECT * FROM erasure_manifests WHERE journalId=? AND slot='processing-directory'").get(id) as { remainingCharge: number; scanPass: string; expectedSize: number };
+    expect(old).toMatchObject({ remainingCharge: initial.size, expectedSize: initial.size });
+    vi.restoreAllMocks();
+    const restarted = await f.restart(), db = connections.all.at(-1)!; bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      let complete = false;
+      for (let n = 0; !complete && n < 20; n++) { complete = (await custodyErasureOwner(restarted.owner.custody).scanBatch(await beginMaintenance(restarted.owner))).complete; await settleMaintenance(restarted.owner); }
+      expect(complete).toBe(true); await eraseAll(restarted.owner, event[1]);
+      expect(db.prepare("SELECT scanPass,expectedSize,remainingCharge,phase FROM erasure_manifests WHERE journalId=? AND slot='processing-directory'").get(id)).toEqual({ scanPass: old.scanPass, expectedSize: old.expectedSize, remainingCharge: 0, phase: "metadata-finalized" });
+      await expect(lstat(path)).rejects.toMatchObject({ code: "ENOENT" });
+    } finally { await settleMaintenance(restarted.owner); }
+  });
+  it.each([false, true])("rebinds a positive same-object plan after cold reconstruction (rollback=%s)", async rollback => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner)); await settleMaintenance(f.owner);
+    const unlink = fs.unlink;
+    vi.spyOn(fs, "unlink").mockImplementation(async path => { if (path === accepted.record.encryptedPayloadPath) throw new Error("synthetic unlink interruption"); return unlink(path); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED");
+    const old = f.db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get() as { remainingCharge: number; scanPass: string };
+    expect(old.remainingCharge).toBe(accepted.record.actualBytes);
+    vi.restoreAllMocks();
+    const restarted = await f.restart(), db = connections.all.at(-1)!;
+    bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      let complete = false;
+      for (let n = 0; !complete && n < 20; n++) { complete = (await custodyErasureOwner(restarted.owner.custody).scanBatch(await beginMaintenance(restarted.owner))).complete; await settleMaintenance(restarted.owner); }
+      expect(complete).toBe(true);
+      if (rollback) {
+        const prepare = db.prepare.bind(db); let fired = false;
+        vi.spyOn(db, "prepare").mockImplementation(sql => {
+          const statement = prepare(sql);
+          if (sql.startsWith("INSERT INTO erasure_manifests")) {
+            const run = statement.run.bind(statement);
+            vi.spyOn(statement, "run").mockImplementation((...args: unknown[]) => {
+              const result = run(...args);
+              const current = prepare("SELECT scanPass FROM erasure_manifests WHERE slot='original-sealed'").get() as { scanPass: string } | undefined;
+              if (!fired && current && current.scanPass !== old.scanPass) {
+                fired = true; db.pragma("defer_foreign_keys=ON");
+                prepare("INSERT INTO erasure_manifests SELECT ?,scanPass,journalId,slot,leaf,expectedDevice,expectedInode,expectedSize,remainingCharge,phase FROM erasure_manifests WHERE slot='original-sealed'").run("f".repeat(32));
+              }
+              return result;
+            });
+          }
+          return statement;
+        });
+        await expect(eraseAll(restarted.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); expect(fired).toBe(true);
+        expect(db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual(old);
+        expect((await lstat(accepted.record.encryptedPayloadPath)).size).toBe(accepted.record.actualBytes);
+        vi.restoreAllMocks();
+      }
+      await eraseAll(restarted.owner, event[1]);
+      const current = db.prepare("SELECT scanPass,phase,remainingCharge FROM erasure_manifests WHERE slot='original-sealed'").get() as { scanPass: string };
+      expect(current.scanPass).not.toBe(old.scanPass);
+      expect(current).toMatchObject({ phase: "metadata-finalized", remainingCharge: 0 });
+      await expect(lstat(accepted.record.encryptedPayloadPath)).rejects.toMatchObject({ code: "ENOENT" });
+    } finally { await settleMaintenance(restarted.owner); }
+  });
+  it("reinspects every finalized absent manifest after cold reconstruction and journal scrub", async () => {
+    const f = await setup(), { event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    expect((await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).complete).toBe(true);
+    await settleMaintenance(f.owner); await eraseAll(f.owner, event[1]);
+    expect(await readdir(f.config.custodyRoot)).toEqual([]);
+    const oldPass = (f.db.prepare("SELECT scanPass FROM erasure_maintenance").get() as { scanPass: string }).scanPass;
+    const restarted = await f.restart(), db = connections.all.at(-1)!;
+    bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      let complete = false;
+      for (let n = 0; !complete && n < 20; n++) { complete = (await custodyErasureOwner(restarted.owner.custody).scanBatch(await beginMaintenance(restarted.owner))).complete; await settleMaintenance(restarted.owner); }
+      expect(complete).toBe(true);
+      const current = (db.prepare("SELECT scanPass FROM erasure_maintenance").get() as { scanPass: string }).scanPass;
+      expect(current).not.toBe(oldPass);
+      expect(db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE pass=? AND presence='absent'").get(current)).toEqual({ n: 3 });
+      await eraseAll(restarted.owner, event[1]);
+    } finally { await settleMaintenance(restarted.owner); }
+  });
+  it("observes the exact incoming generation even when a retained native handle has no pathname", async () => {
+    const f = await setup(), first = await f.accept();
+    const original = f.db.prepare("SELECT * FROM cases WHERE id=?").get(first.accepted.id) as Record<string, unknown>;
+    const reservation = f.db.prepare("SELECT * FROM reservations WHERE id=?").get(original.reservationId) as Record<string, unknown>;
+    const journal = JSON.parse(await readFile(join(f.config.custodyRoot, `${original.reservationId}.journal`), "utf8"));
+    const id = randomUUID(), reservationId = randomUUID(), sessionHash = "b".repeat(64), path = join(f.config.custodyRoot, `${reservationId}.enc`);
+    const r = { ...reservation, id: reservationId, sessionHash }, c = { ...original, id, reference: "hidden-synthetic", reservationId, sessionHash, encryptedPayloadPath: path };
+    for (const [table, value] of [["reservations", r], ["cases", c]] as const) f.db.prepare(`INSERT INTO ${table}(${Object.keys(value).join(",")}) VALUES(${Object.keys(value).map(key => `@${key}`).join(",")})`).run(value);
+    const lifecycle = { ...f.db.prepare("SELECT * FROM case_lifecycle WHERE caseId=?").get(first.accepted.id) as Record<string, unknown>, caseId: id };
+    f.db.prepare(`INSERT INTO case_lifecycle(${Object.keys(lifecycle).join(",")}) VALUES(${Object.keys(lifecycle).map(key => `@${key}`).join(",")})`).run(lifecycle);
+    const delivery = { ...f.db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(first.accepted.id) as Record<string, unknown>, caseId: id };
+    f.db.prepare(`INSERT INTO deliveries(${Object.keys(delivery).join(",")}) VALUES(${Object.keys(delivery).map(key => `@${key}`).join(",")})`).run(delivery);
+    const lease = await f.authority.prepare(reservationId, join(f.config.intakeRoot, `${reservationId}.enc`), 10000);
+    await f.authority.grant(lease);
+    await writeFile(lease.path, "hidden-native-bytes", { mode: 0o640 });
+    const handle = await f.authority.retain(reservationId);
+    try {
+      await fs.unlink(lease.path); await copyFile(first.record.encryptedPayloadPath, path);
+      await writeFile(join(f.config.custodyRoot, `${reservationId}.journal`), JSON.stringify({ ...journal, id: reservationId, caseId: id, path: lease.path, workerPath: path, lease, release: "pending", reservation: { ...journal.reservation, id: reservationId, sessionHash } }), { mode: 0o600 });
+      f.advance(7 * 86400000); await refreshTestRepository(f.owner.repository);
+      const erasure = erasureOwner(f.owner.repository), event = await f.owner.repository.withCaseLock(applicationId(id), async () => {
+        const proposed = erasure.prepareCommit(applicationId(id), "processing_payload"); erasure.acknowledge(proposed, await erasure.journal!.append(proposed)); return proposed;
+      });
+      bindMaintenance(f.owner, f.services, f.monotonicNow);
+      let complete = false;
+      for (let n = 0; !complete && n < 10; n++) { complete = (await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+      expect(complete).toBe(true);
+      expect(f.db.prepare("SELECT presence,chargedBytes,leaseState,device,inode FROM erasure_inventory_objects WHERE journalId=? AND slot='incoming-sealed'").get(reservationId)).toEqual({ presence: "absent", chargedBytes: 19, leaseState: "bounded", device: null, inode: null });
+      expect((await handle.stat()).size).toBe(19);
+      let failed: MaintenanceRun | undefined;
+      for (let n = 0; !failed && n < 30; n++) {
+        const run = await beginMaintenance(f.owner);
+        try { await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], run); }
+        catch (error) { expect(error).toMatchObject({ message: "INGRESS_RECOVERY_REQUIRED" }); failed = run; }
+        if (!failed) await settleMaintenance(f.owner);
+      }
+      expect(failed).toBeDefined();
+      expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE journalId=? AND slot='incoming-sealed'").get(reservationId)).toEqual({ phase: "planned", remainingCharge: 19 });
+      await expect(finishMaintenanceAcceptedResources(failed!, f.owner.custody)).rejects.toThrow("MAINTENANCE_COMMAND_FAILED");
+      expect((await handle.stat()).size).toBe(19); await handle.close();
+      expect(await finishMaintenanceAcceptedResources(failed!, f.owner.custody)).toEqual({ consumedItems: 2 });
+      expect(f.db.prepare("SELECT remainingCharge FROM erasure_manifests WHERE journalId=? AND slot='incoming-sealed'").get(reservationId)).toEqual({ remainingCharge: 19 });
+      await settleMaintenance(f.owner); await eraseAll(f.owner, event[1]);
+      expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests WHERE journalId=? AND slot='incoming-sealed'").get(reservationId)).toEqual({ phase: "metadata-finalized", remainingCharge: 0 });
+    } finally { await handle.close(); }
+  });
+  it("unlinks the acknowledged case's physical bytes while retaining identifying row teardown for 1c", async () => {
+    const f = await setup(), accepted = await f.accept(), original = accepted.record.encryptedPayloadPath;
+    f.advance(7 * 86400000); await refreshTestRepository(f.owner.repository);
+    const erasure = erasureOwner(f.owner.repository);
+    const event = await f.owner.repository.withCaseLock(accepted.accepted.id, async () => {
+      const proposed = erasure.prepareCommit(accepted.accepted.id, "processing_payload");
+      erasure.acknowledge(proposed, await erasure.journal!.append(proposed)); return proposed;
+    });
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    let run = await beginMaintenance(f.owner);
+    expect((await custodyErasureOwner(f.owner.custody).scanBatch(run)).complete).toBe(true);
+    let complete = false;
+    for (let attempt = 0; !complete && attempt < 30; attempt++) {
+      const result = await custodyErasureOwner(f.owner.custody).eraseScopeBatch(event[1], run);
+      complete = result.complete;
+      await settleMaintenance(f.owner);
+      if (!complete) run = await beginMaintenance(f.owner);
+    }
+    expect(complete).toBe(true);
+    await expect(lstat(original)).rejects.toMatchObject({ code: "ENOENT" });
+    expect(await readdir(f.config.custodyRoot)).toEqual([]);
+    expect(f.db.prepare("SELECT phase,remainingCharge FROM erasure_manifests").all()).not.toHaveLength(0);
+    expect(f.db.prepare("SELECT 1 FROM erasure_manifests WHERE phase!='metadata-finalized' OR remainingCharge!=0").get()).toBeUndefined();
+    expect(f.db.prepare("SELECT payloadBytes FROM cases WHERE id=?").get(accepted.accepted.id)).toEqual({ payloadBytes: accepted.record.actualBytes });
+  });
   it.each([
     { partial: false, failure: "deadline" }, { partial: true, failure: "deadline" },
     { partial: false, failure: "hold" }, { partial: true, failure: "hold" },
@@ -535,7 +1157,8 @@ describe("bounded original-custody erasure", () => {
     }
     expect(complete).toBe(true); expect(runs).toBeGreaterThan(1);
     expect(f.db.prepare("SELECT count(DISTINCT caseId) n FROM erasure_inventory_journals").get()).toEqual({ n: 21 });
-    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects").get()).toEqual({ n: 42 });
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE slot!='incoming-sealed'").get()).toEqual({ n: 42 });
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE slot='incoming-sealed' AND presence='absent'").get()).toEqual({ n: 21 });
   });
   it("retains an already-read native entry when selection fills during its await", async () => {
     const f = await setup(); await f.accept(); const originalOpen = fs.opendir;
@@ -550,7 +1173,8 @@ describe("bounded original-custody erasure", () => {
     expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects").get()).toEqual({ n: 0 });
     await settleMaintenance(f.owner);
     expect((await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).complete).toBe(true);
-    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects").get()).toEqual({ n: 2 });
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE slot!='incoming-sealed'").get()).toEqual({ n: 2 });
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE slot='incoming-sealed' AND presence='absent'").get()).toEqual({ n: 1 });
   });
   it("retains an unlinked journal descriptor after a failed actual close without exposing its private error", async () => {
     const f = await setup(); await f.accept(); const originalOpen = fs.open;
@@ -657,7 +1281,8 @@ describe("bounded original-custody erasure", () => {
     expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects").get()).toEqual({ n: 0 });
     await settleMaintenance(f.owner);
     expect((await custodyErasureOwner(f.owner.custody).scanBatch(await beginMaintenance(f.owner))).complete).toBe(true);
-    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects").get()).toEqual({ n: 2 });
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE slot!='incoming-sealed'").get()).toEqual({ n: 2 });
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_inventory_objects WHERE slot='incoming-sealed' AND presence='absent'").get()).toEqual({ n: 1 });
   });
   it("durably invalidates previous EOF coverage after a root changes", async () => {
     const f = await setup(); bindMaintenance(f.owner, f.services, f.monotonicNow);

@@ -76,12 +76,14 @@ describe("original erasure owner foundations", () => {
       expect(end.targets).toEqual([]);expect(end.next).toBeNull();
     });
   });
-  it("migrates fresh and genuine schema8/9 owners to exactly schema10", () => {
-    const s = setup(); expect(s.db.pragma("user_version", { simple: true })).toBe(10);
+  it("migrates fresh and genuine schema8/9/10 owners to exactly schema11", () => {
+    const s = setup(); expect(s.db.pragma("user_version", { simple: true })).toBe(11);
+    s.db.exec("DROP INDEX erasure_inventory_case; DROP INDEX erasure_manifest_execution; DROP INDEX erasure_inventory_identity; PRAGMA user_version=10;"); s.restart();
+    expect(s.db.pragma("user_version", { simple: true })).toBe(11);
     removeTask11B1Schema(s.db); s.db.pragma("user_version=9"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(10);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(11);
     removeTask11Schema(s.db);s.db.pragma("user_version=8");s.restart();
-    expect(s.db.pragma("user_version",{simple:true})).toBe(10);
+    expect(s.db.pragma("user_version",{simple:true})).toBe(11);
     expect(s.db.prepare("SELECT name FROM sqlite_master WHERE name='deletion_contradictory_result'").get()).toBeDefined();
   });
   it("rejects incomplete present-object and cross-kind inventory rows at the schema boundary",()=>{

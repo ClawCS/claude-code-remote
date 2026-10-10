@@ -1,12 +1,13 @@
 import { constants, type Stats } from "node:fs";
-import { lstat, open, opendir } from "node:fs/promises";
+import { lstat, open, opendir, unlink, rmdir } from "node:fs/promises";
 import type { Dir } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import type { ApplicationRepository, CustodyConfig, CustodyLedger, IngressEvidence, IngressLease, Instant, Reservation } from "./types";
 import { checkIncomingRoot, checkPrivateRoot } from "./crypto";
 import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceSettled, assertOriginalMaintenanceCustody, closeCustodyHandle, closeMaintenanceScanIterators, maintenanceCommand, maintenanceRemaining, observeCustodyHandle, type MaintenanceRun } from "./worker-maintenance";
 import { erasureOwner } from "./erasure-repository";
-import type { InventoryObject } from "./erasure-storage";
+import type { InventoryObject, InventoryJournal, AcceptedCandidate } from "./erasure-storage";
+import { createAcceptedErasure, type AcceptedHooks } from "./custody-accepted-erasure";
 
 export interface CustodyJournal {
   version: 1 | 2 | 3; id: string; kind: "intake" | "processing" | "artifact"; state: "reserved" | "committed" | "orphan";
@@ -20,7 +21,10 @@ export type Observation = Readonly<
   { kind: "root-open"; pass: string; root: Root } |
   { kind: "root-eof"; pass: string; root: Root } |
   { kind: "invalidate"; pass: string } |
-  { kind: "object"; pass: string; root: Root; journal: CustodyJournal; object: InventoryObject }
+  { kind: "accepted-plan" | "accepted-rebind" | "accepted-holders" | "accepted-absent" | "accepted-final"; pass: string; candidate: AcceptedCandidate } |
+  { kind: "accepted-recovery"; pass: string; candidate: AcceptedCandidate; object: InventoryObject } |
+  { kind: "recovered-native"; pass: string; root: Root; object: InventoryObject } |
+  { kind: "object" | "incoming-lease-slot"; pass: string; root: Root; journal: CustodyJournal; object: InventoryObject }
 >;
 const observations = new WeakMap<CustodyObservation, { repository: ApplicationRepository; custody: CustodyLedger; run: MaintenanceRun; value: Observation }>();
 // Fixed evidence consumer, not a DTO factory. Only original custody below mints.
@@ -32,19 +36,20 @@ export function consumeCustodyObservation(token: CustodyObservation, custody: Cu
 }
 export interface CustodyErasure {
   scanBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
+  eraseScopeBatch(commitEventId: string, run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
   invalidateAndClose(run: MaintenanceRun): Promise<Readonly<{ consumedItems: number }>>;
 }
 const owners = new WeakMap<CustodyLedger, CustodyErasure>();
 export function custodyErasureOwner(custody: CustodyLedger): CustodyErasure {
   const owner = owners.get(custody); if (!owner) throw new Error("ERASURE_UNAVAILABLE"); return owner;
 }
-interface Hooks {
+interface Hooks extends AcceptedHooks {
   exclusive<T>(action: () => Promise<T>): Promise<T>;
   track<T>(action: () => Promise<T>): Promise<T>;
   decodeJournal(bytes: Buffer): CustodyJournal;
   observeIngress(entry: CustodyJournal): Promise<IngressEvidence>;
 }
-interface Iterator { dir: Dir; root: Root; path: string; identity: Stats; parent?: CustodyJournal; count: number; pending?: string }
+interface Iterator { dir: Dir; root: Root; path: string; identity: Stats; parent?: CustodyJournal; recovered?: Readonly<InventoryJournal>; count: number; pending?: string }
 function fail(code: string): never { throw new Error(code); }
 function same(a: Stats, b: Stats, links = true): boolean { return a.dev === b.dev && a.ino === b.ino && a.mode === b.mode && a.uid === b.uid && a.gid === b.gid && (!links || a.nlink === b.nlink); }
 function objectStats(stat: Stats) {
@@ -71,7 +76,9 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   // At most three ancestry walks, iterator stat/read2, journal open/stat/read/stat/pathstat/
   // close6 + decode1, ingress observe/validation2, object stat1, storage<=20,
   // child open/recheck2, EOF close1; failure denial3 and at most2 closes.
-  const entryMaximum = 3 * ancestryMaximum + 40;
+  // A live intake journal additionally probes its fixed incoming slot: two
+  // native stats, observe+validation, and the existing <=20-credit writer.
+  const entryMaximum = 3 * ancestryMaximum + 64;
   function mint(run: MaintenanceRun, value: Observation): CustodyObservation {
     const token = Object.freeze({}) as CustodyObservation;
     observations.set(token, { repository, custody, run, value: Object.freeze(value) }); return token;
@@ -147,11 +154,20 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     } finally { await io(() => closeCustodyHandle(fd)); }
   }
   async function observe(target: Iterator, name: string, run: MaintenanceRun, io: <T>(action: () => Promise<T>) => Promise<T>) {
-    let id: string, slot: InventoryObject["slot"], leaf = "", entry: CustodyJournal;
-    if (target.parent) {
+    let id: string, slot: InventoryObject["slot"], leaf = "", entry: CustodyJournal | undefined;
+    const live = async (id: string, path: string) => {
+      try { return await readJournal(id, path, io); }
+      catch (error) {
+        if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error;
+        try { await io(() => lstat(path)); }
+        catch (absent) { if (absent instanceof Error && "code" in absent && absent.code === "ENOENT") return undefined; throw absent; }
+        fail("ERASURE_JOURNAL_INVALID");
+      }
+    };
+    if (target.parent || target.recovered) {
       if (!/^(?:[0-4]\.data|document-[1-5]\.(?:pdf|jpg|png))$/.test(name) || target.count >= 20) fail("ERASURE_UNKNOWN_OBJECT");
-      id = target.parent.id; slot = "processing-file"; leaf = name; entry = await readJournal(id, join(config.custodyRoot, `${id}.journal`), io);
-      if (JSON.stringify(entry) !== JSON.stringify(target.parent)) fail("ERASURE_ASSOCIATION_INVALID");
+      id = target.parent?.id ?? target.recovered!.journalId; slot = "processing-file"; leaf = name; entry = await live(id, join(config.custodyRoot, `${id}.journal`));
+      if (target.parent && JSON.stringify(entry) !== JSON.stringify(target.parent)) fail("ERASURE_ASSOCIATION_INVALID");
     } else {
       const match = /^([a-f0-9-]{36})(.*)$/.exec(name); if (!match) fail("ERASURE_UNKNOWN_OBJECT");
       id = match[1]; const suffix = match[2];
@@ -162,11 +178,28 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
       else if (target.root === "custody" && suffix === ".enc") slot = "original-sealed";
       else if (target.root === "custody" && /^\.(bundle|mime)\.(staging|enc)$/.test(suffix)) slot = suffix.endsWith(".staging") ? "artifact-staging" : "artifact-sealed";
       else fail("ERASURE_UNKNOWN_OBJECT");
-      entry = await readJournal(id, join(config.custodyRoot, slot === "journal-temp" ? name : `${id}.journal`), io);
-      if ((slot === "artifact-staging" || slot === "artifact-sealed") && suffix !== `.${entry.artifactKind}.${slot === "artifact-staging" ? "staging" : "enc"}`) fail("ERASURE_ASSOCIATION_INVALID");
+      entry = await live(id, join(config.custodyRoot, slot === "journal-temp" ? name : `${id}.journal`));
+      if (entry && (slot === "artifact-staging" || slot === "artifact-sealed") && suffix !== `.${entry.artifactKind}.${slot === "artifact-staging" ? "staging" : "enc"}`) fail("ERASURE_ASSOCIATION_INVALID");
     }
     const path = join(target.path, name), stat = await io(() => lstat(path));
     if (stat.isSymbolicLink() || (slot === "processing-directory" ? !stat.isDirectory() : !stat.isFile())) fail("ERASURE_OWNERSHIP_INVALID");
+    if (!entry) {
+      if (slot === "journal" || slot === "journal-temp") fail("ERASURE_JOURNAL_INVALID");
+      const recovered = storage.recoveredEntry(id, slot, leaf, run), value = recovered.value;
+      const object: InventoryObject = { ...value.object, presence: "present", ...objectStats(stat) };
+      if (join(paths[object.root], value.relativePath) !== path) fail("ERASURE_ASSOCIATION_INVALID");
+      if (value.journal.kind === "intake") {
+        const evidence = await io(() => hooks.ingress(value.journal, "observe"));
+        if (slot === "incoming-sealed") Object.assign(object, { leaseState: evidence.state, chargedBytes: evidence.chargedBytes, leaseDevice: evidence.object?.dev ?? null, leaseInode: evidence.object?.ino ?? null });
+      }
+      const result = storage.record(mint(run, { kind: "recovered-native", pass: pass!, root: target.root, object }), run);
+      result.consumedItems += recovered.consumedItems;
+      if (slot === "processing-directory") {
+        child = { dir: await io(() => opendir(path, { bufferSize: 1 })), root: "runtime", path, identity: stat, recovered: value.journal, count: 0 };
+        if (!same(stat, await io(() => lstat(path)))) fail("ERASURE_ROOT_CHANGED");
+      }
+      target.count++; return result;
+    }
     let lease: IngressEvidence | undefined;
     if (entry.kind === "intake") {
       const evidence = await io(() => hooks.observeIngress(entry));
@@ -176,6 +209,23 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     const object: InventoryObject = { pass: pass!, journalId: id, slot, leaf, root: target.root, presence: "present", ...objectStats(stat), leaseState: lease?.state ?? null, chargedBytes: lease?.chargedBytes ?? null, leaseDevice: lease?.object?.dev ?? null, leaseInode: lease?.object?.ino ?? null };
     const result = storage.record(mint(run, { kind: "object", pass: pass!, root: target.root, journal: entry, object }), run);
     if ("deferred" in result && result.deferred) return result;
+    if (slot === "journal" && entry.kind === "intake") {
+      const inspect = async () => {
+        try { return await io(() => lstat(entry.path)); }
+        catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") return undefined; throw error; }
+      };
+      const before = await inspect(), evidence = await io(() => hooks.observeIngress(entry)), after = await inspect();
+      await io(async () => {
+        if (!!before !== !!after || (before && after && (!same(before, after) || before.size !== after.size)) ||
+          (after ? !evidence.object || evidence.object.dev !== after.dev || evidence.object.ino !== after.ino : evidence.object !== null)) fail("ERASURE_OWNERSHIP_INVALID");
+      });
+      const incoming: InventoryObject = { pass: pass!, journalId: id, slot: "incoming-sealed", leaf: "", root: "incoming",
+        presence: after ? "present" : "absent", ...(after ? objectStats(after) : { device: null, inode: null, size: null, type: null, uid: null, gid: null, mode: null, nlink: null }),
+        leaseState: evidence.state, chargedBytes: evidence.chargedBytes, leaseDevice: evidence.object?.dev ?? null, leaseInode: evidence.object?.ino ?? null };
+      const recorded = storage.record(mint(run, { kind: "incoming-lease-slot", pass: pass!, root: "incoming", journal: entry, object: incoming }), run);
+      if ("deferred" in recorded && recorded.deferred) return { ...recorded, consumedItems: result.consumedItems + recorded.consumedItems };
+      result.consumedItems += recorded.consumedItems;
+    }
     if (slot === "processing-directory") {
       child = { dir: await io(() => opendir(path, { bufferSize: 1 })), root: "runtime", path, identity: stat, parent: entry, count: 0 };
       if (!same(stat, await io(() => lstat(path)))) fail("ERASURE_ROOT_CHANGED");
@@ -183,7 +233,36 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     target.count++;
     return result;
   }
+  const accepted = createAcceptedErasure({ custody, repository, config, storage, hooks, ancestryMaximum, mint,
+    checkCoverage() { if (!pass || index !== roots.length || !storage.recoveryReady() || invalid || iterator || child || failedCloses.size) fail("ERASURE_ROOT_CHANGED"); },
+    async remove(candidate, run, io) {
+      const value = storage.readAccepted(candidate, run), path = join(paths[value.object.root], value.relativePath), parentPath = dirname(path);
+      const before = await io(() => lstat(parentPath)), captured = identities.get(parentPath);
+      if (captured && !same(captured, before)) fail("ERASURE_ROOT_CHANGED");
+      assertMaintenance(run, repository, "filesystem");
+      try { await io(() => value.object.slot === "processing-directory" ? rmdir(path) : unlink(path)); }
+      finally {
+        let absent = false;
+        try { await io(() => lstat(path)); }
+        catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") absent = true; else throw error; }
+        const after = await io(() => lstat(parentPath));
+        if (!same(before, after, false) || after.size > before.size || (after.nlink !== before.nlink && (!absent || after.nlink !== before.nlink - 1))) fail("ERASURE_ROOT_CHANGED");
+        assertMaintenance(run, repository);
+        // Only this native operation's verified parent change is absorbed.
+        // macOS counts regular entries too; Linux may leave nlink unchanged.
+        if (captured && absent) identities.set(parentPath, after);
+      }
+    },
+    async coverage(run, io) {
+      assertMaintenance(run, repository, "filesystem");
+      if (!pass || index !== roots.length || !storage.recoveryReady() || invalid || iterator || child || failedCloses.size) fail("ERASURE_ROOT_CHANGED");
+      const current = await io(async () => storage.pass());
+      await io(async () => { if (current !== pass) fail("ERASURE_ROOT_CHANGED"); });
+      await checkRoots(io); assertMaintenance(run, repository); return pass;
+    },
+  });
   const owner: CustodyErasure = Object.freeze({
+    eraseScopeBatch: accepted.eraseScopeBatch,
     async scanBatch(run: MaintenanceRun) {
       // Invalid/stale/foreign callers must never reach another scan's denial.
       assertMaintenanceCustodyIdentity(run, repository, custody);
@@ -229,6 +308,27 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
               return { value: false, consumedItems: consumed };
             }
             await checkRoots(io);
+            if (!storage.recoveryReady()) {
+              const selected = storage.nextRecovery(run); consumed += selected.consumedItems;
+              if (selected.candidate) {
+                const value = storage.readAccepted(selected.candidate, run), path = join(paths[value.object.root], value.relativePath);
+                const inspect = async () => {
+                  try { return await io(() => lstat(path)); }
+                  catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") return undefined; throw error; }
+                };
+                const before = await inspect();
+                const evidence = value.journal.kind === "intake" ? await io(() => hooks.ingress(value.journal, "observe")) : undefined;
+                const after = await inspect();
+                await io(async () => { if (!!before !== !!after || (before && after && (!same(before, after) || before.size !== after.size))) fail("ERASURE_OWNERSHIP_INVALID"); });
+                const incoming = value.object.slot === "incoming-sealed";
+                const object: InventoryObject = { ...value.object, pass: pass!, presence: after ? "present" : "absent",
+                  ...(after ? objectStats(after) : { device: null, inode: null, size: null, type: null, uid: null, gid: null, mode: null, nlink: null }),
+                  leaseState: incoming ? evidence!.state : null, chargedBytes: incoming ? evidence!.chargedBytes : null, leaseDevice: incoming ? evidence!.object?.dev ?? null : null, leaseInode: incoming ? evidence!.object?.ino ?? null : null };
+                consumed += storage.recordRecovery(mint(run, { kind: "accepted-recovery", pass: pass!, candidate: selected.candidate, object }), run);
+              }
+              await checkRoots(io); assertMaintenance(run, repository);
+              return { value: false, consumedItems: consumed };
+            }
             if (index === roots.length) { assertMaintenance(run, repository); checkedComplete = true; return { value: false, consumedItems: consumed }; }
             if (!iterator) {
               const identity = await io(() => lstat(paths[root]));
@@ -283,5 +383,5 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     },
   });
   owners.set(custody, owner);
-  return Object.freeze({ idle: () => failedCloses.size === 0, closeReady: () => !iterator && !child && failedCloses.size === 0, closeIterators });
+  return Object.freeze({ idle: () => failedCloses.size === 0 && accepted.idle(), closeReady: () => !iterator && !child && failedCloses.size === 0 && accepted.idle(), closeIterators, finishAcceptedResources: accepted.finishResources });
 }

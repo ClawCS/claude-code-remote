@@ -383,3 +383,8 @@ CREATE TABLE maintenance_pending_cursors(
 );
 INSERT INTO maintenance_pending_cursors VALUES(0,'','',''),(1,'','','');
 PRAGMA user_version = 10;
+-- Task11B1b-A migration11: fixed accepted planning and recovery keysets.
+CREATE INDEX erasure_inventory_case ON erasure_inventory_journals(pass,caseId,journalId);
+CREATE INDEX erasure_manifest_execution ON erasure_manifests(eraseCommitId,slot,journalId,leaf);
+CREATE INDEX erasure_inventory_identity ON erasure_inventory_objects(pass,device,inode,journalId,slot,leaf);
+PRAGMA user_version = 11;

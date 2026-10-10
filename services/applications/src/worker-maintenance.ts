@@ -24,7 +24,7 @@ export async function closeCustodyHandle(handle: FileHandle): Promise<void> {
 }
 
 // Private composition only. Original constructors register these exact objects.
-interface Lifetime { inhibit(): void; settle(): Promise<void>; idle(): boolean; closeReady?(): boolean; closeScanIterators?(): Promise<number> }
+interface Lifetime { inhibit(): void; settle(): Promise<void>; idle(): boolean; closeReady?(): boolean; closeScanIterators?(): Promise<number>; finishAcceptedResources?(run: MaintenanceRun): Promise<number> }
 const repositories = new WeakMap<ApplicationRepository, Lifetime & { clock: Clock }>();
 const custodians = new WeakMap<CustodyLedger, Lifetime & { repository: ApplicationRepository; clock: Clock; config?: CustodyConfig }>();
 const bindings = new WeakMap<WorkerOwner, Binding>();
@@ -71,6 +71,21 @@ export async function closeMaintenanceScanIterators(token: MaintenanceRun, custo
   const task = b.files.closeScanIterators().then(consumedItems => {
     if (!Number.isSafeInteger(consumedItems) || consumedItems < 0 || consumedItems > 2) fail("MAINTENANCE_ACCOUNTING_INVALID");
     r.consumed -= 2 - consumedItems; held(b); return Object.freeze({ consumedItems });
+  }).catch(() => { r.failed = true; r.accepting = false; fail("MAINTENANCE_COMMAND_FAILED"); });
+  r.pending.add(task);
+  try { return await task; } finally { r.pending.delete(task); }
+}
+// R108: at most two retained file closes, one directory iterator close and one already-started ingress
+// operation plus its validation. This cannot select an object or advance a phase.
+export async function finishMaintenanceAcceptedResources(token: MaintenanceRun, custody: CustodyLedger): Promise<Readonly<{ consumedItems: number }>> {
+  const r = current(token), b = r.binding;
+  if (b.custody !== custody || r.pending.size || b.settlement || !b.files.finishAcceptedResources) fail("MAINTENANCE_WORK_ACTIVE");
+  held(b);
+  if (1000 - r.consumed < 5) fail("MAINTENANCE_BUDGET_INSUFFICIENT");
+  r.consumed += 5;
+  const task = b.files.finishAcceptedResources(token).then(consumedItems => {
+    if (!Number.isSafeInteger(consumedItems) || consumedItems < 0 || consumedItems > 5) fail("MAINTENANCE_ACCOUNTING_INVALID");
+    r.consumed -= 5 - consumedItems; held(b); return Object.freeze({ consumedItems });
   }).catch(() => { r.failed = true; r.accepting = false; fail("MAINTENANCE_COMMAND_FAILED"); });
   r.pending.add(task);
   try { return await task; } finally { r.pending.delete(task); }

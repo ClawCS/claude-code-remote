@@ -71,7 +71,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10 && version !== 11) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -93,7 +93,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11A migration9"), schema.indexOf("-- Task11B1a migration10")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 9) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1a migration10")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1a migration10"), schema.indexOf("-- Task11B1b-A migration11")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 10) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-A migration11")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -357,7 +360,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   bindDeletionOwner(repository,deletion);
   function erasureRead<T>(id:ApplicationId,read:()=>T):T {const previous=erasureReadId;erasureReadId=id;try{return read();}finally{erasureReadId=previous;}}
   bindErasureOwner(repository,createErasureRepository(db,{repository,journal,now:()=>utcInstant(clock.now().toISOString()),scope:currentErasureScope,
-    guard(id){live();const own=context.getStore();if(!own?.active||own.id!==id)throw new Error("ERASURE_GUARD_REQUIRED");},guarded:(id,action)=>guarded(id,action,true),
+    guard(id){live();const own=context.getStore();if(!own?.active||own.id!==id)throw new Error("ERASURE_GUARD_REQUIRED");return own;},guarded:(id,action)=>guarded(id,action,true),
     readCase:id=>erasureRead(id,()=>readCase(id)),delivery:id=>erasureRead(id,()=>delivery.getDelivery(id)),currentClear:id=>erasureRead(id,()=>deletion.currentClear(id)),
     lockAuthentication(){live();if(startup!=="cold-maintenance"||authOwned)throw new Error("AUTH_RESTORE_LOCK_UNAVAILABLE");db.transaction(()=>{db.prepare("UPDATE erasure_maintenance SET authLocked=1 WHERE singleton=1").run();db.prepare("DELETE FROM auth_grants").run();db.prepare("DELETE FROM auth_sessions").run();db.prepare("DELETE FROM auth_recovery").run();}).immediate();},
   }));
