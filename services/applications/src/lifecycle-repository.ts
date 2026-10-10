@@ -6,7 +6,7 @@ import { caseFenceAction, decideCaseAction, validateCaseAction, validateLifecycl
 import { applicationId, digest, staffId, utcInstant, type ActionGrant, type ApplicationId, type CaseAction, type CaseLifecycle, type CaseRecord, type DurableReceipt, type Instant, type JournalEvent, type LifecycleRecoveryPage, type SafetyJournal, type SensitiveAction, type StaffSession } from "./types";
 import type { AuthRepository } from "./auth-repository";
 import { readIncidentResolution, validateIncidentResolution } from "./incident-resolution";
-import type { DeliveryRecord, IncidentResolutionInput, IncidentResolutionResult, IncidentResolutionRetention } from "./types";
+import type { DeliveryRecord, IncidentResolutionInput, IncidentResolutionResult, IncidentResolutionReadResult, IncidentResolutionRetention } from "./types";
 
 type StoredLifecycle = Omit<CaseLifecycle, "hold" | "externalCopiesConfirmed"> & { caseId: ApplicationId; holdReviewOn: CaseLifecycle["deadline"]; holdReason: string | null; holdActor: CaseLifecycle["externalCopiesActor"]; holdAt: Instant | null; externalCopiesConfirmed: number };
 interface Proposal { eventId: string; caseId: ApplicationId; event: string; actionBytes: string; grantHash: string; phase: "proposed" | "acknowledged" | "applied" | "superseded"; entry: DurableReceipt["entry"] | null; head: DurableReceipt["head"] | null }
@@ -58,7 +58,7 @@ export function readLifecycle(db: Database.Database, row: Omit<CaseRecord, "life
 }
 
 // Internal composition of the sole DB/auth/clock owner; not an RPC port.
-export function createLifecycleRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, auth: AuthRepository, epochNow: () => ReturnType<typeof digest>, clockNow: () => Instant, journal: SafetyJournal | undefined, incident: Readonly<{ delivery(id: ApplicationId): DeliveryRecord; prepare(id: ApplicationId): void; retention(id: ApplicationId): IncidentResolutionRetention }>) {
+export function createLifecycleRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>, auth: AuthRepository, epochNow: () => ReturnType<typeof digest>, clockNow: () => Instant, journal: SafetyJournal | undefined, incident: Readonly<{ delivery(id: ApplicationId): DeliveryRecord; identityDenied(id: ApplicationId): boolean; prepare(id: ApplicationId): void; retention(id: ApplicationId): IncidentResolutionRetention }>) {
   function requireJournal(): SafetyJournal { if (!journal) throw new Error("CASE_JOURNAL_UNAVAILABLE"); return journal; }
   function requireAuthority(row: CaseRecord, pendingId?: string): void {
     const proof = requireJournal().caseAuthority(row.id);
@@ -202,10 +202,19 @@ export function createLifecycleRepository(db: Database.Database, readCase: (id: 
       throw error;
     });
   }
-  function getDeliveryIncidentResolution(id: ApplicationId, session: StaffSession): IncidentResolutionResult | null {
-    authorize(session);
-    const record = readIncidentResolution(db, id);
-    return record ? Object.freeze({ record, retention: incident.retention(id) }) : null;
+  function getDeliveryIncidentResolution(id: ApplicationId, session: StaffSession): IncidentResolutionReadResult | null {
+    authorize(session); applicationId(id);
+    try {
+      // Original committed-identity denial wins even without current journal
+      // observation. Never select private proof columns after that boundary.
+      if (incident.identityDenied(id)) return db.prepare("SELECT 1 FROM delivery_incident_resolutions WHERE caseId=?").get(id)
+        ? Object.freeze({ record: null, retention: incident.retention(id) }) : null;
+      const record = readIncidentResolution(db, id);
+      return record ? Object.freeze({ record, retention: incident.retention(id) }) : null;
+    } catch (error) {
+      if (error instanceof Error && "code" in error && typeof error.code === "string" && error.code.startsWith("SQLITE_")) throw new Error("CASE_STORAGE_FAILED");
+      throw error;
+    }
   }
   return { getLifecycleCase: current, applyCaseAction: apply, recoverLifecyclePending: recover, recordDeliveryIncidentResolution, getDeliveryIncidentResolution };
 }

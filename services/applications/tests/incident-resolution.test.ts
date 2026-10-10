@@ -211,13 +211,14 @@ it("denies changed current independent authority, not just a locally matching ca
 
 it("keeps a failed append on the same event and reports independently committed scopes separately from cleanup", async () => {
   const s = await setup(), proof = await s.grant(), owner = erasureOwner(s.repository);
-  await s.repository.recordDeliveryIncidentResolution(s.id, s.input, proof, s.session);
+  const local = await s.repository.recordDeliveryIncidentResolution(s.id, s.input, proof, s.session);
   const event = (await s.repository.withCaseLock(s.id, async () => owner.pending(s.id)))!;
   const append = s.f.journalFixture.port.append;
   s.f.journalFixture.port.append = async value => { await append(value); throw new Error("synthetic-lost-reply"); };
   await expect(owner.journal!.append(event)).rejects.toThrow();
   expect(await s.repository.withCaseLock(s.id, async () => owner.pending(s.id))).toEqual(event);
   expect(s.repository.getDeliveryIncidentResolution(s.id, s.session)?.retention).toBe("commit_pending");
+  expect(s.repository.getDeliveryIncidentResolution(s.id, s.session)?.record).toEqual(local.record);
   s.f.journalFixture.port.append = append;
   await owner.journal!.recover(event);
   await s.repository.withCaseLock(s.id, async () => owner.acknowledge(event, await owner.journal!.append(event)));
@@ -225,9 +226,45 @@ it("keeps a failed append on the same event and reports independently committed 
   await s.repository.withCaseLock(s.id, async () => {
     const second = owner.prepareCommit(s.id, "incident_identity"); owner.acknowledge(second, await owner.journal!.append(second));
   });
-  expect(s.repository.getDeliveryIncidentResolution(s.id, s.session)?.retention).toBe("committed_cleanup_pending");
+  expect(s.repository.getDeliveryIncidentResolution(s.id, s.session)).toEqual({ record: null, retention: "committed_cleanup_pending" });
   expect(s.f.journalFixture.receipts.filter(receipt => JSON.parse(receipt.entry)[0][7][1] === event[1])).toHaveLength(1);
   expect(s.db.prepare("SELECT payloadBytes FROM cases WHERE id=?").get(s.id)).not.toEqual({ payloadBytes: 0 });
+});
+
+it.each([
+  ["incident_identity", false], ["incident_identity", true],
+  ["identifying_register", false], ["identifying_register", true],
+] as const)("suppresses private proof after original %s commitment (unavailable observation: %s)", async (scope, unavailable) => {
+  const s = await setup(), proof = await s.grant(), owner = erasureOwner(s.repository);
+  const row = s.repository.getLifecycleCase(s.id, s.session);
+  const local = await s.repository.recordDeliveryIncidentResolution(s.id, s.input, proof, s.session);
+  const first = (await s.repository.withCaseLock(s.id, async () => owner.pending(s.id)))!;
+  await s.repository.withCaseLock(s.id, async () => owner.acknowledge(first, await owner.journal!.append(first)));
+  if (scope === "incident_identity") await s.repository.withCaseLock(s.id, async () => {
+    const identity = owner.prepareCommit(s.id, scope); owner.acknowledge(identity, await owner.journal!.append(identity));
+  });
+  else {
+    // Actual signed final-scope lineage enters through the original verifier /
+    // projection, as independently committed history can precede local cleanup.
+    if (first[3] !== "erase_commit") throw new Error("SYNTHETIC_COMMIT_REQUIRED");
+    const initial = row.lifecycle.initialAuthority!, version = String(local.record.version), key = first[4][2], association = first[4][3];
+    s.f.journalFixture.commit(["tj-journal-event-v1", "b".repeat(32), s.now(), "attempt_intent", [s.id, "c".repeat(32), "initial", initial, version, "d".repeat(32), key, "e".repeat(64)]]);
+    s.f.journalFixture.commit(["tj-journal-event-v1", "f".repeat(32), s.now(), "mailbox_clear_observed", [s.id, "b".repeat(32), "1", s.now(), s.now(), "listed-selectable-v1"]]);
+    s.f.journalFixture.commit(["tj-journal-event-v1", "a".repeat(32), s.now(), "erase_commit", [s.id, scope, key, association, "initial", initial, version, "f".repeat(32), "7".repeat(64)]]);
+    await refreshTestRepository(s.repository);
+  }
+  expect(s.db.prepare("SELECT 1 FROM delivery_incident_resolutions WHERE caseId=?").get(s.id)).toBeDefined();
+  expect(s.db.prepare("SELECT payloadBytes FROM cases WHERE id=?").get(s.id)).not.toEqual({ payloadBytes: 0 });
+  if (unavailable) s.f.advance(60001);
+  expect(owner.journal!.observation() === null).toBe(unavailable);
+  expect(() => s.repository.getLifecycleCase(s.id, s.session)).toThrow("CASE_ERASED");
+  const select = vi.spyOn(s.db, "prepare");
+  try {
+    const result = s.repository.getDeliveryIncidentResolution(s.id, s.session);
+    expect(result).toEqual({ record: null, retention: unavailable ? "commit_pending" : "committed_cleanup_pending" });
+    for (const privateValue of ["canary", local.record.actor, local.record.contactedAt, local.record.agreedResubmissionRoute]) expect(JSON.stringify(result)).not.toContain(privateValue);
+    expect(select.mock.calls.some(([sql]) => sql.includes("SELECT caseId,version,actor"))).toBe(false);
+  } finally { select.mockRestore(); }
 });
 
 it("restores only the acknowledged payload scope without reconstructing lost private proof or early identity intent", async () => {

@@ -344,6 +344,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   // construction finishes; no mutable/undefined owner or public binder escapes.
   const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), journal, Object.freeze({
     delivery: delivery.getDelivery,
+    identityDenied: (id: ApplicationId) => scopeDenied(id, "identity"),
     prepare: (id: ApplicationId) => erasure.prepareIncidentResolution(id),
     retention: (id: ApplicationId) => erasure.incidentResolutionRetention(id),
   }));

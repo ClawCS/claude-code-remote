@@ -150,6 +150,7 @@ export interface IncidentResolutionRecord extends Omit<IncidentResolutionInput, 
 }
 export type IncidentResolutionRetention = "commit_pending" | "committed_cleanup_pending" | "local_scopes_complete";
 export interface IncidentResolutionResult { readonly record: IncidentResolutionRecord; readonly retention: IncidentResolutionRetention }
+export interface IncidentResolutionReadResult { readonly record: IncidentResolutionRecord | null; readonly retention: IncidentResolutionRetention }
 export interface ActionGrant { readonly nonce: string; readonly staffId: StaffId; readonly action: SensitiveAction; readonly issuedAt: Instant; readonly expiresAt: Instant }
 export type ManualCategory = "hired" | "withdrawn" | "data-subject-request" | "other";
 export type CaseAction = { readonly kind: "review" } | { readonly kind: "reject"; readonly closedOn: DateOnly }
@@ -388,7 +389,7 @@ export interface ApplicationRepository extends DeliveryRepository {
   getLifecycleCase(id: ApplicationId, session: StaffSession): CaseRecord;
   applyCaseAction(id: ApplicationId, action: CaseAction, grant: ActionGrant, session: StaffSession, recoveryEventId?: string): Promise<CaseRecord>;
   recordDeliveryIncidentResolution(id: ApplicationId, input: IncidentResolutionInput, grant: ActionGrant, session: StaffSession): Promise<IncidentResolutionResult>;
-  getDeliveryIncidentResolution(id: ApplicationId, session: StaffSession): IncidentResolutionResult | null;
+  getDeliveryIncidentResolution(id: ApplicationId, session: StaffSession): IncidentResolutionReadResult | null;
   recoverLifecyclePending(after?: ApplicationId): Promise<LifecycleRecoveryPage>;
   // Capacity is computed by worker custody, never accepted from RPC metadata.
   reserve(input: ReservationInput, capacity?: "available" | "exhausted"): Reservation;
