@@ -1,0 +1,19 @@
+{
+  "runId": "2026-10-10T22-22-17-514Z-check-7a355a4b",
+  "mode": "check",
+  "startedAt": "2026-10-10T22:22:17.514Z",
+  "evaluatedAt": "2026-10-10T22:22:17.514Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-10-05",
+    "validTo": "2026-10-10"
+  },
+  "sources": [],
+  "errors": [],
+  "warnings": [],
+  "websiteVerified": true,
+  "deploymentVerified": true,
+  "checkedUrl": "https://trinkgut-jammers.de",
+  "finishedAt": "2026-10-10T22:22:24.830Z",
+  "status": "ok"
+}
