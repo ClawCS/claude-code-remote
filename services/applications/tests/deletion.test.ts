@@ -377,11 +377,11 @@ describe("original-owner safety projection and acceptance", () => {
     const tables = ["cases", "case_lifecycle", "lifecycle_proposals", "auth_grants", "deliveries", "deletion_events", "deletion_state", "deletion_diagnostics"];
     const before = tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all());
     removeTask11Schema(s.db);s.db.exec("DROP INDEX IF EXISTS deletion_contradictory_result; PRAGMA user_version=7;"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(11);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(12);
     expect(tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all())).toEqual(before);
     const plan = s.db.prepare("EXPLAIN QUERY PLAN SELECT eventId FROM deletion_events WHERE caseId=? AND json_extract(event,'$[3]')='copy_result' AND json_extract(event,'$[4][2]')='mismatch' AND json_extract(event,'$[4][3]') IN ('INVALID_IDENTITY','CONTENT_MISMATCH','IDENTITY_CHANGED') LIMIT 1").all(s.accepted.id) as { detail: string }[];
     expect(plan.some(row => row.detail.includes("USING INDEX deletion_contradictory_result"))).toBe(true);
-    s.restart(); expect(s.db.pragma("user_version", { simple: true })).toBe(11);
+    s.restart(); expect(s.db.pragma("user_version", { simple: true })).toBe(12);
     expect(tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all())).toEqual(before);
   });
   it.each(["cross-case", "duplicate-result"] as const)("rejects independently signed %s causal facts", async fault => {
@@ -400,7 +400,7 @@ describe("original-owner safety projection and acceptance", () => {
   it("migrates schema6 acceptance to null once and never backfills it on replay", async () => {
     const s = setup(), accepted = (await s.accept());
     removeTask10Schema(s.db); s.db.pragma("user_version=6"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(11);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(12);
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: null });
     s.setAdmission(null); await s.journal.refresh("startup"); expect(s.repository.commitIntake(accepted.input).replayed).toBe(true); s.restart();
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: null });

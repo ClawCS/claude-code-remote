@@ -388,3 +388,43 @@ CREATE INDEX erasure_inventory_case ON erasure_inventory_journals(pass,caseId,jo
 CREATE INDEX erasure_manifest_execution ON erasure_manifests(eraseCommitId,slot,journalId,leaf);
 CREATE INDEX erasure_inventory_identity ON erasure_inventory_objects(pass,device,inode,journalId,slot,leaf);
 PRAGMA user_version = 11;
+-- Task11B1b-N migration12: original acquisition provenance and disposition.
+ALTER TABLE reservations ADD COLUMN custodyStarted INTEGER CHECK(custodyStarted IN(0,1));
+ALTER TABLE reservations ADD COLUMN cleanupDisposition TEXT CHECK(cleanupDisposition IN('abort','replay-loser'));
+ALTER TABLE reservations ADD COLUMN cleanupGeneration TEXT;
+ALTER TABLE reservations ADD COLUMN cleanupDomain TEXT;
+ALTER TABLE reservations ADD COLUMN cleanupWinner TEXT REFERENCES reservations(id);
+CREATE TRIGGER cleanup_source_monotonic BEFORE UPDATE OF custodyStarted ON reservations
+WHEN NOT(OLD.custodyStarted IS 0 AND NEW.custodyStarted IS 1) AND NEW.custodyStarted IS NOT OLD.custodyStarted
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_CLEANUP_SOURCE');END;
+CREATE TRIGGER cleanup_source_binding_immutable BEFORE UPDATE OF id,sessionHash,idempotencyKey,reservedBytes,expiresAt,submission ON reservations
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_CLEANUP_SOURCE');END;
+CREATE TRIGGER cleanup_disposition_immutable BEFORE UPDATE OF cleanupDisposition,cleanupGeneration,cleanupDomain,cleanupWinner ON reservations
+WHEN OLD.cleanupDisposition IS NOT NULL AND (NEW.cleanupDisposition IS NOT OLD.cleanupDisposition OR NEW.cleanupGeneration IS NOT OLD.cleanupGeneration OR NEW.cleanupDomain IS NOT OLD.cleanupDomain OR NEW.cleanupWinner IS NOT OLD.cleanupWinner)
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_CLEANUP_SOURCE');END;
+CREATE TRIGGER cleanup_disposition_valid BEFORE UPDATE OF cleanupDisposition,cleanupGeneration,cleanupDomain,cleanupWinner ON reservations
+WHEN NEW.cleanupDisposition IS NOT NULL AND (NEW.custodyStarted IS NOT 1 OR NEW.active!=1 OR NEW.cleanupGeneration IS NULL OR length(NEW.cleanupGeneration)=0 OR NEW.cleanupDomain IS NULL OR length(NEW.cleanupDomain)=0 OR (NEW.cleanupDisposition='abort' AND NEW.cleanupWinner IS NOT NULL) OR (NEW.cleanupDisposition='replay-loser' AND (NEW.cleanupWinner IS NULL OR NEW.cleanupWinner=NEW.id)))
+BEGIN SELECT RAISE(ABORT,'INVALID_CLEANUP_SOURCE');END;
+CREATE INDEX cleanup_inventory_reservation ON erasure_inventory_journals(reservationId,pass,journalId);
+CREATE INDEX cleanup_replay_winner ON reservations(cleanupWinner,id);
+CREATE TABLE cleanup_manifests(
+ reservationId TEXT NOT NULL REFERENCES reservations(id), journalId TEXT NOT NULL,
+ slot TEXT NOT NULL CHECK(slot IN('incoming-sealed','original-sealed','journal','journal-temp')), leaf TEXT NOT NULL,
+ scanPass TEXT NOT NULL, expectedDevice INTEGER, expectedInode INTEGER,
+ expectedSize INTEGER NOT NULL CHECK(expectedSize BETWEEN 0 AND 9007199254740991), remainingCharge INTEGER NOT NULL CHECK(remainingCharge BETWEEN 0 AND 9007199254740991),
+ disposition TEXT NOT NULL CHECK(disposition IN('abort','expiry','replay-loser')),
+ phase TEXT NOT NULL CHECK(phase IN('planned','holders-released','absent-synced','metadata-finalized')),
+ PRIMARY KEY(reservationId,journalId,slot,leaf), CHECK(reservationId=journalId),
+ FOREIGN KEY(scanPass,journalId,slot,leaf) REFERENCES erasure_inventory_objects(pass,journalId,slot,leaf),
+ CHECK((expectedDevice IS NULL AND expectedInode IS NULL) OR (expectedDevice IS NOT NULL AND expectedInode IS NOT NULL AND expectedDevice BETWEEN 0 AND 9007199254740991 AND expectedInode BETWEEN 0 AND 9007199254740991))
+);
+CREATE TRIGGER cleanup_manifest_binding_immutable BEFORE UPDATE OF reservationId,journalId,slot,leaf,scanPass,expectedDevice,expectedInode,expectedSize,disposition ON cleanup_manifests
+BEGIN SELECT RAISE(ABORT,'IMMUTABLE_CLEANUP_MANIFEST');END;
+CREATE INDEX cleanup_manifest_execution ON cleanup_manifests(reservationId,slot,leaf);
+CREATE INDEX cleanup_manifest_inventory ON cleanup_manifests(scanPass,journalId,slot,leaf,reservationId);
+CREATE INDEX erasure_manifest_inventory ON erasure_manifests(scanPass,journalId,slot,leaf,eraseCommitId);
+CREATE TABLE cleanup_maintenance(singleton INTEGER PRIMARY KEY CHECK(singleton=1), reservationCursor TEXT NOT NULL, prunePhase INTEGER NOT NULL CHECK(prunePhase BETWEEN 0 AND 2));
+INSERT INTO cleanup_maintenance VALUES(1,'',0);
+CREATE TABLE cleanup_prune_cursors(stream INTEGER PRIMARY KEY CHECK(stream BETWEEN 0 AND 2), scanPass TEXT NOT NULL, journalId TEXT NOT NULL, slot TEXT NOT NULL, leaf TEXT NOT NULL, root TEXT NOT NULL);
+INSERT INTO cleanup_prune_cursors VALUES(0,'','','','',''),(1,'','','','',''),(2,'','','','','');
+PRAGMA user_version = 12;

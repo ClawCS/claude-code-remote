@@ -18,12 +18,13 @@ import { bindDeletionOwner, createDeletionRepository } from "./deletion-reposito
 import { bindErasureOwner, createErasureRepository } from "./erasure-repository";
 import { replayAssociation } from "./erasure-association";
 import { registerMaintenanceRepository, assertMaintenanceClose } from "./worker-maintenance";
+import { createCleanupSource, registerCleanupSource } from "./cleanup-storage";
 import type { AdmissionScopePort, AuthDependencies, DeletionScope, DeletionScopePort, EraseScope, JournalSafetyProjection, SafetyJournal } from "./types";
 
 const DAY = 86400000;
 function addDays(value: Instant, days: number): Instant { return utcInstant(new Date(Date.parse(value) + days * DAY).toISOString()); }
 function checkBytes(value: number): void { if (!Number.isSafeInteger(value) || value < 0) throw new Error("INVALID_BYTES"); }
-interface StoredReservation extends Omit<Reservation, "submission"> { active: number; submission: string }
+interface StoredReservation extends Omit<Reservation, "submission"> { active: number; submission: string; custodyStarted: number | null }
 interface StoredCase extends Omit<CaseRecord, "submission"> { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string; submission: string }
 interface Guard { id: ApplicationId; active: boolean }
 type CustodyUnwind = Pick<ApplicationRepository, "listRetainedIntakes" | "listRetainedArtifacts" | "getRequestIdentity" | "getSubmissionKind" | "releaseReservation">;
@@ -71,7 +72,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10 && version !== 11) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10 && version !== 11 && version !== 12) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -96,7 +97,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1a migration10"), schema.indexOf("-- Task11B1b-A migration11")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 10) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-A migration11")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-A migration11"), schema.indexOf("-- Task11B1b-N migration12")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 11) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1b-N migration12")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -104,6 +108,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     throw error;
   }
   const locks = new Map<ApplicationId, Promise<void>>();
+  const cleanupSource = createCleanupSource(db);
   const context = new AsyncLocalStorage<Guard>();
   let closed = false;
   let maintenanceInhibited = false;
@@ -201,7 +206,6 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const expiresAt = new Date(Date.parse(input.now) + ADMISSION_WINDOW_MS).toISOString();
       for (const [scope, key] of [["session", keys.sessionKey], ["ip", keys.ipKey]]) db.prepare("INSERT INTO abuse_events VALUES (?,?,?,?)").run(scope, key, input.now, expiresAt);
       try{assertReplayAdmission(input.sessionHash,input.idempotencyKey);}catch(error){return error instanceof Error?error:new Error("ERASURE_ADMISSION_UNAVAILABLE");}
-      db.prepare("DELETE FROM reservations WHERE active = 1 AND expiresAt <= ?").run(input.now);
       const accepted = db.prepare("SELECT submission FROM cases WHERE sessionHash=? AND idempotencyKey=?").get(input.sessionHash, input.idempotencyKey) as { submission: string } | undefined;
       if (accepted && accepted.submission !== serialized) return new Error("IDEMPOTENCY_CONFLICT");
       const existing = db.prepare("SELECT * FROM reservations WHERE sessionHash = ? AND idempotencyKey = ? AND active = 1").get(input.sessionHash, input.idempotencyKey) as StoredReservation | undefined;
@@ -218,15 +222,16 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       try { storageBudget(cases.bytes + outputs.bytes + reservations.bytes + input.reservedBytes, 0, [{ allowance: (reservations.newCount + (replay ? 0 : 1)) * OUTPUT_RESERVE, actual: 0 }], 8192 + outputs.count * ARTIFACT_METADATA_RESERVE); }
       catch (error) { if (error instanceof Error && error.message === "CAPACITY_EXCEEDED") return error; throw error; }
       const result = { id: randomUUID(), sessionHash: input.sessionHash, idempotencyKey: input.idempotencyKey, reservedBytes: input.reservedBytes, expiresAt: addDays(input.now, 1), submission };
-      db.prepare("INSERT INTO reservations (id,sessionHash,idempotencyKey,reservedBytes,expiresAt,active,submission) VALUES (@id, @sessionHash, @idempotencyKey, @reservedBytes, @expiresAt, 1, @submission)").run({ ...result, submission: serialized });
+      db.prepare("INSERT INTO reservations (id,sessionHash,idempotencyKey,reservedBytes,expiresAt,active,submission,custodyStarted) VALUES (@id, @sessionHash, @idempotencyKey, @reservedBytes, @expiresAt, 1, @submission,0)").run({ ...result, submission: serialized });
       return result;
     }).immediate();
     if (outcome instanceof Error) throw outcome;
+    cleanupSource.issued(outcome);
     return outcome;
   }
   function commitIntake(input: IntakeCommit): Acceptance {
     live(); digest(input.digest); checkBytes(input.actualBytes); utcInstant(input.now);
-    return db.transaction(() => {
+    const outcome = db.transaction((): Acceptance | Error => {
       const now = utcInstant(clock.now().toISOString());
       if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(now)) throw new Error("INVALID_INSTANT");
       const reservation = db.prepare("SELECT * FROM reservations WHERE id = ?").get(input.reservationId) as StoredReservation | undefined;
@@ -235,6 +240,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       if (input.actualBytes > reservation.reservedBytes) throw new Error("RESERVATION_EXCEEDED");
       const existing = db.prepare("SELECT * FROM cases WHERE sessionHash = ? AND idempotencyKey = ?").get(reservation.sessionHash, reservation.idempotencyKey) as StoredCase | undefined;
       if (existing) {
+        if (reservation.custodyStarted === 1 && existing.reservationId !== reservation.id && cleanupSource.captureReplay(reservation.id)) return new Error("WORKER_UNAVAILABLE");
         if (existing.digest !== input.digest || existing.submission !== reservation.submission) throw new Error("IDEMPOTENCY_CONFLICT");
         db.prepare("UPDATE reservations SET active = 0 WHERE id = ?").run(input.reservationId);
         return proof(existing, now, true);
@@ -255,6 +261,8 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.prepare("INSERT INTO audit (caseId, event, version, at) VALUES (?, 'accepted', 1, ?)").run(row.id, now);
       return proof(row, now);
     }).immediate();
+    if (outcome instanceof Error) throw outcome;
+    return outcome;
   }
   function claimNext(owner: string, now: Instant): ClaimedCase | null {
     live(); return delivery.claimDispatchWork(owner, now, "prepare")?.case ?? null;
@@ -332,7 +340,6 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   const lifecycle = createLifecycleRepository(db, readCase, guarded, authStore, () => { if (!authDependencies) throw new Error("AUTH_DENIED"); return trustedAuthEpoch(authDependencies); }, () => utcInstant(clock.now().toISOString()), journal);
   // Validate every persisted ledger before exposing this exclusively-owned DB.
   try { db.prepare("UPDATE erasure_maintenance SET scanPass=? WHERE singleton=1").run(randomBytes(16).toString("hex")); if(startup==="ordinary")db.transaction(() => {
-    db.prepare("DELETE FROM reservations WHERE active = 1").run();
     recoverDelivery(db, utcInstant(clock.now().toISOString()),id=>scopeDenied(id,"payload")||scopeDenied(id,"identity"));
     for (const row of db.prepare("SELECT id FROM cases").all() as { id: ApplicationId }[]) if(!scopeDenied(row.id,"identity"))delivery.getDelivery(row.id);
   }).immediate(); }
@@ -350,7 +357,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     getCommittedIntake(id) { live(); applicationId(id); if(scopeDenied(id,"payload")||scopeDenied(id,"identity"))return null;return (db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases WHERE id = ? AND encryptedPayloadPath IS NOT NULL").get(id) as import("./types").CommittedIntake | undefined) ?? null; },
     listRetainedIntakes() { live(); return db.prepare("SELECT id, encryptedPayloadPath, payloadBytes AS actualBytes, digest, acceptedAt FROM cases c WHERE encryptedPayloadPath IS NOT NULL AND NOT EXISTS(SELECT 1 FROM erasure_scopes e WHERE e.caseId=c.id AND e.committed=1 AND e.scope IN('processing_payload','incident_identity','identifying_register')) ORDER BY acceptedAt, c.rowid").all() as import("./types").CommittedIntake[]; },
     reserve, pruneAdmissionEvents, commitIntake, claimNext, getPublicStatus, transitionDelivery,
-    releaseReservation(id) { live(); db.prepare("DELETE FROM reservations WHERE id = ? AND active = 1").run(id); },
+    releaseReservation(id) { live(); cleanupSource.release(id); },
     withCaseLock: (id, action) => guarded(id, () => action(Object.freeze(readCase(id)))),
     close() { if (closed) return; assertMaintenanceClose(repository); if (locks.size) throw new Error("CASE_LOCK_ACTIVE"); db.close(); closed = true; },
   };
@@ -370,6 +377,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     idle: () => locks.size === 0,
   }, journal);
   custodyUnwinds.set(repository, Object.freeze({ listRetainedIntakes: repository.listRetainedIntakes, listRetainedArtifacts: repository.listRetainedArtifacts, getRequestIdentity: repository.getRequestIdentity, getSubmissionKind: repository.getSubmissionKind, releaseReservation: repository.releaseReservation }));
+  registerCleanupSource(repository, cleanupSource);
   // Every original capability retains its construction-time denial boundary.
   for(const name of Object.keys(repository) as (keyof ApplicationRepository)[]){if(name==="close")continue;const method=repository[name] as (...args:unknown[])=>unknown;Object.defineProperty(repository,name,{value:(...args:unknown[])=>{ordinary();return method(...args);},writable:true});}
   return repository;

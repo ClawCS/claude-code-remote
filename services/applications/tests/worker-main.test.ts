@@ -70,9 +70,9 @@ describe("worker lifecycle", () => {
     expect(await client.getIntakeReadiness()).toEqual({ ready: true });
     live = false; await expect(client.reserve(input)).rejects.toThrow("WORKER_UNAVAILABLE");
     live = true; const reserved = await client.reserve(input);
-    await client.abortIntake(reserved.id, input.sessionHash);
-    expect(await worker.drain({ graceMs: 1000 })).toEqual({ state: "stopped", complete: true });
-    await expect(client.getIntakeReadiness()).rejects.toThrow("WORKER_UNAVAILABLE");
+    await expect(client.abortIntake(reserved.id, input.sessionHash)).rejects.toThrow("CUSTODY_NOT_READY");
+    expect(await worker.drain({ graceMs: 1000 })).toEqual({ state: "draining", complete: false });
+    expect(await client.getIntakeReadiness()).toEqual({ ready: false });
   });
   it.each(["runtime", "scanner", "mail", "retention"] as const)("keeps intake closed without current %s evidence", async missing => {
     const f = await lifecycle();

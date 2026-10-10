@@ -7,6 +7,7 @@ import { decodeJournalEvent,encodeJournalEvent } from "./ledger-contract";
 import { consumeCustodyObservation, type CustodyObservation } from "./custody-erasure";
 import { assertMaintenance, assertMaintenanceCustodyIdentity, assertOriginalMaintenanceCustody, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
 import type { ApplicationRepository, CustodyLedger, ApplicationId } from "./types";
+import { cleanupSourceOwner } from "./cleanup-storage";
 
 export interface InventoryJournal {
   pass:string;journalId:string;caseId:string|null;kind:"intake"|"artifact"|"processing";version:1|2|3;state:"reserved"|"committed"|"orphan";
@@ -182,8 +183,22 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
         // The session/key lookup covers lost replies AND replay reservations.
         // A replay of another accepted reservation is not orphan authority.
         if (accepted) {
-          if (accepted.reservationId !== entry.id || accepted.submission !== stored.submission || (accepted.encryptedPayloadPath !== null && accepted.encryptedPayloadPath !== entry.workerPath) || (entry.caseId && accepted.id !== entry.caseId)) throw new Error("ERASURE_ASSOCIATION_INVALID");
-          caseId = accepted.id;
+          if (accepted.reservationId !== entry.id) {
+            consumedItems += 10;
+            if (!cleanupSourceOwner(custody).isReplayLoser(entry)) {
+              consumedItems++;
+              try { selectMaintenance(run, repository, `reservation:${entry.id}`); }
+              catch (error) {
+                if (error instanceof Error && error.message === "MAINTENANCE_SELECTION_LIMIT") return { caseId: null, consumedItems, deferred: true };
+                throw error;
+              }
+              if (!value.sourceObservation) throw new Error("ERASURE_ASSOCIATION_INVALID");
+              consumedItems += cleanupSourceOwner(custody).captureExpired(value.sourceObservation, run);
+            }
+          } else {
+            if (accepted.submission !== stored.submission || (accepted.encryptedPayloadPath !== null && accepted.encryptedPayloadPath !== entry.workerPath) || (entry.caseId && accepted.id !== entry.caseId)) throw new Error("ERASURE_ASSOCIATION_INVALID");
+            caseId = accepted.id;
+          }
         } else if (entry.caseId || entry.state === "committed") throw new Error("ERASURE_ASSOCIATION_INVALID");
       } else {
         if (!entry.caseId) throw new Error("ERASURE_ASSOCIATION_INVALID");

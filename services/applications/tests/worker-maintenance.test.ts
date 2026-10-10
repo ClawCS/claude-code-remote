@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import Database from "better-sqlite3";
 import { rm } from "node:fs/promises";
 import { maintenanceFixture, deferred } from "./fixtures/maintenance";
-import { bindMaintenance, beginMaintenance, settleMaintenance, maintenanceSnapshot, maintenanceCommand } from "../src/worker-maintenance";
+import { bindMaintenance, beginMaintenance, settleMaintenance, maintenanceSnapshot, maintenanceCommand, finishMaintenanceNeverAcceptedResources, type MaintenanceRun } from "../src/worker-maintenance";
+import { custodyErasureOwner } from "../src/custody-erasure";
 import { testAdmission, testReadiness, refreshTestRepository } from "./fixtures/admission";
 import { digest, utcInstant } from "../src/types";
 import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
@@ -95,16 +96,29 @@ describe("original maintenance lifetime", () => {
     await fs.writeFile(`${f.config.intakeRoot}/${reservation.id}.enc`, "synthetic", { mode: 0o600 });
     const holder = await f.authority.retain(reservation.id);
     try {
-      await expect(f.owner.custody.abortIntake(reservation.id, sessionHash)).rejects.toThrow("INGRESS_BUSY");
+      await expect(f.owner.custody.abortIntake(reservation.id, sessionHash)).rejects.toThrow("CUSTODY_NOT_READY");
       expect((await holder.stat()).isFile()).toBe(true);
       bindMaintenance(f.owner, f.services, f.monotonicNow);
-      await expect(beginMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
-      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      await fs.chmod(`${f.config.intakeRoot}/${reservation.id}.enc`, 0o640);
+      const scanner = custodyErasureOwner(f.owner.custody);
+      let complete = false;
+      for (let n = 0; !complete && n < 40; n++) { complete = (await scanner.scanBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+      expect(complete).toBe(true);
+      let stopped: MaintenanceRun | undefined;
+      for (let n = 0; !stopped && n < 40; n++) {
+        const run = await beginMaintenance(f.owner);
+        try { await scanner.cleanupNeverAcceptedBatch(run); } catch (error) { expect(error).toMatchObject({ message: "INGRESS_RECOVERY_REQUIRED" }); stopped = run; }
+        if (!stopped) await settleMaintenance(f.owner);
+      }
+      expect(stopped).toBeDefined(); await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
       expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
       await holder.close();
       await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
-      await f.owner.custody.abortIntake(reservation.id, sessionHash);
-      await settleMaintenance(f.owner); await beginMaintenance(f.owner);
+      expect(await finishMaintenanceNeverAcceptedResources(stopped!, f.owner.custody)).toEqual({ consumedItems: 2 });
+      await settleMaintenance(f.owner);
+      complete = false;
+      for (let n = 0; !complete && n < 40; n++) { complete = (await scanner.cleanupNeverAcceptedBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+      expect(complete).toBe(true);
       expect(await fs.readdir(f.config.intakeRoot)).toEqual([]);
       expect(f.db.prepare("SELECT id FROM reservations WHERE id=?").get(reservation.id)).toBeUndefined();
     } finally { if (holder.fd !== -1) await holder.close(); }
@@ -317,6 +331,13 @@ describe("original maintenance lifetime", () => {
     let started = false; const starting = beginMaintenance(f.owner).then(run => { started = true; return run; });
     await new Promise(resolve => setImmediate(resolve)); expect(started).toBe(false);
     gate.resolve(); await denied; await starting;
+    expect(await f.authority.observe(lease)).toMatchObject({ state: "bounded", chargedBytes: 0, object: null });
+    expect(f.db.prepare("SELECT active,custodyStarted FROM reservations WHERE id=?").get(lease.reservationId)).toEqual({ active: 1, custodyStarted: 1 });
+    await settleMaintenance(f.owner); f.advance(86400001);
+    const scanner = custodyErasureOwner(f.owner.custody); let scanned = false, cleaned = false;
+    for (let n = 0; !scanned && n < 40; n++) { scanned = (await scanner.scanBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+    for (let n = 0; !cleaned && n < 40; n++) { cleaned = (await scanner.cleanupNeverAcceptedBatch(await beginMaintenance(f.owner))).complete; await settleMaintenance(f.owner); }
+    expect(scanned && cleaned).toBe(true);
     expect(await f.authority.observe(lease)).toMatchObject({ state: "released", chargedBytes: 0, object: null });
     expect(f.db.prepare("SELECT count(*) AS n FROM cases").get()).toEqual({ n: 0 });
   });

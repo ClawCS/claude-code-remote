@@ -174,7 +174,8 @@ it("retains the two producer slots across repository restart while real child ho
     }
     h.repo.close();reopened=await openReadyTestRepository(join(h.root,"registry.sqlite"));
     const recovered=createCustodyLedger(reopened,h.config);await recovered.reconcile();
-    await expect(recovered.reserve({ ...testAdmission(), sessionHash:digest("d".repeat(64)),idempotencyKey:"third-holder",reservedBytes:20000,now}, testReadiness)).rejects.toThrow("CAPACITY_EXCEEDED");
+    await expect(recovered.reserve({ ...testAdmission(), sessionHash:digest("d".repeat(64)),idempotencyKey:"third-holder",reservedBytes:20000,now}, testReadiness)).rejects.toThrow("CUSTODY_NOT_READY");
+    expect(recovered.getIntakeReadiness()).toEqual({ready:false});
     expect(await holders[0].grow(9000)).toBe(9000);
   }finally{for(const holder of holders)await holder.close();reopened?.close();await h.close();}
 });
@@ -208,6 +209,6 @@ it("admits a maximum decoded intake and a second physical upload without double-
     try{
       const full=await h.keys.custody.cleanupOrphans();expect(full.physicalBytes+full.reservedHeadroom).toBe(262144000);
       await withPrivateFiles(snapshot,h.keys,async processing=>expect(processing.files).toHaveLength(2));
-    }finally{await h.keys.custody.abortIntake(fill.id,h.reservation.sessionHash);}
+    }finally{await expect(h.keys.custody.abortIntake(fill.id,h.reservation.sessionHash)).rejects.toThrow("CUSTODY_NOT_READY");}
   }finally{await h.close();}
 });

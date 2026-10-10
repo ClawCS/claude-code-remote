@@ -8,6 +8,8 @@ import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceS
 import { erasureOwner } from "./erasure-repository";
 import type { InventoryObject, InventoryJournal, AcceptedCandidate } from "./erasure-storage";
 import { createAcceptedErasure, type AcceptedHooks } from "./custody-accepted-erasure";
+import { createNeverAcceptedErasure } from "./custody-neveraccepted-erasure";
+import { cleanupSourceOwner, type CleanupCandidate, type CleanupPruneCandidate } from "./cleanup-storage";
 
 export interface CustodyJournal {
   version: 1 | 2 | 3; id: string; kind: "intake" | "processing" | "artifact"; state: "reserved" | "committed" | "orphan";
@@ -23,8 +25,12 @@ export type Observation = Readonly<
   { kind: "invalidate"; pass: string } |
   { kind: "accepted-plan" | "accepted-rebind" | "accepted-holders" | "accepted-absent" | "accepted-final"; pass: string; candidate: AcceptedCandidate } |
   { kind: "accepted-recovery"; pass: string; candidate: AcceptedCandidate; object: InventoryObject } |
+  { kind: "cleanup-plan" | "cleanup-rebind" | "cleanup-holders" | "cleanup-absent" | "cleanup-final" | "cleanup-retire"; pass: string; candidate: CleanupCandidate } |
+  { kind: "cleanup-recovery"; pass: string; candidate: CleanupCandidate; object: InventoryObject } |
+  { kind: "cleanup-prune-released" | "cleanup-prune-duplicate" | "cleanup-prune-blocked" | "cleanup-prune-scan"; pass: string; candidate: CleanupPruneCandidate } |
   { kind: "recovered-native"; pass: string; root: Root; object: InventoryObject } |
-  { kind: "object" | "incoming-lease-slot"; pass: string; root: Root; journal: CustodyJournal; object: InventoryObject }
+  { kind: "cleanup-expiry-source"; pass: string; journal: CustodyJournal; evidence: IngressEvidence } |
+  { kind: "object" | "incoming-lease-slot"; pass: string; root: Root; journal: CustodyJournal; object: InventoryObject; sourceObservation?: CustodyObservation }
 >;
 const observations = new WeakMap<CustodyObservation, { repository: ApplicationRepository; custody: CustodyLedger; run: MaintenanceRun; value: Observation }>();
 // Fixed evidence consumer, not a DTO factory. Only original custody below mints.
@@ -37,6 +43,8 @@ export function consumeCustodyObservation(token: CustodyObservation, custody: Cu
 export interface CustodyErasure {
   scanBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
   eraseScopeBatch(commitEventId: string, run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
+  cleanupNeverAcceptedBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
+  pruneInventoryBatch(run: MaintenanceRun): Promise<Readonly<{ examined: number; removed: number; consumedItems: number }>>;
   invalidateAndClose(run: MaintenanceRun): Promise<Readonly<{ consumedItems: number }>>;
 }
 const owners = new WeakMap<CustodyLedger, CustodyErasure>();
@@ -48,6 +56,7 @@ interface Hooks extends AcceptedHooks {
   track<T>(action: () => Promise<T>): Promise<T>;
   decodeJournal(bytes: Buffer): CustodyJournal;
   observeIngress(entry: CustodyJournal): Promise<IngressEvidence>;
+  cleanupDependency(id: string): boolean;
 }
 interface Iterator { dir: Dir; root: Root; path: string; identity: Stats; parent?: CustodyJournal; recovered?: Readonly<InventoryJournal>; count: number; pending?: string }
 function fail(code: string): never { throw new Error(code); }
@@ -62,6 +71,7 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   if (owners.has(custody)) fail("ERASURE_ALREADY_OWNED");
   assertOriginalMaintenanceCustody(custody, repository, config);
   const storage = erasureOwner(repository).bindCustody(custody, config);
+  const cleanup = cleanupSourceOwner(custody).inventory;
   const roots = ["custody", "incoming", "runtime"] as const;
   const paths = { custody: config.custodyRoot, incoming: config.intakeRoot, runtime: config.runtimeRoot };
   const identities = new Map<string, Stats>();
@@ -78,7 +88,10 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   // child open/recheck2, EOF close1; failure denial3 and at most2 closes.
   // A live intake journal additionally probes its fixed incoming slot: two
   // native stats, observe+validation, and the existing <=20-credit writer.
-  const entryMaximum = 3 * ancestryMaximum + 64;
+  // Original retry checks add10 per record; expiry classification adds up to
+  // selection1 + token-consuming source transaction20 per record (two records).
+  // Thus prior88 + 2*(1+20) =130; native admission/finishing are unchanged.
+  const entryMaximum = 3 * ancestryMaximum + 130;
   function mint(run: MaintenanceRun, value: Observation): CustodyObservation {
     const token = Object.freeze({}) as CustodyObservation;
     observations.set(token, { repository, custody, run, value: Object.freeze(value) }); return token;
@@ -200,14 +213,15 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
       }
       target.count++; return result;
     }
-    let lease: IngressEvidence | undefined;
+    let lease: IngressEvidence | undefined, sourceObservation: CustodyObservation | undefined;
     if (entry.kind === "intake") {
       const evidence = await io(() => hooks.observeIngress(entry));
       await io(async () => { if (slot === "incoming-sealed" && (!evidence.object || evidence.object.dev !== stat.dev || evidence.object.ino !== stat.ino)) fail("ERASURE_ASSOCIATION_INVALID"); });
+      sourceObservation = mint(run, { kind: "cleanup-expiry-source", pass: pass!, journal: entry, evidence });
       if (slot === "incoming-sealed") lease = evidence;
     }
     const object: InventoryObject = { pass: pass!, journalId: id, slot, leaf, root: target.root, presence: "present", ...objectStats(stat), leaseState: lease?.state ?? null, chargedBytes: lease?.chargedBytes ?? null, leaseDevice: lease?.object?.dev ?? null, leaseInode: lease?.object?.ino ?? null };
-    const result = storage.record(mint(run, { kind: "object", pass: pass!, root: target.root, journal: entry, object }), run);
+    const result = storage.record(mint(run, { kind: "object", pass: pass!, root: target.root, journal: entry, object, sourceObservation }), run);
     if ("deferred" in result && result.deferred) return result;
     if (slot === "journal" && entry.kind === "intake") {
       const inspect = async () => {
@@ -222,7 +236,8 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
       const incoming: InventoryObject = { pass: pass!, journalId: id, slot: "incoming-sealed", leaf: "", root: "incoming",
         presence: after ? "present" : "absent", ...(after ? objectStats(after) : { device: null, inode: null, size: null, type: null, uid: null, gid: null, mode: null, nlink: null }),
         leaseState: evidence.state, chargedBytes: evidence.chargedBytes, leaseDevice: evidence.object?.dev ?? null, leaseInode: evidence.object?.ino ?? null };
-      const recorded = storage.record(mint(run, { kind: "incoming-lease-slot", pass: pass!, root: "incoming", journal: entry, object: incoming }), run);
+      const recorded = storage.record(mint(run, { kind: "incoming-lease-slot", pass: pass!, root: "incoming", journal: entry, object: incoming,
+        sourceObservation: mint(run, { kind: "cleanup-expiry-source", pass: pass!, journal: entry, evidence }) }), run);
       if ("deferred" in recorded && recorded.deferred) return { ...recorded, consumedItems: result.consumedItems + recorded.consumedItems };
       result.consumedItems += recorded.consumedItems;
     }
@@ -233,10 +248,15 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     target.count++;
     return result;
   }
-  const accepted = createAcceptedErasure({ custody, repository, config, storage, hooks, ancestryMaximum, mint,
-    checkCoverage() { if (!pass || index !== roots.length || !storage.recoveryReady() || invalid || iterator || child || failedCloses.size) fail("ERASURE_ROOT_CHANGED"); },
-    async remove(candidate, run, io) {
-      const value = storage.readAccepted(candidate, run), path = join(paths[value.object.root], value.relativePath), parentPath = dirname(path);
+  const checkCoverage = () => { if (!pass || index !== roots.length || !storage.recoveryReady() || !cleanup.recoveryReady() || invalid || iterator || child || failedCloses.size) fail("ERASURE_ROOT_CHANGED"); };
+  const coverage = async (run: MaintenanceRun, io: <T>(action: () => Promise<T>) => Promise<T>) => {
+    assertMaintenance(run, repository, "filesystem"); checkCoverage();
+    const current = await io(async () => storage.pass());
+    await io(async () => { if (current !== pass) fail("ERASURE_ROOT_CHANGED"); });
+    await checkRoots(io); assertMaintenance(run, repository); return pass!;
+  };
+  async function removeObject(value: { object: Readonly<InventoryObject>; relativePath: string }, run: MaintenanceRun, io: <T>(action: () => Promise<T>) => Promise<T>) {
+      const path = join(paths[value.object.root], value.relativePath), parentPath = dirname(path);
       const before = await io(() => lstat(parentPath)), captured = identities.get(parentPath);
       if (captured && !same(captured, before)) fail("ERASURE_ROOT_CHANGED");
       assertMaintenance(run, repository, "filesystem");
@@ -252,17 +272,15 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
         // macOS counts regular entries too; Linux may leave nlink unchanged.
         if (captured && absent) identities.set(parentPath, after);
       }
-    },
-    async coverage(run, io) {
-      assertMaintenance(run, repository, "filesystem");
-      if (!pass || index !== roots.length || !storage.recoveryReady() || invalid || iterator || child || failedCloses.size) fail("ERASURE_ROOT_CHANGED");
-      const current = await io(async () => storage.pass());
-      await io(async () => { if (current !== pass) fail("ERASURE_ROOT_CHANGED"); });
-      await checkRoots(io); assertMaintenance(run, repository); return pass;
-    },
-  });
+  }
+  const accepted = createAcceptedErasure({ custody, repository, config, storage, hooks, ancestryMaximum, mint, checkCoverage, coverage,
+    remove: (candidate, run, io) => removeObject(storage.readAccepted(candidate, run), run, io) });
+  const neverAccepted = createNeverAcceptedErasure({ custody, repository, config, hooks, ancestryMaximum, mint, coverage,
+    remove: (candidate, run, io) => removeObject(cleanup.read(candidate, run), run, io) });
   const owner: CustodyErasure = Object.freeze({
     eraseScopeBatch: accepted.eraseScopeBatch,
+    cleanupNeverAcceptedBatch: neverAccepted.cleanupNeverAcceptedBatch,
+    pruneInventoryBatch: neverAccepted.pruneInventoryBatch,
     async scanBatch(run: MaintenanceRun) {
       // Invalid/stale/foreign callers must never reach another scan's denial.
       assertMaintenanceCustodyIdentity(run, repository, custody);
@@ -329,6 +347,24 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
               await checkRoots(io); assertMaintenance(run, repository);
               return { value: false, consumedItems: consumed };
             }
+            if (!cleanup.recoveryReady()) {
+              const selected = cleanup.nextRecovery(run); consumed += selected.consumedItems;
+              if (selected.candidate) {
+                const value = cleanup.read(selected.candidate, run), path = join(paths[value.object.root], value.relativePath);
+                const inspect = async () => {
+                  try { return await io(() => lstat(path)); }
+                  catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") return undefined; throw error; }
+                };
+                const before = await inspect(), evidence = await io(() => hooks.ingress(value.journal, "observe")), after = await inspect();
+                await io(async () => { if (!!before !== !!after || (before && after && (!same(before, after) || before.size !== after.size))) fail("ERASURE_OWNERSHIP_INVALID"); });
+                const incoming = value.object.slot === "incoming-sealed";
+                const object: InventoryObject = { ...value.object, pass: pass!, presence: after ? "present" : "absent",
+                  ...(after ? objectStats(after) : { device: null, inode: null, size: null, type: null, uid: null, gid: null, mode: null, nlink: null }),
+                  leaseState: incoming ? evidence.state : null, chargedBytes: incoming ? evidence.chargedBytes : null, leaseDevice: incoming ? evidence.object?.dev ?? null : null, leaseInode: incoming ? evidence.object?.ino ?? null : null };
+                consumed += cleanup.recordRecovery(mint(run, { kind: "cleanup-recovery", pass: pass!, candidate: selected.candidate, object }), run);
+              }
+              await checkRoots(io); assertMaintenance(run, repository); return { value: false, consumedItems: consumed };
+            }
             if (index === roots.length) { assertMaintenance(run, repository); checkedComplete = true; return { value: false, consumedItems: consumed }; }
             if (!iterator) {
               const identity = await io(() => lstat(paths[root]));
@@ -383,5 +419,5 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     },
   });
   owners.set(custody, owner);
-  return Object.freeze({ idle: () => failedCloses.size === 0 && accepted.idle(), closeReady: () => !iterator && !child && failedCloses.size === 0 && accepted.idle(), closeIterators, finishAcceptedResources: accepted.finishResources });
+  return Object.freeze({ idle: () => failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(), closeReady: () => !iterator && !child && failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(), closeIterators, finishAcceptedResources: accepted.finishResources, finishNeverAcceptedResources: neverAccepted.finishResources });
 }

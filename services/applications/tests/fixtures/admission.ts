@@ -27,8 +27,13 @@ export function removeTask11Schema(db:Database.Database):void{
   db.exec("DROP TABLE erasure_manifests;DROP TABLE erasure_inventory_objects;DROP TABLE erasure_inventory_journals;DROP TABLE erasure_scans;DROP TABLE erasure_safety_carry;DROP TABLE erasure_maintenance;DROP TABLE erasure_progress;DROP TABLE erasure_scopes;DROP TABLE erasure_obligations;DROP TABLE erasure_replay;DROP TABLE erasure_events;DROP INDEX erasure_status_proofs;DROP INDEX erasure_audit;DROP INDEX erasure_grants;DROP INDEX erasure_lifecycle_audit;DROP INDEX erasure_lifecycle_proposals;DROP INDEX erasure_mail_events;DROP INDEX erasure_diagnostics;DROP INDEX erasure_reservations;");
 }
 export function removeTask11B1Schema(db: Database.Database): void {
+  removeTask11B1bNSchema(db);
   db.exec("DROP INDEX erasure_inventory_case; DROP INDEX erasure_manifest_execution; DROP INDEX erasure_inventory_identity;");
   db.exec("DROP TABLE maintenance_pending_cursors; DROP TABLE maintenance_due_cursors; DROP TABLE maintenance_selectors; DROP INDEX maintenance_payload_due; DROP INDEX maintenance_contact_due; DROP INDEX maintenance_accepted_due; DROP INDEX maintenance_cleanup_due; DROP INDEX maintenance_invalid_due; DROP INDEX maintenance_proposed; DROP INDEX maintenance_completed; DROP INDEX maintenance_diagnostics_expiry; DROP INDEX maintenance_searches_expiry; DROP INDEX maintenance_auth_expiry;");
+}
+export function removeTask11B1bNSchema(db: Database.Database): void {
+  db.exec("DROP TABLE cleanup_prune_cursors; DROP TABLE cleanup_maintenance; DROP TABLE cleanup_manifests; DROP INDEX cleanup_inventory_reservation; DROP INDEX cleanup_replay_winner; DROP INDEX erasure_manifest_inventory; DROP TRIGGER cleanup_source_monotonic; DROP TRIGGER cleanup_source_binding_immutable; DROP TRIGGER cleanup_disposition_immutable; DROP TRIGGER cleanup_disposition_valid;");
+  db.exec("ALTER TABLE reservations DROP COLUMN cleanupWinner; ALTER TABLE reservations DROP COLUMN cleanupDomain; ALTER TABLE reservations DROP COLUMN cleanupGeneration; ALTER TABLE reservations DROP COLUMN cleanupDisposition; ALTER TABLE reservations DROP COLUMN custodyStarted;");
 }
 // Produce actual pre7 schemas for existing historical-migration regressions.
 export function removeTask10Schema(db: Database.Database): void {

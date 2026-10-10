@@ -110,8 +110,10 @@ describe("repository-capacity", () => {
     expect(() => repo.commitIntake({ ...input, actualBytes: 2 })).toThrow("RESERVATION_EXCEEDED");
     expect(repo.claimNext("worker", now)).toBeNull();
   });
-  it("expires abandoned reservations after 24 hours", () => {
-    reserve("a"); reserve("b");
+  it("retains expired reservations until their original never-started owner explicitly releases them", () => {
+    const first = reserve("a"), second = reserve("b");
+    expect(() => repo.reserve({ ...testAdmission(), sessionHash: session, idempotencyKey: "c", reservedBytes: 1, now: "2026-10-10T10:00:00.000Z" as Instant })).toThrow("CAPACITY_EXCEEDED");
+    repo.releaseReservation(first.id); repo.releaseReservation(second.id);
     expect(repo.reserve({ ...testAdmission(),  sessionHash: session, idempotencyKey: "c", reservedBytes: 1, now: "2026-10-10T10:00:00.000Z" as Instant }).expiresAt).toBe("2026-10-11T10:00:00.000Z");
   });
 });
@@ -140,7 +142,7 @@ describe("registry lifecycle", () => {
     expect(repo.getRequestIdentity(accepted.id)).toEqual({ id: accepted.id, digest, acceptedAt: now });
     expect(repo.getPublicStatus(createHash("sha256").update(accepted.statusProof).digest("hex") as Digest, now)?.reference).toBe(accepted.reference);
     await repo.withCaseLock(accepted.id, async row => { expect(row.submission).toEqual({ kind: "application" }); });
-    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(11);
+    repo.close(); const inspect = new Database(join(dir, "registry.sqlite")); expect(inspect.pragma("user_version", { simple: true })).toBe(12);
     expect(() => inspect.prepare("UPDATE cases SET submission=? WHERE id=?").run('{"kind":"synthetic","pilotRunId":"invented"}', accepted.id)).toThrow("IMMUTABLE_SUBMISSION"); inspect.close();
     repo = await openReadyTestRepository(join(dir, "registry.sqlite"));
   });

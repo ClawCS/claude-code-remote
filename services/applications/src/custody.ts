@@ -14,6 +14,7 @@ import type { FileHandle } from "node:fs/promises";
 import { custodyUnwindOwner } from "./repository";
 import { bindCustodyErasure, type CustodyJournal } from "./custody-erasure";
 import type { InventoryJournal } from "./erasure-storage";
+import { bindCleanupSource } from "./cleanup-storage";
 
 // Dedicated incoming, custody and runtime roots; never the registry directory.
 const PHYSICAL_CAP = 250 * 1024 * 1024;
@@ -26,11 +27,6 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   const ingressQuiesce = config.ingressAuthority?.quiesce, ingressReleased = config.ingressAuthority?.released;
   const ingressPort = config.ingressAuthority, ingressAssurance = ingressPort?.assurance;
   const unwind = custodyUnwindOwner(repo);
-  // Only created after a repository-origin conflict is proven unaccepted and
-  // existing authority-backed terminal cleanup/accounting has succeeded.
-  class CleanedRepositoryConflict extends Error {
-    constructor(readonly original: Error) { super("IDEMPOTENCY_CONFLICT"); }
-  }
   const entries = new Map<string, Journal>();
   let privateRevision = 0;
   const intakeOwners = new Set<string>();
@@ -70,18 +66,28 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     if (!lease || JSON.stringify(evidence.lease) !== JSON.stringify(lease) || !["prepared", "bounded", "quiescent", "released"].includes(evidence.state) || !Number.isSafeInteger(evidence.chargedBytes) || evidence.chargedBytes < 0 || evidence.chargedBytes > lease.allowance || (evidence.state === "released" && (evidence.chargedBytes !== 0 || evidence.object !== null))) throw new Error("INGRESS_AUTHORITY_MISMATCH");
     return evidence;
   }
+  function originalIngress() {
+    const port = authority();
+    if (port !== ingressPort || port.assurance !== ingressAssurance || port.observe !== ingressObserve || port.quiesce !== ingressQuiesce || port.released !== ingressReleased) throw new Error("INGRESS_RECOVERY_REQUIRED");
+    return port;
+  }
+  async function observeSource(entry: Journal) {
+    if (!entry.lease || !ingressObserve) throw new Error("INGRESS_RECOVERY_REQUIRED");
+    const originalObservation = () => {
+      const port = authority();
+      if (port !== ingressPort || port.assurance !== ingressAssurance || port.observe !== ingressObserve) throw new Error("INGRESS_RECOVERY_REQUIRED");
+      return port;
+    };
+    const evidence = await ingressObserve.call(originalObservation(), entry.lease); originalObservation();
+    return validateEvidence(entry, evidence);
+  }
   async function acceptedIngress(journal: Readonly<InventoryJournal>, operation: "observe" | "quiesce" | "released"): Promise<IngressEvidence> {
     if (journal.kind !== "intake" || journal.reservationId !== journal.journalId || !journal.generation || !journal.domain || !journal.allowance) throw new Error("INGRESS_RECOVERY_REQUIRED");
     const lease: IngressLease = { reservationId: journal.journalId, path: intakePath(config.intakeRoot, journal.journalId), allowance: journal.allowance, generation: journal.generation, domain: journal.domain };
-    const check = () => {
-      const port = authority();
-      if (port !== ingressPort || port.assurance !== ingressAssurance || port.observe !== ingressObserve || port.quiesce !== ingressQuiesce || port.released !== ingressReleased) throw new Error("INGRESS_RECOVERY_REQUIRED");
-      return port;
-    };
     try {
-      const port = check(), method = operation === "observe" ? ingressObserve : operation === "quiesce" ? ingressQuiesce : ingressReleased;
+      const port = originalIngress(), method = operation === "observe" ? ingressObserve : operation === "quiesce" ? ingressQuiesce : ingressReleased;
       if (!method) throw new Error();
-      const evidence = await method.call(port, lease); check();
+      const evidence = await method.call(port, lease); originalIngress();
       if (!evidence.lease || (Object.keys(lease) as (keyof IngressLease)[]).some(key => evidence.lease[key] !== lease[key]) || !["prepared", "bounded", "quiescent", "released"].includes(evidence.state) || !Number.isSafeInteger(evidence.chargedBytes) || evidence.chargedBytes < 0 || evidence.chargedBytes > lease.allowance || (evidence.object !== null && (!Number.isSafeInteger(evidence.object.dev) || evidence.object.dev < 0 || !Number.isSafeInteger(evidence.object.ino) || evidence.object.ino < 0)) || (evidence.state === "released" && (evidence.chargedBytes !== 0 || evidence.object !== null))) throw new Error();
       return evidence;
     } catch { throw new Error("INGRESS_RECOVERY_REQUIRED"); }
@@ -311,7 +317,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     for (const entry of [...entries.values()]) if (entry.kind === "processing") await deleteEntry(entry);
     for (const entry of entries.values()) if (entry.kind === "intake" && entry.state === "committed") await releaseIngress(entry);
     const result = await inspect(); reconciled = true;
-    ready = ![...entries.values()].some(entry => entry.settlement && entry.release !== "released");
+    ready = ![...entries.values()].some(entry => (entry.kind === "intake" && entry.state === "orphan") || (entry.settlement && entry.release !== "released"));
     return result;
   }
   async function settleIngress(request: { kind: "expired" | "drain" }) {
@@ -324,8 +330,8 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         const acceptedId = acceptedIntakeId(original);
         const entry: Journal = { ...original, settlement: original.settlement ?? request.kind, ...(acceptedId ? { state: "committed", caseId: acceptedId } : { state: "orphan" }) };
         await save(entry);
+        if (!acceptedId) { pending++; continue; }
         if (!await releaseIngress(entry)) { pending++; continue; }
-        if (!acceptedId) await deleteEntry(entries.get(entry.id)!);
         unwind.releaseReservation(entry.id);
         intakeOwners.delete(entry.id);
       }
@@ -434,6 +440,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         unwind.releaseReservation(reservation.id);throw new Error("CAPACITY_EXCEEDED");
       }
       try {
+        cleanupSource.start(reservation);
         const path = intakePath(config.intakeRoot, reservation.id), lease = await authority().prepare(reservation.id, path, reservation.reservedBytes / 2);
         const entry: Journal = { version: 3, id: reservation.id, kind: "intake", state: "reserved", budget: reservation.reservedBytes, path, workerPath: intakePath(config.custodyRoot, reservation.id), reservation, cleanupAfter: reservation.expiresAt, lease, release: "pending" };
         if (lease.reservationId !== reservation.id || lease.path !== path || lease.allowance !== reservation.reservedBytes / 2) throw new Error("INGRESS_AUTHORITY_MISMATCH");
@@ -445,7 +452,6 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       catch (error) {
         ready = false;
         if (!entries.has(reservation.id)) unwind.releaseReservation(reservation.id);
-        else if (inhibited) { try { await releaseIngress(entries.get(reservation.id)!); } catch { /* Keep the original charge/uncertainty. */ } }
         throw error;
       }
       intakeOwners.add(reservation.id);
@@ -464,27 +470,18 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
           try { await target.writeFile(bytes); await target.sync(); } finally { await closeCustodyHandle(target); }
         } finally { await closeCustodyHandle(fd); }
         await syncRoot(config.custodyRoot); await checked();
-        let accepted: Acceptance;
-        try { requireReady(); accepted = repo.commitIntake({ ...input, encryptedPayloadPath: entry.workerPath!, now: now() }); }
-        catch (error) {
-          if (error instanceof Error && error.message === "IDEMPOTENCY_CONFLICT" && repo.isReplayReservation(entry.id) && !repo.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) {
-            await markOrphan(entry); await deleteEntry(entry); unwind.releaseReservation(entry.id); await checked();
-            throw new CleanedRepositoryConflict(error);
-          }
-          throw error;
-        }
-        if (accepted.replayed) { await markOrphan(entry); await deleteEntry(entry); }
-        else { const committed: Journal = { ...entry, state: "committed", caseId: accepted.id }; await save(committed); await releaseIngress(committed); }
+        requireReady();
+        await observeSource(entry);
+        requireReady();
+        const accepted: Acceptance = cleanupSource.commit(entry, { ...input, encryptedPayloadPath: entry.workerPath!, now: now() });
+        if (cleanupSource.accepted(entry) !== accepted.id) throw new Error("WORKER_UNAVAILABLE");
+        const committed: Journal = { ...entry, state: "committed", caseId: accepted.id }; await save(committed); await releaseIngress(committed);
         return accepted;
       } catch (error) {
-        if (error instanceof CleanedRepositoryConflict) throw error.original;
         ready = false;
         // If DB commit completed, recovery must preserve the accepted file; no guessed success.
-        if (!unwind.listRetainedIntakes().some(record => record.encryptedPayloadPath === entry.workerPath)) {
+        if (!cleanupSource.accepted(entry)) {
           await markOrphan(entry);
-          // Errors do not prove producer termination. Keep the reservation and
-          // owner if revocation is pending; retain orphan accounting after release.
-          try { if (await releaseIngress(entries.get(entry.id)!)) unwind.releaseReservation(entry.id); } catch { /* Durable uncertainty remains charged. */ }
         }
         throw error;
       } finally { if (!entries.has(entry.id) || entries.get(entry.id)!.release === "released") intakeOwners.delete(entry.id); }
@@ -492,20 +489,28 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     abortIntake: (id, sessionHash) => exclusive(async () => {
       const entry = entries.get(id); if (!entry || entry.kind !== "intake" || entry.reservation?.sessionHash !== sessionHash) throw new Error("INVALID_RESERVATION");
       // A failed post-commit journal write must never overrule durable DB acceptance.
-      const accepted = unwind.listRetainedIntakes().find(record => record.encryptedPayloadPath === entry.workerPath);
-      if (accepted) {
-        const committed: Journal = { ...entry, state: "committed", caseId: accepted.id };
+      const acceptedId = cleanupSource.accepted(entry);
+      if (acceptedId) {
+        const committed: Journal = { ...entry, state: "committed", caseId: applicationId(acceptedId) };
         entries.set(id, committed);
         try { await save(committed); } catch (error) { ready = false; throw error; }
         if (committed.release === "released") intakeOwners.delete(id);
         throw new Error("INVALID_RESERVATION");
       }
       if (!intakeOwners.has(id) || !["reserved", "orphan"].includes(entry.state)) throw new Error("INVALID_RESERVATION");
-      try { await markOrphan(entry); await deleteEntry(entry); unwind.releaseReservation(id); intakeOwners.delete(id); } catch (error) { ready = false; throw error; }
+      try {
+        await observeSource(entry);
+        cleanupSource.abort(entry);
+        await markOrphan(entry);
+        throw new Error("CUSTODY_NOT_READY");
+      } catch (error) { ready = false; throw error; }
     }),
     cleanupOrphans: () => exclusive(async () => {
       if (!reconciled) throw new Error("CUSTODY_NOT_READY");
-      try { await checked(); for (const entry of [...entries.values()]) if (entry.state === "orphan" && !intakeOwners.has(entry.id) && entry.cleanupAfter <= now()) await deleteEntry(entry); return await inspect(); }
+      try { await checked(); for (const entry of [...entries.values()]) if (entry.state === "orphan" && entry.cleanupAfter <= now()) {
+        if (entry.kind === "intake") throw new Error("CUSTODY_NOT_READY");
+        if (!intakeOwners.has(entry.id)) await deleteEntry(entry);
+      } return await inspect(); }
       catch (error) { ready = false; throw error; }
     }),
   };
@@ -523,8 +528,14 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       if (lifetimes.size || processingLifetimes.size || processingOwners.size) throw new Error("MAINTENANCE_WORK_ACTIVE");
       return scanResources.finishAcceptedResources(run);
     },
+    finishNeverAcceptedResources: run => {
+      if (lifetimes.size || processingLifetimes.size || processingOwners.size) throw new Error("MAINTENANCE_WORK_ACTIVE");
+      return scanResources.finishNeverAcceptedResources(run);
+    },
   }, config);
+  const cleanupSource = bindCleanupSource(repo, ledger, config);
   const scanResources = bindCustodyErasure(ledger, repo, config, { exclusive, track, decodeJournal, ingress: acceptedIngress,
+    cleanupDependency: id => entries.has(id) || intakeOwners.has(id) || handles.size !== 0 || unresolvedReleases.size !== 0 || processingOwners.size !== 0 || processingLifetimes.size !== 0,
     privateRevision: () => privateRevision,
     privateReady: () => handles.size === 0 && unresolvedReleases.size === 0 && processingOwners.size === 0 && processingLifetimes.size === 0,
     async forget(journal) {
@@ -543,9 +554,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     const lease = entry.lease;
     if (!lease || typeof lease.generation !== "string" || !lease.generation || typeof lease.domain !== "string" || !lease.domain || lease.reservationId !== entry.id || lease.path !== entry.path || lease.allowance !== entry.reservation!.reservedBytes / 2) throw new Error("INGRESS_RECOVERY_REQUIRED");
     try {
-      const port = authority();
-      if (!ingressObserve || port.observe !== ingressObserve) throw new Error("INGRESS_RECOVERY_REQUIRED");
-      const evidence = validateEvidence(entry, await ingressObserve.call(port, lease));
+      const evidence = await observeSource(entry);
       if (entry.release === "released" && evidence.state !== "released") throw new Error("INGRESS_RECOVERY_REQUIRED");
       return evidence;
     } catch { throw new Error("INGRESS_RECOVERY_REQUIRED"); }

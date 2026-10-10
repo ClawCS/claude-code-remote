@@ -114,7 +114,7 @@ describe("authenticated synthetic HTTP streams", () => {
   it("responds at total deadline while a real handoff writer remains blocked, then releases only after writer settles", async () => {
     let started!: () => void, release!: () => void, aborted!: () => void;
     const writing = new Promise<void>(resolve => { started = resolve; }), gate = new Promise<void>(resolve => { release = resolve; }), terminal = new Promise<void>(resolve => { aborted = resolve; });
-    await active("enabled", port => ({ ...port, abortIntake: async (...args) => { await port.abortIntake(...args); aborted(); } }));
+    await active("enabled", port => ({ ...port, abortIntake: async (...args) => { try { await port.abortIntake(...args); } finally { aborted(); } } }));
     const session = await bootstrap(); const realOpen = fsPromises.open;
     vi.spyOn(fsPromises, "open").mockImplementation(async (...args) => {
       const fd = await realOpen(...args);
@@ -133,12 +133,15 @@ describe("authenticated synthetic HTTP streams", () => {
       expect(outgoing!.writableEnded).toBe(true);
       expect(await readdir(config.acceptance!.privateRoot)).toHaveLength(1); expect(repo!.listRetainedIntakes()).toEqual([]);
     } finally { release(); await terminal; expect((await response).status).toBe(408); }
+    // The failed writer removes only its own unfinished file; custody's source
+    // journal remains pending and no worker cleanup completion is claimed.
     expect(await readdir(config.acceptance!.privateRoot)).toEqual([]);
+    expect((await readdir(join(root!, "custody"))).filter(name => name.endsWith(".journal"))).toHaveLength(1);
   });
   it("allows only two parallel unbounded streams and releases disconnected leases through worker", async () => {
     let count = 0, aborts = 0, slots!: () => void, released!: () => void;
     const filled = new Promise<void>(resolve => { slots = resolve; }), terminal = new Promise<void>(resolve => { released = resolve; });
-    await active("enabled", port => ({ ...port, reserve: async input => { const result = await port.reserve(input); if (++count === 2) slots(); return result; }, abortIntake: async (...args) => { await port.abortIntake(...args); if (++aborts === 2) released(); } }));
+    await active("enabled", port => ({ ...port, reserve: async input => { const result = await port.reserve(input); if (++count === 2) slots(); return result; }, abortIntake: async (...args) => { try { await port.abortIntake(...args); } finally { if (++aborts === 2) released(); } } }));
     const session = await bootstrap(), address = server.address() as import("node:net").AddressInfo;
     const clients = ["one", "two"].map(key => {
       const client = httpRequest({ host: "127.0.0.1", port: address.port, path: "/api/bewerbung", method: "POST", headers: { ...uploadHeaders(session, key), "transfer-encoding": "chunked" } });
@@ -154,7 +157,7 @@ describe("authenticated synthetic HTTP streams", () => {
   it("releases a late reserve result after absolute RPC timeout without local deletion", async () => {
     let obtained!: () => void, release!: () => void, aborted!: () => void;
     const reservation = new Promise<void>(resolve => { obtained = resolve; }), gate = new Promise<void>(resolve => { release = resolve; }), terminal = new Promise<void>(resolve => { aborted = resolve; });
-    await active("enabled", port => ({ ...port, reserve: async input => { const result = await port.reserve(input); obtained(); await gate; return result; }, abortIntake: async (...args) => { await port.abortIntake(...args); aborted(); } }));
+    await active("enabled", port => ({ ...port, reserve: async input => { const result = await port.reserve(input); obtained(); await gate; return result; }, abortIntake: async (...args) => { try { await port.abortIntake(...args); } finally { aborted(); } } }));
     const session = await bootstrap(); vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     const response = request("/api/bewerbung", "POST", uploadHeaders(session), multipart());
     await reservation; vi.advanceTimersByTime(5000); expect((await response).status).toBe(503);
@@ -171,7 +174,8 @@ describe("authenticated synthetic HTTP streams", () => {
     vi.advanceTimersByTime(5000); expect((await response).status).toBe(503);
     release(); await completion; vi.useRealTimers();
     const replay = await request("/api/bewerbung", "POST", uploadHeaders(session), body);
-    expect(replay.status).toBe(202); expect(replay.body).toMatchObject({ reference }); expect(repo!.listRetainedIntakes()).toEqual(retained);
+    expect(replay.status).toBe(503); expect(replay.body).toMatchObject({ code: "WORKER_UNAVAILABLE" }); expect(repo!.listRetainedIntakes()).toEqual(retained);
+    expect(await repo!.withCaseLock(retained[0].id, async row => row.reference)).toBe(reference);
   });
   it("maps malformed unquoted multipart boundary to 400", async () => {
     await active(); const session = await bootstrap();
@@ -195,7 +199,7 @@ describe("authenticated synthetic HTTP streams", () => {
   it("aborts a disconnected chunked upload through worker custody and keeps its admission charged", async () => {
     let reserved!: () => void, aborted!: () => void;
     const reservation = new Promise<void>(resolve => { reserved = resolve; }), terminal = new Promise<void>(resolve => { aborted = resolve; });
-    await active("enabled", port => ({ ...port, reserve: async input => { const result = await port.reserve(input); reserved(); return result; }, abortIntake: async (...args) => { await port.abortIntake(...args); aborted(); } }));
+    await active("enabled", port => ({ ...port, reserve: async input => { const result = await port.reserve(input); reserved(); return result; }, abortIntake: async (...args) => { try { await port.abortIntake(...args); } finally { aborted(); } } }));
     const session = await bootstrap(), address = server.address() as import("node:net").AddressInfo;
     const client = httpRequest({ host: "127.0.0.1", port: address.port, path: "/api/bewerbung", method: "POST", headers: { ...uploadHeaders(session), "transfer-encoding": "chunked" } });
     client.on("error", () => {}); client.write(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="name"\r\n\r\nSynthetic`));
@@ -209,10 +213,10 @@ describe("authenticated synthetic HTTP streams", () => {
     const session = await bootstrap(), body = multipart(undefined, [{ data: Buffer.from("synthetic uncertain") }]);
     expect((await request("/api/bewerbung", "POST", uploadHeaders(session), body)).status).toBe(503);
     const retained = repo!.listRetainedIntakes(); expect(retained).toHaveLength(1);
-    const replay = await request("/api/bewerbung", "POST", uploadHeaders(session), body); expect(replay.status).toBe(202);
+    const replay = await request("/api/bewerbung", "POST", uploadHeaders(session), body); expect(replay.status).toBe(503);
     const reference = await repo!.withCaseLock(retained[0].id, async row => row.reference);
-    expect(repo!.listRetainedIntakes()).toEqual(retained); expect(replay.body).toMatchObject({ reference });
-    expect((await request("/api/bewerbung/status", "GET", { ...metadata, authorization: "Bearer " + (replay.body as { statusToken: string }).statusToken })).body).toEqual({ reference, state: "processing", acceptedAt: "2026-10-09T10:00:00.000Z" });
+    expect(repo!.listRetainedIntakes()).toEqual(retained); expect(replay.body).toMatchObject({ code: "WORKER_UNAVAILABLE" });
+    expect(await repo!.withCaseLock(retained[0].id, async row => row.reference)).toBe(reference);
   });
   it("rejects signed but malformed pilot grant without treating attacker input as outage", async () => {
     await active("pilot");
@@ -233,11 +237,12 @@ describe("authenticated synthetic HTTP streams", () => {
     time = new Date("2026-10-09T10:15:00.000Z"); expect((await request("/api/bewerbung", "POST", uploadHeaders(first), multipart())).status).toBe(403);
     expect(repo!.pruneAdmissionEvents("2026-10-09T11:15:00.000Z" as import("../src/types").Instant)).toBe(0);
   });
-  it("charges invalid bodies durably and returns worker-authoritative Retry-After on seventh attempt", async () => {
+  it("charges the malformed admitted body and stops subsequent admission while its cleanup is pending", async () => {
     await active(); const session = await bootstrap();
-    for (let index = 0; index < 6; index++) expect((await request("/api/bewerbung", "POST", uploadHeaders(session, "invalid-" + index), multipart([["unknown", "synthetic"]]))).status).toBe(400);
+    expect((await request("/api/bewerbung", "POST", uploadHeaders(session, "invalid"), multipart([["unknown", "synthetic"]]))).status).toBe(400);
     const denied = await request("/api/bewerbung", "POST", uploadHeaders(session, "seventh"), multipart());
-    expect(denied.status).toBe(429); expect(denied.body).toMatchObject({ code: "RATE_LIMITED", retryAfterSeconds: 3600 }); expect(denied.headers["retry-after"]).toBe("3600");
+    expect(denied.status).toBe(503); expect(denied.body).toMatchObject({ code: "WORKER_UNAVAILABLE" });
+    expect(repo!.pruneAdmissionEvents("2026-10-09T11:00:00.000Z" as import("../src/types").Instant)).toBe(2);
     expect(repo!.listRetainedIntakes()).toEqual([]);
   });
   it("rejects invalid multipart transport headers without reserve or durable admission events", async () => {
@@ -262,8 +267,8 @@ describe("authenticated synthetic HTTP streams", () => {
   it("still charges admitted malformed bodies and declared oversized content", async () => {
     await active(); const session = await bootstrap();
     expect((await request("/api/bewerbung", "POST", uploadHeaders(session, "bad-framing"), Buffer.from("synthetic invalid framing"))).status).toBe(400);
-    expect((await request("/api/bewerbung", "POST", { ...uploadHeaders(session, "declared-oversize"), "content-length": "11534337" }, multipart())).status).toBe(413);
-    expect(repo!.pruneAdmissionEvents("2026-10-09T11:00:00.000Z" as import("../src/types").Instant)).toBe(4);
+    expect((await request("/api/bewerbung", "POST", { ...uploadHeaders(session, "declared-oversize"), "content-length": "11534337" }, multipart())).status).toBe(503);
+    expect(repo!.pruneAdmissionEvents("2026-10-09T11:00:00.000Z" as import("../src/types").Instant)).toBe(2);
     expect(repo!.listRetainedIntakes()).toEqual([]); expect(await readdir(config.acceptance!.privateRoot)).toEqual([]);
   });
   it.each([
@@ -298,7 +303,7 @@ describe("authenticated synthetic HTTP streams", () => {
     expect(Object.keys(result).sort()).toEqual(["reference", "state", "statusToken"]);
     expect(result.state).toBe("processing"); expect(repo!.listRetainedIntakes()).toHaveLength(1);
     const replay = await request("/api/bewerbung", "POST", uploadHeaders(fresh), body);
-    expect(replay.status).toBe(202); expect(replay.body).toMatchObject({ reference: result.reference }); expect(repo!.listRetainedIntakes()).toHaveLength(1);
+    expect(replay.status).toBe(503); expect(replay.body).toMatchObject({ code: "WORKER_UNAVAILABLE" }); expect(repo!.listRetainedIntakes()).toHaveLength(1);
     const status = await request("/api/bewerbung/status", "GET", { ...metadata, authorization: "Bearer " + result.statusToken });
     expect(status.status).toBe(200); expect(status.body).toEqual({ reference: result.reference, state: "processing", acceptedAt: "2026-10-09T10:00:00.000Z" });
     expect((await request("/api/bewerbung/status?statusToken=" + result.statusToken)).status).toBe(400);
@@ -311,11 +316,11 @@ describe("authenticated synthetic HTTP streams", () => {
     const one = await request("/api/bewerbung", "POST", uploadHeaders(first), multipart()); expect(one.status).toBe(202);
     const two = await request("/api/bewerbung", "POST", uploadHeaders(second), multipart()); expect(two.status).toBe(202);
     expect(two.body).not.toMatchObject({ reference: (one.body as { reference: string }).reference });
-    expect((await request("/api/bewerbung", "POST", uploadHeaders(first), multipart(undefined, [{ data: Buffer.from("synthetic changed") }]))).status).toBe(409);
+    expect((await request("/api/bewerbung", "POST", uploadHeaders(first), multipart(undefined, [{ data: Buffer.from("synthetic changed") }]))).status).toBe(503);
     expect(repo!.listRetainedIntakes()).toHaveLength(2);
-    expect((await request("/api/bewerbung/config")).body).toMatchObject({ enabled: true });
-    expect((await request("/api/bewerbung", "POST", uploadHeaders(second, "after-conflict"), multipart())).status).toBe(202);
-    expect(repo!.listRetainedIntakes()).toHaveLength(3);
+    expect((await request("/api/bewerbung/config")).body).toMatchObject({ enabled: false });
+    expect((await request("/api/bewerbung", "POST", uploadHeaders(second, "after-conflict"), multipart())).status).toBe(503);
+    expect(repo!.listRetainedIntakes()).toHaveLength(2);
   });
   it("fails closed on unavailable readiness without accepting or reserving", async () => {
     await active("enabled", port => ({ ...port, getIntakeReadiness: unavailable.getIntakeReadiness }));

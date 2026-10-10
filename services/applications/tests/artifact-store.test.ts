@@ -240,7 +240,12 @@ it("does not reserve a second output set for replay after original and intake-jo
     expect(during.physicalBytes+during.reservedHeadroom-before.physicalBytes-before.reservedHeadroom).toBe(28192);
     expect(h.repo.getRequestIdentity(h.accepted.id).digest).toBe(payloadDigest(h.payload));
     expect(h.repo.getArtifact(h.accepted.id,"bundle")!.expiresAt).toBe(artifact.expiresAt);
-    await h.keys.custody.abortIntake(retry.id,h.reservation.sessionHash);
+    // Authenticated cancellation binds this distinct retry to its winner, then
+    // remains pending until N runs after the complete producer lifetime exits.
+    await expect(h.keys.custody.abortIntake(retry.id,h.reservation.sessionHash)).rejects.toThrow("CUSTODY_NOT_READY");
+    expect(h.keys.custody.getIntakeReadiness()).toEqual({ready:false});
+    const retained=await h.keys.custody.cleanupOrphans();
+    expect(retained.physicalBytes+retained.reservedHeadroom).toBe(during.physicalBytes+during.reservedHeadroom);
   }finally{await h.close();}
 });
 

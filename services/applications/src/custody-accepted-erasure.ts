@@ -1,11 +1,12 @@
-import { constants, type Stats, type Dir } from "node:fs";
-import { lstat, open, opendir, type FileHandle } from "node:fs/promises";
+import { type Stats, type Dir } from "node:fs";
+import { lstat, opendir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { ApplicationRepository, CustodyConfig, CustodyLedger, IngressEvidence } from "./types";
 import type { AcceptedCandidate, AcceptedOperands, InventoryJournal, PhysicalCompletion, createCustodyInventoryStorage } from "./erasure-storage";
 import type { CustodyObservation, Observation } from "./custody-erasure";
 import { erasureOwner } from "./erasure-repository";
-import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceSettled, closeCustodyHandle, maintenanceCommand, maintenanceRemaining, observeCustodyHandle, type MaintenanceRun } from "./worker-maintenance";
+import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, type MaintenanceRun } from "./worker-maintenance";
+import { createPhysicalResources } from "./custody-physical-resources";
 
 type IO = <T>(action: () => Promise<T>) => Promise<T>;
 export interface AcceptedHooks {
@@ -34,38 +35,23 @@ function matches(stat: Stats, value: AcceptedOperands, removedChildren?: number)
 // One original queue and at most one admitted object. This helper owns neither
 // a repository nor a runtime hold; all authority is borrowed from composition.
 export function createAcceptedErasure(c: Composition) {
-  let target: FileHandle | undefined, parent: FileHandle | undefined;
+  const resources = createPhysicalResources(c.hooks);
   let directory: Dir | undefined;
-  let ingressPending: { journal: Readonly<InventoryJournal>; operation: "quiesce" | "released" } | undefined;
   let active = false;
   let resourceRun: MaintenanceRun | undefined;
   let completion: { commit: string; pass: string; fingerprint: string; revision: number } | undefined;
   let reinspect = false;
   const proofs = new WeakMap<PhysicalCompletion, { completion: NonNullable<typeof completion>; run: MaintenanceRun; guard: object }>();
   const roots = { custody: c.config.custodyRoot, incoming: c.config.intakeRoot, runtime: c.config.runtimeRoot };
-  const idle = () => !active && !target && !parent && !directory && !ingressPending;
+  const idle = () => !active && resources.idle() && !directory;
   async function closeDirectory(io: IO) { if (directory) { await io(() => directory!.close()); directory = undefined; } }
-  async function close(which: "target" | "parent", io: IO) {
-    const handle = which === "target" ? target : parent;
-    if (!handle) return;
-    await io(() => closeCustodyHandle(handle));
-    if (which === "target") target = undefined; else parent = undefined;
-  }
-  async function ingress(journal: Readonly<InventoryJournal>, operation: "quiesce" | "released", io: IO) {
-    ingressPending = { journal, operation };
-    const evidence = await io(() => c.hooks.ingress(journal, operation));
-    await io(async () => {
-      if (operation === "released" ? evidence.state !== "released" : !["quiescent", "released"].includes(evidence.state)) throw new Error("INGRESS_RECOVERY_REQUIRED");
-    });
-    ingressPending = undefined; return evidence;
-  }
+  const close = resources.close, ingress = resources.ingress;
   async function finishResources(run: MaintenanceRun): Promise<number> {
     if (active || (resourceRun && resourceRun !== run)) throw new Error("MAINTENANCE_WORK_ACTIVE");
     return c.hooks.track(() => c.hooks.exclusive(async () => {
       let consumedItems = 0;
       const io: IO = async action => { consumedItems++; return action(); };
-      await close("target", io); await close("parent", io); await closeDirectory(io);
-      if (ingressPending) await ingress(ingressPending.journal, ingressPending.operation, io);
+      await close("target", io); await close("parent", io); await closeDirectory(io); await resources.finishIngress(io);
       if (idle()) resourceRun = undefined;
       return consumedItems;
     }));
@@ -122,7 +108,7 @@ export function createAcceptedErasure(c: Composition) {
               directory = await io(() => opendir(path, { bufferSize: 1 }));
               try { if (await io(() => directory!.read())) fail(); }
               finally { await closeDirectory(io); }
-              parent = observeCustodyHandle(await io(() => open(path, constants.O_RDONLY | constants.O_NOFOLLOW)));
+              const parent = await resources.open("parent", path, io);
               try { if (!matches(await io(() => parent!.stat()), value, removedChildren)) fail(); await io(() => parent!.sync()); }
               finally { await close("parent", io); }
               const fresh = await stat(); if (!fresh || !matches(fresh, value, removedChildren)) fail();
@@ -152,7 +138,7 @@ export function createAcceptedErasure(c: Composition) {
               value = c.storage.readAccepted(candidate, run);
             }
             if (before) {
-              target = observeCustodyHandle(await io(() => open(path, constants.O_RDONLY | constants.O_NOFOLLOW)));
+              const target = await resources.open("target", path, io);
               try { if (!matches(await io(() => target!.stat()), value, removedChildren)) fail(); }
               finally { await close("target", io); }
             }
@@ -169,7 +155,7 @@ export function createAcceptedErasure(c: Composition) {
               if (!(error instanceof Error && "code" in error && error.code === "ENOENT") || value.object.slot !== "processing-file") throw error;
               used += c.storage.absentParent(candidate, run); parentPath = c.config.runtimeRoot; parentIdentity = await io(() => lstat(parentPath));
             }
-            parent = observeCustodyHandle(await io(() => open(parentPath, constants.O_RDONLY | constants.O_NOFOLLOW)));
+            const parent = await resources.open("parent", parentPath, io);
             try { const parentStat = await io(() => parent!.stat()); if (!parentStat.isDirectory() || parentStat.dev !== parentIdentity.dev || parentStat.ino !== parentIdentity.ino || parentStat.mode !== parentIdentity.mode || parentStat.uid !== parentIdentity.uid || parentStat.gid !== parentIdentity.gid) fail(); await io(() => parent!.sync()); }
             finally { await close("parent", io); }
             if (await stat()) fail();
