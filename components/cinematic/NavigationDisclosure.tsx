@@ -31,7 +31,7 @@ export default function NavigationDisclosure({ item }: {
     };
   }, []);
 
-  return <details ref={ref} className={styles.navDisclosure} data-knowledge-navigation>
+  return <details ref={ref} className={styles.navDisclosure} data-navigation-disclosure>
     <summary>{item.label}<span aria-hidden="true">⌄</span></summary>
     <ul className={styles.knowledgePanel}>
       {item.children.map(child => <li key={child.href}>

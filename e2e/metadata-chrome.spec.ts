@@ -29,7 +29,7 @@ const EXPECTED_LOCAL_BUSINESS = {
   owner: { "@type": "Person", name: "Nikolaos Jammers" },
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Jurgenstr. 20",
+    streetAddress: "Jurgensstraße 20",
     postalCode: "47574",
     addressLocality: "Goch",
     addressCountry: "DE",
@@ -201,7 +201,7 @@ async function expectPublicChrome(page: Page): Promise<void> {
   await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Warenkorb öffnen", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Chat öffnen", exact: true })).toHaveCount(0);
-  await expect(page.locator("footer#kontakt")).toContainText("Jurgenstr. 20");
+  await expect(page.locator("footer#kontakt")).toContainText("Jurgensstraße 20");
   await expect(page.locator("footer#kontakt")).toContainText("Mo–Sa 08:00–20:00 Uhr");
   for (const [label, href] of [
     ["Anfrageliste", "/warenkorb"],
@@ -218,7 +218,8 @@ async function expectPublicChrome(page: Page): Promise<void> {
     ["Party & Miete", "/vermietung"],
     ["Eigenmarken", "/eigenmarke"],
     ["Gewinnspiele", "/gewinnspiel"],
-    ["Team", "/galerie"],
+    ["Unser Team", "/galerie"],
+    ["Offene Stellen & Bewerbung", "/bewerbung"],
     ["Kontakt", "/kontakt"],
   ]) {
     await expect(nav.getByRole("link", { name: label, exact: true, includeHidden: true })).toHaveAttribute("href", href);
@@ -378,7 +379,7 @@ test("[product-contract] renders one final landmark tree and ordered server sect
     /Caramello/,
   ]);
   await expect(page.getByText("Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.", { exact: true })).toBeVisible();
-  await expect(page.locator("footer#kontakt")).toContainText("Jurgenstr. 20");
+  await expect(page.locator("footer#kontakt")).toContainText("Jurgensstraße 20");
   await expect(page.locator("footer#kontakt")).toContainText("Mo–Sa 08:00–20:00 Uhr");
   await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
 
@@ -448,7 +449,7 @@ test("[product-contract] keeps the complete active homepage server-readable with
       "Schwarzer Teufel",
       "Caramello",
       "Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.",
-      "Jurgenstr. 20",
+      "Jurgensstraße 20",
       "Mo–Sa 08:00–20:00 Uhr",
     ]) {
       await expect(page.getByText(exactText, { exact: true }).first()).toBeVisible();
@@ -606,10 +607,13 @@ test("[product-contract] keeps the new chrome on direct routes and client naviga
   for (const [label, pathname] of [
     ["Party & Miete", "/vermietung"],
     ["Gewinnspiele", "/gewinnspiel"],
-    ["Team", "/galerie"],
+    ["Unser Team", "/galerie"],
   ]) {
-    await page.getByRole("navigation", { name: "Hauptnavigation" })
-      .getByRole("link", { name: label, exact: true }).click();
+    const navigation = page.getByRole("navigation", { name: "Hauptnavigation" });
+    if (label === "Unser Team") {
+      await navigation.locator("summary").filter({ hasText: "Team & Karriere" }).click();
+    }
+    await navigation.getByRole("link", { name: label, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(pathname + "$"));
     await expectPublicChrome(page);
     await expect(page.locator("main.public-subpage")).toHaveCount(1);

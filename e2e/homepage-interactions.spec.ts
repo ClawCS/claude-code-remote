@@ -246,7 +246,8 @@ test("[product-contract] native mobile navigation remains usable without JavaScr
       ["Party & Miete", "/vermietung"],
       ["Eigenmarken", "/eigenmarke"],
       ["Gewinnspiele", "/gewinnspiel"],
-      ["Team", "/galerie"],
+      ["Unser Team", "/galerie"],
+      ["Offene Stellen & Bewerbung", "/bewerbung"],
       ["Kontakt", "/kontakt"],
     ]) {
       const link = details.getByRole("link", { name: label, exact: true });

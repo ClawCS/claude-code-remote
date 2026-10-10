@@ -36,7 +36,10 @@ describe("verified market contract", () => {
       { label: "Party & Miete", href: "/vermietung" },
       { label: "Eigenmarken", href: "/eigenmarke" },
       { label: "Gewinnspiele", href: "/gewinnspiel" },
-      { label: "Team", href: "/galerie" },
+      { label: "Team & Karriere", children: [
+        { label: "Unser Team", href: "/galerie" },
+        { label: "Offene Stellen & Bewerbung", href: "/bewerbung" },
+      ] },
       { label: "TCG", href: "https://grailbid.com" },
       { label: "Kontakt", href: "/kontakt" },
     ]);

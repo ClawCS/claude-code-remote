@@ -45,11 +45,20 @@ test("offers exact navigation, contact, route, Instagram, NL, and legal links", 
     ["Party & Miete", "/vermietung"],
     ["Eigenmarken", "/eigenmarke"],
     ["Gewinnspiele", "/gewinnspiel"],
-    ["Team", "/galerie"],
     ["TCG", "https://grailbid.com"],
     ["Kontakt", "/kontakt"],
   ]) {
     const link = navigation.getByRole("link", { name: label, exact: true });
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", href);
+  }
+  const teamDisclosure = navigation.locator('details:has(> summary:has-text("Team & Karriere"))');
+  await teamDisclosure.locator("summary").click();
+  for (const [label, href] of [
+    ["Unser Team", "/galerie"],
+    ["Offene Stellen & Bewerbung", "/bewerbung"],
+  ]) {
+    const link = teamDisclosure.getByRole("link", { name: label, exact: true });
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", href);
   }

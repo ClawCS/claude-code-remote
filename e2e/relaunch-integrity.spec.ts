@@ -1,10 +1,10 @@
 import { expect, test } from "./test-fixtures";
 
-for (const width of [320,667,1023,1024,1025,1279,1280,1281]) test(`responsive controls do not clip at ${width}px`,async({page})=>{
+for (const width of [320,667,1023,1024,1025,1151,1152,1153,1279,1280,1281]) test(`responsive controls do not clip at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:width === 667 ? 375 : 900});await page.goto("/");await page.evaluate(()=>document.fonts.ready);
   const errors=await page.locator('#sortiment a, header a:visible, header summary:visible, [data-hero="cinematic"] h1').evaluateAll(nodes=>nodes.filter(node=>{const r=node.getBoundingClientRect();return r.left < -1 || r.right > window.innerWidth+1 || node.scrollWidth > node.clientWidth+2;}).map(node=>node.textContent));
   expect(errors).toEqual([]);
-  if (width < 1024) {
+  if (width < 1152) {
     await page.getByRole("button",{name:"Menü öffnen"}).click();
     const panel=page.getByRole("navigation",{name:"Mobile Navigation"});
     await expect(panel.getByRole("link",{name:"Kontakt",exact:true})).toBeVisible();

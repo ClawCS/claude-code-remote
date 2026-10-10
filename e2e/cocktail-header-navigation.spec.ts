@@ -10,7 +10,6 @@ const expectedLinks = [
   ["Party & Miete", "/vermietung"],
   ["Eigenmarken", "/eigenmarke"],
   ["Gewinnspiele", "/gewinnspiel"],
-  ["Team", "/galerie"],
   ["TCG", "https://grailbid.com"],
   ["Kontakt", "/kontakt"],
 ] as const;
@@ -22,10 +21,21 @@ async function expectPublicLinks(navigation: Locator): Promise<void> {
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", href);
   }
+  const teamDisclosure = navigation.locator('details:has(> summary:has-text("Team & Karriere"))');
+  if (await teamDisclosure.count()) await teamDisclosure.locator("summary").click();
+  for (const [name, href] of [
+    ["Unser Team", "/galerie"],
+    ["Offene Stellen & Bewerbung", "/bewerbung"],
+  ]) {
+    const link = navigation.getByRole("link", { name, exact: true });
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", href);
+  }
+  if (await teamDisclosure.count()) await teamDisclosure.locator("summary").click();
 }
 
 async function openKnowledgeDisclosure(navigation: Locator): Promise<void> {
-  const disclosure = navigation.locator("[data-knowledge-navigation]");
+  const disclosure = navigation.locator('details:has(> summary:has-text("Rezepte & Wissen"))');
   if (await disclosure.count()) {
     await navigation.locator("summary").filter({ hasText: "Rezepte & Wissen" }).click();
     await expect(disclosure).toHaveAttribute("open");
@@ -45,7 +55,7 @@ async function openRecipeFromHeader(page: Page, navigation: Locator): Promise<vo
   await expect(page.getByRole("heading", { name: "Zubereitung", exact: true })).toBeVisible();
 }
 
-for (const width of [1024, 1280]) {
+for (const width of [1152, 1280]) {
   test(`desktop header exposes recipes without hiding or overflowing other links at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -126,9 +136,14 @@ test("mobile menu exposes recipes and opens a full recipe page", async ({ page }
 test("desktop knowledge disclosure supports keyboard, Escape and outside dismissal", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
+  // Native details can open before React installs the Escape/outside handlers.
+  // This current-week suite has an active flyer: its enabled control is the
+  // app's existing hydration signal, so wait for real readiness, not a delay.
+  await page.waitForLoadState("networkidle");
+  await expect(page.locator("main button[aria-busy]").first()).toBeEnabled();
   const navigation = page.locator("[data-cinematic-header]").getByRole("navigation", { name: "Hauptnavigation", exact: true });
   const summary = navigation.locator("summary").filter({ hasText: "Rezepte & Wissen" });
-  const disclosure = navigation.locator("[data-knowledge-navigation]");
+  const disclosure = navigation.locator('details:has(> summary:has-text("Rezepte & Wissen"))');
   await expect(navigation.locator("[class*='desktopNavList'] > li")).toHaveCount(9);
   await summary.focus();
   await summary.press("Enter");
@@ -150,8 +165,8 @@ for (const width of [390, 1280]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     const header = page.locator("[data-cinematic-header]");
-    if (width < 1024) await header.getByRole("button", { name: "Menü öffnen", exact: true }).click();
-    const navigation = header.getByRole("navigation", { name: width < 1024 ? "Mobile Navigation" : "Hauptnavigation", exact: true });
+    if (width < 1152) await header.getByRole("button", { name: "Menü öffnen", exact: true }).click();
+    const navigation = header.getByRole("navigation", { name: width < 1152 ? "Mobile Navigation" : "Hauptnavigation", exact: true });
     await openKnowledgeDisclosure(navigation);
     await navigation.getByRole("link", { name: "Getränkeakademie", exact: true }).click();
     await expect(page).toHaveURL(/\/akademie$/);

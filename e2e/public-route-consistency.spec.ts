@@ -84,8 +84,9 @@ test("fachnavigation führt auf eigene Seiten statt Startseitenabschnitte", asyn
   const nav = page.getByRole("navigation", { name: "Hauptnavigation", exact: true });
   await expect(nav.getByRole("link", { name: "Angebote", exact: true })).toHaveAttribute("href", "/angebote");
   await expect(nav.getByRole("link", { name: "Gewinnspiele", exact: true })).toHaveAttribute("href", "/gewinnspiel");
-  await expect(nav.getByRole("link", { name: "Team", exact: true })).toHaveAttribute("href", "/galerie");
-  await nav.getByRole("link", { name: "Team", exact: true }).click();
+  await nav.locator("summary").filter({ hasText: "Team & Karriere" }).click();
+  await expect(nav.getByRole("link", { name: "Unser Team", exact: true })).toHaveAttribute("href", "/galerie");
+  await nav.getByRole("link", { name: "Unser Team", exact: true }).click();
   await expect(page).toHaveURL(/\/galerie$/);
   await expect(page.locator("[data-cinematic-header]")).toHaveCount(1);
 });
