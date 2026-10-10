@@ -9,7 +9,8 @@ import { checkPrivateRoot, checkIncomingRoot, openPrivateFile, decodePayload, de
 import { ARTIFACT_METADATA_RESERVE, artifactLimit, OUTPUT_RESERVE, SCRATCH_RESERVE, storageBudget } from "./storage-budget";
 import { openArtifactHandle, readArtifactFile } from "./artifact-crypto";
 import { submissionKind } from "./intake-admission";
-import { registerMaintenanceCustody } from "./worker-maintenance";
+import { registerMaintenanceCustody, withCustodyResourceTracking, observeCustodyHandle, closeCustodyHandle } from "./worker-maintenance";
+import type { FileHandle } from "node:fs/promises";
 import { custodyUnwindOwner } from "./repository";
 
 // Dedicated incoming, custody and runtime roots; never the registry directory.
@@ -37,9 +38,14 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   const scopeContext = new AsyncLocalStorage<{id:ApplicationId;path:string;active:boolean}>();
   let ready = false, reconciled = false, ingressBlocked = false, queue = Promise.resolve(), inhibited = false;
   const lifetimes = new Set<Promise<unknown>>();
+  // Producer completion and actual resource release are independent. Failed
+  // close/cleanup identities remain here after the producer promise rejects.
+  const handles = new Set<FileHandle>();
+  const unresolvedReleases = new Set<string>();
+  const resourceObserver = { acquired: (handle: FileHandle) => { handles.add(handle); }, released: (handle: FileHandle) => { handles.delete(handle); } };
   const processingLifetimes = new Map<string, { done: Promise<void>; finish(): void }>();
   function track<T>(action: () => Promise<T>): Promise<T> {
-    const promise = (async () => action())(); lifetimes.add(promise);
+    const promise = withCustodyResourceTracking(resourceObserver, async () => action()); lifetimes.add(promise);
     void promise.then(() => lifetimes.delete(promise), () => lifetimes.delete(promise));
     return promise;
   }
@@ -63,20 +69,27 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   async function releaseIngress(entry: Journal): Promise<boolean> {
     if (entry.kind !== "intake") return true;
     if (!entry.lease) throw new Error("INGRESS_AUTHORITY_UNAVAILABLE");
+    const key = `ingress:${JSON.stringify([entry.id, entry.lease.reservationId, entry.lease.domain, entry.lease.generation, entry.lease.path, entry.lease.allowance])}`;
+    unresolvedReleases.add(key);
+    const released = await releaseIngressHeld(entry, entry.lease);
+    if (released) unresolvedReleases.delete(key);
+    return released;
+  }
+  async function releaseIngressHeld(entry: Journal, lease: IngressLease): Promise<boolean> {
     await save({ ...entry, version: 3, release: "pending" });
-    const evidence = validateEvidence(entry, await authority().quiesce(entry.lease));
+    const evidence = validateEvidence(entry, await authority().quiesce(lease));
     if (!["quiescent", "released"].includes(evidence.state)) { ingressBlocked = true; return false; }
     let existing: Awaited<ReturnType<typeof lstat>> | undefined;
     try { existing = await lstat(entry.path); } catch (error) { if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error; }
     if (existing) {
       if (!evidence.object || existing.dev !== evidence.object.dev || existing.ino !== evidence.object.ino || !existing.isFile() || existing.nlink !== 1 || existing.uid !== config.intakeUid) throw new Error("INGRESS_AUTHORITY_MISMATCH");
-      const fd = await openPrivateFile(entry.path, config.intakeRoot, incoming); await fd.close();
+      const fd = await openPrivateFile(entry.path, config.intakeRoot, incoming); await closeCustodyHandle(fd);
       await unlink(entry.path); await syncRoot(config.intakeRoot);
     } else if (evidence.state !== "released" && evidence.chargedBytes !== 0) {
       // An absent name cannot prove that an unlinked inode has been released.
       throw new Error("INGRESS_RELEASE_UNCONFIRMED");
     }
-    const released = validateEvidence(entry, await authority().released(entry.lease));
+    const released = validateEvidence(entry, await authority().released(lease));
     if (released.state !== "released") throw new Error("INGRESS_RELEASE_UNCONFIRMED");
     const retained = unwind.listRetainedIntakes().find(record => record.encryptedPayloadPath === entry.workerPath);
     await save({ ...entry, version: 3, release: "released", budget: retained?.actualBytes ?? entry.budget });
@@ -87,8 +100,8 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   async function save(entry: Journal) {
     const path = join(config.custodyRoot, `${entry.id}.journal.${randomUUID()}.tmp`);
     const encoded = Buffer.from(JSON.stringify(entry)); if (encoded.length > 4096) throw new Error("CUSTODY_ACCOUNTING_FAILED");
-    const fd = await open(path, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | constants.O_NOFOLLOW, 0o600);
-    try { await fd.writeFile(encoded); await fd.sync(); } finally { await fd.close(); }
+    const fd = observeCustodyHandle(await open(path, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | constants.O_NOFOLLOW, 0o600));
+    try { await fd.writeFile(encoded); await fd.sync(); } finally { await closeCustodyHandle(fd); }
     await rename(path, metadataPath(entry.id)); await syncRoot(config.custodyRoot); entries.set(entry.id, entry);
   }
   async function markOrphan(entry: Journal) { await save({ ...entry, version: entry.kind === "intake" ? 3 : entry.version, state: "orphan", cleanupAfter: entry.cleanupAfter < tomorrow() ? entry.cleanupAfter : tomorrow() }); }
@@ -111,7 +124,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
         let bytes = stat.size;
         for (const file of await readdir(path)) {
           if (!scopeName(file)) throw new Error("CUSTODY_UNACCOUNTED_FILE");
-          const fd = await openPrivateFile(join(path, file), path); try { bytes += (await fd.stat()).size; } finally { await fd.close(); }
+          const fd = await openPrivateFile(join(path, file), path); try { bytes += (await fd.stat()).size; } finally { await closeCustodyHandle(fd); }
         }
         sizes.set(path, bytes); physicalBytes += bytes; scratchBytes += bytes; continue;
       }
@@ -172,7 +185,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       if (entry.version >= 2 && entry.kind === "intake" && (!entry.lease || entry.lease.reservationId !== entry.id || entry.lease.path !== entry.path || entry.lease.allowance !== entry.reservation!.reservedBytes / 2 || !entry.lease.generation || !entry.lease.domain || !["pending","released"].includes(entry.release ?? ""))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       if (entry.settlement !== undefined && (entry.kind !== "intake" || !["expired", "drain"].includes(entry.settlement))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
       utcInstant(entry.cleanupAfter); return entry;
-    } finally { await fd.close(); }
+    } finally { await closeCustodyHandle(fd); }
   }
   async function deleteFile(entry: Journal) {
     try { await lstat(entry.path); } catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") return; throw error; }
@@ -180,20 +193,26 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       await checkPrivateRoot(entry.path);
       const names = await readdir(entry.path);
       // Validate every path before deleting any; never recursively remove unknown entries.
-      for (const name of names) { if (!scopeName(name)) throw new Error("CUSTODY_UNACCOUNTED_FILE"); const fd = await openPrivateFile(join(entry.path, name), entry.path); await fd.close(); }
+      for (const name of names) { if (!scopeName(name)) throw new Error("CUSTODY_UNACCOUNTED_FILE"); const fd = await openPrivateFile(join(entry.path, name), entry.path); await closeCustodyHandle(fd); }
       for (const name of names) await unlink(join(entry.path, name));
       await rmdir(entry.path); await syncRoot(config.runtimeRoot); return;
     }
-    const fd = entry.kind==="artifact"?await openArtifactHandle(entry.path,config.custodyRoot,entry.artifactKind!):await openPrivateFile(entry.path, rootFor(entry), entry.kind === "intake" ? incoming : undefined); await fd.close();
+    const fd = entry.kind==="artifact"?await openArtifactHandle(entry.path,config.custodyRoot,entry.artifactKind!):await openPrivateFile(entry.path, rootFor(entry), entry.kind === "intake" ? incoming : undefined); await closeCustodyHandle(fd);
     await unlink(entry.path); await syncRoot(rootFor(entry));
   }
   async function deleteEntry(entry: Journal) {
+    const key = `cleanup:${entry.id}`;
+    unresolvedReleases.add(key);
+    await deleteEntryHeld(entry);
+    unresolvedReleases.delete(key);
+  }
+  async function deleteEntryHeld(entry: Journal) {
     if (entry.kind === "intake") { if (!await releaseIngress(entry)) throw new Error("INGRESS_BUSY"); }
     else await deleteFile(entry);
     if (entry.workerPath) {
       let exists = true;
       try { await lstat(entry.workerPath); } catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") exists = false; else throw error; }
-      if (exists) { const fd = entry.kind==="artifact"?await openArtifactHandle(entry.workerPath,config.custodyRoot,entry.artifactKind!):await openPrivateFile(entry.workerPath, config.custodyRoot); await fd.close(); await unlink(entry.workerPath); }
+      if (exists) { const fd = entry.kind==="artifact"?await openArtifactHandle(entry.workerPath,config.custodyRoot,entry.artifactKind!):await openPrivateFile(entry.workerPath, config.custodyRoot); await closeCustodyHandle(fd); await unlink(entry.workerPath); }
     }
     await unlink(metadataPath(entry.id)); await syncRoot(config.custodyRoot); entries.delete(entry.id);
   }
@@ -235,7 +254,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       // Submission is immutable: do not await a case lock while holding the
       // custody queue that artifact consumers acquire after their case lock.
       if (JSON.stringify(entry.reservation?.submission) !== JSON.stringify(repo.getSubmissionKind(record.id))) throw new Error("CUSTODY_ACCOUNTING_FAILED");
-      const fd = await openPrivateFile(record.encryptedPayloadPath, config.custodyRoot); try { if ((await fd.stat()).size !== record.actualBytes) throw new Error("SIZE_MISMATCH"); } finally { await fd.close(); }
+      const fd = await openPrivateFile(record.encryptedPayloadPath, config.custodyRoot); try { if ((await fd.stat()).size !== record.actualBytes) throw new Error("SIZE_MISMATCH"); } finally { await closeCustodyHandle(fd); }
       await save({ ...entry, version: 3, state: "committed", caseId: record.id });
     }
     for (const record of retainedArtifacts) {
@@ -308,7 +327,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       try { requireReady(); return await scopeContext.run(guard,()=>action(path)); }
       finally {
         guard.active=false;
-        await exclusive(async()=>{ const entry=[...entries.values()].find(entry=>entry.path===path)!; try { await deleteEntry(entry); } catch(error) { ready=false;throw error; } finally { processingOwners.delete(path); } });
+        await exclusive(async()=>{ const entry=[...entries.values()].find(entry=>entry.path===path)!; try { await deleteEntry(entry); processingOwners.delete(path); } catch(error) { ready=false;throw error; } });
       }
     },
     publishArtifact: (id,kind,bytes,metadata,expectedVersion) => exclusive(async()=>{
@@ -320,8 +339,8 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       const record:ArtifactRecord={caseId:id,kind,path:entry.workerPath!,bytes:bytes.length,...metadata};
       try {
         await checked();
-        const fd=await open(entry.path,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
-        try { await fd.writeFile(bytes); await fd.sync(); } finally { await fd.close(); }
+        const fd=observeCustodyHandle(await open(entry.path,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600));
+        try { await fd.writeFile(bytes); await fd.sync(); } finally { await closeCustodyHandle(fd); }
         await syncRoot(config.custodyRoot); await rename(entry.path,entry.workerPath!); await syncRoot(config.custodyRoot);
         requireReady(); await repo.adoptArtifact(record,expectedVersion);
         await save({...entry,state:"committed",budget:bytes.length});
@@ -349,8 +368,10 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     finishProcessing: path => exclusive(async () => {
       const entry = [...entries.values()].find(entry => entry.kind === "processing" && entry.path === path);
       if (!entry || !processingOwners.has(path)) throw new Error("INVALID_PRIVATE_PAYLOAD");
-      try { await deleteEntry(entry); } catch (error) { ready = false; throw error; }
-      finally { processingOwners.delete(path); processingLifetimes.get(path)?.finish(); processingLifetimes.delete(path); }
+      try { await deleteEntry(entry); processingOwners.delete(path); } catch (error) { ready = false; throw error; }
+      // Finish this attempt, not its failed release. Keep the original owner
+      // for an exact retry; deleteEntry's uncertainty still prevents settlement.
+      finally { processingLifetimes.get(path)?.finish(); processingLifetimes.delete(path); }
     }),
     reconcile: () => exclusive(reconcile),
     settleIngress: request => exclusive(() => settleIngress(request)),
@@ -404,9 +425,9 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
           if ((await fd.stat()).size !== input.actualBytes) throw new Error("SIZE_MISMATCH");
           if (2 * input.actualBytes > entry.budget) throw new Error("RESERVATION_EXCEEDED");
           const bytes = await readBoundedFile(fd, input.actualBytes); if (bytes.length !== input.actualBytes) throw new Error("SIZE_MISMATCH");
-          const target = await open(entry.workerPath!, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
-          try { await target.writeFile(bytes); await target.sync(); } finally { await target.close(); }
-        } finally { await fd.close(); }
+          const target = observeCustodyHandle(await open(entry.workerPath!, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600));
+          try { await target.writeFile(bytes); await target.sync(); } finally { await closeCustodyHandle(target); }
+        } finally { await closeCustodyHandle(fd); }
         await syncRoot(config.custodyRoot); await checked();
         let accepted: Acceptance;
         try { requireReady(); accepted = repo.commitIntake({ ...input, encryptedPayloadPath: entry.workerPath!, now: now() }); }
@@ -455,8 +476,12 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   };
   registerMaintenanceCustody(ledger, repo, config.clock, {
     inhibit() { inhibited = true; },
-    async settle() { while (lifetimes.size || processingLifetimes.size) await Promise.allSettled([...lifetimes, ...[...processingLifetimes.values()].map(scope => scope.done)]); await queue; },
-    idle: () => lifetimes.size === 0 && processingOwners.size === 0,
+    async settle() {
+      while (lifetimes.size || processingLifetimes.size) await Promise.allSettled([...lifetimes, ...[...processingLifetimes.values()].map(scope => scope.done)]);
+      await queue;
+      if (handles.size || unresolvedReleases.size) throw new Error("CUSTODY_RELEASE_UNCERTAIN");
+    },
+    idle: () => lifetimes.size === 0 && processingOwners.size === 0 && handles.size === 0 && unresolvedReleases.size === 0,
   });
   for (const name of Object.keys(ledger) as (keyof CustodyLedger)[]) {
     if (name === "getIntakeReadiness") continue;
@@ -491,7 +516,7 @@ async function readPrivateSnapshot(record: CommittedIntake, keys: WorkerKeys): P
     const payload = decodePayload(plaintext);
     if (payloadDigest(payload) !== record.digest) throw new Error("DIGEST_MISMATCH");
     return Object.freeze({ id: record.id, input: Object.freeze({ ...payload.input }), files: Object.freeze(payload.files.map(file => Object.freeze({ name: file.name, mediaType: file.mediaType, bytes: Buffer.from(file.content, "base64").length, digest: digest(createHash("sha256").update(Buffer.from(file.content, "base64")).digest("hex")) }))), digest: record.digest, encryptedPayloadPath: record.encryptedPayloadPath, bytes: record.actualBytes });
-  } finally { plaintext?.fill(0); await source.close(); }
+  } finally { plaintext?.fill(0); await closeCustodyHandle(source); }
 }
 export async function withPrivateFiles<T>(snapshot: PrivateSnapshot, keys: WorkerKeys, action: (snapshot: ProcessingSnapshot) => Promise<T>): Promise<T> {
   const track = scopeReaders.get(keys.custody.beginProcessing); if (!track) throw new Error("CUSTODY_NOT_READY");
@@ -513,10 +538,10 @@ async function usePrivateFiles<T>(snapshot: PrivateSnapshot, keys: WorkerKeys, a
     const files: ProcessingSnapshot["files"][number][] = [];
     for (const [index, file] of payload.files.entries()) {
       const bytes = Buffer.from(file.content, "base64"), path = join(directory, `${index}.data`);
-      const fd = await open(path, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
-      try { await fd.writeFile(bytes); } finally { bytes.fill(0); await fd.close(); }
+      const fd = observeCustodyHandle(await open(path, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600));
+      try { await fd.writeFile(bytes); } finally { bytes.fill(0); await closeCustodyHandle(fd); }
       files.push(Object.freeze({ name: file.name, mediaType: file.mediaType, digest: digest(createHash("sha256").update(Buffer.from(file.content, "base64")).digest("hex")), bytes: Buffer.from(file.content, "base64").length, path }));
     }
     return await keys.custody.withProcessingAuthority(snapshot.id,directory,()=>action(Object.freeze({ ...snapshot, input: Object.freeze({ ...payload.input }), files: Object.freeze(files) })));
-  } finally { plaintext?.fill(0); await source.close(); if (directory) await keys.custody.finishProcessing(directory); }
+  } finally { plaintext?.fill(0); try { await closeCustodyHandle(source); } finally { if (directory) await keys.custody.finishProcessing(directory); } }
 }

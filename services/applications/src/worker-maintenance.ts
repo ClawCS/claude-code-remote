@@ -1,5 +1,27 @@
 import type { ApplicationRepository, Clock, CustodyLedger, RuntimeMaintenanceExclusion, WorkerOwner, WorkerServices } from "./types";
 import { utcInstant } from "./types";
+import { AsyncLocalStorage } from "node:async_hooks";
+import type { FileHandle } from "node:fs/promises";
+
+// Internal descriptor observation only, installed by the original custody
+// lifetime. No observer flag is accepted as release evidence: close runs here.
+interface ResourceObserver { acquired(handle: FileHandle): void; released(handle: FileHandle): void }
+const resourceContext = new AsyncLocalStorage<ResourceObserver>();
+const resourceOwners = new WeakMap<FileHandle, ResourceObserver>();
+export function withCustodyResourceTracking<T>(observer: ResourceObserver, action: () => Promise<T>): Promise<T> { return resourceContext.run(observer, action); }
+export function observeCustodyHandle(handle: FileHandle): FileHandle {
+  const observer = resourceContext.getStore();
+  if (observer) {
+    const original = resourceOwners.get(handle);
+    if (original && original !== observer) throw new Error("CUSTODY_RESOURCE_OWNER_MISMATCH");
+    resourceOwners.set(handle, observer); observer.acquired(handle);
+  }
+  return handle;
+}
+export async function closeCustodyHandle(handle: FileHandle): Promise<void> {
+  await handle.close();
+  resourceOwners.get(handle)?.released(handle); resourceOwners.delete(handle);
+}
 
 // Private composition only. Original constructors register these exact objects.
 interface Lifetime { inhibit(): void; settle(): Promise<void>; idle(): boolean }

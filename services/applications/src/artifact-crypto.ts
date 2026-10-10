@@ -6,6 +6,7 @@ import type { ApplicationId, ApplicationRepository, ArtifactKind, ArtifactRecord
 import { applicationId } from "./types";
 import { checkPrivateRoot } from "./crypto";
 import { artifactLimit, ARTIFACT_OVERHEAD } from "./storage-budget";
+import { observeCustodyHandle, closeCustodyHandle } from "./worker-maintenance";
 
 const magic = (kind: ArtifactKind) => Buffer.from(kind === "bundle" ? "TJBND001" : "TJMIM001");
 function aad(prefix: Buffer, id: ApplicationId, kind: ArtifactKind) { applicationId(id); return Buffer.concat([prefix, Buffer.from(`\0${id}\0${kind}\0v1`)]); }
@@ -41,12 +42,12 @@ export function openArtifactEnvelope(bytes: Buffer, id: ApplicationId, kind: Art
 export async function openArtifactHandle(path:string,root:string,kind:ArtifactKind){
   await checkPrivateRoot(root);
   if(dirname(path)!==root||resolve(path)!==path||!["bundle","mime"].includes(kind))throw new Error("INVALID_ARTIFACT");
-  const before=await lstat(root),fd=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);
+  const before=await lstat(root),fd=observeCustodyHandle(await open(path,constants.O_RDONLY|constants.O_NOFOLLOW));
   try{
     const info=await fd.stat(),after=await lstat(root);
     if(before.ino!==after.ino||before.dev!==after.dev||!info.isFile()||info.nlink!==1||info.uid!==process.getuid?.()||(info.mode&0o7777)!==0o600||info.size>artifactLimit(kind))throw new Error("INVALID_ARTIFACT");
     return fd;
-  }catch(error){await fd.close();throw error;}
+  }catch(error){await closeCustodyHandle(fd);throw error;}
 }
 export async function readArtifactFile(record: ArtifactRecord, root: string): Promise<Buffer> {
   if (!Number.isSafeInteger(record.bytes) || record.bytes < 1 || record.bytes > artifactLimit(record.kind)) throw new Error("INVALID_ARTIFACT");
@@ -57,7 +58,7 @@ export async function readArtifactFile(record: ArtifactRecord, root: string): Pr
     while (offset < bytes.length) { const read = await fd.read(bytes,offset,bytes.length-offset,offset); if (!read.bytesRead) break; offset += read.bytesRead; }
     if (offset !== record.bytes || createHash("sha256").update(bytes.subarray(0,offset)).digest("hex") !== record.ciphertextDigest) throw new Error("DIGEST_MISMATCH");
     return bytes.subarray(0,offset);
-  } finally { await fd.close(); }
+  } finally { await closeCustodyHandle(fd); }
 }
 const authenticated = new WeakMap<object, { record: ArtifactRecord; plaintext: Buffer }>();
 declare const evidenceBrand: unique symbol;

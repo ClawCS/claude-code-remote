@@ -4,6 +4,7 @@ import { lstat, open, unlink } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import type { IncomingTarget, SealedFile, IntakePayload, Digest } from "./types";
 import { digest } from "./types";
+import { observeCustodyHandle, closeCustodyHandle } from "./worker-maintenance";
 
 // V1: magic(8), RSA wrapped-key length(u16), wrapped-key, nonce(12), ciphertext, tag(16).
 // Authenticate the complete prefix as AAD. Bound plaintext independently of physical budget.
@@ -124,15 +125,17 @@ export async function openPrivateFile(path: string, root: string, incoming?: { u
   const before = await lstat(root);
   if (dirname(path) !== root || resolve(path) !== path) throw new Error("UNSAFE_PATH");
   let fd;
-  try { fd = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW); } catch { throw new Error("UNSAFE_PATH"); }
-  const stat = await fd.stat();
-  try { await check(); const after = await lstat(root); if (before.ino !== after.ino || before.dev !== after.dev) throw new Error("UNSAFE_PATH"); } catch (error) { await fd.close(); throw error; }
-  const mode = incoming ? 0o640 : 0o600;
-  const fixture = process.env.NODE_ENV === "test" && incoming?.uid === process.getuid?.() && (stat.mode & 0o7777) === 0o600;
-  if (!stat.isFile() || stat.nlink !== 1 || stat.uid !== (incoming?.uid ?? process.getuid?.()) || (!fixture && (stat.mode & 0o7777) !== mode) || (incoming && !fixture && stat.gid !== incoming.gid) || stat.size > MAX_SEALED_BYTES) { await fd.close(); throw new Error("UNSAFE_PATH"); }
-  return fd;
+  try { fd = observeCustodyHandle(await open(path, constants.O_RDONLY | constants.O_NOFOLLOW)); } catch { throw new Error("UNSAFE_PATH"); }
+  try {
+    const stat = await fd.stat();
+    await check(); const after = await lstat(root); if (before.ino !== after.ino || before.dev !== after.dev) throw new Error("UNSAFE_PATH");
+    const mode = incoming ? 0o640 : 0o600;
+    const fixture = process.env.NODE_ENV === "test" && incoming?.uid === process.getuid?.() && (stat.mode & 0o7777) === 0o600;
+    if (!stat.isFile() || stat.nlink !== 1 || stat.uid !== (incoming?.uid ?? process.getuid?.()) || (!fixture && (stat.mode & 0o7777) !== mode) || (incoming && !fixture && stat.gid !== incoming.gid) || stat.size > MAX_SEALED_BYTES) throw new Error("UNSAFE_PATH");
+    return fd;
+  } catch (error) { await closeCustodyHandle(fd); throw error; }
 }
-export async function syncRoot(root: string): Promise<void> { const fd = await open(root, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW); try { await fd.sync(); } finally { await fd.close(); } }
+export async function syncRoot(root: string): Promise<void> { const fd = observeCustodyHandle(await open(root, constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW)); try { await fd.sync(); } finally { await closeCustodyHandle(fd); } }
 export function intakePath(root: string, ticket: string): string {
   if (!/^[a-f0-9-]{36}$/.test(ticket)) throw new Error("INVALID_RESERVATION");
   return join(root, `${ticket}.enc`);

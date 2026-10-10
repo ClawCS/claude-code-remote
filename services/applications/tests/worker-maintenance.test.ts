@@ -6,7 +6,12 @@ import { bindMaintenance, beginMaintenance, settleMaintenance, maintenanceSnapsh
 import { testAdmission, testReadiness, refreshTestRepository } from "./fixtures/admission";
 import { digest, utcInstant } from "../src/types";
 import { takePrivateSnapshot, withPrivateFiles } from "../src/custody";
-import { readdir, mkdir } from "node:fs/promises";
+import { readdir, mkdir, writeFile, stat } from "node:fs/promises";
+import * as privateFiles from "../src/crypto";
+import type { FileHandle } from "node:fs/promises";
+import * as fs from "node:fs/promises";
+import { createArtifactStore } from "../src/artifact-store";
+import { withReconstructedDocuments, type ReconstructionDependencies } from "../src/reconstruction";
 import { erasureOwner } from "../src/erasure-repository";
 import { randomUUID } from "node:crypto";
 import { encodeJournalEvent } from "../src/ledger-contract";
@@ -14,12 +19,14 @@ import { caseId, instant } from "./fixtures/ledger";
 import type { EraseJournalEvent, IngressLease } from "../src/types";
 
 const connections = vi.hoisted(() => ({ all: [] as Database.Database[] }));
+vi.mock("node:fs/promises", async original => ({ ...await original<typeof import("node:fs/promises")>() }));
 vi.mock("better-sqlite3", async original => {
   const actual = await original<{ default: typeof Database }>();
   return { default: class extends actual.default { constructor(...args: ConstructorParameters<typeof actual.default>) { super(...args); connections.all.push(this); } } };
 });
 const fixtures: Awaited<ReturnType<typeof maintenanceFixture>>[] = [];
 afterEach(async () => {
+  vi.restoreAllMocks();
   for (const fixture of fixtures) await settleMaintenance(fixture.owner).catch(() => {});
   // Failure tests deliberately retain the production close gate. Dispose the
   // real synthetic connection here, not through a production force-close API.
@@ -43,6 +50,148 @@ async function historicalBacklog(f: Awaited<ReturnType<typeof setup>>, count: nu
   return ids;
 }
 describe("original maintenance lifetime", () => {
+  it("retains an unreleased real ingress holder until exact abort retry confirms release", async () => {
+    const f = await setup(), sessionHash = digest("a".repeat(64));
+    const reservation = await f.owner.custody.reserve({ ...testAdmission(), sessionHash, idempotencyKey: "held-release", reservedBytes: 20000, now: utcInstant(f.owner.clock.now().toISOString()) }, testReadiness);
+    await fs.writeFile(`${f.config.intakeRoot}/${reservation.id}.enc`, "synthetic", { mode: 0o600 });
+    const holder = await f.authority.retain(reservation.id);
+    try {
+      await expect(f.owner.custody.abortIntake(reservation.id, sessionHash)).rejects.toThrow("INGRESS_BUSY");
+      expect((await holder.stat()).isFile()).toBe(true);
+      bindMaintenance(f.owner, f.services, f.monotonicNow);
+      await expect(beginMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+      await holder.close();
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      await f.owner.custody.abortIntake(reservation.id, sessionHash);
+      await settleMaintenance(f.owner); await beginMaintenance(f.owner);
+      expect(await fs.readdir(f.config.intakeRoot)).toEqual([]);
+      expect(f.db.prepare("SELECT id FROM reservations WHERE id=?").get(reservation.id)).toBeUndefined();
+    } finally { if (holder.fd !== -1) await holder.close(); }
+  });
+  it("retains a failed hidden root descriptor close after publication unwinds", async () => {
+    const f = await setup(), closing = deferred(), release = deferred(), originalOpen = fs.open;
+    let retained: FileHandle | undefined, actuallyClose: (() => Promise<void>) | undefined;
+    vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      const handle = await originalOpen(...args);
+      if (args[0] === f.config.custodyRoot) {
+        retained = handle; actuallyClose = handle.close.bind(handle);
+        handle.close = async () => { closing.resolve(); await release.promise; throw new Error("private-root-close-canary"); };
+      }
+      return handle;
+    });
+    const reserve = f.owner.custody.reserve({ ...testAdmission(), sessionHash: digest("a".repeat(64)), idempotencyKey: "root-close", reservedBytes: 20000, now: utcInstant(f.owner.clock.now().toISOString()) }, testReadiness).catch(error => error);
+    await closing.promise; bindMaintenance(f.owner, f.services, f.monotonicNow);
+    const starting = beginMaintenance(f.owner).then(() => "settled", error => error.message); release.resolve(); await reserve;
+    try {
+      expect((await retained!.stat()).isDirectory()).toBe(true);
+      expect(await starting).toBe("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+    } finally { await actuallyClose!(); }
+  });
+  it("retains a failed hidden authenticated-artifact close through the actual bundle reader", async () => {
+    const f = await setup(), accepted = await f.accept(), closing = deferred(), release = deferred();
+    const store = createArtifactStore(f.owner.repository, accepted.keys, f.owner.custody);
+    const deps: ReconstructionDependencies = { scope: f.owner.custody, monotonicNow: () => 0, scanner: { assurance: "qualified-local-engine", scan: async () => { throw new Error("NO_FILES"); } }, inspector: { assurance: "local-test", inspect: async () => { throw new Error("NO_FILES"); } }, raster: { render: async () => { throw new Error("NO_FILES"); } }, output: { verify: async () => {} } };
+    const snapshot = await takePrivateSnapshot(accepted.record, accepted.keys);
+    const bundle = await withPrivateFiles(snapshot, accepted.keys, value => withReconstructedDocuments(value, deps, reconstructed => store.adoptBundle(reconstructed, 1)));
+    const originalOpen = fs.open; let retained: FileHandle | undefined, actuallyClose: (() => Promise<void>) | undefined;
+    vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      const handle = await originalOpen(...args);
+      if (args[0] === bundle.path) {
+        retained = handle; actuallyClose = handle.close.bind(handle);
+        handle.close = async () => { closing.resolve(); await release.promise; throw new Error("private-artifact-close-canary"); };
+      }
+      return handle;
+    });
+    const read = store.withBundle(accepted.accepted.id, async () => { throw new Error("UNREACHABLE"); }).catch(error => error);
+    await closing.promise; bindMaintenance(f.owner, f.services, f.monotonicNow);
+    const starting = beginMaintenance(f.owner).then(() => "settled", error => error.message); release.resolve(); await read;
+    try {
+      expect((await retained!.stat()).isFile()).toBe(true);
+      expect(await readdir(f.config.runtimeRoot)).toEqual([]);
+      expect(await starting).toBe("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+      expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+    } finally { await actuallyClose!(); }
+  });
+  it.each(["stat", "validation"] as const)("settles after a post-open %s rejection only when the actual handle closes", async fault => {
+    const f = await setup(), accepted = await f.accept(), originalOpen = fs.open;
+    let retained: FileHandle | undefined, realStat: FileHandle["stat"] | undefined;
+    if (fault === "validation") await fs.chmod(accepted.record.encryptedPayloadPath, 0o644);
+    vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      const handle = await originalOpen(...args);
+      if (args[0] === accepted.record.encryptedPayloadPath) {
+        retained = handle; realStat = handle.stat.bind(handle);
+        if (fault === "stat") handle.stat = async () => { throw new Error("SYNTHETIC_STAT_FAILURE"); };
+      }
+      return handle;
+    });
+    await expect(takePrivateSnapshot(accepted.record, accepted.keys)).rejects.toThrow(fault === "stat" ? "SYNTHETIC_STAT_FAILURE" : "UNSAFE_PATH");
+    try {
+      await expect(realStat!()).rejects.toMatchObject({ code: "EBADF" });
+      bindMaintenance(f.owner, f.services, f.monotonicNow); await beginMaintenance(f.owner); await settleMaintenance(f.owner);
+      expect(maintenanceSnapshot(f.owner).status).toBe("settled");
+    } finally { if (retained!.fd !== -1) await retained!.close(); }
+  });
+  it.each(["snapshot", "processing"] as const)("retains a still-open %s source after failed close instead of declaring custody settled", async kind => {
+    const f = await setup(), accepted = await f.accept(), closing = deferred(), release = deferred();
+    const snapshot = await takePrivateSnapshot(accepted.record, accepted.keys);
+    const originalOpen = privateFiles.openPrivateFile;
+    let retained: FileHandle | undefined, actuallyClose: (() => Promise<void>) | undefined;
+    vi.spyOn(privateFiles, "openPrivateFile").mockImplementation(async (...args) => {
+      const handle = await originalOpen(...args);
+      if (args[0] === accepted.record.encryptedPayloadPath) {
+        retained = handle; actuallyClose = handle.close.bind(handle);
+        handle.close = async () => { closing.resolve(); await release.promise; throw new Error("private-source-close-canary"); };
+      }
+      return handle;
+    });
+    const read = (kind === "snapshot" ? takePrivateSnapshot(accepted.record, accepted.keys) : withPrivateFiles(snapshot, accepted.keys, async () => {})).catch(error => error);
+    await closing.promise; bindMaintenance(f.owner, f.services, f.monotonicNow);
+    const starting = beginMaintenance(f.owner).then(() => "settled", error => error.message);
+    release.resolve(); await read;
+    try {
+      expect((await retained!.stat()).isFile()).toBe(true);
+      expect(await readdir(f.config.runtimeRoot)).toEqual([]);
+      expect(await starting).toBe("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      expect(maintenanceSnapshot(f.owner).status).toBe("settling");
+      expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+      expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+    } finally { await actuallyClose!(); }
+  });
+  it("retains failed processing cleanup after its producer finishes", async () => {
+    const f = await setup(), accepted = await f.accept();
+    const snapshot = await takePrivateSnapshot(accepted.record, accepted.keys);
+    const directory = await f.owner.custody.beginProcessing(snapshot, 4096);
+    await mkdir(directory, { mode: 0o700 }); await writeFile(`${directory}/unknown-private-canary`, "synthetic", { mode: 0o600 });
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    const starting = beginMaintenance(f.owner).then(() => "settled", error => error.message);
+    await expect(f.owner.custody.finishProcessing(directory)).rejects.toThrow("CUSTODY_UNACCOUNTED_FILE");
+    expect((await stat(directory)).isDirectory()).toBe(true);
+    expect(await starting).toBe("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+    await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+    expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+    expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+    // The fixture removes its foreign obstruction; pathname disappearance is
+    // not release evidence. Only retrying the exact original cleanup clears it.
+    await fs.unlink(`${directory}/unknown-private-canary`);
+    await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+    await f.owner.custody.finishProcessing(directory);
+    await settleMaintenance(f.owner); await beginMaintenance(f.owner);
+    expect(await readdir(f.config.runtimeRoot)).toEqual([]);
+  });
+  it("settles an expected denial that acquired no resource", async () => {
+    const f = await setup();
+    await expect(f.owner.custody.reserve({ ...testAdmission(), sessionHash: digest("a".repeat(64)), idempotencyKey: "denied-before-acquire", reservedBytes: 20000, now: utcInstant(f.owner.clock.now().toISOString()) }, { getIntakeReadiness: () => ({ ready: false }) })).rejects.toThrow("WORKER_UNAVAILABLE");
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await beginMaintenance(f.owner); await settleMaintenance(f.owner);
+    expect(maintenanceSnapshot(f.owner).status).toBe("settled");
+    expect(() => f.owner.repository.close()).not.toThrow();
+  });
   it("prepares a due restored case in the cold original owner without enabling normal reads", async () => {
     const original = await setup(), { accepted } = await original.accept(), cold = await setup("cold-maintenance");
     // Synthetic persisted restore rows, never a claim of restored file coverage.
