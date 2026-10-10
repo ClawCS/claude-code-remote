@@ -540,7 +540,7 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     privateRevision: () => privateRevision,
     privateReady: () => handles.size === 0 && unresolvedReleases.size === 0 && processingOwners.size === 0 && processingLifetimes.size === 0,
     inspectCopies(caseId,reservationId) {
-      if (!copyInspection || copyInspection.caseId !== caseId || copyInspection.reservationId !== reservationId || copyInspection.revision !== privateRevision) copyInspection = {caseId,reservationId,revision:privateRevision,entries:entries.values(),owners:intakeOwners.values(),entriesDone:false,complete:false};
+      if (!copyInspection || copyInspection.complete || copyInspection.caseId !== caseId || copyInspection.reservationId !== reservationId || copyInspection.revision !== privateRevision) copyInspection = {caseId,reservationId,revision:privateRevision,entries:entries.values(),owners:intakeOwners.values(),entriesDone:false,complete:false};
       let consumedItems = 1;
       for (let n=0;n<20&&!copyInspection.complete;n++) {
         consumedItems += 2;

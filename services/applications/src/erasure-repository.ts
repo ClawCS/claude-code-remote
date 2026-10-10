@@ -117,6 +117,8 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     } catch { deny(); }
   }
   let checkpointKey = "";
+  // This records original-connection checkpoint provenance only. Done commands
+  // must still acquire and consume fresh current-stage physical evidence.
   const locallyCompleted = new Map<string, string>();
   async function checkpointDatabase(run: MaintenanceRun) {
     assertMaintenanceSettled(run, deps.repository);
@@ -165,11 +167,23 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
   }
   async function prepareDone(commitEventId: string,run:MaintenanceRun) {
     assertMaintenanceSettled(run,deps.repository);
-    const maximum=40+ancestry.length+10;
-    const result=await maintenanceCommand(run,deps.repository,maximum,"scalar",()=>owner.withErasureGuard(commitEventId,async current=>{
+    const verifier=physicalVerifiers.get(originalMaintenanceCustody(run,deps.repository));
+    if(!verifier)fail("ERASURE_UNVERIFIED");
+    // Guard/work/phase40 + actual fresh inspection + consume99 + original
+    // sanitation sweeps 2*(D+10) + fixed current row-exhaustion selector64.
+    const maximum=40+verifier.inspectionMaximum+99+2*(ancestry.length+10)+64;
+    const result=await maintenanceCommand(run,deps.repository,maximum,"filesystem",()=>owner.withErasureGuard(commitEventId,async current=>{
       assertMaintenance(run,deps.repository); selectMaintenance(run,deps.repository,`case:${current.caseId}`);
       if(current.stage!=="locally-complete" || locallyCompleted.get(commitEventId)!==JSON.stringify(current))fail("ERASURE_PENDING");
       safeDatabase(run);
+      const inspected=await verifier.inspect(commitEventId,run);
+      assertMaintenance(run,deps.repository);
+      if(!inspected.proof)return {value:null,consumedItems:maximum};
+      const page=owner.rowPage(commitEventId,null,64);
+      if(page.targets.length||page.next)fail("ERASURE_PENDING");
+      safeDatabase(run);
+      // No await from exact one-use consumption through the fixed transaction.
+      verifier.consumeInspection(inspected.proof,commitEventId,run);
       const event=db.transaction(()=>{
         const pendingEvent=pending(current.caseId);
         if(pendingEvent){if(pendingEvent[3]!=="erase_done"||pendingEvent[4][1]!==commitEventId)fail("ERASURE_PENDING");return pendingEvent;}
@@ -192,11 +206,21 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
   }
   async function acknowledgeDone(event:EraseJournalEvent,receipt:DurableReceipt,run:MaintenanceRun) {
     if(event[3]!=="erase_done")fail();
-    const maximum=40+ancestry.length+10;
-    const result=await maintenanceCommand(run,deps.repository,maximum,"scalar",()=>owner.withErasureGuard(event[4][1],async current=>{
+    assertMaintenanceSettled(run,deps.repository);
+    const verifier=physicalVerifiers.get(originalMaintenanceCustody(run,deps.repository));
+    if(!verifier)fail("ERASURE_UNVERIFIED");
+    const maximum=40+verifier.inspectionMaximum+99+2*(ancestry.length+10)+64;
+    const result=await maintenanceCommand(run,deps.repository,maximum,"filesystem",()=>owner.withErasureGuard(event[4][1],async current=>{
       assertMaintenance(run,deps.repository); selectMaintenance(run,deps.repository,`case:${current.caseId}`);
       if(current.caseId!==event[4][0] || current.stage!=="locally-complete" || locallyCompleted.get(current.commitEventId)!==JSON.stringify(current))fail("ERASURE_PENDING");
       safeDatabase(run);
+      const inspected=await verifier.inspect(current.commitEventId,run);
+      assertMaintenance(run,deps.repository);
+      if(!inspected.proof)fail("ERASURE_PENDING");
+      const page=owner.rowPage(current.commitEventId,null,64);
+      if(page.targets.length||page.next)fail("ERASURE_PENDING");
+      safeDatabase(run);
+      verifier.consumeInspection(inspected.proof,current.commitEventId,run);
       db.transaction(()=>{
         const phase=db.prepare("SELECT * FROM erasure_events WHERE eventId=?").get(event[1]) as Phase|undefined;
         const fact=db.prepare("SELECT f.event,f.sequence,f.entryHash FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(event[1]) as {event:string;sequence:string;entryHash:string}|undefined;

@@ -115,6 +115,11 @@ it("truncates the original WAL and recovers the exact done without the erased pa
   run=await beginMaintenance(f.owner);
   const retry=await f.erasure.prepareDone(f.event[1],run);
   expect(retry.event).toEqual(staged.event);
+  // The two fresh physical inspections cannot silently exceed one shared run.
+  await expect(f.erasure.acknowledgeDone(staged.event!,receipt,run)).rejects.toThrow("MAINTENANCE_BUDGET_INSUFFICIENT");
+  expect(maintenanceSnapshot(f.owner).consumedItems).toBeLessThanOrEqual(1000);
+  await settleMaintenance(f.owner);
+  run=await beginMaintenance(f.owner);
   await f.erasure.acknowledgeDone(staged.event!,receipt,run);
   await settleMaintenance(f.owner);
   expect(f.db.prepare("SELECT phase FROM erasure_events WHERE eventId=?").get(staged.event![1])).toEqual({phase:"acknowledged"});
@@ -267,6 +272,86 @@ it("does not stage done after losing the original sanitation exclusion",async()=
   f.losePathExclusion(); const run=await beginMaintenance(f.owner);
   await expect(f.erasure.prepareDone(f.event[1],run)).rejects.toThrow("ERASURE_SANITATION_REQUIRED");
   expect(f.db.prepare("SELECT 1 FROM erasure_events WHERE json_extract(event,'$[3]')='erase_done'").get()).toBeUndefined();
+});
+it.each(["prepare","acknowledge"] as const)("denies done %s after actual original scanner coverage is revoked",async phase=>{
+  const f=await setup("processing_contact",true); await scan(f.owner); await rows(f); await checkpoint(f);
+  let run=await beginMaintenance(f.owner);
+  const staged=phase==="acknowledge"?await f.erasure.prepareDone(f.event[1],run):null;
+  await settleMaintenance(f.owner);
+  const receipt=staged?.event?await f.erasure.journal!.append(staged.event):null;
+  run=await beginMaintenance(f.owner);
+  await custodyErasureOwner(f.owner.custody).invalidateAndClose(run);
+  await settleMaintenance(f.owner);
+  run=await beginMaintenance(f.owner);
+  if(phase==="prepare") {
+    await expect(f.erasure.prepareDone(f.event[1],run)).rejects.toThrow();
+    expect(f.db.prepare("SELECT 1 FROM erasure_events WHERE json_extract(event,'$[3]')='erase_done'").get()).toBeUndefined();
+  } else {
+    await expect(f.erasure.acknowledgeDone(staged!.event!,receipt!,run)).rejects.toThrow();
+    expect(f.db.prepare("SELECT phase FROM erasure_events WHERE eventId=?").get(staged!.event![1])).toEqual({phase:"proposed"});
+  }
+});
+it.each(["prepare","acknowledge"] as const)("freshly checks original associated reservations after locally-complete before done %s",async phase=>{
+  const f=await setup("identifying_register",true);
+  const reservation=f.db.prepare("SELECT * FROM reservations WHERE id=(SELECT reservationId FROM cases WHERE id=?)").get(f.accepted.accepted.id) as Record<string,unknown>;
+  await scan(f.owner); await physical(f.owner,f.event[1]); await rows(f); await checkpoint(f);
+  let run=await beginMaintenance(f.owner);
+  const staged=phase==="acknowledge"?await f.erasure.prepareDone(f.event[1],run):null;
+  await settleMaintenance(f.owner);
+  const receipt=staged?.event?await f.erasure.journal!.append(staged.event):null;
+  f.db.prepare(`INSERT INTO reservations(${Object.keys(reservation).join(",")}) VALUES(${Object.keys(reservation).map(k=>`@${k}`).join(",")})`).run(reservation);
+  run=await beginMaintenance(f.owner);
+  if(phase==="prepare") {
+    await expect(f.erasure.prepareDone(f.event[1],run)).rejects.toThrow();
+    expect(f.db.prepare("SELECT 1 FROM erasure_events WHERE json_extract(event,'$[3]')='erase_done'").get()).toBeUndefined();
+  } else {
+    await expect(f.erasure.acknowledgeDone(staged!.event!,receipt!,run)).rejects.toThrow();
+    expect(f.db.prepare("SELECT phase FROM erasure_events WHERE eventId=?").get(staged!.event![1])).toEqual({phase:"proposed"});
+  }
+});
+it("retains only bounded unfinished done inspection across runs and rechecks before acknowledgment",async()=>{
+  const f=await setup("identifying_register",true);
+  const original=f.db.prepare("SELECT * FROM reservations WHERE id=(SELECT reservationId FROM cases WHERE id=?)").get(f.accepted.accepted.id) as Record<string,unknown>;
+  await scan(f.owner); await physical(f.owner,f.event[1]); await rows(f); await checkpoint(f);
+  // Genuine row shape from the original fixture, but two unrelated identities.
+  // The parentless inspector must examine them before accepting actual EOF.
+  for(const suffix of ["1","2"]) {
+    const unrelated={...original,id:`00000000-0000-4000-8000-00000000000${suffix}`,sessionHash:suffix.repeat(64),idempotencyKey:`unrelated-${suffix}`};
+    f.db.prepare(`INSERT INTO reservations(${Object.keys(unrelated).join(",")}) VALUES(${Object.keys(unrelated).map(k=>`@${k}`).join(",")})`).run(unrelated);
+  }
+  for(let n=0;n<2;n++) {
+    const run=await beginMaintenance(f.owner);
+    expect((await f.erasure.prepareDone(f.event[1],run)).event).toBeNull();
+    expect(maintenanceSnapshot(f.owner).consumedItems).toBeLessThanOrEqual(1000);
+    expect(f.db.prepare("SELECT 1 FROM erasure_events WHERE json_extract(event,'$[3]')='erase_done'").get()).toBeUndefined();
+    await settleMaintenance(f.owner);
+  }
+  let run=await beginMaintenance(f.owner);
+  const staged=await f.erasure.prepareDone(f.event[1],run);
+  expect(staged.event?.[3]).toBe("erase_done");
+  await settleMaintenance(f.owner);
+  const receipt=await f.erasure.journal!.append(staged.event!);
+  for(let n=0;n<2;n++) {
+    run=await beginMaintenance(f.owner);
+    await expect(f.erasure.acknowledgeDone(staged.event!,receipt,run)).rejects.toThrow("ERASURE_PENDING");
+    expect(maintenanceSnapshot(f.owner).consumedItems).toBeLessThanOrEqual(1000);
+    expect(f.db.prepare("SELECT phase FROM erasure_events WHERE eventId=?").get(staged.event![1])).toEqual({phase:"proposed"});
+    await settleMaintenance(f.owner);
+  }
+  run=await beginMaintenance(f.owner);
+  await f.erasure.acknowledgeDone(staged.event!,receipt,run);
+  expect(f.db.prepare("SELECT phase FROM erasure_events WHERE eventId=?").get(staged.event![1])).toEqual({phase:"acknowledged"});
+});
+it.each(["prepare","acknowledge"] as const)("rejects a reappeared scoped contact row before done %s",async phase=>{
+  const f=await setup("processing_contact",true); await scan(f.owner); await rows(f); await checkpoint(f);
+  let run=await beginMaintenance(f.owner);
+  const staged=phase==="acknowledge"?await f.erasure.prepareDone(f.event[1],run):null;
+  await settleMaintenance(f.owner);
+  const receipt=staged?.event?await f.erasure.journal!.append(staged.event):null;
+  f.db.prepare("UPDATE deliveries SET contactEnvelope=? WHERE caseId=?").run("SYNTHETIC_REAPPEARED_CONTACT",f.accepted.accepted.id);
+  run=await beginMaintenance(f.owner);
+  if(phase==="prepare")await expect(f.erasure.prepareDone(f.event[1],run)).rejects.toThrow("ERASURE_PENDING");
+  else await expect(f.erasure.acknowledgeDone(staged!.event!,receipt!,run)).rejects.toThrow("ERASURE_PENDING");
 });
 it("does not retain a private row canary in the database or WAL after actual sanitation",async()=>{
   const f=await setup("processing_contact",true); const canary="SYNTHETIC_CONTACT_CANARY_98fc04";

@@ -248,6 +248,9 @@ export function createAcceptedErasure(c: Composition) {
       if (!current.rowOnly && !current.reduced) return current.consumedItems + verifier.consume(proof,current.physical.commitEventId,run);
       const value = inspectionProofs.get(proof); inspectionProofs.delete(proof); c.checkCoverage();
       if (!value || value.run !== run || value.guard !== current.guard || value.state !== inspection || current.fingerprint !== inspection.fingerprint || current.pass !== inspection.pass || c.hooks.privateRevision() !== inspection.revision || !idle() || !c.hooks.privateReady()) fail();
+      // Terminal consumers may not reuse the prior done command's completed
+      // observation. Keep only incomplete bounded progress, never success.
+      if(current.work.stage==="locally-complete")inspection=undefined;
       return current.consumedItems + 4;
     },
   });
