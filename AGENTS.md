@@ -71,6 +71,10 @@ Für Google-Maps-Routenlinks, Instagram- und WhatsApp-Kontaktlinks die belegten 
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Freigegebener filmischer Design-Umbau — 10.10.2026
+
+Niko hat Richtung A (»Filmisch & nahbar«) und den 15-Sekunden-Filmentwurf betrachtet, positiv bestätigt und die Umsetzung in der echten Homepage beauftragt. Grundlage: `docs/superpowers/specs/2026-10-10-filmisch-redesign.md`. Neue ausdrückliche Medienausnahme: der beauftragte KI-Werbefilm zu Getränken/Partyservice mit sechs Eigenmarken als Finale. Lokale optimierte Ableitungen und bereinigte Herkunftsnachweise verwenden; als KI-Werbefilm kennzeichnen, nicht als echte Marktaufnahme. Keine Ausweitung auf generierte Mitarbeiter-/Marktfotos. Keine fremden Gestaltungen oder Markenlogos aus den Designreferenzen übernehmen. Die Gestaltung ändert keine Wochenpakete, Preis-/Anfragelogik oder Betriebsfreigaben; öffentliche Umschaltung bleibt separat nach Abnahme nachzuweisen.
+
 ## Ausdrückliche Desktop-Fotofreigabe — 10.10.2026
 
 Niko beauftragt die passenden Bilder aus seinem Ordner „Fotos Homepage“. Die 17 ausgewählten Motive und Ausschlüsse stehen in `docs/superpowers/specs/2026-10-10-desktop-photo-integration.md`. IMG_6810, IMG_6942, IMG_7981, IMG_8123, IMG_8169 und IMG_7783 zeigen laut Betreiber weder Justin noch Harpe. Ausbildung und Gas-Tauschwerbung (14,99 €/25,99 €) sind aktuell bestätigt. E-Mail auf den drei Stellenplakaten: `info@trinkgut-jammers.de`. Niko akzeptiert ausdrücklich leichte Veränderungen der KI-generierten Anzeigenpersonen bei dieser Korrektur; keine echten Mitarbeiterfotos daraus ableiten. Diese Ausnahme gilt nur für die Stellenplakate, nicht für echte Markt-/Gewinnübergabe-Fotos. Quellen als Betreiber-Desktopbestand und bearbeitete Anzeigen dokumentieren, niemals als Canva-verifiziert ausgeben. Keine Änderung von Upload-/Mail-/Sicherheitskonfiguration aus dieser Fotoveröffentlichung ableiten.

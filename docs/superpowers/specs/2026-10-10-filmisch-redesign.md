@@ -30,4 +30,6 @@ Optimierte lokale MP4-Derivate (Desktop Ziel ≤6 MB, mobil ≤3 MB), vollständ
 
 ## Abnahme
 
+Niko hat während der Umsetzung ausdrücklich »Zuerst lokal ansehen« gewählt. Kein öffentlicher Designrelease in diesem Auftragsschritt.
+
 Funktions- und Datentests, TypeScript/Lint/Build sowie Browserprüfung auf 390px, 768px und 1440px. Video inklusive Finale, Tastatur, reduzierte Bewegung, Datensparen, Fehlerfallback und alle Navigationseinstiege prüfen. Gesamten lokalen Entwurf auf dem echten Next.js zeigen, nicht nur die Designstudie. Änderungen auf bestehendem Branch sichern/pushen. Öffentliche Umschaltung getrennt behandeln; diese Umsetzung veröffentlicht nicht ungeprüft einen umfassenden visuellen Umbau.
