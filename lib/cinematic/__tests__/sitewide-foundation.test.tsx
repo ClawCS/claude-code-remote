@@ -64,4 +64,9 @@ describe("shared editorial foundation", () => {
     expect(html).toContain('id="intro"');
     expect(html).toContain("family");
   });
+
+  test("PageIntro preserves short breadcrumb labels as real links", () => {
+    const html = renderToStaticMarkup(<PageIntro title="Besuch" breadcrumbs={[{ label: "NL", href: "/nl" }, { label: "Besuch" }]} />);
+    expect(html).toMatch(/<a[^>]*href="\/nl"[^>]*>NL<\/a>/);
+  });
 });

@@ -65,3 +65,19 @@ Final gates: all 26 browser tests passed in the serial four-suite run (2.1 minut
 Status: DONE_WITH_CONCERNS solely for the explicitly documented native test prerequisites and deferred controller-owned production acceptance. No known unresolved Task 1 navigation defect. Subsequent page-family layouts are intentionally not claimed complete.
 
 Hard-refresh handoff: Im Browser bitte Strg+Shift+R (Mac: Cmd+Shift+R) drücken, damit der Cache bypasst wird.
+
+## Review round 1 — breadcrumb target (base e51aa76)
+
+Verified the review finding: a short `NL` breadcrumb rendered only 18.671875px wide despite its 44px height. Added `min-inline-size: 44px`, centered alignment and `.25rem` inline padding to the scoped breadcrumb anchor rule. No other product behavior changed.
+
+Regression lives in `e2e/editorial-targets.spec.ts`: actual browser layout of the breadcrumb primitive with the production stylesheet, at 390px, checking width and height >=44px and preserved `/nl` destination. The existing foundation unit file additionally checks that the real PageIntro renderer preserves the short label/link. Browser measurement intentionally stays in E2E so the ordinary Vitest suite does not acquire a Chromium prerequisite.
+
+Exact evidence:
+
+- `env -u NO_COLOR -u FORCE_COLOR PLAYWRIGHT_BASE_URL=http://localhost:3000 npx playwright test e2e/editorial-targets.spec.ts --workers=1 --reporter=list`: observed RED with the original rule, expected >=44, received 18.671875; restored sizing fix, GREEN 1/1. The final committed regression was also mutation-checked by temporarily restoring the original rule and observing the same failure before restoring the fix.
+- `env -u NO_COLOR -u FORCE_COLOR NODE_ENV=test npx vitest run lib/cinematic/__tests__/sitewide-foundation.test.tsx --maxWorkers=2`: GREEN 5/5.
+- `npx tsc --noEmit`; `npx eslint lib/cinematic/__tests__/sitewide-foundation.test.tsx e2e/editorial-targets.spec.ts`; `git diff --check`: all exit0 after the fix.
+- dev3000 `/kontakt` HTTP check succeeded after the CSS edit. No server restart, build, deployment or full-suite repeat.
+- Both color variables were unset for focused test commands; the conflicting NO_COLOR/FORCE_COLOR warnings disappeared without product changes. Use the same env prefix for later browser runs.
+
+Only the scoped CSS rule, two focused test files, and this already-tracked report belong to this follow-up commit. No further scratch reports force-added.

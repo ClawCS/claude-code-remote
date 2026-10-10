@@ -7,7 +7,7 @@
 .breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; margin: 0 0 1.5rem; padding: 0; list-style: none; color: var(--cinematic-color-muted); font-size: .875rem; }
 .breadcrumbs li { display: inline-flex; align-items: center; gap: .75rem; }
 .breadcrumbs li + li::before { content: "/"; color: var(--cinematic-color-muted); }
-.breadcrumbs a { display: inline-flex; min-height: 44px; align-items: center; text-underline-offset: .2em; }
+.breadcrumbs a { display: inline-flex; min-height: 44px; min-inline-size: 44px; align-items: center; justify-content: center; padding-inline: .25rem; text-underline-offset: .2em; }
 .introActions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); }
 .card { min-width: 0; padding: clamp(1.25rem, 3vw, 2rem); background: var(--cinematic-color-white); border: 1px solid var(--cinematic-color-line); border-radius: 2px; }
