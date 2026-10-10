@@ -99,3 +99,38 @@ No activation.11 owns expiry/minimization/old-pass pruning/erase/restore and phy
 R83 blocker: a signed head/non-genesis anchor is not a complete independently authenticated compacted current-case base. Backup-horizon+30-day pruning can strand six-month/held-case authority. Do not extend retention, infer missing SQLite state, prune required coverage or activate until base/classification are approved and qualified. Only complete synthetic genesis coverage is implemented.
 
 No fetch/push/deploy/install/provider/account/real-mail/credentials/activation, no subagents, no out-of-scope product changes, no modification/staging of42 foreign audit paths. Private sources remain local. Commit only verified owned application paths and this report.
+
+## Review fix round1 — I1, schema8 under R85
+
+FIX_BASE `b0c2c56a1a67c77aa99d885ab574f28560be4eab`. Read the complete independent task-10-review.md and verified I1 against the separate prepare/diagnostic transactions and recovery/clear paths. This round fixes only I1 and R85's necessary indexed recovery migration; Minor M1 formatting/refactoring is intentionally deferred. Review, TDD and verification skills were used. No second full-suite execution; the2476-test result above belongs to FIX_BASE, not this follow-up.
+
+Updated private contracts (no public/worker API signature change):
+
+- `prepare(copy_result)` now writes the contradiction latch/status inside the exact proposal transaction for CONTENT_MISMATCH, INVALID_IDENTITY and IDENTITY_CHANGED. A subsequent diagnostic failure cannot leave durable contradiction evidence with a false flag. Latching also invalidates current clearEventId/version/safetyRevision, while retaining historical immutable events.
+- `acknowledge` now atomically stores/validates the original exact receipt and restores the same restriction for a contradictory result, including idempotent acknowledgement. Barrier receipts remain ineligible as original phase receipts.
+- Guarded `snapshot` conservatively detects an already persisted proposed or acknowledged contradictory result when the flag is absent, validates its exact event/case, and durably latches blocked state. It therefore protects initial orchestration checks and both clear-proposal and final-clear checks; recovery starts no saved UID command and cannot erase the restriction. Diagnostic writes are no longer the safety boundary for copy results.
+- UIDVALIDITY_CHANGED remains a transient mismatch: no contradiction latch is created, and a later complete issue-free empty observation can establish technical clearance. No other result-pair or scope semantics changed.
+
+R85 adds only `deletion_contradictory_result`, a partial index on deletion_events(caseId) for the exact three contradictory mismatch payloads. It lives in a distinct appended migration8; the committed schema0–7 text is unchanged. Repository recognizes8, freezes the6→7 slice at its old boundary, and applies7→8 exactly once through the versioned migration transaction. No repeated startup DDL or optional scan fallback. The genuine7→8 test drops only this new index and sets version7, preserves exact case/lifecycle/proposal/grant/delivery/deletion event/state/diagnostic rows across two opens, and checks EXPLAIN QUERY PLAN uses `deletion_contradictory_result` for the actual lookup predicate. Task11 must now consume reviewed8 and append9.
+
+Regression evidence: real original-owner DB and signed-facade fixtures inject an actual SQLite BEFORE INSERT diagnostic failure after the result proposal, retain the exact pending result, reopen the owner, recover the same event, supply empty discovery, and assert no clear event/current-clear state. All three contradictory codes are tested. Six additional cases exercise already durable proposed/acknowledged results with the pre-fix missing flag; all must remain blocked after reopen/exact recovery. These use persisted old-boundary state, not a process-kill claim. The transient UIDVALIDITY restart control remains permitted.
+
+Commands and observed results:
+
+```sh
+NODE_ENV=test npx vitest run services/applications/tests/deletion.test.ts -t 'diagnostic SQL failure|missing latch|UIDVALIDITY_CHANGED transient|actual schema7' --maxWorkers=1
+```
+
+RED before production edits:10 failed/1 passed/45 skipped,10.64s. Three SQL-fault tests found contradictory=0; all six legacy pending/acknowledged cases incorrectly returned mailbox_cleared; migration remained7 rather than8. UIDVALIDITY control passed. GREEN after fix:11 passed/45 skipped,10.75s. Exact local outputs: task-10-fix1-red.log and task-10-fix1-green.log.
+
+```sh
+NODE_ENV=test npx vitest run services/applications/tests/deletion.test.ts services/applications/tests/repository.test.ts services/applications/tests/delivery-repository.test.ts services/applications/tests/lifecycle.test.ts services/applications/tests/ledger-contract.test.ts services/applications/tests/ledger.test.ts services/applications/tests/deletion-association.test.ts --maxWorkers=2
+npm run applications:build
+npx tsc --noEmit
+npx eslint services/applications/src/deletion-repository.ts services/applications/src/repository.ts services/applications/tests/deletion.test.ts services/applications/tests/repository.test.ts services/applications/tests/delivery-repository.test.ts services/applications/tests/lifecycle.test.ts --max-warnings=0
+git diff --check
+```
+
+Covering result:7/7 files,384/384 tests passed,62.53s,exit0. Build/typecheck/zero-warning lint/diff: all exit0. Covering output retained in task-10-fix1-covering.log. No full-suite rerun.
+
+Owned fix paths: src/deletion-repository.ts, src/repository.ts, src/schema.sql; tests/deletion.test.ts plus only current-version expectations in tests/repository.test.ts, tests/delivery-repository.test.ts and tests/lifecycle.test.ts; this report. Existing removeTask10Schema already drops deletion_events and therefore its new index, so no teardown helper change was needed. No lifecycle/ledger codec/facade/association production changes, no orchestration refactor, no retention/provider/activation expansion. All prior11/14/15/R83 coverage blockers remain.42 foreign audit paths remain untouched and unstaged.

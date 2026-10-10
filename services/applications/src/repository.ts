@@ -59,7 +59,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -72,7 +72,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("CREATE TABLE case_lifecycle"), schema.indexOf("-- Task10 migration7")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 6) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 migration7")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 migration7"), schema.indexOf("-- Task10 fix1 migration8")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 7) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 fix1 migration8")));
     }).immediate();
   } catch (error) {
     db.close();

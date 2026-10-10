@@ -231,3 +231,9 @@ CREATE TABLE deletion_diagnostics(
 );
 CREATE INDEX deletion_due ON case_lifecycle(deleteFrom,caseId);
 PRAGMA user_version = 7;
+-- Task10 fix1 migration8: indexed recovery of durable contradiction evidence.
+CREATE INDEX deletion_contradictory_result ON deletion_events(caseId)
+ WHERE json_extract(event,'$[3]')='copy_result'
+ AND json_extract(event,'$[4][2]')='mismatch'
+ AND json_extract(event,'$[4][3]') IN ('INVALID_IDENTITY','CONTENT_MISMATCH','IDENTITY_CHANGED');
+PRAGMA user_version = 8;

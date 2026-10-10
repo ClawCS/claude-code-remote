@@ -11,6 +11,12 @@ export function deletionOwner(repository: ApplicationRepository) { const owner =
 const contradictory = ["INVALID_IDENTITY", "CONTENT_MISMATCH", "IDENTITY_CHANGED"];
 function fail(): never { throw new Error("DELETION_STORAGE_INVALID"); }
 export function createDeletionRepository(db: Database.Database, readCase: (id: ApplicationId) => CaseRecord, getDelivery: (id: ApplicationId) => DeliveryRecord, guard: (id: ApplicationId) => void, journal: SafetyJournal | undefined, now: () => string) {
+  function isContradictoryResult(event: JournalEvent): boolean {
+    return event[3] === "copy_result" && event[4][2] === "mismatch" && contradictory.includes(event[4][3]);
+  }
+  function latchContradiction(id: ApplicationId): void {
+    db.prepare("INSERT INTO deletion_state(caseId,contradictory,status) VALUES(?,1,'blocked') ON CONFLICT(caseId) DO UPDATE SET contradictory=1,status='blocked',clearEventId=NULL,clearVersion=NULL,clearSafetyRevision=NULL").run(id);
+  }
   function phase(eventId: string): Phase {
     const p = db.prepare("SELECT * FROM deletion_events WHERE eventId=?").get(eventId) as Phase | undefined;
     if (!p) fail(); const event = decodeJournalEvent(p.event);
@@ -24,7 +30,18 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
   function snapshot(id: ApplicationId) {
     guard(id); const row = readCase(id), delivery = getDelivery(id);
     const state = db.prepare("SELECT contradictory FROM deletion_state WHERE caseId=?").get(id) as { contradictory: number } | undefined;
-    return { row, delivery, contradictory: state?.contradictory === 1 };
+    let restricted = state?.contradictory === 1;
+    if (!restricted) {
+      // Older proposed/acknowledged outcomes may predate the atomic latch.
+      // The partial index bounds this conservative evidence lookup by case.
+      const found = db.prepare("SELECT eventId FROM deletion_events WHERE caseId=? AND json_extract(event,'$[3]')='copy_result' AND json_extract(event,'$[4][2]')='mismatch' AND json_extract(event,'$[4][3]') IN ('INVALID_IDENTITY','CONTENT_MISMATCH','IDENTITY_CHANGED') LIMIT 1").get(id) as { eventId: string } | undefined;
+      if (found) {
+        const evidence = phase(found.eventId);
+        if (evidence.caseId !== id || !isContradictoryResult(decodeJournalEvent(evidence.event))) fail();
+        latchContradiction(id); restricted = true;
+      }
+    }
+    return { row, delivery, contradictory: restricted };
   }
   function pending(id: ApplicationId): MailboxJournalEvent | null {
     guard(id); const p = db.prepare("SELECT eventId FROM deletion_events WHERE caseId=? AND phase='proposed' LIMIT 2").all(id) as { eventId: string }[];
@@ -48,6 +65,7 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
         }
       }
       db.prepare("INSERT INTO deletion_events(eventId,caseId,event,resultFor,phase) VALUES(?,?,?,?,'proposed')").run(event[1], id, wire, event[3] === "copy_result" ? event[4][1] : null);
+      if (isContradictoryResult(event)) latchContradiction(id);
     }).immediate();
   }
   function acknowledge(id: ApplicationId, event: MailboxJournalEvent, receipt: DurableReceipt): void {
@@ -56,8 +74,11 @@ export function createDeletionRepository(db: Database.Database, readCase: (id: A
     const e = JSON.parse(receipt.entry), h = JSON.parse(receipt.head);
     const fact = db.prepare("SELECT f.sequence,f.entryHash,f.event FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(event[1]) as { sequence: string; entryHash: string; event: string } | undefined;
     if (!fact || JSON.stringify(e) !== receipt.entry || JSON.stringify(h) !== receipt.head || e[0]?.[0] !== "tj-journal-entry-v1" || h[0]?.[0] !== "tj-journal-head-v1" || encodeJournalEvent(e[0][7]) !== p.event || fact.event !== p.event || e[0][4] !== fact.sequence || h[0][4] !== fact.sequence || h[0][5] !== fact.entryHash || h[0][6] !== event[1] || h[0][7] !== event[2] || e[0][1] !== h[0][1] || e[0][2] !== h[0][2]) fail();
-    if (p.phase === "acknowledged") { if (p.entry !== receipt.entry || p.head !== receipt.head) fail(); return; }
-    db.prepare("UPDATE deletion_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry, receipt.head, event[1]);
+    db.transaction(() => {
+      if (p.phase === "acknowledged") { if (p.entry !== receipt.entry || p.head !== receipt.head) fail(); }
+      else db.prepare("UPDATE deletion_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry, receipt.head, event[1]);
+      if (isContradictoryResult(event)) latchContradiction(id);
+    }).immediate();
   }
   const selector = `FROM cases c JOIN case_lifecycle l ON l.caseId=c.id LEFT JOIN deletion_state d ON d.caseId=c.id WHERE l.deleteFrom IS NOT NULL AND l.deleteFrom<=? AND (d.clearVersion IS NULL OR d.clearVersion!=c.version OR d.clearSafetyRevision!=l.safetyRevision) AND COALESCE(d.selectedCycle,0)<?`;
   return Object.freeze({

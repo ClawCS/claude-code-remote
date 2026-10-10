@@ -75,6 +75,53 @@ async function due() {
 }
 
 describe("finite guarded deletion", () => {
+  it.each(["CONTENT_MISMATCH", "INVALID_IDENTITY", "IDENTITY_CHANGED"] as const)("keeps %s blocked across diagnostic SQL failure and exact restart recovery", async issue => {
+    const s = await due();
+    s.mailbox.deleteVerified = async () => ({ kind: "mismatch", issue });
+    s.db.exec("CREATE TRIGGER synthetic_diagnostic_fault BEFORE INSERT ON deletion_diagnostics BEGIN SELECT RAISE(ABORT,'synthetic diagnostic fault'); END;");
+    expect((await runDeletionOnce(s.deps)).cases[0].reason).toBe("STORAGE_FAILED");
+    const pending = s.db.prepare("SELECT eventId,event FROM deletion_events WHERE phase='proposed'").get() as { eventId: string; event: string };
+    expect(JSON.parse(pending.event)[4].slice(2)).toEqual(["mismatch", issue]);
+    expect(s.db.prepare("SELECT contradictory,status FROM deletion_state WHERE caseId=?").get(s.accepted.id)).toEqual({ contradictory: 1, status: "blocked" });
+    s.db.exec("DROP TRIGGER synthetic_diagnostic_fault"); s.restart(); s.deps.repository = s.repository;
+    s.mailbox.findVerified = async () => ({ copies: [], complete: true, issues: [] });
+    expect((await runDeletionOnce(s.deps)).cases[0].reason).toBe("DEFERRED");
+    expect(s.db.prepare("SELECT eventId,event FROM deletion_events WHERE eventId=? AND phase='acknowledged'").get(pending.eventId)).toEqual(pending);
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("blocked");
+    expect(s.fixture.receipts.map(r => JSON.parse(r.entry)[0][7][3])).not.toContain("mailbox_clear_observed");
+    expect(s.db.prepare("SELECT clearEventId FROM deletion_state WHERE caseId=?").get(s.accepted.id)).toEqual({ clearEventId: null });
+  });
+  for (const phase of ["proposed", "acknowledged"] as const) {
+    it.each(["CONTENT_MISMATCH", "INVALID_IDENTITY", "IDENTITY_CHANGED"] as const)(`reconciles old ${phase} %s evidence with a missing latch before empty-search clearing`, async issue => {
+      const s = await due(); s.mailbox.deleteVerified = async () => ({ kind: "mismatch", issue });
+      s.db.exec("CREATE TRIGGER synthetic_diagnostic_fault BEFORE INSERT ON deletion_diagnostics BEGIN SELECT RAISE(ABORT,'synthetic diagnostic fault'); END;");
+      await runDeletionOnce(s.deps); s.db.exec("DROP TRIGGER synthetic_diagnostic_fault");
+      const pending = s.db.prepare("SELECT eventId,event FROM deletion_events WHERE phase='proposed'").get() as { eventId: string; event: string };
+      if (phase === "acknowledged") {
+        const event = JSON.parse(pending.event);
+        await s.journal.recover(event); const receipt = await s.journal.append(event);
+        await s.repository.withCaseLock(s.accepted.id, async () => deletionOwner(s.repository).acknowledge(s.accepted.id, event, receipt));
+      }
+      // Genuine persisted pre-fix boundary: exact outcome exists but the old
+      // separately written latch was absent at the stop/restore boundary.
+      s.db.prepare("UPDATE deletion_state SET contradictory=0,status='partial' WHERE caseId=?").run(s.accepted.id);
+      s.restart(); s.deps.repository = s.repository;
+      s.mailbox.findVerified = async () => ({ copies: [], complete: true, issues: [] });
+      if (phase === "proposed") expect((await runDeletionOnce(s.deps)).cases[0].reason).toBe("DEFERRED");
+      expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("blocked");
+      expect(s.db.prepare("SELECT contradictory,status,clearEventId FROM deletion_state WHERE caseId=?").get(s.accepted.id)).toEqual({ contradictory: 1, status: "blocked", clearEventId: null });
+      expect(s.db.prepare("SELECT eventId,event FROM deletion_events WHERE eventId=? AND phase='acknowledged'").get(pending.eventId)).toEqual(pending);
+      expect(s.fixture.receipts.map(r => JSON.parse(r.entry)[0][7][3])).not.toContain("mailbox_clear_observed");
+    });
+  }
+  it("keeps UIDVALIDITY_CHANGED transient across restart and permits later complete empty evidence", async () => {
+    const s = await due(); s.mailbox.deleteVerified = async () => ({ kind: "mismatch", issue: "UIDVALIDITY_CHANGED" });
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("partial");
+    expect(s.db.prepare("SELECT contradictory FROM deletion_state WHERE caseId=?").get(s.accepted.id)).toEqual({ contradictory: 0 });
+    s.restart(); s.deps.repository = s.repository;
+    s.mailbox.findVerified = async () => ({ copies: [], complete: true, issues: [] });
+    expect((await runDeletionOnce(s.deps)).cases[0].status).toBe("mailbox_cleared");
+  });
   it("does no work when the existing case guard is acquired only after the run deadline", async () => {
     const s = await due(); let release!: () => void, entered!: () => void;
     const gate = new Promise<void>(resolve => { release = resolve; }), seen = new Promise<void>(resolve => { entered = resolve; });
@@ -256,6 +303,18 @@ describe("finite guarded deletion", () => {
 });
 
 describe("original-owner safety projection and acceptance", () => {
+  it("migrates actual schema7 to8 once, preserving exact facts and using the contradiction index", async () => {
+    const s = await due(); s.mailbox.deleteVerified = async () => ({ kind: "mismatch", issue: "CONTENT_MISMATCH" }); await runDeletionOnce(s.deps);
+    const tables = ["cases", "case_lifecycle", "lifecycle_proposals", "auth_grants", "deliveries", "deletion_events", "deletion_state", "deletion_diagnostics"];
+    const before = tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all());
+    s.db.exec("DROP INDEX IF EXISTS deletion_contradictory_result; PRAGMA user_version=7;"); s.restart();
+    expect(s.db.pragma("user_version", { simple: true })).toBe(8);
+    expect(tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all())).toEqual(before);
+    const plan = s.db.prepare("EXPLAIN QUERY PLAN SELECT eventId FROM deletion_events WHERE caseId=? AND json_extract(event,'$[3]')='copy_result' AND json_extract(event,'$[4][2]')='mismatch' AND json_extract(event,'$[4][3]') IN ('INVALID_IDENTITY','CONTENT_MISMATCH','IDENTITY_CHANGED') LIMIT 1").all(s.accepted.id) as { detail: string }[];
+    expect(plan.some(row => row.detail.includes("USING INDEX deletion_contradictory_result"))).toBe(true);
+    s.restart(); expect(s.db.pragma("user_version", { simple: true })).toBe(8);
+    expect(tables.map(table => s.db.prepare(`SELECT * FROM ${table}`).all())).toEqual(before);
+  });
   it.each(["cross-case", "duplicate-result"] as const)("rejects independently signed %s causal facts", async fault => {
     const s = setup(), first = s.accept().value, second = s.accept().value; await s.journal.refresh("startup");
     const row = await s.repository.withCaseLock(first.id, async value => value);
@@ -272,7 +331,7 @@ describe("original-owner safety projection and acceptance", () => {
   it("migrates schema6 acceptance to null once and never backfills it on replay", () => {
     const s = setup(), accepted = s.accept();
     removeTask10Schema(s.db); s.db.pragma("user_version=6"); s.restart();
-    expect(s.db.pragma("user_version", { simple: true })).toBe(7);
+    expect(s.db.pragma("user_version", { simple: true })).toBe(8);
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: null });
     s.setAdmission(null); expect(s.repository.commitIntake(accepted.input).replayed).toBe(true); s.restart();
     expect(s.db.prepare("SELECT acceptanceEpochId FROM cases WHERE id=?").get(accepted.value.id)).toEqual({ acceptanceEpochId: null });
