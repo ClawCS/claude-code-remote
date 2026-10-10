@@ -92,7 +92,7 @@ export default function WishlistDrawer() {
                       <span className="text-xs text-muted">Preis auf Anfrage</span>
                       <div className="flex items-center gap-1">
                         <button
-                          onClick={() => addToCart(product, 1)}
+                          onClick={() => { addToCart(product, 1); setIsWishlistOpen(false); }}
                           className={editorial.primaryLink}
                         >
                           + Anfrage

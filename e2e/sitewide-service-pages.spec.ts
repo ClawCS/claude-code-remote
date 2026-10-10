@@ -160,6 +160,29 @@ for (const width of [390, 768, 1440]) {
     await ready(page, "/checkout"); await expect(page.getByText("Gemischte Warenkörbe und Leihartikel ohne festgelegten Preis stimmen wir persönlich mit dir ab.", { exact: true })).toBeVisible(); await capture(page, `checkout-mixed-${width}`);
   });
 
+  test(`individual wishlist transfer hands off to one keyboard-safe cart dialog at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 }); await ready(page, "/finder");
+    await page.getByRole("button", { name: /Bierfinder/ }).click();
+    for (const name of ["Pils – herb & frisch", "Keine Präferenz", "Feierabendbier"]) await page.getByRole("button", { name, exact: true }).click();
+    const card = page.locator("[data-product-card]").first();
+    const productName = (await card.getByRole("heading", { level: 2 }).textContent())!.trim();
+    await card.getByRole("button", { name: "Zum Merkzettel", exact: true }).click();
+    await page.locator("footer").getByRole("link", { name: "Merkzettel", exact: true }).click();
+    const preview = page.getByRole("button", { name: "Merkzettel-Vorschau öffnen", exact: true }); await preview.click();
+    await page.getByRole("dialog", { name: "Merkzettel (1)", exact: true }).getByRole("button", { name: "+ Anfrage", exact: true }).click();
+    await expect(page.getByRole("dialog")).toHaveCount(1);
+    const cart = page.getByRole("dialog", { name: "Deine Anfrageliste", exact: true });
+    await expect(cart).toContainText(productName); await expect(cart.getByText("1", { exact: true })).toBeVisible();
+    const controls = cart.locator('a[href],button:not([disabled]),input:not([disabled])');
+    await expect(controls.first()).toBeFocused();
+    await page.keyboard.press("Tab"); await expect(controls.nth(1)).toBeFocused();
+    await page.keyboard.press("Shift+Tab"); await expect(controls.first()).toBeFocused();
+    await assertDialogKeyboard(page, "Deine Anfrageliste", preview);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator("[data-product-card]")).toHaveCount(1);
+    await expect(page.locator("[data-product-card]")).toContainText(productName);
+  });
+
   test(`synthetic application selection and error focus without upload at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 }); let mutations = 0;
     await page.route("**/api/bewerbung**", route => {
