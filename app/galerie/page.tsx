@@ -37,6 +37,11 @@ export default function GaleriePage() {
         <p className="my-4">Unsere Bilder und Geschichten auf Instagram.</p>
         <SocialLink platform="instagram" href="https://www.instagram.com/trinkgutjammers_goch/" label="Instagram-Profil @trinkgutjammers_goch öffnen" />
       </section>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-current/20" aria-labelledby="team-jobs-title">
+        <h2 id="team-jobs-title" className="text-2xl font-bold">Teil von Team Jammers werden</h2>
+        <p className="my-4">Verkauf in Vollzeit oder Teilzeit bis zu 150 Stunden/Monat.</p>
+        <Link href="/bewerbung" prefetch={false} className="text-primary underline">Stellen und Bewerbung</Link>
+      </section>
     </div>
   );
 }

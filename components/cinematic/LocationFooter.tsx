@@ -60,6 +60,7 @@ export default function LocationFooter(): React.JSX.Element {
         ))}
       </nav>
       <p className={styles.footerFineprint}>
+        <Link href="/bewerbung" prefetch={false}>Jobs bei Jammers</Link>{" · "}
         <Link href="/cocktails" prefetch={false}>Cocktail-Rezepte</Link>{" · "}
         <Link href="/partyplaner" prefetch={false}>Party planen</Link>{" · "}
         <Link href="/akademie" prefetch={false}>Getränkeakademie</Link>{" · "}

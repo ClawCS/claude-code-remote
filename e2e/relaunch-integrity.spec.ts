@@ -18,7 +18,12 @@ test("GrailBid bridge is explicit and safe",async({page})=>{
 });
 
 test("paused collection endpoints reject input without server-side processing",async({request})=>{
-  for(const route of ["bewerbung","community","chat","kuehlschrank","leergut-scan"]){const response=await request.post(`/api/${route}`,{data:{name:"TEST",text:"TEST"}});expect(response.status(),route).toBe(503);expect(response.headers()["cache-control"]).toBe("no-store");}
+  const configResponse=await request.get("/api/bewerbung/config");expect(configResponse.status()).toBe(200);
+  const {validateApplicationConfig}=await import("../lib/applications-client");
+  const config=validateApplicationConfig(await configResponse.json());expect(config).not.toBeNull();
+  expect(config?.mode==="disabled" ? !config.enabled : config?.mode==="pilot" ? !config.enabled : true).toBe(true);
+  const application=await request.post("/api/bewerbung");expect(application.status()).toBe(config?.mode==="disabled"?503:403);expect(application.headers()["cache-control"]).toContain("no-store");
+  for(const route of ["community","chat","kuehlschrank","leergut-scan"]){const response=await request.post(`/api/${route}`,{data:{name:"TEST",text:"TEST"}});expect(response.status(),route).toBe(503);expect(response.headers()["cache-control"]).toBe("no-store");}
   for(const route of ["/api/handzettel/cron","/api/handzettel/fetch"]){const response=await request.post(route,{data:{}});expect([401,503],route).toContain(response.status());expect(response.headers()["cache-control"]).toBe("no-store");}
 });
 

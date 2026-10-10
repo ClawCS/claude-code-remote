@@ -84,6 +84,22 @@ function uploadHeaders(session: { cookie: string; token: string }, key = "synthe
   return { ...metadata, cookie: session.cookie, "x-application-form-token": session.token, "idempotency-key": key, "x-application-client-ip": "192.0.2.1", "content-type": `multipart/form-data; boundary=${boundary}` };
 }
 describe("disabled intake", () => {
+  it("rejects the empty unauthenticated disabled upload before origin checks or worker actions", async () => {
+    const calls: string[] = [];
+    const worker: IntakeWorkerPort = {
+      getIntakeReadiness: async () => { calls.push("readiness"); throw new Error("UNEXPECTED_WORK"); },
+      reserve: async () => { calls.push("reserve"); throw new Error("UNEXPECTED_WORK"); },
+      commitIntake: async () => { calls.push("commit"); throw new Error("UNEXPECTED_WORK"); },
+      abortIntake: async () => { calls.push("abort"); throw new Error("UNEXPECTED_WORK"); },
+      getPublicStatus: async () => { calls.push("status"); throw new Error("UNEXPECTED_WORK"); },
+    };
+    server = createIntakeServer(readIntakeConfig({ NODE_ENV: "test", APPLICATIONS_ORIGIN: origin }), worker);
+    server.listen(0, "127.0.0.1"); await once(server, "listening");
+    const response = await request("/api/bewerbung", "POST", {});
+    expect(response.status).toBe(503);
+    expect(response.body).toMatchObject({ code: "WORKER_UNAVAILABLE" });
+    expect(calls).toEqual([]);
+  });
   it("returns private JSON errors even for Node-rejected malformed request headers", async () => {
     await start(); const response = await request("/api/bewerbung/session", "POST", { ...metadata, "content-length": "-1" });
     expect(response.status).toBe(400); expect(response.body).toMatchObject({ code: "INVALID_REQUEST" }); expect(response.headers["cache-control"]).toBe("private, no-store");
@@ -105,9 +121,9 @@ describe("disabled intake", () => {
     expect(response.headers["referrer-policy"]).toBe("no-referrer");
     expect(response.headers["x-content-type-options"]).toBe("nosniff");
   });
-  it("rejects cross-origin POST before admitting an unbounded body", async () => {
+  it("keeps configured-disabled POST unavailable even with a cross-origin request", async () => {
     await start(); const response = await request("/api/bewerbung", "POST", { ...metadata, origin: "https://attacker.invalid" });
-    expect(response.status).toBe(403); expect(response.body).toMatchObject({ code: "FORBIDDEN" });
+    expect(response.status).toBe(503); expect(response.body).toMatchObject({ code: "WORKER_UNAVAILABLE" });
   });
 });
 describe("authenticated synthetic HTTP streams", () => {

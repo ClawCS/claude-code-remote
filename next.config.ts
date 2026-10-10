@@ -77,6 +77,10 @@ const nextConfig: NextConfig = {
         source: `/${section}/:path*`,
         headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }, { key: "Cache-Control", value: "private, no-store" }],
       })),
+      ...["bewerbung", "api/bewerbung", "api/bewerbungsverwaltung"].map(section => ({
+        source: `/${section}/:path*`,
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }, { key: "Cache-Control", value: "private, no-store" }, { key: "X-Content-Type-Options", value: "nosniff" }],
+      })),
       {
         source:"/handzettel/manifest.json",
         headers:[{key:"X-Robots-Tag",value:"noindex, noarchive"}],

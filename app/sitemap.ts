@@ -31,7 +31,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/partyspiele", priority: 0.7, changeFrequency: "monthly" },
     { path: "/nl", priority: 0.7, changeFrequency: "weekly" },
     { path: "/kontakt", priority: 0.7, changeFrequency: "yearly" },
-    { path: "/bewerbung", priority: 0.6, changeFrequency: "monthly" },
     { path: "/impressum", priority: 0.3, changeFrequency: "yearly" },
     { path: "/datenschutz", priority: 0.3, changeFrequency: "yearly" },
     { path: "/agb", priority: 0.3, changeFrequency: "yearly" },

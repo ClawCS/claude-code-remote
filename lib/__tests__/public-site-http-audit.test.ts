@@ -10,7 +10,7 @@ afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await
 
 type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string; malformedRow?: { collection: "offers" | "flyers" | "indexFlyers"; value: unknown } };
 
-async function fixture(options: FixtureOptions = {}) {
+async function fixture(options: FixtureOptions & { application?: { config: unknown; post: number } } = {}) {
   const requests: Array<{ path: string; method: string; authorization?: string; origin?: string; body: string }> = [];
   const server = createServer((request: IncomingMessage, response: ServerResponse) => {
     const url = new URL(request.url ?? "/", "http://fixture.invalid");
@@ -31,6 +31,13 @@ async function fixture(options: FixtureOptions = {}) {
     if (url.pathname.startsWith("/api/")) {
       response.setHeader("Content-Type", "application/json");
       response.setHeader("Cache-Control", "no-store");
+      if (url.pathname === "/api/bewerbung/config" || url.pathname === "/api/bewerbung") {
+        response.setHeader("Referrer-Policy", "no-referrer");
+        response.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
+        if (url.pathname.endsWith("/config")) response.end(JSON.stringify(options.application?.config ?? { enabled: false, mode: "disabled", limits: { maxFiles: 5, maxFileBytes: 5242880, maxTotalBytes: 10485760 }, jobs: [{ id: "sales-fulltime", label: "Vollzeit" }, { id: "sales-parttime", label: "Teilzeit" }] }));
+        else { response.statusCode = options.broken === "api" ? 200 : options.application?.post ?? 503; response.end(JSON.stringify({ code: "WORKER_UNAVAILABLE" })); }
+        return;
+      }
       if (url.pathname.startsWith("/api/content/")) {
         if (request.method==="POST") {response.statusCode=options.broken==="content-post"?200:405;response.end();return;}
         const empty={status:"ok",issues:[],generatedAt:"2026-10-11T12:00:00Z",flyers:[],offers:[]};
@@ -45,7 +52,7 @@ async function fixture(options: FixtureOptions = {}) {
       }
       if (/^\/api\/(rentals|rental-admin)\//.test(url.pathname)) {
         response.setHeader("Referrer-Policy", options.broken === "rental-referrer" ? "strict-origin-when-cross-origin" : "no-referrer");
-        if (url.pathname === "/api/rentals/config") response.statusCode = 200;
+        if (url.pathname === "/api/rentals/config") { response.statusCode = 200; response.end(JSON.stringify({ enabled: false, testMode: false, onlinePayment: false, termsVersion: "", termsText: "", privacyText: "", message: "Online-Bestellungen sind noch nicht freigeschaltet. Bitte stellen Sie eine unverbindliche Anfrage." })); return; }
         else if (url.pathname.startsWith("/api/rental-admin/")) response.statusCode = options.broken === "rental-auth" ? 200 : url.pathname.endsWith("/session") ? 403 : 401;
         else if (url.pathname.includes("__audit_unknown__") || url.pathname.endsWith("/webhook")) response.statusCode = 404;
         else response.statusCode = 403;
@@ -95,6 +102,18 @@ async function fixture(options: FixtureOptions = {}) {
 }
 
 describe("public HTTP forensic audit CLI", () => {
+  it.each([
+    ["disabled", false, 503, true], ["enabled", true, 403, true], ["enabled", false, 403, true], ["pilot", false, 403, true],
+    ["disabled", true, 503, false], ["pilot", true, 403, false], ["enabled", true, 503, false], ["disabled", false, 403, false], ["enabled", true, 202, false],
+  ] as const)("maps public application mode %s/%s to exact rejecting POST %s", async (mode, enabled, post, pass) => {
+    const config = { enabled, mode, limits: { maxFiles: 5, maxFileBytes: 5242880, maxTotalBytes: 10485760 }, jobs: [{ id: "sales-fulltime", label: "Vollzeit" }, { id: "sales-parttime", label: "Teilzeit" }] };
+    const result = await fixture({ application: { config, post } });
+    expect(result.code, result.text).toBe(pass ? 0 : 1);
+    expect(result.requests.filter(request => request.path === "/api/bewerbung/session")).toEqual([]);
+    const upload = result.requests.find(request => request.path === "/api/bewerbung" && request.method === "POST");
+    expect(upload).toMatchObject({ body: "", origin: undefined, authorization: undefined });
+    expect(JSON.stringify(result.report)).not.toContain("Vollzeit");
+  });
   it.each(
     (["offers", "flyers", "indexFlyers"] as const).flatMap(collection =>
       [null, false, 0, "https://provider.invalid/private-row", []].map(value => ({ collection, value }))),
@@ -107,7 +126,7 @@ describe("public HTTP forensic audit CLI", () => {
       severity: "error", code: "api-weekly-contract", path: "/api/content/offers",
     }));
     expect(result.requests.every(request => !request.authorization)).toBe(true);
-    expect(result.requests.filter(request => request.method === "POST").every(request => request.body === "{}" && !request.origin)).toBe(true);
+    expect(result.requests.filter(request => request.method === "POST").every(request => request.body === (request.path === "/api/bewerbung" ? "" : "{}") && !request.origin)).toBe(true);
     expect(result.requests.some(request => request.path.includes("private-row"))).toBe(false);
     expect(JSON.stringify(result.report)).not.toContain("provider.invalid");
   });

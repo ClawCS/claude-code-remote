@@ -76,6 +76,9 @@ export function createIntakeServer(config: IntakeConfig, worker: IntakeWorkerPor
       try { await bounded(worker.abortIntake(reservation.id, sessionHash), new AbortController().signal); } catch { /* Worker journal/lifetime recovery retains authority. */ }
     };
     const handle = async () => {
+      // Closed disabled fallback: no admission, body read, identity or worker
+      // action. Enabled/pilot routes retain all original origin/proof gates.
+      if (request.method === "POST" && request.url === "/api/bewerbung" && (!config.acceptance || config.mode === "disabled")) throw new Error("WORKER_UNAVAILABLE");
       sameOrigin(request, config);
       for (const name of ["authorization", "cookie", "x-application-form-token", "idempotency-key", "x-application-synthetic", config.proxy.clientIpHeader, "content-type", "content-length", "transfer-encoding"]) singleHeader(request, name);
       if (!request.url || request.url.includes("?") || request.url.includes("#") || request.url.includes("%")) throw new Error("INVALID_REQUEST");

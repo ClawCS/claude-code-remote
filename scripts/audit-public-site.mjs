@@ -25,7 +25,7 @@ const API_CHECKS = [
   { path: "/api/handzettel/fetch", method: "GET", statuses: [200] },
   { path: "/api/handzettel/cron", method: "GET", statuses: [401, 503] },
   { path: "/api/handzettel/fetch?refresh=true", method: "GET", statuses: [401, 503] },
-  ...["bewerbung", "community", "chat", "kuehlschrank", "leergut-scan"].map(route => ({ path: `/api/${route}`, method: "POST", statuses: [503] })),
+  ...["community", "chat", "kuehlschrank", "leergut-scan"].map(route => ({ path: `/api/${route}`, method: "POST", statuses: [503] })),
   ...["/api/handzettel/cron", "/api/handzettel/fetch"].map(path => ({ path, method: "POST", statuses: [401, 503] })),
   { path: "/api/rentals/config", method: "GET", statuses: [200] },
   { path: "/api/rentals/quote", method: "POST", statuses: [403] },
@@ -104,13 +104,16 @@ async function main() {
     try {
       return await fetch(new URL(path, base), {
         method, redirect: "manual", signal: AbortSignal.timeout(45000),
-        ...(method === "POST" ? { headers: { "Content-Type": "application/json" }, body: "{}" } : {}),
+        ...(path === "/api/bewerbung/config" ? { headers: { "Sec-Fetch-Site": "same-origin", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Dest": "empty" } } : {}),
+        ...(method === "POST" && path !== "/api/bewerbung" ? { headers: { "Content-Type": "application/json" }, body: "{}" } : {}),
       });
     } catch (error) { fail("request-failed", path, `${method} failed (${error?.name ?? "network error"})`); return null; }
   }
 
   function security(response, path) {
-    const referrer = /^\/api\/(?:rentals|rental-admin)(?:\/|$)/.test(path) ? "no-referrer" : "strict-origin-when-cross-origin";
+    const sensitive = /^\/(?:bewerbung|api\/(?:rentals|rental-admin|bewerbung|bewerbungsverwaltung))(?:\/|$)/.test(path);
+    const referrer = sensitive ? "no-referrer" : "strict-origin-when-cross-origin";
+    if (/^\/(?:bewerbung|api\/(?:bewerbung|bewerbungsverwaltung))(?:\/|$)/.test(path) && !response.headers.get("x-robots-tag")?.includes("noindex")) fail("security-header",path,"Sensitive application route lacks noindex");
     for (const [name, value] of [["x-content-type-options", "nosniff"], ["x-frame-options", "SAMEORIGIN"], ["referrer-policy", referrer]]) {
       if (response.headers.get(name) !== value) fail("security-header", path, `${name} missing or incorrect`);
     }
@@ -216,7 +219,23 @@ async function main() {
   });
 
   const weeklyResponses=new Map();
-  for (const contract of API_CHECKS) {
+  const applicationResponse = await fetchLocal("/api/bewerbung/config");
+  let application = null;
+  if (applicationResponse) {
+    security(applicationResponse,"/api/bewerbung/config");
+    try {
+      if (applicationResponse.status !== 200 || !applicationResponse.headers.get("cache-control")?.includes("no-store") || !/^application\/json(?:\s*;|$)/i.test(applicationResponse.headers.get("content-type") ?? "")) throw new Error();
+      const reader = applicationResponse.body.getReader(), decoder = new TextDecoder("utf-8",{fatal:true}); let bytes=0, text="";
+      try { while(true) { const chunk=await reader.read(); if(chunk.done)break; bytes+=chunk.value.byteLength; if(bytes>8192)throw new Error(); text+=decoder.decode(chunk.value,{stream:true}); } text+=decoder.decode(); }
+      catch(error) { await reader.cancel();throw error; } finally { reader.releaseLock(); }
+      const value=JSON.parse(text), object=x=>x!==null&&typeof x==="object"&&!Array.isArray(x), exact=(x,keys)=>object(x)&&Object.keys(x).length===keys.length&&keys.every(k=>Object.hasOwn(x,k));
+      if (!exact(value,["enabled","mode","limits","jobs"]) || typeof value.enabled!=="boolean" || !["disabled","enabled","pilot"].includes(value.mode) || value.mode!=="enabled"&&value.enabled || !exact(value.limits,["maxFiles","maxFileBytes","maxTotalBytes"]) || value.limits.maxFiles!==5 || value.limits.maxFileBytes!==5242880 || value.limits.maxTotalBytes!==10485760 || !Array.isArray(value.jobs)||value.jobs.length!==2||!value.jobs.every(job=>exact(job,["id","label"])&&["sales-fulltime","sales-parttime"].includes(job.id)&&typeof job.label==="string"&&job.label.length>0&&job.label.length<=160&&!/[\u0000-\u001f\u007f]/.test(job.label))||new Set(value.jobs.map(job=>job.id)).size!==2)throw new Error();
+      application={mode:value.mode,enabled:value.enabled};
+    } catch { fail("api-application-config","/api/bewerbung/config","Invalid public application configuration"); }
+  }
+  report.apis.push({path:"/api/bewerbung/config",method:"GET",status:applicationResponse?.status??null,expectedStatuses:[200],...(application?{mode:application.mode,intakeAvailable:application.enabled}:{})});
+  const applicationStatus=application?.mode==="disabled"?503:403;
+  for (const contract of [{path:"/api/bewerbung",method:"POST",statuses:[applicationStatus]},...API_CHECKS]) {
     const response = await fetchLocal(contract.path, contract.method);
     report.apis.push({ path: contract.path, method: contract.method, status: response?.status ?? null, expectedStatuses: contract.statuses });
     if (!response) continue;
