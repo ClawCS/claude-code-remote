@@ -5,7 +5,7 @@ import { eigenmarken } from "../data/eigenmarken";
 import { GIVEAWAYS_2026 } from "../data/giveaways";
 import type { FlyerIndex } from "../lib/flyer-index";
 
-const proof = ".superpowers/sdd/2026-10-10-sitewide-filmisch/screenshots";
+const proof = process.env.AUDIT_SCREENSHOT_DIR ?? ".superpowers/sdd/2026-10-10-sitewide-filmisch/screenshots";
 const routes = ["/angebote", "/handzettel", "/produkte", "/kategorie/bier", "/eigenmarke", "/regionale-spirituosen", "/geschenkideen", "/marktleben", "/galerie", "/gewinnspiel", "/gewinnspiel/archiv"];
 
 for (const width of [390, 768, 1440]) {

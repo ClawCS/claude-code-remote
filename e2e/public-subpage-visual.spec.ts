@@ -2,6 +2,7 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import desktopPhotoManifest from "../assets/source/user-market-photos/manifest.json";
 
 // Development tests use a marked clock; public flyer absence remains truthful.
 // Production-base runs always use the real clock and verified local packages.
@@ -75,21 +76,34 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
 
 async function expectNaturalEditorialImages(page: Page, path: string): Promise<void> {
   const images = path === "/"
-    ? page.locator("#menschen figure img, #eigenmarken figure img")
-    : path === "/galerie" ? page.locator("main figure img") : null;
+    ? page.locator("#menschen figure:not([data-team-photo-placeholder]) img, #eigenmarken [data-own-brand-stage] img")
+    : path === "/galerie" ? page.locator("main figure:not([data-team-photo-placeholder]) img") : null;
   if (!images) return;
-  await expect(images).toHaveCount(path === "/" ? 11 : 8);
+  await expect(images).toHaveCount(path === "/" ? 13 : 7);
   for (const image of await images.all()) {
-    const ratios = await image.evaluate((element: HTMLImageElement) => ({
-      natural: element.naturalWidth / element.naturalHeight,
-      displayed: element.getBoundingClientRect().width / element.getBoundingClientRect().height,
-    }));
-    expect(ratios.displayed, `natural aspect ratio: ${await image.getAttribute("alt")}`).toBeCloseTo(ratios.natural, 2);
+    const ratios = await image.evaluate((element: HTMLImageElement) => {
+      const style = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      const contentWidth = box.width - parseFloat(style.borderLeftWidth) - parseFloat(style.borderRightWidth) - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const contentHeight = box.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth) - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+      const original = Number(element.getAttribute("width")) / Number(element.getAttribute("height"));
+      return { original, displayed: contentWidth / contentHeight,
+        optimizedRatioMin: (element.naturalWidth - 1) / (element.naturalHeight + 1),
+        optimizedRatioMax: (element.naturalWidth + 1) / (element.naturalHeight - 1) };
+    });
+    // Next's density-corrected natural dimensions are integer-rounded (e.g. 195×156 for 710×570).
+    // One integer pixel on each optimized dimension bounds the ratio, including narrow bottles.
+    expect(ratios.original, `optimized original proportions: ${await image.getAttribute("alt")}`).toBeGreaterThanOrEqual(ratios.optimizedRatioMin);
+    expect(ratios.original, `optimized original proportions: ${await image.getAttribute("alt")}`).toBeLessThanOrEqual(ratios.optimizedRatioMax);
+    expect(ratios.displayed, `original content-box aspect ratio: ${await image.getAttribute("alt")}`).toBeCloseTo(ratios.original, 2);
+    if (path === "/") await expect(image).toHaveCSS("object-fit", "contain");
   }
   const placeholder = page.locator("[data-team-photo-placeholder]");
   await expect(placeholder).toHaveCount(1);
   await expect(placeholder).toContainText("Unser neues Teamfoto folgt");
   await expect(placeholder.getByRole("img", { name: "Trinkgut Jammers", exact: true })).toHaveCount(1);
+  await expect(placeholder.getByRole("img", { name: "Trinkgut Jammers", exact: true })).toHaveAttribute("src", /brand-logo\.webp/);
+  await expect(placeholder.getByRole("img", { name: "Trinkgut Jammers", exact: true })).toHaveCSS("object-fit", "contain");
   await expect(page.locator('img[src*="team-group"], img[src*="team-gruppenfoto"]')).toHaveCount(0);
 
   const team = page.locator(path === "/" ? "#menschen" : 'section[aria-labelledby="team-gallery-title"]');
@@ -124,10 +138,11 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
     "/kategorie/alkoholfrei": 0,
     "/geschenkideen": 3,
     "/regionale-spirituosen": 3,
-    "/marktleben": 6,
-    "/eigenmarke": 1,
+    "/marktleben": 15,
+    "/eigenmarke": 0,
   };
   const originalDimensions: Record<string, readonly [number, number]> = {
+    ...Object.fromEntries(desktopPhotoManifest.entries.map(entry => [entry.output.name, [entry.output.dimensions.width, entry.output.dimensions.height] as const])),
     "salitos-market.webp": [696, 975],
     "gift-basket.webp": [666, 910],
     "regional-tante-dele.webp": [1080, 1440],
@@ -142,9 +157,10 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
     "karten-mit-charakter.webp": [675, 1200],
     "verkostung.webp": [675, 1200],
   };
-  const images = page.locator("[data-market-discoveries] img, .category-photo img, .regional-specialties img");
+  const editorialImages = '[data-market-discoveries] img, [data-collection="gifts"] figure img, [data-collection="regional"] figure img, [data-collection="market"] figure img';
+  const images = page.locator(editorialImages);
   await expect(images).toHaveCount(expectedCounts[path] ?? 0);
-  await expect(page.locator("[data-market-discoveries] figcaption, .category-photo figcaption, .regional-specialties figcaption")).toHaveCount(0);
+  await expect(page.locator('[data-market-discoveries] figcaption, [data-collection="gifts"] figcaption, [data-collection="regional"] figcaption, [data-collection="market"] figcaption')).toHaveCount(0);
   await expect(page.getByRole("img", { name: /Reinigungshandschuh|Sprühflasche/i })).toHaveCount(0);
   await expect(page.getByText("Mit Herz. Und mit anpacken.", { exact: true })).toHaveCount(0);
   for (const image of await images.all()) {
@@ -167,7 +183,12 @@ async function expectNaturalMarketImages(page: Page, path: string): Promise<void
     await expect(image).toHaveAttribute("height", String(dimensions[1]));
     expect(ratios.natural, `verified original proportions: ${description}`).toBeCloseTo(dimensions[0] / dimensions[1], 2);
     expect(ratios.declared, `original asset proportions: ${description}`).toBeCloseTo(ratios.natural, 2);
-    expect(ratios.displayed, `uncropped original photo/poster: ${description}`).toBeCloseTo(ratios.natural, 2);
+    if (path === "/") {
+      // Approved discovery photos use a bounded contain box, not an unbounded natural-ratio box.
+      await expect(image).toHaveCSS("object-fit", "contain");
+      await expect(image).toHaveCSS("max-height", "608px");
+      expect((await image.boundingBox())!.height).toBeLessThanOrEqual(608);
+    } else expect(ratios.displayed, `uncropped original photo/poster: ${description}`).toBeCloseTo(ratios.natural, 2);
   }
 }
 
@@ -195,6 +216,8 @@ for (const viewport of viewports) {
       await expect(page.getByRole("contentinfo")).toHaveCount(1);
       await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
 
+      // Portraits live in the approved native disclosure; open it before checking their actual pixels.
+      if (route.path === "/") await page.locator("#menschen summary").click();
       await settleVisibleImages(page);
       await expectNoHorizontalOverflow(page);
       await expectNaturalEditorialImages(page, route.path);

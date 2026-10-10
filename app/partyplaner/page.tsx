@@ -2,6 +2,7 @@
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/tools.module.css";
 import editorial from "@/components/editorial/editorial.module.css";
+import Link from "next/link";
 
 import { useState } from "react";
 import { calculateNeeds, distributionValidity, type PartyConfig } from "@/lib/party-planner";
@@ -149,6 +150,7 @@ export default function PartyplanerPage() {
       )}
       {!showResults && <aside className={styles.results}><h2>Eine erste Mengenhilfe</h2><p>Gäste und Dauer festlegen, die Getränke auf insgesamt 100% verteilen und den Literbedarf berechnen. Wasser wird zusätzlich eingeplant.</p></aside>}
       </div>
+      <div className={styles.actions}><Link href="/partyspiele" className={editorial.secondaryLink}>Partyspiele entdecken</Link></div>
     </div>
     </>
   );

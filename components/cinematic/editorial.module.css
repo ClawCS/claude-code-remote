@@ -38,6 +38,7 @@
 .footer h2 { margin:0; font-family:var(--cinematic-typography-family-sans); font-size:var(--cinematic-typography-size-heading); font-weight:var(--cinematic-typography-weight-medium); line-height:var(--cinematic-typography-line-height-heading); letter-spacing:var(--cinematic-typography-tracking-tight); }
 .section:has(.peopleIntro) { background:var(--cinematic-color-white); }
 .instagramSection { background:var(--cinematic-color-assortment-cream); }
+.instagramSection .eyebrow { color:var(--cinematic-color-burgundy); }
 
 .peopleGrid {
   display: grid;

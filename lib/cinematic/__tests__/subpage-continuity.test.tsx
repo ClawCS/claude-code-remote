@@ -4,8 +4,42 @@ import PageIntro from "@/components/editorial/PageIntro";
 import FlyerIndexView from "@/components/FlyerIndexView";
 import type { FlyerIndex } from "@/lib/flyer-index";
 import AcademyEntry from "@/components/AcademyEntry";
+import ProductCatalogue from "@/components/ProductCatalogue";
+import PartyplanerPage from "@/app/partyplaner/page";
+import KontaktPage from "@/app/kontakt/page";
+import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
 
 describe("subpage visual continuity contracts", () => {
+  const empty: WeeklyOfferContent = { status: "degraded", generatedAt: "2026-10-10T12:00:00Z", issues: [], flyers: [], offers: [] };
+  // Removing these anchors would make active tools unreachable from their relevant host pages.
+  test("catalogue and planner expose exact contextual destinations outside their workspaces", () => {
+    const catalogue = renderToStaticMarkup(<ProductCatalogue content={empty}>{null}</ProductCatalogue>);
+    expect(catalogue).toMatch(/<a[^>]*href="\/finder"[^>]*>Getränkefinder<\/a>/);
+    const planner = renderToStaticMarkup(<PartyplanerPage />);
+    expect(planner).toMatch(/<a[^>]*href="\/partyspiele"[^>]*>Partyspiele entdecken<\/a>/);
+  });
+
+  test("contact separates applications from general enquiries and exposes the two visit tools", () => {
+    const html = renderToStaticMarkup(<KontaktPage />);
+    expect(html).toMatch(/<h2[^>]*>Bewerbungen<\/h2>/);
+    expect(html).toMatch(/<a[^>]*href="mailto:info@trinkgut-jammers.de"[^>]*>\s*info@trinkgut-jammers.de\s*<\/a>/);
+    expect(html).toMatch(/<a[^>]*href="mailto:jammers-goch@trinkgut.de"[^>]*>\s*jammers-goch@trinkgut.de\s*<\/a>/);
+    expect(html).toMatch(/<h2[^>]*>Gut zu wissen<\/h2>/);
+    expect(html).toMatch(/<a[^>]*href="\/leergut"[^>]*>Leergut berechnen<\/a>/);
+    expect(html).toMatch(/<a[^>]*href="\/oeko-tracker"[^>]*>Mehrweg entdecken<\/a>/);
+  });
+
+  test("flyer overview is opt-in and never adds German copy to the compact Dutch viewer", () => {
+    const index: FlyerIndex = { ...empty, scheduled: [] };
+    const overview = renderToStaticMarkup(<FlyerIndexView index={index} showOverviewLink />);
+    expect(overview).toMatch(/<a[^>]*href="\/handzettel"[^>]*>Alle Handzettel ansehen<\/a>/);
+    for (const view of [<FlyerIndexView key="default" index={index} />, <FlyerIndexView key="nl" index={index} compact showOverviewLink />]) {
+      const html = renderToStaticMarkup(view);
+      expect(html).not.toContain('href="/handzettel"');
+      expect(html).not.toContain("Alle Handzettel ansehen");
+    }
+  });
+
   // A removed intro boundary breaks the shared full-width surface and browser verification.
   test("marks the shared intro without requiring a new caller prop", () => {
     const html = renderToStaticMarkup(<PageIntro title="Unsere Welt" />);

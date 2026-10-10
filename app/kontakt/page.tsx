@@ -1,5 +1,6 @@
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/transaction.module.css";
+import editorial from "@/components/editorial/editorial.module.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
@@ -61,6 +62,11 @@ export default function KontaktPage() {
               </a>
             </p>
 
+            <h2>Bewerbungen</h2>
+            <p className="text-secondary leading-relaxed">
+              <a href="mailto:info@trinkgut-jammers.de" className={styles.textLink}>info@trinkgut-jammers.de</a>
+            </p>
+
             <h2>Instagram</h2>
             <SocialLink
               platform="instagram"
@@ -70,6 +76,14 @@ export default function KontaktPage() {
             />
           </div>
         </div>
+
+        <section className={styles.section} aria-labelledby="contact-useful-title">
+          <h2 id="contact-useful-title">Gut zu wissen</h2>
+          <div className={styles.actions}>
+            <Link href="/leergut" className={editorial.secondaryLink}>Leergut berechnen</Link>
+            <Link href="/oeko-tracker" className={editorial.secondaryLink}>Mehrweg entdecken</Link>
+          </div>
+        </section>
 
         <div className={styles.notice}>
           <p className="text-sm text-muted">

@@ -132,9 +132,10 @@ describe("editorial service pages", () => {
   });
 
   // Freeze all visible legal/contact copy, excluding decorative contact emoji.
+  // Contact additionally includes only the approved Bewerbungen recipient and Gut zu wissen links.
   // Privacy baseline includes only Niko's 10 Oct wording update: both recipient
   // labels now say "externe Analyseanbieter"; no processing or retention change.
-  it.each([["contact", ContactPage, "18f3305473ed8239e2930b479b0e2bf10faf15ed63b41b01052ca681a1d2cf91"], ["imprint", ImprintPage, "abedc4922657d2edfad795bb48ad4c6ee9898d5209bfdcccf562a2bb4d8b9936"], ["privacy", PrivacyPage, "2de4d09b1534b61e6e75278e379d8d686aab3d895651e7e7f797bbf4c5198d06"], ["terms", TermsPage, "a8e42c6360a058831a6fc9fab429e8b69e6603e24020704dbc8e4c1c2d97238c"]] as const)("retains exact %s text", (_, Component, hash) => {
+  it.each([["contact", ContactPage, "aa02a5c0feca75f41b1f2fd4c7ca16e6496aef51183adbe1b81ec4079695f224"], ["imprint", ImprintPage, "abedc4922657d2edfad795bb48ad4c6ee9898d5209bfdcccf562a2bb4d8b9936"], ["privacy", PrivacyPage, "2de4d09b1534b61e6e75278e379d8d686aab3d895651e7e7f797bbf4c5198d06"], ["terms", TermsPage, "a8e42c6360a058831a6fc9fab429e8b69e6603e24020704dbc8e4c1c2d97238c"]] as const)("retains exact %s text", (_, Component, hash) => {
     expect(textHash(render(Component))).toBe(hash);
   });
   it.each([["privacy", PrivacyPage, "5598b790ba15d02b4b5cce4c93df386d0a22c7346e7a93d43c53060b1a1dde9b"], ["terms", TermsPage, "2e77ba25a96571893f62935f6e8ec60b834cbd29f0d97c3d85e05ccdd8b25cfe"]] as const)("[synthetic] retains exact enabled %s text", (_, Component, hash) => {

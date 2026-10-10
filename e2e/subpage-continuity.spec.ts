@@ -11,6 +11,78 @@ const brands = ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", 
 
 test.describe.configure({ mode: "parallel" });
 
+const contextLinks = [
+  { host: "/produkte", header: "Sortiment", label: "Getränkefinder", target: "/finder" },
+  { host: "/partyplaner", header: "Partyplaner", label: "Partyspiele entdecken", target: "/partyspiele" },
+  { host: "/kontakt", header: "Dein Besuch", label: "Leergut berechnen", target: "/leergut" },
+  { host: "/kontakt", header: "Dein Besuch", label: "Mehrweg entdecken", target: "/oeko-tracker" },
+  { host: "/angebote", header: "Angebote", label: "Alle Handzettel ansehen", target: "/handzettel" },
+] as const;
+
+async function currentShell(page: Page, origin: string) {
+  expect(new URL(page.url()).origin).toBe(origin);
+  for (const selector of ["main", "main h1", "[data-cinematic-header]", "footer"]) await expect(page.locator(selector)).toHaveCount(1);
+  await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
+}
+
+for (const width of [390, 1440]) {
+  for (const javaScriptEnabled of [true, false]) {
+    test(`task3 header context destinations and Back retain origin and shell at ${width}px with JavaScript ${javaScriptEnabled}`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const context = await browser.newContext({ baseURL: test.info().project.use.baseURL, javaScriptEnabled, viewport: { width, height: 1000 }, reducedMotion: "reduce" });
+      const page = await context.newPage();
+      try {
+        await page.goto("/");
+        const origin = new URL(page.url()).origin;
+        for (const item of contextLinks) {
+          if (javaScriptEnabled) await page.waitForLoadState("networkidle");
+          const header = page.locator("[data-cinematic-header]");
+          if (width < 1152) await header.getByRole("button", { name: "Menü öffnen", exact: true }).click();
+          const nav = header.getByRole("navigation", { name: width < 1152 ? "Mobile Navigation" : "Hauptnavigation", exact: true });
+          await expect(nav.locator(":scope > ul > li")).toHaveCount(5);
+          await expect(nav.locator('a[href="/community"], a[href="/kuehlschrank"], a[href="/checkout"]')).toHaveCount(0);
+          if (item.host === "/partyplaner") await nav.locator('summary[aria-label="Party & Miete – Untermenü öffnen"]').click();
+          await nav.getByRole("link", { name: item.header, exact: true }).click();
+          await expect(page).toHaveURL(`${origin}${item.host}`);
+          if (javaScriptEnabled) await page.waitForLoadState("networkidle");
+          await currentShell(page, origin);
+          const link = page.locator("main").getByRole("link", { name: item.label, exact: true });
+          await expect(link).toHaveAttribute("href", item.target);
+          if (javaScriptEnabled) {
+            // A pointer-opened page does not enter :focus-visible via focus().
+            await page.keyboard.press("Tab");
+            await link.focus();
+            await expect(link).toBeFocused();
+            await expect(link).toHaveCSS("outline-style", "solid");
+            expect((await link.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+          }
+          await link.click();
+          await expect(page).toHaveURL(`${origin}${item.target}`);
+          await currentShell(page, origin);
+          await page.goBack();
+          await expect(page).toHaveURL(`${origin}${item.host}`);
+          await currentShell(page, origin);
+          await expect(page.locator("main").getByRole("link", { name: item.label, exact: true })).toBeVisible();
+        }
+      } finally { await context.close(); }
+    });
+  }
+
+  test(`task3 contact recipients and restricted overview link at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await familyReady(page, "/kontakt");
+    await expect(page.locator("main").getByRole("heading", { name: "Bewerbungen", exact: true })).toBeVisible();
+    await expect(page.locator("main").getByRole("heading", { name: "Gut zu wissen", exact: true })).toBeVisible();
+    for (const email of ["info@trinkgut-jammers.de", "jammers-goch@trinkgut.de"]) await expect(page.locator("main").getByRole("link", { name: email, exact: true })).toHaveAttribute("href", `mailto:${email}`);
+    await familyCapture(page, `contact-context-${width}`);
+    for (const route of ["/handzettel", "/nl"]) {
+      await familyReady(page, route);
+      await expect(page.locator("main").getByRole("link", { name: "Alle Handzettel ansehen", exact: true })).toHaveCount(0);
+      await expect(page.locator('main a[href="/handzettel"]')).toHaveCount(0);
+    }
+  });
+}
+
 for (const width of [360, 390, 768, 1440]) {
   for (const { path } of introCases) {
     test(`${path} has a warm full-width intro and bold hierarchy at ${width}px`, async ({ page }) => {
@@ -314,10 +386,41 @@ test("task2 academy overview editorial benefits retain the stronger section hier
   }
 });
 
-for (const route of ["/cocktails", "/gewinnspiel", "/kategorie/bier", "/finder"]) {
+for (const route of ["/cocktails", "/gewinnspiel", "/kategorie/bier", "/finder", "/geschenkideen", "/regionale-spirituosen", "/marktleben"]) {
   test(`task2 warm-card links meet normal-text contrast on ${route}`, async ({ page }) => {
     await familyReady(page, route);
+    const collectionLinks: Record<string, string[]> = {
+      "/geschenkideen": ["Im Markt beraten lassen"],
+      "/regionale-spirituosen": ["Persönlich beraten lassen", "Jammers-Eigenmarken entdecken", "Geschenkideen ansehen"],
+      "/marktleben": ["Unsere Eigenmarken entdecken", "Kontakt zum Markt", "Anfahrt und Kontakt", "Team kennenlernen", "Sortiment entdecken"],
+    };
+    if (collectionLinks[route]) {
+      const anchors = page.locator('[data-collection] > section a:not([data-brand-link]):not(:has(img))');
+      await expect(anchors).toHaveCount(collectionLinks[route].length);
+      expect(await anchors.allTextContents()).toEqual(collectionLinks[route]);
+      for (const anchor of await anchors.all()) await expect(anchor).toHaveCSS("color", "rgb(165, 21, 34)");
+    }
     const result = await new AxeBuilder({ page }).include("main").withRules(["color-contrast"]).analyze();
     expect(result.violations).toEqual([]);
   });
 }
+
+test("[fixture] synthetic weekly offers preserve Sunday empty, refresh ordering and expiry", async ({ page }) => {
+  await familyReady(page, "/test-fixtures/weekly-offers");
+  await expect(page.getByRole("heading", { name: "Isolierte Wochenangebote-Fixture", exact: true })).toBeVisible();
+  await expect(page.locator("[data-offer-id]")).toHaveCount(0);
+  await page.getByRole("button", { name: "Montag aktivieren", exact: true }).click();
+  await expect(page.locator('[data-offer-id="synthetic-monday-original"]')).toHaveCount(1);
+  await page.getByRole("button", { name: "Ältere Antwort anfordern", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Antwort 1 abschließen", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Neuere Antwort anfordern", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Antwort 2 abschließen", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Antwort 2 abschließen", exact: true }).click();
+  await expect(page.locator('[data-offer-id="synthetic-monday-latest"]')).toHaveCount(1);
+  await page.getByRole("button", { name: "Antwort 1 abschließen", exact: true }).click();
+  await expect(page.locator('[data-offer-id="synthetic-monday-latest"]')).toHaveCount(1);
+  await expect(page.locator('[data-offer-id="synthetic-monday-original"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Nach Wochenablauf", exact: true }).click();
+  await expect(page.locator("[data-offer-id]")).toHaveCount(0);
+  await expect(page.getByRole("status").filter({ hasText: "kein passendes Einzelangebot" })).toBeVisible();
+});

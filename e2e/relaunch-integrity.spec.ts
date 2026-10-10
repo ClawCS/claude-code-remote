@@ -7,9 +7,9 @@ for (const width of [320,667,1023,1024,1025,1151,1152,1153,1279,1280,1281]) test
   if (width < 1152) {
     await page.getByRole("button",{name:"Menü öffnen"}).click();
     const panel=page.getByRole("navigation",{name:"Mobile Navigation"});
-    await expect(panel.getByRole("link",{name:"Kontakt",exact:true})).toBeVisible();
-    await panel.getByRole("link",{name:"Kontakt",exact:true}).focus();
-    await expect(panel.getByRole("link",{name:"Kontakt",exact:true})).toBeInViewport();
+    await expect(panel.getByRole("link",{name:"Dein Besuch",exact:true})).toBeVisible();
+    await panel.getByRole("link",{name:"Dein Besuch",exact:true}).focus();
+    await expect(panel.getByRole("link",{name:"Dein Besuch",exact:true})).toBeInViewport();
   }
 });
 
@@ -34,27 +34,41 @@ test("legacy flyer metadata is deprecated and Dutch viewer controls are translat
   const archive=await request.head("/handzettel/extracted/kw19/de/franziskaner-weissbier.webp");
   expect(archive.status()).toBe(200);expect(archive.headers()["x-robots-tag"]).toContain("noindex");
   await page.goto("/nl");
-  await expect(page.getByRole("button",{name:"Folder bekijken",exact:true})).toBeVisible();
+  const flyersResponse = await request.get("/api/content/flyers");expect(flyersResponse.status()).toBe(200);
+  const index = await flyersResponse.json();
+  const viewers = page.locator("[data-flyer-viewer]");await expect(viewers).toHaveCount(index.flyers.length);
   await expect(page.getByRole("button",{name:"Handzettel ansehen",exact:true})).toHaveCount(0);
-  await page.getByRole("button",{name:"Folder bekijken",exact:true}).click();
-  await expect(page.getByRole("button",{name:"Folder sluiten",exact:true})).toBeVisible();
-  await page.getByRole("button",{name:"Folder sluiten",exact:true}).click();
+  if (!index.flyers.length) await expect(page.getByText("De volgende geldige folder wordt voorbereid.", { exact:false })).toBeVisible();
+  for (const viewer of await viewers.all()) {
+    await viewer.getByRole("button",{name:"Folder bekijken",exact:true}).click();
+    await expect(page.getByRole("button",{name:"Folder sluiten",exact:true})).toBeVisible();
+    await page.getByRole("button",{name:"Folder sluiten",exact:true}).click();
+  }
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
 test("all sitemap destinations and utility pages return an intentional page",async({request})=>{
   const sitemap=await request.get("/sitemap.xml");expect(sitemap.status()).toBe(200);const urls=[...(await sitemap.text()).matchAll(/<loc>(.*?)<\/loc>/g)].map(match=>new URL(match[1]).pathname);
-  expect(urls).toContain("/produkte/altenmuenster-urig-wuerzig");expect(urls.filter(url=>url.startsWith("/produkte/")).length).toBe(107);
+  expect(urls).toContain("/kategorie/bier");expect(urls.filter(url=>url.startsWith("/produkte/"))).toEqual([]);
   const results=await Promise.all([...urls,"/checkout","/warenkorb","/bestellungen","/gewinnspiel/archiv"].map(async url=>[url,(await request.get(url)).status()] as const));
   expect(results.filter(([,status])=>status!==200)).toEqual([]);
 });
 
-test("assortment, finder and party list do not recycle expired prices or promotions",async({page,request})=>{
+test("assortment uses current dated originals while finder and party list do not recycle expired prices or promotions",async({page,request})=>{
   await page.goto("/produkte");
-  await expect(page.getByRole("heading",{name:"Alle Produkte",exact:true})).toBeVisible();
-  expect(await page.locator("main").innerText()).not.toMatch(/€|gratis|zugabe|im angebot|trinkgut app/i);
-  const productImageUrls=await page.locator('main img').evaluateAll(nodes=>nodes.map(node=>(node as HTMLImageElement).currentSrc));
-  expect(productImageUrls.every(url=>!decodeURIComponent(url).includes("/handzettel/extracted/"))).toBe(true);
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByRole("heading",{name:"Sortiment & Wochenangebote",exact:true})).toBeVisible();
+  const offersResponse = await request.get("/api/content/offers");expect(offersResponse.status()).toBe(200);
+  const content = await offersResponse.json();
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone:"Europe/Berlin" }).format(new Date(content.generatedAt));
+  expect(content.offers.every((offer: {validFrom:string;validTo:string}) => offer.validFrom <= today && offer.validTo >= today)).toBe(true);
+  await expect(page.locator("[data-offer-id]")).toHaveCount(content.offers.length);
+  for (const offer of content.offers) {
+    const article=page.locator(`[data-offer-id="${offer.id}"]`);
+    const source = await article.locator("img").evaluate(node => new URL((node as HTMLImageElement).src));
+    expect(source.searchParams.get("url") ?? source.pathname).toBe(offer.image);
+    if (offer.sourceWarning) await expect(article).toContainText(offer.sourceWarning);
+  }
   await page.goto("/finder");
   await page.getByRole("button",{name:/Bierfinder/}).click();
   await page.getByRole("button",{name:/Pils – herb/}).click();
@@ -68,8 +82,7 @@ test("assortment, finder and party list do not recycle expired prices or promoti
   await expect(page.getByRole("region",{name:"Dein Getränkebedarf"})).toBeVisible();
   expect(await page.locator("main").innerText()).not.toMatch(/€|Gesamtpreis/);
   for(const slug of ["franziskaner-weissbier","jim-beam","beck-s"]){
-    const response=await request.get(`/produkte/${slug}`);expect(response.status()).toBe(200);
-    const description=(await response.text()).match(/<meta name="description" content="([^"]*)"/);
-    expect(description?.[1]).toBeTruthy();expect(description?.[1]).not.toMatch(/€|gratis|zugabe|trinkgut app/i);
+    const response=await request.get(`/produkte/${slug}`,{maxRedirects:0});expect(response.status()).toBe(307);
+    expect(response.headers().location).toBe(slug==="jim-beam"?"/kategorie/spirituosen":"/kategorie/bier");
   }
 });

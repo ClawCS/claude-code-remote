@@ -2,6 +2,7 @@
 .section { padding-block: clamp(2.5rem, 5vw, 5rem); border-top: 1px solid var(--cinematic-color-line); }
 .section h2, .story h2 { font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -.04em; margin-bottom: 1.25rem; }
 .body h3 { font-weight: 700; }
+.body[data-collection="market"] > .section a:not([data-brand-link]):not(:has(img)), .body[data-collection="gifts"] > .story a:not([data-brand-link]):not(:has(img)), .body[data-collection="regional"] > .section a:not([data-brand-link]):not(:has(img)) { color: var(--cinematic-color-burgundy); }
 .body[data-collection="market"] > .section, .body[data-collection="gifts"] > .section, .body[data-collection="gifts"] > .story, .body[data-collection="regional"] > .section, .body[data-collection="regional"] > .brandStories { margin-block: 1.5rem; padding-inline: clamp(1.25rem, 3vw, 2.5rem); background: var(--cinematic-color-assortment-cream); }
 .body[data-collection="regional"] > .brandStories { padding-block: 1.5rem; }
 .body[data-collection="catalogue"] .toolbar { margin-block: 1.5rem; padding-inline: clamp(1.25rem, 3vw, 2.5rem); background: var(--cinematic-color-assortment-cream); }

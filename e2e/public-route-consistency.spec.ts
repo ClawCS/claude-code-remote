@@ -68,7 +68,8 @@ test("shared furniture selection cannot reserve bundles and single items on over
 
 test("warengruppen behalten den neuen Rahmen bei direktem Aufruf und Navigation", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "Bier & Fassbier Entdecken" }).click();
+  await page.waitForLoadState("networkidle");
+  await page.locator('#sortiment a[href="/kategorie/bier"]').click();
   await expect(page).toHaveURL(/\/kategorie\/bier$/);
   await expect(page.locator("[data-cinematic-header]")).toHaveCount(1);
   await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
@@ -81,10 +82,11 @@ test("warengruppen behalten den neuen Rahmen bei direktem Aufruf und Navigation"
 
 test("fachnavigation führt auf eigene Seiten statt Startseitenabschnitte", async ({ page }) => {
   await page.goto("/produkte");
+  await page.waitForLoadState("networkidle");
   const nav = page.getByRole("navigation", { name: "Hauptnavigation", exact: true });
   await expect(nav.getByRole("link", { name: "Angebote", exact: true })).toHaveAttribute("href", "/angebote");
+  await nav.locator("summary").filter({ hasText: "Jammers entdecken" }).click();
   await expect(nav.getByRole("link", { name: "Gewinnspiele", exact: true })).toHaveAttribute("href", "/gewinnspiel");
-  await nav.locator("summary").filter({ hasText: "Team & Karriere" }).click();
   await expect(nav.getByRole("link", { name: "Unser Team", exact: true })).toHaveAttribute("href", "/galerie");
   await nav.getByRole("link", { name: "Unser Team", exact: true }).click();
   await expect(page).toHaveURL(/\/galerie$/);

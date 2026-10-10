@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import type { FlyerIndex } from "../lib/flyer-index";
 
 const proof = process.env.AUDIT_SCREENSHOT_DIR ?? ".superpowers/sdd/2026-10-10-sitewide-filmisch/screenshots";
 
 for (const width of [390, 768, 1440]) {
   for (const path of ["/", "/nl"]) {
-    test(`${path} editorial landing at ${width}px preserves originals, anchors and visit controls`, async ({ page }) => {
+    test(`${path} editorial landing at ${width}px preserves originals, anchors and visit controls`, async ({ page, request }) => {
       await page.setViewportSize({ width, height: 1000 });
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);
@@ -15,11 +16,22 @@ for (const width of [390, 768, 1440]) {
       const root = path === "/" ? page.locator("[data-cinematic-root]") : page.locator("main").locator("..");
       await expect(root).toHaveCSS("background-color", "rgb(250, 249, 246)");
       const flyers = page.locator(path === "/" ? "#aktuell article:has([data-flyer-viewer])" : "#handzettel article:has([data-flyer-viewer])");
-      await expect(flyers).toHaveCount(2);
-      const [de, nl] = await Promise.all([flyers.nth(0).boundingBox(), flyers.nth(1).boundingBox()]);
-      expect(de!.width).toBeCloseTo(nl!.width, 0);
-      if (width >= 768) expect(de!.y).toBeCloseTo(nl!.y, 0);
-      else expect(nl!.y).toBeGreaterThan(de!.y + de!.height);
+      const response = await request.get("/api/content/flyers");
+      expect(response.status()).toBe(200);
+      const index: FlyerIndex = await response.json();
+      const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date(index.generatedAt));
+      expect(index.flyers.every(flyer => flyer.validFrom <= today && flyer.validTo >= today)).toBe(true);
+      await expect(flyers).toHaveCount(index.flyers.length);
+      for (const [position, flyer] of index.flyers.entries()) {
+        await expect(flyers.nth(position).locator("h3")).toHaveText(flyer.title);
+      }
+      if (!index.flyers.length) await expect(page.getByText(path === "/" ? "Der nächste gültige Handzettel wird vorbereitet." : "De volgende geldige folder wordt voorbereid.", { exact: false })).toBeVisible();
+      if (index.flyers.length === 2) {
+        const [de, nl] = await Promise.all([flyers.nth(0).boundingBox(), flyers.nth(1).boundingBox()]);
+        expect(de!.width).toBeCloseTo(nl!.width, 0);
+        if (width >= 768) expect(de!.y).toBeCloseTo(nl!.y, 0);
+        else expect(nl!.y).toBeGreaterThan(de!.y + de!.height);
+      }
       for (const flyer of await flyers.all()) {
         await expect(flyer).toHaveCSS("background-color", "rgb(242, 240, 236)");
         await expect(flyer.locator("img")).toHaveCSS("object-fit", "contain");
