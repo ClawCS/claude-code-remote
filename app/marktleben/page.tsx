@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MARKET_PHOTOS } from "@/data/market-photos";
 import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
+import { USER_MARKET_PHOTOS } from "@/data/user-market-photos";
 
 export const metadata: Metadata = {
   title: "Marktleben in Goch",
@@ -31,8 +32,16 @@ export default function MarktlebenPage() {
       <p>Jammers in Goch. Mit Menschen dahinter.</p>
       <h1>Unser Markt. Nah dran.</h1>
       <p>Bei uns geht es um Getränke – und um die Menschen, die den Markt jeden Tag mit Leben füllen. Echte Einblicke zeigen, wie unterschiedlich Marktalltag aussehen kann.</p>
-      <p className="text-sm">Auf den Fotos sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen.</p>
+      <p className="text-sm">Auf den Marktaufnahmen sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen. Die Gas-Tauschwerbung findest du separat weiter unten.</p>
     </div>
+    {[
+      { id: "bier-braukunst", title: "Bier & Braukunst", photos: [USER_MARKET_PHOTOS.schneiderWeisse, USER_MARKET_PHOTOS.bueble, USER_MARKET_PHOTOS.erdinger, USER_MARKET_PHOTOS.mixedBeer] },
+      { id: "wein-entdecken", title: "Wein entdecken", photos: [USER_MARKET_PHOTOS.wineShelf] },
+      { id: "alkoholfrei", title: "Alkoholfrei", photos: [USER_MARKET_PHOTOS.spezi] },
+    ].map(group => <section key={group.id} className="max-w-7xl mx-auto pt-12" aria-labelledby={group.id}>
+      <h2 id={group.id} className="text-3xl font-bold px-6">{group.title}</h2>
+      <div className="regional-specialties">{group.photos.map(photo => <article key={photo.src}><figure><Image {...photo} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></figure></article>)}</div>
+    </section>)}
     {groups.map(group => <section key={group.id} className="max-w-7xl mx-auto pt-12" aria-labelledby={group.id}>
       <h2 id={group.id} className="text-3xl font-bold px-6">{group.title}</h2>
       <div className="regional-specialties">
@@ -44,6 +53,17 @@ export default function MarktlebenPage() {
         </article>)}
       </div>
     </section>)}
+    <section className="max-w-7xl mx-auto pt-12" aria-labelledby="markt-entdeckungen">
+      <h2 id="markt-entdeckungen" className="text-3xl font-bold px-6">Entdeckungen im Markt</h2>
+      <div className="regional-specialties">{[USER_MARKET_PHOTOS.salitosPoster, USER_MARKET_PHOTOS.liefmansPoster].map(photo => <article key={photo.src}><figure><a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`${photo.alt} – vollständige Ansicht öffnen`} className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...photo} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></a></figure></article>)}</div>
+    </section>
+    <section className="max-w-7xl mx-auto pt-12" aria-labelledby="gasflaschen-tauschen">
+      <h2 id="gasflaschen-tauschen" className="text-3xl font-bold px-6">Gasflaschen tauschen</h2>
+      <div className="regional-specialties">
+        <article><figure><a href={USER_MARKET_PHOTOS.gasExchange.src} target="_blank" rel="noopener noreferrer" aria-label="Gas-Tauschwerbung vollständig öffnen" className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...USER_MARKET_PHOTOS.gasExchange} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></a></figure></article>
+        <div><p className="text-xl mb-4">Unsere Tauschpreise: 14,99 € und 25,99 € für die im Plakat gezeigten Varianten.</p><p>Welche Tauschflasche passt? Sprich uns vor Ort an oder melde dich beim Markt.</p><Link href="/kontakt" className="inline-block mt-6 underline font-bold text-primary">Kontakt zum Markt</Link></div>
+      </div>
+    </section>
     <section className="max-w-4xl mx-auto px-6 py-12" aria-labelledby="market-visit">
       <h2 id="market-visit" className="text-3xl font-bold mb-4">Komm vorbei. Wir beraten dich.</h2>
       <p className="mb-6">Ob du ein Getränk für den Feierabend, eine Geschenkidee oder den Bedarf für eine Feier suchst: Sprich uns im Markt an.</p>

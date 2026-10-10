@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SocialLink from "@/components/SocialLink";
 import GiveawayCard from "@/components/giveaways/GiveawayCard";
 import styles from "@/components/giveaways/giveaways.module.css";
@@ -6,6 +7,7 @@ import { getActiveGiveaways, getMonthlyAgenda } from "@/lib/giveaways";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 import { SITE_LINKS } from "@/lib/cinematic/site";
 import { GIVEAWAYS_UPDATED_ON } from "@/data/giveaways";
+import { PRIZE_HANDOVER_PHOTOS } from "@/data/user-market-photos";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -21,7 +23,7 @@ export default function GewinnspielPage() {
         <p className={styles.eyebrow}>Bei Jammers passiert mehr</p>
         <h1>Ein Jahr.<br />Viele Gewinnchancen.</h1>
         <p>Unsere Monatsgewinnspiele 2026 im Überblick – mit den belegten Gewinnen, Teilnahmeschlüssen und dem direkten Weg zum Originalbeitrag.</p>
-        <div className={styles.jumpLinks}><a href="#aktuell">Offene Gewinnspiele</a><a href="#jahresagenda">Jahresagenda 2026</a><Link href="/gewinnspiel/archiv">Zum Archiv</Link></div>
+        <div className={styles.jumpLinks}><a href="#aktuell">Offene Gewinnspiele</a><a href="#jahresagenda">Jahresagenda 2026</a><a href="#gewinnmomente">Gewinnmomente</a><Link href="/gewinnspiel/archiv">Zum Archiv</Link></div>
       </div>
       <div className={styles.notice}>
         <strong>Teilnahme ausschließlich im Originalbeitrag</strong>
@@ -35,6 +37,10 @@ export default function GewinnspielPage() {
         <div className={styles.sectionHeading}><h2 id="agenda-heading">Jahresagenda 2026</h2><p>Die Monatszuordnung ist eine Kalenderübersicht, kein Veröffentlichungsdatum.</p></div>
         <div className={styles.grid}>{agenda.map((slot) => slot.giveaway && slot.status !== "unannounced" ? <GiveawayCard key={slot.month} giveaway={slot.giveaway} status={slot.status} label={`${slot.monthName} ${slot.year}`} /> : <article key={slot.month} className={`${styles.card} ${styles.pending}`} data-month={slot.month}><p className={styles.eyebrow}>{slot.monthName} {slot.year}</p><h3>Noch nicht angekündigt</h3><p className={styles.description}>Für diesen Monat liegt noch kein belegtes Monatsgewinnspiel vor.</p></article>)}</div>
         <p className={styles.note} style={{ marginTop: "1.5rem" }}>Zuletzt aktualisiert: {GIVEAWAYS_UPDATED_ON}. Sondergewinnspiele stehen getrennt von der Monatsagenda. Beendete Aktionen sind keine aktuellen Gewinnchancen.</p>
+      </section>
+      <section id="gewinnmomente" className={styles.section} aria-labelledby="gewinnmomente-heading">
+        <div className={styles.sectionHeading}><h2 id="gewinnmomente-heading">Gewinnmomente im Markt</h2><p>So sieht Freude bei der Übergabe aus. Einblicke in bereits überreichte Gewinne.</p></div>
+        <div className={styles.handoverGrid}>{PRIZE_HANDOVER_PHOTOS.map(photo => <figure key={photo.src}><Image {...photo} className={styles.coverImage} sizes="(max-width: 640px) 90vw, (max-width: 1000px) 44vw, 360px" loading="lazy" /></figure>)}</div>
       </section>
     </div>
   );

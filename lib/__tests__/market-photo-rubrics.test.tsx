@@ -13,7 +13,7 @@ import RegionaleSpirituosenPage from "@/app/regionale-spirituosen/page";
 
 test("places local market and gift motifs behind their own relevant rubric links", () => {
   const html = decodeURIComponent(renderToStaticMarkup(<AssortmentSection />));
-  expect(html).toContain("/images/editorial/google/verkostung.webp");
+  expect(html).toContain("/images/editorial/user/schneider-weisse.webp");
   expect(html).toContain("/images/editorial/canva/gift-basket.webp");
   expect(html).toContain('href="/geschenkideen"');
   expect(html).toContain('href="/regionale-spirituosen"');
@@ -29,7 +29,7 @@ test("keeps the homepage discoveries bounded and pairs each photo with its match
   expect(articles).toHaveLength(3);
   expect(html).not.toContain("<figcaption");
   for (const [source, destination] of [
-    ["/images/editorial/google/verkostung.webp", "/marktleben"],
+    ["/images/editorial/user/schneider-weisse.webp", "/marktleben"],
     ["/images/editorial/canva/gift-basket.webp", "/geschenkideen"],
     ["/images/editorial/canva/regional-tante-dele.webp", "/regionale-spirituosen"],
   ]) {
@@ -45,7 +45,7 @@ test("keeps market groups and approved photos without decorative captions or the
     expect(html).toMatch(new RegExp(`<h2[^>]*>${heading.replaceAll("&", "&amp;")}<\\/h2>`));
   }
   const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
-  expect(images).toHaveLength(6);
+  expect(images).toHaveLength(15);
   for (const filename of ["salitos-market.webp", "verkostung.webp", "desperados-detail.webp", "baileys-aufbau.webp", "regionaler-hofaufbau.webp", "grillbegleiter.webp"]) {
     expect(images.some(image => image.includes(filename)), filename).toBe(true);
   }

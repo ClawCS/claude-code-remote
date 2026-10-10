@@ -22,7 +22,11 @@ Die tatsächliche Ausgabe weicht über das gewünschte Textfeld hinaus ab; die n
 
 Task 1: 28 fokussierte Tests bestanden; Assetprüfung reproduziert alle 17 WebP-Dateien im Speicher, validiert SHA-256, Maße, Metadaten und öffentliche Dateiliste. RED vor Implementierung nachgewiesen. Datenvertrag deckt alle 17 Motive ab. Zwei Kontaktbögen der endgültigen Derivate visuell geprüft.
 
-Task 2, unabhängige Gesamtprüfung und Veröffentlichung stehen noch aus. Dies ist kein Live-Nachweis.
+Task 2 lokal: Platzierungs-Tests erst 7 fehlgeschlagen / 10 bestanden, danach 17/17 bestanden. Gesamtsuite mit den vorhandenen gepinnten lokalen PDF-Testwerkzeugen: 3.135 Tests in 141 Dateien bestanden (247,84 s). Lint, Routentypen, TypeScript, Prüfung aller 128 Originalangebote und Produktionsbuild bestanden.
+
+Browserkontrolle bei 390 und 1440 Pixeln: drei vollständige Stellenplakate, fünf Gewinnübergaben, 15 Marktleben-Motive insgesamt; kein horizontaler Überlauf, sichtbarer Tastaturfokus. Plakatlinks öffnen vollständige lokale Motive. Ein paralleler Entwicklungs-/Buildlauf verursachte vorübergehende Fehler in einem alten lokalen Entwicklungschunk; die getrennt gestartete Produktionsansicht auf Port 3106 zeigte keine neuen Browserfehler. Keine Formulare abgesendet.
+
+Unabhängige Gesamtprüfung und Veröffentlichung stehen noch aus. Dies ist kein Live-Nachweis.
 
 ## Unveränderte Betriebsgrenzen
 

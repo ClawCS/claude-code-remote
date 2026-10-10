@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
+import { USER_JOB_POSTERS, type EditorialPhoto } from "@/data/user-market-photos";
 import { APPLICATION_EMAIL } from "@/lib/application-contact";
 import type { ApplicationInput, IntakeAcceptanceResponse, PublicApplicationConfig, PublicState } from "@/lib/applications-contract";
 import { APPLICATION_FALLBACK, applicationOutcome, applicationRetryDelay, mayRetryApplication, readApplicationJson, selectApplicationFiles, validateApplicationAcceptance, validateApplicationConfig, validateApplicationSession, validateApplicationStatus, type ApplicationOutcome } from "@/lib/applications-client";
@@ -11,6 +13,10 @@ const empty = (): ApplicationInput => ({ name: "", email: "", job: "sales-fullti
 const contact = <a href={`mailto:${APPLICATION_EMAIL}?subject=Interesse%20an%20einer%20Mitarbeit`} className="text-primary underline">{APPLICATION_EMAIL}</a>;
 const unavailable = "Der Online-Upload ist zurzeit nicht verfügbar. Du kannst dich persönlich im Markt oder per E-Mail bewerben. Diese Anzeige sagt nichts über bereits angenommene Bewerbungen aus.";
 const ambiguous = "Deine Bewerbung ist möglicherweise bereits angekommen. Bitte sende nur denselben Versuch erneut, sofern dies hier möglich ist, oder kontaktiere den Markt. Eine neue Bewerbung kann zu einer doppelten Bewerbung führen.";
+
+function JobPoster({ photo }: { photo: EditorialPhoto }) {
+  return <a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`${photo.alt} – vollständige Anzeige öffnen`} className="block mb-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...photo} className="w-full h-auto" sizes="(max-width: 640px) 85vw, (max-width: 1024px) 42vw, 330px" loading="lazy" /></a>;
+}
 
 export default function ApplicationForm({ config: _initialConfig }: { config?: PublicApplicationConfig }) {
   // Static props cannot establish readiness. Initial/no-JS rendering is always safe.
@@ -148,10 +154,12 @@ export default function ApplicationForm({ config: _initialConfig }: { config?: P
   const locked = busy || !!attempt;
   const fieldClass = "block w-full mt-1 rounded border border-current/30 bg-white p-3 text-gray-900 disabled:opacity-70";
   return <section aria-labelledby="application-contact-title">
-    <div className="grid sm:grid-cols-2 gap-6 mb-10">
-      <section className="border border-current/20 rounded-xl p-6"><h2 className="text-2xl font-bold">Verkauf Vollzeit (m/w/d)</h2><p className="mt-3">Bewirb dich für den Verkauf in Vollzeit.</p><button type="button" className="underline mt-4 disabled:opacity-60" disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-fulltime")}>Für Vollzeit bewerben</button></section>
-      <section className="border border-current/20 rounded-xl p-6"><h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2><p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p><button type="button" className="underline mt-4 disabled:opacity-60" disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button></section>
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+      <section className="min-w-0 border border-current/20 rounded-xl p-5"><JobPoster photo={USER_JOB_POSTERS.fulltime} /><h2 className="text-2xl font-bold">Verkauf Vollzeit (m/w/d)</h2><p className="mt-3">Bewirb dich für den Verkauf in Vollzeit.</p><button type="button" className="underline mt-4 disabled:opacity-60" disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-fulltime")}>Für Vollzeit bewerben</button></section>
+      <section className="min-w-0 border border-current/20 rounded-xl p-5"><JobPoster photo={USER_JOB_POSTERS.parttime} /><h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2><p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p><button type="button" className="underline mt-4 disabled:opacity-60" disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button></section>
+      <section className="min-w-0 border border-current/20 rounded-xl p-5"><JobPoster photo={USER_JOB_POSTERS.apprentice} /><h2 className="text-2xl font-bold">Ausbildung im Getränkehandel / Einzelhandel (m/w/d)</h2><p className="mt-3">Starte deine Ausbildung bei Jammers in Goch. Wir freuen uns auf deine Bewerbung.</p><a className="inline-block underline text-primary mt-4" href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Ausbildung`}>Per E-Mail für die Ausbildung bewerben</a></section>
     </div>
+    <p className="text-sm mb-10">KI-generierte Anzeigenmotive – keine Teamfotos. Alle Anzeigen lassen sich in voller Größe öffnen.</p>
     <h2 id="application-contact-title" className="text-2xl font-bold">Deine Bewerbung</h2>
     <p className="my-4">Persönlich im Markt oder per E-Mail: {contact}</p>
     {!config.enabled && <p className="my-4">{unavailable}</p>}
