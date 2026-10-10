@@ -1,5 +1,7 @@
 "use client";
 
+import editorial from "@/components/editorial/editorial.module.css";
+import styles from "@/components/editorial/transaction.module.css";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { USER_JOB_POSTERS, type EditorialPhoto } from "@/data/user-market-photos";
@@ -15,7 +17,7 @@ const unavailable = "Der Online-Upload ist zurzeit nicht verfügbar. Du kannst d
 const ambiguous = "Deine Bewerbung ist möglicherweise bereits angekommen. Bitte sende nur denselben Versuch erneut, sofern dies hier möglich ist, oder kontaktiere den Markt. Eine neue Bewerbung kann zu einer doppelten Bewerbung führen.";
 
 function JobPoster({ photo }: { photo: EditorialPhoto }) {
-  return <a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`${photo.alt} – vollständige Anzeige öffnen`} className="block mb-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...photo} className="w-full h-auto" sizes="(max-width: 640px) 85vw, (max-width: 1024px) 42vw, 330px" loading="lazy" /></a>;
+  return <a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`${photo.alt} – vollständige Anzeige öffnen`} className={styles.jobPoster}><Image {...photo} alt={photo.alt} className="w-full h-auto" sizes="(max-width: 640px) 85vw, (max-width: 1024px) 42vw, 330px" loading="lazy" /></a>;
 }
 
 export default function ApplicationForm({ config: _initialConfig }: { config?: PublicApplicationConfig }) {
@@ -152,18 +154,19 @@ export default function ApplicationForm({ config: _initialConfig }: { config?: P
   const chooseJob = (job: ApplicationInput["job"]) => { setInput(previous => ({ ...previous, job })); nameInput.current?.focus(); };
   const reset = (retain: boolean) => { attemptRef.current = null; setAttempt(null); setAcknowledged(false); setMessage(""); setFieldErrors({}); setShowErrors(false); setError(""); if (!retain) { setInput(empty()); setFiles([]); if (fileInput.current) fileInput.current.value = ""; } };
   const locked = busy || !!attempt;
-  const fieldClass = "block w-full mt-1 rounded border border-current/30 bg-white p-3 text-gray-900 disabled:opacity-70";
+  const fieldClass = styles.field;
   return <section aria-labelledby="application-contact-title">
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
-      <section className="min-w-0 border border-current/20 rounded-xl p-5"><JobPoster photo={USER_JOB_POSTERS.fulltime} /><h2 className="text-2xl font-bold">Verkauf Vollzeit (m/w/d)</h2><p className="mt-3">Bewirb dich für den Verkauf in Vollzeit.</p><button type="button" className="underline mt-4 disabled:opacity-60" disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-fulltime")}>Für Vollzeit bewerben</button></section>
-      <section className="min-w-0 border border-current/20 rounded-xl p-5"><JobPoster photo={USER_JOB_POSTERS.parttime} /><h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2><p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p><button type="button" className="underline mt-4 disabled:opacity-60" disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button></section>
-      <section className="min-w-0 border border-current/20 rounded-xl p-5"><JobPoster photo={USER_JOB_POSTERS.apprentice} /><h2 className="text-2xl font-bold">Ausbildung im Getränkehandel / Einzelhandel (m/w/d)</h2><p className="mt-3">Starte deine Ausbildung bei Jammers in Goch. Wir freuen uns auf deine Bewerbung.</p><a className="inline-block underline text-primary mt-4" href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Ausbildung`}>Per E-Mail für die Ausbildung bewerben</a></section>
+    <div className={styles.jobGrid}>
+      <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.fulltime} /><h2 className="text-2xl font-bold">Verkauf Vollzeit (m/w/d)</h2><p className="mt-3">Bewirb dich für den Verkauf in Vollzeit.</p><button type="button" className={styles.textLink} disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-fulltime")}>Für Vollzeit bewerben</button></section>
+      <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.parttime} /><h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2><p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p><button type="button" className={styles.textLink} disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button></section>
+      <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.apprentice} /><h2 className="text-2xl font-bold">Ausbildung im Getränkehandel / Einzelhandel (m/w/d)</h2><p className="mt-3">Starte deine Ausbildung bei Jammers in Goch. Wir freuen uns auf deine Bewerbung.</p><a className={styles.textLink} href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Ausbildung`}>Per E-Mail für die Ausbildung bewerben</a></section>
     </div>
     <p className="text-sm mb-10">KI-generierte Anzeigenmotive – keine Teamfotos. Alle Anzeigen lassen sich in voller Größe öffnen.</p>
+    <div className={styles.application}>
     <h2 id="application-contact-title" className="text-2xl font-bold">Deine Bewerbung</h2>
     <p className="my-4">Persönlich im Markt oder per E-Mail: {contact}</p>
     {!config.enabled && <p className="my-4">{unavailable}</p>}
-    {!receipt && <button type="button" className="underline mb-4 disabled:opacity-60" disabled={busy || now < configAfter} onClick={() => { if (operation.current) return; operation.current = true; setBusy(true); void refreshConfig().finally(() => { operation.current = false; if (mounted.current) setBusy(false); }); }}>Upload-Verfügbarkeit prüfen</button>}
+    {!receipt && <button type="button" className={styles.textLink} disabled={busy || now < configAfter} onClick={() => { if (operation.current) return; operation.current = true; setBusy(true); void refreshConfig().finally(() => { operation.current = false; if (mounted.current) setBusy(false); }); }}>Upload-Verfügbarkeit prüfen</button>}
     {config.enabled && config.mode === "pilot" && <p className="font-bold border p-4">TEST – nur synthetische Testdaten, keine echte Bewerbung.</p>}
     <p className="text-sm my-4">Nach einer Neuladung gehen die nur im Arbeitsspeicher gehaltenen Eingaben und Statusnachweise verloren. Eine bereits gesendete Bewerbung kann trotzdem angekommen sein. Bitte nicht blind erneut senden.</p>
     <div role="status" aria-live="polite" className="my-4">
@@ -198,7 +201,7 @@ export default function ApplicationForm({ config: _initialConfig }: { config?: P
       <p id="application-files-disclosure" className="text-sm my-4">Zum Schutz unseres Teams werden Unterlagen als technisch aufbereitete Kopien weitergeleitet. PDFs werden vollständig zu Bild-PDF-Kopien rekonstruiert. Textsuche, Links, Interaktivität und digitale Signaturfunktionen gehen dabei verloren. Eine sichtbare Unterschrift bleibt nur als Bildpunkte erhalten. Digitale Unterschriften werden nicht verifiziert; eine sichtbare Unterschrift ist keine Echtheitsbestätigung. JPG/PNG werden ohne private Bildmetadaten neu gespeichert. Wir verändern keine Inhalte redaktionell und verwenden keine KI. Bitte bewahre deine Originale auf. Die Rekonstruktion bestätigt weder Echtheit noch allgemeine Sicherheit.</p>
       <p className="text-sm my-4"><a href="/datenschutz#bewerbungen" className="underline">Datenschutz zu Bewerbungen</a> – ein Portrait ist keine Voraussetzung.</p>
       {error && <p id="application-files-error" role="alert" className="my-4">{error}</p>}
-      {!attempt && <button type="submit" disabled={busy || !config.enabled} className="bg-primary text-white rounded px-6 py-3 disabled:opacity-60">{config.mode === "pilot" ? "TEST-Bewerbung absenden" : "Bewerbung absenden"}</button>}
+      {!attempt && <button type="submit" disabled={busy || !config.enabled} className={editorial.primaryLink}>{config.mode === "pilot" ? "TEST-Bewerbung absenden" : "Bewerbung absenden"}</button>}
       {attempt && !busy && <div className="space-y-4">
         {attempt.outcome === "correctable" ? <button type="button" className="underline" onClick={() => reset(true)}>Fehlgeschlagenen Versuch verwerfen und korrigieren</button> : <>
           {attempt.outcome !== "conflict" && <><button type="button" className="underline disabled:opacity-60" disabled={!config.enabled || !canRetry(attempt, now)} onClick={() => void transmit()}>Denselben Versuch erneut senden</button><p className="text-sm">Höchstens drei bewusste Übertragungen desselben Inhalts innerhalb von 15 Minuten. Die Wartefrist wird nicht verkürzt. Ist keine Wiederholung möglich, kontaktiere bitte den Markt.</p></>}
@@ -207,5 +210,6 @@ export default function ApplicationForm({ config: _initialConfig }: { config?: P
         </>}
       </div>}
     </form>}
+    </div>
   </section>;
 }

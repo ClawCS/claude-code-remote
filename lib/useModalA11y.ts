@@ -29,7 +29,7 @@ function unlockScroll() {
  *
  * Gibt einen ref zurück, der auf das Dialog-Panel (role="dialog") gesetzt wird.
  */
-export function useModalA11y(open: boolean, onClose: () => void) {
+export function useModalA11y(open: boolean, onClose: () => void, returnFocusFallback?: () => HTMLElement | null) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,7 +63,12 @@ export function useModalA11y(open: boolean, onClose: () => void) {
         if (list.length === 0) return;
         const first = list[0];
         const last = list[list.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
+        // Removing the focused item can leave focus on the document body.
+        // Recover into the dialog before normal keyboard traversal resumes.
+        if (!panel?.contains(document.activeElement)) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        } else if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -77,9 +82,12 @@ export function useModalA11y(open: boolean, onClose: () => void) {
     return () => {
       document.removeEventListener("keydown", onKey);
       unlockScroll();
-      prevFocus?.focus?.();
+      // A completed selection may disable its opener while the dialog is open.
+      // Only callers with that workflow supply a stable, meaningful fallback.
+      const canRestore = prevFocus?.isConnected && prevFocus !== document.body && !prevFocus.matches(":disabled") && prevFocus.getClientRects().length > 0;
+      (canRestore ? prevFocus : returnFocusFallback?.() ?? prevFocus)?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open, onClose, returnFocusFallback]);
 
   return ref;
 }

@@ -1,3 +1,5 @@
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/transaction.module.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
@@ -11,27 +13,13 @@ export const metadata: Metadata = {
 export default function KontaktPage() {
   return (
     <>
-      <div className="page-hero-banner py-16 md:py-24">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <nav className="text-sm text-white/60 mb-4">
-            <Link href="/" className="hover:text-white">Home</Link>
-            <span className="mx-1">/</span>
-            <span className="text-white">Kontakt</span>
-          </nav>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg mb-3">Kontakt</h1>
-          <p className="text-white/80 max-w-xl mx-auto text-lg">
-            Wir freuen uns auf deine Nachricht oder deinen Besuch im Markt.
-          </p>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid md:grid-cols-2 gap-6">
+      <div className={styles.breadcrumb}><nav aria-label="Brotkrumennavigation"><Link href="/">Home</Link><span> / </span><span aria-current="page">Kontakt</span></nav></div>
+      <PageIntro title="Kontakt" description="Wir freuen uns auf deine Nachricht oder deinen Besuch im Markt." />
+      <div className={styles.body} data-service="contact">
+        <div className={styles.contactGrid}>
           {/* Adresse + Öffnungszeiten */}
-          <div className="bg-white border border-border/60 rounded-2xl p-6">
-            <h2 className="text-lg font-bold text-secondary mb-3 flex items-center gap-2">
-              <span aria-hidden="true">📍</span> Adresse
-            </h2>
+          <div className={styles.contactGroup}>
+            <h2>Adresse</h2>
             <p className="text-secondary leading-relaxed">
               Trinkgut Jammers Goch<br />
               {MARKET.street}<br />
@@ -44,9 +32,7 @@ export default function KontaktPage() {
               className="mt-4"
             />
 
-            <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
-              <span aria-hidden="true">🕐</span> Öffnungszeiten
-            </h2>
+            <h2>Öffnungszeiten</h2>
             <p className="text-secondary leading-relaxed">
               Montag – Samstag: 08:00 – 20:00 Uhr<br />
               Sonn- und Feiertage: geschlossen
@@ -54,36 +40,28 @@ export default function KontaktPage() {
           </div>
 
           {/* Telefon + E-Mail + WhatsApp */}
-          <div className="bg-white border border-border/60 rounded-2xl p-6">
-            <h2 className="text-lg font-bold text-secondary mb-3 flex items-center gap-2">
-              <span aria-hidden="true">📞</span> Telefon
-            </h2>
+          <div className={styles.contactGroup}>
+            <h2>Telefon</h2>
             <p className="text-secondary leading-relaxed">
               Markt: <a href="tel:+492823418707" className="text-primary hover:underline">02823-418707</a><br />
               Mobil: <a href="tel:+4917663228597" className="text-primary hover:underline">0176-63228597</a>
             </p>
 
-            <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
-              <span aria-hidden="true">💬</span> WhatsApp
-            </h2>
+            <h2>WhatsApp</h2>
             <SocialLink
               platform="whatsapp"
               href="https://wa.me/491752492386"
               label="Schreib uns auf WhatsApp"
             />
 
-            <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
-              <span aria-hidden="true">✉️</span> E-Mail
-            </h2>
+            <h2>E-Mail</h2>
             <p className="text-secondary leading-relaxed">
               <a href="mailto:jammers-goch@trinkgut.de" className="text-primary hover:underline">
                 jammers-goch@trinkgut.de
               </a>
             </p>
 
-            <h2 className="text-lg font-bold text-secondary mt-8 mb-3 flex items-center gap-2">
-              <span aria-hidden="true">📸</span> Instagram
-            </h2>
+            <h2>Instagram</h2>
             <SocialLink
               platform="instagram"
               href="https://www.instagram.com/trinkgutjammers_goch/"
@@ -93,7 +71,7 @@ export default function KontaktPage() {
           </div>
         </div>
 
-        <div className="mt-10 p-6 bg-[#fff8ee] border border-primary/20 rounded-2xl text-center">
+        <div className={styles.notice}>
           <p className="text-sm text-muted">
             Für rechtliche Angaben siehe{" "}
             <Link href="/impressum" className="text-primary hover:underline">Impressum</Link>,{" "}

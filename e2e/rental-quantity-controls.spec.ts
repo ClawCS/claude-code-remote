@@ -70,9 +70,9 @@ test("cart quantity increases explain the limit without changing the accepted qu
   await expect(drawer).toContainText("3 Stück");
   await drawer.getByRole("link", { name: "Liste prüfen", exact: true }).click();
   await page.getByRole("button", { name: "Menge für Kühlanhänger erhöhen", exact: true }).click();
-  await expect(page.getByRole("alert")).toHaveText("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
+  await expect(page.locator("main").getByRole("alert")).toHaveText("Diese Menge ist nicht verfügbar. Bitte reduziere die Menge.");
   await page.getByRole("button", { name: "Menge für Kühlanhänger verringern", exact: true }).click();
-  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.locator("main").getByRole("alert")).toHaveCount(0);
   await expect(page.getByText("Positionssumme: 300,00", { exact: false })).toBeVisible();
 });
 

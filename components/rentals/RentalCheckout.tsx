@@ -1,5 +1,8 @@
 "use client";
 
+import PageIntro from "@/components/editorial/PageIntro";
+import editorial from "@/components/editorial/editorial.module.css";
+import styles from "@/components/editorial/transaction.module.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -58,26 +61,24 @@ export default function RentalCheckout() {
     finally { setBusy(false); }
   }
 
-  if (completed) return <p role="status" className="p-10">Bestellung gespeichert. Deine Bestellübersicht wird geöffnet …</p>;
+  if (completed) return <><PageIntro title="Deine Mietbestellung" /><div className={styles.body}><p role="status" className={styles.notice}>Bestellung gespeichert. Deine Bestellübersicht wird geöffnet …</p></div></>;
   if (!items.length) return <InquiryCheckout />;
   if (!onlyRentals || (quote && !quote.allPriced)) return <><p className="max-w-4xl mx-auto px-6 pt-8 text-sm">Gemischte Warenkörbe und Leihartikel ohne festgelegten Preis stimmen wir persönlich mit dir ab.</p><InquiryCheckout /></>;
-  if (quoteError) return <div className="max-w-3xl mx-auto p-8"><h1 className="text-3xl font-bold mb-4">Bitte die Auswahl prüfen</h1><p role="alert">{quoteError}</p><Link href="/warenkorb" className="underline text-primary">Warenkorb bearbeiten</Link></div>;
-  if (loadError) return <div className="max-w-3xl mx-auto p-8"><p role="alert">{loadError}</p><button onClick={() => window.location.reload()} className="underline mt-4">Erneut laden</button></div>;
-  if (!config) return <p role="status" className="p-10">Bestellfunktion wird geladen …</p>;
+  if (quoteError) return <><PageIntro title="Bitte die Auswahl prüfen" /><div className={styles.body}><p role="alert" className={styles.error}>{quoteError}</p><Link href="/warenkorb" className={editorial.secondaryLink}>Warenkorb bearbeiten</Link></div></>;
+  if (loadError) return <><PageIntro title="Deine Mietauswahl" /><div className={styles.body}><p role="alert" className={styles.error}>{loadError}</p><button onClick={() => window.location.reload()} className={editorial.secondaryLink}>Erneut laden</button></div></>;
+  if (!config) return <><PageIntro title="Deine Mietauswahl" /><div className={styles.body}><p role="status" className={styles.notice}>Bestellfunktion wird geladen …</p></div></>;
   if (!config.enabled) return <><p className="max-w-4xl mx-auto px-6 pt-8 text-sm">{config.message}</p><InquiryCheckout /></>;
   if (!quote || quote.totalCents === null) return null;
-  return <div className="max-w-6xl mx-auto px-5 py-10">
-    <Link href="/warenkorb" className="text-primary underline">Warenkorb bearbeiten</Link>
-    <h1 className="text-3xl md:text-4xl font-bold my-5">Deine Mietbestellung</h1>
-    {config.testMode && <div role="note" className="p-4 mb-6 rounded-lg border border-amber-400 bg-amber-50 font-semibold">Testbetrieb – keine echte Bestellung, Zahlung oder E-Mail. Bitte nur erfundene Kundendaten eingeben.</div>}
+  return <><PageIntro title="Deine Mietbestellung"><Link href="/warenkorb" className={editorial.secondaryLink}>Warenkorb bearbeiten</Link></PageIntro><div className={styles.body} data-service="rental-checkout">
+    {config.testMode && <div role="note" className={styles.notice}>Testbetrieb – keine echte Bestellung, Zahlung oder E-Mail. Bitte nur erfundene Kundendaten eingeben.</div>}
     <p className="mb-8 max-w-3xl">Du gibst eine zahlungspflichtige Bestellung ab. Erst wenn wir Termin und Verfügbarkeit ausdrücklich bestätigen, kommt der Mietvertrag zustande. Danach erhältst du deinen Zahlungslink oder bezahlst bei Abholung bar.</p>
-    <form onSubmit={submit} className="grid lg:grid-cols-2 gap-8">
-      <div className="space-y-5">
+    <form onSubmit={submit} className={styles.formLayout}>
+      <div className={styles.form}>
         <h2 className="text-xl font-bold">Deine Rechnungs- und Kontaktdaten</h2>
-        {fields.map(field => <label key={field.key} className="block font-medium" htmlFor={`rental-${field.key}`}>{field.label}<input id={`rental-${field.key}`} name={field.key} autoComplete={field.auto} type={field.type || "text"} maxLength={field.max} required={!field.optional} value={customer[field.key] || ""} onChange={event => setCustomer({ ...customer, [field.key]: event.target.value })} className="block mt-2 w-full p-3 rounded-lg border border-border bg-white text-secondary" /></label>)}
-        <label className="block font-medium" htmlFor="rental-notes">Anmerkungen (optional)<textarea id="rental-notes" maxLength={2000} rows={3} value={customer.notes} onChange={event => setCustomer({ ...customer, notes: event.target.value })} className="block mt-2 w-full p-3 rounded-lg border border-border bg-white" /></label>
+        {fields.map(field => <label key={field.key} className="block font-medium" htmlFor={`rental-${field.key}`}>{field.label}<input id={`rental-${field.key}`} name={field.key} autoComplete={field.auto} type={field.type || "text"} maxLength={field.max} required={!field.optional} value={customer[field.key] || ""} onChange={event => setCustomer({ ...customer, [field.key]: event.target.value })} className={styles.field} /></label>)}
+        <label className="block font-medium" htmlFor="rental-notes">Anmerkungen (optional)<textarea id="rental-notes" maxLength={2000} rows={3} value={customer.notes} onChange={event => setCustomer({ ...customer, notes: event.target.value })} className={styles.field} /></label>
       </div>
-      <aside className="rounded-2xl border border-border bg-white p-5 md:p-7 h-fit space-y-6">
+      <aside className={styles.summary}>
         <h2 className="text-xl font-bold">Vollständige Preisübersicht</h2>
         <ul className="space-y-4">{quote.lines.map(line => <li key={`${line.id}:${line.startDate}:${line.endDate}`} className="border-b border-border pb-4"><div className="flex gap-4 justify-between font-semibold"><span>{line.quantity} × {line.name}</span><span className="whitespace-nowrap">{money(line.lineTotalCents!)}</span></div><p className="text-sm mt-2">{line.startDate.split("-").reverse().join(".")} bis {line.endDate.split("-").reverse().join(".")}</p><p className="text-sm text-muted">{line.workdays} Werktage · {line.periods} Dreierblock{line.periods === 1 ? "" : "e"} · {money(line.unitPriceCents!)} je Stück und Block</p></li>)}</ul>
         <p className="text-sm">Abhol- und Rückgabetag zählen mit. Werktage: Mo–Sa, ohne Sonn- und NRW-Feiertage. Jeder angefangene Dreierblock wird vollständig berechnet.</p>
@@ -87,10 +88,10 @@ export default function RentalCheckout() {
         <details className="text-sm"><summary className="cursor-pointer font-semibold">Mietbedingungen lesen</summary><p className="whitespace-pre-wrap mt-3">{config.termsText}</p></details>
         <details className="text-sm"><summary className="cursor-pointer font-semibold">Datenschutz zur Bestellung</summary><p className="whitespace-pre-wrap mt-3">{config.privacyText}</p></details>
         <label className="flex gap-3 items-start text-sm"><input type="checkbox" required checked={terms} onChange={event => setTerms(event.target.checked)} className="mt-1"/><span>Ich akzeptiere die Mietbedingungen und habe den Datenschutzhinweis gelesen.</span></label>
-        <button type="submit" disabled={busy} className="w-full rounded-lg bg-primary text-white p-4 font-bold disabled:opacity-50">{busy ? "Bestellung wird gespeichert …" : config.testMode ? "Zahlungspflichtig bestellen (Test)" : "Zahlungspflichtig bestellen"}</button>
-        {error && <p role="alert" className="text-red-800 bg-red-50 p-4 rounded-lg">{error}</p>}
+        <button type="submit" disabled={busy} className={editorial.primaryLink}>{busy ? "Bestellung wird gespeichert …" : config.testMode ? "Zahlungspflichtig bestellen (Test)" : "Zahlungspflichtig bestellen"}</button>
+        {error && <p role="alert" className={styles.error}>{error}</p>}
         <p className="text-xs text-muted">Die Eingangsbestätigung ist noch keine Annahme. Bestellübersicht und später verfügbare Belege erhältst du per E-Mail.</p>
       </aside>
     </form>
-  </div>;
+  </div></>;
 }

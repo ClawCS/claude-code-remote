@@ -50,7 +50,9 @@ test("array-valued config stays email-only and array status cannot stop processi
 test("keyboard cards focus the form and invalid submit exposes associated errors with a focusable summary", async ({ page }) => {
   const port = await service(page); await page.goto("/bewerbung");
   for (const role of ["Teilzeit", "Vollzeit"]) {
-    await page.getByRole("button", { name: `Für ${role} bewerben` }).focus(); await page.keyboard.press("Enter");
+    const button = page.getByRole("button", { name: `Für ${role} bewerben` });
+    await expect(button).toBeEnabled();
+    await button.focus(); await page.keyboard.press("Enter");
     await expect(page.getByLabel("Name *", { exact: true })).toBeFocused();
     await expect(page.getByRole("radio", { name: role === "Teilzeit" ? "Verkauf Teilzeit bis zu 150 Stunden/Monat (m/w/d)" : "Verkauf Vollzeit (m/w/d)", exact: true })).toBeChecked();
   }

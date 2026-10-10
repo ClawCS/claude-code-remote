@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useCallback } from "react";
 import Link from "next/link";
+import editorial from "@/components/editorial/editorial.module.css";
+import styles from "@/components/editorial/transaction.module.css";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import { useModalA11y } from "@/lib/useModalA11y";
@@ -9,7 +12,8 @@ import { useModalA11y } from "@/lib/useModalA11y";
 export default function WishlistDrawer() {
   const { items, removeItem, clearWishlist, isWishlistOpen, setIsWishlistOpen } = useWishlist();
   const { addItem: addToCart } = useCart();
-  const panelRef = useModalA11y(isWishlistOpen, () => setIsWishlistOpen(false));
+  const close = useCallback(() => setIsWishlistOpen(false), [setIsWishlistOpen]);
+  const panelRef = useModalA11y(isWishlistOpen, close);
 
   const addAllToCart = () => {
     items.forEach((product) => addToCart(product, 1));
@@ -21,7 +25,7 @@ export default function WishlistDrawer() {
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/30 z-[200]"
+        className={styles.drawerBackdrop}
         onClick={() => setIsWishlistOpen(false)}
         aria-hidden="true"
       />
@@ -30,10 +34,10 @@ export default function WishlistDrawer() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="wishlist-drawer-title"
-        className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-[201] shadow-2xl flex flex-col"
+        className={styles.drawerPanel}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className={styles.drawerHeader}>
           <h2 id="wishlist-drawer-title" className="text-lg font-bold text-secondary flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
               <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
@@ -42,7 +46,7 @@ export default function WishlistDrawer() {
           </h2>
           <button
             onClick={() => setIsWishlistOpen(false)}
-            className="p-1 text-muted hover:text-secondary"
+            className={styles.iconButton}
             aria-label="Schliessen"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -52,20 +56,20 @@ export default function WishlistDrawer() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className={styles.drawerBody}>
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className={editorial.emptyState}>
               <p className="text-muted font-medium">Dein Merkzettel ist leer</p>
               <p className="text-sm text-muted mt-1">Tippe auf das Herz bei einem Produkt</p>
             </div>
           ) : (
             <div className="space-y-3">
               {items.map((product) => (
-                <div key={product.id} className="flex gap-3 bg-light rounded-xl p-3">
+                <div key={product.id} className={`${styles.drawerItem} ${styles.cartRow}`}>
                   {product.image && product.image !== "/images/home/brand-logo.webp" && <Link
                     href={`/produkte/${product.slug}`}
                     onClick={() => setIsWishlistOpen(false)}
-                    className="flex-shrink-0 w-16 h-16 bg-white rounded-lg overflow-hidden relative"
+                    className={styles.thumbnail}
                   >
                     <Image
                       src={product.image}
@@ -84,18 +88,18 @@ export default function WishlistDrawer() {
                       {product.name}
                     </Link>
                     <p className="text-xs text-muted mt-0.5">{product.unit}</p>
-                    <div className="flex items-center justify-between mt-1.5">
+                    <div className={styles.drawerControls}>
                       <span className="text-xs text-muted">Preis auf Anfrage</span>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => addToCart(product, 1)}
-                          className="px-2 py-1 bg-primary text-white text-xs font-medium rounded-md hover:bg-primary-dark transition-colors"
+                          className={editorial.primaryLink}
                         >
                           + Anfrage
                         </button>
                         <button
                           onClick={() => removeItem(product.id)}
-                          className="p-1 text-muted hover:text-red-500 transition-colors"
+                          className={styles.iconButton}
                           aria-label="Entfernen"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -113,16 +117,16 @@ export default function WishlistDrawer() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="p-4 border-t border-border space-y-2">
+          <div className={styles.drawerFooter}>
             <button
               onClick={addAllToCart}
-              className="w-full py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors shadow-sm"
+              className={editorial.primaryLink}
             >
               Alle zur Anfrageliste ({items.length})
             </button>
             <button
               onClick={clearWishlist}
-              className="w-full py-2 text-sm text-muted hover:text-red-500 transition-colors"
+              className={styles.textLink}
             >
               Merkzettel leeren
             </button>

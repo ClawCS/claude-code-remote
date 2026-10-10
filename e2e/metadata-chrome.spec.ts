@@ -6,6 +6,7 @@ import {
   type Page,
 } from "@playwright/test";
 import { test } from "./test-fixtures";
+import type { HomepageContent } from "../lib/homepage-content";
 
 const PRODUCTION_ORIGIN = "https://trinkgut-jammers.de";
 const HOME_TITLE = "Goch schenkt ein. | Trinkgut Jammers";
@@ -72,6 +73,57 @@ type ScriptObservation = {
   runtimeIssues: string[];
   waitForIdle: () => Promise<void>;
 };
+
+async function openRealProductResults(page: Page) {
+  await page.goto("/finder");
+  await page.getByRole("button", { name: /Bierfinder/ }).click();
+  for (const name of ["Pils – herb & frisch", "Keine Präferenz", "Feierabendbier"]) await page.getByRole("button", { name, exact: true }).click();
+  await expect(page.locator("[data-product-card]").first()).toBeVisible();
+}
+
+async function expectBrands(page: Page) {
+  for (const name of ["Pralle Kirsche", "Dicke Nüsse", "Süsse Sünde", "Caramello", "Schwarzer Teufel", "Weisser Engel"]) {
+    await expect(page.locator("#eigenmarken ul").getByRole("link", { name, exact: true })).toHaveAttribute("href", "/eigenmarke");
+  }
+  const originals = page.locator("#eigenmarken figure img"); await expect(originals).toHaveCount(3);
+  for (const image of await originals.all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 0)).toBe(true);
+    await expect(image).toHaveCSS("object-fit", "contain");
+    const ratio = await image.evaluate((node: HTMLImageElement) => ({ actual: node.clientWidth / node.clientHeight, original: node.naturalWidth / node.naturalHeight }));
+    expect(ratio.actual).toBeCloseTo(ratio.original, 2);
+  }
+}
+
+async function expectCurrentPublication(page: Page) {
+  const response = await page.request.get(new URL("/api/content/current", page.url()).href);
+  expect(response.ok()).toBe(true);
+  const content: HomepageContent = await response.json();
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  expect(new Date(content.generatedAt).valueOf()).toBeGreaterThan(Date.now() - 60_000);
+  await expect(page.locator("#aktuell h2")).toHaveText(/Deine Woche\.\s*Ein guter Einkauf\./);
+  for (const [flyer, selector] of [[content.flyer, "[data-current-flyer]"], [content.nlFlyer, "[data-current-nl-flyer]"]] as const) {
+    const card = page.locator(selector);
+    if (!flyer) { await expect(card).toHaveCount(0); continue; }
+    expect(flyer.validFrom <= today && today <= flyer.validTo).toBe(true);
+    await expect(card.getByRole("heading", { level: 3 })).toHaveText(flyer.title);
+    await expect(card.locator(`a[href="${flyer.pdfUrl}"]`)).toHaveCount(1);
+    await expect(card.locator("img")).toHaveAttribute("src", new RegExp(encodeURIComponent(flyer.coverUrl).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    const from = flyer.validFrom.split("-").reverse(), to = flyer.validTo.split("-").reverse();
+    const range = flyer.validFrom === flyer.validTo ? from.join(".") : from[1] === to[1] && from[2] === to[2] ? `${from[0]}.–${to.join(".")}` : from[2] === to[2] ? `${from[0]}.${from[1]}.–${to.join(".")}` : `${from.join(".")}–${to.join(".")}`;
+    await expect(card).toContainText(range);
+    await expect(card).toContainText(selector === "[data-current-flyer]" ? `${flyer.pageCount} ${flyer.pageCount === 1 ? "Seite" : "Seiten"}` : "1 pagina");
+  }
+  if (!content.flyer) await expect(page.locator("[data-current-fallback]")).toContainText(content.fallbackMessage ?? "Der nächste Handzettel wird vorbereitet.");
+  else await expect(page.locator("[data-current-fallback]")).toHaveCount(0);
+  for (const selector of ["[data-current-event]", "[data-action-current]"]) {
+    if (!content.event) { await expect(page.locator(selector)).toHaveCount(0); continue; }
+    expect(content.event.validFrom <= today && today <= content.event.validTo).toBe(true);
+    await expect(page.locator(selector)).toContainText(content.event.summary);
+    await expect(page.locator(selector).getByRole("heading", { level: 3 })).toHaveText(content.event.title);
+    await expect(page.locator(selector).getByRole("link", { name: "Quelle öffnen", exact: true })).toHaveAttribute("href", content.event.sourceUrl);
+  }
+}
 
 function localUrl(baseURL: string | undefined, pathname: string): string {
   if (!baseURL) throw new Error("Playwright baseURL is required");
@@ -220,7 +272,7 @@ async function expectPublicChrome(page: Page): Promise<void> {
     ["Gewinnspiele", "/gewinnspiel"],
     ["Unser Team", "/galerie"],
     ["Offene Stellen & Bewerbung", "/bewerbung"],
-    ["Kontakt", "/kontakt"],
+    ["Dein Besuch", "/kontakt"],
   ]) {
     await expect(nav.getByRole("link", { name: label, exact: true, includeHidden: true })).toHaveAttribute("href", href);
   }
@@ -228,6 +280,11 @@ async function expectPublicChrome(page: Page): Promise<void> {
 }
 
 async function expectNaturalPeopleStory(page: Page): Promise<void> {
+  const details = page.locator("#menschen details");
+  const initiallyOpen = await details.evaluate(node => (node as HTMLDetailsElement).open);
+  if (!initiallyOpen) await details.locator("summary").click();
+  await expect(page.locator("#menschen")).toContainText("Unser neues Teamfoto folgt");
+  await expect(page.locator('#menschen img[src*="team-group"], #menschen img[src*="team-justin"], #menschen img[src*="team-harpe"]')).toHaveCount(0);
   await expect(page.locator("#menschen figure")).toHaveCount(8);
   await expect(page.locator("#menschen figcaption")).toHaveText([
     "Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna",
@@ -235,17 +292,24 @@ async function expectNaturalPeopleStory(page: Page): Promise<void> {
   ]);
   const photos = page.locator("#menschen figure img");
   await expect(photos).toHaveCount(8);
+  for (const [index, source] of ["brand-logo", "team-niko", "team-sven", "team-jasmin", "team-jan-niklas", "team-hanna.", "team-henri", "team-hannah"].entries()) {
+    await expect(photos.nth(index)).toHaveAttribute("src", new RegExp(source.replaceAll(".", "\\.")));
+  }
   await expect(page.locator('#menschen img[src*="team-gabriella"]')).toHaveCount(0);
   for (const image of await photos.all()) {
     await image.scrollIntoViewIfNeeded();
     await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true);
     await expect(image).toHaveCSS("object-fit", "contain");
     const dimensions = await image.evaluate((element: HTMLImageElement) => ({
-      displayed: element.getBoundingClientRect().width / element.getBoundingClientRect().height,
+      width: element.getBoundingClientRect().width,
+      height: element.getBoundingClientRect().height,
       natural: element.naturalWidth / element.naturalHeight,
     }));
-    expect(dimensions.displayed).toBeCloseTo(dimensions.natural, 2);
+    // Next's density-corrected intrinsic dimensions round to whole pixels.
+    // Keep the full-image proportion contract within one rendered pixel.
+    expect(Math.abs(dimensions.height - dimensions.width / dimensions.natural)).toBeLessThanOrEqual(1);
   }
+  if (!initiallyOpen) await details.locator("summary").click();
 }
 
 test("[product-contract] binds exact homepage metadata and the local OG JPEG", async ({
@@ -329,8 +393,8 @@ test("[product-contract] renders one final landmark tree and ordered server sect
   expect(sectionOrder).toEqual([
     "hero",
     "aktuell",
-    "sortiment",
     "service",
+    "sortiment",
     "eigenmarken",
     "aktionen",
     "menschen",
@@ -338,39 +402,11 @@ test("[product-contract] renders one final landmark tree and ordered server sect
     "instagram",
   ]);
 
-  await expect(page.getByText("Für deinen Feierabend. Für die große Runde. Und für alles, was du zu feiern hast. Wir beraten dich persönlich und machen deine Party startklar.", { exact: true })).toBeVisible();
-  await expect(page.getByText("Angebote der Woche", { exact: true })).toBeVisible();
-  await expect(page.getByText("Gültig 13.–18.07.2026", { exact: true })).toBeVisible();
-  await expect(page.getByText("10 Seiten", { exact: true })).toBeVisible();
-  await expect(
-    page
-      .locator("#aktuell")
-      .getByText("Aktionszeitraum · 14.–24.07.2026", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page
-      .locator("#aktionen")
-      .getByText("Aktionszeitraum · 14.–24.07.2026", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page
-      .locator("#aktuell")
-      .getByText(
-        "Dein Schuss. Dein Gewinn. Am 24. Juli bei Trinkgut Jammers.",
-        { exact: true },
-      ),
-  ).toBeVisible();
-  await expect(
-    page
-      .locator("#aktionen")
-      .getByText(
-        "Dein Schuss. Dein Gewinn. Am 24. Juli bei Trinkgut Jammers.",
-        { exact: true },
-      ),
-  ).toBeVisible();
+  await expect(page.getByText("Vom ersten Anstoßen bis zur großen Runde. Alles für deinen Anlass unter einem Dach.", { exact: true })).toBeVisible();
+  await expectCurrentPublication(page);
   await expect(page.getByRole("heading", { name: "Menschen hinter Jammers" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Deine Party. Unser Service." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Drei mit Charakter." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Du hast etwas vor. Wir sind dabei." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sechs eigene Charaktere." })).toBeVisible();
   await expectNaturalPeopleStory(page);
   await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
   await expect(page.locator("#eigenmarken figcaption")).toHaveText([
@@ -381,7 +417,7 @@ test("[product-contract] renders one final landmark tree and ordered server sect
   await expect(page.getByText("Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.", { exact: true })).toBeVisible();
   await expect(page.locator("footer#kontakt")).toContainText("Jurgensstraße 20");
   await expect(page.locator("footer#kontakt")).toContainText("Mo–Sa 08:00–20:00 Uhr");
-  await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
+  await expectBrands(page);
 
   const fragments = page.locator('a[href^="#"]:visible');
   for (let index = 0; index < (await fragments.count()); index += 1) {
@@ -429,8 +465,8 @@ test("[product-contract] keeps the complete active homepage server-readable with
     expect(sectionOrder).toEqual([
       "hero",
       "aktuell",
-      "sortiment",
       "service",
+      "sortiment",
       "eigenmarken",
       "aktionen",
       "menschen",
@@ -439,26 +475,23 @@ test("[product-contract] keeps the complete active homepage server-readable with
     ]);
 
     for (const exactText of [
-      "Für deinen Feierabend. Für die große Runde. Und für alles, was du zu feiern hast. Wir beraten dich persönlich und machen deine Party startklar.",
-      "Angebote der Woche",
-      "Gültig 13.–18.07.2026",
-      "10 Seiten",
+      "Vom ersten Anstoßen bis zur großen Runde. Alles für deinen Anlass unter einem Dach.",
       "Menschen hinter Jammers",
-      "Deine Party. Unser Service.",
       "Pralle Kirsche",
       "Schwarzer Teufel",
       "Caramello",
       "Marktleben, neue Produkte, Verkostungen und Gewinnspiele – direkt von unserem Team. Folge uns und bleib dabei.",
-      "Jurgensstraße 20",
-      "Mo–Sa 08:00–20:00 Uhr",
     ]) {
       await expect(page.getByText(exactText, { exact: true }).first()).toBeVisible();
     }
+    await expect(page.getByRole("heading", { name: "Du hast etwas vor. Wir sind dabei.", exact: true })).toBeVisible();
+    for (const text of ["Jurgensstraße 20", "Mo–Sa 08:00–20:00 Uhr"]) await expect(page.locator("footer#kontakt").getByText(text, { exact: true })).toBeVisible();
     await expectPublicChrome(page);
+    await expectCurrentPublication(page);
     await expectNaturalPeopleStory(page);
     await expect(page.locator("#eigenmarken figure")).toHaveCount(3);
     await expect(page.locator("iframe")).toHaveCount(0);
-    await expect(page.getByText("Der nächste Handzettel wird vorbereitet.", { exact: true })).toHaveCount(0);
+    await expectBrands(page);
   } finally {
     await context.close();
   }
@@ -610,13 +643,13 @@ test("[product-contract] keeps the new chrome on direct routes and client naviga
     ["Unser Team", "/galerie"],
   ]) {
     const navigation = page.getByRole("navigation", { name: "Hauptnavigation" });
-    if (label === "Unser Team") {
-      await navigation.locator("summary").filter({ hasText: "Team & Karriere" }).click();
+    if (label === "Unser Team" || label === "Gewinnspiele") {
+      await navigation.locator("summary").filter({ hasText: "Jammers entdecken" }).click();
     }
     await navigation.getByRole("link", { name: label, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(pathname + "$"));
     await expectPublicChrome(page);
-    await expect(page.locator("main.public-subpage")).toHaveCount(1);
+    await expect(page.locator("main#main-content")).toHaveCount(1);
   }
   expect(runtimeIssues).toEqual([]);
 });
@@ -630,7 +663,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   expect(response?.status()).toBe(200);
   await page.waitForLoadState("networkidle");
   await expectPublicChrome(page);
-  await expect(page.locator("footer").getByRole("link", { name: "WhatsApp", exact: true })).toBeVisible();
+  await expect(page.locator("footer").getByRole("link", { name: "Per WhatsApp schreiben", exact: true })).toBeVisible();
 
   await page.locator("footer").getByRole("link", { name: "Anfrageliste", exact: true }).click();
   await expect(page).toHaveURL(/\/warenkorb$/);
@@ -639,6 +672,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   await expect(page).toHaveURL(/\/produkte$/);
   await expectPublicChrome(page);
 
+  await openRealProductResults(page);
   const card = page.locator("[data-product-card]").first();
   const productName = (await card.getByRole("heading", { level: 2 }).textContent())!.trim();
   const productHref = await card.locator('a[href^="/produkte/"]').first().getAttribute("href");
@@ -653,6 +687,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   await expect(drawer).toContainText(productName);
   await drawer.getByRole("button", { name: "Schließen", exact: true }).click();
   await expect(drawer).toHaveCount(0);
+  await expect(card.getByRole("button", { name: "Anfragen", exact: true })).toBeFocused();
 
   await page.locator("footer").getByRole("link", { name: "Anfrageliste", exact: true }).click();
   await expect(page).toHaveURL(/\/warenkorb$/);
@@ -682,6 +717,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
 
   await page.getByRole("link", { name: "Sortiment entdecken", exact: true }).click();
   await expect(page).toHaveURL(/\/produkte$/);
+  await openRealProductResults(page);
   await page.locator("[data-product-card]").first().getByRole("button", { name: "Zum Merkzettel", exact: true }).click();
   await page.locator("footer").getByRole("link", { name: "Merkzettel", exact: true }).click();
   await expect(page).toHaveURL(/\/merkzettel$/);
@@ -701,7 +737,7 @@ test("[product-contract] reaches inquiry and wishlist pages and preserves indivi
   expect(runtimeIssues).toEqual([]);
 });
 
-test("[product-contract] keeps all seven approved portraits and the group photo natural on desktop and mobile", async ({ page }) => {
+test("[product-contract] keeps all seven approved portraits and the logo placeholder natural on desktop and mobile", async ({ page }) => {
   const runtimeIssues = collectRuntimeIssues(page);
   for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
