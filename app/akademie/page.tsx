@@ -2,8 +2,13 @@ import Link from "next/link";
 import AcademyCover from "@/components/AcademyCover";
 import { courses } from "@/data/akademie";
 import type { Metadata } from "next";
+import { academyCertificates } from "@/data/academy-certificates";
 
-export const metadata: Metadata = { title: "Getränkeakademie" };
+export const metadata: Metadata = {
+  title: "Getränkeakademie",
+  description: "Lernen rund um Bier, Wein und Spirituosen: kostenlose Lektionen, Quiz und Abschlusstests sowie Hinweise auf externe Weiterbildungen.",
+  alternates: { canonical: "/akademie" },
+};
 
 export default function AkademiePage() {
   return (
@@ -49,7 +54,7 @@ export default function AkademiePage() {
       <div className="mt-12 bg-[#fff8ee] border border-border rounded-2xl p-8 text-secondary text-center">
         <h2 className="text-2xl font-bold mb-2">Professionelle Zertifikatskurse</h2>
         <p className="text-muted max-w-lg mx-auto mb-5">
-          IHK-Zertifikate, WSET-Diplome und Sommelier-Ausbildungen — 16 buchbare Kurse für deine Karriere.
+          IHK-Zertifikate, WSET-Diplome und Sommelier-Ausbildungen — {academyCertificates.length} Weiterbildungshinweise für deine Karriere. Termine, Preise und Anmeldung bitte beim Anbieter prüfen.
         </p>
         <Link
           href="/akademie/zertifikate"

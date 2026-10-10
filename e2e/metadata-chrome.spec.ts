@@ -10,12 +10,12 @@ import { test } from "./test-fixtures";
 const PRODUCTION_ORIGIN = "https://trinkgut-jammers.de";
 const HOME_TITLE = "Goch schenkt ein. | Trinkgut Jammers";
 const HOME_DESCRIPTION =
-  "Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers, Jurgenstr. 20 in Goch.";
+  "Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers, Jurgensstraße 20 in Goch.";
 const HOME_OG_IMAGE =
   "https://trinkgut-jammers.de/images/home/cinematic/og-home.jpg";
-const NL_TITLE = "Informatie voor Nederlandse klanten | Trinkgut Jammers";
+const NL_TITLE = "Jouw drankenadres in Goch | Trinkgut Jammers";
 const NL_DESCRIPTION =
-  "Persoonlijk advies, feestbenodigdheden en verhuur bij Trinkgut Jammers, Jurgenstr. 20 in Goch. Ma–za 08:00–20:00 uur.";
+  "Bekijk de actuele folders van Trinkgut Jammers, Jurgensstraße 20 in Goch. Persoonlijk advies, feestbenodigdheden en verhuur. Plan je bezoek: ma–za 08:00–20:00 uur.";
 
 const EXPECTED_LOCAL_BUSINESS = {
   "@context": "https://schema.org",
@@ -489,7 +489,7 @@ test("[product-contract] renders one exact serializer-backed LocalBusiness scrip
   expect(runtimeIssues).toEqual([]);
 });
 
-test("[product-contract] keeps homepage metadata off child routes and neutralizes NL metadata", async ({
+test("[product-contract] keeps homepage metadata off child routes and preserves NL metadata", async ({
   page,
 }) => {
   const runtimeIssues = collectRuntimeIssues(page);

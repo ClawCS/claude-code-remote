@@ -52,7 +52,7 @@ describe("academy discovery in the existing assortment", () => {
 
   test.each([
     ["homepage assortment", async () => <AssortmentSection key="home" />],
-    ["product overview", async () => await ProduktePage()],
+    ["product overview", async () => await ProduktePage({ searchParams: Promise.resolve({}) })],
   ])("adds a compact academy destination to %s", async (_label, element) => {
     const html = markup(await element());
     expect(html).toMatch(/href="\/akademie"[^>]*>[^<]*Getränkeakademie/);

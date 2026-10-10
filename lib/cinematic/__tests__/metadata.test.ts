@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 
 import { metadata as nlMetadata } from "@/app/nl/layout";
+import { metadata as academyMetadata } from "@/app/akademie/page";
+import { metadata as productsMetadata } from "@/app/produkte/layout";
+import { metadata as offersMetadata } from "@/app/angebote/layout";
+import { metadata as flyersMetadata } from "@/app/handzettel/layout";
 import {
   HOMEPAGE_METADATA,
   LOCAL_BUSINESS_JSON_LD,
@@ -9,6 +13,17 @@ import {
 } from "@/lib/cinematic/metadata";
 
 describe("homepage metadata", () => {
+  test("canonicalizes catalogue filters and duplicate handzettel views to their own destinations", () => {
+    expect(academyMetadata.alternates?.canonical).toBe("/akademie");
+    expect(academyMetadata.description).toMatch(/Lektionen|Lernen/);
+    expect(productsMetadata.alternates?.canonical).toBe("/produkte");
+    expect(offersMetadata.alternates?.canonical).toBe("/angebote");
+    expect(flyersMetadata.alternates?.canonical).toBe("/angebote");
+    for (const metadata of [offersMetadata, flyersMetadata]) {
+      expect(metadata.description).toMatch(/Originalhandzettel/);
+      expect(metadata.title).toBe(String(metadata.title).trim());
+    }
+  });
   test("keeps root-only canonical, hreflang, and OG out of site metadata", () => {
     expect(SITE_METADATA.alternates?.canonical).toBeUndefined();
     expect(SITE_METADATA.openGraph).toBeUndefined();

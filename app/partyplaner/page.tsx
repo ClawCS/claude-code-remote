@@ -4,88 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { type Product } from "@/lib/utils";
+import { calculateNeeds, distributionValidity, getRecommendations, type PartyConfig } from "@/lib/party-planner";
 import { assortmentProducts as products } from "@/lib/catalog";
-
-type PartyConfig = {
-  guests: number;
-  duration: number; // hours
-  beerDrinkers: number; // percentage
-  wineDrinkers: number;
-  softDrinkers: number;
-  spiritDrinkers: number;
-};
-
-function calculateNeeds(config: PartyConfig) {
-  const { guests, duration, beerDrinkers, wineDrinkers, softDrinkers, spiritDrinkers } = config;
-  const drinksPerHour = 2;
-  const totalDrinks = guests * duration * drinksPerHour;
-
-  // Portionen (Getränke) pro Kategorie
-  const beerServings = (totalDrinks * beerDrinkers) / 100;
-  const wineServings = (totalDrinks * wineDrinkers) / 100;
-  const softServings = (totalDrinks * softDrinkers) / 100;
-  const spiritServings = (totalDrinks * spiritDrinkers) / 100;
-
-  // Portionsgrößen → tatsächlicher Liter-Bedarf pro Kategorie
-  const beerLiters = beerServings * 0.33; // Flasche/Glas ~0,33 l
-  const wineLiters = wineServings * 0.2; // Weinglas ~0,2 l
-  const softLiters = softServings * 0.25; // Glas ~0,25 l
-  const spiritLiters = spiritServings * 0.04; // Shot 4 cl
-  const waterLiters = guests * duration * 0.2; // ~0,2 l pro Person und Stunde
-
-  return { beerLiters, wineLiters, softLiters, spiritLiters, waterLiters, totalDrinks };
-}
-
-/** Liest das Volumen eines Produkts (in Litern) aus unit/description — z.B. "16 x 0,33 l" = 5,28 l, "5L" = 5 l. */
-function parseVolumeLiters(p: Product): number {
-  const text = `${p.unit ?? ""} ${p.description ?? ""}`.toLowerCase().replace(/,/g, ".");
-  const multi = text.match(/(\d+)\s*[x×]\s*(\d+(?:\.\d+)?)\s*l/);
-  if (multi) return parseInt(multi[1], 10) * parseFloat(multi[2]);
-  const single = text.match(/(\d+(?:\.\d+)?)\s*l\b/);
-  if (single) return parseFloat(single[1]);
-  return 0;
-}
-
-/** Wie viele Einheiten des Produkts decken den Liter-Bedarf (mind. 1)? */
-function unitsFor(liters: number, product: Product): number {
-  const vol = parseVolumeLiters(product);
-  return Math.max(1, Math.ceil(liters / (vol > 0 ? vol : 1)));
-}
-
-function getRecommendations(needs: ReturnType<typeof calculateNeeds>) {
-  const recs: { product: Product; quantity: number; reason: string }[] = [];
-
-  const fmtL = (l: number) => `~${Math.round(l)} l`;
-  const waterRegex = /(wasser|gerolsteiner|fachingen|volvic|quelle|pellegrino|rheinfels)/i;
-
-  if (needs.beerLiters > 0) {
-    const beer = products.find((p) => p.categorySlug === "bier");
-    if (beer) recs.push({ product: beer, quantity: unitsFor(needs.beerLiters, beer), reason: `${fmtL(needs.beerLiters)} Bier` });
-  }
-  if (needs.wineLiters > 0) {
-    const wine = products.find((p) => p.categorySlug === "wein");
-    if (wine) recs.push({ product: wine, quantity: unitsFor(needs.wineLiters, wine), reason: `${fmtL(needs.wineLiters)} Wein` });
-  }
-  if (needs.softLiters > 0) {
-    const soft =
-      products.find((p) => p.categorySlug === "alkoholfrei" && !waterRegex.test(p.name)) ||
-      products.find((p) => p.categorySlug === "alkoholfrei");
-    if (soft) recs.push({ product: soft, quantity: unitsFor(needs.softLiters, soft), reason: `${fmtL(needs.softLiters)} Softdrinks` });
-  }
-  if (needs.spiritLiters > 0) {
-    const spirit = products.find((p) => p.categorySlug === "spirituosen");
-    if (spirit) recs.push({ product: spirit, quantity: unitsFor(needs.spiritLiters, spirit), reason: `${fmtL(needs.spiritLiters)} Spirituosen` });
-  }
-  if (needs.waterLiters > 0) {
-    const water =
-      products.find((p) => p.categorySlug === "alkoholfrei" && waterRegex.test(p.name)) ||
-      products.find((p) => p.categorySlug === "alkoholfrei");
-    if (water) recs.push({ product: water, quantity: unitsFor(needs.waterLiters, water), reason: `${fmtL(needs.waterLiters)} Wasser` });
-  }
-
-  return recs;
-}
 
 export default function PartyplanerPage() {
   const { addItem } = useCart();
@@ -98,11 +18,22 @@ export default function PartyplanerPage() {
     spiritDrinkers: 10,
   });
   const [showResults, setShowResults] = useState(false);
+  const { total, valid } = distributionValidity(config);
+
+  const updateConfig = (next: PartyConfig) => {
+    setConfig(next);
+    setShowResults(false);
+  };
+  const handleCalculate = () => {
+    if (!valid) return;
+    setShowResults(true);
+  };
 
   const needs = calculateNeeds(config);
-  const recommendations = getRecommendations(needs);
+  const recommendations = getRecommendations(needs, products);
 
   const handleAddAll = () => {
+    if (!valid || !showResults) return;
     recommendations.forEach((r) => addItem(r.product, r.quantity));
   };
 
@@ -133,7 +64,7 @@ export default function PartyplanerPage() {
               max={200}
               step={5}
               value={config.guests}
-              onChange={(e) => setConfig({ ...config, guests: +e.target.value })}
+              onChange={(e) => updateConfig({ ...config, guests: +e.target.value })}
               className="w-full accent-primary"
             />
             <div className="text-2xl font-bold text-primary mt-1">{config.guests} Personen</div>
@@ -149,7 +80,7 @@ export default function PartyplanerPage() {
               min={2}
               max={12}
               value={config.duration}
-              onChange={(e) => setConfig({ ...config, duration: +e.target.value })}
+              onChange={(e) => updateConfig({ ...config, duration: +e.target.value })}
               className="w-full accent-primary"
             />
             <div className="text-2xl font-bold text-primary mt-1">{config.duration} Stunden</div>
@@ -175,21 +106,24 @@ export default function PartyplanerPage() {
                 max={100}
                 step={5}
                 value={config[key]}
-                onChange={(e) => setConfig({ ...config, [key]: +e.target.value })}
+                onChange={(e) => updateConfig({ ...config, [key]: +e.target.value })}
+                aria-invalid={!valid}
+                aria-describedby={!valid ? "party-distribution-error" : undefined}
                 className="w-full accent-primary"
               />
               <span className={`text-lg font-bold ${color}`}>{config[key]}%</span>
             </div>
           ))}
         </div>
-        {config.beerDrinkers + config.wineDrinkers + config.softDrinkers + config.spiritDrinkers !== 100 && (
-          <p className="text-sm text-red-500 mt-2">
-            Summe: {config.beerDrinkers + config.wineDrinkers + config.softDrinkers + config.spiritDrinkers}% (sollte 100% sein)
+        {!valid && (
+          <p id="party-distribution-error" role="alert" className="text-sm text-red-700 mt-2">
+            Summe: {total}% — bitte verteile genau 100% auf die Kategorien (jeweils 0–100%).
           </p>
         )}
 
         <button
-          onClick={() => setShowResults(true)}
+          onClick={handleCalculate}
+          disabled={!valid}
           className="mt-6 w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-colors text-lg"
         >
           Berechnen
@@ -197,7 +131,7 @@ export default function PartyplanerPage() {
       </div>
 
       {/* Results */}
-      {showResults && (
+      {showResults && valid && (
         <div className="bg-white border border-border rounded-xl p-6">
           <h2 className="text-xl font-bold text-secondary mb-2">Deine Party-Einkaufsliste</h2>
           <p className="text-sm text-muted mb-6">
@@ -205,6 +139,7 @@ export default function PartyplanerPage() {
           </p>
 
           <div className="space-y-4 mb-6">
+            {!recommendations.some(rec => rec.reason.endsWith(" Wasser")) && <p className="text-sm text-muted">Zusätzlich ca. {Math.round(needs.waterLiters)} l Wasser einplanen. Passendes Mineralwasser und Packungsgrößen bitte im Markt abstimmen; kein Wasserartikel zur Anfrageliste hinzugefügt.</p>}
             {recommendations.map((rec, i) => (
               <div key={i} className="flex items-center gap-4 p-4 bg-light rounded-lg">
                 {rec.product.image && rec.product.image !== "/images/home/brand-logo.webp" && <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">

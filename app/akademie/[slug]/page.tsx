@@ -3,7 +3,7 @@ import AcademyCover from "@/components/AcademyCover";
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { courses, type QuizQuestion } from "@/data/akademie";
+import { courses, type Course, type QuizQuestion } from "@/data/akademie";
 import { useState } from "react";
 
 function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete: (score: number) => void }) {
@@ -55,7 +55,7 @@ function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete
 
           return (
             <button key={i} onClick={() => handleSelect(i)} className={cls} disabled={showAnswer}>
-              <span className="font-bold mr-2 opacity-50">{String.fromCharCode(65 + i)}.</span>
+              <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
               {opt}
             </button>
           );
@@ -81,11 +81,6 @@ function Quiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete
 export default function CoursePage() {
   const { slug } = useParams<{ slug: string }>();
   const course = courses.find((c) => c.slug === slug);
-  const [activeLesson, setActiveLesson] = useState(0);
-  const [showFinalExam, setShowFinalExam] = useState(false);
-  const [lessonQuizDone, setLessonQuizDone] = useState<Record<number, number>>({});
-  const [examScore, setExamScore] = useState<number | null>(null);
-
   if (!course) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
@@ -95,13 +90,22 @@ export default function CoursePage() {
     );
   }
 
+  return <CourseBody key={course.slug} course={course} />;
+}
+
+function CourseBody({ course }: { course: Course }) {
+  const [activeLesson, setActiveLesson] = useState(0);
+  const [showFinalExam, setShowFinalExam] = useState(false);
+  const [lessonQuizDone, setLessonQuizDone] = useState<Record<number, number>>({});
+  const [examScore, setExamScore] = useState<number | null>(null);
+
   const lesson = course.lessons[activeLesson];
   const completedLessons = Object.keys(lessonQuizDone).length;
 
   if (examScore !== null) {
     const totalFinal = course.finalExam.length;
     const percent = Math.round((examScore / totalFinal) * 100);
-    const passed = percent >= 70;
+    const passed = examScore / totalFinal >= 0.7;
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
         <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">Abschlussprüfung</p>
@@ -137,7 +141,7 @@ export default function CoursePage() {
           <h1 className="text-2xl font-bold">Abschlusstest: {course.title}</h1>
           <p className="text-muted mt-1">{course.finalExam.length} Fragen — 70% zum Bestehen</p>
         </div>
-        <Quiz questions={course.finalExam} onComplete={(s) => setExamScore(s)} />
+        <Quiz key={`${course.slug}:final`} questions={course.finalExam} onComplete={(s) => setExamScore(s)} />
       </div>
     );
   }
@@ -174,7 +178,7 @@ export default function CoursePage() {
           ))}
           <div className={`h-2 w-8 rounded-full ${showFinalExam ? "bg-primary" : "bg-primary/20"}`} />
         </div>
-        <p className="text-xs text-muted mt-2">Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz bestanden</p>
+        <p className="text-xs text-muted mt-2">Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz abgeschlossen</p>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-8">
@@ -184,7 +188,7 @@ export default function CoursePage() {
           <nav className="space-y-1">
             {course.lessons.map((l, i) => (
               <button key={i} onClick={() => setActiveLesson(i)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${i === activeLesson ? "bg-primary text-white font-medium" : "text-muted hover:bg-light hover:text-secondary"}`}>
-                {lessonQuizDone[i] !== undefined ? <span className="text-green-500 text-xs">✓</span> : <span className="opacity-30 text-xs">{i + 1}.</span>}
+                {lessonQuizDone[i] !== undefined ? <span className={`text-xs ${i === activeLesson ? "text-white" : "text-green-800"}`}>✓</span> : <span className={`text-xs ${i === activeLesson ? "text-white" : "text-muted"}`}>{i + 1}.</span>}
                 <span className="truncate">{l.title}</span>
               </button>
             ))}
@@ -195,7 +199,7 @@ export default function CoursePage() {
               className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium ${completedLessons >= course.lessons.length ? "text-primary hover:bg-red-50 cursor-pointer" : "text-muted/30 cursor-not-allowed"}`}
             >
               📝 Abschlusstest
-              {completedLessons < course.lessons.length && <span className="block text-xs opacity-50">Erst alle Quiz bestehen</span>}
+              {completedLessons < course.lessons.length && <span className="block text-xs opacity-50">Erst alle Quiz abschließen</span>}
             </button>
           </nav>
         </div>
@@ -214,11 +218,11 @@ export default function CoursePage() {
           {/* Lesson Quiz */}
           {lesson.quiz.length > 0 && (
             lessonQuizDone[activeLesson] !== undefined ? (
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800">
-                ✓ Quiz bestanden — {lessonQuizDone[activeLesson]}/{lesson.quiz.length} richtig
+              <div className="mt-6 p-4 bg-light border border-border rounded-xl text-sm text-secondary">
+                Quiz abgeschlossen — {lessonQuizDone[activeLesson]}/{lesson.quiz.length} richtig
               </div>
             ) : (
-              <Quiz questions={lesson.quiz} onComplete={(s) => setLessonQuizDone((prev) => ({ ...prev, [activeLesson]: s }))} />
+              <Quiz key={`${course.slug}:${activeLesson}`} questions={lesson.quiz} onComplete={(s) => setLessonQuizDone((prev) => ({ ...prev, [activeLesson]: s }))} />
             )
           )}
 
@@ -240,7 +244,7 @@ export default function CoursePage() {
                 📝 Zum Abschlusstest
               </button>
             ) : (
-              <span className="px-5 py-2.5 text-sm text-muted">Bestehe erst alle Quiz</span>
+              <span className="px-5 py-2.5 text-sm text-muted">Schließe erst alle Quiz ab</span>
             )}
           </div>
         </div>

@@ -1,205 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { academyCertificates as zertifikatskurse } from "@/data/academy-certificates";
 
 export const metadata: Metadata = {
   title: "Professionelle Zertifikatskurse | Getränkeakademie",
-  description: "IHK-Zertifikate, Sommelier-Ausbildungen und Fachkurse für Wein, Bier, Spirituosen — alle buchbaren Kurse auf einen Blick.",
+  description: `${zertifikatskurse.length} Weiterbildungshinweise zu IHK, WSET und Sommelier-Qualifikationen. Termine, Preise und Anmeldung bitte beim jeweiligen Anbieter prüfen.`,
+  alternates: { canonical: "/akademie/zertifikate" },
 };
-
-type Kurs = {
-  titel: string;
-  abschluss: string;
-  anbieter: string;
-  dauer: string;
-  kosten: string;
-  beschreibung: string;
-  url: string;
-  kategorie: "wein" | "bier" | "spirituosen" | "allgemein";
-  highlight?: boolean;
-};
-
-const zertifikatskurse: Kurs[] = [
-  // === WEIN ===
-  {
-    titel: "Geprüfter Sommelier (IHK)",
-    abschluss: "IHK-Zeugnis",
-    anbieter: "IHK / Sommelier-Union Deutschland",
-    dauer: "10-12 Monate (berufsbegleitend)",
-    kosten: "ca. 3.500-5.500 EUR",
-    beschreibung: "Die höchste deutsche Sommelier-Ausbildung. Weinwissen, Service, Sensorik, Menüberatung, Kalkulation und Betriebsführung. Voraussetzung: Abschluss in Gastronomie oder 3 Jahre Berufserfahrung.",
-    url: "https://www.sommelier-union.de/ausbildung/",
-    kategorie: "wein",
-    highlight: true,
-  },
-  {
-    titel: "WSET Level 1 - Award in Wines",
-    abschluss: "WSET Level 1 Zertifikat",
-    anbieter: "Wine & Spirit Education Trust (WSET)",
-    dauer: "1 Tag (6-8 Stunden)",
-    kosten: "ca. 200-300 EUR",
-    beschreibung: "Einstieg in die Weinwelt. Grundlagen der Weintypen, Rebsorten und Verkostungstechnik. Ideal für Quereinsteiger und Weinliebhaber.",
-    url: "https://www.wsetglobal.com/qualifications/wset-level-1-award-in-wines/",
-    kategorie: "wein",
-  },
-  {
-    titel: "WSET Level 2 - Award in Wines",
-    abschluss: "WSET Level 2 Zertifikat",
-    anbieter: "Wine & Spirit Education Trust (WSET)",
-    dauer: "3-5 Tage oder 6-8 Wochen (abends)",
-    kosten: "ca. 500-700 EUR",
-    beschreibung: "Vertiefung: Rebsorten, Anbaugebiete, Weinherstellung, Etikettenlesen und systematische Verkostung (SAT). International anerkannt.",
-    url: "https://www.wsetglobal.com/qualifications/wset-level-2-award-in-wines/",
-    kategorie: "wein",
-  },
-  {
-    titel: "WSET Level 3 - Award in Wines",
-    abschluss: "WSET Level 3 Zertifikat + Pin",
-    anbieter: "Wine & Spirit Education Trust (WSET)",
-    dauer: "ca. 6-12 Monate (berufsbegleitend)",
-    kosten: "ca. 1.200-1.800 EUR",
-    beschreibung: "Fortgeschrittenes Expertenwissen. Detaillierte Analyse von Weinregionen weltweit, Vinifikation, Qualitätsbewertung und Geschäftsaspekte. Voraussetzung: WSET Level 2.",
-    url: "https://www.wsetglobal.com/qualifications/wset-level-3-award-in-wines/",
-    kategorie: "wein",
-    highlight: true,
-  },
-  {
-    titel: "Weinberater (IHK)",
-    abschluss: "IHK-Zertifikat",
-    anbieter: "Verschiedene IHK-Standorte",
-    dauer: "40-80 Stunden",
-    kosten: "ca. 600-1.200 EUR",
-    beschreibung: "Grundlagen der Weinberatung im Handel. Rebsorten, Anbaugebiete, Verkostung und Kundenberatung. Ideal für den Getränkehandel.",
-    url: "https://www.ihk-wein-sommelierschule.de/",
-    kategorie: "wein",
-  },
-  {
-    titel: "Weinfachberater (DWI)",
-    abschluss: "DWI-Zertifikat",
-    anbieter: "Deutsches Weininstitut",
-    dauer: "3 Tage Intensivkurs",
-    kosten: "ca. 400-600 EUR",
-    beschreibung: "Fokus auf deutsche Weine: 13 Anbaugebiete, Qualitätsstufen, Rebsorten und Vermarktung. Perfekt für den deutschen Weinhandel.",
-    url: "https://www.deutscheweine.de/weinbranche/weinerzeuger/seminare-fuer-die-weinwirtschaft/anerkannter-berater-fuer-deutschen-wein-1",
-    kategorie: "wein",
-  },
-  // === BIER ===
-  {
-    titel: "Biersommelier (Doemens)",
-    abschluss: "Doemens-Diplom Biersommelier",
-    anbieter: "Doemens Akademie, Gräfelfing",
-    dauer: "2 Wochen Vollzeit (ca. 80 Std.)",
-    kosten: "ca. 3.200-3.800 EUR",
-    beschreibung: "Die renommierteste Biersommelier-Ausbildung im deutschsprachigen Raum. Braukunst, Sensorik, Bierstile weltweit, Food Pairing, Präsentation und Beratung. Kursgebühr: 3.450 EUR.",
-    url: "https://doemens.org/aktuelles/weiterbildung/intensiv-doemens-biersommelier/",
-    kategorie: "bier",
-    highlight: true,
-  },
-  {
-    titel: "Bier-Botschafter (IHK)",
-    abschluss: "IHK-Zertifikat Bier-Botschafter",
-    anbieter: "IHK München / verschiedene Standorte",
-    dauer: "3-5 Tage",
-    kosten: "ca. 800-1.500 EUR",
-    beschreibung: "Kompaktkurs für den Getränkehandel und die Gastronomie. Bierherstellung, Bierstile, Sensorik und Kundenberatung. 56 Unterrichtseinheiten.",
-    url: "https://gbz-koblenz.de/kurs/D-BB/bierbotschafter-in-ihk/",
-    kategorie: "bier",
-  },
-  {
-    titel: "Certified Beer Server (Cicerone)",
-    abschluss: "Cicerone CBS Zertifikat",
-    anbieter: "Cicerone Certification Program",
-    dauer: "Selbststudium + Online-Prüfung",
-    kosten: "ca. 79 USD",
-    beschreibung: "Internationaler Einstieg. Grundlagen des Bierservice: Ausschank, Lagerung, Bierstile und Fehlererkennung. Online-Prüfung mit 60 Multiple-Choice-Fragen.",
-    url: "https://www.cicerone.org/us-en/certifications/certified-beer-server",
-    kategorie: "bier",
-  },
-  {
-    titel: "Certified Cicerone",
-    abschluss: "Certified Cicerone",
-    anbieter: "Cicerone Certification Program",
-    dauer: "6-12 Monate Vorbereitung",
-    kosten: "ca. 450 USD (Prüfung: 250 + 200 USD)",
-    beschreibung: "Fortgeschrittene Prüfung: Braukunst, Bierstile, Sensorik, Ausschank-Technologie und Pairing. Schriftlich + Verkostung + Demonstration. International höchstes Ansehen.",
-    url: "https://www.cicerone.org/us-en/certifications/certified-cicerone",
-    kategorie: "bier",
-    highlight: true,
-  },
-  // === SPIRITUOSEN ===
-  {
-    titel: "WSET Level 2 - Award in Spirits",
-    abschluss: "WSET Level 2 Spirits Zertifikat",
-    anbieter: "Wine & Spirit Education Trust (WSET)",
-    dauer: "2-3 Tage",
-    kosten: "ca. 500-700 EUR",
-    beschreibung: "Systematische Einführung in alle Spirituosenkategorien: Whisky, Rum, Gin, Brandy, Tequila, Vodka. Herstellung, Verkostung und Service.",
-    url: "https://www.wsetglobal.com/qualifications/wset-level-2-award-in-spirits/",
-    kategorie: "spirituosen",
-  },
-  {
-    titel: "WSET Level 3 - Award in Spirits",
-    abschluss: "WSET Level 3 Spirits Zertifikat",
-    anbieter: "Wine & Spirit Education Trust (WSET)",
-    dauer: "ca. 3-6 Monate",
-    kosten: "ca. 1.500-2.000 EUR",
-    beschreibung: "Expertenniveau: Vertiefte Analyse aller Spirituosenkategorien, Destillationstechnik, Reifung, globale Märkte und Trends.",
-    url: "https://www.wsetglobal.com/qualifications/wset-level-3-award-in-spirits/",
-    kategorie: "spirituosen",
-    highlight: true,
-  },
-  {
-    titel: "Spirituosen-Sommelier (Doemens)",
-    abschluss: "Doemens-Diplom Spirituosen-Sommelier",
-    anbieter: "Doemens Akademie, Gräfelfing",
-    dauer: "1 Woche Vollzeit",
-    kosten: "ca. 2.200-2.800 EUR",
-    beschreibung: "Destillation, Reifung, Verkostung aller Spirituosenkategorien. Cocktails, Bar-Management und Kundenberatung. Abschluss mit Prüfung.",
-    url: "https://doemens.org/aktuelles/weiterbildung/",
-    kategorie: "spirituosen",
-  },
-  {
-    titel: "Barkeeper / Barmixer (IHK)",
-    abschluss: "IHK-Zertifikat",
-    anbieter: "Verschiedene IHK-Standorte",
-    dauer: "1-2 Wochen",
-    kosten: "ca. 800-1.500 EUR",
-    beschreibung: "Praxiskurs: Cocktailtechniken, Spirituosenkunde, Bar-Setup, Kalkulation und Gästebetreuung. Mit praktischer Prüfung. Inkl. WSET Level 2 Spirits möglich.",
-    url: "https://gbz-koblenz.de/kurs/D-BK/barkeeper-in-ihk-professional-expert-in-spirits-inkl-wset-level-2-award-in-spirits/",
-    kategorie: "spirituosen",
-  },
-  // === ALLGEMEIN ===
-  {
-    titel: "Getränkefachwirt (IHK)",
-    abschluss: "IHK-Prüfungszeugnis (Meister-Niveau)",
-    anbieter: "IHK",
-    dauer: "12-18 Monate (berufsbegleitend)",
-    kosten: "ca. 3.000-5.000 EUR",
-    beschreibung: "Die höchste kaufmännische Qualifikation im Getränkehandel. BWL, Marketing, Sortimentsgestaltung, Logistik und Personalführung. Auf Meisterebene (DQR 6).",
-    url: "https://www.ihk-akademie-muenchen.de/fachwirte/",
-    kategorie: "allgemein",
-    highlight: true,
-  },
-  {
-    titel: "Fachkraft für Getränkeschankanlagen",
-    abschluss: "Sachkundenachweis nach TRSK",
-    anbieter: "TUEV / DEKRA / IHK",
-    dauer: "2-3 Tage",
-    kosten: "ca. 400-700 EUR",
-    beschreibung: "Gesetzlich vorgeschriebener Sachkundenachweis für den Betrieb von Schankanlagen. Hygiene, Technik, Wartung und Reinigung nach TRSK.",
-    url: "https://www.tuv-akademie.at/kurs/ausbildung-zertifizierte-r-sachkundige-r-fuer-schankanlagen-tuevr",
-    kategorie: "allgemein",
-  },
-  {
-    titel: "Ausbilder-Eignungsprüfung (AEVO/AdA)",
-    abschluss: "IHK-Ausbilderschein",
-    anbieter: "IHK",
-    dauer: "1-2 Wochen oder berufsbegleitend",
-    kosten: "ca. 500-800 EUR",
-    beschreibung: "Berechtigung zur Ausbildung von Lehrlingen. Pflicht für Betriebe die ausbilden wollen. Pädagogik, Arbeitsrecht und Prüfungswesen.",
-    url: "https://www.ihk-akademie-muenchen.de/ausbilder/ausbildung-der-ausbilder/",
-    kategorie: "allgemein",
-  },
-];
 
 const kategorien = [
   { key: "wein" as const, label: "Wein", icon: "\uD83C\uDF77", color: "from-purple-600 to-purple-800" },
@@ -216,8 +23,8 @@ export default function ZertifikatePage() {
         <Link href="/akademie" className="text-sm text-primary hover:underline mb-4 inline-block">&larr; Zurück zur Akademie</Link>
         <h1 className="text-3xl md:text-4xl font-extrabold text-secondary mb-3">Professionelle Zertifikatskurse</h1>
         <p className="text-muted max-w-2xl mx-auto">
-          Von der IHK über Doemens bis zum WSET — hier findest du alle buchbaren Kurse mit anerkanntem Abschluss.
-          Investiere in dein Fachwissen und werde zertifizierter Experte.
+          {zertifikatskurse.length} Weiterbildungshinweise — von der IHK über Doemens bis zum WSET.
+          Informationen zu Qualifikationen und Kursen; aktuelle Termine, Preise und Anmeldung bitte beim jeweiligen Anbieter prüfen.
         </p>
       </div>
 
@@ -272,7 +79,7 @@ export default function ZertifikatePage() {
                       rel="noopener noreferrer"
                       className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-colors text-sm font-semibold"
                     >
-                      Zum Kurs &rarr;
+                      Informationen beim Anbieter &rarr;
                     </a>
                   </div>
                 </div>
@@ -322,7 +129,7 @@ export default function ZertifikatePage() {
               <p className="text-primary">&darr;</p>
               <p>2. Barkeeper (IHK)</p>
               <p className="text-primary">&darr;</p>
-              <p>3. Spirituosen-Sommelier</p>
+              <p>3. Destillat-Sommelier (Doemens)</p>
               <p className="text-primary">&darr;</p>
               <p className="font-bold text-secondary">4. WSET Level 3 Spirits</p>
             </div>

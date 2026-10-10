@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import { categories } from "@/lib/utils";
 import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
-function Catalogue({children,content}:{children:React.ReactNode;content:WeeklyOfferContent}) {
-  const params=useSearchParams();
-  const searchFromUrl=params.get("search") || "";
-  const [search,setSearch]=useState(searchFromUrl);
-  useEffect(()=>{setSearch(searchFromUrl);},[searchFromUrl]);
+export default function ProductCatalogue({children,content,initialSearch=""}:{children:React.ReactNode;content:WeeklyOfferContent;initialSearch?:string}) {
+  const [search,setSearch]=useState(initialSearch);
+  const [previousSearch,setPreviousSearch]=useState(initialSearch);
+  if (initialSearch !== previousSearch) {
+    setPreviousSearch(initialSearch);
+    setSearch(initialSearch);
+  }
   const [language,setLanguage]=useState("alle");
   return <>
     <div className="page-hero-banner py-16 md:py-24"><div className="max-w-7xl mx-auto px-6 text-center relative">
@@ -28,7 +29,4 @@ function Catalogue({children,content}:{children:React.ReactNode;content:WeeklyOf
       {children}
     </div>
   </>;
-}
-export default function ProductCatalogue(props:{children:React.ReactNode;content:WeeklyOfferContent}) {
-  return <Suspense fallback={<p className="p-8">Wochenangebote werden geladen …</p>}><Catalogue {...props}/></Suspense>;
 }

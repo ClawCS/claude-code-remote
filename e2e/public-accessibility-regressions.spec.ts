@@ -21,8 +21,9 @@ test("Escape returns mobile navigation focus to its visible trigger", async ({ p
 test("assortment origin filters all fit inside a 320px viewport", async ({ page }) => {
   await page.goto("/produkte");
   await page.evaluate(() => document.fonts.ready);
-  for (const name of [/Alle Artikel/, /Deutschland/, /Nederland/]) {
+  for (const name of [/Alle Angebote/, /Deutsch/, /Nederlands/]) {
     const button = page.getByRole("button", { name });
+    await button.scrollIntoViewIfNeeded();
     await expect(button).toBeInViewport({ ratio: 1 });
     const bounds = await button.boundingBox();
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
