@@ -2,7 +2,7 @@
 
 ## Status und Auftrag
 
-Erweiterung des bisherigen lokalen Umbaus, noch zur Bestätigung des vollständigen Umfangs. Niko verlangt ausdrücklich, dass auch alle Unterseiten dem neuen Look entsprechen. Sein Screenshot zeigt die freigegebene Richtung A mit schmaler heller Infoleiste, großzügigem weißem Kopfbereich und fünf Hauptpunkten. Die bisherige Umsetzung war nur eine Teilübertragung: Film, einige Startseitenbereiche und leichte gemeinsame Anpassungen. Ein vollständiger Seitenumbau darf nicht erneut allein aus einem neuen Film oder globalen Farbwechsel abgeleitet werden.
+Niko hat den vollständigen Umfang einschließlich der fünf Hauptgruppen am 10.10.2026 mit »ja leg los« bestätigt und die Umsetzung beauftragt. Niko verlangt ausdrücklich, dass auch alle Unterseiten dem neuen Look entsprechen. Sein Screenshot zeigt die freigegebene Richtung A mit schmaler heller Infoleiste, großzügigem weißem Kopfbereich und fünf Hauptpunkten. Die bisherige Umsetzung war nur eine Teilübertragung: Film, einige Startseitenbereiche und leichte gemeinsame Anpassungen. Ein vollständiger Seitenumbau darf nicht erneut allein aus einem neuen Film oder globalen Farbwechsel abgeleitet werden.
 
 Visuelle Referenz: `.superpowers/brainstorm/88954-1791640434/content/jammers-directions.html`, Richtung A. Zusätzlich vom Betreiber vorgelegter Screenshot `download.jpg`, SHA-256 `809edf886bb7e1264727bcff88fecd07cd831b28427f014dda9af65b760c4781`. Die Designstudio-Werkzeugleisten sind keine Websitebestandteile. Der bestätigte Film bleibt erhalten.
 
@@ -16,7 +16,7 @@ Gleiche Gestaltung bedeutet nicht gleiche Schablone: Angebotsseiten bleiben übe
 
 ## Kopfbereich und Navigation
 
-Die folgende konkrete Einordnung ist der Gestaltungsvorschlag des Implementierers, keine bereits bestätigte einzelne Inhaltsentscheidung:
+Die folgende vom Implementierer vorgeschlagene Einordnung ist mit dem vollständigen Entwurf bestätigt:
 
 - Schmale helle Infoleiste mit Goch/Öffnungszeiten, Adresse und klar erkennbarem NL-Einstieg mit Flagge. Sie ersetzt die bisherige vollflächig orange deutsche Sprachleiste; auf Mobil bleibt Nederlands unmittelbar sichtbar. Die niederländische Landingpage behält dezente orange Akzente innerhalb des gemeinsamen Stils.
 - Weißer großzügiger Kopfbereich mit unverändertem Jammers-Logo und den fünf Gruppen des Entwurfs: **Angebote**, **Sortiment**, **Party & Miete**, **Jammers entdecken**, **Dein Besuch**.
@@ -28,7 +28,7 @@ Die folgende konkrete Einordnung ist der Gestaltungsvorschlag des Implementierer
 - Logo führt nach Hause; interne Links bleiben auf derselben lokalen Origin. Untermenüs sind klar von Ziel-Links unterscheidbar und per Maus, Touch und Tastatur nutzbar. Escape, Fokus und Schließen nach Navigation sind ausdrücklich zu prüfen.
 - GrailBid bleibt zusätzlich auf der Startseite deutlich als externer TCG-Shop verknüpft. Externe Ziele werden nicht kopiert oder lokal nachgebaut.
 
-Die Fünferstruktur ersetzt die ältere Vorgabe, exakt neun Hauptgruppen sichtbar beizubehalten, erst nach Bestätigung dieses Entwurfs. Der vollständige Inhalt dieser Gruppen bleibt erreichbar.
+Die bestätigte Fünferstruktur ersetzt die ältere Vorgabe, exakt neun Hauptgruppen sichtbar beizubehalten. Der vollständige Inhalt dieser Gruppen bleibt erreichbar.
 
 ## Startseite vervollständigen
 
