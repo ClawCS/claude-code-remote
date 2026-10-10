@@ -69,6 +69,8 @@ export function createAdminReadRepository(db: Database.Database, privateKey: Key
   }) as typeof db.prepare;
 
   function authority(row: CaseRecord): void {
+    const { authorityKind, authorityId, initialAuthority } = row.lifecycle;
+    if (!authorityId || authorityKind !== "initial" && authorityKind !== "fence" || authorityKind === "initial" && authorityId !== initialAuthority) unavailable();
     const proof = deps.journal?.caseAuthority(row.id);
     if (!proof) unavailable();
     const expected = row.lifecycle.pendingEventId ?? (row.lifecycle.authorityKind === "fence" ? row.lifecycle.authorityId : null);
@@ -93,7 +95,10 @@ export function createAdminReadRepository(db: Database.Database, privateKey: Key
     if (delivery.determinedAt && (delivery.determinedAt < row.acceptedAt || delivery.determinedAt > now) || delivery.confirmedAt && (delivery.confirmedAt < row.acceptedAt || delivery.confirmedAt > now)) unavailable();
     if (delivery.category !== null && !delivery.determinedAt || row.deliveryState === "needs_attention" && (!delivery.category || !delivery.reason || !delivery.determinedAt)) unavailable();
     const early = validatedEarlyCleanup(row, delivery);
-    const deadline = delivery.confirmedAt ? null : displayInstant(new Date(Math.min(Date.parse(row.acceptedAt) + 30 * 86400000, resolution ? Date.parse(resolution.recordedAt) : Infinity, delivery.category === "invalid" ? Math.min(Date.parse(row.contactDeleteAfter), Date.parse(delivery.determinedAt!) + 86400000) : Infinity)).toISOString());
+    // Resolution ends identity even if contradictory delivered evidence would
+    // otherwise qualify for the reduced register's no-technical-expiry branch.
+    if (resolution) return null;
+    const deadline = delivery.confirmedAt ? null : displayInstant(new Date(Math.min(Date.parse(row.acceptedAt) + 30 * 86400000, delivery.category === "invalid" ? Math.min(Date.parse(row.contactDeleteAfter), Date.parse(delivery.determinedAt!) + 86400000) : Infinity)).toISOString());
     if (deadline !== null && now >= deadline) return null;
     authority(row);
     const retention = deps.retention(id);

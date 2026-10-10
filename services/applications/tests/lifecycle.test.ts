@@ -474,7 +474,7 @@ describe("actual lifecycle commits", () => {
     expect(lifecycleIndicators(s.read(), dateOnly("2026-11-09")).openReminder).toBe(true);
     const fences = s.db.prepare("SELECT event FROM lifecycle_proposals").all() as { event: string }[];
     expect(fences.map(item => JSON.parse(item.event)[4][4])).toContain("renew-hold");
-  });
+  }, 15000); // Fourteen real sensitive-action reauthentications use full scrypt.
   it("corrects dates with exact old/new audit, retains dated copy confirmation and records explicit withdrawal", async () => {
     const s = await setup("2026-10-10T21:56:00.000Z");
     await s.act({ kind: "reject", closedOn: dateOnly("2026-10-10") });

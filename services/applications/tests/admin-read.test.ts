@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Secret, TOTP } from "otpauth";
 import { openReadyTestRepository, refreshTestRepository, testAdmission } from "./fixtures/admission";
-import { applicationId, digest, utcInstant } from "../src/types";
+import { applicationId, dateOnly, digest, utcInstant } from "../src/types";
 import { sealName } from "../src/crypto";
 import { sealContact } from "../src/contact-crypto";
 import { createSafetyJournal } from "../src/ledger";
@@ -140,6 +140,50 @@ it("suppresses identity immediately after genuine incident resolution, without e
   s.db.exec("DROP TRIGGER incident_resolution_immutable");
   s.db.prepare("UPDATE delivery_incident_resolutions SET recordedAt=? WHERE caseId=?").run("2026-10-11T12:00:30.000Z", a.id);
   expect(() => s.repo.getAdminCase(a.id, s.session)).toThrow("ADMIN_UNAVAILABLE");
+});
+
+it.each(["detail", "list"] as const)("never resurrects resolved identity through coherent delivered corruption in %s", async read => {
+  const s = await setup(), a = s.accept(); await s.operational(a.id);
+  const proof = await s.grant(a.id, "record-delivery-incident-resolution");
+  await s.repo.recordDeliveryIncidentResolution(a.id, { kind: "record-delivery-incident-resolution", contactedAt: s.now(), contactChannel: "phone", agreedResubmissionRoute: "resolved-private-canary" }, proof, s.session);
+  const pending = s.db.prepare("SELECT * FROM erasure_events WHERE caseId=? AND phase='proposed'").all(a.id);
+  expect(pending).toHaveLength(1);
+  const readSuppressed = () => read === "detail" ? s.repo.getAdminCase(a.id, s.session) : s.repo.listAdminCases(null, s.session).cases;
+  expect(readSuppressed()).toEqual(read === "detail" ? null : []);
+  const fingerprint = "4".repeat(64), messageId = `<${a.id}@trinkgut-jammers.de>`;
+  const registered = { id: a.id, messageId, keyId: "synthetic", profile: "tj-mail-1", fingerprint, shape: { kind: "text", parts: 1, attachments: [] } };
+  const schedule = [0, 300000, 1800000, 3600000, 86400000].map(ms => new Date(Date.parse(a.acceptedAt) + ms).toISOString());
+  // Genuine resolution shortened both deadlines to recordedAt. The shared
+  // delivery validator's exact cleanup instant is therefore recordedAt - 1h.
+  s.db.prepare("UPDATE deliveries SET messageId=?,keyId='synthetic',identityDate=?,registered=?,mimeDigest=?,receiptStartedAt=?,receiptSchedule=?,confirmedAt=?,copies=?,cleanupDueAt=? WHERE caseId=?").run(messageId, a.acceptedAt, JSON.stringify(registered), "5".repeat(64), a.acceptedAt, JSON.stringify(schedule), a.acceptedAt, JSON.stringify([{ mailbox: "synthetic", uid: 1, uidValidity: "1", fingerprint }]), "2026-10-10T11:01:00.000Z", a.id);
+  s.db.prepare("UPDATE cases SET deliveryState='delivered' WHERE id=?").run(a.id);
+  const before = s.db.prepare("SELECT total_changes() n").get();
+  expect(readSuppressed()).toEqual(read === "detail" ? null : []);
+  expect(s.db.prepare("SELECT total_changes() n").get()).toEqual(before);
+  expect(s.db.prepare("SELECT * FROM erasure_events WHERE caseId=? AND phase='proposed'").all(a.id)).toEqual(pending);
+  s.db.prepare("UPDATE cases SET encryptedName='must-not-decrypt-resolved' WHERE id=?").run(a.id);
+  expect(readSuppressed()).toEqual(read === "detail" ? null : []);
+});
+
+it.each(["detail", "list"] as const)("denies missing lifecycle authority before exposing identity or contact in %s", async read => {
+  const s = await setup(), a = s.accept(); await s.operational(a.id);
+  s.db.prepare("UPDATE deliveries SET contactEnvelope=? WHERE caseId=?").run(sealContact("authority-canary@example.invalid", { caseId: a.id, acceptedAt: a.acceptedAt, version: 1 }, keys.publicKey), a.id);
+  expect(s.repo.getAdminCase(a.id, s.session)!.contact?.email).toBe("authority-canary@example.invalid");
+  const initial = s.repo.getLifecycleCase(a.id, s.session).lifecycle.initialAuthority;
+  s.db.prepare("UPDATE case_lifecycle SET authorityKind=NULL,authorityId=NULL WHERE caseId=?").run(a.id);
+  const before = s.db.prepare("SELECT total_changes() n").get();
+  expect(() => read === "detail" ? s.repo.getAdminCase(a.id, s.session) : s.repo.listAdminCases(null, s.session)).toThrow(/^ADMIN_UNAVAILABLE$/);
+  expect(s.db.prepare("SELECT total_changes() n").get()).toEqual(before);
+  expect(s.repo.getLifecycleCase(a.id, s.session).lifecycle.initialAuthority).toBe(initial);
+});
+
+it("preserves identity reads under genuine applied lifecycle fence authority", async () => {
+  const s = await setup(), a = s.accept(), proof = await s.grant(a.id, "reject");
+  await s.repo.applyCaseAction(a.id, { kind: "reject", closedOn: dateOnly("2026-10-10") }, proof, s.session);
+  const before = s.db.prepare("SELECT total_changes() n").get();
+  expect(s.repo.getAdminCase(a.id, s.session)).toMatchObject({ case: { id: a.id, caseState: "rejected_closed", pendingAction: false }, pending: null });
+  expect(s.repo.listAdminCases(null, s.session).cases.map(c => c.id)).toEqual([a.id]);
+  expect(s.db.prepare("SELECT total_changes() n").get()).toEqual(before);
 });
 
 it.each(["session", "epoch", "clock", "scope", "projection", "readiness"])("rechecks final original %s authority before returning private data", async defect => {
