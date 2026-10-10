@@ -1,0 +1,56 @@
+.body { width: min(100%, var(--cinematic-layout-content-max)); margin-inline: auto; padding: 0 var(--cinematic-spacing-gutter) var(--cinematic-spacing-section); }
+.section { padding-block: clamp(2.5rem, 5vw, 5rem); border-top: 1px solid var(--cinematic-color-line); }
+.section h2, .story h2 { font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 500; line-height: 1.15; letter-spacing: -.04em; margin-bottom: 1.25rem; }
+.section p, .story p { max-width: 65ch; color: var(--cinematic-color-muted); line-height: 1.75; }
+.links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.5rem; }
+.links a { display: inline-flex; min-height: 44px; align-items: center; color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .25em; }
+.categories { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; padding-block: 1rem 2rem; border-bottom: 1px solid var(--cinematic-color-line); }
+.categories a { display: inline-flex; min-height: 44px; align-items: center; border-bottom: 2px solid transparent; font-weight: 600; }
+.categories a:hover, .categories a[aria-current="page"] { border-color: var(--cinematic-color-red); }
+.toolbar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.5rem; padding-block: 2rem; }
+.search { flex: 1 1 18rem; max-width: 32rem; }
+.search input { min-height: 48px; border-radius: 2px; background: var(--cinematic-color-white); }
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; }
+.filters button { min-height: 44px; padding: .7rem 1rem; border: 1px solid var(--cinematic-color-line); border-radius: 2px; background: var(--cinematic-color-white); font-weight: 600; cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--cinematic-color-ink); color: var(--cinematic-color-white); border-color: var(--cinematic-color-ink); }
+.results { padding-top: 2rem; }
+.resultCount { margin-bottom: 1.75rem; color: var(--cinematic-color-muted); }
+.offerGrid, .portraitGrid { display: grid; gap: 2.5rem 1.5rem; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+.offer { min-width: 0; border-top: 1px solid var(--cinematic-color-line); padding-top: 1rem; }
+.offerImage { display: block; width: 100%; height: 20rem; object-fit: contain; background: var(--cinematic-color-white); padding: .75rem; }
+.offerText { padding-block: 1.25rem; }
+.offerText h2 { font-size: clamp(1.15rem, 1.8vw, 1.5rem); line-height: 1.3; font-weight: 600; margin-block: .65rem; overflow-wrap: anywhere; }
+.meta { color: var(--cinematic-color-muted); font-size: .75rem; font-weight: 600; line-height: 1.6; }
+.fineprint { color: var(--cinematic-color-muted); font-size: .875rem; line-height: 1.65; }
+.conditions { margin-block: 1rem; font-size: .875rem; line-height: 1.65; }
+.conditions summary { cursor: pointer; padding-block: .75rem; font-weight: 600; }
+.warning { margin-top: 1rem; padding: 1rem; border-left: 3px solid var(--cinematic-color-red); background: var(--cinematic-color-surface); font-size: .875rem; line-height: 1.65; }
+.sourceLink { display: inline-flex; align-items: center; min-height: 44px; margin-top: 1rem; color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .25em; font-weight: 600; }
+.flyers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+.flyer { min-width: 0; border-top: 1px solid var(--cinematic-color-line); padding-top: 1.5rem; }
+.flyer h2, .flyer h3 { font-size: clamp(1.35rem, 2.5vw, 2rem); line-height: 1.2; margin: .75rem 0 1.5rem; overflow-wrap: anywhere; }
+.story { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 5rem); border-top: 1px solid var(--cinematic-color-line); }
+.story figure { min-width: 0; margin: 0; }
+.story img, .photoGrid img, .portraitGrid img { display: block; width: 100%; height: auto; object-fit: contain; }
+.photoGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; margin-top: 2rem; }
+.photoGrid > :only-child { grid-column: 1 / -1; max-width: 52rem; }
+.photoGrid article, .photoGrid figure { min-width: 0; margin: 0; }
+.photoGrid h3 { font-size: 1.5rem; line-height: 1.25; margin-block: 1.5rem .75rem; }
+.brandStories { display: grid; }
+.brand { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 5rem); border-top: 1px solid var(--cinematic-color-line); scroll-margin-top: 8rem; }
+.brand:nth-child(even) .poster { order: 2; }
+.poster { position: relative; aspect-ratio: 707 / 1000; width: 100%; max-width: 30rem; background: var(--cinematic-color-white); }
+.poster img { object-fit: contain; }
+.brand h2 { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -.045em; margin-block: 1rem; }
+.brand p { line-height: 1.75; margin-block: 1rem; color: var(--cinematic-color-muted); }
+.portraitGrid figure { min-width: 0; margin: 0; }
+.portraitGrid figcaption { padding-block: 1rem; border-bottom: 1px solid var(--cinematic-color-line); }
+.portraitGrid h3 { font-size: 1.25rem; font-weight: 500; }
+.teamLead { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 3rem; margin-bottom: 3rem; }
+.showcase { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+.showcase a { min-width: 0; }
+.showcase img { display: block; width: 100%; height: auto; object-fit: contain; }
+.showcase span { display: block; padding-block: 1rem; font-weight: 600; }
+.categories a:focus-visible, .filters button:focus-visible, .links a:focus-visible, .sourceLink:focus-visible, .offer a:focus-visible, .conditions summary:focus-visible, .showcase a:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 4px; }
+@media (max-width: 63rem) { .offerGrid, .portraitGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 47rem) { .flyers, .story, .brand, .teamLead { grid-template-columns: minmax(0, 1fr); } .brand:nth-child(even) .poster { order: initial; } .poster { max-width: none; } .photoGrid, .portraitGrid, .offerGrid { grid-template-columns: minmax(0, 1fr); } .showcase { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import AcademyEntry from "@/components/AcademyEntry";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/collection.module.css";
 import { categories } from "@/lib/utils";
 import { getWeeklyOfferContent } from "@/lib/weekly-offer-content";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
@@ -22,16 +24,9 @@ export default async function KategoriePage({ params }: { params: Promise<{ slug
   if (!category) notFound();
   const content = await getWeeklyOfferContent(resolveHomepageNow());
   return <>
-    <div className="category-intro" data-category-intro>
-      <div>
-        <nav aria-label="Brotkrumennavigation"><Link href="/">Startseite</Link><span>/</span><Link href="/produkte">Sortiment</Link><span>/</span><span>{category.name}</span></nav>
-        <h1>{category.name}</h1>
-        <p>{introductions[slug]}</p>
-        <p>Aktuelle Handzettelangebote · Das vollständige Sortiment findest du im Markt.</p>
-      </div>
-    </div>
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <nav className="category-links" aria-label="Warengruppen">{categories.map(item => <Link key={item.slug} href={`/kategorie/${item.slug}`} aria-current={slug === item.slug ? "page" : undefined}>{item.name}</Link>)}</nav>
+    <PageIntro eyebrow="Aktuelle Handzettelangebote" title={category.name} description={<><p>{introductions[slug]}</p><p>Das vollständige Sortiment findest du im Markt.</p></>} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: category.name }]} />
+    <div className={styles.body} data-collection="category" data-category-intro>
+      <nav className={styles.categories} aria-label="Warengruppen">{categories.map(item => <Link key={item.slug} href={`/kategorie/${item.slug}`} aria-current={slug === item.slug ? "page" : undefined}>{item.name}</Link>)}</nav>
       {slug === "spirituosen" && <p className="mb-8"><Link href="/regionale-spirituosen" className="text-primary underline font-bold">Regionale Spezialitäten vom Niederrhein entdecken</Link></p>}
       <WeeklyOfferGrid content={content} category={slug} />
       {slug === "spirituosen" && <Link href="/eigenmarke" className="inline-block text-primary underline mt-8">Unsere Jammers-Eigenmarken kennenlernen</Link>}

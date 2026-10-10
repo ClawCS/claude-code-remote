@@ -4,6 +4,8 @@ import Link from "next/link";
 import { MARKET_PHOTOS } from "@/data/market-photos";
 import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
 import { USER_MARKET_PHOTOS } from "@/data/user-market-photos";
+import PageIntro from "@/components/editorial/PageIntro";
+import styles from "@/components/editorial/collection.module.css";
 
 export const metadata: Metadata = {
   title: "Marktleben in Goch",
@@ -27,47 +29,45 @@ export default function MarktlebenPage() {
     ] },
   ];
   return <>
-    <div className="category-intro">
-      <nav aria-label="Brotkrumennavigation"><Link href="/">Startseite</Link><span>/</span><span>Marktleben</span></nav>
-      <p>Jammers in Goch. Mit Menschen dahinter.</p>
-      <h1>Unser Markt. Nah dran.</h1>
-      <p>Bei uns geht es um Getränke – und um die Menschen, die den Markt jeden Tag mit Leben füllen. Echte Einblicke zeigen, wie unterschiedlich Marktalltag aussehen kann.</p>
-      <p className="text-sm">Auf den Marktaufnahmen sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen. Die Gas-Tauschwerbung findest du separat weiter unten.</p>
-    </div>
+    <PageIntro eyebrow="Jammers in Goch. Mit Menschen dahinter." title="Unser Markt. Nah dran." description="Bei uns geht es um Getränke – und um die Menschen, die den Markt jeden Tag mit Leben füllen. Echte Einblicke zeigen, wie unterschiedlich Marktalltag aussehen kann." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Marktleben" }]} />
+    <div className={styles.body} data-collection="market">
+    <p className={styles.fineprint}>Auf den Marktaufnahmen sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen. Die Gas-Tauschwerbung findest du separat weiter unten.</p>
     {[
       { id: "bier-braukunst", title: "Bier & Braukunst", photos: [USER_MARKET_PHOTOS.schneiderWeisse, USER_MARKET_PHOTOS.bueble, USER_MARKET_PHOTOS.erdinger, USER_MARKET_PHOTOS.mixedBeer] },
       { id: "wein-entdecken", title: "Wein entdecken", photos: [USER_MARKET_PHOTOS.wineShelf] },
       { id: "alkoholfrei", title: "Alkoholfrei", photos: [USER_MARKET_PHOTOS.spezi] },
-    ].map(group => <section key={group.id} className="max-w-7xl mx-auto pt-12" aria-labelledby={group.id}>
-      <h2 id={group.id} className="text-3xl font-bold px-6">{group.title}</h2>
-      <div className="regional-specialties">{group.photos.map(photo => <article key={photo.src}><figure><Image {...photo} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></figure></article>)}</div>
+    ].map(group => <section key={group.id} className={styles.section} aria-labelledby={group.id}>
+      <h2 id={group.id}>{group.title}</h2>
+      <div className={styles.photoGrid}>{group.photos.map(photo => <article key={photo.src}><figure><Image {...photo} alt={photo.alt} sizes="(max-width: 752px) 90vw, 50vw" loading="lazy" /></figure></article>)}</div>
     </section>)}
-    {groups.map(group => <section key={group.id} className="max-w-7xl mx-auto pt-12" aria-labelledby={group.id}>
-      <h2 id={group.id} className="text-3xl font-bold px-6">{group.title}</h2>
-      <div className="regional-specialties">
-        {group.photos.map(item => <article key={item.photo.src}>
-          <figure><Image src={item.photo.src} width={item.photo.width} height={item.photo.height} alt={item.photo.alt} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></figure>
-          <h3 className="text-2xl font-bold mt-6 mb-3">{item.title}</h3>
+    {groups.map(group => <section key={group.id} className={styles.section} aria-labelledby={group.id}>
+      <h2 id={group.id}>{group.title}</h2>
+      <div>
+        {group.photos.map(item => <article key={item.photo.src} className={styles.story}>
+          <figure><Image src={item.photo.src} width={item.photo.width} height={item.photo.height} alt={item.photo.alt} sizes="(max-width: 752px) 90vw, 45vw" loading="lazy" /></figure>
+          <div><h3 className="text-2xl font-medium mb-3">{item.title}</h3>
           <p>{item.text}</p>
           {"href" in item && item.href && <Link href={item.href} className="inline-block mt-4 underline font-bold text-primary">{item.link}</Link>}
+          </div>
         </article>)}
       </div>
     </section>)}
-    <section className="max-w-7xl mx-auto pt-12" aria-labelledby="markt-entdeckungen">
-      <h2 id="markt-entdeckungen" className="text-3xl font-bold px-6">Entdeckungen im Markt</h2>
-      <div className="regional-specialties">{[USER_MARKET_PHOTOS.salitosPoster, USER_MARKET_PHOTOS.liefmansPoster].map(photo => <article key={photo.src}><figure><a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`${photo.alt} – vollständige Ansicht öffnen`} className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...photo} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></a></figure></article>)}</div>
+    <section className={styles.section} aria-labelledby="markt-entdeckungen">
+      <h2 id="markt-entdeckungen">Entdeckungen im Markt</h2>
+      <div className={styles.photoGrid}>{[USER_MARKET_PHOTOS.salitosPoster, USER_MARKET_PHOTOS.liefmansPoster].map(photo => <article key={photo.src}><figure><a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`${photo.alt} – vollständige Ansicht öffnen`} className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...photo} alt={photo.alt} sizes="(max-width: 752px) 90vw, 45vw" loading="lazy" /></a></figure></article>)}</div>
     </section>
-    <section className="max-w-7xl mx-auto pt-12" aria-labelledby="gasflaschen-tauschen">
-      <h2 id="gasflaschen-tauschen" className="text-3xl font-bold px-6">Gasflaschen tauschen</h2>
-      <div className="regional-specialties">
-        <article><figure><a href={USER_MARKET_PHOTOS.gasExchange.src} target="_blank" rel="noopener noreferrer" aria-label="Gas-Tauschwerbung vollständig öffnen" className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...USER_MARKET_PHOTOS.gasExchange} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></a></figure></article>
+    <section className={styles.section} aria-labelledby="gasflaschen-tauschen">
+      <h2 id="gasflaschen-tauschen">Gasflaschen tauschen</h2>
+      <div className={styles.story}>
+        <article><figure><a href={USER_MARKET_PHOTOS.gasExchange.src} target="_blank" rel="noopener noreferrer" aria-label="Gas-Tauschwerbung vollständig öffnen" className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"><Image {...USER_MARKET_PHOTOS.gasExchange} alt={USER_MARKET_PHOTOS.gasExchange.alt} sizes="(max-width: 768px) 90vw, 384px" loading="lazy" /></a></figure></article>
         <div><p className="text-xl mb-4">Unsere Tauschpreise: 14,99 € und 25,99 € für die im Plakat gezeigten Varianten.</p><p>Welche Tauschflasche passt? Sprich uns vor Ort an oder melde dich beim Markt.</p><Link href="/kontakt" className="inline-block mt-6 underline font-bold text-primary">Kontakt zum Markt</Link></div>
       </div>
     </section>
-    <section className="max-w-4xl mx-auto px-6 py-12" aria-labelledby="market-visit">
+    <section className={styles.section} aria-labelledby="market-visit">
       <h2 id="market-visit" className="text-3xl font-bold mb-4">Komm vorbei. Wir beraten dich.</h2>
       <p className="mb-6">Ob du ein Getränk für den Feierabend, eine Geschenkidee oder den Bedarf für eine Feier suchst: Sprich uns im Markt an.</p>
       <div className="flex flex-wrap gap-6"><Link href="/kontakt" className="underline font-bold text-primary">Anfahrt und Kontakt</Link><Link href="/galerie" className="underline font-bold text-primary">Team kennenlernen</Link><Link href="/produkte" className="underline font-bold text-primary">Sortiment entdecken</Link></div>
     </section>
+    </div>
   </>;
 }

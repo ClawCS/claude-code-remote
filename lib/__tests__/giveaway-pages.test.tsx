@@ -26,7 +26,9 @@ describe("giveaway public pages", () => {
     expect(html).toContain("https://www.instagram.com/trinkgutjammers_goch/p/DdQ8_8hsWYB/");
     expect(html).toContain("Noch nicht angekündigt");
     expect(html).toContain("Teilnahme ausschließlich im Originalbeitrag");
-    expect(html).not.toMatch(/<form|<iframe|<svg|<header|<footer|shimmer/i);
+    // The shared editorial introduction is a header, not duplicate site chrome.
+    expect(html.match(/<header\b/g)).toHaveLength(1);
+    expect(html).not.toMatch(/<form|<iframe|<svg|role="banner"|<footer|shimmer/i);
     for (const id of ["2026-01", "2026-02", "2026-04", "2026-05", "2026-06", "2026-07"]) {
       expect(html).toContain(`data-giveaway-cover="${id}"`);
       expect(decodeURIComponent(html)).toContain(`/images/editorial/canva/giveaway-${id}.webp`);
@@ -52,7 +54,8 @@ describe("giveaway public pages", () => {
     expect(html).toContain("Erdinger Sommer-Set");
     expect(html).not.toContain("Veltins Helles Lager");
     expect(html).not.toContain("Guinness");
-    expect(html).not.toMatch(/<form|<iframe|<header|<footer/);
+    expect(html.match(/<header\b/g)).toHaveLength(1);
+    expect(html).not.toMatch(/<form|<iframe|role="banner"|<footer/);
     for (const id of ["2026-01", "2026-02", "2026-04", "2026-05", "2026-06", "2026-07", "2026-easter", "2026-faxe", "2026-wm"]) {
       expect(html).toContain(`data-giveaway-cover="${id}"`);
     }
