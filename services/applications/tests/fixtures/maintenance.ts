@@ -1,6 +1,7 @@
 import { mkdtemp, mkdir, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { lstatSync } from "node:fs";
 import { openReadyTestRepository } from "./admission";
 import { createCustodyLedger } from "../../src/custody";
 import { testIngressAuthority } from "./ingress-authority";
@@ -23,8 +24,12 @@ export function deferred<T = void>() {
 }
 
 // Actual local exclusion model for these synthetic owners only. Not OS evidence.
-export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance" = "ordinary") {
+export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance" = "ordinary", sanitation = false) {
   const root = await mkdtemp(join(await realpath(tmpdir()), "maintenance-synthetic-"));
+  // This test owns the private directory before SQLite opens and keeps all
+  // synthetic actors in-process until close. NOT Linux/native qualification.
+  const originalRoot = lstatSync(root);
+  let pathExclusion = true;
   let time = Date.parse("2026-10-10T12:00:00.000Z"), monotonic = 0;
   const clock = { now: () => new Date(time) };
   const journalFixture = syntheticJournal();
@@ -47,6 +52,11 @@ export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance
     assertMaintenanceHeld(candidate, value) { if (candidate !== owner || value !== handle || !held) throw new Error("SYNTHETIC_HOLD_LOST"); },
     async releaseMaintenance() { throw new Error("RELEASE_NOT_ALLOWED_IN_1A"); },
     async settle() { settles++; }, async close() {},
+  };
+  if (sanitation) services.assertDatabaseSanitationBaseline = function(candidate, value, target) {
+    this.assertMaintenanceHeld!(candidate, value);
+    const parent = lstatSync(root), file = lstatSync(join(root,"registry.sqlite"));
+    if (!pathExclusion || parent.dev !== originalRoot.dev || parent.ino !== originalRoot.ino || !Object.isFrozen(target) || target.canonicalPath !== join(root,"registry.sqlite") || target.device !== file.dev || target.inode !== file.ino) throw new Error("SYNTHETIC_BASELINE_LOST");
   };
   async function accept() {
     const keys = { ...generateKeyPairSync("rsa", { modulusLength: 2048 }), intakeRoot: config.intakeRoot, privateRoot: config.custodyRoot, runtimeRoot: config.runtimeRoot, custody };
@@ -85,7 +95,7 @@ export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance
     const result = await runDeletionOnce({ repository, clock: { wallNow: clock.now, monotonicNow: () => monotonic }, scope: { currentScope: deletionScope }, verificationKeys: () => new Map([["fixture-mime", createSecretKey(Buffer.alloc(32, 7))]]), createMailbox: () => mailbox });
     if (result.cases[0]?.status !== "mailbox_cleared") throw new Error("SYNTHETIC_FINAL_CLEAR");
   }
-  return { root, owner, config, authority, services, accept, qualifySyntheticFinalScope, monotonicNow: () => monotonic, get settles() { return settles; }, loseHold() { held = false; }, advance(ms: number) { monotonic += ms; time += ms; },
+  return { root, owner, config, authority, services, accept, qualifySyntheticFinalScope, losePathExclusion() { pathExclusion = false; }, monotonicNow: () => monotonic, get settles() { return settles; }, loseHold() { held = false; }, advance(ms: number) { monotonic += ms; time += ms; },
     async restart() {
       repository.close();
       const nextRepository = await open("cold-maintenance"), nextCustody = createCustodyLedger(nextRepository, { ...config, ingressAuthority: authority });

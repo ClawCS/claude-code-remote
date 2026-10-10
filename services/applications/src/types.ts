@@ -299,6 +299,11 @@ export interface WorkerProof { readonly checkedAt: Instant; readonly validUntil:
 export interface WorkerRestoreProof extends WorkerProof { readonly checkpointId: string; readonly ledgerVerified: true }
 export interface WorkerOwner { readonly repository: ApplicationRepository; readonly custody: CustodyLedger; readonly clock: Clock }
 export interface RuntimeMaintenanceExclusion { readonly [key: symbol]: never }
+declare const databaseIncarnationBrand: unique symbol;
+export interface DatabaseIncarnation {
+  readonly [databaseIncarnationBrand]: true;
+  readonly canonicalPath: string; readonly device: number; readonly inode: number;
+}
 export interface WorkerServices {
   settle(): Promise<void>;
   close(): Promise<void>;
@@ -307,6 +312,10 @@ export interface WorkerServices {
   holdMaintenance?(owner: WorkerOwner): Promise<RuntimeMaintenanceExclusion>;
   assertMaintenanceHeld?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion): void;
   releaseMaintenance?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion): Promise<void>;
+  // Corroborates this exact original connection's initialization/offline
+  // sanitation and continuous path/parent exclusion beginning BEFORE open.
+  // The token and later stat do not establish that operating qualification.
+  assertDatabaseSanitationBaseline?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion, target: DatabaseIncarnation): void;
 }
 export type WorkerAssurance = "unavailable" | "local-test" | "qualified";
 export interface WorkerLifecycleOptions {

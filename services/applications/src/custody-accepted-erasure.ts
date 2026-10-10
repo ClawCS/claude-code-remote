@@ -1,7 +1,7 @@
 import { type Stats, type Dir } from "node:fs";
 import { lstat, opendir } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import type { ApplicationRepository, CustodyConfig, CustodyLedger, IngressEvidence } from "./types";
+import type { ApplicationId, ApplicationRepository, CustodyConfig, CustodyLedger, IngressEvidence } from "./types";
 import type { AcceptedCandidate, AcceptedOperands, InventoryJournal, PhysicalCompletion, createCustodyInventoryStorage } from "./erasure-storage";
 import type { CustodyObservation, Observation } from "./custody-erasure";
 import { erasureOwner } from "./erasure-repository";
@@ -16,6 +16,7 @@ export interface AcceptedHooks {
   forget(journal: Readonly<InventoryJournal>): Promise<number>;
   privateRevision(): number;
   privateReady(): boolean;
+  inspectCopies(caseId: ApplicationId, reservationId: string | null): { complete: boolean; consumedItems: number };
 }
 interface Composition {
   custody: CustodyLedger; repository: ApplicationRepository; config: CustodyConfig;
@@ -42,6 +43,8 @@ export function createAcceptedErasure(c: Composition) {
   let completion: { commit: string; pass: string; fingerprint: string; revision: number } | undefined;
   let reinspect = false;
   const proofs = new WeakMap<PhysicalCompletion, { completion: NonNullable<typeof completion>; run: MaintenanceRun; guard: object }>();
+  let inspection: { fingerprint: string; pass: string; revision: number; key: [string,string,string,string]; reservationKey: string; reservationsDone: boolean; objectsDone: boolean; copiesDone: boolean } | undefined;
+  const inspectionProofs = new WeakMap<PhysicalCompletion, { state: NonNullable<typeof inspection>; run: MaintenanceRun; guard: object }>();
   const roots = { custody: c.config.custodyRoot, incoming: c.config.intakeRoot, runtime: c.config.runtimeRoot };
   const idle = () => !active && resources.idle() && !directory;
   async function closeDirectory(io: IO) { if (directory) { await io(() => directory!.close()); directory = undefined; } }
@@ -173,7 +176,7 @@ export function createAcceptedErasure(c: Composition) {
       finally { active = false; }
     });
   }
-  c.storage.bindPhysicalVerifier(Object.freeze({
+  const verifier = Object.freeze({
     maximumItems: c.ancestryMaximum + 72,
     async verify(commit: string, run: MaintenanceRun) {
       assertMaintenanceCustodyIdentity(run, c.repository, c.custody);
@@ -196,6 +199,58 @@ export function createAcceptedErasure(c: Composition) {
       if (!value || value.run !== run || value.guard !== current.guard || value.completion !== completion || !completion || completion.commit !== commit || completion.pass !== current.pass || completion.fingerprint !== current.fingerprint || completion.revision !== c.hooks.privateRevision() || !idle() || !c.hooks.privateReady()) fail();
       return current.consumedItems + 3;
     },
-  }));
+    inspectionMaximum: 2 * c.ancestryMaximum + 236,
+    async inspect(commit: string, run: MaintenanceRun) {
+      assertMaintenanceCustodyIdentity(run, c.repository, c.custody);
+      const before = c.storage.inspectionWork(commit,run);
+      if (!before.rowOnly && !before.reduced) return verifier.verify(before.physical.commitEventId,run);
+      return c.hooks.track(() => c.hooks.exclusive(async () => {
+        let consumedItems = before.consumedItems;
+        const io: IO = async action => { consumedItems++; return action(); };
+        const pass = await c.coverage(run,io), revision = c.hooks.privateRevision();
+        if (!idle() || !c.hooks.privateReady()) fail();
+        if (!inspection || inspection.fingerprint !== before.fingerprint || inspection.pass !== pass || inspection.revision !== revision) inspection = { fingerprint: before.fingerprint,pass,revision,key:["","","",""],reservationKey:"",reservationsDone:before.reservationId!==null,objectsDone:before.rowOnly,copiesDone:before.rowOnly };
+        const expected = inspection;
+        if(!expected.reservationsDone) {
+          const selected=c.storage.inspectionReservation(expected.reservationKey,before.work); consumedItems+=selected.consumedItems;
+          if(selected.next)expected.reservationKey=selected.next;else expected.reservationsDone=true;
+        }
+        if (!expected.copiesDone) {
+          const copies = c.hooks.inspectCopies(before.work.caseId,before.reservationId); consumedItems += copies.consumedItems;
+          expected.copiesDone = copies.complete;
+        }
+        if (!expected.objectsDone) {
+          const selected = c.storage.inspectionObject(expected.key,before.work.caseId); consumedItems += selected.consumedItems;
+          if (selected.value) {
+            const value = selected.value, path = join(roots[value.object.root],value.relativePath);
+            try { await io(() => lstat(path)); fail(); }
+            catch (error) { if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error; }
+            if (value.journal.kind === "intake") {
+              const evidence = await io(() => c.hooks.ingress(value.journal,"observe")); consumedItems++;
+              if (evidence.state !== "released" || evidence.chargedBytes !== 0 || evidence.object !== null) fail();
+            }
+            const parent = await resources.open("parent",roots[value.object.root],io);
+            try { await io(() => parent!.sync()); } finally { await resources.close("parent",io); }
+          }
+          if (selected.next) expected.key = selected.next; else expected.objectsDone = true;
+        }
+        await c.coverage(run,io);
+        const after = c.storage.inspectionWork(commit,run); consumedItems += after.consumedItems;
+        if (after.fingerprint !== before.fingerprint || after.guard !== before.guard || c.hooks.privateRevision() !== revision || !idle() || !c.hooks.privateReady()) fail();
+        if (!expected.objectsDone || !expected.copiesDone || !expected.reservationsDone) return Object.freeze({proof:null,consumedItems});
+        const proof = Object.freeze({}) as PhysicalCompletion;
+        inspectionProofs.set(proof,{state:expected,run,guard:after.guard});
+        return Object.freeze({proof,consumedItems});
+      })).catch(error => { inspection = undefined; throw error; });
+    },
+    consumeInspection(proof: PhysicalCompletion, commit: string, run: MaintenanceRun) {
+      const current = c.storage.inspectionWork(commit,run);
+      if (!current.rowOnly && !current.reduced) return current.consumedItems + verifier.consume(proof,current.physical.commitEventId,run);
+      const value = inspectionProofs.get(proof); inspectionProofs.delete(proof); c.checkCoverage();
+      if (!value || value.run !== run || value.guard !== current.guard || value.state !== inspection || current.fingerprint !== inspection.fingerprint || current.pass !== inspection.pass || c.hooks.privateRevision() !== inspection.revision || !idle() || !c.hooks.privateReady()) fail();
+      return current.consumedItems + 4;
+    },
+  });
+  c.storage.bindPhysicalVerifier(verifier);
   return Object.freeze({ eraseScopeBatch, finishResources, idle });
 }

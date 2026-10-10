@@ -1,12 +1,15 @@
 import type Database from "better-sqlite3";
 import { createHash, randomBytes } from "node:crypto";
+import { lstatSync, type Stats } from "node:fs";
+import { dirname, isAbsolute, resolve } from "node:path";
 import { decodeJournalEvent, encodeJournalEvent } from "./ledger-contract";
 import { admissionScopeAccepts, registrationAssociation } from "./deletion-association";
 import { externalAttestationAssociation, replayAssociation } from "./erasure-association";
-import { createErasureRowSelector, createCustodyInventoryStorage, type PhysicalVerifier } from "./erasure-storage";
+import { createErasureRowSelector, createCustodyInventoryStorage, validateSafetyCarry, type PhysicalVerifier } from "./erasure-storage";
 import type { CustodyConfig, CustodyLedger } from "./types";
 import { berlinDate, operatorReason } from "./lifecycle";
-import { assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
+import { assertDatabaseSanitationBaseline, assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, originalMaintenanceCustody, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
+import type { DatabaseIncarnation } from "./types";
 import { advanceAuthMaintenanceClock } from "./auth-repository";
 import { applicationId, staffId, utcInstant, type ApplicationId, type ApplicationRepository, type CaseRecord, type CurrentExternalAttestation, type CurrentMailboxClear, type DeletionScope, type DeliveryRecord, type DurableReceipt, type EraseJournalEvent, type EraseScope, type ErasureRowCursor, type ErasureRowPage, type ErasureWork, type ErasureWorkPage, type FinalErasureEvidence, type SafetyJournal } from "./types";
 
@@ -48,6 +51,10 @@ export interface ErasureOwner {
   listPending(run: MaintenanceRun): Promise<Readonly<{ items: readonly PendingMaintenance[]; hasMore: boolean; consumedItems: number }>>;
   listCommitted(run: MaintenanceRun): Promise<ErasureWorkPage>;
   reconcileClaim(commitEventId: string, run: MaintenanceRun): Promise<Readonly<{ changed: boolean; consumedItems: number }>>;
+  applyRowBatch(commitEventId: string, cursor: ErasureRowCursor | null, run: MaintenanceRun): Promise<Readonly<{ next: ErasureRowCursor | null; complete: boolean; consumedItems: number }>>;
+  checkpointDatabase(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
+  prepareDone(commitEventId: string, run: MaintenanceRun): Promise<Readonly<{ event: EraseJournalEvent | null; consumedItems: number }>>;
+  acknowledgeDone(event: EraseJournalEvent, receipt: DurableReceipt, run: MaintenanceRun): Promise<Readonly<{ consumedItems: number }>>;
 }
 export type PendingMaintenance = Readonly<{ kind: "proposed"; event: EraseJournalEvent }> | Readonly<{ kind: "needs-done"; work: ErasureWork }>;
 export interface DueCandidate { readonly caseId: ApplicationId; readonly scope: EraseScope; readonly dueAt: string }
@@ -59,6 +66,7 @@ function fail(code = "ERASURE_STORAGE_INVALID"): never { throw new Error(code); 
 const scopes: readonly EraseScope[] = ["processing_payload", "processing_contact", "incident_identity", "public_token", "identifying_register"];
 type Phase = { eventId: string; caseId: ApplicationId; event: string; phase: "proposed" | "acknowledged"; entry: DurableReceipt["entry"] | null; head: DurableReceipt["head"] | null };
 interface Dependencies {
+  readonly databasePath: string;
   readonly repository: ApplicationRepository;
   readonly journal: SafetyJournal | undefined;
   readonly now: () => string;
@@ -75,6 +83,309 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
   const physicalVerifiers = new WeakMap<CustodyLedger, PhysicalVerifier>();
   const selectRows=createErasureRowSelector(db);
   const candidates = new WeakMap<DueCandidate, { run: MaintenanceRun; used: boolean }>();
+  // Captured from the original connection/configuration, never an operation
+  // operand. These stats are identity checks, NOT pre-open exclusion evidence.
+  const databasePath = deps.databasePath;
+  const originalFile = lstatSync(databasePath);
+  const originalWal = lstatSync(`${databasePath}-wal`);
+  const ancestry: { path: string; stat: Stats }[] = [];
+  for (let path = dirname(databasePath); ; path = dirname(path)) {
+    ancestry.push({ path, stat: lstatSync(path) });
+    if (path === dirname(path)) break;
+  }
+  const incarnation = Object.freeze({ canonicalPath: databasePath, device: originalFile.dev, inode: originalFile.ino }) as DatabaseIncarnation;
+  function safeDatabase(run: MaintenanceRun, truncated = false): void {
+    const deny = () => fail("ERASURE_SANITATION_REQUIRED");
+    try {
+      assertDatabaseSanitationBaseline(run, deps.repository, incarnation);
+      if (!isAbsolute(databasePath) || resolve(databasePath) !== databasePath) deny();
+      const attached = db.pragma("database_list") as { name: string; file: string }[];
+      if (attached.length !== 1 || attached[0].name !== "main" || attached[0].file !== databasePath) deny();
+      const file = lstatSync(databasePath);
+      if (!file.isFile() || file.isSymbolicLink() || file.nlink !== 1 || file.uid !== process.getuid?.() || (file.mode & 0o077) !== 0 || file.dev !== incarnation.device || file.ino !== incarnation.inode || !Number.isSafeInteger(file.dev) || !Number.isSafeInteger(file.ino)) deny();
+      for (const original of ancestry) {
+        const current = lstatSync(original.path);
+        if (!current.isDirectory() || current.isSymbolicLink() || current.dev !== original.stat.dev || current.ino !== original.stat.ino || current.uid !== original.stat.uid || current.mode !== original.stat.mode) deny();
+      }
+      const root = ancestry[0].stat;
+      if (root.uid !== process.getuid?.() || (root.mode & 0o077) !== 0 || db.pragma("secure_delete", { simple: true }) !== 1) deny();
+      try {
+        const wal = lstatSync(`${databasePath}-wal`);
+        if (!wal.isFile() || wal.isSymbolicLink() || wal.nlink !== 1 || wal.uid !== process.getuid?.() || (wal.mode & 0o077) !== 0 || wal.dev !== file.dev || wal.dev !== originalWal.dev || wal.ino !== originalWal.ino || !Number.isSafeInteger(wal.ino) || (truncated && wal.size !== 0)) deny();
+      } catch (error) { if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error; }
+      assertDatabaseSanitationBaseline(run, deps.repository, incarnation);
+    } catch { deny(); }
+  }
+  let checkpointKey = "";
+  const locallyCompleted = new Map<string, string>();
+  async function checkpointDatabase(run: MaintenanceRun) {
+    assertMaintenanceSettled(run, deps.repository);
+    const verifier = physicalVerifiers.get(originalMaintenanceCustody(run, deps.repository));
+    if (!verifier) fail("ERASURE_UNVERIFIED");
+    // Key selection/work/guard24 + inspector + consume99 + three safe fixed
+    // DB/WAL/ancestry sweeps + fresh row selector64 + transition/lookahead8.
+    const maximum = 24 + verifier.inspectionMaximum + 99 + 3 * (ancestry.length + 10) + 64 + 8;
+    if (maintenanceRemaining(run,deps.repository).items < maximum) return Object.freeze({complete:false,consumedItems:0});
+    const result = await maintenanceCommand(run,deps.repository,maximum,"filesystem",async () => {
+      safeDatabase(run);
+      let used = ancestry.length + 12;
+      const selected = db.prepare("SELECT commitEventId FROM erasure_obligations WHERE commitEventId>? ORDER BY commitEventId LIMIT 1").get(checkpointKey) as {commitEventId:string}|undefined;
+      if (!selected) { checkpointKey=""; return {value:false,consumedItems:used}; }
+      return owner.withErasureGuard(selected.commitEventId,async initial => {
+        used += 20;
+        selectMaintenance(run,deps.repository,`case:${initial.caseId}`);
+        if (initial.stage !== "database-maintenance-pending") { checkpointKey=initial.commitEventId; return {value:false,consumedItems:used}; }
+        const inspected=await verifier.inspect(initial.commitEventId,run); used+=inspected.consumedItems;
+        assertMaintenance(run,deps.repository);
+        if (!inspected.proof) return {value:false,consumedItems:used};
+        const page=owner.rowPage(initial.commitEventId,null,64); used+=page.consumedItems;
+        if (page.targets.length || page.next) fail("ERASURE_PENDING");
+        safeDatabase(run); used+=ancestry.length+10;
+        let checkpoint: {busy:number;log:number;checkpointed:number}[];
+        used++;
+        try { checkpoint=db.pragma("wal_checkpoint(TRUNCATE)") as typeof checkpoint; }
+        catch(error) {
+          if(error instanceof Error && "code" in error && (error.code==="SQLITE_BUSY"||error.code==="SQLITE_LOCKED"))return {value:false,consumedItems:used};
+          throw error;
+        }
+        if (checkpoint.length!==1 || checkpoint[0].busy!==0 || checkpoint[0].log!==0 || checkpoint[0].checkpointed!==0) return {value:false,consumedItems:used};
+        // No await between actual checkpoint, exact current proof consumption,
+        // held baseline checks and the original connection's fixed transition.
+        safeDatabase(run,true); used+=ancestry.length+10;
+        used+=verifier.consumeInspection(inspected.proof,initial.commitEventId,run);
+        const current=work(initial.commitEventId); used+=4;
+        if(JSON.stringify(current)!==JSON.stringify(initial))fail("ERASURE_UNVERIFIED");
+        db.transaction(()=>db.prepare("UPDATE erasure_obligations SET stage='locally-complete' WHERE commitEventId=? AND stage='database-maintenance-pending'").run(initial.commitEventId)).immediate(); used++;
+        locallyCompleted.set(initial.commitEventId,JSON.stringify({...current,stage:"locally-complete"}));
+        checkpointKey=initial.commitEventId;
+        return {value:true,consumedItems:used};
+      });
+    });
+    return Object.freeze({complete:result.value,consumedItems:result.consumedItems});
+  }
+  async function prepareDone(commitEventId: string,run:MaintenanceRun) {
+    assertMaintenanceSettled(run,deps.repository);
+    const maximum=40+ancestry.length+10;
+    const result=await maintenanceCommand(run,deps.repository,maximum,"scalar",()=>owner.withErasureGuard(commitEventId,async current=>{
+      assertMaintenance(run,deps.repository); selectMaintenance(run,deps.repository,`case:${current.caseId}`);
+      if(current.stage!=="locally-complete" || locallyCompleted.get(commitEventId)!==JSON.stringify(current))fail("ERASURE_PENDING");
+      safeDatabase(run);
+      const event=db.transaction(()=>{
+        const pendingEvent=pending(current.caseId);
+        if(pendingEvent){if(pendingEvent[3]!=="erase_done"||pendingEvent[4][1]!==commitEventId)fail("ERASURE_PENDING");return pendingEvent;}
+        const historical=db.prepare("SELECT historicalDone FROM erasure_obligations WHERE commitEventId=?").get(commitEventId) as {historicalDone:string|null};
+        if(historical.historicalDone){
+          const fact=db.prepare("SELECT f.event FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(historical.historicalDone) as {event:string}|undefined;
+          if(!fact)fail("ERASURE_UNVERIFIED");
+          const done=decodeJournalEvent(fact.event);
+          if(done[3]!=="erase_done"||done[4][0]!==current.caseId||done[4][1]!==commitEventId)fail();
+          db.prepare("INSERT INTO erasure_events(eventId,caseId,event,phase) VALUES(?,?,?,'proposed') ON CONFLICT DO NOTHING").run(done[1],current.caseId,fact.event);
+          return done;
+        }
+        const done:EraseJournalEvent=["tj-journal-event-v1",randomBytes(16).toString("hex"),utcInstant(deps.now()),"erase_done",[current.caseId,commitEventId]];
+        db.prepare("INSERT INTO erasure_events(eventId,caseId,event,phase) VALUES(?,?,?,'proposed')").run(done[1],current.caseId,encodeJournalEvent(done));
+        return done;
+      }).immediate();
+      return {value:event,consumedItems:maximum};
+    }));
+    return Object.freeze({event:result.value,consumedItems:result.consumedItems});
+  }
+  async function acknowledgeDone(event:EraseJournalEvent,receipt:DurableReceipt,run:MaintenanceRun) {
+    if(event[3]!=="erase_done")fail();
+    const maximum=40+ancestry.length+10;
+    const result=await maintenanceCommand(run,deps.repository,maximum,"scalar",()=>owner.withErasureGuard(event[4][1],async current=>{
+      assertMaintenance(run,deps.repository); selectMaintenance(run,deps.repository,`case:${current.caseId}`);
+      if(current.caseId!==event[4][0] || current.stage!=="locally-complete" || locallyCompleted.get(current.commitEventId)!==JSON.stringify(current))fail("ERASURE_PENDING");
+      safeDatabase(run);
+      db.transaction(()=>{
+        const phase=db.prepare("SELECT * FROM erasure_events WHERE eventId=?").get(event[1]) as Phase|undefined;
+        const fact=db.prepare("SELECT f.event,f.sequence,f.entryHash FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(event[1]) as {event:string;sequence:string;entryHash:string}|undefined;
+        if(!phase || phase.event!==encodeJournalEvent(event) || phase.caseId!==current.caseId || !fact || fact.event!==phase.event)fail("ERASURE_UNVERIFIED");
+        validateReceipt(event,receipt,current.ledgerId,current.historyEpoch,fact.sequence,fact.entryHash);
+        if(phase.phase==="acknowledged"){if(phase.entry!==receipt.entry||phase.head!==receipt.head)fail();}
+        else db.prepare("UPDATE erasure_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry,receipt.head,event[1]);
+      }).immediate();
+      return {value:null,consumedItems:maximum};
+    }));
+    return Object.freeze({consumedItems:result.consumedItems});
+  }
+  function validateReceipt(event:import("./types").JournalEvent,receipt:DurableReceipt,ledger:string,history:string,sequence:string,hash:string) {
+    if(typeof receipt.entry!=="string"||typeof receipt.head!=="string"||Buffer.byteLength(receipt.entry)>4096||Buffer.byteLength(receipt.head)>1024)fail();
+    let entry,head;
+    try {entry=JSON.parse(receipt.entry);head=JSON.parse(receipt.head);}catch{fail();}
+    if(!Array.isArray(entry)||!Array.isArray(head)||entry.length!==2||head.length!==2||!Array.isArray(entry[0])||!Array.isArray(head[0])||entry[0].length!==8||head[0].length!==9||typeof entry[1]!=="string"||typeof head[1]!=="string"||!/^[A-Za-z0-9_-]{86}$/.test(entry[1])||!/^[A-Za-z0-9_-]{86}$/.test(head[1])||JSON.stringify(entry)!==receipt.entry||JSON.stringify(head)!==receipt.head)fail();
+    const e=entry[0],h=head[0];
+    if(e[0]!=="tj-journal-entry-v1"||h[0]!=="tj-journal-head-v1"||e[1]!==ledger||e[2]!==history||h[1]!==ledger||h[2]!==history||encodeJournalEvent(e[7])!==encodeJournalEvent(event)||e[4]!==sequence||h[4]!==sequence||h[5]!==hash||h[6]!==event[1]||h[7]!==event[2]||e[3]!==h[3]||e[6]!==h[8]||createHash("sha256").update("tj-journal-entry-hash-v1\n"+JSON.stringify(e)).digest("hex")!==hash)fail();
+  }
+  // Examined-key streams use the global composite PK before case filtering.
+  // No all-pass case predicate is hidden behind LIMIT or a pass-first index.
+  let retirement: { commit: string; fingerprint: string; objectsDone: boolean; objectKey: [string,string,string,string]; journalKey: [string,string] } | undefined;
+  function retireAccepted(current: ErasureWork): boolean {
+    const fingerprint = JSON.stringify(current);
+    if (!retirement || retirement.commit !== current.commitEventId || retirement.fingerprint !== fingerprint) retirement = { commit: current.commitEventId, fingerprint, objectsDone: false, objectKey: ["","","",""], journalKey: ["",""] };
+    const before = retirement;
+    const state = { ...before, objectKey: [...before.objectKey] as [string,string,string,string], journalKey: [...before.journalKey] as [string,string] };
+    const streams = [current.commitEventId];
+    if (current.scope === "identifying_register") {
+      const predecessor = db.prepare("SELECT eventId FROM erasure_scopes WHERE caseId=? AND scope='processing_payload' AND committed=1").get(current.caseId) as { eventId: string } | undefined;
+      if (predecessor) streams.push(predecessor.eventId);
+    }
+    for (const commit of streams) {
+      const manifest = db.prepare("SELECT * FROM erasure_manifests WHERE eraseCommitId=? ORDER BY journalId,slot,leaf LIMIT 1").get(commit) as { scanPass: string; journalId: string; slot: string; leaf: string; phase: string; remainingCharge: number } | undefined;
+      if (!manifest) continue;
+      if (manifest.phase !== "metadata-finalized" || manifest.remainingCharge !== 0) fail("ERASURE_UNVERIFIED");
+      const journal = db.prepare("SELECT caseId FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(manifest.scanPass, manifest.journalId) as { caseId: string } | undefined;
+      if (!journal || journal.caseId !== current.caseId) fail();
+      if (db.prepare("SELECT 1 FROM cleanup_manifests WHERE scanPass=? AND journalId=? AND slot=? AND leaf=? LIMIT 1").get(manifest.scanPass, manifest.journalId, manifest.slot, manifest.leaf)) fail("ERASURE_PENDING");
+      db.prepare("DELETE FROM erasure_manifests WHERE eraseCommitId=? AND journalId=? AND slot=? AND leaf=?").run(commit, manifest.journalId, manifest.slot, manifest.leaf);
+      return false;
+    }
+    if (!state.objectsDone) {
+      const object = db.prepare("SELECT pass,journalId,slot,leaf FROM erasure_inventory_objects WHERE (pass,journalId,slot,leaf)>(?,?,?,?) ORDER BY pass,journalId,slot,leaf LIMIT 1").get(...state.objectKey) as { pass: string; journalId: string; slot: string; leaf: string } | undefined;
+      if (!object) state.objectsDone = true;
+      else {
+        const journal = db.prepare("SELECT caseId FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(object.pass, object.journalId) as { caseId: string } | undefined;
+        if (!journal) fail();
+        if (journal.caseId === current.caseId) {
+          if (db.prepare("SELECT 1 FROM erasure_manifests INDEXED BY erasure_manifest_inventory WHERE scanPass=? AND journalId=? AND slot=? AND leaf=? LIMIT 1").get(object.pass, object.journalId, object.slot, object.leaf) || db.prepare("SELECT 1 FROM cleanup_manifests INDEXED BY cleanup_manifest_inventory WHERE scanPass=? AND journalId=? AND slot=? AND leaf=? LIMIT 1").get(object.pass, object.journalId, object.slot, object.leaf)) fail("ERASURE_PENDING");
+          db.prepare("DELETE FROM erasure_inventory_objects WHERE pass=? AND journalId=? AND slot=? AND leaf=?").run(object.pass, object.journalId, object.slot, object.leaf);
+        }
+        state.objectKey = [object.pass, object.journalId, object.slot, object.leaf];
+      }
+    } else {
+      const journal = db.prepare("SELECT pass,journalId,caseId FROM erasure_inventory_journals WHERE (pass,journalId)>(?,?) ORDER BY pass,journalId LIMIT 1").get(...state.journalKey) as { pass: string; journalId: string; caseId: string | null } | undefined;
+      if (!journal) return true;
+      if (journal.caseId === current.caseId) {
+        if (db.prepare("SELECT 1 FROM erasure_inventory_objects WHERE pass=? AND journalId=? LIMIT 1").get(journal.pass, journal.journalId)) fail("ERASURE_PENDING");
+        db.prepare("DELETE FROM erasure_inventory_journals WHERE pass=? AND journalId=?").run(journal.pass, journal.journalId);
+      }
+      state.journalKey = [journal.pass, journal.journalId];
+    }
+    // Publication is performed only by the caller after its actual COMMIT.
+    pendingRetirement = state; return false;
+  }
+  let pendingRetirement: typeof retirement;
+  function preserveSource(current:ErasureWork,source:"lifecycle"|"mailbox",eventId:string):void {
+    const table=source==="lifecycle"?"lifecycle_proposals":"deletion_events";
+    const row=db.prepare(`SELECT eventId,caseId,event,phase,entry,head FROM ${table} WHERE eventId=? AND caseId=?`).get(eventId,current.caseId) as {eventId:string;caseId:string;event:string;phase:string;entry:string|null;head:string|null}|undefined;
+    if(!row)fail();
+    const unresolved=row.phase==="proposed"||row.phase==="acknowledged";
+    const carry=validateSafetyCarry({...row,source,phase:row.phase==="proposed"?"proposed":"acknowledged",coveringCommit:current.commitEventId});
+    const fact=db.prepare("SELECT f.event,f.sequence,f.entryHash FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.eventId=?").get(eventId) as {event:string;sequence:string;entryHash:string}|undefined;
+    if(fact && fact.event!==row.event)fail();
+    if(row.phase!=="proposed" && fact) {
+      validateReceipt(decodeJournalEvent(row.event),{entry:row.entry!,head:row.head!} as DurableReceipt,current.ledgerId,current.historyEpoch,fact.sequence,fact.entryHash);
+      // An acknowledged mutation marker is NOT an observed outcome. Its
+      // current independently verified result, if any, is the only resolving
+      // fact. Keep an unknown external effect minimal and non-executable.
+      const event=decodeJournalEvent(row.event);
+      if(source==="mailbox") {
+        if(event[3]!=="copy_mutation_started")return;
+        const result=db.prepare("SELECT f.event FROM journal_facts f JOIN journal_projection p ON p.pass=f.pass WHERE p.singleton=1 AND f.resultFor=?").get(eventId) as {event:string}|undefined;
+        if(result) {
+          const outcome=decodeJournalEvent(result.event);
+          if(outcome[3]!=="copy_result"||outcome[4][0]!==current.caseId||outcome[4][1]!==eventId)fail();
+          return;
+        }
+      } else if(!unresolved)return;
+    } else if(!unresolved)fail("ERASURE_UNVERIFIED");
+    const old=db.prepare("SELECT * FROM erasure_safety_carry WHERE caseId=? AND source=?").get(current.caseId,source);
+    if(old) {
+      const previous=validateSafetyCarry(old);
+      if(Object.keys(carry).some(key=>previous[key as keyof typeof carry]!==carry[key as keyof typeof carry]))fail();
+    }
+    if(!old)db.prepare("INSERT INTO erasure_safety_carry(eventId,caseId,source,event,phase,entry,head,coveringCommit) VALUES(@eventId,@caseId,@source,@event,@phase,@entry,@head,@coveringCommit)").run(carry);
+  }
+  async function applyRowBatch(commitEventId: string, cursor: ErasureRowCursor | null, run: MaintenanceRun) {
+    assertMaintenanceSettled(run, deps.repository);
+    const verifier = physicalVerifiers.get(originalMaintenanceCustody(run, deps.repository));
+    if (!verifier) fail("ERASURE_UNVERIFIED");
+    // Guard20 + inspector + consume99 + selection32 + <=11 targets *15
+    // (source/fact/carry probes, validation, carry+delete), secure_delete1,
+    // fresh selector64, retirement50, stage1, pre-carry/current-work44.
+    const maximum = 20 + verifier.inspectionMaximum + 99 + 32 + 165 + 1 + 64 + 50 + 1 + 44;
+    if (maintenanceRemaining(run, deps.repository).items < maximum) return Object.freeze({ next: cursor, complete: false, consumedItems: 0 });
+    const result = await maintenanceCommand(run, deps.repository, maximum, "filesystem", () => owner.withErasureGuard(commitEventId, async initial => {
+      assertMaintenance(run, deps.repository);
+      selectMaintenance(run, deps.repository, `case:${initial.caseId}`);
+      const checked = await verifier.inspect(commitEventId, run);
+      assertMaintenance(run, deps.repository);
+      let consumed = 20 + checked.consumedItems;
+      if (!checked.proof) return {value:{next:cursor,complete:false},consumedItems:consumed};
+      pendingRetirement = undefined;
+      try {
+        const value = db.transaction(() => {
+          consumed += verifier.consumeInspection(checked.proof!, commitEventId, run);
+          const current = work(commitEventId); consumed += 4;
+          if (JSON.stringify(current) !== JSON.stringify(initial)) fail("ERASURE_UNVERIFIED");
+          if (db.pragma("secure_delete", { simple: true }) !== 1) fail("ERASURE_SANITATION_REQUIRED"); consumed++;
+          if(current.scope==="incident_identity"||current.scope==="identifying_register") {
+            const lifecycle=db.prepare("SELECT pendingEventId FROM case_lifecycle WHERE caseId=?").get(current.caseId) as {pendingEventId:string|null}|undefined;
+            if(lifecycle?.pendingEventId)preserveSource(current,"lifecycle",lifecycle.pendingEventId);
+            const mail=db.prepare("SELECT eventId FROM deletion_events WHERE caseId=? AND phase='proposed'").get(current.caseId) as {eventId:string}|undefined;
+            if(mail)preserveSource(current,"mailbox",mail.eventId);
+            consumed+=32;
+          }
+          const page = owner.rowPage(commitEventId, cursor, 32); consumed += page.consumedItems;
+          for (const target of page.targets) {
+            switch (target.phase) {
+              case "scope-contact": db.prepare("UPDATE deliveries SET contactEnvelope=NULL WHERE caseId=?").run(current.caseId); break;
+              case "scope-proofs": db.prepare("DELETE FROM status_proofs WHERE caseId=? AND proofHash=?").run(current.caseId,target.key); break;
+              case "payload-artifacts": case "payload-reservations": {
+                const key = target.key as readonly [string,string];
+                db.prepare(`DELETE FROM ${target.phase === "payload-artifacts" ? "artifacts" : "artifact_reservations"} WHERE caseId=? AND kind=?`).run(current.caseId,key[1]); break;
+              }
+              case "payload-case": db.prepare("UPDATE cases SET encryptedPayloadPath=NULL,payloadBytes=0 WHERE id=?").run(current.caseId); break;
+              case "payload-send": db.prepare("UPDATE deliveries SET sendDueAt=NULL WHERE caseId=?").run(current.caseId); break;
+              case "identity-grants": db.prepare("DELETE FROM auth_grants WHERE caseId=? AND hash=?").run(current.caseId,target.key); break;
+              case "identity-lifecycle-audit": case "identity-audit":
+                db.prepare(`DELETE FROM ${target.phase === "identity-audit" ? "audit" : "lifecycle_audit"} WHERE caseId=? AND sequence=?`).run(current.caseId,target.key); break;
+              case "identity-lifecycle-proposals": {
+                preserveSource(current,"lifecycle",target.key as string); consumed+=13;
+                db.prepare("UPDATE case_lifecycle SET pendingEventId=NULL WHERE caseId=? AND pendingEventId=?").run(current.caseId,target.key); consumed++;
+                db.prepare("DELETE FROM lifecycle_proposals WHERE caseId=? AND eventId=?").run(current.caseId,target.key); break;
+              }
+              case "identity-searches": {
+                const key = target.key as readonly [string,string];
+                db.prepare("DELETE FROM deletion_searches WHERE attemptId=? AND round=?").run(...key); break;
+              }
+              case "identity-diagnostics": db.prepare("DELETE FROM deletion_diagnostics WHERE caseId=? AND eventId=?").run(current.caseId,target.key); break;
+              case "identity-mail-events": {
+                preserveSource(current,"mailbox",target.key as string); consumed+=13;
+                db.prepare("DELETE FROM deletion_events WHERE caseId=? AND eventId=?").run(current.caseId,target.key); break;
+              }
+              case "identity-mail-state": case "identity-delivery": case "identity-lifecycle":
+                db.prepare(`DELETE FROM ${target.phase === "identity-mail-state" ? "deletion_state" : target.phase === "identity-delivery" ? "deliveries" : "case_lifecycle"} WHERE caseId=?`).run(current.caseId); break;
+              case "identity-delivery-attempts": {
+                const key = target.key as readonly [string,number];
+                db.prepare("DELETE FROM delivery_attempts WHERE caseId=? AND ordinal=?").run(...key); break;
+              }
+              case "identity-replay-reservations": fail("ERASURE_PENDING");
+              case "identity-case-reservation": {
+                const key = target.key as readonly [string,string];
+                if (db.prepare("SELECT 1 FROM reservations INDEXED BY cleanup_replay_winner WHERE cleanupWinner=? LIMIT 1").get(key[1]) || db.prepare("SELECT 1 FROM cleanup_manifests WHERE reservationId=? LIMIT 1").get(key[1])) fail("ERASURE_PENDING");
+                consumed += 4;
+                if(db.prepare("DELETE FROM cases WHERE id=? AND reservationId=?").run(...key).changes !== 1 || db.prepare("DELETE FROM reservations WHERE id=? AND active=0").run(key[1]).changes !== 1)fail();
+                consumed++; break;
+              }
+            }
+            consumed++;
+          }
+          if (page.next) return { next: page.next, complete: false };
+          const fresh = owner.rowPage(commitEventId, null, 64); consumed += fresh.consumedItems;
+          if (fresh.next || fresh.targets.length) return { next: null, complete: false };
+          const retired = current.scope === "processing_contact" || current.scope === "public_token" || current.scope === "incident_identity" ? true : retireAccepted(current); consumed += 50;
+          if (!retired) return { next: null, complete: false };
+          assertMaintenance(run, deps.repository);
+          db.prepare("UPDATE erasure_obligations SET stage='database-maintenance-pending' WHERE commitEventId=? AND stage='rows-pending'").run(commitEventId); consumed++;
+          return { next: null, complete: true };
+        }).immediate();
+        if (pendingRetirement) retirement = pendingRetirement;
+        return { value, consumedItems: consumed };
+      } finally { pendingRetirement = undefined; }
+    }));
+    return Object.freeze({ ...result.value, consumedItems: result.consumedItems });
+  }
   const dueStreams = [
     ["cases", "payloadDeleteAfter", "id", "maintenance_payload_due", "processing_payload", 0],
     ["cases", "contactDeleteAfter", "id", "maintenance_contact_due", "processing_contact", 0],
@@ -347,13 +658,18 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     db.prepare("UPDATE erasure_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry,receipt.head,event[1]);
   }
   function budget(value:number):void { if(!Number.isSafeInteger(value)||value<1||value>1000) fail("ERASURE_BUDGET_INVALID"); }
-  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue,prepareDue,expireGlobalBatch,listPending,listCommitted,reconcileClaim,
+  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue,prepareDue,expireGlobalBatch,listPending,listCommitted,reconcileClaim,applyRowBatch,checkpointDatabase,prepareDone,acknowledgeDone,
     bindCustody(custody: CustodyLedger, config: CustodyConfig) {
       if (boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
       // Captured only by this original composition. Future fixed 1c commands
       // invoke verify under their existing guard and consume immediately before
       // their synchronous transaction; no public getter/callback is exposed.
       const storage = createCustodyInventoryStorage(db, deps.repository, custody, config, { resolve: work, guard: deps.guard,
+        matchesReservation(current,identity) {
+          const scope=deps.scope();
+          if(scope.ledgerId!==current.ledgerId||scope.historyEpoch!==current.historyEpoch||scope.associationKeyId!==current.associationKeyId)fail("ERASURE_UNVERIFIED");
+          return replayAssociation(scope,identity.sessionHash as import("./types").Digest,identity.idempotencyKey)===current.replayAssociation;
+        },
         registerPhysicalVerifier(verifier) {
           if (physicalVerifiers.has(custody) || !boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
           physicalVerifiers.set(custody, verifier);

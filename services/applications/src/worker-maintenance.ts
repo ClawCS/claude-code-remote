@@ -1,4 +1,4 @@
-import type { ApplicationRepository, Clock, CustodyConfig, CustodyLedger, RuntimeMaintenanceExclusion, WorkerOwner, WorkerServices } from "./types";
+import type { ApplicationRepository, Clock, CustodyConfig, CustodyLedger, DatabaseIncarnation, RuntimeMaintenanceExclusion, WorkerOwner, WorkerServices } from "./types";
 import { utcInstant } from "./types";
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { FileHandle } from "node:fs/promises";
@@ -41,13 +41,14 @@ interface Binding {
   repo: Lifetime; files: Lifetime; services: WorkerServices; monotonic: () => number; last: number;
   holdMethod: WorkerServices["holdMaintenance"]; assertMethod: WorkerServices["assertMaintenanceHeld"];
   releaseMethod: WorkerServices["releaseMaintenance"]; settleMethod: WorkerServices["settle"];
+  sanitationMethod: WorkerServices["assertDatabaseSanitationBaseline"];
   hold?: RuntimeMaintenanceExclusion; acquisition?: Promise<void>; settlement?: Promise<void>; current?: Run; lastRun?: Run;
   started: boolean; settled: boolean; uncertain: boolean; journal?: { settle(): Promise<void> };
 }
 const runs = new WeakMap<MaintenanceRun, Run>();
 const journals = new WeakMap<ApplicationRepository, { settle(): Promise<void> } | undefined>();
 function fail(code: string): never { throw new Error(code); }
-const commandErrors = new Set(["ERASURE_UNKNOWN_OBJECT", "ERASURE_OWNERSHIP_INVALID", "ERASURE_JOURNAL_INVALID", "ERASURE_ASSOCIATION_INVALID", "ERASURE_ROOT_CHANGED", "INGRESS_RECOVERY_REQUIRED", "ERASURE_CLAIM_ACTIVE", "ERASURE_NOT_DUE", "ERASURE_PENDING", "ERASURE_FINAL_EVIDENCE_REQUIRED", "ERASURE_UNVERIFIED", "ERASURE_ADMISSION_UNAVAILABLE", "ERASURE_SANITATION_REQUIRED", "MAINTENANCE_DEADLINE", "MAINTENANCE_HOLD_LOST", "MAINTENANCE_RUN_STOPPED", "MAINTENANCE_SELECTION_LIMIT", "AUTH_DENIED"]);
+const commandErrors = new Set(["ERASURE_UNKNOWN_OBJECT", "ERASURE_OWNERSHIP_INVALID", "ERASURE_JOURNAL_INVALID", "ERASURE_ASSOCIATION_INVALID", "ERASURE_ROOT_CHANGED", "INGRESS_RECOVERY_REQUIRED", "ERASURE_CLAIM_ACTIVE", "ERASURE_NOT_DUE", "ERASURE_PENDING", "ERASURE_FINAL_EVIDENCE_REQUIRED", "ERASURE_PAYLOAD_COVERAGE_REQUIRED", "ERASURE_UNVERIFIED", "ERASURE_ADMISSION_UNAVAILABLE", "ERASURE_SANITATION_REQUIRED", "MAINTENANCE_DEADLINE", "MAINTENANCE_HOLD_LOST", "MAINTENANCE_RUN_STOPPED", "MAINTENANCE_SELECTION_LIMIT", "AUTH_DENIED"]);
 export function registerMaintenanceRepository(repository: ApplicationRepository, clock: Clock, lifetime: Lifetime, journal?: { settle(): Promise<void> }): void {
   if (repositories.has(repository)) fail("MAINTENANCE_ALREADY_OWNED");
   repositories.set(repository, { ...lifetime, clock }); journals.set(repository, journal);
@@ -105,7 +106,7 @@ export function bindMaintenance(owner: WorkerOwner, services: WorkerServices, mo
   if (!services || typeof services.settle !== "function" || typeof services.close !== "function" || typeof services.holdMaintenance !== "function" || typeof services.assertMaintenanceHeld !== "function" || typeof services.releaseMaintenance !== "function") fail("MAINTENANCE_UNAVAILABLE");
   let last: number; try { last = monotonic(); } catch { fail("MAINTENANCE_CLOCK_INVALID"); }
   if (!Number.isFinite(last) || last < 0) fail("MAINTENANCE_CLOCK_INVALID");
-  const b: Binding = { owner, repository: owner.repository, custody: owner.custody, clock: owner.clock, repo, files, services, monotonic, last, holdMethod: services.holdMaintenance, assertMethod: services.assertMaintenanceHeld, releaseMethod: services.releaseMaintenance, settleMethod: services.settle, started: false, settled: false, uncertain: false, journal: journals.get(owner.repository) };
+  const b: Binding = { owner, repository: owner.repository, custody: owner.custody, clock: owner.clock, repo, files, services, monotonic, last, holdMethod: services.holdMaintenance, assertMethod: services.assertMaintenanceHeld, releaseMethod: services.releaseMaintenance, settleMethod: services.settle, sanitationMethod: services.assertDatabaseSanitationBaseline, started: false, settled: false, uncertain: false, journal: journals.get(owner.repository) };
   bindings.set(owner, b); repositoryOwners.set(owner.repository, owner); custodyOwners.set(owner.custody, owner);
 }
 function binding(owner: WorkerOwner): Binding {
@@ -155,6 +156,16 @@ function current(token: MaintenanceRun, repository?: ApplicationRepository): Run
 }
 export function assertMaintenanceCustodyIdentity(run: MaintenanceRun, repository: ApplicationRepository, custody: CustodyLedger): void {
   if (current(run, repository).binding.custody !== custody) fail("MAINTENANCE_OWNER_MISMATCH");
+}
+export function originalMaintenanceCustody(run: MaintenanceRun, repository: ApplicationRepository): CustodyLedger {
+  assertMaintenance(run, repository); return current(run, repository).binding.custody;
+}
+export function assertDatabaseSanitationBaseline(run: MaintenanceRun, repository: ApplicationRepository, target: DatabaseIncarnation): void {
+  assertMaintenance(run,repository); const b=current(run,repository).binding;
+  if (!b.sanitationMethod || b.services.assertDatabaseSanitationBaseline !== b.sanitationMethod) fail("ERASURE_SANITATION_REQUIRED");
+  try { b.sanitationMethod.call(b.services,b.owner,b.hold!,target); }
+  catch { fail("ERASURE_SANITATION_REQUIRED"); }
+  assertMaintenance(run,repository);
 }
 export function assertMaintenance(run: MaintenanceRun, repository: ApplicationRepository, phase: "scalar" | "journal" | "filesystem" = "scalar"): void {
   const r = current(run, repository); held(r.binding);

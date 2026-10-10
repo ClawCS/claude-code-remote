@@ -32,8 +32,15 @@ export interface PhysicalVerifier {
   readonly maximumItems: number;
   verify(commit: string, run: MaintenanceRun): Promise<Readonly<{ proof: PhysicalCompletion; consumedItems: number }>>;
   consume(proof: PhysicalCompletion, commit: string, run: MaintenanceRun): number;
+  readonly inspectionMaximum: number;
+  inspect(commit: string, run: MaintenanceRun): Promise<Readonly<{ proof: PhysicalCompletion | null; consumedItems: number }>>;
+  consumeInspection(proof: PhysicalCompletion, commit: string, run: MaintenanceRun): number;
 }
-interface AcceptedAuthority { resolve(commit: string): ErasureWork; guard(id: ApplicationId): object; registerPhysicalVerifier(verifier: PhysicalVerifier): void }
+interface AcceptedAuthority {
+  resolve(commit: string): ErasureWork; guard(id: ApplicationId): object;
+  matchesReservation(work: ErasureWork, identity: {sessionHash: string; idempotencyKey: string}): boolean;
+  registerPhysicalVerifier(verifier: PhysicalVerifier): void;
+}
 export interface SafetyCarry {eventId:string;caseId:string;source:"lifecycle"|"mailbox";event:string;phase:"proposed"|"acknowledged";entry:string|null;head:string|null;coveringCommit:string}
 const journalFields="pass journalId caseId kind version state artifactKind budget cleanupAfter reservationId generation domain allowance";
 const objectFields="pass journalId slot leaf root presence device inode size type uid gid mode nlink leaseState chargedBytes leaseDevice leaseInode";
@@ -557,6 +564,63 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     const scope = acceptedScope(commit, run);
     return { pass: pass(), fingerprint: scope.fingerprint, guard: acceptedAuthority!.guard(scope.work.caseId), consumedItems: 32 };
   }
+  function inspectionWork(commit: string, run: MaintenanceRun) {
+    assertMaintenanceCustodyIdentity(run, repository, custody); assertMaintenance(run, repository);
+    if (!acceptedAuthority) inventoryInvalid();
+    const work = acceptedAuthority.resolve(commit), guard = acceptedAuthority.guard(work.caseId);
+    selectMaintenance(run, repository, `case:${work.caseId}`);
+    const linked = (scope: EraseScope) => {
+      const row = db.prepare("SELECT eventId,committed FROM erasure_scopes WHERE caseId=? AND scope=?").get(work.caseId, scope) as { eventId: string; committed: number } | undefined;
+      if (!row) return null;
+      if (row.committed !== 1) inventoryInvalid();
+      const value = acceptedAuthority!.resolve(row.eventId);
+      if (value.scope !== scope || ["caseId","ledgerId","historyEpoch","associationKeyId","replayAssociation"].some(key => value[key as keyof ErasureWork] !== work[key as keyof ErasureWork])) inventoryInvalid();
+      return value;
+    };
+    const rowOnly = work.scope === "processing_contact" || work.scope === "public_token";
+    const covering = work.scope === "incident_identity" ? linked("processing_payload") ?? linked("identifying_register") : null;
+    if (work.scope === "incident_identity" && (!covering || covering.stage !== "locally-complete")) throw new Error("ERASURE_PAYLOAD_COVERAGE_REQUIRED");
+    const physical = covering ?? work;
+    const predecessor = physical.scope === "identifying_register" ? linked("processing_payload") : null;
+    if (predecessor && BigInt(predecessor.sequence) >= BigInt(physical.sequence)) inventoryInvalid();
+    const source = db.prepare("SELECT reservationId,sessionHash,idempotencyKey,submission,encryptedPayloadPath,payloadBytes,claimToken,claimOwner,claimedAt,claimKind FROM cases WHERE id=?").get(work.caseId) as { reservationId: string; sessionHash: string; idempotencyKey: string; submission: string; encryptedPayloadPath: string | null; payloadBytes: number; claimToken: string | null; claimOwner: string | null; claimedAt: string | null; claimKind: string | null } | undefined;
+    if (source && [source.claimToken,source.claimOwner,source.claimedAt,source.claimKind].some(value => value !== null)) throw new Error("ERASURE_CLAIM_ACTIVE");
+    let reduced = !source;
+    let identity: ErasureWork | null = null;
+    if (source) {
+      const reservation = db.prepare("SELECT sessionHash,idempotencyKey,submission,active FROM reservations WHERE id=?").get(source.reservationId) as { sessionHash: string; idempotencyKey: string; submission: string; active: number } | undefined;
+      if (!reservation || reservation.active !== 0 || reservation.sessionHash !== source.sessionHash || reservation.idempotencyKey !== source.idempotencyKey || reservation.submission !== source.submission) inventoryInvalid();
+      const artifact = db.prepare("SELECT 1 FROM artifacts WHERE caseId=? LIMIT 1").get(work.caseId);
+      const reserved = db.prepare("SELECT 1 FROM artifact_reservations WHERE caseId=? LIMIT 1").get(work.caseId);
+      reduced = source.encryptedPayloadPath === null && source.payloadBytes === 0 && !artifact && !reserved;
+    } else if (!rowOnly) {
+      identity = linked("identifying_register") ?? linked("incident_identity");
+      if (!identity) inventoryInvalid();
+      if (identity.scope === "incident_identity") {
+        const payload = linked("processing_payload");
+        if (!payload || payload.commitEventId !== physical.commitEventId || payload.stage !== "locally-complete") inventoryInvalid();
+      }
+    } else inventoryInvalid();
+    // Once the real source is reduced the old physical traversal has no more
+    // execution purpose. Do not retain its last journal/leaf as a shadow copy
+    // after normalized ownership metadata is retired. Recovery reselects.
+    if(reduced && continuation?.commit===physical.commitEventId)continuation=undefined;
+    return { work, physical, predecessor, rowOnly, reduced, reservationId: source?.reservationId ?? null, pass: pass(), guard,
+      fingerprint: JSON.stringify([work,covering,predecessor,identity,source ?? null]), consumedItems: 64 };
+  }
+  function inspectionObject(key: readonly [string,string,string,string], caseId: ApplicationId) {
+    const object = db.prepare("SELECT * FROM erasure_inventory_objects WHERE (pass,journalId,slot,leaf)>(?,?,?,?) ORDER BY pass,journalId,slot,leaf LIMIT 1").get(...key) as InventoryObject | undefined;
+    if (!object) return { next: null, value: null, consumedItems: 2 };
+    const journal = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(object.pass,object.journalId) as InventoryJournal | undefined;
+    if (!journal) inventoryInvalid();
+    return { next: [object.pass,object.journalId,object.slot,object.leaf] as [string,string,string,string], value: journal.caseId === caseId ? operands(journal,object,null) : null, consumedItems: 8 };
+  }
+  function inspectionReservation(key: string, work: ErasureWork) {
+    acceptedAuthority!.guard(work.caseId);
+    const row=db.prepare("SELECT id,sessionHash,idempotencyKey FROM reservations WHERE id>? ORDER BY id LIMIT 1").get(key) as {id:string;sessionHash:string;idempotencyKey:string}|undefined;
+    if(row && acceptedAuthority!.matchesReservation(work,row))inventoryInvalid();
+    return {next:row?.id??null,consumedItems:6};
+  }
   function restartAccepted(commit: string, run: MaintenanceRun) { acceptedScope(commit, run); continuation = undefined; return 31; }
   function isInitialZero(key: AcceptedCandidate, run: MaintenanceRun) {
     const value = accepted.get(key); if (!value || value.run !== run || !value.manifest) inventoryInvalid();
@@ -569,7 +633,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     if ((value.manifest.remainingCharge > 0 || isInitialZero(key, run)) && sourceCharge(value) !== value.manifest.remainingCharge) inventoryInvalid();
     return 85; // Both authorities and current-pass retained-identity exclusion.
   }
-  return Object.freeze({ pass, record: recordObservation, invalidate, nextRecovery, recordRecovery, recoveredEntry, recoveryReady: () => recoveryComplete, nextAccepted, readAccepted, planAccepted, rebindAccepted, advanceAccepted, directoryCompanions, absentParent, bindPhysicalVerifier, verifyCompletionWork, restartAccepted, isInitialZero, checkAcceptedSource });
+  return Object.freeze({ pass, record: recordObservation, invalidate, nextRecovery, recordRecovery, recoveredEntry, recoveryReady: () => recoveryComplete, nextAccepted, readAccepted, planAccepted, rebindAccepted, advanceAccepted, directoryCompanions, absentParent, bindPhysicalVerifier, verifyCompletionWork, inspectionWork, inspectionObject, inspectionReservation, restartAccepted, isInitialZero, checkAcceptedSource });
 }
 interface ReservationSource { id: string; sessionHash: string; idempotencyKey: string; reservedBytes: number; expiresAt: string; submission: string }
 

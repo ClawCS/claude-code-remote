@@ -534,10 +534,29 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     },
   }, config);
   const cleanupSource = bindCleanupSource(repo, ledger, config);
+  let copyInspection: { caseId: ApplicationId; reservationId: string | null; revision: number; entries: MapIterator<Journal>; owners: SetIterator<string>; entriesDone: boolean; complete: boolean } | undefined;
   const scanResources = bindCustodyErasure(ledger, repo, config, { exclusive, track, decodeJournal, ingress: acceptedIngress,
     cleanupDependency: id => entries.has(id) || intakeOwners.has(id) || handles.size !== 0 || unresolvedReleases.size !== 0 || processingOwners.size !== 0 || processingLifetimes.size !== 0,
     privateRevision: () => privateRevision,
     privateReady: () => handles.size === 0 && unresolvedReleases.size === 0 && processingOwners.size === 0 && processingLifetimes.size === 0,
+    inspectCopies(caseId,reservationId) {
+      if (!copyInspection || copyInspection.caseId !== caseId || copyInspection.reservationId !== reservationId || copyInspection.revision !== privateRevision) copyInspection = {caseId,reservationId,revision:privateRevision,entries:entries.values(),owners:intakeOwners.values(),entriesDone:false,complete:false};
+      let consumedItems = 1;
+      for (let n=0;n<20&&!copyInspection.complete;n++) {
+        consumedItems += 2;
+        if (!copyInspection.entriesDone) {
+          const next = copyInspection.entries.next();
+          if (next.done) { copyInspection.entriesDone = true; continue; }
+          if (next.value.caseId === caseId || next.value.id === reservationId) throw new Error("ERASURE_OWNERSHIP_INVALID");
+        } else {
+          const next = copyInspection.owners.next();
+          if (next.done) { copyInspection.complete = true; continue; }
+          const entry = entries.get(next.value); consumedItems++;
+          if (!entry || entry.caseId === caseId || entry.id === reservationId) throw new Error("ERASURE_OWNERSHIP_INVALID");
+        }
+      }
+      return {complete:copyInspection.complete,consumedItems};
+    },
     async forget(journal) {
       const entry = entries.get(journal.journalId);
       if (processingOwners.has(join(config.runtimeRoot, journal.journalId)) || processingLifetimes.has(join(config.runtimeRoot, journal.journalId))) throw new Error("CUSTODY_SCOPE_ACTIVE");
