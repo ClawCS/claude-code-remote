@@ -123,7 +123,9 @@ git archive --format=tar.gz --output="$ARCHIVE" "$RELEASE_ID" -- \
   postcss.config.mjs eslint.config.mjs vitest.config.mts playwright.config.ts \
   app components config context data lib public scripts e2e deploy docs patches services/applications \
   assets/fonts assets/source/market-photos assets/source/google-market-photos assets/source/team-photos-safe \
-  assets/source/preislisten assets/source/contact-brands assets/source/user-market-photos
+  assets/source/preislisten assets/source/contact-brands assets/source/user-market-photos \
+  assets/source/hero-film/provenance.json assets/source/eigenmarken-bottles/provenance.json \
+  assets/source/eigenmarken-scenes/provenance.json
 tar -tzf "$ARCHIVE"
 shasum -a 256 "$ARCHIVE"
 ```
@@ -143,7 +145,9 @@ export NODE_ENV=production RENTAL_MODE=disabled NEXT_TELEMETRY_DISABLED=1
 node --version
 npm ci --include=dev --ignore-scripts
 npm run applications:imap-patch
-NODE_ENV=test npm test -- lib/ --maxWorkers=2
+NODE_ENV=test npm test -- lib/ --maxWorkers=2 \
+  --exclude lib/cinematic/__tests__/hero-film.test.tsx \
+  --exclude lib/cinematic/__tests__/own-brand-stage.test.tsx
 npm run lint -- --quiet
 npx next typegen
 npx tsc --noEmit
@@ -152,6 +156,10 @@ npm run build
 ```
 
 Nur der Unit-Testprozess erhält `NODE_ENV=test`, damit ausdrücklich markierte Datumsfixtures funktionieren. Build und Website bleiben im Produktionsmodus; dort werden Testuhren bewusst ignoriert. Nicht den Produktionsschutz abschalten, um Datums-Tests zu erzwingen.
+
+**Explizite Browser-/Server-Aufteilung ab dem filmischen Release:** Die beiden oben exakt genannten Testdateien starten einen Chromium-Browser. Die bestehende VM hat weder diesen Browser noch seine Systembibliotheken; für einen Website-Release werden keine zusätzlichen GUI-Pakete oder Sicherheitskonfigurationen installiert. Beide Dateien müssen vor Veröffentlichung in echtem lokalem Chromium vollständig bestehen, zusammen mit der vollständigen lokalen Web-Suite (`NODE_ENV=test npx vitest run lib app --exclude 'services/**'`). Der Ausschluss ist ausdrücklich nötig: Vitest behandelt `app` als Teilzeichenfolge und würde sonst auch die getrennten nativen `services/applications`-Tests starten. Alle übrigen `lib/`-Tests laufen zusätzlich auf Linux; anschließend echte öffentliche Browserprüfung für Abspielen/Pausieren, mobile Quelle, sechs Originalflaschen, Fokus und Reduced-motion. Die Aufteilung und tatsächlichen Ergebnisse im Releasebericht nennen, **niemals als vollständigen Linux-Alltests-Pass darstellen**. Keine weiteren Dateien still ausschließen. Ein reproduzierbarer Film-/Bühnenfehler bleibt eine Veröffentlichungssperre; die bekannte fehlende native Bewerbungsqualifikation bleibt getrennt.
+
+Die drei zusätzlichen Provenienz-JSONs gehören zum geprüften Quellpaket. Die zugehörigen fertigen öffentlichen Film-/Bilddateien einschließlich getesteter historischer Filmversionen sind bereits über `public` enthalten. Private Film-/Generatororiginale werden nicht mitgepackt; auf Linux ist keine neue Videoerzeugung erforderlich.
 
 Keine Mac-`node_modules` oder ungeprüfte Mac-`.next` hochladen: Sharp und SWC haben Linux-native Bestandteile. Der Build lädt die Schriften über `next/font/google` und benötigt Internetzugang. Der Prebuild prüft Quellen/Derivate und erstellt den historischen Manifest-Stub; keine privaten Originale nachfordern, um diese Kontrolle zu umgehen. Build/Test dürfen den laufenden Release nie verändern. Bei knappen 4 GB RAM nicht mehrere Builds gleichzeitig ausführen; Speicherfehler zuerst belegen, nicht die Inhaltsprüfung deaktivieren.
 
