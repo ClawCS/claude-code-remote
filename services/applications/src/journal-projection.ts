@@ -5,6 +5,16 @@ import { applicationId, type JournalCheckpoint, type JournalEvent, type JournalF
 
 interface State extends JournalCheckpoint { pass: string; ledgerId: string; historyEpoch: string }
 interface Fact { eventId: string; sequence: string; entryHash: string; event: string }
+// Closed maintenance replay accounting. The largest branch (identifying
+// erase_commit) has at most 24 SQL operations, each examining/mutating at most
+// one indexed row, plus transaction begin/commit and stream/verification work.
+// 64 precharged items per entry covers every branch, including duplicate replay.
+// Changing the projection's bounded query shape requires revisiting this bound.
+export const JOURNAL_PROJECTION_ENTRY_MAXIMUM = 64;
+const barrierCredits = new WeakMap<JournalSafetyProjection, () => number>();
+export function originalProjectionBarrierCredits(projection: JournalSafetyProjection): number {
+  const read = barrierCredits.get(projection); if (!read) fail(); return read();
+}
 function fail(): never { throw new Error("JOURNAL_PROJECTION_UNAVAILABLE"); }
 const sameHead = (a: JournalCheckpoint, b: JournalCheckpoint) => a.sequence === b.sequence && a.hash === b.hash && a.cursor === b.cursor && a.observedAt === b.observedAt;
 
@@ -12,6 +22,7 @@ const sameHead = (a: JournalCheckpoint, b: JournalCheckpoint) => a.sequence === 
  * business writes, network calls or restored-current shortcut are permitted. */
 export function createJournalProjection(db: Database.Database): JournalSafetyProjection {
   const pass = randomBytes(16).toString("hex"); let begun = false;
+  let verifiedBarrierWrites = 0;
   function state(): State {
     const value = db.prepare("SELECT * FROM journal_projection WHERE singleton=1 AND pass=?").get(pass) as State | undefined;
     if (!begun || !value) fail(); return value;
@@ -33,7 +44,7 @@ export function createJournalProjection(db: Database.Database): JournalSafetyPro
     const p = event[4], fence = latest(p[0]);
     if (p[2] === "initial" ? fence !== null : fence?.eventId !== p[3]) fail();
   }
-  return Object.freeze<JournalSafetyProjection>({
+  const projection = Object.freeze<JournalSafetyProjection>({
     beginProjection(anchor) {
       if (begun) fail(); begun = true;
       // A non-genesis anchor cannot authenticate the prior current-case base.
@@ -43,6 +54,8 @@ export function createJournalProjection(db: Database.Database): JournalSafetyPro
       db.prepare("INSERT INTO journal_projection(singleton,pass,ledgerId,historyEpoch,sequence,hash,observedAt,cursor) VALUES(1,?,?,?,'0',?,NULL,?) ON CONFLICT(singleton) DO UPDATE SET pass=excluded.pass,ledgerId=excluded.ledgerId,historyEpoch=excluded.historyEpoch,sequence=excluded.sequence,hash=excluded.hash,observedAt=NULL,cursor=excluded.cursor").run(pass, cursor[1], cursor[2], cursor[4], anchor.cursor);
     },
     applyVerifiedEntry(previous, entry) {
+      const barrier = entry.event[3] === "barrier";
+      const before = barrier ? (db.prepare("SELECT total_changes() AS value").get() as { value: number }).value : 0;
       db.transaction(() => {
         const current = state(), event = decodeJournalEvent(encodeJournalEvent(entry.event)), wire = encodeJournalEvent(event);
         if (entry.sequence !== String(BigInt(previous.sequence) + BigInt(1)) || JSON.parse(entry.cursor)[1] !== current.ledgerId || JSON.parse(entry.cursor)[2] !== current.historyEpoch) fail();
@@ -96,10 +109,20 @@ export function createJournalProjection(db: Database.Database): JournalSafetyPro
         db.prepare("INSERT INTO journal_facts(pass,eventId,sequence,entryHash,event,caseId,kind,resultFor) VALUES(?,?,?,?,?,?,?,?)").run(pass, event[1], entry.sequence, entry.hash, wire, caseId, event[3], resultFor);
         db.prepare("UPDATE journal_projection SET sequence=?,hash=?,observedAt=?,cursor=? WHERE singleton=1 AND pass=?").run(entry.sequence, entry.hash, entry.observedAt, entry.cursor, pass);
       }).immediate();
+      if (barrier) {
+        const writes = (db.prepare("SELECT total_changes() AS value").get() as { value: number }).value - before;
+        // Synchronous exact original transaction only: duplicate replay writes
+        // zero; a new verified barrier inserts one fact and updates one head.
+        // A trigger/reentrant/non-barrier side effect is never discounted.
+        if (writes !== 0 && writes !== 2) fail();
+        verifiedBarrierWrites += writes;
+      }
     },
     readCaseAuthority(caseId, expectedAppliedHead) {
       applicationId(caseId); if (!sameHead(state(), expectedAppliedHead)) fail();
       const fact = latest(caseId); return fact === null ? null : Object.freeze({ ...fact });
     },
   });
+  barrierCredits.set(projection, () => verifiedBarrierWrites);
+  return projection;
 }

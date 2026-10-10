@@ -5,12 +5,13 @@ import type { ApplicationRepository, CustodyConfig, CustodyLedger } from "./type
 import type { AcceptedHooks } from "./custody-accepted-erasure";
 import type { CustodyObservation, Observation } from "./custody-erasure";
 import { cleanupSourceOwner, type CleanupCandidate, type CleanupOperands } from "./cleanup-storage";
+import type { InventoryJournal } from "./erasure-storage";
 import { createPhysicalResources, type PhysicalIO } from "./custody-physical-resources";
 import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, type MaintenanceRun } from "./worker-maintenance";
 
 interface Composition {
   custody: CustodyLedger; repository: ApplicationRepository; config: CustodyConfig;
-  hooks: AcceptedHooks & { cleanupDependency(id: string): boolean };
+  hooks: AcceptedHooks & { cleanupDependency(id: string): boolean; duplicateInventoryDependency(journal:Readonly<InventoryJournal>,pass:string): {blocked:boolean;consumedItems:number} };
   ancestryMaximum: number;
   coverage(run: MaintenanceRun, io: PhysicalIO): Promise<string>;
   remove(candidate: CleanupCandidate, run: MaintenanceRun, io: PhysicalIO): Promise<void>;
@@ -125,8 +126,9 @@ export function createNeverAcceptedErasure(c: Composition) {
     assertMaintenanceCustodyIdentity(run, c.repository, c.custody); assertMaintenanceSettled(run, c.repository);
     if (!idle()) throw new Error("MAINTENANCE_WORK_ACTIVE");
     // Two fixed source/dependency sweeps40+50, three root/hold coverage sweeps,
-    // observe/validation2 and original private point checks, fairness included.
-    const maximum = 105 + 3 * c.ancestryMaximum;
+    // observe/validation2 and original private point checks, fairness included;
+    // two duplicate-only current private observation checks reserve12 each.
+    const maximum = 129 + 3 * c.ancestryMaximum;
     if (maximum > 1000) throw new Error("MAINTENANCE_BUDGET_INSUFFICIENT");
     return c.hooks.track(async () => {
       active = true; let examined = 0, removed = 0, consumedItems = 0;
@@ -135,9 +137,14 @@ export function createNeverAcceptedErasure(c: Composition) {
           const result = await maintenanceCommand(run, c.repository, maximum, "filesystem", () => c.hooks.exclusive(async () => {
             let used = 0; const io: PhysicalIO = async action => { used++; return action(); };
             const pass = await c.coverage(run, io), selected = storage.selectPrune(run); used += selected.consumedItems;
+            const dependent=()=>{
+              if(!selected.journal)return false;
+              if(selected.kind!=="duplicate")return c.hooks.cleanupDependency(selected.journal.journalId);
+              const result=c.hooks.duplicateInventoryDependency(selected.journal,pass);used+=result.consumedItems;return result.blocked;
+            };
             let kind: "cleanup-prune-released" | "cleanup-prune-duplicate" | "cleanup-prune-blocked" | "cleanup-prune-scan" = "cleanup-prune-blocked";
             if (selected.kind === "scan") kind = "cleanup-prune-scan";
-            if (selected.journal && !c.hooks.cleanupDependency(selected.journal.journalId)) {
+            if (selected.journal && !dependent()) {
               used++;
               if (selected.kind === "duplicate") kind = "cleanup-prune-duplicate";
               else if (selected.kind === "released-intake") {
@@ -148,7 +155,7 @@ export function createNeverAcceptedErasure(c: Composition) {
               }
             }
             await c.coverage(run, io);
-            if (selected.journal && c.hooks.cleanupDependency(selected.journal.journalId)) kind = "cleanup-prune-blocked";
+            if (selected.journal && dependent()) kind = "cleanup-prune-blocked";
             used++;
             const result = storage.prune(c.mint(run, { kind, pass, candidate: selected.candidate }), run); used += result.consumedItems;
             return { value: { examined: selected.examined, removed: result.removed }, consumedItems: used };

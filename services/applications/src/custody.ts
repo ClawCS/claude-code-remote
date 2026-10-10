@@ -516,6 +516,10 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   };
   registerMaintenanceCustody(ledger, repo, config.clock, {
     inhibit() { inhibited = true; },
+    ordinaryReady: () => ready && reconciled && !ingressBlocked && lifetimes.size === 0 && processingOwners.size === 0 && handles.size === 0 && unresolvedReleases.size === 0 && scanResources.closeReady(),
+    reopen() { inhibited = false; },
+    releaseReady: () => scanResources.releaseReady(),
+    finishForDrain: run => scanResources.finishForDrain(run),
     async settle() {
       while (lifetimes.size || processingLifetimes.size) await Promise.allSettled([...lifetimes, ...[...processingLifetimes.values()].map(scope => scope.done)]);
       await queue;
@@ -534,9 +538,58 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     },
   }, config);
   const cleanupSource = bindCleanupSource(repo, ledger, config);
+  const hydratedPass = new WeakMap<Journal,string>();
+  const scannerOnly = new WeakSet<Journal>();
+  let accountingCopies: { pass: string; revision: number; entries: MapIterator<Journal>; owners: SetIterator<string>; entriesDone: boolean; complete: boolean } | undefined;
   let copyInspection: { caseId: ApplicationId; reservationId: string | null; revision: number; entries: MapIterator<Journal>; owners: SetIterator<string>; entriesDone: boolean; complete: boolean } | undefined;
   const scanResources = bindCustodyErasure(ledger, repo, config, { exclusive, track, decodeJournal, ingress: acceptedIngress,
+    resetAccounting() { ready = false; reconciled = false; accountingCopies = undefined; },
+    hydrate(entry,caseId,pass) {
+      const previous = entries.get(entry.id);
+      if (previous && (previous.kind !== entry.kind || previous.path !== entry.path || previous.budget !== entry.budget || previous.lease?.generation !== entry.lease?.generation || previous.lease?.domain !== entry.lease?.domain)) throw new Error("ERASURE_ASSOCIATION_INVALID");
+      const observed: Journal = caseId && entry.kind === "intake" ? {...entry,caseId:applicationId(caseId),state:"committed"} : entry;
+      // Native recovery of an absent private entry is distinct from replacing
+      // an ordinary owner. Repeated hydration cannot promote the latter.
+      if(!previous||scannerOnly.has(previous))scannerOnly.add(observed);
+      entries.set(entry.id,observed); hydratedPass.set(observed,pass); privateRevision++;
+      return 6;
+    },
+    accountJournal(journal,pass) {
+      const entry = entries.get(journal.journalId);
+      if (!entry || hydratedPass.get(entry) !== pass || entry.kind !== journal.kind || (entry.caseId ?? null) !== journal.caseId || entry.budget !== journal.budget || (entry.lease?.generation ?? null) !== journal.generation || (entry.lease?.domain ?? null) !== journal.domain) throw new Error("CUSTODY_ACCOUNTING_FAILED");
+      return 4;
+    },
+    finishAccounting(pass) {
+      if (handles.size || unresolvedReleases.size || processingOwners.size || processingLifetimes.size || ingressBlocked) throw new Error("CUSTODY_RELEASE_UNCERTAIN");
+      if (!accountingCopies || accountingCopies.pass !== pass || accountingCopies.revision !== privateRevision) accountingCopies = {pass,revision:privateRevision,entries:entries.values(),owners:intakeOwners.values(),entriesDone:false,complete:false};
+      let consumedItems = 1;
+      for (let n=0;n<20&&!accountingCopies.complete;n++) {
+        consumedItems += 3;
+        if (!accountingCopies.entriesDone) {
+          const next = accountingCopies.entries.next();
+          if (next.done) { accountingCopies.entriesDone = true; continue; }
+          if (hydratedPass.get(next.value) !== pass || next.value.kind === "processing" || next.value.state === "orphan" || next.value.settlement && next.value.release !== "released") throw new Error("CUSTODY_ACCOUNTING_FAILED");
+        } else {
+          const next = accountingCopies.owners.next();
+          if (next.done) { accountingCopies.complete = true; continue; }
+          const entry = entries.get(next.value);
+          if (!entry || hydratedPass.get(entry) !== pass || entry.release !== "released") throw new Error("CUSTODY_ACCOUNTING_FAILED");
+          intakeOwners.delete(next.value);
+        }
+      }
+      if (accountingCopies.complete) { reconciled = true; ready = true; }
+      return {complete:accountingCopies.complete,consumedItems};
+    },
     cleanupDependency: id => entries.has(id) || intakeOwners.has(id) || handles.size !== 0 || unresolvedReleases.size !== 0 || processingOwners.size !== 0 || processingLifetimes.size !== 0,
+    duplicateInventoryDependency(journal,pass) {
+      const entry=entries.get(journal.journalId);
+      const blocked=!entry||!scannerOnly.has(entry)||hydratedPass.get(entry)!==pass||intakeOwners.has(journal.journalId)||handles.size!==0||unresolvedReleases.size!==0||processingOwners.size!==0||processingLifetimes.size!==0||ingressBlocked
+        ||entry.id!==journal.journalId||entry.kind!==journal.kind||(entry.caseId??null)!==journal.caseId||entry.version!==journal.version||entry.state!==journal.state
+        ||(entry.artifactKind??null)!==journal.artifactKind||entry.budget!==journal.budget||entry.cleanupAfter!==journal.cleanupAfter||(entry.reservation?.id??null)!==journal.reservationId
+        ||(entry.lease?.generation??null)!==journal.generation||(entry.lease?.domain??null)!==journal.domain||(entry.lease?.allowance??null)!==journal.allowance
+        ||entry.path!==ownedPath(entry)||(entry.kind==="intake"&&entry.workerPath!==join(config.custodyRoot,`${entry.id}.enc`))||(entry.kind==="artifact"&&entry.workerPath!==join(config.custodyRoot,`${entry.id}.${entry.artifactKind}.enc`));
+      return {blocked,consumedItems:12};
+    },
     privateRevision: () => privateRevision,
     privateReady: () => handles.size === 0 && unresolvedReleases.size === 0 && processingOwners.size === 0 && processingLifetimes.size === 0,
     inspectCopies(caseId,reservationId) {

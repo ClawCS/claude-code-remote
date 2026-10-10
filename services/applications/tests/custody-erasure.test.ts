@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import Database from "better-sqlite3";
 import { copyFile, lstat, readdir, readFile, rm, writeFile, rename, mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+import { sealContact } from "../src/contact-crypto";
 import * as fs from "node:fs/promises";
 import type { Dir } from "node:fs";
 import { maintenanceFixture, deferred } from "./fixtures/maintenance";
@@ -53,6 +54,92 @@ async function setup(startup?: "ordinary" | "cold-maintenance") {
   const f = await maintenanceFixture(startup); fixtures.push(f);
   return { ...f, db: connections.all.at(-1)! };
 }
+it("requires new native enumeration after a closed invalidated pass and does not reuse prior EOF", async () => {
+  const f = await setup(); bindMaintenance(f.owner, f.services, f.monotonicNow);
+  const scanner = custodyErasureOwner(f.owner.custody);
+  let run = await beginMaintenance(f.owner);
+  for (let i = 0; !(await scanner.scanBatch(run)).complete; i++) {
+    expect(i).toBeLessThan(10); await settleMaintenance(f.owner); run = await beginMaintenance(f.owner);
+  }
+  const previous = f.db.prepare("SELECT scanPass FROM erasure_maintenance").get() as { scanPass: string };
+  await settleMaintenance(f.owner); run = await beginMaintenance(f.owner);
+  await scanner.invalidateAndClose(run);
+  await settleMaintenance(f.owner); run = await beginMaintenance(f.owner);
+  await scanner.startFreshPass(run);
+  expect((f.db.prepare("SELECT scanPass FROM erasure_maintenance").get() as { scanPass: string }).scanPass).not.toBe(previous.scanPass);
+  await writeFile(join(f.config.runtimeRoot, "unknown-native-copy"), "not inventoried", { mode: 0o600 });
+  await expect(scanner.scanBatch(run)).rejects.toThrow();
+  expect(f.owner.custody.getIntakeReadiness().ready).toBe(false);
+});
+it("rejects accounting from a modified database after the original physical EOF", async () => {
+  const f=await setup(); await f.accept(); bindMaintenance(f.owner,f.services,f.monotonicNow);
+  const scanner=custodyErasureOwner(f.owner.custody);
+  for(let n=0;n<50;n++){const run=await beginMaintenance(f.owner);const result=await scanner.scanBatch(run);await settleMaintenance(f.owner);if(result.complete)break;}
+  f.db.prepare("UPDATE erasure_inventory_objects SET size=size+1 WHERE slot='original-sealed'").run();
+  const run=await beginMaintenance(f.owner);
+  await expect(scanner.accountBatch(run)).rejects.toThrow();
+});
+it("uses the remaining original allowance to finish empty current-pass accounting in one bounded call",async()=>{
+  const f=await setup();bindMaintenance(f.owner,f.services,f.monotonicNow);await scanAll(f.owner);
+  const run=await beginMaintenance(f.owner);
+  const result=await custodyErasureOwner(f.owner.custody).accountBatch(run);
+  expect(result.complete).toBe(true);
+  expect(result.consumedItems).toBeGreaterThan(0);expect(result.consumedItems).toBeLessThanOrEqual(1000);
+});
+it("does not refresh changed dedicated-root topology within the same original hold", async () => {
+  const f=await setup(); bindMaintenance(f.owner,f.services,f.monotonicNow);
+  const scanner=custodyErasureOwner(f.owner.custody);
+  for(let n=0;n<50;n++){const run=await beginMaintenance(f.owner);const result=await scanner.scanBatch(run);await settleMaintenance(f.owner);if(result.complete)break;}
+  let run=await beginMaintenance(f.owner); await scanner.invalidateAndClose(run); await settleMaintenance(f.owner);
+  await mkdir(join(f.config.runtimeRoot,"foreign-topology"),{mode:0o700});
+  run=await beginMaintenance(f.owner);
+  await expect(scanner.startFreshPass(run)).rejects.toThrow("ERASURE_ROOT_CHANGED");
+});
+it.each([false,true])("accounts a large real current-pass inventory in bounded scalar continuations (over quota=%s)", async overQuota => {
+  const f=await setup(), accepted=await f.accept(), count=overQuota?13:1001;
+  for(let n=0;n<count;n++) {
+    const id=randomUUID(), path=join(f.config.custodyRoot,`${id}.bundle.staging`);
+    const entry={version:1,id,kind:"artifact",state:"reserved",path,workerPath:join(f.config.custodyRoot,`${id}.bundle.enc`),budget:10*1024*1024,cleanupAfter:"2026-10-11T12:00:00.000Z",caseId:accepted.accepted.id,artifactKind:"bundle"};
+    await writeFile(join(f.config.custodyRoot,`${id}.journal`),JSON.stringify(entry),{mode:0o600});
+    if(overQuota){const fd=await fs.open(path,"wx",0o600);try{await fd.truncate(10*1024*1024);}finally{await fd.close();}}
+  }
+  bindMaintenance(f.owner,f.services,f.monotonicNow);const scanner=custodyErasureOwner(f.owner.custody);
+  let complete=false;
+  for(let n=0;n<2000&&!complete;n++){const run=await beginMaintenance(f.owner);const result=await scanner.scanBatch(run);complete=result.complete;expect(result.consumedItems).toBeLessThanOrEqual(1000);await settleMaintenance(f.owner);}
+  expect(complete).toBe(true); complete=false;let calls=0,denied=false,total=0;
+  // Objects + journals + both case-reservation journal streams + bounded
+  // private entries need fewer than five steps per seeded journal, plus EOFs.
+  for(;calls<count*5+100&&!complete&&!denied;calls++) {
+    const run=await beginMaintenance(f.owner);
+    try{const result=await scanner.accountBatch(run);complete=result.complete;total+=result.consumedItems;expect(result.consumedItems).toBeLessThanOrEqual(1000);expect(maintenanceSnapshot(f.owner).selectedCount).toBeLessThanOrEqual(20);}
+    catch(error){expect(overQuota).toBe(true);expect((error as Error).message).toBe("MAINTENANCE_COMMAND_FAILED");denied=true;}
+    finally{await settleMaintenance(f.owner);}
+  }
+  expect(denied).toBe(overQuota);expect(complete).toBe(!overQuota);
+  if(!overQuota){expect(calls).toBeGreaterThan(1);expect(total).toBeGreaterThan(1000);}
+},30000);
+it.each(["none","null-positive","path-zero","native-size","inventory-size","binding"] as const)("erases an original retained after actual logical retirement without accepting changed sources (%s)",async defect=>{
+  const f=await setup(), accepted=await f.accept(), repo=f.owner.repository, now=utcInstant(f.owner.clock.now().toISOString());
+  const claim=repo.claimDispatchWork("synthetic-retirement",now,"prepare")!;
+  const id=randomUUID(),path=join(f.config.custodyRoot,`${id}.bundle.enc`),bytes=Buffer.from("synthetic verified bundle");
+  await writeFile(path,bytes,{mode:0o600});
+  const adopted=await repo.adoptArtifact({caseId:accepted.accepted.id,kind:"bundle",path,bytes:bytes.length,plaintextDigest:digest("1".repeat(64)),ciphertextDigest:digest(createHash("sha256").update(bytes).digest("hex")),expiresAt:utcInstant("2026-10-17T12:00:00.000Z")},claim.case.version);
+  await writeFile(join(f.config.custodyRoot,`${id}.journal`),JSON.stringify({version:3,id,kind:"artifact",artifactKind:"bundle",state:"committed",path:join(f.config.custodyRoot,`${id}.bundle.staging`),workerPath:path,budget:bytes.length,cleanupAfter:"2026-10-17T12:00:00.000Z",caseId:accepted.accepted.id}),{mode:0o600});
+  const contact=await repo.storeContact({id:adopted.id,version:adopted.version,token:adopted.claimToken!},sealContact("synthetic@example.invalid",{caseId:adopted.id,acceptedAt:now,version:1},accepted.keys.publicKey),accepted.keys.privateKey,now);
+  const retired=await repo.retireOriginal(adopted.id,contact.case.version);
+  await repo.releaseDeliveryClaim({id:retired.id,version:retired.version,token:retired.claimToken!},now);
+  expect(repo.getCommittedIntake(retired.id)).toBeNull();expect((await lstat(accepted.record.encryptedPayloadPath)).size).toBe(accepted.record.actualBytes);
+  f.advance(7*86400000);await refreshTestRepository(repo);const erasure=erasureOwner(repo);
+  const event=await repo.withCaseLock(retired.id,async()=>{const event=erasure.prepareCommit(retired.id,"processing_payload");erasure.acknowledge(event,await erasure.journal!.append(event));return event;});
+  if(defect==="null-positive")f.db.prepare("UPDATE cases SET payloadBytes=1 WHERE id=?").run(retired.id);
+  if(defect==="path-zero")f.db.prepare("UPDATE cases SET encryptedPayloadPath=? WHERE id=?").run(accepted.record.encryptedPayloadPath,retired.id);
+  bindMaintenance(f.owner,f.services,f.monotonicNow);await scanAll(f.owner);
+  if(defect==="native-size")await fs.truncate(accepted.record.encryptedPayloadPath,accepted.record.actualBytes+1);
+  if(defect==="inventory-size")f.db.prepare("UPDATE erasure_inventory_objects SET size=size+1 WHERE slot='original-sealed'").run();
+  if(defect==="binding")f.db.prepare("UPDATE cases SET sessionHash=? WHERE id=?").run("f".repeat(64),retired.id);
+  if(defect!=="none"){await expect(eraseAll(f.owner,event[1])).rejects.toThrow();expect((await lstat(accepted.record.encryptedPayloadPath)).size).toBe(accepted.record.actualBytes+(defect==="native-size"?1:0));}
+  else{await eraseAll(f.owner,event[1]);expect(await readdir(f.config.custodyRoot)).toEqual([]);}
+});
 async function acknowledgedPayload(f: Awaited<ReturnType<typeof setup>>) {
   const accepted = await f.accept(); f.advance(7 * 86400000); await refreshTestRepository(f.owner.repository);
   const erasure = erasureOwner(f.owner.repository);
@@ -1198,7 +1285,10 @@ describe("bounded original-custody erasure", () => {
     await settleMaintenance(f.owner);
     await custodyErasureOwner(f.owner.custody).invalidateAndClose(await beginMaintenance(f.owner));
     expect(plans.size).toBeGreaterThanOrEqual(11);
-    for (const plan of plans.values()) { expect(plan.some(detail => detail.includes("SEARCH"))).toBe(true); expect(plan.some(detail => /SCAN|TEMP B-TREE/.test(detail))).toBe(false); }
+    for (const [sql,plan] of plans) {
+      if(sql==="SELECT total_changes() n") { expect(plan).toEqual(["SCAN CONSTANT ROW"]); continue; }
+      expect(plan.some(detail => detail.includes("SEARCH")),sql).toBe(true); expect(plan.some(detail => /SCAN|TEMP B-TREE/.test(detail)),sql).toBe(false);
+    }
   });
   it("rejects an authentic but unconsumed observation after its original run has ended", async () => {
     const f = await setup(); let captured: CustodyObservation | undefined;

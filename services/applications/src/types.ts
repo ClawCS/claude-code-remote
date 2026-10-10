@@ -298,6 +298,15 @@ export interface WorkerScheduleEntry {
 export interface WorkerProof { readonly checkedAt: Instant; readonly validUntil: Instant }
 export interface WorkerRestoreProof extends WorkerProof { readonly checkpointId: string; readonly ledgerVerified: true }
 export interface WorkerOwner { readonly repository: ApplicationRepository; readonly custody: CustodyLedger; readonly clock: Clock }
+export interface RetentionReport {
+  readonly status: "progress" | "complete" | "blocked" | "settling";
+  readonly consumedItems: number;
+  readonly selectedCount: number;
+  readonly hasMore: boolean;
+  readonly nextWakeAt: Instant | null;
+  readonly blocker: "journal" | "custody" | "erasure" | "baseline" | "deadline" | "ownership" | null;
+}
+export interface RestoreResult extends RetentionReport { readonly authLocked: boolean }
 export interface RuntimeMaintenanceExclusion { readonly [key: symbol]: never }
 declare const databaseIncarnationBrand: unique symbol;
 export interface DatabaseIncarnation {
@@ -312,6 +321,9 @@ export interface WorkerServices {
   holdMaintenance?(owner: WorkerOwner): Promise<RuntimeMaintenanceExclusion>;
   assertMaintenanceHeld?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion): void;
   releaseMaintenance?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion): Promise<void>;
+  // Original runtime/descriptor/quota invariants after confirmed release.
+  // Not overall intake readiness; Task14 supplies qualified underlying proof.
+  assertOrdinaryReady?(owner: WorkerOwner): void;
   // Corroborates this exact original connection's initialization/offline
   // sanitation and continuous path/parent exclusion beginning BEFORE open.
   // The token and later stat do not establish that operating qualification.

@@ -1,4 +1,7 @@
 import { randomBytes } from "node:crypto";
+import { JOURNAL_PROJECTION_ENTRY_MAXIMUM, originalProjectionBarrierCredits } from "./journal-projection";
+import { maintenanceCommand, originalMaintenanceJournal, type MaintenanceRun } from "./worker-maintenance";
+import type { ApplicationRepository } from "./types";
 import { decodeJournalEvent, encodeJournalEvent, validateJournalTrust, verifyJournalCheckpoint, verifyJournalEntry, verifyJournalReceipt, verifyNextJournalEntry } from "./ledger-contract";
 import { applicationId, type ApplicationId, type DeletionLedgerPort, type DurableReceipt, type JournalCheckpoint, type JournalClock, type JournalEvent, type JournalProgress, type JournalSafetyProjection, type LedgerTrustContext, type LedgerTrustPort, type SafetyJournal } from "./types";
 
@@ -14,8 +17,26 @@ interface Pending {
   memberSeen: boolean;
 }
 const ownedPorts = new WeakSet<DeletionLedgerPort>();
+type MaintenanceJournalOperation = { readonly kind: "refresh"; readonly purpose: "startup" | "restore" | "refresh" }
+  | { readonly kind: "continue-replay" } | { readonly kind: "recover"; readonly event?: JournalEvent }
+  | { readonly kind: "append"; readonly event: JournalEvent };
+const maintenanceOwners = new WeakMap<object, (operation: MaintenanceJournalOperation) => Promise<JournalProgress | DurableReceipt>>();
+const projectionStamps = new WeakMap<SafetyJournal, () => number>();
+export function maintenanceBarrierCredits(journal: SafetyJournal): number {
+  const stamp = projectionStamps.get(journal); if (!stamp) throw failure("UNAVAILABLE"); return stamp();
+}
+const MAINTENANCE_REPLAY_ENTRIES = 8;
+// Two possible exact appends, receipt/head validation, iterator open/return and
+// fixed coordinator work, then the original projection's per-entry upper bound.
+export const MAINTENANCE_JOURNAL_MAXIMUM = 32 + MAINTENANCE_REPLAY_ENTRIES * JOURNAL_PROJECTION_ENTRY_MAXIMUM;
+export function maintenanceJournal(run: MaintenanceRun, repository: ApplicationRepository, operation: MaintenanceJournalOperation) {
+  const execute = maintenanceOwners.get(originalMaintenanceJournal(run, repository));
+  if (!execute) throw new Error("MAINTENANCE_OWNER_MISMATCH");
+  return maintenanceCommand(run, repository, MAINTENANCE_JOURNAL_MAXIMUM, "journal", async () => ({ value: await execute(operation), consumedItems: MAINTENANCE_JOURNAL_MAXIMUM }));
+}
 interface Work {
   readonly admitted: number;
+  readonly replayLimit: number;
   phase: "waiting" | "append" | "replay";
   deadline: number;
   expired: boolean;
@@ -97,7 +118,7 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
       return;
     }
   }
-  function enqueue<T>(action: (work: Work) => Promise<T>, replayOnly = false, progressResult = true): Promise<T> {
+  function enqueue<T>(action: (work: Work) => Promise<T>, replayOnly = false, progressResult = true, replayLimit = 1000): Promise<T> {
     let admitted: number;
     try { admitted = current().mono; } catch { return Promise.reject(failure("UNAVAILABLE")); }
     if (active && waiting.length >= 2) return Promise.reject(failure("QUEUE_FULL"));
@@ -107,7 +128,7 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
     return new Promise<T>((resolve, reject) => {
       let delivered = false;
       const work: Work = {
-        admitted, deadline: admitted + 15_000, phase: "waiting", expired: false, ownsPending: false, timer: undefined as unknown as ReturnType<typeof setTimeout>,
+        admitted, replayLimit, deadline: admitted + 15_000, phase: "waiting", expired: false, ownsPending: false, timer: undefined as unknown as ReturnType<typeof setTimeout>,
         expire() {
           if (work.expired) return;
           work.expired = true; delivered = true;
@@ -170,7 +191,7 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
     try {
       while (state.replay.sequence !== target.sequence) {
         guard(work);
-        if (count >= 1000 || bytes >= 8 * 1024 * 1024) return continuation();
+        if (count >= work.replayLimit || bytes >= 8 * 1024 * 1024) return continuation();
         const next = await iterator.next(); guard(work);
         if (next.done) throw failure("INCOMPLETE");
         if (typeof next.value !== "string") throw failure("INVALID");
@@ -201,7 +222,7 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
     observedAt = state.challengeStarted!;
     return { kind: "observed", checkpoint, receipt: state.target };
   }
-  function append(event: JournalEvent): Promise<DurableReceipt> {
+  function append(event: JournalEvent, replayLimit = 1000): Promise<DurableReceipt> {
     let value: JournalEvent;
     try {
       current(); value = proposed(event);
@@ -232,9 +253,9 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
       const result = await replay(work);
       if (result.kind !== "observed" && pending) throw failure("UNKNOWN");
       return receipt;
-    }, false, false);
+    }, false, false, replayLimit);
   }
-  function refresh(purpose: "startup" | "restore" | "refresh"): Promise<JournalProgress> {
+  function refresh(purpose: "startup" | "restore" | "refresh", replayLimit = 1000): Promise<JournalProgress> {
     if (unknown || (pending && !active)) return Promise.reject(failure("UNKNOWN"));
     return enqueue(async work => {
       if (pending || unknown) throw failure("UNKNOWN");
@@ -243,9 +264,9 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
       const receipt = await appendExact(event, work, r => { pending!.receipt = r; pending!.target = r; });
       timeBinding(event, start.wall, current().wall); verifyJournalReceipt(event, receipt, context);
       replayPhase(work); return replay(work);
-    });
+    }, false, true, replayLimit);
   }
-  function recover(event?: JournalEvent): Promise<JournalProgress> {
+  function recover(event?: JournalEvent, replayLimit = 1000): Promise<JournalProgress> {
     if (active) return Promise.reject(failure("BUSY"));
     let value: JournalEvent;
     try {
@@ -265,12 +286,26 @@ export function createSafetyJournal({ port, trust, clock, projection }: Dependen
       }
       if (!state.target) await appendExact(state.barrier, work, r => { state.target = r; });
       unknown = false; replayPhase(work); return replay(work);
-    });
+    }, false, true, replayLimit);
   }
-  function continueReplay(): Promise<JournalProgress> {
+  function continueReplay(replayLimit = 1000): Promise<JournalProgress> {
     if (active) return Promise.reject(failure("BUSY"));
     if (unknown || !pending?.target) return Promise.reject(failure("UNAVAILABLE"));
-    return enqueue(replay, true);
+    return enqueue(replay, true, true, replayLimit);
   }
-  return Object.freeze({ append, refresh, recover, continueReplay, observation, caseAuthority, settle });
+  const facade: SafetyJournal = Object.freeze({ append: (event: JournalEvent) => append(event), refresh: (purpose: "startup" | "restore" | "refresh") => refresh(purpose), recover: (event?: JournalEvent) => recover(event), continueReplay: () => continueReplay(), observation, caseAuthority, settle });
+  maintenanceOwners.set(facade, operation => {
+    switch (operation.kind) {
+      case "append": return append(operation.event, MAINTENANCE_REPLAY_ENTRIES);
+      case "refresh": return refresh(operation.purpose, MAINTENANCE_REPLAY_ENTRIES);
+      case "recover": return recover(operation.event, MAINTENANCE_REPLAY_ENTRIES);
+      case "continue-replay": return continueReplay(MAINTENANCE_REPLAY_ENTRIES);
+    }
+  });
+  if (projection) projectionStamps.set(facade, () => {
+    current();
+    if (active || waiting.length || unknown || pending) throw failure("UNAVAILABLE");
+    return originalProjectionBarrierCredits(projection);
+  });
+  return facade;
 }

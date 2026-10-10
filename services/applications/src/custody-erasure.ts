@@ -4,7 +4,7 @@ import type { Dir } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import type { ApplicationRepository, CustodyConfig, CustodyLedger, IngressEvidence, IngressLease, Instant, Reservation } from "./types";
 import { checkIncomingRoot, checkPrivateRoot } from "./crypto";
-import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceSettled, assertOriginalMaintenanceCustody, closeCustodyHandle, closeMaintenanceScanIterators, maintenanceCommand, maintenanceRemaining, observeCustodyHandle, type MaintenanceRun } from "./worker-maintenance";
+import { assertMaintenance, assertMaintenanceCustodyIdentity, assertMaintenanceSettled, assertOriginalMaintenanceCustody, closeCustodyHandle, closeMaintenanceScanIterators, finishMaintenanceAcceptedResources, finishMaintenanceNeverAcceptedResources, maintenanceCommand, maintenanceRemaining, observeCustodyHandle, originalMaintenanceExclusion, type MaintenanceRun } from "./worker-maintenance";
 import { erasureOwner } from "./erasure-repository";
 import type { InventoryObject, InventoryJournal, AcceptedCandidate } from "./erasure-storage";
 import { createAcceptedErasure, type AcceptedHooks } from "./custody-accepted-erasure";
@@ -23,6 +23,8 @@ export type Observation = Readonly<
   { kind: "root-open"; pass: string; root: Root } |
   { kind: "root-eof"; pass: string; root: Root } |
   { kind: "invalidate"; pass: string } |
+  { kind: "fresh-pass"; pass: string } |
+  { kind: "accounting" | "accounting-seal"; pass: string } |
   { kind: "accepted-plan" | "accepted-rebind" | "accepted-holders" | "accepted-absent" | "accepted-final"; pass: string; candidate: AcceptedCandidate } |
   { kind: "accepted-recovery"; pass: string; candidate: AcceptedCandidate; object: InventoryObject } |
   { kind: "cleanup-plan" | "cleanup-rebind" | "cleanup-holders" | "cleanup-absent" | "cleanup-final" | "cleanup-retire"; pass: string; candidate: CleanupCandidate } |
@@ -41,6 +43,8 @@ export function consumeCustodyObservation(token: CustodyObservation, custody: Cu
   observations.delete(token); return value.value;
 }
 export interface CustodyErasure {
+  accountBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
+  startFreshPass(run: MaintenanceRun): Promise<Readonly<{ consumedItems: number }>>;
   scanBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
   eraseScopeBatch(commitEventId: string, run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
   cleanupNeverAcceptedBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
@@ -57,6 +61,11 @@ interface Hooks extends AcceptedHooks {
   decodeJournal(bytes: Buffer): CustodyJournal;
   observeIngress(entry: CustodyJournal): Promise<IngressEvidence>;
   cleanupDependency(id: string): boolean;
+  duplicateInventoryDependency(journal: Readonly<InventoryJournal>,pass: string): {blocked:boolean;consumedItems:number};
+  hydrate(entry: CustodyJournal, caseId: string | null, pass: string): number;
+  accountJournal(journal: InventoryJournal, pass: string): number;
+  finishAccounting(pass: string): { complete: boolean; consumedItems: number };
+  resetAccounting(): void;
 }
 interface Iterator { dir: Dir; root: Root; path: string; identity: Stats; parent?: CustodyJournal; recovered?: Readonly<InventoryJournal>; count: number; pending?: string }
 function fail(code: string): never { throw new Error(code); }
@@ -77,6 +86,7 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   const identities = new Map<string, Stats>();
   const failedCloses = new Set<Iterator>();
   let iterator: Iterator | undefined, child: Iterator | undefined, pass: string | undefined, index = 0, invalid = false, invalidated = false;
+  let exclusion: object | undefined;
   // One outstanding reservation, never a bank of five-credit grants. Its run
   // identifies the admitting operation that already paid, including across a
   // dormant continuation; a successor does not receive a fresh allowance.
@@ -91,7 +101,8 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   // Original retry checks add10 per record; expiry classification adds up to
   // selection1 + token-consuming source transaction20 per record (two records).
   // Thus prior88 + 2*(1+20) =130; native admission/finishing are unchanged.
-  const entryMaximum = 3 * ancestryMaximum + 130;
+  // Original hydration/private provenance adds6, including both WeakSet ops.
+  const entryMaximum = 3 * ancestryMaximum + 136;
   function mint(run: MaintenanceRun, value: Observation): CustodyObservation {
     const token = Object.freeze({}) as CustodyObservation;
     observations.set(token, { repository, custody, run, value: Object.freeze(value) }); return token;
@@ -223,6 +234,7 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     const object: InventoryObject = { pass: pass!, journalId: id, slot, leaf, root: target.root, presence: "present", ...objectStats(stat), leaseState: lease?.state ?? null, chargedBytes: lease?.chargedBytes ?? null, leaseDevice: lease?.object?.dev ?? null, leaseInode: lease?.object?.ino ?? null };
     const result = storage.record(mint(run, { kind: "object", pass: pass!, root: target.root, journal: entry, object, sourceObservation }), run);
     if ("deferred" in result && result.deferred) return result;
+    if (slot === "journal") result.consumedItems += hooks.hydrate(entry,result.caseId,pass!);
     if (slot === "journal" && entry.kind === "intake") {
       const inspect = async () => {
         try { return await io(() => lstat(entry.path)); }
@@ -278,9 +290,62 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
   const neverAccepted = createNeverAcceptedErasure({ custody, repository, config, hooks, ancestryMaximum, mint, coverage,
     remove: (candidate, run, io) => removeObject(cleanup.read(candidate, run), run, io) });
   const owner: CustodyErasure = Object.freeze({
+    async accountBatch(run: MaintenanceRun) {
+      assertMaintenanceCustodyIdentity(run,repository,custody); assertMaintenanceSettled(run,repository);
+      const maximum=2*ancestryMaximum+100;let total=0,complete=false;
+      while(!complete){
+        const remaining=maintenanceRemaining(run,repository,"filesystem");
+        if(remaining.items<maximum || remaining.selections===0)break;
+        const result = await maintenanceCommand(run,repository,maximum,"filesystem",() => hooks.track(() => hooks.exclusive(async () => {
+        checkCoverage(); let consumedItems = 0;
+        await checkRoots(async action => { consumedItems++; return action(); });
+        const accounted = storage.accountBatch(mint(run,{kind:"accounting",pass:pass!}),run);
+        consumedItems += accounted.consumedItems;
+        if (accounted.journal) consumedItems += hooks.accountJournal(accounted.journal,pass!);
+        const privateState = accounted.complete ? hooks.finishAccounting(pass!) : {complete:false,consumedItems:0};
+        consumedItems += privateState.consumedItems;
+        await checkRoots(async action => { consumedItems++; return action(); });
+        assertMaintenance(run,repository); checkCoverage();
+        return {value:privateState.complete,consumedItems};
+        })));
+        total+=result.consumedItems;complete=result.value;
+        if(result.consumedItems===0)break;
+      }
+      return Object.freeze({complete,consumedItems:total});
+    },
     eraseScopeBatch: accepted.eraseScopeBatch,
     cleanupNeverAcceptedBatch: neverAccepted.cleanupNeverAcceptedBatch,
     pruneInventoryBatch: neverAccepted.pruneInventoryBatch,
+    async startFreshPass(run: MaintenanceRun) {
+      assertMaintenanceCustodyIdentity(run, repository, custody);
+      assertMaintenanceSettled(run, repository);
+      const result = await maintenanceCommand(run, repository, 2 * ancestryMaximum + 20, "filesystem", () => hooks.track(() => hooks.exclusive(async () => {
+        if (!invalid || !invalidated || !pass || iterator || child || failedCloses.size || !accepted.idle() || !neverAccepted.idle()) fail("ERASURE_PENDING");
+        let consumedItems = 0;
+        const nextExclusion = originalMaintenanceExclusion(run,repository);
+        if (exclusion !== nextExclusion) {
+          // A genuinely new original-service hold permits only root link-count
+          // refresh. Incarnations/protections still match the original paths.
+          for (const [path,expected] of identities) {
+            const actual = await lstat(path); consumedItems++;
+            if (!same(expected,actual,false)) fail("ERASURE_ROOT_CHANGED");
+            identities.set(path,actual);
+          }
+          exclusion = nextExclusion;
+        }
+        await checkRoots(async action => { consumedItems++; return action(); });
+        assertMaintenance(run, repository);
+        // A new pass is created only from this original scanner's closed,
+        // invalidated pass. It never restores old EOF or recovery authority.
+        pass = storage.startFreshPass(mint(run, { kind: "fresh-pass", pass }), run);
+        consumedItems += 7;
+        consumedItems += cleanup.startFreshPass(mint(run, { kind: "fresh-pass", pass }), run);
+        index = 0; invalid = false; invalidated = false; finishing = undefined;
+        hooks.resetAccounting();
+        return { value: undefined, consumedItems };
+      })));
+      return Object.freeze({ consumedItems: result.consumedItems });
+    },
     async scanBatch(run: MaintenanceRun) {
       // Invalid/stale/foreign callers must never reach another scan's denial.
       assertMaintenanceCustodyIdentity(run, repository, custody);
@@ -292,6 +357,7 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
       if (!pass) {
         const result = await maintenanceCommand(run, repository, 7, "filesystem", () => {
           pass = storage.pass();
+          exclusion = originalMaintenanceExclusion(run,repository);
           finishing = { run, pass };
           return { value: pass, consumedItems: 7 };
         });
@@ -365,7 +431,7 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
               }
               await checkRoots(io); assertMaintenance(run, repository); return { value: false, consumedItems: consumed };
             }
-            if (index === roots.length) { assertMaintenance(run, repository); checkedComplete = true; return { value: false, consumedItems: consumed }; }
+            if (index === roots.length) { assertMaintenance(run, repository); consumed += storage.sealAccounting(mint(run,{kind:"accounting-seal",pass:pass!}),run); checkedComplete = true; return { value: false, consumedItems: consumed }; }
             if (!iterator) {
               const identity = await io(() => lstat(paths[root]));
               iterator = { dir: await io(() => opendir(paths[root], { bufferSize: 1 })), root, path: paths[root], identity, count: 0 };
@@ -419,5 +485,15 @@ export function bindCustodyErasure(custody: CustodyLedger, repository: Applicati
     },
   });
   owners.set(custody, owner);
-  return Object.freeze({ idle: () => failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(), closeReady: () => !iterator && !child && failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(), closeIterators, finishAcceptedResources: accepted.finishResources, finishNeverAcceptedResources: neverAccepted.finishResources });
+  return Object.freeze({ idle: () => failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(), closeReady: () => !iterator && !child && failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(),
+    releaseReady: () => index === roots.length && invalid && invalidated && !iterator && !child && failedCloses.size === 0 && accepted.idle() && neverAccepted.idle(),
+    async finishForDrain(run: MaintenanceRun) {
+      assertMaintenanceCustodyIdentity(run, repository, custody);
+      const finished = new Error("SCANNER_DRAIN_FINISHED");
+      try { await hooks.track(() => finishFailure(run, finished)); } catch (error) { if (error !== finished) throw error; }
+      if (iterator || child || failedCloses.size) await closeMaintenanceScanIterators(run, custody);
+      if (!accepted.idle()) await finishMaintenanceAcceptedResources(run, custody);
+      if (!neverAccepted.idle()) await finishMaintenanceNeverAcceptedResources(run, custody);
+    },
+    closeIterators, finishAcceptedResources: accepted.finishResources, finishNeverAcceptedResources: neverAccepted.finishResources });
 }

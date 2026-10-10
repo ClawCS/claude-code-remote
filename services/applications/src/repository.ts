@@ -366,12 +366,17 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   }, journal, () => utcInstant(clock.now().toISOString()));
   bindDeletionOwner(repository,deletion);
   function erasureRead<T>(id:ApplicationId,read:()=>T):T {const previous=erasureReadId;erasureReadId=id;try{return read();}finally{erasureReadId=previous;}}
-  bindErasureOwner(repository,createErasureRepository(db,{databasePath:path,repository,journal,now:()=>utcInstant(clock.now().toISOString()),scope:currentErasureScope,
+  const erasure = createErasureRepository(db,{databasePath:path,repository,journal,now:()=>utcInstant(clock.now().toISOString()),scope:currentErasureScope,
     guard(id){live();const own=context.getStore();if(!own?.active||own.id!==id)throw new Error("ERASURE_GUARD_REQUIRED");return own;},guarded:(id,action)=>guarded(id,action,true),
     readCase:id=>erasureRead(id,()=>readCase(id)),delivery:id=>erasureRead(id,()=>delivery.getDelivery(id)),currentClear:id=>erasureRead(id,()=>deletion.currentClear(id)),
     lockAuthentication(){live();if(startup!=="cold-maintenance"||authOwned)throw new Error("AUTH_RESTORE_LOCK_UNAVAILABLE");db.transaction(()=>{db.prepare("UPDATE erasure_maintenance SET authLocked=1 WHERE singleton=1").run();db.prepare("DELETE FROM auth_grants").run();db.prepare("DELETE FROM auth_sessions").run();db.prepare("DELETE FROM auth_recovery").run();}).immediate();},
-  }));
+  });
+  bindErasureOwner(repository, erasure);
   registerMaintenanceRepository(repository, clock, {
+    origin: startup,
+    finalReady: () => { live(); erasure.assertSanitizedFinalWork(); },
+    ordinaryReady: () => { live(); return startup === "ordinary" && (db.prepare("SELECT authLocked FROM erasure_maintenance WHERE singleton=1").get() as { authLocked: number }).authLocked === 0; },
+    reopen() { live(); if (startup !== "ordinary") throw new Error("REPOSITORY_COLD"); maintenanceInhibited = false; },
     inhibit() { live(); maintenanceInhibited = true; },
     async settle() { while (locks.size) await Promise.all([...locks.values()]); },
     idle: () => locks.size === 0,

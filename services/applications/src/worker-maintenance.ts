@@ -24,7 +24,7 @@ export async function closeCustodyHandle(handle: FileHandle): Promise<void> {
 }
 
 // Private composition only. Original constructors register these exact objects.
-interface Lifetime { inhibit(): void; settle(): Promise<void>; idle(): boolean; closeReady?(): boolean; closeScanIterators?(): Promise<number>; finishAcceptedResources?(run: MaintenanceRun): Promise<number>; finishNeverAcceptedResources?(run: MaintenanceRun): Promise<number> }
+interface Lifetime { origin?: "ordinary" | "cold-maintenance"; inhibit(): void; settle(): Promise<void>; idle(): boolean; finalReady?(): void; ordinaryReady?(): boolean; reopen?(): void; releaseReady?(): boolean; finishForDrain?(run: MaintenanceRun): Promise<void>; closeReady?(): boolean; closeScanIterators?(): Promise<number>; finishAcceptedResources?(run: MaintenanceRun): Promise<number>; finishNeverAcceptedResources?(run: MaintenanceRun): Promise<number> }
 const repositories = new WeakMap<ApplicationRepository, Lifetime & { clock: Clock }>();
 const custodians = new WeakMap<CustodyLedger, Lifetime & { repository: ApplicationRepository; clock: Clock; config?: CustodyConfig }>();
 const bindings = new WeakMap<WorkerOwner, Binding>();
@@ -42,6 +42,11 @@ interface Binding {
   holdMethod: WorkerServices["holdMaintenance"]; assertMethod: WorkerServices["assertMaintenanceHeld"];
   releaseMethod: WorkerServices["releaseMaintenance"]; settleMethod: WorkerServices["settle"];
   sanitationMethod: WorkerServices["assertDatabaseSanitationBaseline"];
+  ordinaryMethod?: WorkerServices["assertOrdinaryReady"];
+  released?: boolean; reopened?: boolean; draining?: boolean;
+  closing?: Promise<void>;
+  cycles: Set<Promise<unknown>>;
+  exclusion?: object;
   hold?: RuntimeMaintenanceExclusion; acquisition?: Promise<void>; settlement?: Promise<void>; current?: Run; lastRun?: Run;
   started: boolean; settled: boolean; uncertain: boolean; journal?: { settle(): Promise<void> };
 }
@@ -106,11 +111,16 @@ export function bindMaintenance(owner: WorkerOwner, services: WorkerServices, mo
   if (!services || typeof services.settle !== "function" || typeof services.close !== "function" || typeof services.holdMaintenance !== "function" || typeof services.assertMaintenanceHeld !== "function" || typeof services.releaseMaintenance !== "function") fail("MAINTENANCE_UNAVAILABLE");
   let last: number; try { last = monotonic(); } catch { fail("MAINTENANCE_CLOCK_INVALID"); }
   if (!Number.isFinite(last) || last < 0) fail("MAINTENANCE_CLOCK_INVALID");
-  const b: Binding = { owner, repository: owner.repository, custody: owner.custody, clock: owner.clock, repo, files, services, monotonic, last, holdMethod: services.holdMaintenance, assertMethod: services.assertMaintenanceHeld, releaseMethod: services.releaseMaintenance, settleMethod: services.settle, sanitationMethod: services.assertDatabaseSanitationBaseline, started: false, settled: false, uncertain: false, journal: journals.get(owner.repository) };
+  const b: Binding = { owner, repository: owner.repository, custody: owner.custody, clock: owner.clock, repo, files, services, monotonic, last, holdMethod: services.holdMaintenance, assertMethod: services.assertMaintenanceHeld, releaseMethod: services.releaseMaintenance, settleMethod: services.settle, sanitationMethod: services.assertDatabaseSanitationBaseline, ordinaryMethod: services.assertOrdinaryReady, cycles: new Set(), started: false, settled: false, uncertain: false, journal: journals.get(owner.repository) };
   bindings.set(owner, b); repositoryOwners.set(owner.repository, owner); custodyOwners.set(owner.custody, owner);
 }
 function binding(owner: WorkerOwner): Binding {
   const b = bindings.get(owner); if (!b || owner.repository !== b.repository || owner.custody !== b.custody || owner.clock !== b.clock) fail("MAINTENANCE_OWNER_MISMATCH"); return b;
+}
+export function maintenanceOrigin(owner: WorkerOwner): "ordinary" | "cold-maintenance" {
+  const origin = binding(owner).repo.origin;
+  if (!origin) fail("MAINTENANCE_OWNER_MISMATCH");
+  return origin;
 }
 function tick(b: Binding): number {
   let value: number; try { value = b.monotonic(); } catch { b.uncertain = true; fail("MAINTENANCE_CLOCK_INVALID"); }
@@ -123,25 +133,35 @@ function held(b: Binding): void {
     b.assertMethod!.call(b.services, b.owner, b.hold);
   } catch { b.uncertain = true; fail("MAINTENANCE_HOLD_LOST"); }
 }
+function released(b: Binding): void {
+  binding(b.owner);
+  if (b.uncertain || !b.released || b.draining || b.services.holdMaintenance !== b.holdMethod || b.services.assertMaintenanceHeld !== b.assertMethod || b.services.releaseMaintenance !== b.releaseMethod || b.services.settle !== b.settleMethod || !b.ordinaryMethod || b.services.assertOrdinaryReady !== b.ordinaryMethod) fail("MAINTENANCE_HOLD_LOST");
+}
 async function settleOwners(b: Binding): Promise<void> {
   // Each owner retains entire scopes, including finally work enqueued later.
   let failed = false;
   for (const settle of [() => b.settleMethod.call(b.services), () => b.files.settle(), () => b.repo.settle(), () => b.journal?.settle()]) {
-    try { await settle(); if (b.hold) held(b); } catch { failed = true; }
+    try { await settle(); if (b.released) released(b); else if (b.hold) held(b); } catch { failed = true; }
   }
   if (failed) fail("MAINTENANCE_SETTLEMENT_UNCERTAIN");
   if (!b.files.idle() || !b.repo.idle()) fail("MAINTENANCE_WORK_ACTIVE");
 }
 export function beginMaintenance(owner: WorkerOwner): Promise<MaintenanceRun> {
+  return begin(owner, false);
+}
+function begin(owner: WorkerOwner, closing: boolean): Promise<MaintenanceRun> {
   const b = binding(owner); if (b.current || b.settlement) fail("MAINTENANCE_RUN_ACTIVE");
+  if (b.draining && !closing) fail("MAINTENANCE_RUN_STOPPED");
+  if (b.reopened) { b.reopened = false; b.released = false; b.acquisition = undefined; b.hold = undefined; }
   if (b.uncertain) fail("MAINTENANCE_HOLD_LOST");
   const token = Object.freeze({}) as MaintenanceRun;
   const run: Run = { binding: b, token, start: tick(b), consumed: 0, selected: new Set(), failed: false, accepting: true, pending: new Set() };
   runs.set(token, run); b.current = run; b.lastRun = run; b.started = true; b.settled = false;
   b.repo.inhibit(); b.files.inhibit(); // Synchronous, before acquisition/waits.
   const start = (async () => {
+    if (b.released) { released(b); await settleOwners(b); released(b); return token; }
     if (!b.acquisition) b.acquisition = (async () => {
-      try { const hold = await b.holdMethod!.call(b.services, owner); if (!hold || typeof hold !== "object") throw new Error(); b.hold = hold; held(b); }
+      try { const hold = await b.holdMethod!.call(b.services, owner); if (!hold || typeof hold !== "object") throw new Error(); b.hold = hold; held(b); b.exclusion = Object.freeze({}); }
       catch { b.uncertain = true; fail("MAINTENANCE_HOLD_LOST"); }
     })();
     await b.acquisition; held(b); await settleOwners(b); held(b); return token;
@@ -160,6 +180,16 @@ export function assertMaintenanceCustodyIdentity(run: MaintenanceRun, repository
 export function originalMaintenanceCustody(run: MaintenanceRun, repository: ApplicationRepository): CustodyLedger {
   assertMaintenance(run, repository); return current(run, repository).binding.custody;
 }
+export function originalMaintenanceExclusion(run: MaintenanceRun, repository: ApplicationRepository): object {
+  assertMaintenance(run,repository); const value = current(run,repository).binding.exclusion;
+  if (!value) fail("MAINTENANCE_HOLD_LOST"); return value;
+}
+export function originalMaintenanceJournal(run: MaintenanceRun, repository: ApplicationRepository): object {
+  assertMaintenance(run, repository, "journal");
+  const journal = current(run, repository).binding.journal;
+  if (!journal) fail("MAINTENANCE_UNAVAILABLE");
+  return journal;
+}
 export function assertDatabaseSanitationBaseline(run: MaintenanceRun, repository: ApplicationRepository, target: DatabaseIncarnation): void {
   assertMaintenance(run,repository); const b=current(run,repository).binding;
   if (!b.sanitationMethod || b.services.assertDatabaseSanitationBaseline !== b.sanitationMethod) fail("ERASURE_SANITATION_REQUIRED");
@@ -167,19 +197,25 @@ export function assertDatabaseSanitationBaseline(run: MaintenanceRun, repository
   catch { fail("ERASURE_SANITATION_REQUIRED"); }
   assertMaintenance(run,repository);
 }
-export function assertMaintenance(run: MaintenanceRun, repository: ApplicationRepository, phase: "scalar" | "journal" | "filesystem" = "scalar"): void {
-  const r = current(run, repository); held(r.binding);
+type Phase = "scalar" | "journal" | "filesystem" | "post-release";
+export function assertMaintenance(run: MaintenanceRun, repository: ApplicationRepository, phase: Phase = "scalar"): void {
+  const r = current(run, repository);
+  if (r.binding.released) { released(r.binding); if (phase !== "journal" && phase !== "post-release") fail("MAINTENANCE_RUN_STOPPED"); }
+  else held(r.binding);
   if (!r.accepting || r.failed) fail("MAINTENANCE_RUN_STOPPED");
   const remaining = 120000 - (tick(r.binding) - r.start), minimum = phase === "journal" ? 65000 : phase === "filesystem" ? 40000 : 0;
   if (remaining <= 0 || remaining < minimum) { r.accepting = false; fail("MAINTENANCE_DEADLINE"); }
 }
-export function maintenanceRemaining(run: MaintenanceRun, repository: ApplicationRepository): Readonly<{ items: number; selections: number; now: string }> {
-  assertMaintenance(run, repository); const r = current(run);
+export function maintenanceReadPhase(run: MaintenanceRun, repository: ApplicationRepository): "scalar" | "post-release" {
+  return current(run, repository).binding.released ? "post-release" : "scalar";
+}
+export function maintenanceRemaining(run: MaintenanceRun, repository: ApplicationRepository, phase: Phase = "scalar"): Readonly<{ items: number; selections: number; now: string }> {
+  assertMaintenance(run, repository, phase); const r = current(run);
   let now: string; try { now = utcInstant(r.binding.clock.now().toISOString()); } catch { r.failed = true; fail("MAINTENANCE_CLOCK_INVALID"); }
   return Object.freeze({ items: 1000 - r.consumed, selections: 20 - r.selected.size, now });
 }
-export function selectMaintenance(run: MaintenanceRun, repository: ApplicationRepository, key: string): void {
-  assertMaintenance(run, repository); const r = current(run);
+export function selectMaintenance(run: MaintenanceRun, repository: ApplicationRepository, key: string, phase: Phase = "scalar"): void {
+  assertMaintenance(run, repository, phase); const r = current(run);
   if (!r.selected.has(key) && r.selected.size >= 20) fail("MAINTENANCE_SELECTION_LIMIT"); r.selected.add(key);
 }
 export function assertMaintenanceSettled(run: MaintenanceRun, repository: ApplicationRepository): void {
@@ -188,23 +224,102 @@ export function assertMaintenanceSettled(run: MaintenanceRun, repository: Applic
 }
 // Accounting only: no DB/custody mutation capability is granted here. Closed
 // owner commands supply fixed code and query-derived worst-case reservations.
-export async function maintenanceCommand<T>(token: MaintenanceRun, repository: ApplicationRepository, maximum: number, phase: "scalar" | "journal" | "filesystem", action: () => Promise<{ value: T; consumedItems: number }> | { value: T; consumedItems: number }): Promise<Readonly<{ value: T; consumedItems: number }>> {
+export async function maintenanceCommand<T>(token: MaintenanceRun, repository: ApplicationRepository, maximum: number, phase: Phase, action: () => Promise<{ value: T; consumedItems: number }> | { value: T; consumedItems: number }): Promise<Readonly<{ value: T; consumedItems: number }>> {
   const r = current(token, repository); assertMaintenance(token, repository, phase);
   if (!Number.isSafeInteger(maximum) || maximum < 1 || maximum > 1000 - r.consumed) fail("MAINTENANCE_BUDGET_INSUFFICIENT");
   r.consumed += maximum;
   const task = (async () => { assertMaintenance(token, repository, phase); return action(); })().then(result => {
     // Late completion is retained and recorded, not treated as cancellation.
     if (!Number.isSafeInteger(result.consumedItems) || result.consumedItems < 0 || result.consumedItems > maximum) fail("MAINTENANCE_ACCOUNTING_INVALID");
-    r.consumed -= maximum - result.consumedItems; held(r.binding); return Object.freeze(result);
+    r.consumed -= maximum - result.consumedItems; if (r.binding.released) released(r.binding); else held(r.binding); return Object.freeze(result);
   }).catch(error => { r.failed = true; r.accepting = false; throw new Error(error instanceof Error && commandErrors.has(error.message) ? error.message : "MAINTENANCE_COMMAND_FAILED"); });
   r.pending.add(task);
   try { return await task; } finally { r.pending.delete(task); }
+}
+export async function releaseMaintenanceForRecheck(run: MaintenanceRun, repository: ApplicationRepository): Promise<void> {
+  const b = current(run, repository).binding;
+  await maintenanceCommand(run, repository, 20, "scalar", () => {
+    if (b.repo.origin !== "ordinary" || b.draining || !b.ordinaryMethod || b.services.assertOrdinaryReady !== b.ordinaryMethod || !b.repo.finalReady || !b.files.releaseReady?.() || !b.files.ordinaryReady?.()) fail("MAINTENANCE_RUN_STOPPED");
+    b.repo.finalReady(); return { value: undefined, consumedItems: 20 };
+  });
+  await maintenanceCommand(run, repository, 1, "filesystem", async () => {
+    // Unknown release is terminal for this handle. Keep producer denial and
+    // ownership even if the service reports failure after a physical release.
+    try { await b.releaseMethod!.call(b.services, b.owner, b.hold!); }
+    catch { b.uncertain = true; fail("MAINTENANCE_HOLD_LOST"); }
+    b.released = true;
+    return { value: undefined, consumedItems: 1 };
+  });
+}
+export async function reopenMaintenance(run: MaintenanceRun, repository: ApplicationRepository): Promise<void> {
+  const b = current(run, repository).binding;
+  await maintenanceCommand(run, repository, 20, "post-release", () => {
+    released(b);
+    if (b.repo.origin !== "ordinary" || !b.repo.finalReady || !b.repo.ordinaryReady?.() || !b.files.ordinaryReady?.() || !b.repo.reopen || !b.files.reopen) fail("MAINTENANCE_RUN_STOPPED");
+    b.ordinaryMethod!.call(b.services, b.owner);
+    b.repo.finalReady();
+    // No await from the final original checks through both local gates.
+    released(b); b.repo.reopen(); b.files.reopen(); b.reopened = true;
+    return { value: undefined, consumedItems: 20 };
+  });
+}
+export function beginFreshHeldMaintenance(owner: WorkerOwner): Promise<MaintenanceRun> {
+  const b = binding(owner);
+  if (b.current || b.settlement || !b.settled || !b.released || b.uncertain) fail("MAINTENANCE_WORK_ACTIVE");
+  b.released = false; b.acquisition = undefined; b.hold = undefined;
+  return beginMaintenance(owner);
+}
+export function inhibitMaintenance(owner: WorkerOwner): void {
+  const b = binding(owner); b.draining = true; if (b.current) b.current.accepting = false; b.repo.inhibit(); b.files.inhibit();
+}
+// Retain the full scheduler finally/settlement lifetime, not its timeout race.
+// Adding work can only delay close; no caller can remove another cycle.
+export function retainMaintenanceCycle(owner: WorkerOwner, work: Promise<unknown>): void {
+  const b = binding(owner); b.cycles.add(work);
+  void work.then(() => b.cycles.delete(work), () => b.cycles.delete(work));
+}
+export function settleMaintenanceForClose(owner: WorkerOwner): Promise<void> {
+  inhibitMaintenance(owner);
+  const b = binding(owner);
+  if (b.closing) return b.closing;
+  b.closing = (async () => {
+    while (b.cycles.size) await Promise.allSettled([...b.cycles]);
+    if (b.settlement) await b.settlement.catch(() => {});
+    while (b.current?.pending.size) await Promise.allSettled([...b.current.pending]);
+    if (b.uncertain) fail("MAINTENANCE_HOLD_LOST");
+    // A confirmed ordinary release needs a genuinely new exclusion before DB
+    // close. Never reuse its stale handle or retry an uncertain release.
+    if (b.released) { b.released = false; b.reopened = false; b.hold = undefined; b.acquisition = undefined; }
+    if (!b.current) await begin(owner, true);
+    else if (!b.hold) {
+      let hold: RuntimeMaintenanceExclusion;
+      try { hold = await b.holdMethod!.call(b.services, owner); }
+      catch { b.uncertain = true; fail("MAINTENANCE_HOLD_LOST"); }
+      if (!hold || typeof hold !== "object") { b.uncertain = true; fail("MAINTENANCE_HOLD_LOST"); }
+      b.hold = hold; held(b);
+      b.exclusion = Object.freeze({});
+    }
+    // Settlement owns complete producer/finally/journal scopes. A known
+    // retained scanner resource can still require its exact finishing hook.
+    await b.journal?.settle();
+    await b.settleMethod.call(b.services); held(b);
+    await b.repo.settle();
+    await b.files.settle().catch(() => {});
+    if (!b.files.finishForDrain || !b.current) fail("MAINTENANCE_WORK_ACTIVE");
+    await b.files.finishForDrain(b.current.token);
+    await settleMaintenance(owner);
+    assertMaintenanceClose(b.repository);
+  })().catch(error => { b.closing = undefined; throw error; });
+  return b.closing;
 }
 export function settleMaintenance(owner: WorkerOwner): Promise<void> {
   const b = bindings.get(owner); if (!b || !b.started) return Promise.resolve();
   if (b.settlement) return b.settlement;
   b.settlement = (async () => {
     const run = b.current; if (run) { run.accepting = false; while (run.pending.size) await Promise.allSettled([...run.pending]); }
+    // New ordinary producers may start after the synchronous reopen. They are
+    // not work admitted to the now-finished maintenance invocation.
+    if (b.reopened) { b.settled = true; b.current = undefined; return; }
     await settleOwners(b); b.settled = true; b.current = undefined;
   })().finally(() => { b.settlement = undefined; });
   return b.settlement;

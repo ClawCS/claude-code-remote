@@ -10,6 +10,8 @@ import { digest, utcInstant } from "../src/types";
 import { beginMaintenance, bindMaintenance, settleMaintenance, finishMaintenanceNeverAcceptedResources, maintenanceSnapshot, maintenanceCommand, selectMaintenance, type MaintenanceRun } from "../src/worker-maintenance";
 import type { WorkerOwner } from "../src/types";
 import { custodyErasureOwner } from "../src/custody-erasure";
+import * as custodyComposition from "../src/custody-erasure";
+import type { InventoryJournal } from "../src/erasure-storage";
 import { erasureOwner } from "../src/erasure-repository";
 import { TestIngressAuthority } from "./fixtures/ingress-authority";
 import { randomUUID } from "node:crypto";
@@ -393,6 +395,32 @@ describe("proven never-accepted original custody cleanup", () => {
     expect(db.prepare("SELECT 1 FROM erasure_inventory_journals WHERE pass=?").get(old)).toBeUndefined();
     expect(db.prepare("SELECT id FROM cases WHERE id=?").get(accepted.accepted.id)).toBeDefined();
     expect(await readFile(accepted.record.encryptedPayloadPath)).toBeDefined();
+  });
+  it("binds scanner-only duplicate dependence to the actual current pass and normalized entry",async()=>{
+    const original=custodyComposition.bindCustodyErasure;
+    let hooks:Parameters<typeof original>[3]|undefined;
+    vi.spyOn(custodyComposition,"bindCustodyErasure").mockImplementation((...args)=>{hooks=args[3];return original(...args);});
+    const f=await setup(),accepted=await f.accept();bindMaintenance(f.owner,f.services,f.monotonicNow);await scanAll(f.owner);
+    const old=(f.db.prepare("SELECT scanPass FROM erasure_maintenance").get() as {scanPass:string}).scanPass;
+    const restarted=await f.restart();bindMaintenance(restarted.owner,restarted.services,f.monotonicNow);await scanAll(restarted.owner);
+    const db=connections.all.at(-1)!,pass=(db.prepare("SELECT scanPass FROM erasure_maintenance").get() as {scanPass:string}).scanPass;
+    const journal=db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND caseId=?").get(pass,accepted.accepted.id) as InventoryJournal;
+    expect(hooks!.cleanupDependency(journal.journalId)).toBe(true);
+    expect(hooks!.duplicateInventoryDependency(journal,pass)).toEqual({blocked:false,consumedItems:12});
+    expect(hooks!.duplicateInventoryDependency(journal,old)).toEqual({blocked:true,consumedItems:12});
+    expect(hooks!.duplicateInventoryDependency({...journal,budget:journal.budget+1},pass)).toEqual({blocked:true,consumedItems:12});
+    expect(await readFile(accepted.record.encryptedPayloadPath)).toBeDefined();
+  });
+  it("never promotes an ordinary private entry through repeated original scanner hydration",async()=>{
+    const f=await setup();await f.accept();bindMaintenance(f.owner,f.services,f.monotonicNow);await scanAll(f.owner);
+    const scanner=custodyErasureOwner(f.owner.custody),old=(f.db.prepare("SELECT scanPass FROM erasure_maintenance").get() as {scanPass:string}).scanPass;
+    const before=f.db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=?").all(old);
+    let run=await beginMaintenance(f.owner);await scanner.invalidateAndClose(run);await settleMaintenance(f.owner);
+    run=await beginMaintenance(f.owner);await scanner.startFreshPass(run);await settleMaintenance(f.owner);await scanAll(f.owner);
+    expect((f.db.prepare("SELECT scanPass FROM erasure_maintenance").get() as {scanPass:string}).scanPass).not.toBe(old);
+    await prune(f.owner);
+    expect(f.db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=?").all(old)).toEqual(before);
+    expect(f.db.prepare("SELECT 1 FROM erasure_inventory_journals WHERE pass=?").get(old)).toBeDefined();
   });
   it.each(["changed", "private-entry"] as const)("retains duplicate bookkeeping with %s dependence", async reason => {
     const f = await setup(); await f.accept(); bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);

@@ -169,11 +169,11 @@ const objectFields = "pass,journalId,slot,leaf,root,presence,device,inode,size,t
 const slots = ["incoming-sealed", "original-sealed", "journal-temp", "journal"] as const;
 function createCleanupInventory(db: Database.Database, repository: ApplicationRepository, custody: CustodyLedger, config: CustodyConfig,
   eligibility: (journal: Readonly<InventoryJournal>, now: string) => Disposition | null, originalZero: (id: string) => boolean) {
-  const candidates = new WeakMap<CleanupCandidate, CleanupOperands & { run: MaintenanceRun }>();
+  let candidates = new WeakMap<CleanupCandidate, CleanupOperands & { run: MaintenanceRun }>();
   const initialZero = new Set<string>();
   interface PruneRow { pass: string; journalId?: string; slot?: string; leaf?: string; root?: string }
   interface PruneRecord { stream: number; row: PruneRow | undefined; cursor: { scanPass: string; journalId: string; slot: string; leaf: string; root: string }; run: MaintenanceRun }
-  const pruning = new WeakMap<CleanupPruneCandidate, PruneRecord>();
+  let pruning = new WeakMap<CleanupPruneCandidate, PruneRecord>();
   let recoveryCursor = ["", "", "", ""], recoveryComplete = false, preflight = ["", "", "", ""], preflightComplete = false;
   let current: { id: string; planning: boolean; slot: string; leaf: string; execution: number; retiring: boolean } | undefined;
   let cycleStarted = false, blocked = false;
@@ -266,6 +266,16 @@ function createCleanupInventory(db: Database.Database, repository: ApplicationRe
   }
   return Object.freeze({
     read,
+    startFreshPass(observation: CustodyObservation, run: MaintenanceRun) {
+      check(run);
+      const value = consumeCustodyObservation(observation, custody, run);
+      if (value.kind !== "fresh-pass" || value.pass !== pass()) denied();
+      candidates = new WeakMap(); pruning = new WeakMap(); initialZero.clear();
+      recoveryCursor = ["", "", "", ""]; recoveryComplete = false;
+      preflight = ["", "", "", ""]; preflightComplete = false;
+      current = undefined; cycleStarted = false; blocked = false;
+      return 3;
+    },
     recoveryReady: () => recoveryComplete,
     nextRecovery(run: MaintenanceRun) {
       check(run);

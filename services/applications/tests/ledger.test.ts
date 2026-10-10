@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createSafetyJournal } from "../src/ledger";
+import { createSafetyJournal, maintenanceJournal } from "../src/ledger";
+import { maintenanceFixture } from "./fixtures/maintenance";
+import { beginMaintenance, bindMaintenance, maintenanceSnapshot, settleMaintenance } from "../src/worker-maintenance";
 import { entryHash, fence, instant, syntheticJournal } from "./fixtures/ledger";
 import type { DeletionLedgerPort, DurableReceipt, JournalEvent, LedgerTrustContext } from "../src/types";
 
@@ -14,6 +16,35 @@ function deferred<T>() { let resolve!: (value: T) => void, reject!: (error: Erro
 afterEach(() => vi.useRealTimers());
 
 describe("one bounded worker journal owner", () => {
+  it("replays a greater-than-1000 backlog through fixed original-owner maintenance slices without bypassing projection", async () => {
+    const f = await maintenanceFixture("ordinary", true);
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    try {
+      for (let i = 1; i <= 1001; i++) f.journalFixture.commit(["tj-journal-event-v1", i.toString(16).padStart(32, "0"), instant, "barrier", ["a".repeat(64), "0".repeat(64), "refresh"]]);
+      const before = f.journalFixture.receipts.length;
+      let run = await beginMaintenance(f.owner);
+      let result = await maintenanceJournal(run, f.owner.repository, { kind: "refresh", purpose: "refresh" });
+      expect(result.value).toMatchObject({ kind: "continuation", next: "continue-replay" });
+      expect(result.consumedItems).toBe(544);
+      expect(maintenanceSnapshot(f.owner).consumedItems).toBe(544);
+      await expect(maintenanceJournal(run, f.owner.repository, { kind: "continue-replay" })).rejects.toThrow("MAINTENANCE_BUDGET_INSUFFICIENT");
+      let slices = 1;
+      while ("kind" in result.value && result.value.kind === "continuation") {
+        await settleMaintenance(f.owner); run = await beginMaintenance(f.owner);
+        result = await maintenanceJournal(run, f.owner.repository, { kind: "continue-replay" });
+        expect(result.consumedItems).toBe(544);
+        expect(++slices).toBeLessThan(130);
+      }
+      expect(result.value).toMatchObject({ kind: "observed", checkpoint: { sequence: String(before + 1) } });
+      expect(slices).toBe(126);
+      // The original projection rejects contradictory signed causal history;
+      // replay slicing must not replace it with merely advancing a cursor.
+      await settleMaintenance(f.owner);
+      f.journalFixture.commit(fence()); f.journalFixture.commit(fence("f".repeat(32)));
+      run = await beginMaintenance(f.owner);
+      await expect(maintenanceJournal(run, f.owner.repository, { kind: "refresh", purpose: "refresh" })).rejects.toThrow("MAINTENANCE_COMMAND_FAILED");
+    } finally { await settleMaintenance(f.owner); await f.close(); }
+  });
   it("settlement observes real admitted append ownership after the caller times out", async () => {
     vi.useFakeTimers(); const gate = deferred<DurableReceipt>(); let blocked = false;
     const h = harness(s => ({ ...s.port, append: event => blocked ? gate.promise : s.port.append(event) }));

@@ -3,12 +3,16 @@ import Database from "better-sqlite3";
 import { rm } from "node:fs/promises";
 import { lstatSync, linkSync, unlinkSync, renameSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { createSecretKey } from "node:crypto";
+import { createArtifactStore } from "../src/artifact-store";
+import { runDispatchOnce } from "../src/dispatch";
+import { utcInstant, type DispatchDependencies } from "../src/types";
 import { maintenanceFixture } from "./fixtures/maintenance";
 import { refreshTestRepository } from "./fixtures/admission";
 import { erasureOwner } from "../src/erasure-repository";
 import { custodyErasureOwner } from "../src/custody-erasure";
 import { beginMaintenance, bindMaintenance, settleMaintenance, maintenanceSnapshot, maintenanceCommand } from "../src/worker-maintenance";
-import type { EraseScope, ErasureRowCursor, WorkerOwner } from "../src/types";
+import type { EraseScope, ErasureRowCursor, WorkerOwner, DurableReceipt } from "../src/types";
 
 const connections = vi.hoisted(() => [] as Database.Database[]);
 vi.mock("better-sqlite3", async original => {
@@ -60,6 +64,62 @@ async function physical(owner: WorkerOwner, commit: string) {
   throw new Error("SYNTHETIC_PHYSICAL_DID_NOT_FINISH");
 }
 
+async function expiredDelivery(state:"queued"|"ready"|"smtp_accepted"|"uncertain"|"delivered"|"invalid"|"needs_attention"){
+  const f=await maintenanceFixture("ordinary",true);fixtures.push(f);
+  const accepted=await f.accept(),db=connections.at(-1)!,repo=f.owner.repository,key=createSecretKey(Buffer.alloc(32,7));
+  const deps:DispatchDependencies={...f.owner,owner:"expiry-regression",keys:accepted.keys,artifacts:createArtifactStore(repo,accepted.keys,f.owner.custody),
+    signingKeyId:"expiry-key",signingKeys:new Map([["expiry-key",key]]),verificationKeys:new Map([["expiry-key",key]]),
+    reconstruction:{scope:f.owner.custody,monotonicNow:()=>0,
+      scanner:{assurance:"qualified-local-engine",scan:async file=>({kind:"clean",complete:true,digest:file.digest,bytes:file.bytes,signatureTime:utcInstant(f.owner.clock.now().toISOString()),engineIdentity:"synthetic-only"})},
+      inspector:{assurance:"local-test",inspect:async()=>({kind:"inspected",inspection:{format:"png",pageCount:1}})},raster:{render:async()=>{throw new Error("NO_FILES");}},output:{verify:async()=>{}}},
+    createSmtp:()=>({connect:async()=>{},login:async()=>{},send:async(_envelope,raw)=>{for await(const bytes of raw)void bytes;if(state==="uncertain")throw new Error("synthetic-unknown-send");return{accepted:["info@trinkgut-jammers.de"],rejected:[],response:"250 synthetic"};},close:()=>{}}),
+    createMailbox:()=>({findVerified:async mail=>({complete:true,copies:[{mailbox:"INBOX",uidValidity:"1",uid:42,fingerprint:mail.fingerprint}],issues:[]}),disconnect:async()=>{}})};
+  if(state==="invalid"||state==="needs_attention"){
+    const claim=repo.claimDispatchWork("expiry-regression",utcInstant(f.owner.clock.now().toISOString()),"prepare")!;
+    await repo.recordDeliveryFailure({id:claim.case.id,version:claim.case.version,token:claim.case.claimToken},state==="invalid"?{category:"invalid",reason:"INVALID_INPUT"}:{category:"operational",reason:"DEPENDENCY_UNAVAILABLE"},utcInstant(f.owner.clock.now().toISOString()));
+  }else if(state!=="queued"){
+    expect(await runDispatchOnce(deps)).toMatchObject({state:"ready"});
+    if(state!=="ready")expect(await runDispatchOnce(deps)).toMatchObject({state:state==="delivered"?"smtp_accepted":state});
+    if(state==="delivered")expect(await runDispatchOnce(deps)).toMatchObject({state:"delivered"});
+  }
+  f.advance(7*86400000);await refreshTestRepository(repo);const erasure=erasureOwner(repo);
+  const event=await repo.withCaseLock(accepted.accepted.id,async()=>{const value=erasure.prepareCommit(accepted.accepted.id,"processing_payload");erasure.acknowledge(value,await erasure.journal!.append(value));return value;});
+  bindMaintenance(f.owner,f.services,f.monotonicNow);
+  const result={...f,db,accepted,erasure,event,predecessor:null};await scan(f.owner);await physical(f.owner,event[1]);return result;
+}
+
+it.each(["queued","ready","smtp_accepted","uncertain","delivered","invalid","needs_attention"] as const)("preserves original delivery evidence while bounded payload erasure handles expired %s",async state=>{
+  const f=await expiredDelivery(state),id=f.accepted.accepted.id;
+  const beforeCase=f.db.prepare("SELECT * FROM cases WHERE id=?").get(id) as Record<string,unknown>;
+  const beforeDelivery=f.db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id) as Record<string,unknown>;
+  const attempts=f.db.prepare("SELECT * FROM delivery_attempts WHERE caseId=?").all(id);
+  await rows(f);
+  const afterCase=f.db.prepare("SELECT * FROM cases WHERE id=?").get(id) as Record<string,unknown>;
+  const afterDelivery=f.db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id) as Record<string,unknown>;
+  const changed=!["delivered","invalid","needs_attention"].includes(state);
+  expect(afterCase).toEqual({...beforeCase,encryptedPayloadPath:null,payloadBytes:0,...(changed?{deliveryState:"needs_attention",version:Number(beforeCase.version)+1}:{})});
+  expect(afterDelivery).toEqual({...beforeDelivery,sendDueAt:null,...(changed?{category:"operational",reason:"PROCESSING_EXPIRED",determinedAt:f.owner.clock.now().toISOString()}:{})});
+  expect(f.db.prepare("SELECT * FROM delivery_attempts WHERE caseId=?").all(id)).toEqual(attempts);
+  expect(f.db.prepare("SELECT event,version,at FROM audit WHERE caseId=? AND event='delivery:failure:PROCESSING_EXPIRED'").all(id)).toEqual(changed?[{event:"delivery:failure:PROCESSING_EXPIRED",version:Number(beforeCase.version)+1,at:f.owner.clock.now().toISOString()}]:[]);
+  await rows(f);
+  expect(f.db.prepare("SELECT * FROM cases WHERE id=?").get(id)).toEqual(afterCase);
+  expect(f.db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id)).toEqual(afterDelivery);
+  expect(f.db.prepare("SELECT count(*) n FROM audit WHERE caseId=? AND event='delivery:failure:PROCESSING_EXPIRED'").get(id)).toEqual({n:changed?1:0});
+});
+
+it.each(["active-claim","audit-rollback","lost-hold","projection-binding"] as const)("does not partially terminalize expired delivery on %s",async defect=>{
+  const f=await expiredDelivery("queued"),id=f.accepted.accepted.id;
+  if(defect==="active-claim")f.db.prepare("UPDATE cases SET deliveryState='scanning',claimOwner='active',claimedAt=?,claimToken=?,claimKind='prepare' WHERE id=?").run(f.owner.clock.now().toISOString(),"a".repeat(64),id);
+  if(defect==="audit-rollback")f.db.exec("CREATE TRIGGER expiry_rollback BEFORE INSERT ON audit WHEN NEW.event='delivery:failure:PROCESSING_EXPIRED' BEGIN SELECT RAISE(ABORT,'synthetic-rollback'); END");
+  if(defect==="projection-binding")f.db.prepare("UPDATE erasure_obligations SET inspectionGeneration=? WHERE commitEventId=?").run("f".repeat(32),f.event[1]);
+  const beforeCase=f.db.prepare("SELECT * FROM cases WHERE id=?").get(id),beforeDelivery=f.db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id);
+  if(defect==="lost-hold")f.loseHold();
+  await expect(rows(f)).rejects.toThrow();
+  expect(f.db.prepare("SELECT * FROM cases WHERE id=?").get(id)).toEqual(beforeCase);
+  expect(f.db.prepare("SELECT * FROM deliveries WHERE caseId=?").get(id)).toEqual(beforeDelivery);
+  expect(f.db.prepare("SELECT 1 FROM audit WHERE caseId=? AND event='delivery:failure:PROCESSING_EXPIRED'").get(id)).toBeUndefined();
+});
+
 it("minimizes actual payload sources and retires accepted ownership metadata before database maintenance", async () => {
   const f = await setup();
   await scan(f.owner); await physical(f.owner, f.event[1]);
@@ -102,6 +162,18 @@ it("requires the original baseline and rejects a later replacement method", asyn
   await expect(f.erasure.checkpointDatabase(run)).rejects.toThrow("ERASURE_SANITATION_REQUIRED");
   await settleMaintenance(f.owner);
 });
+it("returns the original same-case proposed event before a completed scope needs done",async()=>{
+  const f=await setup("processing_contact",true);await scan(f.owner);await rows(f);await checkpoint(f);
+  const proposed=await f.erasure.withErasureGuard(f.event[1],async()=>f.erasure.prepareCommit(f.accepted.accepted.id,"public_token"));
+  for(let n=0;n<2;n++){
+    const run=await beginMaintenance(f.owner);
+    try{
+      const page=await f.erasure.listPending(run);
+      expect(page.items).toEqual([{kind:"proposed",event:proposed}]);
+      expect(page.consumedItems).toBeLessThanOrEqual(193);
+    }finally{await settleMaintenance(f.owner);}
+  }
+});
 it("truncates the original WAL and recovers the exact done without the erased parent", async () => {
   const f=await setup("identifying_register",true); await scan(f.owner); await physical(f.owner,f.event[1]); await rows(f);
   expect(lstatSync(join(f.root,"registry.sqlite-wal")).size).toBeGreaterThan(0);
@@ -134,6 +206,14 @@ it("truncates the original WAL and recovers the exact done without the erased pa
   expect((await restored.prepareDone(f.event[1],run)).event).toEqual(staged.event);
   await settleMaintenance(next.owner);
 });
+it("acknowledges the same verified committed event after its identifying parent is already absent", async () => {
+  const f=await setup("identifying_register",true);
+  const receipt=f.db.prepare("SELECT entry,head FROM erasure_events WHERE eventId=?").get(f.event[1]) as DurableReceipt;
+  await scan(f.owner); await physical(f.owner,f.event[1]); await rows(f);
+  expect(f.db.prepare("SELECT 1 FROM cases WHERE id=?").get(f.accepted.accepted.id)).toBeUndefined();
+  const run=await beginMaintenance(f.owner);
+  await expect(f.erasure.acknowledgeCommit(f.event,receipt,run)).resolves.toEqual({consumedItems:215});
+});
 async function checkpoint(f: Pick<Awaited<ReturnType<typeof setup>>, "owner"|"erasure">) {
   for(let n=0;n<200;n++) {
     const run=await beginMaintenance(f.owner);
@@ -157,6 +237,7 @@ it.each(["processing_contact","public_token"] as const)("executes independent %s
   expect(f.db.prepare("SELECT payloadBytes FROM cases WHERE id=?").get(f.accepted.accepted.id)).toEqual({payloadBytes:f.accepted.record.actualBytes});
   expect(f.db.prepare("SELECT 1 FROM erasure_manifests").get()).toBeUndefined();
   expect(f.db.prepare("SELECT 1 FROM erasure_inventory_journals WHERE caseId=?").get(f.accepted.accepted.id)).toBeDefined();
+  expect(f.db.prepare("SELECT deliveryState FROM cases WHERE id=?").get(f.accepted.accepted.id)).toEqual({deliveryState:"queued"});
 });
 it("erases the genuine final identity and original reservation atomically after physical proof", async () => {
   const f=await setup("identifying_register"); await scan(f.owner); await physical(f.owner,f.event[1]); await rows(f);
@@ -369,8 +450,9 @@ it("denies parentless terminal completion when an original associated reservatio
   await expect(f.erasure.checkpointDatabase(run)).rejects.toThrow();
   expect(f.db.prepare("SELECT stage FROM erasure_obligations").get()).toEqual({stage:"database-maintenance-pending"});
 });
-it("charges original SQL selection, returned rows and mutations throughout row and sanitation commands",async()=>{
-  const f=await setup("identifying_register",true); await scan(f.owner); await physical(f.owner,f.event[1]);
+it.each(["identifying_register","processing_payload"] as const)("charges original SQL selection, returned rows and mutations throughout %s row and sanitation commands",async scope=>{
+  const f=scope==="processing_payload"?await expiredDelivery("smtp_accepted"):await setup(scope,true);
+  if(scope==="identifying_register"){await scan(f.owner);await physical(f.owner,f.event[1]);}
   let sqlItems=0, total=0; const prepare=f.db.prepare.bind(f.db);
   vi.spyOn(f.db,"prepare").mockImplementation(sql=>{
     const statement=prepare(sql), get=statement.get.bind(statement), all=statement.all.bind(statement), run=statement.run.bind(statement);

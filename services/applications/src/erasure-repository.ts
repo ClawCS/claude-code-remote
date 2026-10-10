@@ -3,12 +3,13 @@ import { createHash, randomBytes } from "node:crypto";
 import { lstatSync, type Stats } from "node:fs";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { decodeJournalEvent, encodeJournalEvent } from "./ledger-contract";
+import { maintenanceBarrierCredits } from "./ledger";
 import { admissionScopeAccepts, registrationAssociation } from "./deletion-association";
 import { externalAttestationAssociation, replayAssociation } from "./erasure-association";
 import { createErasureRowSelector, createCustodyInventoryStorage, validateSafetyCarry, type PhysicalVerifier } from "./erasure-storage";
 import type { CustodyConfig, CustodyLedger } from "./types";
 import { berlinDate, operatorReason } from "./lifecycle";
-import { assertDatabaseSanitationBaseline, assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, originalMaintenanceCustody, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
+import { assertDatabaseSanitationBaseline, assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, maintenanceReadPhase, originalMaintenanceCustody, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
 import type { DatabaseIncarnation } from "./types";
 import { advanceAuthMaintenanceClock } from "./auth-repository";
 import { applicationId, staffId, utcInstant, type ApplicationId, type ApplicationRepository, type CaseRecord, type CurrentExternalAttestation, type CurrentMailboxClear, type DeletionScope, type DeliveryRecord, type DurableReceipt, type EraseJournalEvent, type EraseScope, type ErasureRowCursor, type ErasureRowPage, type ErasureWork, type ErasureWorkPage, type FinalErasureEvidence, type SafetyJournal } from "./types";
@@ -47,6 +48,12 @@ export interface ErasureOwner {
   lockRestoredAuthentication(): void;
   listDue(run: MaintenanceRun): Promise<DuePage>;
   prepareDue(candidate: DueCandidate, run: MaintenanceRun): Promise<Readonly<{ event: EraseJournalEvent; consumedItems: number }>>;
+  prepareDueBatch(run: MaintenanceRun): Promise<Readonly<{ prepared: number; consumedItems: number }>>;
+  acknowledgeCommit(event: EraseJournalEvent, receipt: DurableReceipt, run: MaintenanceRun): Promise<Readonly<{ consumedItems: number }>>;
+  finalWorkBatch(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; hasWork: boolean; nextWakeAt: string | null; consumedItems: number }>>;
+  assertFinalWork(): void;
+  assertSanitizedFinalWork(): void;
+  checkpointFinalDatabase(run: MaintenanceRun): Promise<Readonly<{ complete: boolean; consumedItems: number }>>;
   expireGlobalBatch(run: MaintenanceRun): Promise<Readonly<{ deleted: number; hasMore: boolean; consumedItems: number }>>;
   listPending(run: MaintenanceRun): Promise<Readonly<{ items: readonly PendingMaintenance[]; hasMore: boolean; consumedItems: number }>>;
   listCommitted(run: MaintenanceRun): Promise<ErasureWorkPage>;
@@ -320,14 +327,32 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     }
     if(!old)db.prepare("INSERT INTO erasure_safety_carry(eventId,caseId,source,event,phase,entry,head,coveringCommit) VALUES(@eventId,@caseId,@source,@event,@phase,@entry,@head,@coveringCommit)").run(carry);
   }
+  function expireCommittedPayload(current:ErasureWork,run:MaintenanceRun):void {
+    if(current.scope!=="processing_payload")return;
+    // Fixed point-only transition. It remains reachable after retireOriginal
+    // cleared path/bytes, and when no sendDueAt target remains. It conveys no
+    // mailbox absence or delivery-success evidence.
+    if(!db.prepare("SELECT 1 FROM cases WHERE id=?").get(current.caseId))return;
+    const row=deps.readCase(current.caseId),delivery=deps.delivery(current.caseId);
+    const now=utcInstant(maintenanceRemaining(run,deps.repository).now);
+    if(row.claimToken!==null||row.claimOwner!==null||row.claimedAt!==null||row.claimKind!==null)fail("ERASURE_CLAIM_ACTIVE");
+    if(now<row.payloadDeleteAfter||row.deliveryState==="delivered"||row.deliveryState==="needs_attention"||delivery.confirmedAt!==null||delivery.category==="invalid")return;
+    if(!["queued","scanning","ready","sending","smtp_accepted","uncertain"].includes(row.deliveryState)||row.version>=Number.MAX_SAFE_INTEGER)fail();
+    const changed=db.prepare("UPDATE cases SET deliveryState='needs_attention',version=version+1 WHERE id=? AND version=? AND deliveryState=? AND claimToken IS NULL AND claimOwner IS NULL AND claimedAt IS NULL AND claimKind IS NULL").run(row.id,row.version,row.deliveryState);
+    if(changed.changes!==1)fail("ERASURE_UNVERIFIED");
+    if(db.prepare("UPDATE deliveries SET category='operational',reason='PROCESSING_EXPIRED',determinedAt=?,sendDueAt=NULL WHERE caseId=? AND confirmedAt IS NULL AND (category IS NULL OR category!='invalid')").run(now,row.id).changes!==1)fail("ERASURE_UNVERIFIED");
+    db.prepare("INSERT INTO audit(caseId,event,version,at) VALUES(?,'delivery:failure:PROCESSING_EXPIRED',?,?)").run(row.id,row.version+1,now);
+  }
   async function applyRowBatch(commitEventId: string, cursor: ErasureRowCursor | null, run: MaintenanceRun) {
     assertMaintenanceSettled(run, deps.repository);
     const verifier = physicalVerifiers.get(originalMaintenanceCustody(run, deps.repository));
     if (!verifier) fail("ERASURE_UNVERIFIED");
     // Guard20 + inspector + consume99 + selection32 + <=11 targets *15
     // (source/fact/carry probes, validation, carry+delete), secure_delete1,
-    // fresh selector64, retirement50, stage1, pre-carry/current-work44.
-    const maximum = 20 + verifier.inspectionMaximum + 99 + 32 + 165 + 1 + 64 + 50 + 1 + 44;
+    // fresh selector64, retirement50, stage1, pre-carry/current-work44;
+    // expiry64 covers live point2 + validated case12/delivery24 + three
+    // statement/changed-row pairs6 (=44), including applied/pending fences.
+    const maximum = 20 + verifier.inspectionMaximum + 99 + 32 + 165 + 1 + 64 + 50 + 1 + 44 + 64;
     if (maintenanceRemaining(run, deps.repository).items < maximum) return Object.freeze({ next: cursor, complete: false, consumedItems: 0 });
     const result = await maintenanceCommand(run, deps.repository, maximum, "filesystem", () => owner.withErasureGuard(commitEventId, async initial => {
       assertMaintenance(run, deps.repository);
@@ -343,6 +368,7 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
           const current = work(commitEventId); consumed += 4;
           if (JSON.stringify(current) !== JSON.stringify(initial)) fail("ERASURE_UNVERIFIED");
           if (db.pragma("secure_delete", { simple: true }) !== 1) fail("ERASURE_SANITATION_REQUIRED"); consumed++;
+          expireCommittedPayload(current,run); consumed+=64;
           if(current.scope==="incident_identity"||current.scope==="identifying_register") {
             const lifecycle=db.prepare("SELECT pendingEventId FROM case_lifecycle WHERE caseId=?").get(current.caseId) as {pendingEventId:string|null}|undefined;
             if(lifecycle?.pendingEventId)preserveSource(current,"lifecycle",lifecycle.pendingEventId);
@@ -420,11 +446,11 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     ["deliveries", "determinedAt", "caseId", "maintenance_invalid_due", "incident_identity", 1],
     ["case_lifecycle", "deleteFrom", "caseId", "deletion_due", "identifying_register", 0],
   ] as const;
-  async function listDue(run: MaintenanceRun): Promise<DuePage> {
+  async function listDue(run: MaintenanceRun, maximumCandidates = 20): Promise<DuePage> {
     const remaining = maintenanceRemaining(run, deps.repository);
     // State query+row(2), cursor query+row(2), key query(1), lookahead(1),
     // two fairness writes(2); per parent row(1), two point queries+rows(4).
-    const limit = Math.min(20, remaining.selections, Math.floor((remaining.items - 8) / 5));
+    const limit = Math.min(maximumCandidates, remaining.selections, Math.floor((remaining.items - 8) / 5));
     if (limit < 1) return Object.freeze({ items: Object.freeze([]), hasMore: true, consumedItems: 0 });
     const result = await maintenanceCommand(run, deps.repository, 8 + 5 * limit, "scalar", () => db.transaction(() => {
       assertMaintenance(run, deps.repository);
@@ -479,6 +505,120 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     }));
     return Object.freeze({ event: result.value, consumedItems: result.consumedItems });
   }
+  async function prepareDueBatch(run: MaintenanceRun) {
+    // Three candidates plus their complete guarded preparation fit one shared
+    // run (23 + 3*279 = 860). Candidate provenance never escapes to a later run.
+    if (maintenanceRemaining(run, deps.repository).items < 860) return Object.freeze({ prepared: 0, consumedItems: 0 });
+    const page = await listDue(run, 3);
+    let consumedItems = page.consumedItems;
+    for (const candidate of page.items) consumedItems += (await prepareDue(candidate, run)).consumedItems;
+    return Object.freeze({ prepared: page.items.length, consumedItems });
+  }
+  async function acknowledgeCommit(event: EraseJournalEvent, receipt: DurableReceipt, run: MaintenanceRun) {
+    if (event[3] !== "erase_commit") fail();
+    assertMaintenanceSettled(run, deps.repository);
+    const result = await maintenanceCommand(run, deps.repository, 215, "scalar", () => deps.guarded(event[4][0], async () => {
+      selectMaintenance(run, deps.repository, `case:${event[4][0]}`);
+      reconcileSelectedClaim(event[4][0], run);
+      acknowledgeRecorded(event, receipt);
+      return { value: undefined, consumedItems: 215 };
+    }));
+    return Object.freeze({ consumedItems: result.consumedItems });
+  }
+  // Release evidence is built by the original connection from examined keys,
+  // never by LIMIT after an unbounded uncovered-row filter. This read-only
+  // continuation is invalidated by ANY intervening original/external DB write
+  // or independently applied journal head change.
+  let finalCheck: { stamp: string; phase: number; at: string; id: string; nextWakeAt: string | null; hasWork: boolean; complete: boolean } | undefined;
+  let finalSanitation: string | undefined;
+  function finalStamp(): string {
+    if (!deps.journal) fail("ERASURE_UNVERIFIED");
+    const credit = maintenanceBarrierCredits(deps.journal);
+    const changes = (db.prepare("SELECT total_changes() AS value").get() as { value: number }).value;
+    return JSON.stringify([changes - credit, db.pragma("data_version", { simple: true })]);
+  }
+  async function finalWorkBatch(run: MaintenanceRun) {
+    const phase = maintenanceReadPhase(run, deps.repository);
+    const now = maintenanceRemaining(run, deps.repository, phase).now;
+    const result = await maintenanceCommand(run, deps.repository, 200, phase, async () => {
+      const stamp = finalStamp();
+      if (!finalCheck || finalCheck.stamp !== stamp || (finalCheck.nextWakeAt !== null && finalCheck.nextWakeAt <= now)) finalCheck = { stamp, phase: 0, at: "", id: "", nextWakeAt: null, hasWork: false, complete: false };
+      const state = finalCheck;
+      if (phase === "post-release" && finalSanitation !== stamp) { state.hasWork = true; state.complete = true; }
+      const advance = () => { state.phase++; state.at = ""; state.id = ""; };
+      const future = (at: string) => { if (state.nextWakeAt === null || at < state.nextWakeAt) state.nextWakeAt = at; };
+      if (!state.complete && state.phase < dueStreams.length) {
+        const [table, column, id, index, scope, days] = dueStreams[state.phase];
+        const row = db.prepare(`SELECT ${column} AS keyAt,${id} AS caseId FROM ${table} INDEXED BY ${index} WHERE ${state.phase === 6 ? "category='invalid' AND " : ""}(${column},${id})>(?,?) ORDER BY ${column},${id} LIMIT 1`).get(state.at, state.id) as { keyAt: string; caseId: ApplicationId } | undefined;
+        if (!row) advance();
+        else {
+          selectMaintenance(run, deps.repository, `case:${row.caseId}`, phase);
+          state.at = row.keyAt; state.id = row.caseId;
+          const covering = scope === "processing_contact" || scope === "public_token" ? [scope, "incident_identity", "identifying_register"] : [scope, "identifying_register"];
+          const covered = db.prepare(`SELECT 1 FROM erasure_scopes WHERE caseId=? AND scope IN(${covering.map(() => "?").join(",")}) LIMIT 1`).get(row.caseId, ...covering);
+          if (!covered) {
+            const dueAt = state.phase === 7 ? new Date(Date.parse(row.keyAt) - 2 * 3600000).toISOString() : new Date(Date.parse(row.keyAt) + days * 86400000).toISOString();
+            if (state.phase === 7 ? row.keyAt > berlinDate(new Date(now)) : dueAt > now) { future(dueAt); advance(); }
+            else if (scope !== "identifying_register" || await deps.guarded(row.caseId, async () => currentFinalEvidence(row.caseId) !== null)) state.hasWork = true;
+          }
+        }
+      } else if (!state.complete && state.phase === 8) {
+        const row = db.prepare("SELECT commitEventId,stage,historicalDone FROM erasure_obligations WHERE commitEventId>? ORDER BY commitEventId LIMIT 1").get(state.id) as { commitEventId: string; stage: string; historicalDone: string | null } | undefined;
+        if (!row) advance();
+        else {
+          state.id = row.commitEventId;
+          const current = work(row.commitEventId);
+          selectMaintenance(run, deps.repository, `case:${current.caseId}`, phase);
+          if (row.stage !== "locally-complete" || row.historicalDone === null || locallyCompleted.get(row.commitEventId) !== JSON.stringify(current)) state.hasWork = true;
+        }
+      } else if (!state.complete && state.phase === 9) {
+        if (db.prepare("SELECT 1 FROM erasure_events INDEXED BY maintenance_proposed WHERE phase='proposed' LIMIT 1").get() || db.prepare("SELECT 1 FROM erasure_manifests LIMIT 1").get() || db.prepare("SELECT 1 FROM cleanup_manifests LIMIT 1").get()) state.hasWork = true;
+        advance();
+      } else if (!state.complete && state.phase === 10) {
+        const row = db.prepare("SELECT id,active,expiresAt,cleanupDisposition FROM reservations WHERE id>? ORDER BY id LIMIT 1").get(state.id) as { id: string; active: number; expiresAt: string; cleanupDisposition: string | null } | undefined;
+        if (!row) advance();
+        else {
+          state.id = row.id; selectMaintenance(run, deps.repository, `reservation:${row.id}`, phase);
+          if (row.active === 1) {
+            if (row.cleanupDisposition !== null || row.expiresAt <= now) state.hasWork = true;
+            else future(row.expiresAt);
+          }
+        }
+      } else if (!state.complete && state.phase < 15) {
+        const [table, column, index] = [["abuse_events", "expiresAt", "abuse_events_expiry"], ["deletion_diagnostics", "expiresAt", "maintenance_diagnostics_expiry"], ["deletion_searches", "expiresAt", "maintenance_searches_expiry"], ["auth_attempts", "at", "maintenance_auth_expiry"]][state.phase - 11];
+        const row = db.prepare(`SELECT ${column} AS at FROM ${table} INDEXED BY ${index} ORDER BY ${column},rowid LIMIT 1`).get() as { at: string } | undefined;
+        if (row) { const dueAt = new Date(Date.parse(row.at) + (state.phase === 14 ? 900000 : 0)).toISOString(); if (dueAt <= now) state.hasWork = true; else future(dueAt); }
+        advance();
+      }
+      if (state.hasWork || state.phase >= 15) state.complete = true;
+      if (finalStamp() !== state.stamp) fail("ERASURE_UNVERIFIED");
+      return { value: { complete: state.complete, hasWork: state.hasWork, nextWakeAt: state.nextWakeAt }, consumedItems: 200 };
+    });
+    return Object.freeze({ ...result.value, consumedItems: result.consumedItems });
+  }
+  function assertFinalWork(): void {
+    if (!deps.journal?.observation() || !finalCheck?.complete || finalCheck.hasWork || finalCheck.stamp !== finalStamp() || (finalCheck.nextWakeAt !== null && finalCheck.nextWakeAt <= deps.now())) fail("ERASURE_PENDING");
+  }
+  function assertSanitizedFinalWork(): void {
+    assertFinalWork();
+    if (!finalSanitation || finalSanitation !== finalStamp()) fail("ERASURE_SANITATION_REQUIRED");
+  }
+  async function checkpointFinalDatabase(run: MaintenanceRun) {
+    const maximum = 3 * (ancestry.length + 10) + 20;
+    const result = await maintenanceCommand(run, deps.repository, maximum, "filesystem", () => {
+      assertFinalWork(); safeDatabase(run);
+      let checkpoint: { busy: number; log: number; checkpointed: number }[];
+      try { checkpoint = db.pragma("wal_checkpoint(TRUNCATE)") as typeof checkpoint; }
+      catch (error) {
+        if (error instanceof Error && "code" in error && (error.code === "SQLITE_BUSY" || error.code === "SQLITE_LOCKED")) return { value: false, consumedItems: maximum };
+        throw error;
+      }
+      if (checkpoint.length !== 1 || checkpoint[0].busy !== 0 || checkpoint[0].log !== 0 || checkpoint[0].checkpointed !== 0) return { value: false, consumedItems: maximum };
+      safeDatabase(run, true); assertFinalWork(); finalSanitation = finalStamp();
+      return { value: true, consumedItems: maximum };
+    });
+    return Object.freeze({ complete: result.value, consumedItems: result.consumedItems });
+  }
   async function expireGlobalBatch(run: MaintenanceRun) {
     const remaining = maintenanceRemaining(run, deps.repository);
     // Fixed state query/row2, secure_delete1, select1, fairness write1;
@@ -509,10 +649,11 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     const remaining = maintenanceRemaining(run, deps.repository);
     // Two state/cursor query+row pairs4, optional projection query+row2,
     // <=4 disjoint indexed range queries/lookahead1/two writes2. Each key1 + phase
-    // point query/row2 + verified work's two fixed join pairs4 = at most7.
-    const limit = Math.min(20, remaining.selections, Math.floor((remaining.items - 13) / 7));
+    // point query/row2 + verified work's two fixed join pairs4 + original
+    // same-case proposed-event point query/row2 = at most9.
+    const limit = Math.min(20, remaining.selections, Math.floor((remaining.items - 13) / 9));
     if (limit < 1) return Object.freeze({ items: Object.freeze([]), hasMore: true, consumedItems: 0 });
-    const result = await maintenanceCommand(run, deps.repository, 13 + 7 * limit, "scalar", () => db.transaction(() => {
+    const result = await maintenanceCommand(run, deps.repository, 13 + 9 * limit, "scalar", () => db.transaction(() => {
       const phase = (db.prepare("SELECT pendingPhase FROM maintenance_selectors WHERE singleton=1").get() as { pendingPhase: number }).pendingPhase;
       const cursor = db.prepare("SELECT keyAt,keyCase,keyEvent FROM maintenance_pending_cursors WHERE stream=?").get(phase) as { keyAt: string; keyCase: string; keyEvent: string };
       const selected: { keyAt: string; caseId: ApplicationId; eventId: string }[] = []; let consumed = 6;
@@ -549,6 +690,13 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
         } else {
           const row = db.prepare("SELECT historicalDone FROM erasure_obligations WHERE commitEventId=?").get(key.eventId) as { historicalDone: string | null };
           if (row.historicalDone !== null) continue;
+          const proposed=db.prepare("SELECT eventId,event FROM erasure_events INDEXED BY erasure_one_pending WHERE caseId=? AND phase='proposed'").get(key.caseId) as {eventId:string;event:string}|undefined;
+          consumed+=2;
+          if(proposed){
+            const event=decodeJournalEvent(proposed.event);
+            if((event[3]!=="erase_commit"&&event[3]!=="erase_done")||event[1]!==proposed.eventId||event[4][0]!==key.caseId)fail();
+            items.push(Object.freeze({kind:"proposed",event}));continue;
+          }
           const current = work(key.eventId); consumed += 4;
           if (current.caseId !== key.caseId || current.stage !== "locally-complete") fail();
           items.push(Object.freeze({ kind: "needs-done", work: current }));
@@ -660,29 +808,38 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     return Object.freeze({ commitEventId, caseId: row.caseId, scope: row.scope, ledgerId: row.ledgerId, historyEpoch: row.historyEpoch, associationKeyId: row.associationKeyId, replayAssociation: row.replayAssociation, sequence: row.sequence, entryHash: row.entryHash, stage: row.stage });
   }
   function acknowledge(event: EraseJournalEvent, receipt: DurableReceipt): void {
+    if (event[3] !== "erase_commit") fail();
+    deps.guard(event[4][0]);
+    const raw=deps.readCase(event[4][0]), scope=deps.scope();
+    const identity=db.prepare("SELECT sessionHash,idempotencyKey FROM cases WHERE id=?").get(event[4][0]) as {sessionHash:import("./types").Digest;idempotencyKey:string}|undefined;
+    if(raw.claimToken!==null)fail("ERASURE_CLAIM_ACTIVE");
+    if(!identity||replayAssociation(scope,identity.sessionHash,identity.idempotencyKey)!==event[4][3])fail();
+    if(event[4][1]!=="identifying_register")due(raw,deps.delivery(event[4][0]),event[4][1],utcInstant(deps.now()));
+    if (event[4][1] === "identifying_register") {
+      const evidence=currentFinalEvidence(event[4][0]),payload=event[4];
+      if (!evidence || String(evidence.caseVersion)!==payload[6] || evidence.clear.clearEvent[1]!==payload[7] || evidence.externalAttestationAssociation!==payload[8]) fail("ERASURE_FINAL_EVIDENCE_REQUIRED");
+    }
+    acknowledgeRecorded(event,receipt);
+  }
+  // A replay-verified commit is deletion authority even after its parent was
+  // minimized. Recovery validates the exact original event/receipt and current
+  // projection, without re-running pre-commit business eligibility.
+  function acknowledgeRecorded(event: EraseJournalEvent, receipt: DurableReceipt): void {
     deps.guard(event[4][0]);
     const p = db.prepare("SELECT * FROM erasure_events WHERE eventId=?").get(event[1]) as Phase | undefined;
     if (!p || p.caseId !== event[4][0] || p.event !== encodeJournalEvent(event) || event[3] !== "erase_commit") fail();
     const current = work(event[1]), scope = deps.scope();
     if (scope.ledgerId !== current.ledgerId || scope.historyEpoch !== current.historyEpoch || scope.associationKeyId !== current.associationKeyId) fail();
-    const raw=deps.readCase(p.caseId),identity=db.prepare("SELECT sessionHash,idempotencyKey FROM cases WHERE id=?").get(p.caseId) as {sessionHash:import("./types").Digest;idempotencyKey:string}|undefined;
-    if(raw.claimToken!==null)fail("ERASURE_CLAIM_ACTIVE");
-    if(!identity||replayAssociation(scope,identity.sessionHash,identity.idempotencyKey)!==event[4][3])fail();
-    if(event[4][1]!=="identifying_register")due(raw,deps.delivery(p.caseId),event[4][1],utcInstant(deps.now()));
     if (typeof receipt.entry !== "string" || typeof receipt.head !== "string" || Buffer.byteLength(receipt.entry)>4096 || Buffer.byteLength(receipt.head)>1024) fail();
     let entry: unknown, head: unknown; try { entry = JSON.parse(receipt.entry); head = JSON.parse(receipt.head); } catch { fail(); }
     if (!Array.isArray(entry) || !Array.isArray(head) || entry.length!==2 || head.length!==2 || !Array.isArray(entry[0]) || !Array.isArray(head[0]) || entry[0].length!==8 || head[0].length!==9 || typeof entry[1]!=="string" || typeof head[1]!=="string" || !/^[A-Za-z0-9_-]{86}$/.test(entry[1]) || !/^[A-Za-z0-9_-]{86}$/.test(head[1]) || JSON.stringify(entry)!==receipt.entry || JSON.stringify(head)!==receipt.head) fail();
     const e=entry[0],h=head[0];
     if (e[0]!=="tj-journal-entry-v1" || h[0]!=="tj-journal-head-v1" || e[1]!==scope.ledgerId || e[2]!==scope.historyEpoch || h[1]!==e[1] || h[2]!==e[2] || encodeJournalEvent(e[7])!==p.event || e[4]!==current.sequence || h[4]!==current.sequence || h[5]!==current.entryHash || h[6]!==event[1] || h[7]!==event[2] || createHash("sha256").update("tj-journal-entry-hash-v1\n"+JSON.stringify(e)).digest("hex")!==current.entryHash) fail();
-    if (event[4][1] === "identifying_register") {
-      const evidence=currentFinalEvidence(p.caseId),payload=event[4];
-      if (!evidence || String(evidence.caseVersion)!==payload[6] || evidence.clear.clearEvent[1]!==payload[7] || evidence.externalAttestationAssociation!==payload[8]) fail("ERASURE_FINAL_EVIDENCE_REQUIRED");
-    }
     if(p.phase==="acknowledged") { if(p.entry!==receipt.entry||p.head!==receipt.head) fail(); return; }
     db.prepare("UPDATE erasure_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry,receipt.head,event[1]);
   }
   function budget(value:number):void { if(!Number.isSafeInteger(value)||value<1||value>1000) fail("ERASURE_BUDGET_INVALID"); }
-  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue,prepareDue,expireGlobalBatch,listPending,listCommitted,reconcileClaim,applyRowBatch,checkpointDatabase,prepareDone,acknowledgeDone,
+  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue: (run: MaintenanceRun) => listDue(run),prepareDue,prepareDueBatch,acknowledgeCommit,finalWorkBatch,assertFinalWork,assertSanitizedFinalWork,checkpointFinalDatabase,expireGlobalBatch,listPending,listCommitted,reconcileClaim,applyRowBatch,checkpointDatabase,prepareDone,acknowledgeDone,
     bindCustody(custody: CustodyLedger, config: CustodyConfig) {
       if (boundCustodies.has(custody)) fail("ERASURE_ALREADY_OWNED");
       // Captured only by this original composition. Future fixed 1c commands

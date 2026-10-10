@@ -1,8 +1,8 @@
 import type Database from "better-sqlite3";
 import { applicationId, utcInstant, type CustodyConfig, type EraseScope, type ErasureRowCursor, type ErasureRowKey, type ErasureRowPage, type ErasureRowPhase, type ErasureRowTarget, type ErasureWork } from "./types";
 import { MAX_SEALED_BYTES } from "./crypto";
-import { artifactLimit,SCRATCH_RESERVE } from "./storage-budget";
-import { createHash } from "node:crypto";
+import { artifactLimit,SCRATCH_RESERVE, ARTIFACT_METADATA_RESERVE, OUTPUT_RESERVE, storageBudget } from "./storage-budget";
+import { createHash, randomBytes } from "node:crypto";
 import { decodeJournalEvent,encodeJournalEvent } from "./ledger-contract";
 import { consumeCustodyObservation, type CustodyObservation } from "./custody-erasure";
 import { assertMaintenance, assertMaintenanceCustodyIdentity, assertOriginalMaintenanceCustody, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
@@ -144,24 +144,56 @@ export function validateManifest(value:unknown,journal:Readonly<InventoryJournal
 // query operand, caller phase or structural DTO grants write authority.
 export function createCustodyInventoryStorage(db: Database.Database, repository: ApplicationRepository, custody: CustodyLedger, config: CustodyConfig, acceptedAuthority?: AcceptedAuthority) {
   assertOriginalMaintenanceCustody(custody, repository, config);
-  const accepted = new WeakMap<AcceptedCandidate, AcceptedRecord>();
+  let accepted = new WeakMap<AcceptedCandidate, AcceptedRecord>();
+  // Only actual original-scanner observations of a legitimately associated
+  // null/zero retired original can supply its now-unregistered native charge.
+  // Never reconstructed from inventory rows or an existing zero manifest.
+  const retiredSources = new Map<string,string>();
+  const retiredIdentity = (j: InventoryJournal,o: InventoryObject) => JSON.stringify([j.pass,j.journalId,j.reservationId,j.caseId,j.version,j.state,j.budget,j.cleanupAfter,j.generation,j.domain,j.allowance,o.slot,o.leaf,o.root,o.device,o.inode,o.size]);
   // Exact plans minted by this live composition only. Point membership is not
   // reconstructible from restored phase/charge columns and is never traversed.
   const initialZeroPlans = new Set<string>();
   const manifestKey = (commit: string, object: Pick<InventoryObject, "journalId" | "slot" | "leaf">) => JSON.stringify([commit, object.journalId, object.slot, object.leaf]);
   let recoveryCursor = ["", "", "", ""], recoveryComplete = false;
+  let accounting: { pass: string; stamp: string; phase: "objects" | "journals" | "reservations" | "complete"; key: string[]; physical: number; scratch: number; claims: number; metadata: number;
+    reserve?: { caseId: string; kind: string; bytes: number; registeredPath: string | null; registeredBytes: number | null; journal: string; actual: number; metadata: number } } | undefined;
+  const accountingStamp = () => JSON.stringify([db.prepare("SELECT total_changes() n").get(), db.pragma("data_version", { simple: true })]);
+  let accountingSeal: { pass: string; stamp: string } | undefined;
+  function sealAccounting(observation: CustodyObservation, run: MaintenanceRun): number {
+    assertMaintenanceCustodyIdentity(run,repository,custody); assertMaintenance(run,repository);
+    const value = consumeCustodyObservation(observation,custody,run);
+    if (value.kind !== "accounting-seal" || value.pass !== pass()) inventoryInvalid();
+    // EOF can be repeated by the caller, but it cannot renew a revoked seal
+    // without the original scanner's genuine new pass and full enumeration.
+    if (!accountingSeal || accountingSeal.pass !== value.pass) accountingSeal = {pass:value.pass,stamp:accountingStamp()};
+    return 6;
+  }
   const executionSlots: readonly InventoryObject["slot"][] = ["incoming-sealed", "original-sealed", "artifact-staging", "artifact-sealed", "processing-file", "processing-directory", "journal-temp", "journal"];
   let continuation: { commit: string; authority: string; streams: readonly string[]; stream: number; pass: string; journal: string; slot: string; leaf: string; currentJournal: string | null; planning: boolean; preflight: boolean; execution: number } | undefined;
   function pass(): string {
     const row = db.prepare("SELECT scanPass FROM erasure_maintenance WHERE singleton=1").get() as { scanPass: string };
     if (!token(row.scanPass, 32)) inventoryInvalid(); return row.scanPass;
   }
+  function startFreshPass(observation: CustodyObservation, run: MaintenanceRun): string {
+    assertMaintenanceCustodyIdentity(run, repository, custody); assertMaintenance(run, repository);
+    const value = consumeCustodyObservation(observation, custody, run);
+    if (value.kind !== "fresh-pass" || value.pass !== pass()) inventoryInvalid();
+    const next = randomBytes(16).toString("hex");
+    if (db.prepare("UPDATE erasure_maintenance SET scanPass=? WHERE singleton=1 AND scanPass=?").run(next, value.pass).changes !== 1) inventoryInvalid();
+    accepted = new WeakMap(); initialZeroPlans.clear(); continuation = undefined;
+    retiredSources.clear();
+    recoveryCursor = ["", "", "", ""]; recoveryComplete = false;
+    accounting = undefined;
+    accountingSeal = undefined;
+    return next;
+  }
   function recordObservation(observation: CustodyObservation, run: MaintenanceRun) {
     assertMaintenanceCustodyIdentity(run, repository, custody);
     assertMaintenance(run, repository);
     const value = consumeCustodyObservation(observation, custody, run);
     if (value.kind === "invalidate" || value.kind === "accepted-plan" || value.kind === "accepted-rebind" || value.kind === "accepted-holders" || value.kind === "accepted-absent" || value.kind === "accepted-final" || value.kind === "accepted-recovery") inventoryInvalid();
-    return db.transaction(() => {
+    let retiredObservation: {id:string;fingerprint:string} | undefined;
+    const result = db.transaction(() => {
       let consumedItems = 2;
       if (value.pass !== pass()) inventoryInvalid();
       if (value.kind === "root-open") {
@@ -181,7 +213,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       }
       if (value.kind !== "object" && value.kind !== "incoming-lease-slot") inventoryInvalid();
       const entry = value.journal;
-      let caseId: string | null = null, reservation: { id: string; reservedBytes: number } | undefined;
+      let caseId: string | null = null, reservation: { id: string; reservedBytes: number } | undefined, retired = false;
       if (entry.kind === "intake") {
         const stored = db.prepare("SELECT id,sessionHash,idempotencyKey,reservedBytes,expiresAt,submission FROM reservations WHERE id=?").get(entry.id) as (ReservationSource | undefined); consumedItems += 2;
         if (!stored || !entry.reservation || stored.sessionHash !== entry.reservation.sessionHash || stored.idempotencyKey !== entry.reservation.idempotencyKey || stored.reservedBytes !== entry.reservation.reservedBytes || stored.expiresAt !== entry.reservation.expiresAt || stored.submission !== JSON.stringify(entry.reservation.submission)) throw new Error("ERASURE_ASSOCIATION_INVALID");
@@ -205,6 +237,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
           } else {
             if (accepted.submission !== stored.submission || (accepted.encryptedPayloadPath !== null && accepted.encryptedPayloadPath !== entry.workerPath) || (entry.caseId && accepted.id !== entry.caseId)) throw new Error("ERASURE_ASSOCIATION_INVALID");
             caseId = accepted.id;
+            retired = accepted.encryptedPayloadPath === null && accepted.payloadBytes === 0;
           }
         } else if (entry.caseId || entry.state === "committed") throw new Error("ERASURE_ASSOCIATION_INVALID");
       } else {
@@ -220,6 +253,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       }
       const journal = validateInventoryJournal({ pass: value.pass, journalId: entry.id, caseId, kind: entry.kind, version: entry.version, state: caseId && entry.kind === "intake" ? "committed" : entry.state, artifactKind: entry.artifactKind ?? null, budget: entry.budget, cleanupAfter: entry.cleanupAfter, reservationId: entry.reservation?.id ?? null, generation: entry.lease?.generation ?? null, domain: entry.lease?.domain ?? null, allowance: entry.lease?.allowance ?? null }, reservation);
       const object = validateInventoryObject(value.object, journal, config);
+      if (retired && object.slot === "original-sealed" && object.presence === "present" && object.size! > 0) retiredObservation = {id:journal.journalId,fingerprint:retiredIdentity(journal,object)};
       consumedItems += 2; // Fixed journal and object validation.
       if (caseId) {
         consumedItems++; // Distinct selection admission, before any mutation.
@@ -240,6 +274,8 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       }
       return { caseId, consumedItems };
     }).immediate();
+    if (retiredObservation && !("deferred" in result && result.deferred)) { retiredSources.set(retiredObservation.id,retiredObservation.fingerprint); result.consumedItems += 2; }
+    return result;
   }
   function invalidate(observation: CustodyObservation, run: MaintenanceRun): number {
     assertMaintenanceCustodyIdentity(run, repository, custody);
@@ -250,6 +286,86 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       for (const root of ["custody", "incoming", "runtime"]) db.prepare("UPDATE erasure_scans SET state='blocked',error='STORAGE_FAILED' WHERE pass=? AND root=? AND state IN('scanning','complete')").run(value.pass, root);
     }).immediate();
     return 3;
+  }
+  // Each invocation examines one indexed key. All aggregate state is scalar;
+  // no whole-root inventory, reservation list, or private-map copy is built.
+  // Only the original scanner can mint the same-pass, completed-coverage input.
+  function accountBatch(observation: CustodyObservation, run: MaintenanceRun) {
+    assertMaintenanceCustodyIdentity(run, repository, custody); assertMaintenance(run, repository);
+    const proof = consumeCustodyObservation(observation, custody, run);
+    if (proof.kind !== "accounting" || proof.pass !== pass() || !recoveryComplete) inventoryInvalid();
+    const stamp = accountingStamp();
+    if (!accountingSeal || accountingSeal.pass !== proof.pass || accountingSeal.stamp !== stamp) inventoryInvalid();
+    if (!accounting || accounting.pass !== proof.pass || accounting.stamp !== stamp) accounting = { pass: proof.pass, stamp, phase: "objects", key: ["", "", ""], physical: 0, scratch: 0, claims: 0, metadata: 8192 };
+    const state = accounting;
+    let journal: InventoryJournal | null = null;
+    const object = (id: string, slot: InventoryObject["slot"]) => db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=? AND journalId=? AND slot=? AND leaf='' ").get(state.pass,id,slot) as InventoryObject | undefined;
+    if (state.phase === "objects") {
+      const row = db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=? AND (journalId,slot,leaf)>(?,?,?) ORDER BY journalId,slot,leaf LIMIT 1").get(state.pass,...state.key) as InventoryObject | undefined;
+      if (!row) { state.phase = "journals"; state.key = [""]; }
+      else {
+        const source = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(state.pass,row.journalId) as InventoryJournal;
+        validateInventoryObject(row,source,config);
+        const bytes = row.presence === "present" ? row.size! : 0;
+        state.physical += bytes;
+        if (row.root === "runtime" || source.kind === "processing" && row.slot === "journal") state.scratch += bytes;
+        if (row.slot === "incoming-sealed") state.physical += Math.max(0,(row.chargedBytes ?? 0)-bytes);
+        state.key = [row.journalId,row.slot,row.leaf];
+      }
+    } else if (state.phase === "journals") {
+      journal = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND journalId>? ORDER BY journalId LIMIT 1").get(state.pass,state.key[0]) as InventoryJournal ?? null;
+      if (!journal) { state.phase = "reservations"; state.key = ["", ""]; }
+      else {
+        const metadata = object(journal.journalId,"journal");
+        if (!metadata || metadata.presence !== "present") inventoryInvalid();
+        if (journal.kind === "intake") {
+          const incoming = object(journal.journalId,"incoming-sealed"), original = object(journal.journalId,"original-sealed");
+          if (!incoming || incoming.leaseState === null) inventoryInvalid();
+          const actual = Math.max(incoming.size ?? 0,incoming.chargedBytes ?? 0)+(original?.size ?? 0);
+          if (actual > journal.budget || journal.state === "committed" && original?.presence !== "present") inventoryInvalid();
+          if (incoming.leaseState !== "released") state.claims += Math.max(0,journal.budget-actual);
+          state.metadata += Math.max(0,8192-metadata.size!);
+          if (journal.state === "reserved" && journal.caseId === null) {
+            const reservation = db.prepare("SELECT sessionHash,idempotencyKey FROM reservations WHERE id=?").get(journal.reservationId) as {sessionHash:string;idempotencyKey:string}|undefined;
+            if (!reservation) inventoryInvalid();
+            if (!db.prepare("SELECT 1 FROM cases WHERE sessionHash=? AND idempotencyKey=?").get(reservation.sessionHash,reservation.idempotencyKey)) state.claims += OUTPUT_RESERVE;
+          }
+        } else if (journal.kind === "artifact") {
+          const staged = object(journal.journalId,"artifact-staging"), sealed = object(journal.journalId,"artifact-sealed");
+          if ((staged?.size ?? 0)+(sealed?.size ?? 0) > journal.budget || journal.state === "committed" && sealed?.presence !== "present") inventoryInvalid();
+        }
+        state.key = [journal.journalId];
+      }
+    } else if (state.phase === "reservations") {
+      if (!state.reserve) {
+        const reserve = db.prepare("SELECT caseId,kind,bytes FROM artifact_reservations WHERE (caseId,kind)>(?,?) ORDER BY caseId,kind LIMIT 1").get(...state.key) as {caseId:string;kind:string;bytes:number}|undefined;
+        if (!reserve) state.phase = "complete";
+        else {
+          const registered = db.prepare("SELECT path,bytes FROM artifacts WHERE caseId=? AND kind=?").get(reserve.caseId,reserve.kind) as {path:string;bytes:number}|undefined;
+          state.reserve = {...reserve,registeredPath:registered?.path??null,registeredBytes:registered?.bytes??null,journal:"",actual:0,metadata:0};
+        }
+      } else {
+        const reserve = state.reserve;
+        const row = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND caseId=? AND journalId>? ORDER BY journalId LIMIT 1").get(state.pass,reserve.caseId,reserve.journal) as InventoryJournal|undefined;
+        if (!row) {
+          state.claims += Math.max(0,(reserve.registeredBytes ?? reserve.bytes)-reserve.actual);
+          state.metadata += Math.max(0,ARTIFACT_METADATA_RESERVE-reserve.metadata);
+          state.key = [reserve.caseId,reserve.kind]; state.reserve = undefined;
+        } else {
+          reserve.journal = row.journalId;
+          if (row.kind === "artifact" && row.artifactKind === reserve.kind && row.state !== "orphan") {
+            const staged = object(row.journalId,"artifact-staging"), sealed = object(row.journalId,"artifact-sealed"), metadata = object(row.journalId,"journal");
+            reserve.metadata += metadata?.size ?? 0;
+            if (!reserve.registeredPath) reserve.actual += (staged?.size ?? 0)+(sealed?.size ?? 0);
+            else if (reserve.registeredPath === `${config.custodyRoot}/${row.journalId}.${row.artifactKind}.enc`) reserve.actual += sealed?.size ?? 0;
+          }
+        }
+      }
+    }
+    if (state.phase === "complete") storageBudget(state.physical,state.scratch,[{allowance:state.claims,actual:0}],state.metadata);
+    // Worst branch: source/pass/stamp queries8, four point lookups8,
+    // identity/byte validations8, cursor/counter operations8 =32 credits.
+    return {complete:state.phase === "complete",journal,consumedItems:32};
   }
   function acceptedWork(commit: string, run: MaintenanceRun, guarded: boolean) {
     assertMaintenanceCustodyIdentity(run, repository, custody); assertMaintenance(run, repository);
@@ -434,8 +550,14 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       if (total > j.budget || total > SCRATCH_RESERVE) inventoryInvalid();
     }
     if (o.slot === "original-sealed") {
-      const row = db.prepare("SELECT reservationId,encryptedPayloadPath,payloadBytes FROM cases WHERE id=?").get(j.caseId) as { reservationId: string; encryptedPayloadPath: string; payloadBytes: number } | undefined;
-      if (!row || row.reservationId !== j.reservationId || row.encryptedPayloadPath !== `${config.custodyRoot}/${relativePath}` || row.payloadBytes !== o.size || row.payloadBytes <= 0) inventoryInvalid();
+      const row = db.prepare("SELECT reservationId,encryptedPayloadPath,payloadBytes,sessionHash,idempotencyKey,submission FROM cases WHERE id=?").get(j.caseId) as { reservationId: string; encryptedPayloadPath: string|null; payloadBytes: number;sessionHash:string;idempotencyKey:string;submission:string } | undefined;
+      if (!row || row.reservationId !== j.reservationId || relativePath !== `${j.reservationId}.enc`) inventoryInvalid();
+      if (row.encryptedPayloadPath === null && row.payloadBytes === 0) {
+        const reservation = db.prepare("SELECT sessionHash,idempotencyKey,reservedBytes,submission FROM reservations WHERE id=?").get(j.reservationId) as {sessionHash:string;idempotencyKey:string;reservedBytes:number;submission:string}|undefined;
+        if (!reservation || reservation.sessionHash !== row.sessionHash || reservation.idempotencyKey !== row.idempotencyKey || reservation.submission !== row.submission || j.budget > reservation.reservedBytes || o.size > j.budget || j.allowance !== reservation.reservedBytes/2 || !j.generation || !j.domain || o.size <= 0 || o.size > j.allowance || retiredSources.get(j.journalId) !== retiredIdentity(j,o)) inventoryInvalid();
+        return o.size;
+      }
+      if (row.encryptedPayloadPath !== `${config.custodyRoot}/${relativePath}` || row.payloadBytes !== o.size || row.payloadBytes <= 0) inventoryInvalid();
       return row.payloadBytes;
     }
     if (o.slot === "artifact-sealed" || o.slot === "artifact-staging") {
@@ -633,7 +755,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     if ((value.manifest.remainingCharge > 0 || isInitialZero(key, run)) && sourceCharge(value) !== value.manifest.remainingCharge) inventoryInvalid();
     return 85; // Both authorities and current-pass retained-identity exclusion.
   }
-  return Object.freeze({ pass, record: recordObservation, invalidate, nextRecovery, recordRecovery, recoveredEntry, recoveryReady: () => recoveryComplete, nextAccepted, readAccepted, planAccepted, rebindAccepted, advanceAccepted, directoryCompanions, absentParent, bindPhysicalVerifier, verifyCompletionWork, inspectionWork, inspectionObject, inspectionReservation, restartAccepted, isInitialZero, checkAcceptedSource });
+  return Object.freeze({ pass, startFreshPass, sealAccounting, accountBatch, record: recordObservation, invalidate, nextRecovery, recordRecovery, recoveredEntry, recoveryReady: () => recoveryComplete, nextAccepted, readAccepted, planAccepted, rebindAccepted, advanceAccepted, directoryCompanions, absentParent, bindPhysicalVerifier, verifyCompletionWork, inspectionWork, inspectionObject, inspectionReservation, restartAccepted, isInitialZero, checkAcceptedSource });
 }
 interface ReservationSource { id: string; sessionHash: string; idempotencyKey: string; reservedBytes: number; expiresAt: string; submission: string }
 

@@ -2,6 +2,9 @@ import { randomUUID } from "node:crypto";
 import type { Server } from "node:net";
 import { runDispatchOnce } from "./dispatch";
 import { createWorkerRpc } from "./worker-rpc";
+import { bindMaintenance, inhibitMaintenance, maintenanceOrigin, settleMaintenanceForClose } from "./worker-maintenance";
+import { runRetentionOnce } from "./retention";
+import { reconcileRestore } from "./restore";
 import { utcInstant, type ApplicationWorker, type DispatchDependencies, type WorkerAssurance, type WorkerLifecycleOptions, type WorkerLifecycleState, type WorkerOwner, type WorkerProof, type WorkerRestoreProof, type WorkerScheduleEntry } from "./types";
 
 const POLL_MS = 1000, MAINTENANCE_MS = 300000, RETENTION_MS = 3600000;
@@ -10,10 +13,11 @@ export function createApplicationWorker(options: WorkerLifecycleOptions): Applic
   let state: WorkerLifecycleState = "new", owner: WorkerOwner | undefined, dispatch: DispatchDependencies | undefined;
   let checkpoint: WorkerRestoreProof | null = null, retention: WorkerProof | null = null;
   let queue = Promise.resolve(), timer: ReturnType<typeof setTimeout> | undefined, rpc: Server | undefined;
-  let pruneTimer: ReturnType<typeof setInterval> | undefined;
-  let maintenanceAt = 0, retentionAt = 0, healthy = false, started = false;
+  let maintenanceAt = 0, retentionAt = 0, healthy = false, started = false, bound = false, maintenanceComplete = false;
+  let origin: "ordinary" | "cold-maintenance" | undefined;
   let drainWork: Promise<boolean> | undefined;
-  let stopping = false;
+  let stopping = false, databaseClosed = false, inhibitionFailed = false;
+  const services = options.services, closeServices = services?.close;
   const reference = randomUUID(), emitted = new Set<string>();
   const allowed = (assurance: WorkerAssurance | undefined) => assurance === "qualified" || (assurance === "local-test" && process.env.NODE_ENV === "test");
   const now = () => utcInstant(owner!.clock.now().toISOString());
@@ -31,7 +35,7 @@ export function createApplicationWorker(options: WorkerLifecycleOptions): Applic
   }
   function current(): boolean {
     try {
-      if (state !== "running" || !healthy || !dispatch || !owner || !restoreCurrent() || !allowed(options.retention?.assurance) || !fresh(retention) || !allowed(options.readiness?.assurance) || !owner.custody.getIntakeReadiness().ready) return false;
+      if (state !== "running" || !healthy || !maintenanceComplete || origin !== "ordinary" || !dispatch || !owner || !restoreCurrent() || !allowed(options.retention?.assurance) || !fresh(retention) || !allowed(options.readiness?.assurance) || !owner.custody.getIntakeReadiness().ready) return false;
       const evidence = options.readiness!.current(owner);
       return [evidence.runtime, evidence.scanner, evidence.mail, evidence.retention].every(fresh);
     } catch { return false; }
@@ -47,13 +51,31 @@ export function createApplicationWorker(options: WorkerLifecycleOptions): Applic
   }
   function schedule(rows: readonly WorkerScheduleEntry[]) {
     if (timer) clearTimeout(timer);
-    if (state !== "running") return null;
+    if (!started || stopping || !owner) return null;
     const time = owner!.clock.now().getTime();
     const deadlines = rows.flatMap(row => [row.dispatchDueAt, row.incidentAt, row.manualRequiredAt]).filter((value): value is NonNullable<typeof value> => value !== null && Date.parse(value) > time).map(value => Date.parse(value));
     const wake = Math.min(time + POLL_MS, ...[maintenanceAt, retentionAt, ...deadlines].filter(deadline => deadline > time));
     timer = setTimeout(() => { timer = undefined; void worker.runOnce(); }, Math.max(1, wake - time));
     timer.unref();
     return utcInstant(new Date(wake).toISOString());
+  }
+  async function maintain() {
+    healthy = false; maintenanceComplete = false;
+    if (!restoreCurrent() || !allowed(options.readiness?.assurance) || !fresh(options.readiness!.current(owner!).runtime) || !allowed(options.retention?.assurance)) throw new Error("WORKER_UNAVAILABLE");
+    const report = await (origin === "cold-maintenance" ? reconcileRestore(owner!) : runRetentionOnce(owner!));
+    if (stopping) return;
+    const time = owner!.clock.now().getTime(), next = report.nextWakeAt === null ? time + POLL_MS : Date.parse(report.nextWakeAt);
+    maintenanceAt = Math.max(time + 1, Math.min(time + (report.status === "complete" ? MAINTENANCE_MS : POLL_MS), next));
+    state = "unavailable";
+    if (origin !== "ordinary" || report.status !== "complete") return;
+    maintenanceComplete = true;
+    if (time >= retentionAt || !fresh(retention)) {
+      retention = await options.retention!.sweep(owner!);
+      retentionAt = owner!.clock.now().getTime() + RETENTION_MS;
+    }
+    if (stopping) return;
+    if (!fresh(retention)) throw new Error("WORKER_UNAVAILABLE");
+    healthy = true; state = "running";
   }
   const worker: ApplicationWorker = {
     getState: () => state,
@@ -63,6 +85,7 @@ export function createApplicationWorker(options: WorkerLifecycleOptions): Applic
       state = "starting";
       try {
         owner ??= options.acquire();
+        if (!bound) { bindMaintenance(owner, services!); bound = true; origin = maintenanceOrigin(owner); }
         if (!allowed(options.restore?.assurance)) throw new Error("WORKER_UNAVAILABLE");
         checkpoint = await options.restore!.verify(owner);
         if (stopping) return { state };
@@ -70,52 +93,38 @@ export function createApplicationWorker(options: WorkerLifecycleOptions): Applic
         // Runtime evidence includes actual previous scanner/raster holder recovery,
         // not merely an available service or a sandbox qualification label.
         if (!allowed(options.readiness?.assurance) || !fresh(options.readiness!.current(owner).runtime)) throw new Error("WORKER_UNAVAILABLE");
-        await owner.custody.reconcile();
-        const ingress = await owner.custody.settleIngress({ kind: "drain" });
-        if (!ingress.complete) throw new Error("WORKER_UNAVAILABLE");
-        await owner.custody.cleanupOrphans();
         if (!allowed(options.retention?.assurance)) throw new Error("WORKER_UNAVAILABLE");
-        retention = await options.retention!.sweep(owner);
-        if (stopping) return { state };
-        if (!fresh(retention)) throw new Error("WORKER_UNAVAILABLE");
-        dispatch = options.dispatch?.(owner);
+        dispatch = origin === "ordinary" ? options.dispatch?.(owner) : undefined;
         if (dispatch && (dispatch.repository !== owner.repository || dispatch.custody !== owner.custody || dispatch.clock !== owner.clock || dispatch.keys.custody !== owner.custody || dispatch.reconstruction.scope !== owner.custody)) throw new Error("WORKER_OWNER_MISMATCH");
-        owner.repository.pruneAdmissionEvents(now());
-        // Synchronous SQLite pruning has no async/case/custody scope and cannot
-        // interleave a transaction. Keep its five-minute bound during slow I/O.
-        pruneTimer = setInterval(() => {
-          try { owner!.repository.pruneAdmissionEvents(now()); } catch { healthy = false; emit("WORKER_UNAVAILABLE"); }
-        }, MAINTENANCE_MS);
-        pruneTimer.unref();
-        maintenanceAt = owner.clock.now().getTime() + MAINTENANCE_MS; retentionAt = owner.clock.now().getTime() + RETENTION_MS;
-        healthy = true; started = true; state = "running";
-        const rows = project();
-        if (options.rpc) {
+        started = true;
+        await maintain();
+        if (stopping) return { state };
+        if (options.rpc && origin === "ordinary") {
           rpc = createWorkerRpc(owner.repository, { ...options.rpc, custody: owner.custody, clock: owner.clock, readiness: worker });
           await new Promise<void>((resolve, reject) => { rpc!.once("error", reject); rpc!.listen(options.rpc!.socketPath, resolve); });
           rpc.on("error", () => { healthy = false; emit("WORKER_UNAVAILABLE"); });
         }
-        schedule(rows);
-      } catch { healthy = false; if (!stopping) state = "unavailable"; emit("WORKER_UNAVAILABLE"); }
+        schedule(maintenanceComplete ? project() : []);
+      } catch { healthy = false; if (!stopping) state = "unavailable"; emit("WORKER_UNAVAILABLE"); schedule([]); }
       return { state };
     }),
     runOnce: () => exclusive(async () => {
-      if (state !== "running" || !owner) return { dispatched: false, nextWakeAt: null };
+      if (!started || stopping || !owner) return { dispatched: false, nextWakeAt: null };
       let dispatched = false;
       try {
         const time = owner.clock.now().getTime();
-        if (time >= maintenanceAt) {
-          owner.repository.pruneAdmissionEvents(now());
-          const ingress = await owner.custody.settleIngress({ kind: "expired" });
-          await owner.custody.cleanupOrphans();
-          healthy = ingress.complete;
-          maintenanceAt = time + MAINTENANCE_MS;
+        if (time >= maintenanceAt || (maintenanceComplete && !owner.custody.getIntakeReadiness().ready)) {
+          await maintain();
+          // One bounded maintenance continuation per scheduler turn. Dispatch
+          // gets a later turn, only after genuine ordinary reopening.
+          return { dispatched: false, nextWakeAt: schedule(maintenanceComplete && !stopping ? project() : []) };
         }
-        if (time >= retentionAt) {
+        if (stopping) return { dispatched: false, nextWakeAt: null };
+        if (maintenanceComplete && time >= retentionAt) {
           retention = allowed(options.retention?.assurance) ? await options.retention!.sweep(owner) : null;
           retentionAt = time + RETENTION_MS;
         }
-        let rows = project();
+        let rows = maintenanceComplete ? project() : [];
         if (current() && rows.some(row => !row.busy && row.dispatchDueAt !== null && row.dispatchDueAt <= now())) {
           await runDispatchOnce(dispatch!); dispatched = true;
           // idle is not a no-op: the selector may have terminalized several rows.
@@ -129,19 +138,26 @@ export function createApplicationWorker(options: WorkerLifecycleOptions): Applic
       if (state === "stopped") return { state, complete: true };
       // Synchronous before the first await, including while dispatch holds the queue.
       stopping = true; state = "draining"; healthy = false; if (timer) clearTimeout(timer); timer = undefined;
+      if (owner && !databaseClosed) {
+        try { if (!bound) throw new Error("MAINTENANCE_UNAVAILABLE"); inhibitMaintenance(owner); }
+        catch { inhibitionFailed = true; }
+      }
       if (!drainWork) {
-        // This requests actual producer termination without waiting for SMTP.
-        const ingress = owner?.custody.settleIngress({ kind: "drain" }).catch(() => null);
         drainWork = exclusive(async () => {
-          const result = await ingress;
-          if (owner && (!result?.complete || !(await owner.custody.settleIngress({ kind: "drain" })).complete)) return false;
-          await options.services?.settle();
+          if (inhibitionFailed) return false;
+          if (owner) await settleMaintenanceForClose(owner);
           if (rpc?.listening) await new Promise<void>((resolve, reject) => rpc!.close(error => error ? reject(error) : resolve()));
-          await options.services?.close();
-          owner?.repository.close(); if (pruneTimer) clearInterval(pruneTimer); state = "stopped"; return true;
+          if (owner) {
+            if (!services || services.close !== closeServices) return false;
+            // The original hold/process/DB-path exclusion remains retained
+            // through SQLite close. Service close may do no later DB cleanup.
+            owner.repository.close(); databaseClosed = true;
+            await closeServices!.call(services);
+          }
+          state = "stopped"; return true;
         }).catch(() => false);
         const attempt = drainWork;
-        void attempt.then(complete => { if (!complete && drainWork === attempt) drainWork = undefined; });
+        void attempt.then(complete => { if (!complete && !databaseClosed && drainWork === attempt) drainWork = undefined; });
       }
       let deadline: ReturnType<typeof setTimeout> | undefined;
       const complete = await Promise.race([drainWork, new Promise<false>(resolve => { deadline = setTimeout(() => resolve(false), graceMs); })]);

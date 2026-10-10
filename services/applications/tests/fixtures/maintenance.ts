@@ -45,12 +45,13 @@ export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance
   const custody = createCustodyLedger(repository, { ...config, ingressAuthority: authority });
   if (startup === "ordinary") await custody.reconcile();
   const owner: WorkerOwner = Object.freeze({ repository, custody, clock });
-  const handle = Object.freeze({});
+  let handle = Object.freeze({});
   let held = false, settles = 0;
   const services: NonNullable<WorkerLifecycleOptions["services"]> = {
-    async holdMaintenance(candidate) { if (candidate !== owner || held) throw new Error("SYNTHETIC_HOLD_INVALID"); held = true; return handle; },
+    async holdMaintenance(candidate) { if (candidate !== owner || held) throw new Error("SYNTHETIC_HOLD_INVALID"); held = true; handle = Object.freeze({}); return handle; },
     assertMaintenanceHeld(candidate, value) { if (candidate !== owner || value !== handle || !held) throw new Error("SYNTHETIC_HOLD_LOST"); },
-    async releaseMaintenance() { throw new Error("RELEASE_NOT_ALLOWED_IN_1A"); },
+    async releaseMaintenance(candidate, value) { this.assertMaintenanceHeld!(candidate, value); held = false; },
+    assertOrdinaryReady(candidate) { if (candidate !== owner || held || !pathExclusion) throw new Error("SYNTHETIC_ORDINARY_INVALID"); },
     async settle() { settles++; }, async close() {},
   };
   if (sanitation) services.assertDatabaseSanitationBaseline = function(candidate, value, target) {
@@ -95,14 +96,16 @@ export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance
     const result = await runDeletionOnce({ repository, clock: { wallNow: clock.now, monotonicNow: () => monotonic }, scope: { currentScope: deletionScope }, verificationKeys: () => new Map([["fixture-mime", createSecretKey(Buffer.alloc(32, 7))]]), createMailbox: () => mailbox });
     if (result.cases[0]?.status !== "mailbox_cleared") throw new Error("SYNTHETIC_FINAL_CLEAR");
   }
-  return { root, owner, config, authority, services, accept, qualifySyntheticFinalScope, losePathExclusion() { pathExclusion = false; }, monotonicNow: () => monotonic, get settles() { return settles; }, loseHold() { held = false; }, advance(ms: number) { monotonic += ms; time += ms; },
-    async restart() {
+  return { root, owner, config, authority, services, journalFixture, accept, qualifySyntheticFinalScope, losePathExclusion() { pathExclusion = false; }, monotonicNow: () => monotonic, get settles() { return settles; }, loseHold() { held = false; }, advance(ms: number) { monotonic += ms; time += ms; },
+    async restart(mode: "ordinary" | "cold-maintenance" = "cold-maintenance") {
       repository.close();
-      const nextRepository = await open("cold-maintenance"), nextCustody = createCustodyLedger(nextRepository, { ...config, ingressAuthority: authority });
+      const nextRepository = await open(mode), nextCustody = createCustodyLedger(nextRepository, { ...config, ingressAuthority: authority });
       const nextOwner: WorkerOwner = Object.freeze({ repository: nextRepository, custody: nextCustody, clock }), nextHandle = Object.freeze({}); let nextHeld = false;
       const nextServices = { ...services,
         async holdMaintenance(candidate: WorkerOwner) { if (candidate !== nextOwner || nextHeld) throw new Error("SYNTHETIC_HOLD_INVALID"); nextHeld = true; return nextHandle; },
         assertMaintenanceHeld(candidate: WorkerOwner, value: object) { if (candidate !== nextOwner || value !== nextHandle || !nextHeld) throw new Error("SYNTHETIC_HOLD_LOST"); },
+        async releaseMaintenance(candidate: WorkerOwner, value: object) { this.assertMaintenanceHeld(candidate,value); nextHeld = false; },
+        assertOrdinaryReady(candidate: WorkerOwner) { if (candidate !== nextOwner || nextHeld || !pathExclusion) throw new Error("SYNTHETIC_ORDINARY_INVALID"); },
       };
       return { owner: nextOwner, services: nextServices };
     },
