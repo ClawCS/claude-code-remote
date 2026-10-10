@@ -2,6 +2,20 @@
 
 **Nicht fertig, nicht live aktiviert.** Dieser Bericht dokumentiert einen gesicherten Entwicklungsstand, keine Abnahme des Bewerbungsportals. Die bestehende Website, Mietanfragen, Newsletter, Werbung, DNS und Mailkonten wurden durch diese Umsetzung nicht verändert.
 
+## Aktueller Prüfstand, 10.10.2026
+
+Die tatsächliche Dateibereinigung für angenommene Bewerbungen ist lokal implementiert (`92f1199`, Korrektur `c750bff`) und unabhängig geprüft. Der ursprünglich fehlgeschlagene Verhaltenstest für die fehlende Löschmethode ist nun abgedeckt; alle 65 bisherigen Dateiprüfungs-Regressionen bleiben erhalten. Der vollständige lokale Lauf bestand mit 124 Dateien und 2.734 Tests **vor** einer anschließenden kleinen Fehlerkorrektur. Danach bestanden zunächst 199 abdeckende Tests sowie Backend-Build, TypeScript, Lint und Diffprüfung. Diese Ergebnisse sind keine Freigabe des gesamten Bewerbungsportals oder des Serverbetriebs.
+
+Die unabhängige Prüfung meldete zwei Befunde: Eine an einen anderen zulässigen internen Speicherplatz verschobene Datei konnte als getrenntes Objekt behandelt werden; außerdem war die Wiederaufnahme weiterhin vom ursprünglichen Bewerbungsdatensatz abhängig. Beide Fehler sind im lokalen Korrekturstand `c750bff` durch zunächst fehlschlagende Verhaltenstests reproduziert und korrigiert. Hinzu kommt der tatsächlich getestete Übergang von bereits bereinigten Dokumenten zur späteren vollständigen Registerlöschung. Anschließend bestanden 209 abdeckende Tests in vier Dateien sowie Backend-Build, TypeScript, Lint und Diffprüfung. Die unabhängige Nachprüfung bestätigt alle drei Korrekturpunkte ohne neue Befunde. Dieser Teilbaustein ist damit lokal abgenommen. Der frühere vollständige Lauf mit 2.734 Tests wird nicht als Gesamtlauf dieses Korrekturstands ausgegeben.
+
+Geprüft werden insbesondere Wiederaufnahme nach Absturz, offene Dateizugriffe trotz entferntem Dateinamen und die Fortsetzung ohne bereits entfernte ursprüngliche Metadatendatei. Gespeicherte Fortschrittsangaben allein gelten nicht als Nachweis tatsächlicher Freigabe. Die zusätzliche Selbstprüfung reproduzierte einen Fehler bei einem vorübergehenden Datenbanklesefehler am Abschlussübergang: Ein erneuter Durchlauf konnte die Dateiprüfung überspringen. Die Korrektur verlangt dann erneut die tatsächliche Prüfung. Die zuerst untersuchte verlorene Zugriffssperre war dagegen bereits durch eine dauerhafte Sperrregel abgesichert; diese wurde nicht gelockert.
+
+Eine technische Planpräzisierung unterscheidet deshalb die unveränderte Übertragung einer noch offenen Speicherverpflichtung von ihrer Erledigung: Bei erneut geprüftem identischem Objekt darf die Zuordnung atomar erneuert werden, ohne belegte Bytes abzuschreiben. Tatsächliche Freigabe, Entfernung und dauerhafte Speicherung müssen danach separat nachgewiesen werden. Andersartige, verschobene oder nicht mehr eindeutig zuordenbare Objekte bleiben gesperrt. Diese Präzisierung erweitert weder die Löschziele noch die Betreiberfreigaben.
+
+Die Betreiberfreigabe für genau drei synthetische Testbewerbungen und eine Testkopie bleibt gespeichert. Noch wurden weder echte Testnachrichten versandt noch bestehende Postfachinhalte gelesen, verändert oder gelöscht. Externe Speicherqualifikation, sicher bereitgestellte Zugangsdaten, Linux-/Scanner-/Wiederherstellungsnachweise und die übrigen offenen Umsetzungsschritte bleiben Voraussetzungen für den Praxistest und die spätere Aktivierung.
+
+Die Bereinigung nie angenommener Uploads, die anschließende Datenbankbereinigung, vollständige Ablaufsteuerung und Verwaltungs-/Bewerbungsoberfläche sind noch nicht durch diesen Teilbaustein abgeschlossen. Keine Live-Aktivierung und kein Push aus diesem Prüfstand.
+
 ## Aktuelle Fortschreibung: Dokumentrekonstruktion
 
 Niko hat sowohl die [schriftliche Ergänzung](../superpowers/specs/2026-10-09-application-document-reconstruction-design.md) als auch den [gezielten Plan-Nachtrag](../superpowers/plans/2026-10-09-application-document-reconstruction.md) bestätigt. Die zuvor offene Richtungsentscheidung ist erledigt; keine weitere Design- oder Methodenfreigabe erforderlich.
