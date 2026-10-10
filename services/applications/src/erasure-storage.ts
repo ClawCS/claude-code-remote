@@ -24,7 +24,7 @@ export interface ErasureManifest {
 declare const acceptedBrand: unique symbol;
 export interface AcceptedCandidate { readonly [acceptedBrand]: true }
 export interface AcceptedOperands { readonly journal: Readonly<InventoryJournal>; readonly object: Readonly<InventoryObject>; readonly manifest: Readonly<ErasureManifest> | null; readonly relativePath: string }
-interface AcceptedRecord extends Omit<AcceptedOperands, "manifest"> { manifest: Readonly<ErasureManifest> | null; run: MaintenanceRun; commit: string; fingerprint: string }
+interface AcceptedRecord extends Omit<AcceptedOperands, "manifest"> { manifest: Readonly<ErasureManifest> | null; run: MaintenanceRun; commit: string; request: string; authority: string | null; fingerprint: string }
 declare const physicalBrand: unique symbol;
 export interface PhysicalCompletion { readonly [physicalBrand]: true }
 export interface PhysicalVerifier {
@@ -143,7 +143,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
   const manifestKey = (commit: string, object: Pick<InventoryObject, "journalId" | "slot" | "leaf">) => JSON.stringify([commit, object.journalId, object.slot, object.leaf]);
   let recoveryCursor = ["", "", "", ""], recoveryComplete = false;
   const executionSlots: readonly InventoryObject["slot"][] = ["incoming-sealed", "original-sealed", "artifact-staging", "artifact-sealed", "processing-file", "processing-directory", "journal-temp", "journal"];
-  let continuation: { commit: string; pass: string; journal: string; slot: string; leaf: string; currentJournal: string | null; planning: boolean; execution: number } | undefined;
+  let continuation: { commit: string; authority: string; streams: readonly string[]; stream: number; pass: string; journal: string; slot: string; leaf: string; currentJournal: string | null; planning: boolean; preflight: boolean; execution: number } | undefined;
   function pass(): string {
     const row = db.prepare("SELECT scanPass FROM erasure_maintenance WHERE singleton=1").get() as { scanPass: string };
     if (!token(row.scanPass, 32)) inventoryInvalid(); return row.scanPass;
@@ -240,14 +240,32 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     selectMaintenance(run, repository, `case:${work.caseId}`);
     return work;
   }
+  function acceptedScope(commit: string, run: MaintenanceRun) {
+    const work = acceptedWork(commit, run, true);
+    let predecessor: ErasureWork | undefined;
+    if (work.scope === "identifying_register") {
+      const source = db.prepare("SELECT eventId,committed FROM erasure_scopes WHERE caseId=? AND scope='processing_payload'").get(work.caseId) as { eventId: string; committed: number } | undefined;
+      if (source) {
+        if (source.committed !== 1) inventoryInvalid();
+        predecessor = acceptedAuthority!.resolve(source.eventId);
+        if (predecessor.scope !== "processing_payload" || ["caseId", "ledgerId", "historyEpoch", "associationKeyId", "replayAssociation"].some(field => predecessor![field as keyof ErasureWork] !== work[field as keyof ErasureWork]) || BigInt(predecessor.sequence) >= BigInt(work.sequence)) inventoryInvalid();
+      }
+    }
+    return { work, predecessor, fingerprint: JSON.stringify([work, predecessor ?? null]), streams: predecessor ? [predecessor.commitEventId, commit] : [commit] };
+  }
+  function candidateWork(value: AcceptedRecord, run: MaintenanceRun) {
+    const scope = acceptedScope(value.request, run);
+    if (value.authority !== scope.fingerprint || !scope.streams.includes(value.commit)) inventoryInvalid();
+    return scope.work;
+  }
   function operands(journal: InventoryJournal, object: InventoryObject, manifest: ErasureManifest | null): AcceptedOperands {
     const j = validateJournal(journal, undefined, undefined, true), o = validateInventoryObject(object, j, config);
     if (manifest) validateManifest(manifest, j, object);
     return Object.freeze({ journal: j, object: Object.freeze({ ...object }), manifest: manifest && Object.freeze({ ...manifest }), relativePath: o.relativePath });
   }
-  function candidate(commit: string, run: MaintenanceRun, value: AcceptedOperands): AcceptedCandidate {
+  function candidate(commit: string, run: MaintenanceRun, value: AcceptedOperands, request = commit, authority: string | null = null): AcceptedCandidate {
     const key = Object.freeze({}) as AcceptedCandidate;
-    accepted.set(key, { ...value, commit, run, fingerprint: JSON.stringify(value) }); return key;
+    accepted.set(key, { ...value, commit, request, authority, run, fingerprint: JSON.stringify(value) }); return key;
   }
   function readAccepted(key: AcceptedCandidate, run: MaintenanceRun): AcceptedOperands {
     const value = accepted.get(key);
@@ -311,42 +329,61 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     return { value: operands(journal, object, null), consumedItems: 8 };
   }
   function nextAccepted(commit: string, run: MaintenanceRun) {
-    const work = acceptedWork(commit, run, true), scanPass = pass();
-    // work's fixed two joins <=8, claim2, selection1, pass2 =13.
-    let consumedItems = 13;
-    if (!continuation || continuation.commit !== commit || continuation.pass !== scanPass) continuation = { commit, pass: scanPass, journal: "", slot: "", leaf: "", currentJournal: null, planning: true, execution: 0 };
+    const scope = acceptedScope(commit, run), work = scope.work, scanPass = pass();
+    // Requested work/claim/selection/pass13 plus predecessor scope point2,
+    // original current fact/obligation8 and bounded association comparisons4.
+    let consumedItems = 27;
+    if (!continuation || continuation.commit !== commit || continuation.pass !== scanPass) continuation = { commit, authority: scope.fingerprint, streams: scope.streams, stream: 0, pass: scanPass, journal: "", slot: "", leaf: "", currentJournal: null, planning: true, preflight: true, execution: 0 };
     const state = continuation;
+    if (state.authority !== scope.fingerprint) inventoryInvalid();
+    if (state.preflight) {
+      const old = db.prepare("SELECT * FROM erasure_manifests WHERE eraseCommitId=? AND (journalId,slot,leaf)>(?,?,?) ORDER BY journalId,slot,leaf LIMIT 1").get(state.streams[state.stream], state.journal, state.slot, state.leaf) as ErasureManifest | undefined; consumedItems += 2;
+      if (old) {
+        const value = manifestOperands(old); consumedItems += 6;
+        if (value.journal.caseId !== work.caseId) inventoryInvalid();
+        consumedItems += excludeMovedIdentity(old, scanPass);
+        state.journal = old.journalId; state.slot = old.slot; state.leaf = old.leaf;
+      } else { state.stream++; state.journal = ""; state.slot = ""; state.leaf = ""; if (state.stream === state.streams.length) { state.preflight = false; state.stream = 0; } }
+      return { candidate: null, exhausted: false, planning: true, consumedItems };
+    }
     if (state.planning) {
       if (!state.currentJournal) {
         const next = db.prepare("SELECT journalId FROM erasure_inventory_journals INDEXED BY erasure_inventory_case WHERE pass=? AND caseId=? AND journalId>? ORDER BY journalId LIMIT 1").get(scanPass, work.caseId, state.journal) as { journalId: string } | undefined; consumedItems += 2;
-        if (!next) { consumedItems += verifySourceCoverage(work); state.planning = false; state.journal = ""; return { candidate: null, exhausted: false, planning: false, consumedItems }; }
+        if (!next) { consumedItems += verifySourceCoverage(work, scope.predecessor); state.planning = false; state.journal = ""; return { candidate: null, exhausted: false, planning: false, consumedItems }; }
         state.currentJournal = next.journalId; state.slot = ""; state.leaf = "";
       }
       const object = db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=? AND journalId=? AND (slot,leaf)>(?,?) ORDER BY slot,leaf LIMIT 1").get(scanPass, state.currentJournal, state.slot, state.leaf) as InventoryObject | undefined; consumedItems += 2;
       if (!object) { state.journal = state.currentJournal; state.currentJournal = null; return { candidate: null, exhausted: false, planning: true, consumedItems }; }
       const journal = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(scanPass, state.currentJournal) as InventoryJournal; consumedItems += 2;
-      const existing = readManifest(commit, object.journalId, object.slot, object.leaf); consumedItems += 2;
+      const existing = readManifest(commit, object.journalId, object.slot, object.leaf) ?? (scope.predecessor && readManifest(scope.predecessor.commitEventId, object.journalId, object.slot, object.leaf)); consumedItems += 4;
       const value = operands(journal, object, null); consumedItems += 2;
       // Existing bindings are inspected during the separate all-manifest stream;
       // never overwrite their positive charge with a new absence observation.
       if (existing) { state.slot = object.slot; state.leaf = object.leaf; return { candidate: null, exhausted: false, planning: true, consumedItems }; }
-      return { candidate: candidate(commit, run, value), exhausted: false, planning: true, consumedItems };
+      return { candidate: candidate(commit, run, value, commit, scope.fingerprint), exhausted: false, planning: true, consumedItems };
     }
-    if (state.execution === executionSlots.length) return { candidate: null, exhausted: true, planning: false, consumedItems };
-    consumedItems += verifySourceCoverage(work);
-    const manifest = db.prepare("SELECT * FROM erasure_manifests INDEXED BY erasure_manifest_execution WHERE eraseCommitId=? AND slot=? AND (journalId,leaf)>(?,?) ORDER BY journalId,leaf LIMIT 1").get(commit, executionSlots[state.execution], state.journal, state.leaf) as ErasureManifest | undefined; consumedItems += 2;
-    if (!manifest) { state.execution++; state.journal = ""; state.leaf = ""; return { candidate: null, exhausted: state.execution === executionSlots.length, planning: false, consumedItems }; }
+    if (state.stream === state.streams.length) return { candidate: null, exhausted: true, planning: false, consumedItems };
+    consumedItems += verifySourceCoverage(work, scope.predecessor);
+    const source = state.streams[state.stream];
+    const manifest = db.prepare("SELECT * FROM erasure_manifests INDEXED BY erasure_manifest_execution WHERE eraseCommitId=? AND slot=? AND (journalId,leaf)>(?,?) ORDER BY journalId,leaf LIMIT 1").get(source, executionSlots[state.execution], state.journal, state.leaf) as ErasureManifest | undefined; consumedItems += 2;
+    if (!manifest) { state.execution++; state.journal = ""; state.leaf = ""; if (state.execution === executionSlots.length) { state.execution = 0; state.stream++; } return { candidate: null, exhausted: state.stream === state.streams.length, planning: false, consumedItems }; }
     const value = manifestOperands(manifest); consumedItems += 6;
     if (value.journal.caseId !== work.caseId) inventoryInvalid();
-    return { candidate: candidate(commit, run, value), exhausted: false, planning: false, consumedItems };
+    return { candidate: candidate(source, run, value, commit, scope.fingerprint), exhausted: false, planning: false, consumedItems };
   }
-  function verifySourceCoverage(work: ErasureWork): number {
+  function verifySourceCoverage(work: ErasureWork, predecessor?: ErasureWork): number {
+    const manifest = (id: string, slot: string) => readManifest(work.commitEventId, id, slot, "") ?? (predecessor && readManifest(predecessor.commitEventId, id, slot, ""));
     const row = db.prepare("SELECT reservationId,encryptedPayloadPath,payloadBytes FROM cases WHERE id=?").get(work.caseId) as { reservationId: string; encryptedPayloadPath: string | null; payloadBytes: number } | undefined;
-    if (!row) inventoryInvalid();
+    if (!row) {
+      // An independently acknowledged retained manifest survives later parent
+      // minimization. This does not authorize any new plan or positive rebind.
+      if (!db.prepare("SELECT 1 FROM erasure_manifests WHERE eraseCommitId=? LIMIT 1").get(work.commitEventId) && (!predecessor || !db.prepare("SELECT 1 FROM erasure_manifests WHERE eraseCommitId=? LIMIT 1").get(predecessor.commitEventId))) inventoryInvalid();
+      return 6;
+    }
     let consumedItems = 2;
     if (row.encryptedPayloadPath !== null || row.payloadBytes !== 0) {
-      const original = readManifest(work.commitEventId, row.reservationId, "original-sealed", ""); consumedItems += 2;
-      const incoming = readManifest(work.commitEventId, row.reservationId, "incoming-sealed", ""); consumedItems += 2;
+      const original = manifest(row.reservationId, "original-sealed"); consumedItems += 4;
+      const incoming = manifest(row.reservationId, "incoming-sealed"); consumedItems += 4;
       if (!original || !incoming || row.encryptedPayloadPath !== `${config.custodyRoot}/${row.reservationId}.enc` || row.payloadBytes <= 0 || original.expectedSize !== row.payloadBytes) inventoryInvalid();
     }
     const artifacts = db.prepare("SELECT kind,path,bytes FROM artifacts WHERE caseId=? ORDER BY kind LIMIT 3").all(work.caseId) as { kind: string; path: string; bytes: number }[]; consumedItems += artifacts.length + 1;
@@ -354,8 +391,8 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     for (const artifact of artifacts) {
       const suffix = `.${artifact.kind}.enc`, id = artifact.path.slice(config.custodyRoot.length + 1, -suffix.length);
       if (!custodyId(id) || !["bundle", "mime"].includes(artifact.kind) || artifact.path !== `${config.custodyRoot}/${id}${suffix}`) inventoryInvalid();
-      const manifest = readManifest(work.commitEventId, id, "artifact-sealed", ""); consumedItems += 2;
-      if (!manifest || artifact.bytes <= 0 || manifest.expectedSize !== artifact.bytes) inventoryInvalid();
+      const binding = manifest(id, "artifact-sealed"); consumedItems += 4;
+      if (!binding || artifact.bytes <= 0 || binding.expectedSize !== artifact.bytes) inventoryInvalid();
     }
     return consumedItems + 6; // Per-artifact path/manifest validation plus fixed source validation.
   }
@@ -391,28 +428,35 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     }
     return o.size;
   }
+  function excludeMovedIdentity(manifest: Readonly<ErasureManifest>, currentPass: string): number {
+    if (manifest.expectedDevice === null || manifest.expectedInode === null) return 1;
+    const identities = db.prepare("SELECT journalId,slot,leaf FROM erasure_inventory_objects INDEXED BY erasure_inventory_identity WHERE pass=? AND device=? AND inode=? LIMIT 2").all(currentPass, manifest.expectedDevice, manifest.expectedInode) as { journalId: string; slot: string; leaf: string }[];
+    if (identities.length > 1 || identities.some(value => value.journalId !== manifest.journalId || value.slot !== manifest.slot || value.leaf !== manifest.leaf)) inventoryInvalid();
+    return 4;
+  }
   function planAccepted(observation: CustodyObservation, run: MaintenanceRun): number {
     const proof = consumeCustodyObservation(observation, custody, run);
     if (proof.kind !== "accepted-plan") inventoryInvalid();
     const value = accepted.get(proof.candidate);
     if (!value || value.run !== run || value.manifest || proof.pass !== pass()) inventoryInvalid();
     const result = db.transaction(() => {
-      const work = acceptedWork(value.commit, run, true);
+      const work = candidateWork(value, run);
       if (value.journal.caseId !== work.caseId || value.journal.pass !== proof.pass) inventoryInvalid();
+      if (!db.prepare("SELECT 1 FROM cases WHERE id=?").get(work.caseId)) inventoryInvalid();
       const journal = db.prepare("SELECT * FROM erasure_inventory_journals WHERE pass=? AND journalId=?").get(proof.pass, value.journal.journalId) as InventoryJournal;
       const object = db.prepare("SELECT * FROM erasure_inventory_objects WHERE pass=? AND journalId=? AND slot=? AND leaf=?").get(proof.pass, value.object.journalId, value.object.slot, value.object.leaf) as InventoryObject;
       if (JSON.stringify(operands(journal, object, null)) !== value.fingerprint || readManifest(value.commit, object.journalId, object.slot, object.leaf)) inventoryInvalid();
       const charge = sourceCharge(value), manifest: ErasureManifest = { eraseCommitId: value.commit, scanPass: proof.pass, journalId: object.journalId, slot: object.slot, leaf: object.leaf, expectedDevice: object.device, expectedInode: object.inode, expectedSize: object.size ?? 0, remainingCharge: charge, phase: "planned" };
       validateManifest(manifest, journal, object);
       db.prepare("INSERT INTO erasure_manifests(eraseCommitId,scanPass,journalId,slot,leaf,expectedDevice,expectedInode,expectedSize,remainingCharge,phase) VALUES(@eraseCommitId,@scanPass,@journalId,@slot,@leaf,@expectedDevice,@expectedInode,@expectedSize,@remainingCharge,@phase)").run(manifest);
-      if (!continuation || continuation.commit !== value.commit || !continuation.planning) inventoryInvalid();
-      // Current work13 + pass2 + three point pairs6 + validation3 + up to
-      // two source pairs4 + insert1 + cursor/token bookkeeping2 =31.
+      if (!continuation || continuation.commit !== value.request || !continuation.planning) inventoryInvalid();
+      // Private cursor publication is after COMMIT; the100-credit block also
+      // covers both authorities, the live source point and bounded aggregates.
       return { state: continuation, slot: object.slot, leaf: object.leaf, initialZero: charge === 0 && object.presence === "present" && object.size === 0 && object.slot !== "processing-directory" };
     }).immediate();
     result.state.slot = result.slot; result.state.leaf = result.leaf; accepted.delete(proof.candidate);
     if (result.initialZero) initialZeroPlans.add(manifestKey(value.commit, value.object));
-    return 75; // Includes <=21 scratch rows and their bounded validations.
+    return 100; // Includes two-scope authority, scratch validations and source.
   }
   function advanceAccepted(observation: CustodyObservation, run: MaintenanceRun): number {
     const proof = consumeCustodyObservation(observation, custody, run);
@@ -420,7 +464,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     const value = accepted.get(proof.candidate);
     if (!value || value.run !== run || !value.manifest) inventoryInvalid();
     const result = db.transaction(() => {
-      const current = acceptedWork(value.commit, run, true);
+      const current = candidateWork(value, run);
       if (current.caseId !== value.journal.caseId || proof.pass !== pass()) inventoryInvalid();
       const old = readManifest(value.commit, value.object.journalId, value.object.slot, value.object.leaf);
       if (!old || JSON.stringify(old) !== JSON.stringify(value.manifest)) inventoryInvalid();
@@ -435,13 +479,13 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
         next = { ...old, phase, remainingCharge: phase === "metadata-finalized" ? 0 : old.remainingCharge };
       }
       if (proof.kind === "accepted-final") {
-        if (!continuation || continuation.commit !== value.commit || continuation.planning) inventoryInvalid();
+        if (!continuation || continuation.commit !== value.request || continuation.planning) inventoryInvalid();
       }
       return { next, state: proof.kind === "accepted-final" ? continuation! : null };
     }).immediate();
     value.manifest = Object.freeze(result.next);
     if (result.state) { result.state.journal = result.next.journalId; result.state.leaf = result.next.leaf; accepted.delete(proof.candidate); initialZeroPlans.delete(manifestKey(value.commit, value.object)); }
-    return 21; // work/claim/selection13 + pass2 + manifest pair2 + validation2 + write1 + cursor1.
+    return 40; // Both current scope authorities plus fixed manifest transition.
   }
   function rebindAccepted(observation: CustodyObservation, run: MaintenanceRun): number {
     const proof = consumeCustodyObservation(observation, custody, run);
@@ -450,8 +494,9 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     if (!old || old.run !== run || !old.manifest || old.manifest.remainingCharge <= 0 || old.object.slot === "processing-directory") inventoryInvalid();
     const oldManifest = old.manifest;
     const result = db.transaction(() => {
-      const work = acceptedWork(old.commit, run, true);
+      const work = candidateWork(old, run);
       if (proof.pass !== pass() || old.journal.caseId !== work.caseId || oldManifest.scanPass === proof.pass) inventoryInvalid();
+      if (!db.prepare("SELECT 1 FROM cases WHERE id=?").get(work.caseId)) inventoryInvalid();
       const stored = readManifest(old.commit, old.object.journalId, old.object.slot, old.object.leaf);
       if (!stored || JSON.stringify(stored) !== JSON.stringify(old.manifest)) inventoryInvalid();
       const current = recoveredEntry(old.object.journalId, old.object.slot, old.object.leaf, run).value;
@@ -459,7 +504,7 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       for (const field of ["device", "inode", "size", "type", "uid", "gid", "mode", "nlink"] as const) if (current.object[field] !== old.object[field]) inventoryInvalid();
       const identities = db.prepare("SELECT journalId,slot,leaf FROM erasure_inventory_objects INDEXED BY erasure_inventory_identity WHERE pass=? AND device=? AND inode=? LIMIT 2").all(proof.pass, current.object.device, current.object.inode) as { journalId: string; slot: string; leaf: string }[];
       if (identities.length !== 1 || identities[0].journalId !== old.object.journalId || identities[0].slot !== old.object.slot || identities[0].leaf !== old.object.leaf) inventoryInvalid();
-      const next: AcceptedRecord = { ...current, run, commit: old.commit, fingerprint: "", manifest: null };
+      const next: AcceptedRecord = { ...current, run, commit: old.commit, request: old.request, authority: old.authority, fingerprint: "", manifest: null };
       if (sourceCharge(next) !== stored.remainingCharge) inventoryInvalid();
       const manifest = { ...stored, scanPass: proof.pass, phase: "planned" as const };
       validateManifest(manifest, current.journal, current.object);
@@ -468,25 +513,25 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
       return { ...next, manifest, fingerprint: JSON.stringify(current) };
     }).immediate();
     accepted.set(proof.candidate, result);
-    return 80; // Includes the same bounded aggregate scratch verification.
+    return 110; // Includes both authorities, scratch verification and source.
   }
   function directoryCompanions(key: AcceptedCandidate, run: MaintenanceRun) {
     const value = accepted.get(key);
     if (!value || value.run !== run || !value.manifest || value.object.slot !== "processing-directory") inventoryInvalid();
-    acceptedWork(value.commit, run, true);
+    candidateWork(value, run);
     const children = db.prepare("SELECT leaf,phase,remainingCharge FROM erasure_manifests WHERE eraseCommitId=? AND journalId=? AND slot='processing-file' ORDER BY leaf LIMIT 21").all(value.commit, value.object.journalId) as { leaf: string; phase: string; remainingCharge: number }[];
     const inspected = db.prepare("SELECT leaf FROM erasure_inventory_objects WHERE pass=? AND journalId=? AND slot='processing-file' ORDER BY leaf LIMIT 21").all(pass(), value.object.journalId) as { leaf: string }[];
     if (children.length > 20 || children.length !== inspected.length || children.some((child, i) => child.leaf !== inspected[i].leaf || child.phase !== "metadata-finalized" || child.remainingCharge !== 0 || !/^(?:[0-4]\.data|document-[1-5]\.(?:pdf|jpg|png))$/.test(child.leaf))) inventoryInvalid();
-    return { leaves: children.map(child => child.leaf), consumedItems: 18 + 2 * children.length + 2 * inspected.length };
+    return { leaves: children.map(child => child.leaf), consumedItems: 36 + 2 * children.length + 2 * inspected.length };
   }
   function absentParent(key: AcceptedCandidate, run: MaintenanceRun) {
     const value = accepted.get(key);
     if (!value || value.run !== run || !value.manifest || value.object.slot !== "processing-file") inventoryInvalid();
-    const work = acceptedWork(value.commit, run, true), manifest = readManifest(value.commit, value.object.journalId, "processing-directory", "");
+    const work = candidateWork(value, run), manifest = readManifest(value.commit, value.object.journalId, "processing-directory", "");
     if (!manifest || manifest.expectedDevice === null || manifest.expectedInode === null) inventoryInvalid();
     const parent = manifestOperands(manifest), fresh = recoveredEntry(value.object.journalId, "processing-directory", "", run).value;
     if (parent.journal.caseId !== work.caseId || fresh.object.presence !== "absent") inventoryInvalid();
-    return 29;
+    return 47;
   }
   function bindPhysicalVerifier(verifier: PhysicalVerifier) {
     assertOriginalMaintenanceCustody(custody, repository, config);
@@ -494,19 +539,20 @@ export function createCustodyInventoryStorage(db: Database.Database, repository:
     acceptedAuthority.registerPhysicalVerifier(verifier);
   }
   function verifyCompletionWork(commit: string, run: MaintenanceRun) {
-    const work = acceptedWork(commit, run, true);
-    return { pass: pass(), fingerprint: JSON.stringify(work), guard: acceptedAuthority!.guard(work.caseId), consumedItems: 14 };
+    const scope = acceptedScope(commit, run);
+    return { pass: pass(), fingerprint: scope.fingerprint, guard: acceptedAuthority!.guard(scope.work.caseId), consumedItems: 32 };
   }
-  function restartAccepted(commit: string, run: MaintenanceRun) { acceptedWork(commit, run, true); continuation = undefined; return 13; }
+  function restartAccepted(commit: string, run: MaintenanceRun) { acceptedScope(commit, run); continuation = undefined; return 31; }
   function isInitialZero(key: AcceptedCandidate, run: MaintenanceRun) {
     const value = accepted.get(key); if (!value || value.run !== run || !value.manifest) inventoryInvalid();
     return value.manifest.scanPass === pass() && value.manifest.expectedSize === 0 && value.object.presence === "present" && value.object.size === 0 && ["planned", "holders-released"].includes(value.manifest.phase) && initialZeroPlans.has(manifestKey(value.commit, value.object));
   }
   function checkAcceptedSource(key: AcceptedCandidate, run: MaintenanceRun) {
     const value = accepted.get(key); if (!value || value.run !== run || !value.manifest) inventoryInvalid();
-    acceptedWork(value.commit, run, true);
+    candidateWork(value, run);
+    excludeMovedIdentity(value.manifest, pass());
     if ((value.manifest.remainingCharge > 0 || isInitialZero(key, run)) && sourceCharge(value) !== value.manifest.remainingCharge) inventoryInvalid();
-    return 60;
+    return 85; // Both authorities and current-pass retained-identity exclusion.
   }
   return Object.freeze({ pass, record: recordObservation, invalidate, nextRecovery, recordRecovery, recoveredEntry, recoveryReady: () => recoveryComplete, nextAccepted, readAccepted, planAccepted, rebindAccepted, advanceAccepted, directoryCompanions, absentParent, bindPhysicalVerifier, verifyCompletionWork, restartAccepted, isInitialZero, checkAcceptedSource });
 }

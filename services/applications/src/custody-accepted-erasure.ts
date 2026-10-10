@@ -77,11 +77,12 @@ export function createAcceptedErasure(c: Composition) {
     assertMaintenanceSettled(run, c.repository);
     if (!idle()) throw new Error("MAINTENANCE_WORK_ACTIVE");
     let consumedItems = 0, complete = false;
-    // All branches are precharged conservatively together: guard20, selector45,
-    // plan75, rebind80, three phases63, source60, <=8 ancestry sweeps, and140
+    // Guard20, selector70, max(plan100,rebind110), three phases120, source85,
+    // <=8 ancestry sweeps, and160. Planning returns before execution/rebind,
+    // so those two storage blocks cannot occur in the same admitted unit.
     // for <=20 exact child probes/companions, native/lease/private-copy work,
-    // restart13 and completion14. A failed command retains this reservation.
-    const maximum = 20 + 45 + 75 + 80 + 63 + 60 + 8 * c.ancestryMaximum + 140;
+    // restart31 and completion32. A failed command retains this reservation.
+    const maximum = 20 + 70 + Math.max(100, 110) + 120 + 85 + 8 * c.ancestryMaximum + 160;
     if (maximum > 1000) throw new Error("MAINTENANCE_BUDGET_INSUFFICIENT");
     return c.hooks.track(async () => {
       active = true;
@@ -187,7 +188,7 @@ export function createAcceptedErasure(c: Composition) {
     });
   }
   c.storage.bindPhysicalVerifier(Object.freeze({
-    maximumItems: c.ancestryMaximum + 36,
+    maximumItems: c.ancestryMaximum + 72,
     async verify(commit: string, run: MaintenanceRun) {
       assertMaintenanceCustodyIdentity(run, c.repository, c.custody);
       const before = c.storage.verifyCompletionWork(commit, run);

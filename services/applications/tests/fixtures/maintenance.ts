@@ -4,11 +4,15 @@ import { join } from "node:path";
 import { openReadyTestRepository } from "./admission";
 import { createCustodyLedger } from "../../src/custody";
 import { testIngressAuthority } from "./ingress-authority";
-import type { WorkerOwner, WorkerLifecycleOptions } from "../../src/types";
-import { digest, utcInstant } from "../../src/types";
-import { generateKeyPairSync } from "node:crypto";
+import type { WorkerOwner, WorkerLifecycleOptions, RegisteredMail, MailboxPort, CaseAction } from "../../src/types";
+import { dateOnly, digest, utcInstant } from "../../src/types";
+import { generateKeyPairSync, createSecretKey } from "node:crypto";
+import { Readable } from "node:stream";
+import { Secret, TOTP } from "otpauth";
+import { fingerprintMime, MIME_LIMITS } from "../../src/mail-manifest";
+import { runDeletionOnce } from "../../src/deletion";
 import { encodePayload, payloadDigest, sealIncoming } from "../../src/crypto";
-import { testAdmission, testReadiness, testAdmissionScope } from "./admission";
+import { testAdmission, testReadiness, testAdmissionScope, refreshTestRepository } from "./admission";
 import { syntheticJournal } from "./ledger";
 import { createSafetyJournal } from "../../src/ledger";
 
@@ -24,8 +28,9 @@ export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance
   let time = Date.parse("2026-10-10T12:00:00.000Z"), monotonic = 0;
   const clock = { now: () => new Date(time) };
   const journalFixture = syntheticJournal();
+  const deletionScope = () => ({ ledgerId: journalFixture.context.ledgerId, historyEpoch: journalFixture.context.historyEpoch, associationKeyId: "fixture-erasure", associationKey: Buffer.alloc(32, 17), approvedScopes: [testAdmissionScope] });
   const open = (mode: "ordinary" | "cold-maintenance") => openReadyTestRepository(join(root, "registry.sqlite"), clock, { startup: mode,
-    deletionScope: { currentScope: () => ({ ledgerId: journalFixture.context.ledgerId, historyEpoch: journalFixture.context.historyEpoch, associationKeyId: "fixture-erasure", associationKey: Buffer.alloc(32, 17), approvedScopes: [testAdmissionScope] }) },
+    deletionScope: { currentScope: deletionScope },
     journalFactory: projection => createSafetyJournal({ port: { append: event => journalFixture.port.append(event), readSince: cursor => journalFixture.port.readSince(cursor) }, trust: { currentContext: () => journalFixture.context }, clock: { wallNow: () => clock.now(), monotonicNow: () => monotonic }, projection }),
   });
   const repository = await open(startup);
@@ -52,7 +57,35 @@ export async function maintenanceFixture(startup: "ordinary" | "cold-maintenance
     const accepted = await custody.commitIntake({ reservationId: reservation.id, digest: payloadDigest(payload), encryptedPayloadPath: file.path, actualBytes: file.bytes, encryptedName: "synthetic", job: "sales-fulltime", now });
     return { keys, accepted, record: repository.getCommittedIntake(accepted.id)! };
   }
-  return { root, owner, config, authority, services, accept, monotonicNow: () => monotonic, get settles() { return settles; }, loseHold() { held = false; }, advance(ms: number) { monotonic += ms; time += ms; },
+  async function qualifySyntheticFinalScope(value: Awaited<ReturnType<typeof accept>>) {
+    const advance = (ms: number) => { time += ms; monotonic += ms; }, now = utcInstant(clock.now().toISOString());
+    const claim = repository.claimNext("synthetic-final", now)!;
+    if (!claim || claim.id !== value.accepted.id) throw new Error("SYNTHETIC_FINAL_CLAIM");
+    const identity = await repository.stageDeliveryIdentity({ id: claim.id, version: claim.version, token: claim.claimToken }, "fixture-mime", now);
+    const raw = Buffer.from(`From: info@trinkgut-jammers.de\r\nTo: info@trinkgut-jammers.de\r\nReply-To: synthetic@example.invalid\r\nSubject: Synthetic\r\nDate: Sat, 10 Oct 2026 12:00:00 +0000\r\nMessage-ID: ${identity.delivery.identity!.messageId}\r\nX-TJ-Application-ID: ${claim.id}\r\nX-TJ-Profile: tj-mail-1\r\nX-TJ-Key-ID: fixture-mime\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: base64\r\n\r\nSGVsbG8=\r\n`);
+    const fingerprint = await fingerprintMime(Readable.from([raw]), MIME_LIMITS);
+    const mail: RegisteredMail = { id: claim.id, messageId: identity.delivery.identity!.messageId, keyId: "fixture-mime", profile: "tj-mail-1", fingerprint: fingerprint.fingerprint, shape: fingerprint.shape };
+    const registered = await repository.stageRegisteredMail({ id: claim.id, version: identity.case.version, token: claim.claimToken }, mail, now);
+    await repository.releaseDeliveryClaim({ id: claim.id, version: registered.case.version, token: claim.claimToken }, now);
+    const auth = repository.createAuthentication({ keys: value.keys, rateKey: Buffer.alloc(32, 8), trust: { currentEpoch: () => digest("9".repeat(64)) }, initialEnrollmentEpoch: () => digest("9".repeat(64)) });
+    const password = "Synthetic final fixture password", enrollment = await auth.beginEnrollment(password, password);
+    const otp = () => TOTP.generate({ secret: Secret.fromBase32(new URL(enrollment.provisioningUri).searchParams.get("secret")!), algorithm: "SHA1", digits: 6, period: 30, timestamp: time });
+    auth.finishEnrollment(enrollment.handle, otp());
+    for (const action of [{ kind: "reject", closedOn: dateOnly("2026-10-10") }, { kind: "confirm-external-copies", confirmed: true, reason: "Synthetic copies checked" }] as const satisfies readonly CaseAction[]) {
+      advance(30000); const login = await auth.authenticate({ username: "niko", password, otp: otp(), trustedIp: "127.0.0.1" });
+      if (login.kind !== "authenticated") throw new Error("SYNTHETIC_FINAL_LOGIN");
+      advance(30000); const row = repository.getLifecycleCase(claim.id, login.session);
+      const proof = await auth.authorizeSensitiveAction(login.session, { password, otp: otp(), trustedIp: "127.0.0.1" }, { kind: action.kind, caseId: claim.id, version: row.version });
+      await refreshTestRepository(repository);
+      await repository.applyCaseAction(claim.id, action, proof, login.session);
+    }
+    advance(Date.parse("2027-04-11T12:00:00.000Z") - time);
+    await refreshTestRepository(repository);
+    const mailbox: MailboxPort = { async findVerified() { return { copies: [], complete: true, issues: [] }; }, async deleteVerified() { throw new Error("NO_SYNTHETIC_COPY"); }, async disconnect() {}, async settle() {} };
+    const result = await runDeletionOnce({ repository, clock: { wallNow: clock.now, monotonicNow: () => monotonic }, scope: { currentScope: deletionScope }, verificationKeys: () => new Map([["fixture-mime", createSecretKey(Buffer.alloc(32, 7))]]), createMailbox: () => mailbox });
+    if (result.cases[0]?.status !== "mailbox_cleared") throw new Error("SYNTHETIC_FINAL_CLEAR");
+  }
+  return { root, owner, config, authority, services, accept, qualifySyntheticFinalScope, monotonicNow: () => monotonic, get settles() { return settles; }, loseHold() { held = false; }, advance(ms: number) { monotonic += ms; time += ms; },
     async restart() {
       repository.close();
       const nextRepository = await open("cold-maintenance"), nextCustody = createCustodyLedger(nextRepository, { ...config, ingressAuthority: authority });

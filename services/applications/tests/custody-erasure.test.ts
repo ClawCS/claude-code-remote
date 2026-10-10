@@ -79,7 +79,147 @@ async function scanAll(owner: WorkerOwner) {
   }
   expect(complete).toBe(true);
 }
+// R114: models only the later consumer's output after real physical execution;
+// it grants no production teardown capability or fabricated completion.
+async function minimizeExecutedSyntheticParent(f: Awaited<ReturnType<typeof setup>>, commit: string, id: string) {
+  expect(f.db.pragma("foreign_keys", { simple: true })).toBe(1);
+  const manifests = f.db.prepare("SELECT * FROM erasure_manifests WHERE eraseCommitId=? ORDER BY journalId,slot,leaf").all(commit);
+  expect(manifests.length).toBeGreaterThan(0);
+  expect(f.db.prepare("SELECT 1 FROM erasure_manifests WHERE eraseCommitId=? AND (phase!='metadata-finalized' OR remainingCharge!=0)").get(commit)).toBeUndefined();
+  for (const root of [f.config.custodyRoot, f.config.intakeRoot, f.config.runtimeRoot]) expect(await readdir(root)).toEqual([]);
+  const source = f.db.prepare("SELECT reservationId FROM cases WHERE id=?").get(id) as { reservationId: string };
+  expect(source).toBeDefined();
+  f.db.transaction(() => {
+    f.db.prepare("DELETE FROM deletion_searches WHERE attemptId IN(SELECT eventId FROM deletion_events WHERE caseId=?)").run(id);
+    f.db.prepare("DELETE FROM deletion_events WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM deletion_state WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM deletion_diagnostics WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM auth_grants WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM lifecycle_audit WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM lifecycle_proposals WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM case_lifecycle WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM delivery_attempts WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM deliveries WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM artifacts WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM artifact_reservations WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM audit WHERE caseId=?").run(id);
+    f.db.prepare("DELETE FROM cases WHERE id=?").run(id);
+    f.db.prepare("DELETE FROM reservations WHERE id=?").run(source.reservationId);
+  }).immediate();
+  expect(f.db.prepare("SELECT 1 FROM cases WHERE id=?").get(id)).toBeUndefined();
+  expect(f.db.prepare("SELECT * FROM erasure_manifests WHERE eraseCommitId=? ORDER BY journalId,slot,leaf").all(commit)).toEqual(manifests);
+  expect(f.db.prepare("SELECT 1 FROM erasure_obligations WHERE commitEventId=? AND caseId=?").get(commit, id)).toBeDefined();
+  expect(f.db.pragma("foreign_key_check")).toEqual([]);
+}
 describe("bounded original-custody erasure", () => {
+  it("plans genuine live final-scope resources when no payload predecessor exists", async () => {
+    const f = await setup(), accepted = await f.accept(); await f.qualifySyntheticFinalScope(accepted);
+    const erasure = erasureOwner(f.owner.repository), event = await f.owner.repository.withCaseLock(accepted.accepted.id, async () => {
+      expect(erasure.currentFinalEvidence(accepted.accepted.id)).not.toBeNull();
+      const event = erasure.prepareCommit(accepted.accepted.id, "identifying_register"); erasure.acknowledge(event, await erasure.journal!.append(event)); return event;
+    });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner); await eraseAll(f.owner, event[1]);
+    expect(f.db.prepare("SELECT DISTINCT eraseCommitId FROM erasure_manifests").all()).toEqual([{ eraseCommitId: event[1] }]);
+    expect(f.db.prepare("SELECT count(*) n FROM erasure_manifests WHERE phase='metadata-finalized' AND remainingCharge=0").get()).toEqual({ n: 3 });
+  });
+  it.each(["same-pass", "cold", "minimized-parent", "missing-predecessor", "self-predecessor", "stale-proof"] as const)("reuses exact payload manifests for a genuinely eligible later identifying scope (%s)", async mode => {
+    const f = await setup(), accepted = await f.accept(); await f.qualifySyntheticFinalScope(accepted);
+    const erasure = erasureOwner(f.owner.repository);
+    const payload = await f.owner.repository.withCaseLock(accepted.accepted.id, async () => {
+      expect(erasure.currentFinalEvidence(accepted.accepted.id)).not.toBeNull();
+      const event = erasure.prepareCommit(accepted.accepted.id, "processing_payload"); erasure.acknowledge(event, await erasure.journal!.append(event)); return event;
+    });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner); await eraseAll(f.owner, payload[1]);
+    const final = await erasure.withErasureGuard(payload[1], async () => {
+      expect(erasure.currentFinalEvidence(accepted.accepted.id)).not.toBeNull();
+      const event = erasure.prepareCommit(accepted.accepted.id, "identifying_register"); erasure.acknowledge(event, await erasure.journal!.append(event)); return event;
+    });
+    expect(final[4]).toHaveLength(9);
+    if (mode === "missing-predecessor" || mode === "self-predecessor") {
+      const old = f.db.prepare("SELECT * FROM erasure_manifests ORDER BY journalId,slot,leaf").all();
+      f.db.prepare("UPDATE erasure_scopes SET eventId=? WHERE caseId=? AND scope='processing_payload'").run(mode === "self-predecessor" ? final[1] : "f".repeat(32), accepted.accepted.id);
+      await expect(eraseAll(f.owner, final[1])).rejects.toThrow();
+      expect(f.db.prepare("SELECT * FROM erasure_manifests ORDER BY journalId,slot,leaf").all()).toEqual(old); return;
+    }
+    let owner = f.owner, db = f.db;
+    if (mode === "cold" || mode === "minimized-parent") {
+      if (mode === "minimized-parent") { await eraseAll(owner, final[1]); await minimizeExecutedSyntheticParent(f, payload[1], accepted.accepted.id); }
+      const restarted = await f.restart(); owner = restarted.owner; db = connections.all.at(-1)!; bindMaintenance(owner, restarted.services, f.monotonicNow); await scanAll(owner);
+    }
+    try {
+      let examined = 0;
+      if (mode === "same-pass") {
+        const prepare = db.prepare.bind(db);
+        vi.spyOn(db, "prepare").mockImplementation(sql => {
+          const statement = prepare(sql), get = statement.get.bind(statement), all = statement.all.bind(statement), run = statement.run.bind(statement);
+          vi.spyOn(statement, "get").mockImplementation((...args: unknown[]) => { const result = get(...args); examined += result ? 2 : 1; return result; });
+          vi.spyOn(statement, "all").mockImplementation((...args: unknown[]) => { const result = all(...args); examined += result.length + 1; return result; });
+          vi.spyOn(statement, "run").mockImplementation((...args: unknown[]) => { examined++; return run(...args); }); return statement;
+        });
+      }
+      let complete = false;
+      for (let n = 0; !complete && n < 200; n++) {
+        const before = examined, result = await custodyErasureOwner(owner.custody).eraseScopeBatch(final[1], await beginMaintenance(owner));
+        complete = result.complete;
+        expect(result.consumedItems).toBeGreaterThanOrEqual(examined - before);
+        expect(maintenanceSnapshot(owner).consumedItems).toBeLessThanOrEqual(1000); expect(maintenanceSnapshot(owner).selectedCount).toBeLessThanOrEqual(20);
+        await settleMaintenance(owner);
+      }
+      expect(complete).toBe(true); if (mode === "same-pass") expect(examined).toBeGreaterThan(100);
+      expect(db.prepare("SELECT DISTINCT eraseCommitId FROM erasure_manifests").all()).toEqual([{ eraseCommitId: payload[1] }]);
+      const verifier = verifierProbe.all.find(value => value.custody === owner.custody)!.verifier, run = await beginMaintenance(owner);
+      await maintenance.maintenanceCommand(run, owner.repository, 20 + verifier.maximumItems + 100, "filesystem", () => erasureOwner(owner.repository).withErasureGuard(final[1], async () => {
+        const checked = await verifier.verify(final[1], run);
+        if (mode === "stale-proof") {
+          db.prepare("UPDATE erasure_scopes SET eventId=? WHERE caseId=? AND scope='processing_payload'").run(final[1], accepted.accepted.id);
+          expect(() => verifier.consume(checked.proof, final[1], run)).toThrow();
+          return { value: undefined, consumedItems: 20 + checked.consumedItems + 35 };
+        }
+        const consumed = verifier.consume(checked.proof, final[1], run);
+        return { value: undefined, consumedItems: 20 + checked.consumedItems + consumed };
+      }));
+    } finally { await settleMaintenance(owner); }
+  });
+  it("reestablishes exact absent physical evidence after the executed synthetic parent is minimized", async () => {
+    const f = await setup(), { accepted, event } = await acknowledgedPayload(f);
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner); await eraseAll(f.owner, event[1]);
+    await minimizeExecutedSyntheticParent(f, event[1], accepted.accepted.id);
+    const restarted = await f.restart(), db = connections.all.at(-1)!; bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      await scanAll(restarted.owner); await eraseAll(restarted.owner, event[1]);
+      expect(db.prepare("SELECT 1 FROM cases").get()).toBeUndefined(); expect(db.pragma("foreign_key_check")).toEqual([]);
+      expect(db.prepare("SELECT count(*) n FROM erasure_manifests WHERE phase='metadata-finalized' AND remainingCharge=0").get()).toEqual({ n: 3 });
+    } finally { await settleMaintenance(restarted.owner); }
+  });
+  it.each([false, true])("preserves an old positive binding moved into a valid same-case processing slot (final=%s)", async finalScope => {
+    const f = await setup(), accepted = await f.accept(), unlink = fs.unlink;
+    if (finalScope) await f.qualifySyntheticFinalScope(accepted); else f.advance(7 * 86400000);
+    await refreshTestRepository(f.owner.repository);
+    const erasure = erasureOwner(f.owner.repository), event = await f.owner.repository.withCaseLock(accepted.accepted.id, async () => {
+      const event = erasure.prepareCommit(accepted.accepted.id, "processing_payload"); erasure.acknowledge(event, await erasure.journal!.append(event)); return event;
+    });
+    bindMaintenance(f.owner, f.services, f.monotonicNow); await scanAll(f.owner);
+    vi.spyOn(fs, "unlink").mockImplementation(async path => { if (path === accepted.record.encryptedPayloadPath) throw new Error("retain original plan"); await unlink(path); });
+    await expect(eraseAll(f.owner, event[1])).rejects.toThrow("MAINTENANCE_COMMAND_FAILED"); vi.restoreAllMocks();
+    const old = f.db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get() as { expectedInode: number; remainingCharge: number };
+    expect(old.remainingCharge).toBe(accepted.record.actualBytes);
+    const requested = finalScope ? await erasure.withErasureGuard(event[1], async () => {
+      expect(erasure.currentFinalEvidence(accepted.accepted.id)).not.toBeNull();
+      const final = erasure.prepareCommit(accepted.accepted.id, "identifying_register"); erasure.acknowledge(final, await erasure.journal!.append(final)); return final[1];
+    }) : event[1];
+    const id = randomUUID(), directory = join(f.config.runtimeRoot, id), moved = join(directory, "0.data");
+    await mkdir(directory, { mode: 0o700 }); await rename(accepted.record.encryptedPayloadPath, moved);
+    await writeFile(join(f.config.custodyRoot, `${id}.journal`), JSON.stringify({ version: 3, id, kind: "processing", state: "committed", path: directory, budget: 4096, cleanupAfter: "2026-10-18T12:00:00.000Z", caseId: accepted.accepted.id }), { mode: 0o600 });
+    expect((await lstat(moved)).ino).toBe(old.expectedInode);
+    const restarted = await f.restart(), db = connections.all.at(-1)!; bindMaintenance(restarted.owner, restarted.services, f.monotonicNow);
+    try {
+      await scanAll(restarted.owner);
+      await expect(eraseAll(restarted.owner, requested)).rejects.toThrow();
+      expect(db.prepare("SELECT * FROM erasure_manifests WHERE slot='original-sealed'").get()).toEqual(old);
+      expect(db.prepare("SELECT 1 FROM erasure_manifests WHERE journalId=?").get(id)).toBeUndefined();
+      expect((await lstat(moved)).ino).toBe(old.expectedInode);
+    } finally { await settleMaintenance(restarted.owner); }
+  });
   it("covers actual twenty-leaf native and SQLite work with the single charged physical allowance", async () => {
     const f = await setup(), { accepted, event } = await acknowledgedPayload(f), id = randomUUID(), path = join(f.config.runtimeRoot, id);
     await mkdir(path, { mode: 0o700 });
@@ -236,6 +376,8 @@ describe("bounded original-custody erasure", () => {
       ["SELECT * FROM erasure_manifests WHERE (eraseCommitId,journalId,slot,leaf)>(?,?,?,?) ORDER BY eraseCommitId,journalId,slot,leaf LIMIT 1", ["", "", "", ""]],
       ["SELECT journalId,slot,leaf FROM erasure_inventory_objects INDEXED BY erasure_inventory_identity WHERE pass=? AND device=? AND inode=? LIMIT 2", ["", 1, 1]],
       ["SELECT leaf,phase,remainingCharge FROM erasure_manifests WHERE eraseCommitId=? AND journalId=? AND slot='processing-file' ORDER BY leaf LIMIT 21", ["", ""]],
+      ["SELECT * FROM erasure_manifests WHERE eraseCommitId=? AND (journalId,slot,leaf)>(?,?,?) ORDER BY journalId,slot,leaf LIMIT 1", ["", "", "", ""]],
+      ["SELECT eventId,committed FROM erasure_scopes WHERE caseId=? AND scope='processing_payload'", [""]],
     ];
     for (const [sql, args] of queries) {
       const rows = f.db.prepare(`EXPLAIN QUERY PLAN ${sql}`).all(...args) as { detail: string }[];
@@ -340,17 +482,17 @@ describe("bounded original-custody erasure", () => {
       const result = await verifier.verify(event[1], run); return { value: result.proof, consumedItems: 20 + result.consumedItems };
     }));
     const staleGuard = (await issue()).value;
-    await maintenance.maintenanceCommand(run, f.owner.repository, 20 + verifier.maximumItems + 68, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+    await maintenance.maintenanceCommand(run, f.owner.repository, 20 + verifier.maximumItems + 140, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
       expect(() => verifier.consume(staleGuard, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID");
       expect(() => verifier.consume({} as PhysicalCompletion, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID");
       const result = await verifier.verify(event[1], run);
-      expect(verifier.consume(result.proof, event[1], run)).toBe(17);
+      expect(verifier.consume(result.proof, event[1], run)).toBe(35);
       expect(() => verifier.consume(result.proof, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID");
-      return { value: undefined, consumedItems: 20 + result.consumedItems + 68 };
+      return { value: undefined, consumedItems: 20 + result.consumedItems + 140 };
     }));
     const staleRun = (await issue()).value; await settleMaintenance(f.owner); run = await beginMaintenance(f.owner);
-    await maintenance.maintenanceCommand(run, f.owner.repository, 37, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
-      expect(() => verifier.consume(staleRun, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID"); return { value: undefined, consumedItems: 37 };
+    await maintenance.maintenanceCommand(run, f.owner.repository, 55, "filesystem", () => erasureOwner(f.owner.repository).withErasureGuard(event[1], async () => {
+      expect(() => verifier.consume(staleRun, event[1], run)).toThrow("ERASURE_OWNERSHIP_INVALID"); return { value: undefined, consumedItems: 55 };
     }));
   });
   it("permanently denies same-owner recovery after the final held assertion rejects execution EOF", async () => {
