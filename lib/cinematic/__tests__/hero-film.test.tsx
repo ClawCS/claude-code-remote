@@ -71,7 +71,7 @@ describe("HeroFilm loading and playback", () => {
     expect(await label(page)).toBe("Film abspielen");
     await page.locator("video").scrollIntoViewIfNeeded();
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
-    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-mobile.mp4");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-mobile.mp4");
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film abspielen");
     expect((await page.locator("video").boundingBox())!.y).toBeGreaterThanOrEqual(500);
@@ -112,7 +112,7 @@ describe("HeroFilm loading and playback", () => {
     expect(await page.locator("video").getAttribute("src")).toBeNull();
     await page.locator("button").click();
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
-    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-desktop.mp4");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-desktop.mp4");
     await page.locator("button").click();
     expect(await label(page)).toBe("Film abspielen");
     await page.close();
@@ -121,7 +121,7 @@ describe("HeroFilm loading and playback", () => {
   it.each([[390, "mobile"], [768, "desktop"], [1440, "desktop"]])("chooses the bounded source at %ipx", async (width, variant) => {
     const page = await mount({ width: Number(width) });
     await page.waitForFunction(() => Boolean(document.querySelector("video")?.getAttribute("src")));
-    expect(await page.locator("video").getAttribute("src")).toBe(`/videos/jammers-hero-${variant}.mp4`);
+    expect(await page.locator("video").getAttribute("src")).toBe(`/videos/jammers-hero-v4-${variant}.mp4`);
     await page.close();
   });
 
@@ -176,7 +176,7 @@ describe("HeroFilm loading and playback", () => {
     await page.waitForTimeout(30);
     expect(await label(page)).toBe("Film abspielen");
     expect(await page.locator("[role=status]").innerText()).toBe("");
-    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-desktop.mp4");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-desktop.mp4");
     await page.close();
   });
 

@@ -157,7 +157,7 @@ test("meets visual stability, interaction, transfer, and request budgets", async
   const imageBytes = total("img");
   const approvedFilm = resources.filter(({ name }) => {
     const url = new URL(name);
-    return url.origin === new URL(page.url()).origin && url.pathname === "/videos/jammers-hero-mobile.mp4";
+    return url.origin === new URL(page.url()).origin && url.pathname === "/videos/jammers-hero-v4-mobile.mp4";
   });
   const largestResourceBytes = Math.max(
     0,

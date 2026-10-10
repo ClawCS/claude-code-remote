@@ -211,7 +211,7 @@ describe("cinematic homepage composition", () => {
     expectEveryFragmentResolvesOnce(html);
   });
 
-  test("renders the audited people and poster manifests in exact order", () => {
+  test("renders the audited people and all six original-bottle destinations in exact order", () => {
     const html = render(emptyContent);
     const people = extractElement(html, "section", 'id="menschen"');
     const spotlight = extractElement(html, "section", 'id="eigenmarken"');
@@ -229,16 +229,13 @@ describe("cinematic homepage composition", () => {
     expect(people).toContain("Unser neues Teamfoto folgt");
     expect(people).toContain('/images/home/brand-logo.webp');
 
-    expect(count(spotlight, /<figure\b/)).toBe(3);
-    const posterOrder = [
-      "Pralle Kirsche",
-      "Schwarzer Teufel",
-      "Caramello",
-    ].map((name) => spotlight.slice(spotlight.indexOf('data-rail="cinematic"')).indexOf(name));
-    expect(posterOrder.every((position) => position >= 0)).toBe(true);
-    expect(posterOrder).toEqual(
-      [...posterOrder].sort((left, right) => left - right),
-    );
+    expect(spotlight).toContain("data-own-brand-stage");
+    const flavorOrder = ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"]
+      .map(slug => spotlight.indexOf(`href="/eigenmarke#${slug}"`));
+    expect(flavorOrder.every(position => position >= 0)).toBe(true);
+    expect(flavorOrder).toEqual([...flavorOrder].sort((left,right) => left-right));
+    expect(spotlight).not.toContain('data-rail="cinematic"');
+    expect(count(spotlight, /<img\b/)).toBe(6);
   });
 
   test("server-renders the approved film poster, copy and usable destination links without loading video", () => {

@@ -44,7 +44,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
     const start = () => {
       if (disposed || document.hidden || !visible || isPlaying || isPending) return;
       if (!media.hasAttribute("src")) {
-        media.src = wide.matches ? "/videos/jammers-hero-desktop.mp4" : "/videos/jammers-hero-mobile.mp4";
+        media.src = wide.matches ? "/videos/jammers-hero-v4-desktop.mp4" : "/videos/jammers-hero-v4-mobile.mp4";
         media.load();
       }
       const attempt = ++request;

@@ -40,6 +40,8 @@ export const CINEMATIC_TOKENS = deepFreeze({
     editorialSurface: "#F2F0EC",
     editorialLine: "#E2DED8",
     nlText: "#784700",
+    assortmentCream: "#F5ECDD",
+    stageName: "#F6EBDD",
   },
   typography: {
     family: {
@@ -57,6 +59,10 @@ export const CINEMATIC_TOKENS = deepFreeze({
       display: "clamp(3.3rem, 6.5vw, 6.4rem)",
       mobileDisplay: "clamp(3.4rem, 12vw, 5.5rem)",
       card: "1.35rem",
+      editorialHeading: "clamp(2.5rem, 5.2vw, 4.75rem)",
+      categoryName: "clamp(1.35rem, 2.5vw, 2.15rem)",
+      stageName: "clamp(3.5rem, 12vw, 11rem)",
+      flavorName: "clamp(1.05rem, 1.45vw, 1.3rem)",
     },
     lineHeight: { display: "0.98", heading: "1.08", compact: "1.5", body: "1.6" },
     weight: { regular: "400", medium: "500", semibold: "600", bold: "700", extraBold: "800" },

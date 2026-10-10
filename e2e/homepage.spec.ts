@@ -193,7 +193,7 @@ test("only loads the approved local hero film, never social, map or flyer embeds
   ).toBe(false);
   for (const url of urls.filter(url => /\.mp4/i.test(url))) {
     expect(new URL(url).origin).toBe(new URL(page.url()).origin);
-    expect(["/videos/jammers-hero-desktop.mp4", "/videos/jammers-hero-mobile.mp4"]).toContain(new URL(url).pathname);
+    expect(["/videos/jammers-hero-v4-desktop.mp4", "/videos/jammers-hero-v4-mobile.mp4"]).toContain(new URL(url).pathname);
   }
   await expect(page.locator("iframe")).toHaveCount(0);
 });

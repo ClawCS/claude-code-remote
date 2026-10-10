@@ -1,62 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
-
-import { SPOTLIGHT_POSTERS } from "@/data/cinematic-editorial";
-import { eigenmarken } from "@/data/eigenmarken";
-import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
-
+import OwnBrandStage from "./OwnBrandStage";
 import styles from "./spotlight.module.css";
 
 export default function SpotlightSection(): React.JSX.Element {
-  return (
-    <section
-      className={styles.section}
-      id="eigenmarken"
-      data-signature="cinematic"
-      aria-labelledby="eigenmarken-title"
-    >
-      <div className={styles.intro}>
-        <p>Unsere Eigenmarken</p>
-        <h2 id="eigenmarken-title">Sechs eigene Charaktere.</h2>
-      </div>
-      <div className={styles.brandStory}>
-        <div className={styles.bottleImage}>
-          <Image src={EIGENMARKEN_GROUP_SCENE.src} width={EIGENMARKEN_GROUP_SCENE.width} height={EIGENMARKEN_GROUP_SCENE.height} alt={EIGENMARKEN_GROUP_SCENE.altDE} sizes="(max-width: 767px) 100vw, 50vw" />
-        </div>
-        <div className={styles.brandCopy}>
-          <p>Sechs Namen. Eine Familie aus Goch. Entdecke unsere Eigenmarken und frag unser Team nach deinem Favoriten.</p>
-          <ul className={styles.brandNames}>
-            {eigenmarken.map(brand => <li key={brand.slug}><Link href="/eigenmarke" prefetch={false}>{brand.name}<span aria-hidden="true">↗</span></Link></li>)}
-          </ul>
-          <Link href="/eigenmarke" prefetch={false} className={styles.allBrands}>Unsere Eigenmarken kennenlernen ↗</Link>
-        </div>
-      </div>
-      <div className={styles.railViewport}>
-        <div className={styles.rail} data-rail="cinematic">
-          {SPOTLIGHT_POSTERS.map((poster) => (
-            <Link
-              className={styles.frame}
-              key={poster.number}
-              href={poster.href}
-              prefetch={false}
-            >
-              <figure className={styles.posterWindow}>
-                <Image
-                  className={styles.posterImage}
-                  src={poster.image}
-                  alt={poster.alt}
-                  placeholder="blur"
-                  sizes="(max-width: 47.999rem) 100vw, 33vw"
-                />
-                <figcaption className={styles.posterMeta}>
-                  <span className={styles.posterName}>{poster.name}</span>
-                  <span className={styles.posterLabel}>Im Markt entdecken ↗</span>
-                </figcaption>
-              </figure>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <section className={styles.section} id="eigenmarken" data-signature="cinematic" aria-labelledby="eigenmarken-title">
+    <div className={styles.intro}>
+      <div><p>Unsere Eigenmarken</p><h2 id="eigenmarken-title">Sechs eigene<br />Charaktere.</h2></div>
+      <p className={styles.story}>Eine Familie aus Goch. Von fruchtig bis kräftig – finde deinen Favoriten und lerne die Geschichte dahinter kennen.</p>
+    </div>
+    <OwnBrandStage />
+    <div className={styles.outro}><p>Noch unentschlossen? Frag unser Team im Markt.</p><Link href="/eigenmarke" prefetch={false} className={styles.allBrands}>Alle sechs Liköre kennenlernen <span aria-hidden="true">↗</span></Link></div>
+  </section>;
 }

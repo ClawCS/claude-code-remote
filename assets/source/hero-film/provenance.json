@@ -3,22 +3,31 @@
   "kind": "operator-approved-ai-advertising-film",
   "approval": {
     "date": "2026-10-10",
-    "basis": "Operator approved direction A and requested the production design rebuild after viewing accepted v2.",
-    "specification": "docs/superpowers/specs/2026-10-10-filmisch-redesign.md",
+    "basis": "Operator approved the v4 people-and-single-tap preview and explicitly approved local visual-polish implementation; no deployment authorized by this manifest.",
+    "specification": "docs/superpowers/specs/2026-10-10-visual-polish.md",
     "exception": "Explicit exception to the Canva-only image rule for this accepted AI advertising film and its finale poster; not documentary market imagery or a pixel-identical product photograph.",
     "deploymentApprovedByThisManifest": false
   },
   "generation": {
-    "providers": ["Runway", "OpenAI imagegen", "local AVFoundation assembly"],
-    "acceptedTaskIds": ["269e26d5-7937-45b8-8127-1945b38bbb12", "867270ee-eda9-4ec4-b102-68d422a1c4ed"],
+    "providers": [
+      "Runway",
+      "OpenAI imagegen",
+      "local AVFoundation assembly"
+    ],
+    "acceptedTaskIds": [
+      "269e26d5-7937-45b8-8127-1945b38bbb12",
+      "867270ee-eda9-4ec4-b102-68d422a1c4ed",
+      "c3cff79c-87fc-47b2-a6df-147cb7579339",
+      "b6d193fe-f5c0-4133-b64f-f3f001d099d8"
+    ],
     "finale": "Accepted static AI motif with a minimal 1% zoom, assembled into v2 from second 11. Rejected animated finale with changing label details is not used.",
     "reference": "Operator-approved six-bottle product photograph; bottle identities informed the generated motif, which is not pixel-identical.",
-    "promptSummary": "Warm 16:9 advertising scenes of drinks and an illustrative party setup; pouring Pralle Kirsche; six complete bottles in original order with matching filled shot glasses, black tabletop and restrained red accent. No new generation for the production derivatives."
+    "promptSummary": "Approved v4: adult toast, garden party with one-tap rectangular stainless-steel rear Jammers-logo dispensing setup, unchanged accepted v2 pouring and finale. Advertising imagery, not documentary evidence. Rejected edited close-up is excluded. No new generation for production derivatives."
   },
   "source": {
-    "filename": "jammers-hero-15s-v2.mp4",
-    "sha256": "dfb37e4e0ea987dce428afeaf93eb2c3030849603901264967671141289202c7",
-    "bytes": 17311407,
+    "filename": "jammers-hero-15s-v4.mp4",
+    "sha256": "59a70d3ef71c8eef46396005b3242f2109e3570a46b286f1b7f3fadbe0cc81a2",
+    "bytes": 16618455,
     "width": 1920,
     "height": 1080,
     "durationSeconds": 15,
@@ -44,9 +53,101 @@
     "posterEncoding": "sharp WebP, 1280x720 contain, quality 84"
   },
   "files": [
-    { "path": "public/videos/jammers-hero-desktop.mp4", "sha256": "f74801aa87f6c6545ad8eb7b404e801d059f2441ff304617e5f9cf598909739c", "bytes": 4789249, "width": 1280, "height": 720, "maxBytes": 6000000, "durationSeconds": 15, "fps": 24, "hasAudio": false },
-    { "path": "public/videos/jammers-hero-mobile.mp4", "sha256": "db6b240fee5bef822bedfc4f98f6a5dde86a9cf403917df9b48a3768fca4a3ac", "bytes": 2317235, "width": 960, "height": 540, "maxBytes": 3000000, "durationSeconds": 15, "fps": 24, "hasAudio": false },
-    { "path": "public/images/home/jammers-film-poster.webp", "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638", "bytes": 130626, "width": 1280, "height": 720 }
+    {
+      "path": "public/videos/jammers-hero-v4-desktop.mp4",
+      "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
+      "bytes": 4785365,
+      "width": 1280,
+      "height": 720,
+      "maxBytes": 6000000,
+      "durationSeconds": 15,
+      "fps": 24,
+      "hasAudio": false
+    },
+    {
+      "path": "public/videos/jammers-hero-v4-mobile.mp4",
+      "sha256": "66141998ae290a8f8087dfe1921a53ddacffa6d7b9f9a4bd95ed42adce38797c",
+      "bytes": 2316048,
+      "width": 960,
+      "height": 540,
+      "maxBytes": 3000000,
+      "durationSeconds": 15,
+      "fps": 24,
+      "hasAudio": false
+    },
+    {
+      "path": "public/images/home/jammers-film-poster.webp",
+      "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
+      "bytes": 130626,
+      "width": 1280,
+      "height": 720
+    }
   ],
-  "publicLabel": "KI-Werbefilm · beispielhafte Partyszene"
+  "history": [
+    {
+      "version": "v2",
+      "source": {
+        "filename": "jammers-hero-15s-v2.mp4",
+        "sha256": "dfb37e4e0ea987dce428afeaf93eb2c3030849603901264967671141289202c7",
+        "bytes": 17311407,
+        "width": 1920,
+        "height": 1080,
+        "durationSeconds": 15,
+        "fps": 24,
+        "hasAudio": false
+      },
+      "files": [
+        {
+          "path": "public/videos/jammers-hero-desktop.mp4",
+          "sha256": "f74801aa87f6c6545ad8eb7b404e801d059f2441ff304617e5f9cf598909739c",
+          "bytes": 4789249,
+          "width": 1280,
+          "height": 720,
+          "maxBytes": 6000000,
+          "durationSeconds": 15,
+          "fps": 24,
+          "hasAudio": false
+        },
+        {
+          "path": "public/videos/jammers-hero-mobile.mp4",
+          "sha256": "db6b240fee5bef822bedfc4f98f6a5dde86a9cf403917df9b48a3768fca4a3ac",
+          "bytes": 2317235,
+          "width": 960,
+          "height": 540,
+          "maxBytes": 3000000,
+          "durationSeconds": 15,
+          "fps": 24,
+          "hasAudio": false
+        }
+      ],
+      "approvalBasis": "Operator approved direction A and requested the production design rebuild after viewing accepted v2."
+    }
+  ],
+  "sceneTimeline": [
+    {
+      "startSeconds": 0,
+      "endSeconds": 4,
+      "scene": "Accepted adult toast",
+      "sourceFilename": "opening-source.mp4",
+      "sourceSha256": "03c51ead20d886543a7f856100df022613315ba45314c0c4b145d94b5cdf8cd9"
+    },
+    {
+      "startSeconds": 4,
+      "endSeconds": 7,
+      "scene": "Accepted single-tap rear-view garden party",
+      "sourceFilename": "opening-single-tap.mp4",
+      "sourceSha256": "ec69645e0f496ffbca50340299b04fb319dea4780b51468090cf822138783477"
+    },
+    {
+      "startSeconds": 7,
+      "endSeconds": 11,
+      "scene": "Unchanged v2 pouring"
+    },
+    {
+      "startSeconds": 11,
+      "endSeconds": 15,
+      "scene": "Unchanged accepted static finale with minimal zoom"
+    }
+  ],
+  "internalClassification": "AI advertising film; not documentary market footage or a pixel-identical product photograph. Internal provenance only; no technical public badge."
 }

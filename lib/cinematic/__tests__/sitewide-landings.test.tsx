@@ -45,11 +45,16 @@ describe("complete editorial landings", () => {
   });
 
   // A three-brand-only spotlight would silently omit half the range from the homepage.
-  test("represents all six own brands alongside the three complete original posters", () => {
+  test("represents all six original bottles with direct detail anchors rather than repeated homepage posters", () => {
     const html = section(home(), "eigenmarken");
-    for (const name of ["Pralle Kirsche", "Dicke Nüsse", "Süsse Sünde", "Caramello", "Schwarzer Teufel", "Weisser Engel"]) expect(html).toMatch(new RegExp(`<a[^>]*href="/eigenmarke"[^>]*>[^<]*${name}`));
-    for (const poster of ["poster-pralle-kirsche.webp", "poster-schwarzer-teufel.webp", "poster-caramello.webp"]) expect(html).toContain(poster);
-    expect(html).toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
+    for (const [slug, name] of [["pralle-kirsche", "Pralle Kirsche"], ["dicke-nuesse", "Dicke Nüsse"], ["suesse-suende", "Süsse Sünde"], ["caramello", "Caramello"], ["schwarzer-teufel", "Schwarzer Teufel"], ["weisser-engel", "Weisser Engel"]]) {
+      const link = html.match(new RegExp(`<a[^>]*href="/eigenmarke#${slug}"[^>]*>[\\s\\S]*?</a>`))?.[0];
+      expect(link).toBeDefined();
+      expect(link).toContain(name);
+      expect(link).toContain(`/images/eigenmarken-bottles/${slug}.png`);
+    }
+    expect(html).toContain('href="/eigenmarke"');
+    expect(html).not.toContain('data-rail="cinematic"');
     expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");
   });
 

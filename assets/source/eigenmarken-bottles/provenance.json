@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "approved-real-original-bottle-photography",
+  "approval": {
+    "date": "2026-10-10",
+    "basis": "Operator approved reuse of the visually verified six original bottle silhouettes for the local own-brand stage.",
+    "specification": "docs/superpowers/specs/2026-10-10-visual-polish.md",
+    "deploymentApprovedByThisManifest": false
+  },
+  "derivation": {
+    "currentOperation": "Byte-identical copy of existing transparent PNGs; no new generation, relabeling, crop, retouching or encoding.",
+    "historicalPreparationScript": "/Users/niko/Desktop/Homepage/Homepage Codex/scripts/prep-flaschen.mjs",
+    "historicalPreparationScriptSha256": "da1f6eaf26a05087c15498d44f2070172ec60af1f67699ea9efc866dbb0c91be",
+    "historicalPreparation": "Original sheet photographs traced to complete bottle silhouettes, soft edge and padded 1200px output. Cream sheet tone within translucent glass was preserved. Historical script was inspected, not rerun."
+  },
+  "files": [
+    {
+      "slug": "pralle-kirsche",
+      "path": "public/images/eigenmarken-bottles/pralle-kirsche.png",
+      "sha256": "48545530b2f4dd036a2f8423f971b37b6e085ffb85fa962a35c2dc1da6c8bf9f",
+      "bytes": 572994,
+      "width": 258,
+      "height": 1200,
+      "hasAlpha": true,
+      "sourcePath": "/Users/niko/Desktop/Homepage/Homepage Codex/src/assets/flaschen/pralle-kirsche.png",
+      "sourceSha256": "48545530b2f4dd036a2f8423f971b37b6e085ffb85fa962a35c2dc1da6c8bf9f",
+      "originalPoster": "public/images/Expertise Liköre (A5)/2.png",
+      "originalPosterSha256": "cadb058903f81e984c7a25e4a097339621d4edfcd6a6cc2adc6558b201ce3e1c"
+    },
+    {
+      "slug": "dicke-nuesse",
+      "path": "public/images/eigenmarken-bottles/dicke-nuesse.png",
+      "sha256": "ed2dcca8e526c90635d02b207de52002560e138789010806ab4ecde97159831d",
+      "bytes": 561047,
+      "width": 260,
+      "height": 1200,
+      "hasAlpha": true,
+      "sourcePath": "/Users/niko/Desktop/Homepage/Homepage Codex/src/assets/flaschen/dicke-nuesse.png",
+      "sourceSha256": "ed2dcca8e526c90635d02b207de52002560e138789010806ab4ecde97159831d",
+      "originalPoster": "public/images/Expertise Liköre (A5)/4.png",
+      "originalPosterSha256": "77fcf1c5614ab5538df3014c8732bcaec6af8caf34c12c491afd9ed4346c3def"
+    },
+    {
+      "slug": "suesse-suende",
+      "path": "public/images/eigenmarken-bottles/suesse-suende.png",
+      "sha256": "dd14baf66680842e3bcb6df080fa3d987faeb8a452f9371eaea71c1aee62dce6",
+      "bytes": 557292,
+      "width": 259,
+      "height": 1200,
+      "hasAlpha": true,
+      "sourcePath": "/Users/niko/Desktop/Homepage/Homepage Codex/src/assets/flaschen/suesse-suende.png",
+      "sourceSha256": "dd14baf66680842e3bcb6df080fa3d987faeb8a452f9371eaea71c1aee62dce6",
+      "originalPoster": "public/images/Expertise Liköre (A5)/6.png",
+      "originalPosterSha256": "de994b267135fab2a91729bc3ff6eec9bdb2727490e0d0119b9f23d5247d15bf"
+    },
+    {
+      "slug": "caramello",
+      "path": "public/images/eigenmarken-bottles/caramello.png",
+      "sha256": "aca2287cbf9e52be5b4f6674ccf16ae5b0b62519406bdfcc7e7cb652e2548e32",
+      "bytes": 549022,
+      "width": 260,
+      "height": 1200,
+      "hasAlpha": true,
+      "sourcePath": "/Users/niko/Desktop/Homepage/Homepage Codex/src/assets/flaschen/caramello.png",
+      "sourceSha256": "aca2287cbf9e52be5b4f6674ccf16ae5b0b62519406bdfcc7e7cb652e2548e32",
+      "originalPoster": "public/images/Expertise Liköre (A5)/8.png",
+      "originalPosterSha256": "29460f5332ce2b646f7fee35877908f96b0816a048e9760cfe43e2802d3509e1"
+    },
+    {
+      "slug": "schwarzer-teufel",
+      "path": "public/images/eigenmarken-bottles/schwarzer-teufel.png",
+      "sha256": "b5268a9d7ac972dd31e6ea46979bcac7fa37e1b337c9a1c6357ab5f13cc5e527",
+      "bytes": 560274,
+      "width": 259,
+      "height": 1200,
+      "hasAlpha": true,
+      "sourcePath": "/Users/niko/Desktop/Homepage/Homepage Codex/src/assets/flaschen/schwarzer-teufel.png",
+      "sourceSha256": "b5268a9d7ac972dd31e6ea46979bcac7fa37e1b337c9a1c6357ab5f13cc5e527",
+      "originalPoster": "public/images/Expertise Liköre (A5)/10.png",
+      "originalPosterSha256": "2ee126ab91f120f60da164718550dc03f0869aba091f67e9f1b33f5df7c7d02b"
+    },
+    {
+      "slug": "weisser-engel",
+      "path": "public/images/eigenmarken-bottles/weisser-engel.png",
+      "sha256": "bd2ac50c431f97e4d8f23da1ce65687980b04ee9ba9a118643868becaf187d82",
+      "bytes": 527925,
+      "width": 263,
+      "height": 1200,
+      "hasAlpha": true,
+      "sourcePath": "/Users/niko/Desktop/Homepage/Homepage Codex/src/assets/flaschen/weisser-engel.png",
+      "sourceSha256": "bd2ac50c431f97e4d8f23da1ce65687980b04ee9ba9a118643868becaf187d82",
+      "originalPoster": "public/images/Expertise Liköre (A5)/12.png",
+      "originalPosterSha256": "a46531fd9dd548c5fec27b3ba941aea83887476e37f907aa341d0b163cdec680"
+    }
+  ]
+}

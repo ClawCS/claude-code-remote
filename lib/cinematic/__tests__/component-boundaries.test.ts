@@ -8,6 +8,7 @@ const cinematicComponentsDirectory = join(root, "components/cinematic");
 
 const clientIslands = [
   "components/cinematic/HeroFilm.tsx",
+  "components/cinematic/OwnBrandStage.tsx",
   "components/cinematic/FlyerViewer.tsx",
   "components/cinematic/LiveMarketStatus.tsx",
   "components/cinematic/MobileNavigation.tsx",

@@ -161,7 +161,6 @@ export default function ApplicationForm({ config: _initialConfig }: { config?: P
       <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.parttime} /><h2 className="text-2xl font-bold">Verkauf Teilzeit (m/w/d)</h2><p className="mt-3">Bis zu 150 Stunden/Monat im Verkauf.</p><button type="button" className={styles.textLink} disabled={locked || !config.enabled || !!receipt} onClick={() => chooseJob("sales-parttime")}>Für Teilzeit bewerben</button></section>
       <section className={styles.jobCard}><JobPoster photo={USER_JOB_POSTERS.apprentice} /><h2 className="text-2xl font-bold">Ausbildung im Getränkehandel / Einzelhandel (m/w/d)</h2><p className="mt-3">Starte deine Ausbildung bei Jammers in Goch. Wir freuen uns auf deine Bewerbung.</p><a className={styles.textLink} href={`mailto:${APPLICATION_EMAIL}?subject=Bewerbung%20Ausbildung`}>Per E-Mail für die Ausbildung bewerben</a></section>
     </div>
-    <p className="text-sm mb-10">Anzeigenmotive – keine Teamfotos. Alle Anzeigen lassen sich in voller Größe öffnen.</p>
     <div className={styles.application}>
     <h2 id="application-contact-title" className="text-2xl font-bold">Deine Bewerbung</h2>
     <p className="my-4">Persönlich im Markt oder per E-Mail: {contact}</p>

@@ -124,7 +124,8 @@ describe("editorial service pages", () => {
     expect(html).toContain("jobGrid");
     expect(html).toContain("info@trinkgut-jammers.de");
     expect(html).toContain("Der Online-Upload ist zurzeit nicht verfügbar.");
-    expect(html).toContain("Anzeigenmotive – keine Teamfotos.");
+    expect(html).not.toContain("Anzeigenmotive – keine Teamfotos.");
+    expect(html).not.toContain("Alle Anzeigen lassen sich in voller Größe öffnen.");
     expect(html).not.toContain("KI-generierte");
     expect(html).not.toContain('type="file"');
     expect(html).not.toContain('value="apprentice"');

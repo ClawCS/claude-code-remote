@@ -22,7 +22,7 @@ for (const preference of ["reduced-motion", "save-data"] as const) {
     await expect(page.getByRole("heading", { level:1 })).toBeVisible();
     expect(videos).toEqual([]);
     await page.getByRole("button", { name: "Film abspielen", exact:true }).click();
-    await expect(film).toHaveAttribute("src", "/videos/jammers-hero-desktop.mp4");
+    await expect(film).toHaveAttribute("src", "/videos/jammers-hero-v4-desktop.mp4");
   });
 }
 
