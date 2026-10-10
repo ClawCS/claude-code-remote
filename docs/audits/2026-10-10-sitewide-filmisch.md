@@ -95,6 +95,8 @@ Alle 19 bestehenden Leihartikel haben einen Preis. Der bislang unbenutzte Zweig 
 
 ## Offene Grenzen außerhalb dieser Designabnahme
 
+Die Aufgabennachweise wurden dauerhaft unter `docs/audits/sitewide-filmisch-2026-10-10/` gesichert. Ursprünglich temporäre Kopf-/Navigationsaufnahmen liegen jetzt in `audit/screenshots/sitewide-foundation-2026-10-10/`, Start-/NL-/Sammlungsaufnahmen in `audit/screenshots/sitewide-landings-collections-2026-10-10/`. Die historischen Aufgabenberichte nennen teilweise noch ihre damaligen temporären Pfade; diese Zuordnung bewahrt die Originalbelege. Evidenzcheckpoint `ec92f689e09bb23860a11da0edc518d79161cb62` wurde auf GitHub gepusht und per Remote-SHA abgeglichen. Die tatsächliche Homepage 3110 ist als lokale Übergabe geöffnet; temporäre Browsergröße zurückgesetzt. Dev 3000 ist ohne Fixture-Freigabe/Testuhr wieder verfügbar. Keine Synchronisation in einen anderen Checkout nötig.
+
 - Die Vollprojektprüfung ist wegen fehlendem Poppler 26.10.0 nicht vollständig grün: 3.204 Tests bestanden, 15 native Tests nicht ausgeführt. Kein Upload-/Mail-/Löschbetrieb wurde aktiviert oder als abgenommen erklärt.
 - Die zuvor beobachtete sporadische SyntaxError-Ursache im Entwicklungsbundle bleibt ungeklärt. Die frische Produktionsmatrix und der isolierte Entwicklungs-Fixturefall bestanden; daraus wird keine Ursachenbehebung abgeleitet.
 - Keine Veröffentlichung auf Hetzner, kein Merge/PR, keine echten Zahlungen, E-Mails oder Bewerbungen. Der bestehende Branch und die Worktree bleiben für Nikos lokale Sichtung erhalten.

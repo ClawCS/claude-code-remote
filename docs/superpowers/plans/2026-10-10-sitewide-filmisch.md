@@ -139,4 +139,6 @@
 - [x] Run `npm run audit:public -- --url http://127.0.0.1:3110 --output audit/evidence/sitewide-filmisch-2026-10-10.json` and local content check. Check actual original hashes and offer counts unchanged.
 - [x] Controller uses CUA to inspect and capture every page family and major interaction states; compare header directly to screenshot/prototype and full-page flow to approved design, with proof inventory by route. Unknown/legacy routes and same-origin menu clicks tested explicitly.
 - [x] Fresh whole-change reviewer sees complete diff from `6d60875` plus per-task reports and coverage evidence. Fix reproduced issues through scoped implementation/re-review.
-- [ ] Only verified owned commits/docs/screenshots pushed. Open actual rebuilt local homepage, reset temporary viewport, show screenshot and clearly state not live. Don't claim application/full native system acceptance from web tests.
+- [x] Only verified owned commits/docs/screenshots pushed. Open actual rebuilt local homepage, reset temporary viewport, show screenshot and clearly state not live. Don't claim application/full native system acceptance from web tests.
+
+Completed local acceptance: see `docs/audits/2026-10-10-sitewide-filmisch.md`. App revision a8112f0; evidence checkpoint ec92f68 matched the remote branch. Final documentation/proof preservation does not alter that built app. Native acceptance remains expressly incomplete, no public deployment.
