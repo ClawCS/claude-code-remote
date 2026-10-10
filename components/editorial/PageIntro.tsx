@@ -14,15 +14,17 @@ export type PageIntroProps = Readonly<{
 
 /** Pure presentation: safe to compose in either a server or client page. */
 export default function PageIntro({ eyebrow, title, description, breadcrumbs, children, className, id }: PageIntroProps) {
-  return <header id={id} className={[styles.container, styles.intro, className].filter(Boolean).join(" ")}>
-    {breadcrumbs?.length ? <nav aria-label="Brotkrumennavigation" className={styles.breadcrumbs}>
-      <ol>{breadcrumbs.map((crumb, index) => <li key={`${crumb.label}-${index}`}>
-        {crumb.href ? <Link href={crumb.href} prefetch={false}>{crumb.label}</Link> : <span aria-current={index === breadcrumbs.length - 1 ? "page" : undefined}>{crumb.label}</span>}
-      </li>)}</ol>
-    </nav> : null}
-    {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-    <h1>{title}</h1>
-    {description && <div className={styles.description}>{description}</div>}
-    {children && <div className={styles.introActions}>{children}</div>}
+  return <header id={id} data-editorial-intro className={styles.intro}>
+    <div className={[styles.container, className].filter(Boolean).join(" ")}>
+      {breadcrumbs?.length ? <nav aria-label="Brotkrumennavigation" className={styles.breadcrumbs}>
+        <ol>{breadcrumbs.map((crumb, index) => <li key={`${crumb.label}-${index}`}>
+          {crumb.href ? <Link href={crumb.href} prefetch={false}>{crumb.label}</Link> : <span aria-current={index === breadcrumbs.length - 1 ? "page" : undefined}>{crumb.label}</span>}
+        </li>)}</ol>
+      </nav> : null}
+      {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+      <h1>{title}</h1>
+      {description && <div className={styles.description}>{description}</div>}
+      {children && <div className={styles.introActions}>{children}</div>}
+    </div>
   </header>;
 }

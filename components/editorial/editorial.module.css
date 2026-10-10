@@ -1,7 +1,7 @@
 .container { width: min(100%, var(--cinematic-layout-content-max)); margin-inline: auto; padding-inline: var(--cinematic-spacing-gutter); }
 .section { padding-block: var(--cinematic-spacing-section); }
-.intro { padding-block: clamp(2.5rem, 6vw, 5.5rem); }
-.intro h1 { max-width: 20ch; margin: 1rem 0 1.5rem; color: var(--cinematic-color-ink); font-family: var(--font-jakarta), sans-serif; font-size: clamp(2.5rem, 5.5vw, 5rem); font-weight: 500; line-height: 1.05; letter-spacing: -.055em; text-wrap: balance; }
+.intro { width: 100%; padding-block: clamp(2.5rem, 6vw, 5.5rem); background: var(--cinematic-color-assortment-cream); }
+.intro h1 { max-width: 20ch; margin: 1rem 0 1.5rem; color: var(--cinematic-color-ink); font-family: var(--font-jakarta), sans-serif; font-size: var(--cinematic-typography-size-editorial-heading); font-weight: var(--cinematic-typography-weight-extra-bold); line-height: 1.06; letter-spacing: -.055em; text-wrap: balance; overflow-wrap: anywhere; }
 .eyebrow { color: var(--cinematic-color-muted); font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 .description { max-width: 60ch; color: var(--cinematic-color-muted); font-size: var(--cinematic-typography-size-lead); line-height: 1.7; }
 .breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; margin: 0 0 1.5rem; padding: 0; list-style: none; color: var(--cinematic-color-muted); font-size: .875rem; }
@@ -9,6 +9,7 @@
 .breadcrumbs li + li::before { content: "/"; color: var(--cinematic-color-muted); }
 .breadcrumbs a { display: inline-flex; min-height: 44px; min-inline-size: 44px; align-items: center; justify-content: center; padding-inline: .25rem; text-underline-offset: .2em; }
 .introActions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+.introActions > a, .introActions > button { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); }
 .card { min-width: 0; padding: clamp(1.25rem, 3vw, 2rem); background: var(--cinematic-color-white); border: 1px solid var(--cinematic-color-line); border-radius: 2px; }
 .primaryLink, .secondaryLink { display: inline-flex; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; gap: .75rem; padding: .75rem 1.25rem; border: 1px solid transparent; border-radius: 2px; font: inherit; font-size: .875rem; font-weight: 600; text-decoration: none; cursor: pointer; }
@@ -17,14 +18,14 @@
 .secondaryLink { background: transparent; border-color: var(--cinematic-color-line); color: var(--cinematic-color-ink); }
 .secondaryLink:hover { border-color: var(--cinematic-color-ink); }
 .prose { max-width: 70ch; line-height: 1.8; overflow-wrap: anywhere; }
-.prose h2, .prose h3 { margin-block: 2rem 1rem; font-weight: 600; line-height: 1.25; letter-spacing: -.025em; }
+.prose h2, .prose h3 { margin-block: 2rem 1rem; font-weight: 700; line-height: 1.25; letter-spacing: -.025em; }
 .prose p, .prose ul, .prose ol { margin-block: 1rem; }
 .prose a { text-decoration: underline; text-underline-offset: .2em; }
 .field { display: block; width: 100%; min-height: 44px; padding: .75rem 1rem; border: 1px solid var(--cinematic-color-muted); border-radius: 2px; background: var(--cinematic-color-white); color: var(--cinematic-color-ink); font: inherit; }
 .field:disabled { background: var(--cinematic-color-surface); cursor: not-allowed; }
 .notice { padding: 1.25rem 1.5rem; border-inline-start: 3px solid var(--cinematic-color-red); background: var(--cinematic-color-surface); color: var(--cinematic-color-ink); line-height: 1.65; }
 .emptyState { padding: clamp(2rem, 5vw, 4rem); text-align: center; background: var(--cinematic-color-surface); color: var(--cinematic-color-ink); }
-.primaryLink:focus-visible, .secondaryLink:focus-visible, .field:focus-visible, .breadcrumbs a:focus-visible, .prose a:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 3px; }
+.primaryLink:focus-visible, .secondaryLink:focus-visible, .field:focus-visible, .breadcrumbs a:focus-visible, .introActions > a:focus-visible, .introActions > button:focus-visible, .prose a:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 3px; }
 
 .footer { display: grid; gap: 2rem; padding: var(--cinematic-spacing-section) var(--cinematic-spacing-gutter) 2rem; background: var(--cinematic-color-charcoal); color: var(--cinematic-color-white); }
 .footer > * { width: min(100%, var(--cinematic-layout-content-max)); margin-inline: auto; }
