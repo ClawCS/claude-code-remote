@@ -26,7 +26,34 @@ Task 2 lokal: Platzierungs-Tests erst 7 fehlgeschlagen / 10 bestanden, danach 17
 
 Browserkontrolle bei 390 und 1440 Pixeln: drei vollständige Stellenplakate, fünf Gewinnübergaben, 15 Marktleben-Motive insgesamt; kein horizontaler Überlauf, sichtbarer Tastaturfokus. Plakatlinks öffnen vollständige lokale Motive. Ein paralleler Entwicklungs-/Buildlauf verursachte vorübergehende Fehler in einem alten lokalen Entwicklungschunk; die getrennt gestartete Produktionsansicht auf Port 3106 zeigte keine neuen Browserfehler. Keine Formulare abgesendet.
 
-Unabhängige Gesamtprüfung und Veröffentlichung stehen noch aus. Dies ist kein Live-Nachweis.
+## Unabhängige Prüfung
+
+Ein separater Reviewer prüfte den gesamten Bereich `21318c3..40b58c3`: keine kritischen, wichtigen oder kleineren offenen Befunde. Zusätzlich 45 fokussierte Tests, die 17-Bilder-Prüfung, Archivfilter und QR-Abgleich unabhängig bestätigt. Kein Korrekturdurchlauf erforderlich.
+
+## Veröffentlichung und öffentlicher Nachweis
+
+- App-Commit / Release: `40b58c38b28cf840a0d94633cf12a94fd7da6c54`.
+- Umschaltung: 10.10.2026, 10:46:22 UTC / 12:46:22 Europe/Berlin.
+- Rückrollziel unverändert erhalten: `ef95c0204c2679660ed0fca684ebb5e81069a603`.
+- Frisches Git-Archiv mit 17 öffentlichen Derivaten und 18 bereinigten Quelldateien einschließlich Manifest; Archiv-SHA-256 `845dad2c2b5ed65aec1681322166c60dbd36f8e278e61952f8ebcd8b511b0589`.
+- Linux: Node 22.23.3, 1.556 Webtests in 93 Dateien bestanden; Lint, TypeScript, 128 Originalangebote und Produktionsbuild bestanden. Keine nativen Bewerbungs-/Scannerarbeiten auf dem Server.
+- Nur Next-Release atomar gewechselt und Next neu gestartet. Erste Bereitschaftsprobe traf den erwarteten kurzen Neustart; der begrenzte Wiederholungsversuch bestätigte anschließend HTTP-Bereitschaft und deaktivierte Miet-/Bewerbungsfunktionen.
+- `https://trinkgut-jammers.de`: alle 17 Dateien tatsächlich heruntergeladen, HTTP 200, WebP-Typ, Bytezahl und SHA-256 identisch zum lokalen Manifest. Vier betroffene Seiten enthalten die erwarteten Motive. Bewerbungs-Konfiguration weiterhin deaktiviert mit genau zwei bestehenden API-Stellen.
+- `content:check`: Status ok, keine Fehler/Warnungen, websiteVerified und deploymentVerified true; beide aktuellen Wochenpakete weiterhin gebunden und geprüft.
+- `audit:public`: 117 Seiten, 2.969 lokale Ressourcen, fünf unbekannte Routen und 31 API-Verträge; null Fehler und null Warnungen. Keine externen Links abgerufen, keine echten Formulare oder authentifizierten Aktionen ausgelöst.
+- Live-Browser: vollständige Stellenplakate bei 1440px; Gewinnmomente und Gaswerbung bei 390px, kein horizontaler Überlauf. Temporäre Viewport-Änderung anschließend zurückgesetzt. Neue Bilder erfolgreich geladen.
+- Caddy-SHA-256 vorher/nachher: `fbdf74b2f94dedb319e885110e31179219a3b448f3d65f1018b503e5eeb038ef`; Next-Unit: `e9d9ba135d9e7f70119ccae175f12bedd64337c083e7efff0a96d1ad22cb1dfa`.
+
+Vorbereitung, Git-Sicherung und öffentlicher Betrieb sind damit getrennt nachgewiesen. Dieser Dokumentationsnachtrag ändert den genannten App-Release nicht. Screenshots, rohe technische Prüfberichte und private Quellenbelege bleiben im ignorierten Arbeitsbereich `.superpowers/desktop-photos-2026-10-10/`.
+
+## Bewusste Abgrenzungen
+
+- Tabakfoto statt TCG: ausgeschlossen; dadurch ein Motiv weniger, keine falsche Rubrikzuordnung.
+- Leichte Änderungen der KI-Anzeigenpersonen ausdrücklich akzeptiert; keine Pixelidentität behauptet. Echte Fotos nicht generativ geändert.
+- Personenfreigaben und aktuelle Gas-/Stellenwerbung beruhen auf den Betreiberbestätigungen. Keine Gesichtserkennung oder unabhängige Preiszusage; bei geänderten Tatsachen ist redaktionell zu korrigieren.
+- Ausbildungs-QR-Ziel unverändert und dekodierbar; der externe WhatsApp-Kanalbetrieb wurde nicht getestet. Ein dort bereits bestehendes Problem wäre hiervon nicht behoben.
+- Linux-, öffentliche und Browserprüfung gesondert durch den Hauptbearbeiter durchgeführt, nicht aus Code-Review abgeleitet.
+- Fremde Screenshots und der fremde Bewerbungs-Audit bleiben unberührt. Der getrennte Bewerbungsablauf bleibt wegen der ausgesetzten Sicherheitsintegration unvollständig. Keine zurückgestellten kleineren Reviewbefunde.
 
 ## Unveränderte Betriebsgrenzen
 
