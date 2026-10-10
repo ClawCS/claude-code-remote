@@ -356,3 +356,30 @@ CREATE INDEX erasure_mail_events ON deletion_events(caseId,eventId);
 CREATE INDEX erasure_diagnostics ON deletion_diagnostics(caseId,eventId);
 CREATE INDEX erasure_reservations ON reservations(sessionHash,idempotencyKey,id);
 PRAGMA user_version = 9;
+-- Task11B1a migration10: bounded indexed discovery and fixed fair continuations.
+CREATE INDEX maintenance_payload_due ON cases(payloadDeleteAfter,id);
+CREATE INDEX maintenance_contact_due ON cases(contactDeleteAfter,id);
+CREATE INDEX maintenance_accepted_due ON cases(acceptedAt,id);
+CREATE INDEX maintenance_cleanup_due ON deliveries(cleanupDueAt,caseId);
+CREATE INDEX maintenance_invalid_due ON deliveries(determinedAt,caseId) WHERE category='invalid';
+CREATE INDEX maintenance_proposed ON erasure_events(json_extract(event,'$[2]'),caseId,eventId) WHERE phase='proposed';
+CREATE INDEX maintenance_completed ON erasure_obligations(stage,inspectionGeneration,length(sequence),sequence,caseId,commitEventId);
+CREATE INDEX maintenance_diagnostics_expiry ON deletion_diagnostics(expiresAt);
+CREATE INDEX maintenance_searches_expiry ON deletion_searches(expiresAt);
+CREATE INDEX maintenance_auth_expiry ON auth_attempts(at);
+CREATE TABLE maintenance_selectors(
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1),
+ duePhase INTEGER NOT NULL CHECK(duePhase BETWEEN 0 AND 7),
+ pendingPhase INTEGER NOT NULL CHECK(pendingPhase BETWEEN 0 AND 1),
+ globalPhase INTEGER NOT NULL CHECK(globalPhase BETWEEN 0 AND 3)
+);
+INSERT INTO maintenance_selectors VALUES(1,0,0,0);
+CREATE TABLE maintenance_due_cursors(
+ stream INTEGER PRIMARY KEY CHECK(stream BETWEEN 0 AND 7), keyAt TEXT NOT NULL, keyId TEXT NOT NULL
+);
+INSERT INTO maintenance_due_cursors VALUES(0,'',''),(1,'',''),(2,'',''),(3,'',''),(4,'',''),(5,'',''),(6,'',''),(7,'','');
+CREATE TABLE maintenance_pending_cursors(
+ stream INTEGER PRIMARY KEY CHECK(stream BETWEEN 0 AND 1), keyAt TEXT NOT NULL, keyCase TEXT NOT NULL, keyEvent TEXT NOT NULL
+);
+INSERT INTO maintenance_pending_cursors VALUES(0,'','',''),(1,'','','');
+PRAGMA user_version = 10;

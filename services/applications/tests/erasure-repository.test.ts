@@ -9,7 +9,7 @@ import { encodeJournalEvent } from "../src/ledger-contract";
 import { erasureOwner } from "../src/erasure-repository";
 import { replayAssociation } from "../src/erasure-association";
 import { createHash } from "node:crypto";
-import { removeTask11Schema, testAdmission, testAdmissionScope } from "./fixtures/admission";
+import { removeTask11Schema, removeTask11B1Schema, testAdmission, testAdmissionScope } from "./fixtures/admission";
 import { applicationId,digest, utcInstant } from "../src/types";
 import { caseId, instant, syntheticJournal } from "./fixtures/ledger";
 import type { EraseJournalEvent, JournalEvent,SafetyJournal } from "../src/types";
@@ -76,10 +76,12 @@ describe("original erasure owner foundations", () => {
       expect(end.targets).toEqual([]);expect(end.next).toBeNull();
     });
   });
-  it("migrates fresh and genuine schema8 owners to exactly schema9", () => {
-    const s = setup(); expect(s.db.pragma("user_version", { simple: true })).toBe(9);
+  it("migrates fresh and genuine schema8/9 owners to exactly schema10", () => {
+    const s = setup(); expect(s.db.pragma("user_version", { simple: true })).toBe(10);
+    removeTask11B1Schema(s.db); s.db.pragma("user_version=9"); s.restart();
+    expect(s.db.pragma("user_version", { simple: true })).toBe(10);
     removeTask11Schema(s.db);s.db.pragma("user_version=8");s.restart();
-    expect(s.db.pragma("user_version",{simple:true})).toBe(9);
+    expect(s.db.pragma("user_version",{simple:true})).toBe(10);
     expect(s.db.prepare("SELECT name FROM sqlite_master WHERE name='deletion_contradictory_result'").get()).toBeDefined();
   });
   it("rejects incomplete present-object and cross-kind inventory rows at the schema boundary",()=>{

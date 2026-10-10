@@ -94,7 +94,7 @@ describe("durable delivery authority", () => {
     expect(repo.getDelivery(id).identity).toBeNull(); expect(repo.getDelivery(id).reason).toBe("LEGACY_UNVERIFIED"); expect(repo.getDelivery(id).attempts).toEqual([]);
     expect(repo.getRequestIdentity(id).acceptedAt).toBe(now); expect(repo.listArtifactReservations()).toHaveLength(2);
     repo.close(); const inspection = new Database(join(dir, "db.sqlite"));
-    expect(inspection.pragma("user_version", { simple: true })).toBe(9);
+    expect(inspection.pragma("user_version", { simple: true })).toBe(10);
     expect(() => inspection.prepare("UPDATE cases SET acceptedAt=? WHERE id=?").run(at(1), id)).toThrow("IMMUTABLE_ACCEPTED_AT"); inspection.close();
     repo = await openReadyTestRepository(join(dir, "db.sqlite"));
   });

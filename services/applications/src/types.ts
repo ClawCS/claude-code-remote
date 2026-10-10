@@ -298,6 +298,16 @@ export interface WorkerScheduleEntry {
 export interface WorkerProof { readonly checkedAt: Instant; readonly validUntil: Instant }
 export interface WorkerRestoreProof extends WorkerProof { readonly checkpointId: string; readonly ledgerVerified: true }
 export interface WorkerOwner { readonly repository: ApplicationRepository; readonly custody: CustodyLedger; readonly clock: Clock }
+export interface RuntimeMaintenanceExclusion { readonly [key: symbol]: never }
+export interface WorkerServices {
+  settle(): Promise<void>;
+  close(): Promise<void>;
+  // Actual continuous same-domain exclusion, including previous processes.
+  // Absent methods remain source-compatible, but cannot qualify maintenance.
+  holdMaintenance?(owner: WorkerOwner): Promise<RuntimeMaintenanceExclusion>;
+  assertMaintenanceHeld?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion): void;
+  releaseMaintenance?(owner: WorkerOwner, hold: RuntimeMaintenanceExclusion): Promise<void>;
+}
 export type WorkerAssurance = "unavailable" | "local-test" | "qualified";
 export interface WorkerLifecycleOptions {
   // Trusted platform wiring acquires the exclusive repository and its sole ledger.
@@ -311,7 +321,7 @@ export interface WorkerLifecycleOptions {
   readonly readiness?: { readonly assurance: WorkerAssurance; current(owner: WorkerOwner): { runtime: WorkerProof | null; scanner: WorkerProof | null; mail: WorkerProof | null; retention: WorkerProof | null } };
   readonly rpc?: { readonly socketPath: string; readonly sharedGid: number };
   // Task14-owned services must resolve only after their real scopes have settled.
-  readonly services?: { settle(): Promise<void>; close(): Promise<void> };
+  readonly services?: WorkerServices;
   readonly onEvent?: (event: { readonly reference: string; readonly code: "WORKER_UNAVAILABLE" | "DRAIN_INCOMPLETE" | "DELIVERY_INCIDENT" | "MANUAL_REQUIRED" }) => void;
 }
 export type WorkerLifecycleState = "new" | "starting" | "unavailable" | "running" | "draining" | "stopped";

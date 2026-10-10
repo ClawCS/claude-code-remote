@@ -17,6 +17,7 @@ import { admissionScopeAccepts, snapshotAdmissionScope, snapshotDeletionScope, s
 import { bindDeletionOwner, createDeletionRepository } from "./deletion-repository";
 import { bindErasureOwner, createErasureRepository } from "./erasure-repository";
 import { replayAssociation } from "./erasure-association";
+import { registerMaintenanceRepository, assertMaintenanceClose } from "./worker-maintenance";
 import type { AdmissionScopePort, AuthDependencies, DeletionScope, DeletionScopePort, EraseScope, JournalSafetyProjection, SafetyJournal } from "./types";
 
 const DAY = 86400000;
@@ -25,6 +26,12 @@ function checkBytes(value: number): void { if (!Number.isSafeInteger(value) || v
 interface StoredReservation extends Omit<Reservation, "submission"> { active: number; submission: string }
 interface StoredCase extends Omit<CaseRecord, "submission"> { digest: Digest; reservationId: string; sessionHash: Digest; idempotencyKey: string; submission: string }
 interface Guard { id: ApplicationId; active: boolean }
+type CustodyUnwind = Pick<ApplicationRepository, "listRetainedIntakes" | "listRetainedArtifacts" | "getRequestIdentity" | "getSubmissionKind" | "releaseReservation">;
+const custodyUnwinds = new WeakMap<ApplicationRepository, CustodyUnwind>();
+// Exact existing unwind operations, not an ordinary-admission bypass closure.
+export function custodyUnwindOwner(repository: ApplicationRepository): CustodyUnwind {
+  const owner = custodyUnwinds.get(repository); if (!owner) throw new Error("CUSTODY_OWNER_MISMATCH"); return owner;
+}
 
 export function openRepository(path: string, clock: Clock = { now: () => new Date() }, lifecycleOptions: { readonly journalFactory?: (projection: JournalSafetyProjection) => SafetyJournal; readonly admissionScope?: AdmissionScopePort; readonly deletionScope?: DeletionScopePort; readonly startup?: "ordinary" | "cold-maintenance" } = {}): ApplicationRepository {
   const startup=lifecycleOptions.startup??"ordinary";
@@ -64,7 +71,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       db.exec(schema.slice(schema.indexOf("CREATE TABLE abuse_events"), schema.indexOf("CREATE TABLE deliveries")));
       db.pragma("user_version = 3");
     }).immediate();
-    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
+    else if (version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10) throw new Error("UNSUPPORTED_SCHEMA_VERSION");
     version = db.pragma("user_version", { simple: true });
     if (version === 3) db.transaction(() => {
       db.exec("ALTER TABLE cases ADD COLUMN claimToken TEXT; ALTER TABLE cases ADD COLUMN claimKind TEXT CHECK(claimKind IN ('prepare','send','reconcile'));");
@@ -83,7 +90,10 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
       const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task10 fix1 migration8"), schema.indexOf("-- Task11A migration9")));
     }).immediate();
     if (db.pragma("user_version", { simple: true }) === 8) db.transaction(() => {
-      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11A migration9")));
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11A migration9"), schema.indexOf("-- Task11B1a migration10")));
+    }).immediate();
+    if (db.pragma("user_version", { simple: true }) === 9) db.transaction(() => {
+      const schema = readFileSync(join(__dirname, "schema.sql"), "utf8"); db.exec(schema.slice(schema.indexOf("-- Task11B1a migration10")));
     }).immediate();
   } catch (error) {
     db.close();
@@ -93,13 +103,14 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
   const locks = new Map<ApplicationId, Promise<void>>();
   const context = new AsyncLocalStorage<Guard>();
   let closed = false;
+  let maintenanceInhibited = false;
   let authOwned = false;
   let authDependencies: AuthDependencies | undefined;
   let erasureReadId: ApplicationId | undefined;
   let boundScope: DeletionScope | undefined;
   let scopeChanged=false;
   function live(): void { if (closed) throw new Error("REPOSITORY_CLOSED"); }
-  function ordinary():void { live();if(startup==="cold-maintenance")throw new Error("REPOSITORY_COLD"); }
+  function ordinary():void { live();if(startup==="cold-maintenance")throw new Error("REPOSITORY_COLD");if(maintenanceInhibited)throw new Error("MAINTENANCE_INHIBITED"); }
   function authLive():void { ordinary();if((db.prepare("SELECT authLocked FROM erasure_maintenance WHERE singleton=1").get() as {authLocked:number}).authLocked)throw new Error("AUTH_DENIED"); }
   function scopeDenied(id:ApplicationId,scope: "payload"|"contact"|"identity"|"proof"):boolean {
     const accepted:readonly EraseScope[]=scope==="payload"?["processing_payload","identifying_register"]:scope==="contact"?["processing_contact","incident_identity","identifying_register"]:scope==="proof"?["public_token","incident_identity","identifying_register"]:["incident_identity","identifying_register"];
@@ -138,7 +149,8 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     const result=readLifecycle(db, { ...row, submission: submissionKind(JSON.parse(row.submission)) });
     return erasureReadId!==id&&scopeDenied(id,"payload")?{...result,encryptedPayloadPath:null,payloadBytes:0}:result;
   }
-  async function guarded<T>(id: ApplicationId, action: () => Promise<T>): Promise<T> {
+  async function guarded<T>(id: ApplicationId, action: () => Promise<T>, maintenance = false): Promise<T> {
+    if (maintenanceInhibited && !maintenance) throw new Error("MAINTENANCE_INHIBITED");
     live(); const own = context.getStore();
     if (own?.active && own.id === id) return action();
     const previous = locks.get(id);
@@ -147,7 +159,7 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     locks.set(id, held);
     if (previous) await previous;
     const guard: Guard = { id, active: true };
-    try { live(); return await context.run(guard, action); }
+    try { live(); if (maintenanceInhibited && !maintenance) throw new Error("MAINTENANCE_INHIBITED"); return await context.run(guard, action); }
     finally { guard.active = false; release(); if (locks.get(id) === held) locks.delete(id); }
   }
   function proof(row: Pick<CaseRecord, "id" | "reference" | "acceptedAt">, now: Instant, replayed = false): Acceptance {
@@ -337,18 +349,24 @@ export function openRepository(path: string, clock: Clock = { now: () => new Dat
     reserve, pruneAdmissionEvents, commitIntake, claimNext, getPublicStatus, transitionDelivery,
     releaseReservation(id) { live(); db.prepare("DELETE FROM reservations WHERE id = ? AND active = 1").run(id); },
     withCaseLock: (id, action) => guarded(id, () => action(Object.freeze(readCase(id)))),
-    close() { if (closed) return; if (locks.size) throw new Error("CASE_LOCK_ACTIVE"); db.close(); closed = true; },
+    close() { if (closed) return; assertMaintenanceClose(repository); if (locks.size) throw new Error("CASE_LOCK_ACTIVE"); db.close(); closed = true; },
   };
   const deletion=createDeletionRepository(db, readCase, delivery.getDelivery, id => {
     live(); const own = context.getStore(); if (!own?.active || own.id !== id) throw new Error("DELETION_GUARD_REQUIRED");
   }, journal, () => utcInstant(clock.now().toISOString()));
   bindDeletionOwner(repository,deletion);
   function erasureRead<T>(id:ApplicationId,read:()=>T):T {const previous=erasureReadId;erasureReadId=id;try{return read();}finally{erasureReadId=previous;}}
-  bindErasureOwner(repository,createErasureRepository(db,{journal,now:()=>utcInstant(clock.now().toISOString()),scope:currentErasureScope,
-    guard(id){live();const own=context.getStore();if(!own?.active||own.id!==id)throw new Error("ERASURE_GUARD_REQUIRED");},guarded,
+  bindErasureOwner(repository,createErasureRepository(db,{repository,journal,now:()=>utcInstant(clock.now().toISOString()),scope:currentErasureScope,
+    guard(id){live();const own=context.getStore();if(!own?.active||own.id!==id)throw new Error("ERASURE_GUARD_REQUIRED");},guarded:(id,action)=>guarded(id,action,true),
     readCase:id=>erasureRead(id,()=>readCase(id)),delivery:id=>erasureRead(id,()=>delivery.getDelivery(id)),currentClear:id=>erasureRead(id,()=>deletion.currentClear(id)),
     lockAuthentication(){live();if(startup!=="cold-maintenance"||authOwned)throw new Error("AUTH_RESTORE_LOCK_UNAVAILABLE");db.transaction(()=>{db.prepare("UPDATE erasure_maintenance SET authLocked=1 WHERE singleton=1").run();db.prepare("DELETE FROM auth_grants").run();db.prepare("DELETE FROM auth_sessions").run();db.prepare("DELETE FROM auth_recovery").run();}).immediate();},
   }));
+  registerMaintenanceRepository(repository, clock, {
+    inhibit() { live(); maintenanceInhibited = true; },
+    async settle() { while (locks.size) await Promise.all([...locks.values()]); },
+    idle: () => locks.size === 0,
+  }, journal);
+  custodyUnwinds.set(repository, Object.freeze({ listRetainedIntakes: repository.listRetainedIntakes, listRetainedArtifacts: repository.listRetainedArtifacts, getRequestIdentity: repository.getRequestIdentity, getSubmissionKind: repository.getSubmissionKind, releaseReservation: repository.releaseReservation }));
   // Every original capability retains its construction-time denial boundary.
   for(const name of Object.keys(repository) as (keyof ApplicationRepository)[]){if(name==="close")continue;const method=repository[name] as (...args:unknown[])=>unknown;Object.defineProperty(repository,name,{value:(...args:unknown[])=>{ordinary();return method(...args);},writable:true});}
   return repository;

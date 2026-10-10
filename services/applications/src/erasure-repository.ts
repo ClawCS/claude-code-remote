@@ -5,6 +5,8 @@ import { admissionScopeAccepts, registrationAssociation } from "./deletion-assoc
 import { externalAttestationAssociation, replayAssociation } from "./erasure-association";
 import { createErasureRowSelector } from "./erasure-storage";
 import { berlinDate, operatorReason } from "./lifecycle";
+import { assertMaintenance, assertMaintenanceSettled, maintenanceCommand, maintenanceRemaining, selectMaintenance, type MaintenanceRun } from "./worker-maintenance";
+import { advanceAuthMaintenanceClock } from "./auth-repository";
 import { applicationId, staffId, utcInstant, type ApplicationId, type ApplicationRepository, type CaseRecord, type CurrentExternalAttestation, type CurrentMailboxClear, type DeletionScope, type DeliveryRecord, type DurableReceipt, type EraseJournalEvent, type EraseScope, type ErasureRowCursor, type ErasureRowPage, type ErasureWork, type ErasureWorkPage, type FinalErasureEvidence, type SafetyJournal } from "./types";
 
 // Private 11B admission contract for commands without a consumedItems DTO.
@@ -38,7 +40,16 @@ export interface ErasureOwner {
   listWork(remainingItems: number): ErasureWorkPage;
   rowPage(commitEventId: string, cursor: ErasureRowCursor | null, remainingItems: number): ErasureRowPage;
   lockRestoredAuthentication(): void;
+  listDue(run: MaintenanceRun): Promise<DuePage>;
+  prepareDue(candidate: DueCandidate, run: MaintenanceRun): Promise<Readonly<{ event: EraseJournalEvent; consumedItems: number }>>;
+  expireGlobalBatch(run: MaintenanceRun): Promise<Readonly<{ deleted: number; hasMore: boolean; consumedItems: number }>>;
+  listPending(run: MaintenanceRun): Promise<Readonly<{ items: readonly PendingMaintenance[]; hasMore: boolean; consumedItems: number }>>;
+  listCommitted(run: MaintenanceRun): Promise<ErasureWorkPage>;
+  reconcileClaim(commitEventId: string, run: MaintenanceRun): Promise<Readonly<{ changed: boolean; consumedItems: number }>>;
 }
+export type PendingMaintenance = Readonly<{ kind: "proposed"; event: EraseJournalEvent }> | Readonly<{ kind: "needs-done"; work: ErasureWork }>;
+export interface DueCandidate { readonly caseId: ApplicationId; readonly scope: EraseScope; readonly dueAt: string }
+export interface DuePage { readonly items: readonly DueCandidate[]; readonly hasMore: boolean; readonly consumedItems: number }
 const owners = new WeakMap<ApplicationRepository, ErasureOwner>();
 export function bindErasureOwner(repository: ApplicationRepository, owner: ErasureOwner): void { if (owners.has(repository)) throw new Error("ERASURE_ALREADY_OWNED"); owners.set(repository, owner); }
 export function erasureOwner(repository: ApplicationRepository): ErasureOwner { const owner = owners.get(repository); if (!owner) throw new Error("ERASURE_UNAVAILABLE"); return owner; }
@@ -46,6 +57,7 @@ function fail(code = "ERASURE_STORAGE_INVALID"): never { throw new Error(code); 
 const scopes: readonly EraseScope[] = ["processing_payload", "processing_contact", "incident_identity", "public_token", "identifying_register"];
 type Phase = { eventId: string; caseId: ApplicationId; event: string; phase: "proposed" | "acknowledged"; entry: DurableReceipt["entry"] | null; head: DurableReceipt["head"] | null };
 interface Dependencies {
+  readonly repository: ApplicationRepository;
   readonly journal: SafetyJournal | undefined;
   readonly now: () => string;
   readonly guard: (id: ApplicationId) => void;
@@ -58,6 +70,181 @@ interface Dependencies {
 }
 export function createErasureRepository(db: Database.Database, deps: Dependencies): ErasureOwner {
   const selectRows=createErasureRowSelector(db);
+  const candidates = new WeakMap<DueCandidate, { run: MaintenanceRun; used: boolean }>();
+  const dueStreams = [
+    ["cases", "payloadDeleteAfter", "id", "maintenance_payload_due", "processing_payload", 0],
+    ["cases", "contactDeleteAfter", "id", "maintenance_contact_due", "processing_contact", 0],
+    ["cases", "acceptedAt", "id", "maintenance_accepted_due", "public_token", 7],
+    ["cases", "acceptedAt", "id", "maintenance_accepted_due", "incident_identity", 30],
+    ["deliveries", "cleanupDueAt", "caseId", "maintenance_cleanup_due", "processing_payload", 0],
+    ["deliveries", "cleanupDueAt", "caseId", "maintenance_cleanup_due", "processing_contact", 0],
+    ["deliveries", "determinedAt", "caseId", "maintenance_invalid_due", "incident_identity", 1],
+    ["case_lifecycle", "deleteFrom", "caseId", "deletion_due", "identifying_register", 0],
+  ] as const;
+  async function listDue(run: MaintenanceRun): Promise<DuePage> {
+    const remaining = maintenanceRemaining(run, deps.repository);
+    // State query+row(2), cursor query+row(2), key query(1), lookahead(1),
+    // two fairness writes(2); per parent row(1), two point queries+rows(4).
+    const limit = Math.min(20, remaining.selections, Math.floor((remaining.items - 8) / 5));
+    if (limit < 1) return Object.freeze({ items: Object.freeze([]), hasMore: true, consumedItems: 0 });
+    const result = await maintenanceCommand(run, deps.repository, 8 + 5 * limit, "scalar", () => db.transaction(() => {
+      assertMaintenance(run, deps.repository);
+      const phase = (db.prepare("SELECT duePhase FROM maintenance_selectors WHERE singleton=1").get() as { duePhase: number }).duePhase;
+      const cursor = db.prepare("SELECT keyAt,keyId FROM maintenance_due_cursors WHERE stream=?").get(phase) as { keyAt: string; keyId: string };
+      const [table, column, id, index, scope, days] = dueStreams[phase];
+      const cutoff = phase === 7 ? berlinDate(new Date(remaining.now)) : new Date(Date.parse(remaining.now) - days * 86400000).toISOString();
+      const selected = db.prepare(`SELECT ${column} AS keyAt,${id} AS caseId FROM ${table} INDEXED BY ${index} WHERE ${phase === 6 ? "category='invalid' AND " : ""}${column}<=? AND (${column},${id})>(?,?) ORDER BY ${column},${id} LIMIT ?`).all(cutoff, cursor.keyAt, cursor.keyId, limit + 1) as { keyAt: string; caseId: ApplicationId }[];
+      const page = selected.slice(0, limit), items: DueCandidate[] = []; let consumed = 7 + selected.length;
+      for (const row of page) {
+        applicationId(row.caseId); selectMaintenance(run, deps.repository, `case:${row.caseId}`);
+        const covering = scope === "processing_contact" || scope === "public_token" ? [scope, "incident_identity", "identifying_register"] : [scope, "identifying_register"];
+        consumed++;
+        const covered = db.prepare(`SELECT 1 FROM erasure_scopes WHERE caseId=? AND scope IN(${covering.map(() => "?").join(",")}) LIMIT 1`).get(row.caseId, ...covering);
+        if (covered) { consumed++; continue; }
+        consumed++;
+        if (db.prepare("SELECT 1 FROM erasure_events WHERE caseId=? AND phase='proposed' LIMIT 1").get(row.caseId)) { consumed++; continue; }
+        const candidate = Object.freeze({ caseId: row.caseId, scope, dueAt: phase === 7 ? row.keyAt : new Date(Date.parse(row.keyAt) + days * 86400000).toISOString() });
+        candidates.set(candidate, { run, used: false }); items.push(candidate);
+      }
+      const last = selected.length > limit ? page.at(-1) : undefined;
+      db.prepare("UPDATE maintenance_due_cursors SET keyAt=?,keyId=? WHERE stream=?").run(last?.keyAt ?? "", last?.caseId ?? "", phase);
+      // Rotate after EVERY bounded page; a large/blocked stream cannot monopolize.
+      db.prepare("UPDATE maintenance_selectors SET duePhase=? WHERE singleton=1").run((phase + 1) % 8);
+      return { value: Object.freeze({ items: Object.freeze(items), hasMore: true }), consumedItems: consumed };
+    }).immediate());
+    return Object.freeze({ ...result.value, consumedItems: result.consumedItems });
+  }
+  function reconcileSelectedClaim(id: ApplicationId, run: MaintenanceRun): boolean {
+    assertMaintenance(run, deps.repository); deps.guard(id);
+    const row = db.prepare("SELECT claimOwner,claimedAt,claimToken,claimKind,deliveryState FROM cases WHERE id=?").get(id) as { claimOwner: string | null; claimedAt: string | null; claimToken: string | null; claimKind: string | null; deliveryState: string } | undefined;
+    if (!row || [row.claimOwner, row.claimedAt, row.claimToken, row.claimKind].every(value => value === null)) return false;
+    if (!row.claimOwner || !/^[A-Za-z0-9_-]{1,128}$/.test(row.claimOwner) || !row.claimToken || !/^[a-f0-9]{64}$/.test(row.claimToken) || !row.claimedAt || !["prepare", "send", "reconcile"].includes(row.claimKind ?? "")) fail("ERASURE_CLAIM_ACTIVE");
+    try { utcInstant(row.claimedAt); } catch { fail("ERASURE_CLAIM_ACTIVE"); }
+    if ((row.claimKind === "prepare" && row.deliveryState !== "scanning") || (row.claimKind === "send" && !["ready", "sending"].includes(row.deliveryState)) || (row.claimKind === "reconcile" && !["smtp_accepted", "uncertain"].includes(row.deliveryState))) fail("ERASURE_CLAIM_ACTIVE");
+    // Same continuous runtime hold includes prior workers. Full scopes/senders
+    // were settled at begin; no ordinary producer may have started since.
+    assertMaintenance(run, deps.repository);
+    const changed = db.prepare("UPDATE cases SET claimOwner=NULL,claimedAt=NULL,claimToken=NULL,claimKind=NULL WHERE id=? AND claimOwner=? AND claimedAt=? AND claimToken=? AND claimKind=? AND deliveryState=?").run(id, row.claimOwner, row.claimedAt, row.claimToken, row.claimKind, row.deliveryState).changes;
+    if (changed !== 1) fail("ERASURE_CLAIM_ACTIVE");
+    assertMaintenance(run, deps.repository); return true;
+  }
+  async function prepareDue(candidate: DueCandidate, run: MaintenanceRun) {
+    const record = candidates.get(candidate);
+    if (!record || record.run !== run || record.used) fail("ERASURE_CANDIDATE_INVALID");
+    record.used = true;
+    assertMaintenanceSettled(run, deps.repository);
+    // prepareCommit256 + original guard20 + claim query/row2 + exact CAS1.
+    const result = await maintenanceCommand(run, deps.repository, 279, "scalar", () => deps.guarded(candidate.caseId, async () => {
+      assertMaintenance(run, deps.repository);
+      return db.transaction(() => { reconcileSelectedClaim(candidate.caseId, run); const event = prepareCommit(candidate.caseId, candidate.scope); assertMaintenance(run, deps.repository); return { value: event, consumedItems: 279 }; }).immediate();
+    }));
+    return Object.freeze({ event: result.value, consumedItems: result.consumedItems });
+  }
+  async function expireGlobalBatch(run: MaintenanceRun) {
+    const remaining = maintenanceRemaining(run, deps.repository);
+    // Fixed state query/row2, secure_delete1, select1, fairness write1;
+    // auth clock query/row+write3. Each selected row and exact delete cost2.
+    const limit = Math.min(100, Math.floor((remaining.items - 8) / 2));
+    if (limit < 1) return Object.freeze({ deleted: 0, hasMore: true, consumedItems: 0 });
+    const result = await maintenanceCommand(run, deps.repository, 8 + 2 * limit, "scalar", () => db.transaction(() => {
+      assertMaintenance(run, deps.repository);
+      if (db.pragma("secure_delete", { simple: true }) !== 1) fail("ERASURE_SANITATION_REQUIRED");
+      const phase = (db.prepare("SELECT globalPhase FROM maintenance_selectors WHERE singleton=1").get() as { globalPhase: number }).globalPhase;
+      const [table, column, index] = [["abuse_events", "expiresAt", "abuse_events_expiry"], ["deletion_diagnostics", "expiresAt", "maintenance_diagnostics_expiry"], ["deletion_searches", "expiresAt", "maintenance_searches_expiry"], ["auth_attempts", "at", "maintenance_auth_expiry"]][phase];
+      let consumed = 5;
+      if (phase === 3) { advanceAuthMaintenanceClock(db, utcInstant(remaining.now)); consumed += 3; }
+      const cutoff = phase === 3 ? new Date(Date.parse(remaining.now) - 900000).toISOString() : remaining.now;
+      const rows = db.prepare(`SELECT rowid FROM ${table} INDEXED BY ${index} WHERE ${column}<=? ORDER BY ${column},rowid LIMIT ?`).all(cutoff, limit) as { rowid: number }[];
+      let deleted = 0;
+      for (const row of rows) {
+        if (!Number.isSafeInteger(row.rowid)) fail();
+        deleted += db.prepare(`DELETE FROM ${table} WHERE rowid=? AND ${column}<=?`).run(row.rowid, cutoff).changes; consumed += 2;
+      }
+      assertMaintenance(run, deps.repository);
+      db.prepare("UPDATE maintenance_selectors SET globalPhase=? WHERE singleton=1").run((phase + 1) % 4);
+      return { value: Object.freeze({ deleted, hasMore: true }), consumedItems: consumed };
+    }).immediate());
+    return Object.freeze({ ...result.value, consumedItems: result.consumedItems });
+  }
+  async function listPending(run: MaintenanceRun) {
+    const remaining = maintenanceRemaining(run, deps.repository);
+    // Two state/cursor query+row pairs4, optional projection query+row2,
+    // <=4 disjoint indexed range queries/lookahead1/two writes2. Each key1 + phase
+    // point query/row2 + verified work's two fixed join pairs4 = at most7.
+    const limit = Math.min(20, remaining.selections, Math.floor((remaining.items - 13) / 7));
+    if (limit < 1) return Object.freeze({ items: Object.freeze([]), hasMore: true, consumedItems: 0 });
+    const result = await maintenanceCommand(run, deps.repository, 13 + 7 * limit, "scalar", () => db.transaction(() => {
+      const phase = (db.prepare("SELECT pendingPhase FROM maintenance_selectors WHERE singleton=1").get() as { pendingPhase: number }).pendingPhase;
+      const cursor = db.prepare("SELECT keyAt,keyCase,keyEvent FROM maintenance_pending_cursors WHERE stream=?").get(phase) as { keyAt: string; keyCase: string; keyEvent: string };
+      const selected: { keyAt: string; caseId: ApplicationId; eventId: string }[] = []; let consumed = 6;
+      const select = (sql: string, args: readonly unknown[]) => {
+        if (selected.length >= limit + 1) return;
+        consumed++; selected.push(...db.prepare(sql).all(...args, limit + 1 - selected.length) as typeof selected);
+      };
+      if (phase === 0) {
+        // SQLite does not seek a row-value bound beginning with an expression.
+        // Disjoint prefix ranges avoid scanning equal-time predecessors.
+        const prefix = "SELECT json_extract(event,'$[2]') AS keyAt,caseId,eventId FROM erasure_events INDEXED BY maintenance_proposed WHERE phase='proposed' AND ";
+        const order = " ORDER BY json_extract(event,'$[2]'),caseId,eventId LIMIT ?";
+        select(prefix + "json_extract(event,'$[2]')=? AND caseId=? AND eventId>? ORDER BY eventId LIMIT ?", [cursor.keyAt, cursor.keyCase, cursor.keyEvent]);
+        select(prefix + "json_extract(event,'$[2]')=? AND caseId>? ORDER BY caseId,eventId LIMIT ?", [cursor.keyAt, cursor.keyCase]);
+        select(prefix + "json_extract(event,'$[2]')>?" + order, [cursor.keyAt]);
+      } else {
+        const projection = db.prepare("SELECT pass FROM journal_projection WHERE singleton=1").get() as { pass: string }; consumed += 2;
+        const prefix = "SELECT sequence AS keyAt,caseId,commitEventId AS eventId FROM erasure_obligations INDEXED BY maintenance_completed WHERE stage='locally-complete' AND inspectionGeneration=? AND ";
+        const order = " ORDER BY length(sequence),sequence,caseId,commitEventId LIMIT ?", length = cursor.keyAt.length;
+        select(prefix + "length(sequence)=? AND sequence=? AND caseId=? AND commitEventId>? ORDER BY commitEventId LIMIT ?", [projection.pass, length, cursor.keyAt, cursor.keyCase, cursor.keyEvent]);
+        select(prefix + "length(sequence)=? AND sequence=? AND caseId>? ORDER BY caseId,commitEventId LIMIT ?", [projection.pass, length, cursor.keyAt, cursor.keyCase]);
+        select(prefix + "length(sequence)=? AND sequence>? ORDER BY sequence,caseId,commitEventId LIMIT ?", [projection.pass, length, cursor.keyAt]);
+        select(prefix + "length(sequence)>?" + order, [projection.pass, length]);
+      }
+      consumed += selected.length;
+      const page = selected.slice(0, limit), items: PendingMaintenance[] = [];
+      for (const key of page) {
+        applicationId(key.caseId); selectMaintenance(run, deps.repository, `case:${key.caseId}`); consumed += 2;
+        if (phase === 0) {
+          const row = db.prepare("SELECT event FROM erasure_events WHERE eventId=? AND caseId=? AND phase='proposed'").get(key.eventId, key.caseId) as { event: string } | undefined;
+          if (!row) fail(); const event = decodeJournalEvent(row.event);
+          if ((event[3] !== "erase_commit" && event[3] !== "erase_done") || event[1] !== key.eventId || event[4][0] !== key.caseId || event[2] !== key.keyAt) fail();
+          items.push(Object.freeze({ kind: "proposed", event }));
+        } else {
+          const row = db.prepare("SELECT historicalDone FROM erasure_obligations WHERE commitEventId=?").get(key.eventId) as { historicalDone: string | null };
+          if (row.historicalDone !== null) continue;
+          const current = work(key.eventId); consumed += 4;
+          if (current.caseId !== key.caseId || current.stage !== "locally-complete") fail();
+          items.push(Object.freeze({ kind: "needs-done", work: current }));
+        }
+      }
+      const last = selected.length > limit ? page.at(-1) : undefined;
+      db.prepare("UPDATE maintenance_pending_cursors SET keyAt=?,keyCase=?,keyEvent=? WHERE stream=?").run(last?.keyAt ?? "", last?.caseId ?? "", last?.eventId ?? "", phase);
+      db.prepare("UPDATE maintenance_selectors SET pendingPhase=? WHERE singleton=1").run(1 - phase);
+      assertMaintenance(run, deps.repository);
+      return { value: Object.freeze({ items: Object.freeze(items), hasMore: true }), consumedItems: consumed };
+    }).immediate());
+    return Object.freeze({ ...result.value, consumedItems: result.consumedItems });
+  }
+  async function listCommitted(run: MaintenanceRun): Promise<ErasureWorkPage> {
+    const remaining = maintenanceRemaining(run, deps.repository), maximum = Math.min(remaining.items, 4 + 6 * remaining.selections);
+    if (maximum < 10) return Object.freeze({ items: Object.freeze([]), hasMore: true, consumedItems: 0 });
+    const result = await maintenanceCommand(run, deps.repository, maximum, "scalar", () => {
+      const page = owner.listWork(maximum);
+      for (const work of page.items) selectMaintenance(run, deps.repository, `commit:${work.commitEventId}`);
+      return { value: page, consumedItems: page.consumedItems };
+    });
+    return result.value;
+  }
+  async function reconcileClaim(commitEventId: string, run: MaintenanceRun) {
+    assertMaintenanceSettled(run, deps.repository);
+    // Existing guard resolution reserve20 + selected claim query/row/CAS3.
+    const result = await maintenanceCommand(run, deps.repository, 23, "scalar", async () => {
+      const initial = work(commitEventId); selectMaintenance(run, deps.repository, `commit:${commitEventId}`);
+      return deps.guarded(initial.caseId, async () => {
+        assertMaintenance(run, deps.repository);
+        return db.transaction(() => { const current = work(commitEventId); if (current.caseId !== initial.caseId) fail(); return { value: reconcileSelectedClaim(current.caseId, run), consumedItems: 23 }; }).immediate();
+      });
+    });
+    return Object.freeze({ changed: result.value, consumedItems: result.consumedItems });
+  }
   function pending(id: ApplicationId): EraseJournalEvent | null {
     deps.guard(id);
     const phase = db.prepare("SELECT event FROM erasure_events WHERE caseId=? AND phase='proposed'").get(id) as { event: string } | undefined;
@@ -156,7 +343,7 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     db.prepare("UPDATE erasure_events SET phase='acknowledged',entry=?,head=? WHERE eventId=? AND phase='proposed'").run(receipt.entry,receipt.head,event[1]);
   }
   function budget(value:number):void { if(!Number.isSafeInteger(value)||value<1||value>1000) fail("ERASURE_BUDGET_INVALID"); }
-  return Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,
+  const owner: ErasureOwner = Object.freeze({ journal:deps.journal,pending,prepareCommit,acknowledge,currentFinalEvidence,listDue,prepareDue,expireGlobalBatch,listPending,listCommitted,reconcileClaim,
     async withErasureGuard<T>(commitEventId:string,action:(value:ErasureWork)=>Promise<T>):Promise<T> {
       const initial=work(commitEventId);
       return deps.guarded(initial.caseId,async()=>{ const current=work(commitEventId); const claim=db.prepare("SELECT claimToken,claimOwner,claimedAt FROM cases WHERE id=?").get(current.caseId) as {claimToken:string|null;claimOwner:string|null;claimedAt:string|null}|undefined; if(claim&&Object.values(claim).some(value=>value!==null)) fail("ERASURE_CLAIM_ACTIVE"); return action(current); });
@@ -188,4 +375,5 @@ export function createErasureRepository(db: Database.Database, deps: Dependencie
     },
     lockRestoredAuthentication:deps.lockAuthentication,
   });
+  return owner;
 }

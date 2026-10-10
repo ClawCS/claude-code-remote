@@ -11,14 +11,14 @@ export function assertAction(action: SensitiveAction): void {
   applicationId(action.caseId);
   if (!AUTH_ACTIONS.includes(action.kind) || !Number.isSafeInteger(action.version) || action.version < 1) throw new Error("AUTH_DENIED");
 }
-function advanceClock(db: Database.Database, now: Instant): void {
+export function advanceAuthMaintenanceClock(db: Database.Database, now: Instant): void {
   utcInstant(now); const old = db.prepare("SELECT lastAt FROM auth_clock WHERE singleton=1").get() as { lastAt: Instant } | undefined;
   if (old && now < utcInstant(old.lastAt)) throw new Error("AUTH_DENIED");
   db.prepare("INSERT INTO auth_clock VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET lastAt=excluded.lastAt").run(now);
 }
 export function pruneAuthAttempts(db: Database.Database, now: Instant): number {
   return db.transaction(() => {
-    advanceClock(db, now);
+    advanceAuthMaintenanceClock(db, now);
     return db.prepare("DELETE FROM auth_attempts WHERE at<=?").run(new Date(Date.parse(now) - 900000).toISOString()).changes;
   }).immediate();
 }
@@ -27,7 +27,7 @@ export function pruneAuthAttempts(db: Database.Database, now: Instant): number {
 export function createAuthRepository(db: Database.Database, live: () => void, readCase: (id: ApplicationId) => CaseRecord, guarded: <T>(id: ApplicationId, action: () => Promise<T>) => Promise<T>) {
   function transaction<T>(action: () => T): T { live(); return db.transaction(action).immediate(); }
   function clock(now: Instant): void {
-    advanceClock(db, now);
+    advanceAuthMaintenanceClock(db, now);
   }
   function staff(login: string): AuthStaff | null {
     live(); const row = db.prepare("SELECT * FROM auth_staff WHERE login=?").get(login) as (Omit<AuthStaff, "password"> & { password: string }) | undefined;
