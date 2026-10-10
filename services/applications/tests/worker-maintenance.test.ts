@@ -50,6 +50,45 @@ async function historicalBacklog(f: Awaited<ReturnType<typeof setup>>, count: nu
   return ids;
 }
 describe("original maintenance lifetime", () => {
+  it.each(["runtime", "journal"] as const)("retains the failed %s root sync across exact processing cleanup retries", async boundary => {
+    const f = await setup(), accepted = await f.accept();
+    const snapshot = await takePrivateSnapshot(accepted.record, accepted.keys);
+    const directory = await f.owner.custody.beginProcessing(snapshot, 4096);
+    await mkdir(directory, { mode: 0o700 });
+    const targetRoot = boundary === "runtime" ? f.config.runtimeRoot : f.config.custodyRoot;
+    const originalOpen = fs.open; let failSync = true, failedSyncs = 0, successfulSyncs = 0;
+    vi.spyOn(fs, "open").mockImplementation(async (...args) => {
+      const handle = await originalOpen(...args);
+      if (args[0] === targetRoot) {
+        const sync = handle.sync.bind(handle);
+        handle.sync = async () => {
+          if (failSync) { failedSyncs++; throw new Error("private-root-sync-canary"); }
+          await sync(); successfulSyncs++;
+        };
+      }
+      return handle;
+    });
+    await expect(f.owner.custody.finishProcessing(directory)).rejects.toThrow("private-root-sync-canary");
+    await expect(stat(directory)).rejects.toMatchObject({ code: "ENOENT" });
+    expect(successfulSyncs).toBe(0);
+    bindMaintenance(f.owner, f.services, f.monotonicNow);
+    await expect(beginMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await expect(f.owner.custody.finishProcessing(directory)).rejects.toThrow("private-root-sync-canary");
+      await expect(settleMaintenance(f.owner)).rejects.toThrow("MAINTENANCE_SETTLEMENT_UNCERTAIN");
+      expect(() => beginMaintenance(f.owner)).toThrow("MAINTENANCE_RUN_ACTIVE");
+      expect(() => f.owner.repository.close()).toThrow("MAINTENANCE_WORK_ACTIVE");
+      expect(successfulSyncs).toBe(0);
+    }
+    expect(failedSyncs).toBe(3);
+    failSync = false;
+    await f.owner.custody.finishProcessing(directory);
+    expect(successfulSyncs).toBe(1);
+    await settleMaintenance(f.owner); await beginMaintenance(f.owner); await settleMaintenance(f.owner);
+    expect(maintenanceSnapshot(f.owner).status).toBe("settled");
+    expect((await readdir(f.config.custodyRoot)).some(name => name.startsWith(directory.split("/").at(-1)!))).toBe(false);
+    expect(() => f.owner.repository.close()).not.toThrow();
+  });
   it("retains an unreleased real ingress holder until exact abort retry confirms release", async () => {
     const f = await setup(), sessionHash = digest("a".repeat(64));
     const reservation = await f.owner.custody.reserve({ ...testAdmission(), sessionHash, idempotencyKey: "held-release", reservedBytes: 20000, now: utcInstant(f.owner.clock.now().toISOString()) }, testReadiness);

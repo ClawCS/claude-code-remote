@@ -42,6 +42,10 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
   // close/cleanup identities remain here after the producer promise rejects.
   const handles = new Set<FileHandle>();
   const unresolvedReleases = new Set<string>();
+  // In-memory milestones of the original admitted processing cleanup only.
+  // An absent pathname cannot discharge a previously failed durability step.
+  const pendingProcessingSync = new Set<string>();
+  const unlinkedProcessingJournals = new Set<string>();
   const resourceObserver = { acquired: (handle: FileHandle) => { handles.add(handle); }, released: (handle: FileHandle) => { handles.delete(handle); } };
   const processingLifetimes = new Map<string, { done: Promise<void>; finish(): void }>();
   function track<T>(action: () => Promise<T>): Promise<T> {
@@ -188,14 +192,21 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
     } finally { await closeCustodyHandle(fd); }
   }
   async function deleteFile(entry: Journal) {
-    try { await lstat(entry.path); } catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") return; throw error; }
+    try { await lstat(entry.path); } catch (error) {
+      if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error;
+      if (entry.kind === "processing" && pendingProcessingSync.has(entry.id)) {
+        await syncRoot(config.runtimeRoot); pendingProcessingSync.delete(entry.id);
+      }
+      return;
+    }
     if (entry.kind === "processing") {
       await checkPrivateRoot(entry.path);
       const names = await readdir(entry.path);
       // Validate every path before deleting any; never recursively remove unknown entries.
       for (const name of names) { if (!scopeName(name)) throw new Error("CUSTODY_UNACCOUNTED_FILE"); const fd = await openPrivateFile(join(entry.path, name), entry.path); await closeCustodyHandle(fd); }
+      pendingProcessingSync.add(entry.id);
       for (const name of names) await unlink(join(entry.path, name));
-      await rmdir(entry.path); await syncRoot(config.runtimeRoot); return;
+      await rmdir(entry.path); await syncRoot(config.runtimeRoot); pendingProcessingSync.delete(entry.id); return;
     }
     const fd = entry.kind==="artifact"?await openArtifactHandle(entry.path,config.custodyRoot,entry.artifactKind!):await openPrivateFile(entry.path, rootFor(entry), entry.kind === "intake" ? incoming : undefined); await closeCustodyHandle(fd);
     await unlink(entry.path); await syncRoot(rootFor(entry));
@@ -214,7 +225,12 @@ export function createCustodyLedger(repo: ApplicationRepository, config: Custody
       try { await lstat(entry.workerPath); } catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") exists = false; else throw error; }
       if (exists) { const fd = entry.kind==="artifact"?await openArtifactHandle(entry.workerPath,config.custodyRoot,entry.artifactKind!):await openPrivateFile(entry.workerPath, config.custodyRoot); await closeCustodyHandle(fd); await unlink(entry.workerPath); }
     }
-    await unlink(metadataPath(entry.id)); await syncRoot(config.custodyRoot); entries.delete(entry.id);
+    if (entry.kind !== "processing" || !unlinkedProcessingJournals.has(entry.id)) {
+      await unlink(metadataPath(entry.id));
+      if (entry.kind === "processing") unlinkedProcessingJournals.add(entry.id);
+    }
+    await syncRoot(config.custodyRoot);
+    unlinkedProcessingJournals.delete(entry.id); entries.delete(entry.id);
   }
   async function reconcile() {
     if (processingOwners.size || intakeOwners.size) throw new Error("CUSTODY_SCOPE_ACTIVE");
