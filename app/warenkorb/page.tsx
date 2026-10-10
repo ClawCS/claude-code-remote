@@ -40,7 +40,7 @@ export default function WarenkorbPage() {
             <div key={cartLineKey(item)} className={styles.cartLine}>
               <div className={styles.cartRow}>
                 {item.product.image && item.product.image !== "/images/home/brand-logo.webp" && <div className={styles.thumbnail}>
-                  <Image src={item.product.image} alt={isRental ? `KI-Beispielbild: ${item.product.name}` : item.product.name} fill sizes="64px" className="object-contain p-1" />
+                  <Image src={item.product.image} alt={isRental ? `Beispielbild: ${item.product.name}` : item.product.name} fill sizes="64px" className="object-contain p-1" />
                 </div>}
                 <div className={styles.itemTitle}>
                   {isRental ? (
@@ -49,7 +49,7 @@ export default function WarenkorbPage() {
                     <Link href={`/produkte/${item.product.slug}`} className="font-semibold text-secondary hover:text-primary transition-colors">{item.product.name}</Link>
                   )}
                   {!isRental && <p className="text-sm text-muted">{item.product.unit}</p>}
-                  {isRental && <p className="text-xs text-muted">KI-Beispielbild · Modell und Ausführung können abweichen.</p>}
+                  {isRental && <p className="text-xs text-muted">Beispielbild · Modell und Ausführung können abweichen.</p>}
                 </div>
                 <div className={styles.quantityControl}>
                   <button aria-label={`Menge für ${item.product.name} verringern`} onClick={() => updateQuantity(cartLineKey(item), item.quantity - 1)} className={styles.iconButton}>-</button>

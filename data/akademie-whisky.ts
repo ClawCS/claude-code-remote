@@ -1622,7 +1622,7 @@ Der Klimawandel beeinflusst die Whisky-Produktion bereits spürbar: Wärmere Som
 
 ## Technologische Innovationen
 
-**Analytische Technologien**: KI-gestützte Sensorik, Massenspektrometrie zur Qualitätskontrolle, Blockchain für Fälschungsschutz und Provenienz-Tracking. **Biotechnologie**: Neue Hefestämme für spezielle Aromenprofile. Genetisch optimierte Gerstensorten mit höherer Ausbeute und Trockenheitsresistenz. **Ultraschall-Reifung**: Einige Start-ups versuchen, die Fassreifung mit Ultraschall, Druck oder Temperatur zu beschleunigen — die Ergebnisse sind umstritten, und Puristen lehnen dies ab.
+**Analytische Technologien**: Computergestützte Sensorik, Massenspektrometrie zur Qualitätskontrolle, Blockchain für Fälschungsschutz und Provenienz-Tracking. **Biotechnologie**: Neue Hefestämme für spezielle Aromenprofile. Genetisch optimierte Gerstensorten mit höherer Ausbeute und Trockenheitsresistenz. **Ultraschall-Reifung**: Einige Start-ups versuchen, die Fassreifung mit Ultraschall, Druck oder Temperatur zu beschleunigen — die Ergebnisse sind umstritten, und Puristen lehnen dies ab.
 
 ## Neue Verbrauchermärkte
 

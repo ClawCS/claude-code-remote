@@ -29,16 +29,17 @@ describe("public side-page presentation", () => {
   ])("renders %s without the old animated particles or giant emoji illustrations", (_name, Page) => {
     const html = renderToStaticMarkup(<CartProvider><Page /></CartProvider>);
     expect(html).not.toContain("particleFloat");
+    expect(html).not.toMatch(/\bKI\b/);
     const largeText = [...html.matchAll(/<(?:span|p|div)\b[^>]*class="[^"]*text-(?:[3-9]xl|\[\d+px\])[^"]*"[^>]*>([^<]*)<\//g)];
     for (const [, text] of largeText) {
       expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
     }
   });
 
-  it("pairs every course destination with its approved illustrative cover and visible disclosure", () => {
+  it("pairs every course destination with its approved cover without technical generation labels", () => {
     const html = renderToStaticMarkup(<AkademiePage />);
     expect([...html.matchAll(/<img\b/g)]).toHaveLength(8);
-    expect(html).toContain("KI-generierte Themenbilder");
+    expect(html).not.toMatch(/\bKI\b|KI-generiert/);
     const titles = [...html.matchAll(/<h2\b[^>]*>([^<]+)<\/h2>/g)].map(([, title]) => title.replaceAll("&amp;", "&"));
     for (const course of courses) {
       expect(html).toContain(`href="/akademie/${course.slug}"`);

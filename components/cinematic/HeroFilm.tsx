@@ -120,12 +120,12 @@ export default function HeroFilm({ children, className, copyClassName }: {
       </div>}
       <div className={styles.media}>
         <video ref={video} className={styles.video} width="1920" height="1080" muted playsInline loop preload="none"
-          poster="/images/home/jammers-film-poster.webp" aria-label="Jammers: fünfzehnsekündiger KI-Werbefilm ohne Ton" aria-describedby={descriptionId}>
+          poster="/images/home/jammers-film-poster.webp" aria-label="Jammers: fünfzehnsekündiger Werbefilm ohne Ton" aria-describedby={descriptionId}>
           Dein Browser kann diesen Film nicht abspielen. Das Schlussmotiv zeigt sechs Jammers-Liköre mit passenden Gläsern.
         </video>
       </div>
       <div className={styles.caption}>
-        <p id={descriptionId}>KI-Werbefilm · beispielhafte Partyszene<span className={styles.description}> · 15 Sekunden ohne Ton: Getränke und Partyservice, zum Schluss sechs Jammers-Liköre mit passenden Gläsern. Generierte Werbung, keine dokumentarische Markt- oder pixelidentische Produktaufnahme.</span></p>
+        <p id={descriptionId}>Werbefilm · beispielhafte Partyszene<span className={styles.description}> · 15 Sekunden ohne Ton: Getränke und Partyservice, zum Schluss sechs Jammers-Liköre mit passenden Gläsern. Illustrative Werbung, keine dokumentarische Markt- oder pixelidentische Produktaufnahme.</span></p>
         <button className={styles.control} type="button" disabled={!hydrated} onClick={() => controls.current?.toggle()} aria-describedby={descriptionId}>
           {pending ? "Wiedergabe abbrechen" : playing ? "Film pausieren" : "Film abspielen"}
         </button>

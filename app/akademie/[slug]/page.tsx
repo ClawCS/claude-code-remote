@@ -147,7 +147,7 @@ function CourseBody({ course }: { course: Course }) {
               {course.lessons.map((l, i) => <button key={i} onClick={() => setActiveLesson(i)} aria-label={`Lektion ${i + 1}: ${l.title}`} aria-current={i === activeLesson ? "step" : undefined}>{i + 1}{lessonQuizDone[i] !== undefined && <span aria-label="abgeschlossen"> ✓</span>}</button>)}
             </div>
           </div>
-          <figure><AcademyCover slug={course.slug} /><figcaption className={styles.credit}>KI-generiertes Themenbild zur Illustration des Kursinhalts.</figcaption></figure>
+          <figure><AcademyCover slug={course.slug} /></figure>
         </div>
       <div className={styles.course}>
         {/* Sidebar */}

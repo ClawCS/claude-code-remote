@@ -28,7 +28,6 @@ export default function AkademiePage() {
           </div>
         </Link>)}
       </div>
-      <p className={styles.credit}>KI-generierte Themenbilder zur Illustration der Kursinhalte.</p>
       <section className={styles.related} aria-labelledby="external-courses">
         <h2 id="external-courses">Professionelle Zertifikatskurse</h2>
         <p>IHK-Zertifikate, WSET-Diplome und Sommelier-Ausbildungen — {academyCertificates.length} Weiterbildungshinweise für deine Karriere. Termine, Preise und Anmeldung bitte beim Anbieter prüfen.</p>

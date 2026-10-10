@@ -98,7 +98,7 @@ export default function VermietungPage() {
             <div className={styles.rentalGrid}>
               {rentalItems.filter(item=>item.category === category).map(item=>(
                 <article key={item.id} data-rental-name={item.name} className={styles.rentalCard}>
-                  <figure className="mb-4"><Image src={item.image} alt={`Beispielabbildung: ${item.name}`} width={960} height={640} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className={styles.rentalImage} /><figcaption className="text-xs text-muted mt-2">KI-Beispielbild · Modell und Ausführung können abweichen.</figcaption></figure>
+                  <figure className="mb-4"><Image src={item.image} alt={`Beispielabbildung: ${item.name}`} width={960} height={640} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className={styles.rentalImage} /><figcaption className="text-xs text-muted mt-2">Beispielbild · Modell und Ausführung können abweichen.</figcaption></figure>
                   <h3 className="text-xl font-bold mb-3">{item.name}</h3>
                   <p className={styles.price}>{item.price === null ? "Preis auf Anfrage" : formatPrice(item.price)}</p>
                   {item.price !== null && <p className="text-xs mt-1">je Stück / angefangenem 3-Werktage-Block · inkl. MwSt.</p>}

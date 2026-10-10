@@ -46,7 +46,8 @@ test("all three complete job posters are visible without opening an unready uplo
   }
   expect(html).toContain("Ausbildung im Getränkehandel / Einzelhandel (m/w/d)");
   expect(html).toContain('href="mailto:info@trinkgut-jammers.de?subject=Bewerbung%20Ausbildung"'.replaceAll("%20", " "));
-  expect(html).toContain("KI-generierte Anzeigenmotive");
+  expect(html).toContain("Anzeigenmotive – keine Teamfotos.");
+  expect(html).not.toContain("KI-generierte");
   expect(html).not.toContain('<input type="file"');
   expect(APPLICATION_FALLBACK.jobs.map(job => job.id)).toEqual(["sales-fulltime", "sales-parttime"]);
 });

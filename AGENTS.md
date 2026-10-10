@@ -75,6 +75,10 @@ Für Google-Maps-Routenlinks, Instagram- und WhatsApp-Kontaktlinks die belegten 
 
 # Verbindliche Bildregel — Niko, 30.09.2026
 
+## Öffentliche Medienbeschriftungen — 10.10.2026, neueste Betreiberanweisung
+
+Niko verlangt, dass auf der Kundenseite keine technischen „KI“-Bezeichnungen erscheinen, insbesondere nicht unter Akademiebildern. Diese Anweisung ersetzt die früheren sichtbaren Kennzeichnungsvorgaben in den folgenden historischen Freigaben: Akademie ohne Generierungshinweis; Film als illustrative Werbung; Leihbilder weiterhin „Beispielbild · Modell und Ausführung können abweichen“; Stellenanzeigen weiterhin als Anzeigenmotive und nicht als Teamfotos beschreiben. Hilfreiche Bildbeschreibungen, konkrete Modell-/Dokumentverarbeitungsgrenzen und Datenschutzaussagen erhalten. Interne Herkunftsmanifeste, Prompts, Originaldateien, Hashes und maschinenlesbare Provenienz nicht entfernen oder verfälschen. Keine erfundene dokumentarische Echtheit oder echten Mitarbeiter daraus ableiten. Diese reine Textänderung gilt zunächst nur für die lokale Designvorschau; keine Live-Freigabe oder Betriebsaktivierung.
+
 ## Freigegebener filmischer Design-Umbau — 10.10.2026
 
 Niko hat Richtung A (»Filmisch & nahbar«) und den 15-Sekunden-Filmentwurf betrachtet, positiv bestätigt und die Umsetzung in der echten Homepage beauftragt. Grundlage: `docs/superpowers/specs/2026-10-10-filmisch-redesign.md`. Neue ausdrückliche Medienausnahme: der beauftragte KI-Werbefilm zu Getränken/Partyservice mit sechs Eigenmarken als Finale. Lokale optimierte Ableitungen und bereinigte Herkunftsnachweise verwenden; als KI-Werbefilm kennzeichnen, nicht als echte Marktaufnahme. Keine Ausweitung auf generierte Mitarbeiter-/Marktfotos. Keine fremden Gestaltungen oder Markenlogos aus den Designreferenzen übernehmen. Die Gestaltung ändert keine Wochenpakete, Preis-/Anfragelogik oder Betriebsfreigaben; öffentliche Umschaltung bleibt separat nach Abnahme nachzuweisen.

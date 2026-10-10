@@ -103,7 +103,8 @@ describe("HeroFilm loading and playback", () => {
     expect(html).not.toContain(".mp4");
     expect(html).toContain('href="/angebote"');
     expect(html).toContain('disabled=""');
-    expect(html).toContain("KI-Werbefilm · beispielhafte Partyszene");
+    expect(html).toContain("Werbefilm · beispielhafte Partyszene");
+    expect(html).not.toContain("KI-Werbefilm");
   });
 
   it.each([{ reduced: true }, { saveData: true }])("does not attach a source until an explicit play under %j", async (options) => {

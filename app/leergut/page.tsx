@@ -230,7 +230,7 @@ export default function LeergutRechnerPage() {
 
   return (
     <>
-    <PageIntro eyebrow="Rückgabe vorbereiten" title="Leergut-Rechner" description="Zähle dein Leergut manuell. Der KI-Foto-Scan ist derzeit nicht verfügbar. Wir berechnen deinen Pfandwert sofort." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Leergut-Rechner" }]} />
+    <PageIntro eyebrow="Rückgabe vorbereiten" title="Leergut-Rechner" description="Zähle dein Leergut manuell. Der Foto-Scan ist derzeit nicht verfügbar. Wir berechnen deinen Pfandwert sofort." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Leergut-Rechner" }]} />
     <div data-tool="deposit" className={`${styles.body} ${styles.workspace}`}>
       {/* Mode Toggle */}
       <div className="flex flex-wrap gap-2">
@@ -246,7 +246,7 @@ export default function LeergutRechnerPage() {
           aria-label="Foto-Scan derzeit nicht verfügbar"
           className={editorial.secondaryLink}
         >
-           Foto scannen (KI)
+           Foto scannen
         </button>
       </div>
 
@@ -254,7 +254,7 @@ export default function LeergutRechnerPage() {
       {scanSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-sm p-4 mb-6 text-center animate-fade-in">
           <p className="text-secondary font-semibold text-sm">
-             KI-Scan abgeschlossen! Die Ergebnisse wurden eingetragen. Du kannst sie unten korrigieren.
+             Foto-Scan abgeschlossen! Die Ergebnisse wurden eingetragen. Du kannst sie unten korrigieren.
           </p>
         </div>
       )}
@@ -285,7 +285,7 @@ export default function LeergutRechnerPage() {
           {scanning ? (
             <div className="py-8">
               <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-muted text-sm">KI analysiert dein Leergut...</p>
+              <p className="text-muted text-sm">Dein Leergut wird ausgewertet...</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -300,7 +300,7 @@ export default function LeergutRechnerPage() {
                 Foto aufnehmen / hochladen
               </button>
               <p className="text-xs text-muted">
-                Fotografiere dein Leergut und die KI z&auml;hlt automatisch.
+                Fotografiere dein Leergut zur automatischen Z&auml;hlung.
                 <br />
                 Du kannst das Ergebnis danach manuell korrigieren.
               </p>

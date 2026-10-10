@@ -56,7 +56,8 @@ describe("editorial service pages", () => {
   it("styles the actual rental catalogue, controls and source examples", () => {
     const html = render(RentalPage);
     expect(html.match(/data-rental-name=/g)).toHaveLength(19);
-    expect(html.match(/KI-Beispielbild · Modell und Ausführung können abweichen\./g)).toHaveLength(19);
+    expect(html.match(/Beispielbild · Modell und Ausführung können abweichen\./g)).toHaveLength(19);
+    expect(html).not.toContain("KI-Beispielbild");
     expect(html).toContain("rentalGrid");
     expect(html).toContain("quantityControl");
     expect(html).toContain('aria-label="Menge für Kühlanhänger erhöhen"');
@@ -123,17 +124,19 @@ describe("editorial service pages", () => {
     expect(html).toContain("jobGrid");
     expect(html).toContain("info@trinkgut-jammers.de");
     expect(html).toContain("Der Online-Upload ist zurzeit nicht verfügbar.");
-    expect(html).toContain("KI-generierte Anzeigenmotive – keine Teamfotos.");
+    expect(html).toContain("Anzeigenmotive – keine Teamfotos.");
+    expect(html).not.toContain("KI-generierte");
     expect(html).not.toContain('type="file"');
     expect(html).not.toContain('value="apprentice"');
   });
 
-  // Explicit task contract: copy is frozen. Hashes capture all visible words of
-  // the pre-edit real rendering, excluding only allowed decorative contact emoji.
-  it.each([["contact", ContactPage, "18f3305473ed8239e2930b479b0e2bf10faf15ed63b41b01052ca681a1d2cf91"], ["imprint", ImprintPage, "abedc4922657d2edfad795bb48ad4c6ee9898d5209bfdcccf562a2bb4d8b9936"], ["privacy", PrivacyPage, "928ea634fd841ee806b54d781957f0221b595c613d96dfd86b36fbc05442ac3a"], ["terms", TermsPage, "a8e42c6360a058831a6fc9fab429e8b69e6603e24020704dbc8e4c1c2d97238c"]] as const)("retains exact %s text", (_, Component, hash) => {
+  // Freeze all visible legal/contact copy, excluding decorative contact emoji.
+  // Privacy baseline includes only Niko's 10 Oct wording update: both recipient
+  // labels now say "externe Analyseanbieter"; no processing or retention change.
+  it.each([["contact", ContactPage, "18f3305473ed8239e2930b479b0e2bf10faf15ed63b41b01052ca681a1d2cf91"], ["imprint", ImprintPage, "abedc4922657d2edfad795bb48ad4c6ee9898d5209bfdcccf562a2bb4d8b9936"], ["privacy", PrivacyPage, "2de4d09b1534b61e6e75278e379d8d686aab3d895651e7e7f797bbf4c5198d06"], ["terms", TermsPage, "a8e42c6360a058831a6fc9fab429e8b69e6603e24020704dbc8e4c1c2d97238c"]] as const)("retains exact %s text", (_, Component, hash) => {
     expect(textHash(render(Component))).toBe(hash);
   });
-  it.each([["privacy", PrivacyPage, "2c2b1b6e953d9791a81531b42d01b1f6c5d04806ebe25fb5b906059de36d9e0b"], ["terms", TermsPage, "2e77ba25a96571893f62935f6e8ec60b834cbd29f0d97c3d85e05ccdd8b25cfe"]] as const)("[synthetic] retains exact enabled %s text", (_, Component, hash) => {
+  it.each([["privacy", PrivacyPage, "5598b790ba15d02b4b5cce4c93df386d0a22c7346e7a93d43c53060b1a1dde9b"], ["terms", TermsPage, "2e77ba25a96571893f62935f6e8ec60b834cbd29f0d97c3d85e05ccdd8b25cfe"]] as const)("[synthetic] retains exact enabled %s text", (_, Component, hash) => {
     vi.stubEnv("RENTAL_MODE", "test"); vi.stubEnv("RENTAL_DATA_DIR", "/tmp/jammers-privacy-test-fixture"); vi.stubEnv("RENTAL_PUBLIC_ORIGIN", "http://127.0.0.1:3104");
     expect(textHash(render(Component))).toBe(hash);
   });

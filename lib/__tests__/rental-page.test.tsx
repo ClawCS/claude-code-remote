@@ -30,7 +30,8 @@ describe("source-backed rental catalog", () => {
     expect(result).not.toContain("Weinglas klein");
     expect(result).not.toContain("Preis auf Anfrage");
     expect([...result.matchAll(/<img\b/g)]).toHaveLength(19);
-    expect(result).toContain("KI-Beispielbild");
+    expect(result).toContain("Beispielbild · Modell und Ausführung können abweichen.");
+    expect(result).not.toContain("KI-Beispielbild");
     expect(result).toContain("Bruchersatz");
     expect(result).toContain("Deine Mietauswahl");
     expect(result).not.toContain("kein berechneter Mietgesamtpreis");

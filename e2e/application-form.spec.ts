@@ -71,9 +71,10 @@ test("keyboard cards focus the form and invalid submit exposes associated errors
   await expect(page.getByLabel("Unterlagen / Portrait (freiwillig)")).toHaveAttribute("aria-describedby", /application-files-error/);
   await expect(page.locator("#application-files-error")).toContainText("PDF"); expect(port.sessions).toBe(0); expect(port.uploads).toHaveLength(0);
 });
-test("selection visibly discloses technical copies, signature limits, no AI/editing and whole-package output failure", async ({ page }) => {
+test("selection visibly discloses technical copies, signature limits, no editorial editing and whole-package output failure", async ({ page }) => {
   await service(page); await page.goto("/bewerbung"); await expect(page.getByLabel("Name *", { exact: true })).toBeVisible();
-  for (const text of ["technisch aufbereitete Kopien", "digitale Signaturfunktionen", "nur als Bildpunkte", "Digitale Unterschriften werden nicht verifiziert", "keine Echtheitsbestätigung", "keine Inhalte redaktionell", "keine KI", "bewahre deine Originale", "Auch kleine Eingangsdateien", "gesamte Bewerbung", "Ausgaben höchstens 5 MiB je Datei und 10 MiB insgesamt"]) await expect(page.getByText(text, { exact: false })).toBeVisible();
+  for (const text of ["technisch aufbereitete Kopien", "digitale Signaturfunktionen", "nur als Bildpunkte", "Digitale Unterschriften werden nicht verifiziert", "keine Echtheitsbestätigung", "keine Inhalte redaktionell", "bewahre deine Originale", "Auch kleine Eingangsdateien", "gesamte Bewerbung", "Ausgaben höchstens 5 MiB je Datei und 10 MiB insgesamt"]) await expect(page.getByText(text, { exact: false })).toBeVisible();
+  await expect(page.locator("main")).not.toContainText(/\bKI\b/);
 });
 test("disabled runtime stays email-only and never bootstraps a session", async ({ page }) => {
   const port = await service(page, { ...active, enabled: false, mode: "disabled" });

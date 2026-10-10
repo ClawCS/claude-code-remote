@@ -248,7 +248,8 @@ describe("cinematic homepage composition", () => {
     expect(hero).toContain('poster="/images/home/jammers-film-poster.webp"');
     expect(hero).toContain('preload="none"');
     expect(hero).not.toMatch(/(?:src|href)="[^"]*\.mp4/);
-    expect(hero).toContain("KI-Werbefilm · beispielhafte Partyszene");
+    expect(hero).toContain("Werbefilm · beispielhafte Partyszene");
+    expect(hero).not.toContain("KI-Werbefilm");
     expect(hero).toContain('data-film-copy');
     expect(hero).toContain('href="#aktuell"');
     expect(hero).toContain('href="#service"');
