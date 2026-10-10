@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { build } from "esbuild";
 import { chromium, type Browser } from "@playwright/test";
+import sharp from "sharp";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, afterAll, expect, it } from "vitest";
 import SpotlightSection from "@/components/cinematic/SpotlightSection";
@@ -102,6 +103,30 @@ it.each([360,390,768,1440])("keeps six names, complete images and 44px targets w
     await links.nth(index).focus();
     expect(await links.nth(index).locator("img").evaluate(img => getComputedStyle(img).transform)).toBe("none");
     expect(await links.nth(index).locator("img").evaluate(img => getComputedStyle(img).transitionDuration)).toBe("0s");
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.close();
+});
+
+it("still paints every loaded bottle after resizing desktop to 360px", async () => {
+  const page = await mount(1440, true);
+  const images = page.locator("[data-own-brand-stage] img");
+  expect(await images.count()).toBe(6);
+  for (let index=0; index<6; index++) await images.nth(index).evaluate(image => (image as HTMLImageElement).decode());
+  await page.setViewportSize({ width:360, height:900 });
+  for (let index=0; index<6; index++) {
+    const image = images.nth(index);
+    expect(await image.evaluate(node => ({ complete:(node as HTMLImageElement).complete, width:(node as HTMLImageElement).naturalWidth }))).toEqual({complete:true,width:widths[index]});
+    const box = await image.boundingBox();
+    expect(box!.width).toBeGreaterThan(40);
+    expect(box!.height).toBeGreaterThan(150);
+    // A decoded image can still have a blank composited layer: inspect rendered pixels.
+    const {data,info} = await sharp(await image.screenshot()).removeAlpha().raw().toBuffer({resolveWithObject:true});
+    let painted = 0;
+    for (let pixel=0; pixel<info.width*info.height; pixel++) {
+      if (Math.max(data[pixel*info.channels],data[pixel*info.channels+1],data[pixel*info.channels+2]) > 90) painted++;
+    }
+    expect(painted, slugs[index]).toBeGreaterThan(100);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.close();
