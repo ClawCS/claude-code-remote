@@ -19,17 +19,17 @@ Dieser Auftrag wird ausschließlich in der bestehenden lokalen Worktree auf `cod
 
 | Bereich | Umsetzung | Funktions-/Darstellungsprüfung |
 | --- | --- | --- |
-| Gemeinsame Gestaltung und fünfteilige Navigation | `e51aa76` + `fbb76b7` | Separate Codeprüfung und gezielte Nachprüfung bestanden; Gesamtbuild noch ausstehend |
-| Startseite und niederländische Landingpage | `544e95d` | 63 gezielte Tests und 9 Browserfälle; unabhängige Prüfung bestanden, Gesamtbuild ausstehend |
+| Gemeinsame Gestaltung und fünfteilige Navigation | `e51aa76` + `fbb76b7` | Separate Prüfung und Nachprüfung bestanden; integrierter Produktionsbuild und Browsermatrix ebenfalls bestanden |
+| Startseite und niederländische Landingpage | `544e95d` | 63 gezielte Tests und 9 Browserfälle; unabhängige Prüfung und abschließende Integration bestanden |
 | Angebote, Sortiment, Marken, Menschen und Aktionen | `8bc9e74` | 1.596 Webtests, 185 fokussierte Tests, 40 Browserfälle; unabhängige Prüfung bestanden |
 | Rezepte, Akademie und Kundenwerkzeuge | `5c2a7c1` | 1.614 Webtests vor letzter kleiner Überschriftenergänzung, danach 19 fokussierte Tests; 50 Browserfälle im lokalen Produktionsbuild; unabhängige Prüfung bestanden |
-| Vermietung, Karriere, Listen, Kontakt, Recht und Fehlerseiten | Ausstehend | Ausstehend |
-| Gemeinsamer Build und vollständige lokale Routen-/Medienprüfung | Ausstehend | Ausstehend |
-| Unabhängige Schlussprüfung und Git-Synchronisation | Ausstehend | Ausstehend |
+| Vermietung, Karriere, Listen, Kontakt, Recht und Fehlerseiten | `1f7c455` + `a8112f0` | 28 Browserfälle + 3 gezielte Übergangsregressionen; unabhängige Prüfung und Nachprüfung bestanden |
+| Gemeinsamer Build und vollständige lokale Routen-/Medienprüfung | App-Stand `a8112f0` | 164 Produktionsbrowserfälle; 117 Seiten, 3.000 Dateien, 31 API-Verträge und 107 Alias-Weiterleitungen bestanden |
+| Unabhängige Schlussprüfung und Git-Synchronisation | Schlussprüfung freigegeben | Keine kritischen/wichtigen Befunde; ein nichtblockierender Testabdeckungs-Hinweis; Sicherungscommit enthält diesen Bericht |
 
-## Abnahmevorbehalt
+## Abnahmeumfang
 
-Noch kein Abschlussnachweis: Die Prüfung muss alle öffentlichen Seitentypen einschließlich echter Details, Formzustände, Mobil-/Tablet-/Desktopansichten und tatsächlicher Navigationsklicks umfassen. Ein neues Video oder neue globale Farbwerte allein erfüllen den Auftrag nicht.
+Der lokale Designstand ist zur Betrachtung freigegeben. Alle 37 öffentlichen Seitentemplates plus 404 wurden familienbezogen überarbeitet; echte Details, Formzustände, Mobil-/Tablet-/Desktopansichten und tatsächliche Navigationsklicks sind Bestandteil der Prüfung. Das ist keine öffentliche Veröffentlichung und keine Gesamtfreigabe des nativen Bewerbungsbetriebs. Historische Teilprüfungen unten bleiben als Verlauf erhalten; maßgeblich ist die abschließende integrierte Abnahme.
 
 ## Teilabnahme 1 — gemeinsame Gestaltung und Navigation
 
@@ -72,3 +72,35 @@ Die unveränderten nativen Bewerbungsprüfungen werden am Anfang und bei der Ges
 ## Zusätzliche Prüfgrenze bei Mietartikeln
 
 Alle 19 bestehenden Leihartikel haben einen Preis. Der bislang unbenutzte Zweig für einen Artikel ohne Preis wird deshalb mit ausdrücklich synthetischen Tests des echten Bauteils geprüft; reale Browserprüfung umfasst die tatsächlich vorhandenen Leer-, Waren-, Misch-, Datums- und Fehlerzustände. Keine geschützten Quelldaten oder Produktionsfreigaben werden allein für einen Screenshot verändert. Restrisiko: Für den nicht erreichbaren Zweig gibt es keinen direkten visuellen Browsernachweis.
+
+## Integrierter Prüfstand nach dem letzten Seitenbereich
+
+- Kandidat `1f7c455`: 28 Browserfälle des letzten Bereichs einschließlich aller zehn Metadata-/Chrome-Verträge bestanden; 108 Produktionsaufnahmen, jeweils 36 bei 390/768/1440 px. Sichere Bestandsprüfung: zunächst 40 bestandene Fälle, zwei überholte Lade-/Selektorannahmen gezielt korrigiert und beide nachgeprüft; zusätzlich drei Community-/Bestands-/Dialogregressionen bestanden. Kein echter Versand oder Bestellvorgang.
+- Frische vollständige Webprüfung: 99 Dateien / 1.640 Tests bestanden (59,20 s). TypeScript fehlerfrei; globaler Linter ohne Fehler, mit 21 bestehenden Warnungen.
+- Frische Vollprojektprüfung mit vorhandener QPDF-Konfiguration: 146 Dateien bestanden, eine native Suite wegen fehlender ausdrücklich verlangter Poppler-Version 26.10.0 fehlgeschlagen. 3.204 Tests bestanden, 15 Tests dieser Suite nicht ausgeführt; Gesamtlauf deshalb **nicht grün**. Die lokal vorhandene Version 26.05.0 wurde nicht als Ersatz ausgegeben. Bewerbungsbetrieb bleibt deaktiviert.
+- Unabhängige Gegenprüfung fand anschließend einen noch nicht getesteten Übergang: Einzelübernahme aus der Merkzettel-Vorschau ließ gleichzeitig zwei Dialoge offen. Im Produktionsbrowser reproduziert und mit minimalem Dialogübergang korrigiert (`a8112f0`). Drei echte UI-Regressionsfälle bei 390/768/1440 px und 44 fokussierte Tests bestanden; unabhängige Nachprüfung ohne neuen Befund. Keine Änderung der Produkte/Mengen oder Datenverwaltung.
+- Frischer Produktionsbuild nach dieser Korrektur erfolgreich; Bewerbungs-/Mietbetrieb weiter deaktiviert, beide Fixture-Routen weiterhin 404. Erneute vollständige Websuite am aktuellen Stand: 99 Dateien / 1.640 Tests bestanden (60,87 s). Die nachfolgende Abnahme prüft genau diesen App-Stand.
+
+## Abschließende integrierte Abnahme
+
+- App-Stand `a8112f0e59eec3678457b2391ab8134d9da755ec`, lokaler Produktionsbuild auf `http://127.0.0.1:3110/`; 120 statische Seiten erfolgreich gebaut, ohne Testuhr oder Fixture-Freigabe. TypeScript und Diff-Prüfung erneut fehlerfrei. Geschützte Daten, Originalmedien, Quellen, APIs, Services, Miet-/Bewerbungsbibliotheken, Kontexte, Abhängigkeiten und Next-Konfiguration sind gegenüber `6d60875` unverändert.
+- **164/164 Produktionsbrowserfälle bestanden (5,8 Minuten)**: alle fünf neuen Seitengruppen-Suiten und bestehende Metadata-/Chrome-, Film-, Originalkontaktlogo-, Cocktailnavigation-, Finder-, Literplaner-, UI-Korrektur- und Mietanfrage-/Mengenverträge. Breiten 390/768/1440 px; Dialogübergänge, Tastaturbedienung, sichere synthetisch abgefangene Form-/Fehlerzustände und echte Navigation eingeschlossen. Keine echten Anfragen oder Bewerbungen versandt.
+- Der ausdrücklich markierte NL-Leerzustands-/Langtitel-Fixturefall bestand separat auf Entwicklung 3000 (1/1, 4,7 s). Das ersetzt keinen Produktionsfall; beide Fixture-Routen bleiben auf 3110 geschlossen (404).
+- Isolierter Leistungstest bestanden (1/1): LCP 108 ms, CLS 0,04907, gemessene Interaktion 32 ms, JavaScript 167.105 Bytes, Bilder 250.933 Bytes. Der genehmigte Mobilfilm hat 2.317.235 Nutzbytes. Unveränderte Testbudgets; CLS liegt nahe an der Grenze 0,05. Dies sind lokale Messungen, keine Aussage über Mobilfunk oder reale Besucher.
+- `offers:check`: alle **128** unveränderten Originalangebote und ihre Bilder geprüft. `audit:public` ausschließlich gegen Loopback: **117 Seiten, 3.000 lokale Ressourcen, 31 API-Verträge, 5 unbekannte Routen**, null Fehler/Warnungen. Die 17 ausschließlich leeren/unauthentifizierten Abweisungsproben sind keine realen Formulartransaktionen. Beleg: `audit/evidence/sitewide-filmisch-2026-10-10.json`.
+- Alle **107** historischen Produktslugs antworten mit 307 und dem jeweils richtigen Kategorie-Ziel; keine externe Weiterleitung verfolgt. Beleg: `audit/evidence/sitewide-filmisch-aliases-2026-10-10.json`.
+- `content:check` gegen Loopback: beide KW41-Originale und Dateibindungen geprüft, keine Inhaltsfehler; `websiteVerified:true`, `deploymentVerified:false`. Status `degraded` ausschließlich wegen der bewusst nicht geprüften öffentlichen Veröffentlichung. DE-SHA-256 `be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a`, NL-SHA-256 `65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4`. Zeitraum unverändert 05.–10.10.2026; keine neue Quelle importiert, kein Datum verlängert.
+- Controller-Sichtprüfung ergänzend zu den Familienmatrizen: Kopf/Film gegen Referenz, vollständige Angebots-/Eigenmarkengeschichte, mobile Rezept-/Werkzeug-/Quiz-/Dialogzustände, Karriere-/Rechts-/Kontaktseiten. Im finalen Build erneut 360-px-Menü mit echter Weiterleitung zur Vermietung, 390-px-Mietseite, 768-px-Akademie und 1440-px-Angebote geprüft. Keine horizontale Überbreite in den gemessenen Mobil-/Tabletansichten. Eigene finale Aufnahmen unter `audit/screenshots/sitewide-final-2026-10-10/`, vollständige Familienbelege in den `sitewide-*`-Nachweisordnern.
+- Unabhängige Schlussprüfung des vollständigen Diffs bis EOF, sämtlicher Aufgabenberichte, Spezifikation und Prüfentscheidungen: **bereit zur lokalen Übergabe**, keine kritischen/wichtigen Befunde. Ein nichtblockierender Hinweis bleibt: die Laufzeitfehler-Sammlung der Lernwerkzeug-Browsersuite umfasst Erstansichten, nicht jeden separaten Interaktionstest. Keine pauschale vollständige Laufzeitfehlerfreiheit behauptet.
+
+## Offene Grenzen außerhalb dieser Designabnahme
+
+- Die Vollprojektprüfung ist wegen fehlendem Poppler 26.10.0 nicht vollständig grün: 3.204 Tests bestanden, 15 native Tests nicht ausgeführt. Kein Upload-/Mail-/Löschbetrieb wurde aktiviert oder als abgenommen erklärt.
+- Die zuvor beobachtete sporadische SyntaxError-Ursache im Entwicklungsbundle bleibt ungeklärt. Die frische Produktionsmatrix und der isolierte Entwicklungs-Fixturefall bestanden; daraus wird keine Ursachenbehebung abgeleitet.
+- Keine Veröffentlichung auf Hetzner, kein Merge/PR, keine echten Zahlungen, E-Mails oder Bewerbungen. Der bestehende Branch und die Worktree bleiben für Nikos lokale Sichtung erhalten.
+
+## Getroffene Prüfentscheidungen — vollständig und chronologisch
+
+1. Markierte synthetische Fixturefälle separat im Entwicklungsserver, echte Seiten im Produktionsbuild prüfen. Grund: Die Vorlage verlangte zugleich geschlossene Produktions-Fixtures und synthetische Sonderzustände. Risiko einer falschen Einordnung: Ein produktionsspezifischer Fehler könnte im betreffenden Test fehlen; beide Gruppen und geschlossene Gates wurden geprüft.
+2. Unveränderte native Bewerbungsprüfungen am Anfang und Ende bündeln; jede Seitengruppe erhält die volle Websuite. Grund: Rein visuelle Arbeit bei bekannten nativen Werkzeugvoraussetzungen. Risiko: Ein versehentlicher nativer Eingriff würde später auffallen; der geschützte Pfadvergleich ist zusätzlich leer.
+3. Mietartikel ohne Preis nur im echten Bauteil mit klar synthetischen Daten prüfen. Grund: Alle 19 realen Artikel sind bepreist, keine Quelldatenänderung nur für einen Screenshot. Risiko: Der derzeit unerreichbare Zweig hat keinen direkten visuellen Browsernachweis.

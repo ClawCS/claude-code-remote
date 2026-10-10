@@ -1,0 +1,757 @@
+{
+  "checkedAt": "2026-10-10T18:26:08.128Z",
+  "origin": "http://127.0.0.1:3110",
+  "count": 107,
+  "passed": true,
+  "results": [
+    {
+      "path": "/produkte/altenmuenster-urig-wuerzig",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/bolten-altbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/budweiser-budvar-o-budvar-0-0",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/carlsberg-elephant-extra-strong",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/estrella-galicia",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/flensburger-pilsener-o-fruehlingsbock",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/frankenheim-alt-o-blue",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/franziskaner-weissbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/franziskaner-witbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/hb-witbier-muenchner-weisse",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/heren-handtas-xxl",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/hofbraeuhaus-muenchen-helles-vollbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/jever-pilsener",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/kloster-scheyern-kloster-gold-hell-oder-dunkel",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/koenig-pilsener-steinie",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/koestritzer-schwarzbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/leikeim-premium-pils",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/luebzer-pils",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/oberdorfer-helles",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/schneider-weisse-tap-7-witbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/stauder-blond-radler",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/traugott-simon-pilsener-o-landbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/traugott-simon-pilsener-steinie",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/veltins-helles-puelleken-helles-puelleken-0-0-o-helles-zitronken",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/warsteiner-pils",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/warsteiner-pilsener",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/zirndorfer",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/grand-premier-cru-o-pfaffl",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/leonardi",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/oberrotweiler-winzerverein",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/reuter-dusemund-ortega",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/reuter-dusemund-regent",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/vier-jahreszeiten",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/brut-dargent-ice-chardonnay-pinot-noir",
+      "status": 307,
+      "location": "/kategorie/sekt",
+      "expected": "/kategorie/sekt",
+      "passed": true
+    },
+    {
+      "path": "/produkte/cinzano-asti-spumante",
+      "status": 307,
+      "location": "/kategorie/sekt",
+      "expected": "/kategorie/sekt",
+      "passed": true
+    },
+    {
+      "path": "/produkte/rot-kaeppchen",
+      "status": 307,
+      "location": "/kategorie/sekt",
+      "expected": "/kategorie/sekt",
+      "passed": true
+    },
+    {
+      "path": "/produkte/soehnlein-brillant-sekt-o-white-ice",
+      "status": 307,
+      "location": "/kategorie/sekt",
+      "expected": "/kategorie/sekt",
+      "passed": true
+    },
+    {
+      "path": "/produkte/baileys",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/berentzen-riem",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/captain-morgan",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/chantr",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/chantr-brandewijn",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/cointreau-orangenlikoer",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/d-j-vu",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/gordon-s-london-dry-gin",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/j-walker-red-label",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/johnnie-walker-red-label",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/kilbeggan-irish-whiskey",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/label-5-blended-scotch-whisky",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/lillet-l-ap-ritif",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/mamont-vodka",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/ouzo-12-o-12-gold-anis-liqueur",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/ramazzotti",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/roku-gin",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/verpoorten-eierlikoer",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/vescovino-limoncello-spritz",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/villa-massa-limoncello",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/afri-cola-o-bluna",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/bad-brambacher-garten-limonade",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/bio-volvic-tee-o-vitamin",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/coca-cola",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/coca-cola-fanta-o-sprite",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/edeka-ice-tea",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/emsland-sonne-limonaden",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/landpark-bio-quelle-erfrischungsgetraenke",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/pepsi-cola-schwip-schwap-o-seven-up",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/pfanner-sparkling-eistee",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/thomas-henry-bitter-getraenke",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/tut-gut-malzbier",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/gerolsteiner-mineralwasser",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/landpark-bio-quelle-mineralwasser",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/nuerburg-quelle-o-purborn-mineralwasser",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/roemerwall-mineralwasser",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/st-leonhards-quelle",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/toenissteiner-mineralwasser",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/vitrex",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/warburger-waldquell-mineralwasser",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/capri-sun",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/hohes-c",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/leonie-saft",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/28-black-energy-drink",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/effect-energy-drink",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/goenrgy-energy-drink",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/funny-frisch-spezialitaeten",
+      "status": 307,
+      "location": "/kategorie/lebensmittel",
+      "expected": "/kategorie/lebensmittel",
+      "passed": true
+    },
+    {
+      "path": "/produkte/hawesta-heringsfilets",
+      "status": 307,
+      "location": "/kategorie/lebensmittel",
+      "expected": "/kategorie/lebensmittel",
+      "passed": true
+    },
+    {
+      "path": "/produkte/toffifee",
+      "status": 307,
+      "location": "/kategorie/lebensmittel",
+      "expected": "/kategorie/lebensmittel",
+      "passed": true
+    },
+    {
+      "path": "/produkte/beck-s",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/bitburger-pils",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/desperados",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/erdinger-witbier",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/faxe-premium-lager",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/hertog-jan",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/hofbraeu-maibock",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/jupiler-pils",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/krombacher",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/traugott-pils",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/veltins",
+      "status": 307,
+      "location": "/kategorie/bier",
+      "expected": "/kategorie/bier",
+      "passed": true
+    },
+    {
+      "path": "/produkte/maybach",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/wein-genuss",
+      "status": 307,
+      "location": "/kategorie/wein",
+      "expected": "/kategorie/wein",
+      "passed": true
+    },
+    {
+      "path": "/produkte/bacardi",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/chivas",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/don-papa-botucal",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/jim-beam",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/three-sixty",
+      "status": 307,
+      "location": "/kategorie/spirituosen",
+      "expected": "/kategorie/spirituosen",
+      "passed": true
+    },
+    {
+      "path": "/produkte/elephant-bay",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/fuze-tea",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    },
+    {
+      "path": "/produkte/monster",
+      "status": 307,
+      "location": "/kategorie/alkoholfrei",
+      "expected": "/kategorie/alkoholfrei",
+      "passed": true
+    }
+  ]
+}
