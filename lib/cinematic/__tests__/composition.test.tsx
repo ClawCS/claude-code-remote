@@ -196,8 +196,8 @@ describe("cinematic homepage composition", () => {
     const orderedMarkers = [
       'data-hero="cinematic"',
       'id="aktuell"',
-      'id="sortiment"',
       'id="service"',
+      'id="sortiment"',
       'id="eigenmarken"',
       'id="aktionen"',
       'id="menschen"',
@@ -241,20 +241,31 @@ describe("cinematic homepage composition", () => {
     );
   });
 
-  test("gives only the responsive Hero image high fetch priority", () => {
+  test("server-renders the approved film poster, copy and usable destination links without loading video", () => {
     const html = render(populatedContent);
     const hero = extractElement(html, "section", 'data-hero="cinematic"');
-    const heroImage = /<img\b[^>]*alt="Sven und Niko von Trinkgut Jammers"[^>]*>/.exec(
-      hero,
-    );
+    expect(count(hero, /<video\b/)).toBe(1);
+    expect(hero).toContain('poster="/images/home/jammers-film-poster.webp"');
+    expect(hero).toContain('preload="none"');
+    expect(hero).not.toMatch(/(?:src|href)="[^"]*\.mp4/);
+    expect(hero).toContain("KI-Werbefilm · beispielhafte Partyszene");
+    expect(hero).toContain('data-film-copy');
+    expect(hero).toContain('href="#aktuell"');
+    expect(hero).toContain('href="#service"');
+    const quickLinks = extractElement(html, "nav", 'aria-label="Direkt zu Angeboten, Partyplanung und Besuch"');
+    expect(quickLinks).toContain('href="#aktuell"');
+    expect(quickLinks).toContain('href="/partyplaner"');
+    expect(quickLinks).toContain('/images/brands/google-maps-original.png');
+    expectSafeExternalLink(quickLinks, "https://www.google.com/maps/dir/?api=1&destination=Trinkgut%20Jammers%2C%20Jurgensstra%C3%9Fe%2020%2C%2047574%20Goch%2C%20Deutschland");
+  });
 
-    expect(heroImage).not.toBeNull();
-    expect(heroImage![0]).toContain('fetchPriority="high"');
-    expect(heroImage![0]).toContain(
-      'sizes="(max-width: 47.999rem) 100vw, (max-width: 79.999rem) 40vw, min(50vw, 915px)"',
-    );
-    expect(count(html, /<img\b[^>]*fetchPriority="high"/)).toBe(1);
-    expect(count(html, /<link\b[^>]*fetchPriority="high"/)).toBe(1);
+  test("pairs the party service with an honestly described market photo and preserves personal service", () => {
+    const service = extractElement(render(populatedContent), "section", 'id="service"');
+    expect(service).toContain('/images/editorial/user/schneider-weisse.webp');
+    expect(service).toContain('alt="Schneider-Weisse-Aufbau mit blauen Getränkekisten bei Jammers"');
+    expect(service).toContain('href="/vermietung"');
+    expect(service).toContain('href="/partyplaner"');
+    expect(service).toContain("Wir beraten dich persönlich");
   });
 
   test("passes through the exact empty state and exposes no phantom action", () => {

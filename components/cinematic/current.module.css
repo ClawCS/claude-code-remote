@@ -8,8 +8,10 @@
 }
 
 .heading {
-  display: grid;
-  max-width: var(--cinematic-layout-text-measure);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
   margin-block-end:var(--cinematic-spacing-two-xl);
   gap:var(--cinematic-spacing-sm);
 }
@@ -27,13 +29,15 @@
 
 .heading h2 {
   margin:0;
-  font-family: var(--cinematic-typography-family-display);
+  font-family: var(--cinematic-typography-family-sans);
   font-size: var(--cinematic-typography-size-heading);
-  font-weight: var(--cinematic-typography-weight-extra-bold);
+  font-weight: var(--cinematic-typography-weight-medium);
   line-height: var(--cinematic-typography-line-height-heading);
   letter-spacing: var(--cinematic-typography-tracking-tight);
-  text-transform: uppercase;
+  text-transform: none;
 }
+
+.allOffers { display:inline-flex; min-height:var(--cinematic-spacing-target); align-items:center; color:var(--cinematic-color-ink); font-size:var(--cinematic-typography-size-small); text-underline-offset:.3em; }
 
 .stage {
   display: grid;
@@ -51,13 +55,12 @@
 .event,
 .fallback {
   min-width: 0;
-  border: 1px solid var(--cinematic-color-line);
-  background: var(--cinematic-color-surface);
+  background: var(--cinematic-color-warm);
 }
 
 .flyer,
 .fallback {
-  padding:var(--cinematic-spacing-lg);
+  padding:var(--cinematic-spacing-xl);
 }
 
 .flyer > h3,
@@ -80,17 +83,16 @@
 .validity {
   display: inline-flex;
   min-height: var(--cinematic-spacing-target);
-  padding:var(--cinematic-spacing-sm) var(--cinematic-spacing-md);
+  padding:0;
   align-items: center;
-  background: var(--cinematic-color-yellow);
-  color: var(--cinematic-color-black);
+  color: var(--cinematic-color-muted);
 }
 
 .event {
   position: relative;
   padding:var(--cinematic-spacing-lg);
-  border-block-start: var(--cinematic-spacing-xs) solid
-    var(--cinematic-color-red);
+  border-block-start: 1px solid var(--cinematic-color-line);
+  background: transparent;
 }
 
 .eventImage {
@@ -135,6 +137,7 @@
 .cover {
   position: relative;
   width: min(100%, 21rem);
+  justify-self: center;
   overflow: hidden;
   aspect-ratio: 4 / 5;
   border: 1px solid var(--cinematic-color-white);
@@ -146,13 +149,14 @@
 }
 
 .singlePageCover {
-  width: 100%;
-  aspect-ratio: auto;
+  width: min(100%, 21rem);
+  aspect-ratio: 4 / 5;
 }
 .singlePageCover img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .cover p {
@@ -196,6 +200,8 @@
   gap:var(--cinematic-spacing-sm);
 }
 
+.viewerLinks a { padding:0; border:0; background:transparent; color:var(--cinematic-color-ink); font-weight:var(--cinematic-typography-weight-regular); text-decoration:underline; text-underline-offset:.25em; }
+
 .viewerBackdrop {
   position: fixed;
   z-index: 1000;
@@ -225,7 +231,7 @@
 .viewerDialog h2 {
   margin:0;
   font-family: var(--cinematic-typography-family-display);
-  font-size: var(--cinematic-typography-size-heading);
+  font-size: var(--cinematic-typography-size-lead);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-heading);
 }
@@ -250,17 +256,13 @@
   margin:0;
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 48rem) {
   .flyers {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .flyers > :only-child {
     grid-column: 1 / -1;
-  }
-
-  .stage {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   }
 
 }

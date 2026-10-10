@@ -27,7 +27,7 @@ test("renders exact landmarks, heading hierarchy, facts, and section order", asy
     page.getByRole("heading", { level: 1, name: "Goch schenkt ein." }),
   ).toHaveCount(1);
   await expect(
-    page.getByText("Jurgenstr. 20", { exact: true }).first(),
+    page.getByText("Jurgensstraße 20", { exact: true }).first(),
   ).toBeVisible();
   await expect(
     page.getByText("Mo–Sa 08:00–20:00 Uhr", { exact: true }).first(),
@@ -141,7 +141,7 @@ test("mobile details navigation works by keyboard and never covers the first her
   );
 });
 
-test("keeps hero copy and real people clear of each other at tablet widths", async ({
+test("keeps the complete film and usable overlaid copy at tablet widths", async ({
   page,
 }) => {
   for (const viewport of [
@@ -152,9 +152,12 @@ test("keeps hero copy and real people clear of each other at tablet widths", asy
     await page.reload();
     await page.evaluate(()=>document.fonts.ready);
     const heading=await page.locator('[data-hero="cinematic"] h1').boundingBox();
-    const portrait=await page.locator('[data-hero="cinematic"] figure').boundingBox();
-    expect(heading).not.toBeNull();expect(portrait).not.toBeNull();
-    expect(heading!.x+heading!.width).toBeLessThanOrEqual(portrait!.x+1);
+    const film=await page.locator('[data-hero="cinematic"] video').boundingBox();
+    const actions=await page.locator('[data-hero="cinematic"] a').last().boundingBox();
+    expect(heading).not.toBeNull();expect(film).not.toBeNull();expect(actions).not.toBeNull();
+    expect(film!.width/film!.height).toBeCloseTo(16/9,2);
+    expect(actions!.y+actions!.height).toBeLessThanOrEqual(film!.y+film!.height);
+    await expect(page.locator('[data-hero="cinematic"] video')).toHaveCSS("object-fit","contain");
   }
 });
 
@@ -179,14 +182,18 @@ test("has no critical or serious axe findings", async ({ page }) => {
   ).toEqual([]);
 });
 
-test("never first-loads video, Instagram, map, or flyer iframes", async ({
+test("only loads the approved local hero film, never social, map or flyer embeds", async ({
   page,
 }) => {
   const urls = await page.evaluate(() =>
     performance.getEntriesByType("resource").map((entry) => entry.name),
   );
   expect(
-    urls.some((url) => /instagram|google\.com\/maps|\.mp4|viewer/i.test(url)),
+    urls.some((url) => /instagram|google\.com\/maps|viewer/i.test(url)),
   ).toBe(false);
+  for (const url of urls.filter(url => /\.mp4/i.test(url))) {
+    expect(new URL(url).origin).toBe(new URL(page.url()).origin);
+    expect(["/videos/jammers-hero-desktop.mp4", "/videos/jammers-hero-mobile.mp4"]).toContain(new URL(url).pathname);
+  }
   await expect(page.locator("iframe")).toHaveCount(0);
 });

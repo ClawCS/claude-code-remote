@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import TeamPhotoPlaceholder from "@/components/TeamPhotoPlaceholder";
 
-import { PEOPLE_STORY } from "@/data/cinematic-editorial";
+import { EDITORIAL_IMAGES, PEOPLE_STORY } from "@/data/cinematic-editorial";
 
 import styles from "./editorial.module.css";
 
@@ -13,10 +13,13 @@ export default function PeopleSection(): React.JSX.Element {
       id="menschen"
       aria-labelledby="menschen-title"
     >
+      <div className={styles.peopleIntro}>
+      <Image src={EDITORIAL_IMAGES.hero.image} alt={EDITORIAL_IMAGES.hero.alt} placeholder="blur" sizes="(max-width: 47.999rem) 100vw, 50vw" className={styles.peoplePhoto} />
       <div className={styles.sectionHeading}>
         <p className={styles.eyebrow}>Unser Markt. Unser Team.</p>
         <h2 id="menschen-title">Menschen hinter Jammers</h2>
         <p>Dein Lieblingsgetränk finden, eine Feier planen oder einfach kurz schnacken: Wir sind für dich da.</p>
+      </div>
       </div>
       <div className={styles.peopleGrid} data-people-story>
         <TeamPhotoPlaceholder />
@@ -36,7 +39,7 @@ export default function PeopleSection(): React.JSX.Element {
                 src={person.image}
                 alt={person.alt}
                 placeholder="blur"
-                sizes={`(max-width: 47.999rem) min(100vw, ${person.image.width}px), min(50vw, ${person.image.width}px)`}
+                sizes={`(max-width: 47.999rem) min(50vw, ${person.image.width}px), min(25vw, ${person.image.width}px)`}
               />
               {person.caption && <figcaption className={styles.caption}>
                 {person.caption}

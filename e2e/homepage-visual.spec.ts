@@ -80,10 +80,10 @@ for (const viewport of viewports) {
       const h1 = await page.getByRole("heading", { level: 1 }).boundingBox();
       const cta = await page
         .locator('[data-hero="cinematic"]')
-        .getByRole("link", { name: /Wochenangebote/ })
+        .getByRole("link", { name: /Aktuelle Angebote/ })
         .boundingBox();
       const heroImage = await page
-        .locator('[data-hero="cinematic"] img')
+        .locator('[data-hero="cinematic"] video')
         .boundingBox();
       expect(h1 && h1.y + h1.height).toBeLessThan(viewport.height);
       expect(cta && cta.y + cta.height).toBeLessThan(viewport.height);
@@ -100,14 +100,15 @@ for (const viewport of viewports) {
   });
 }
 
-test("360px facts occupy separate rows without collisions", async ({ page }) => {
+test("360px quick destinations occupy separate rows without collisions", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 844 });
   await page.goto("/");
   const boxes = await page
-    .locator('[data-hero="cinematic"] dl > div')
+    .locator('nav[aria-label="Direkt zu Angeboten, Partyplanung und Besuch"] > *')
     .evaluateAll((nodes) =>
       nodes.map((node) => node.getBoundingClientRect()),
     );
+  expect(boxes).toHaveLength(3);
   for (let index = 1; index < boxes.length; index += 1) {
     expect(boxes[index].top).toBeGreaterThanOrEqual(boxes[index - 1].bottom);
   }

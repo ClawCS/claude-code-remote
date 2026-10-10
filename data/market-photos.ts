@@ -10,7 +10,7 @@ export const MARKET_PHOTOS = {
 } as const satisfies Record<string, MarketPhoto>;
 
 export const MARKET_DISCOVERIES = [
-  { id: "marktleben", title: "Nicht einfach irgendein Markt.", text: "Echte Einblicke, besondere Aufbauten und Menschen, die mit anpacken. Das ist Jammers in Goch.", href: "/marktleben", photo: USER_MARKET_PHOTOS.schneiderWeisse },
+  { id: "marktleben", title: "Nicht einfach irgendein Markt.", text: "Echte Einblicke, besondere Aufbauten und Menschen, die mit anpacken. Das ist Jammers in Goch.", href: "/marktleben", photo: USER_MARKET_PHOTOS.mixedBeer },
   { id: "geschenke", title: "Eine Freude zum Mitnehmen.", text: "Für Gastgeber, Geburtstage oder ein kleines Dankeschön: Lass dich zu einer passenden Geschenkidee beraten.", href: "/geschenkideen", photo: MARKET_PHOTOS.gifts },
   { id: "regional", title: "Vom Niederrhein. Für dich.", text: "Regionale Spezialitäten mit Charakter. Entdecke Brüdergeist und weitere Genussideen aus unserem Markt.", href: "/regionale-spirituosen", photo: { ...REGIONAL_SPECIALTIES[0], caption: "Brüdergeist · originale Canva-Produktgrafik" } },
 ] as const;

@@ -155,9 +155,13 @@ test("meets visual stability, interaction, transfer, and request budgets", async
       .reduce((sum, resource) => sum + resource.accountedBytes, 0);
   const scriptBytes = total("script");
   const imageBytes = total("img");
+  const approvedFilm = resources.filter(({ name }) => {
+    const url = new URL(name);
+    return url.origin === new URL(page.url()).origin && url.pathname === "/videos/jammers-hero-mobile.mp4";
+  });
   const largestResourceBytes = Math.max(
     0,
-    ...resources.map((resource) => resource.accountedBytes),
+    ...resources.filter(resource => !approvedFilm.includes(resource)).map((resource) => resource.accountedBytes),
   );
   const unmeasuredLoadedUrls = resources
     .filter(
@@ -167,7 +171,7 @@ test("meets visual stability, interaction, transfer, and request budgets", async
     .map(({ name }) => name);
   const forbiddenUrls = resources
     .map(({ name }) => name)
-    .filter((name) => /instagram|google\.com\/maps|\.mp4|viewer/i.test(name));
+    .filter((name) => /instagram|google\.com\/maps|viewer/i.test(name) || (/\.mp4/i.test(name) && !approvedFilm.some(resource => resource.name === name)));
   const metricEvidence = {
     ...metrics,
     imageBytes,
@@ -211,7 +215,8 @@ test("meets visual stability, interaction, transfer, and request budgets", async
     .soft(largestResourceBytes, "each first-load asset must remain within 550 KiB")
     .toBeLessThanOrEqual(RESOURCE_BUDGET_BYTES);
   expect.soft(unmeasuredLoadedUrls, "every loaded URL must report a size").toEqual([]);
-  expect.soft(forbiddenUrls, "passive load must not request embeds or video").toEqual([]);
+  expect.soft(forbiddenUrls, "passive load must not request embeds or unapproved video").toEqual([]);
+  for (const film of approvedFilm) expect.soft(film.accountedBytes, "approved mobile film stays within 3 MB").toBeLessThanOrEqual(3_000_000);
 
   await client.detach();
 });

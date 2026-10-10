@@ -11,8 +11,8 @@ it("uses Dutch controls while preserving the original document title",()=>{
 it("describes the local original as a direct link without claiming an external provider",()=>{
   const de=renderToStaticMarkup(<FlyerIndexView index={index}/>);
   const nl=renderToStaticMarkup(<FlyerIndexView index={index} compact/>);
-  expect(de).toContain("Handzettel direkt öffnen");expect(de).not.toContain("Handzettel extern öffnen");
-  expect(nl).toContain("Folder direct openen");expect(nl).not.toContain("externe folder");
+  expect(de).toContain("Handzettel als PDF öffnen");expect(de).not.toContain("Handzettel extern öffnen");
+  expect(nl).toContain("Folder als PDF openen");expect(nl).not.toContain("externe folder");
 });
 it("uses Dutch empty and scheduled states",()=>{
   const html=renderToStaticMarkup(<FlyerIndexView index={{...index,flyers:[],scheduled:[{id:"next",language:"nl",title:"Volgende folder",validFrom:"2026-10-05",validTo:"2026-10-10"}]}} compact/>);

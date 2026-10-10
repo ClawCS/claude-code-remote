@@ -13,7 +13,7 @@ import RegionaleSpirituosenPage from "@/app/regionale-spirituosen/page";
 
 test("places local market and gift motifs behind their own relevant rubric links", () => {
   const html = decodeURIComponent(renderToStaticMarkup(<AssortmentSection />));
-  expect(html).toContain("/images/editorial/user/schneider-weisse.webp");
+  expect(html).toContain("/images/editorial/user/biermischgetraenke.webp");
   expect(html).toContain("/images/editorial/canva/gift-basket.webp");
   expect(html).toContain('href="/geschenkideen"');
   expect(html).toContain('href="/regionale-spirituosen"');
@@ -29,7 +29,7 @@ test("keeps the homepage discoveries bounded and pairs each photo with its match
   expect(articles).toHaveLength(3);
   expect(html).not.toContain("<figcaption");
   for (const [source, destination] of [
-    ["/images/editorial/user/schneider-weisse.webp", "/marktleben"],
+    ["/images/editorial/user/biermischgetraenke.webp", "/marktleben"],
     ["/images/editorial/canva/gift-basket.webp", "/geschenkideen"],
     ["/images/editorial/canva/regional-tante-dele.webp", "/regionale-spirituosen"],
   ]) {

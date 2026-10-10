@@ -221,6 +221,8 @@ describe("HeroFilm loading and playback", () => {
     const page = await mount({ reduced: true, nativeMedia: true, width: 390 });
     await page.locator("button").click();
     await page.waitForFunction(() => { const video = document.querySelector("video"); return video && video.currentTime > 0 && video.videoWidth === 960; });
+    // Native playback can advance before React commits the playing-event label.
+    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
     expect(await label(page)).toBe("Film pausieren");
     await page.locator("button").click();
     expect(await page.locator("video").evaluate((video: HTMLVideoElement) => video.paused)).toBe(true);

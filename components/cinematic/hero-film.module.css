@@ -2,11 +2,14 @@
 .media { position:relative; aspect-ratio:16/9; background:var(--cinematic-color-charcoal); }
 .video { display:block; width:100%; height:100%; object-fit:contain; }
 .copy { position:relative; }
-.control { position:absolute; bottom:var(--cinematic-spacing-md); right:var(--cinematic-spacing-md); z-index:3; min-height:var(--cinematic-spacing-target); padding:var(--cinematic-spacing-xs) var(--cinematic-spacing-md); border:1px solid var(--cinematic-color-line); border-radius:3px; background:var(--cinematic-color-paper); color:var(--cinematic-color-ink); font-size:var(--cinematic-typography-size-small); font-weight:var(--cinematic-typography-weight-bold); cursor:pointer; }
+.control { flex-shrink:0; min-height:3rem; padding:var(--cinematic-spacing-xs) var(--cinematic-spacing-md); border:1px solid var(--cinematic-color-line); border-radius:3px; background:var(--cinematic-color-paper); color:var(--cinematic-color-ink); font-size:var(--cinematic-typography-size-small); font-weight:var(--cinematic-typography-weight-bold); cursor:pointer; }
 .control:focus-visible { outline:3px solid var(--cinematic-color-red); outline-offset:3px; }
 .control:disabled { cursor:default; }
-.caption { padding:var(--cinematic-spacing-sm) var(--cinematic-spacing-gutter); font-size:var(--cinematic-typography-size-label); line-height:var(--cinematic-typography-line-height-body); }
+.caption { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--cinematic-spacing-sm); padding:var(--cinematic-spacing-sm) var(--cinematic-spacing-gutter); font-size:var(--cinematic-typography-size-label); line-height:var(--cinematic-typography-line-height-body); }
 .caption p { margin:0; }
+.caption p:first-child { flex:1 1 12rem; }
+.caption p[role="status"]:empty { display:none; }
+.caption p[role="status"]:not(:empty) { flex-basis:100%; }
 .description { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 @media(min-width:48rem) {
   .copy { position:absolute; inset:0; bottom:auto; z-index:2; }

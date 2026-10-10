@@ -36,6 +36,9 @@ export const CINEMATIC_TOKENS = deepFreeze({
     success: "#28813C",
     translucent: "#FFFFFF60",
     shadow: "#30292314",
+    editorialPaper: "#FAF9F6",
+    editorialSurface: "#F2F0EC",
+    editorialLine: "#E2DED8",
   },
   typography: {
     family: {
@@ -138,3 +141,11 @@ export function createTokenStyle<
 }
 
 export const cinematicTokenStyle = createTokenStyle(CINEMATIC_TOKENS);
+
+/** Homepage-only composition; transactional pages keep the shared palette. */
+export const cinematicHomeTokenStyle = Object.freeze({
+  ...cinematicTokenStyle,
+  "--cinematic-color-paper": CINEMATIC_TOKENS.color.editorialPaper,
+  "--cinematic-color-warm": CINEMATIC_TOKENS.color.editorialSurface,
+  "--cinematic-color-line": CINEMATIC_TOKENS.color.editorialLine,
+});

@@ -29,13 +29,13 @@ function ExternalFlyerLinks({
 }): React.JSX.Element {
   return (
     <div className={styles.viewerLinks} data-flyer-fallback-links>
-      <a
+      {flyer.viewerUrl !== flyer.pdfUrl && <a
         href={flyer.viewerUrl}
         target="_blank"
         rel="noopener noreferrer"
       >
         {COPY[locale].external}
-      </a>
+      </a>}
       <a href={flyer.pdfUrl} target="_blank" rel="noopener noreferrer">
         {COPY[locale].pdf}
       </a>

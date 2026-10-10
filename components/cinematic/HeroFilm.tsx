@@ -123,12 +123,12 @@ export default function HeroFilm({ children, className, copyClassName }: {
           poster="/images/home/jammers-film-poster.webp" aria-label="Jammers: fünfzehnsekündiger KI-Werbefilm ohne Ton" aria-describedby={descriptionId}>
           Dein Browser kann diesen Film nicht abspielen. Das Schlussmotiv zeigt sechs Jammers-Liköre mit passenden Gläsern.
         </video>
-        <button className={styles.control} type="button" disabled={!hydrated} onClick={() => controls.current?.toggle()} aria-describedby={descriptionId}>
-          {pending ? "Wiedergabe abbrechen" : playing ? "Film pausieren" : "Film abspielen"}
-        </button>
       </div>
       <div className={styles.caption}>
         <p id={descriptionId}>KI-Werbefilm · beispielhafte Partyszene<span className={styles.description}> · 15 Sekunden ohne Ton: Getränke und Partyservice, zum Schluss sechs Jammers-Liköre mit passenden Gläsern. Generierte Werbung, keine dokumentarische Markt- oder pixelidentische Produktaufnahme.</span></p>
+        <button className={styles.control} type="button" disabled={!hydrated} onClick={() => controls.current?.toggle()} aria-describedby={descriptionId}>
+          {pending ? "Wiedergabe abbrechen" : playing ? "Film pausieren" : "Film abspielen"}
+        </button>
         <p role="status" aria-live="polite">{failed ? "Der Film ist gerade nicht verfügbar. Das Standbild bleibt sichtbar; du kannst die Wiedergabe erneut versuchen." : ""}</p>
       </div>
     </div>

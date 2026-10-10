@@ -17,6 +17,11 @@ const flyer: HomepageFlyer = {
 };
 
 describe("flyer viewer before client hydration", () => {
+  it("keeps one usable native fallback when viewer and PDF are the same original", () => {
+    const html = renderToStaticMarkup(<FlyerViewer flyer={{...flyer, viewerUrl: "/handzettel/current.pdf", pdfUrl: "/handzettel/current.pdf"}} />);
+    expect([...html.matchAll(/<a[^>]*href="\/handzettel\/current.pdf"/g)]).toHaveLength(1);
+    expect(html).toContain("Handzettel als PDF öffnen");
+  });
   it("renders a single-page original at natural aspect ratio and full card width", () => {
     const html=renderToStaticMarkup(<FlyerViewer flyer={{...flyer,pageCount:1}}/>);
     expect(html).toContain('data-single-page="true"');

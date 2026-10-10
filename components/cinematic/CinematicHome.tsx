@@ -1,11 +1,12 @@
 import styles from "@/app/home.module.css";
 import type { HomepageContent } from "@/lib/homepage-content";
-import { cinematicTokenStyle } from "@/lib/cinematic/tokens";
+import { cinematicHomeTokenStyle } from "@/lib/cinematic/tokens";
 
 import ActionsSection from "./ActionsSection";
 import CinematicHeader from "./CinematicHeader";
 import CurrentSection from "./CurrentSection";
 import HeroSection from "./HeroSection";
+import HomeQuickLinks from "./HomeQuickLinks";
 import InstagramSection from "./InstagramSection";
 import LocationFooter from "./LocationFooter";
 import PeopleSection from "./PeopleSection";
@@ -32,7 +33,7 @@ export default function CinematicHome({
       data-motion-state="static"
       data-motion-controller-count="0"
       data-motion-trigger-count="0"
-      style={cinematicTokenStyle}
+      style={cinematicHomeTokenStyle}
     >
       <a className={styles.skipLink} href="#main-content">
         Zum Hauptinhalt
@@ -40,9 +41,10 @@ export default function CinematicHome({
       <CinematicHeader nowIso={nowIso} hasActions={hasActions} />
       <main id="main-content" tabIndex={-1}>
         <HeroSection />
+        <HomeQuickLinks />
         <CurrentSection content={content} />
-        <AssortmentSection />
         <ServiceSection />
+        <AssortmentSection />
         <SpotlightSection />
         {hasActions ? (
           <ActionsSection archive={content.archive} event={content.event} nowIso={nowIso} />
