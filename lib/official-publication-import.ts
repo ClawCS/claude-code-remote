@@ -1,9 +1,8 @@
-import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, realpath, rename, rm, stat, unlink, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { validatePublicationPdf } from "./publication-pdf";
-import sharp from "sharp";
 import { getCurrentWeekRange } from "./editorial-schedule";
 import { parseFlyerPackages, selectWeeklyNlFlyer } from "./flyer-packages";
 import { validateCatalog, type HandzettelCache } from "./handzettel-catalog";
@@ -11,53 +10,11 @@ import { parseWeeklyPublication, verifyWeeklyEdition } from "./weekly-publicatio
 import type { LocalAsset, PublishedOffer, WeeklyEdition, WeeklyPublication } from "./weekly-publication-types";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
 import { withWeeklyPublicationTransaction } from "./weekly-publication-transaction";
+import { atomicPublicationBytes as atomicBytes, decodedPublicationImage as decodedImage, immutablePublicationAsset as immutableAsset, localPublicationBytes as localBytes, publicationDirectory as directory, publicationHash as hash } from "./publication-assembly-files";
+import { assertPublicationPolicy, type PublicationIdentity } from "./flyer-source-policy";
+import { countPublicationEditionIds } from "./publication-integrity";
 
 const MAX_BYTES = 50 * 1024 * 1024;
-const hash = (bytes: string | Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-const inside = (root: string, file: string) => { const relative = path.relative(root, file); return relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative); };
-
-/** Editorial reads cannot escape the worktree, including through symlinks. */
-async function localBytes(root: string, relative: string): Promise<Buffer> {
-  if (path.isAbsolute(relative)) throw new Error("Expected an editorial relative path");
-  const canonical = await realpath(root), file = await realpath(path.resolve(root, relative));
-  if (!inside(canonical, file)) throw new Error("Editorial path escapes root");
-  const info = await stat(file);
-  if (!info.isFile() || info.size > MAX_BYTES) throw new Error("Invalid or oversized original");
-  const bytes = await readFile(file);
-  if (!bytes.length || bytes.length > MAX_BYTES) throw new Error("Invalid or oversized original");
-  return bytes;
-}
-async function directory(root: string, relative: string) {
-  const target = path.resolve(root, relative);
-  if (!inside(path.resolve(root), target)) throw new Error("Output path escapes root");
-  await mkdir(target, { recursive: true });
-  if (!inside(await realpath(root), await realpath(target))) throw new Error("Output symlink escapes root");
-  return target;
-}
-async function atomicBytes(file: string, bytes: string | Uint8Array) {
-  await mkdir(path.dirname(file), { recursive: true });
-  const temp = `${file}.${randomUUID()}.tmp`;
-  try { await writeFile(temp, bytes, { flag: "wx" }); await rename(temp, file); }
-  finally { await unlink(temp).catch(() => {}); }
-}
-async function immutableAsset(root: string, asset: LocalAsset, bytes: Buffer) {
-  if (hash(bytes) !== asset.sha256 || bytes.length !== asset.bytes) throw new Error("Original checksum mismatch");
-  const parent = await directory(root, path.dirname(`public${asset.path}`));
-  const file = path.join(parent, path.basename(asset.path));
-  try { await writeFile(file, bytes, { flag: "wx" }); }
-  catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
-    if (!(await localBytes(root, `public${asset.path}`)).equals(bytes)) throw new Error("Cannot overwrite a published path with different bytes");
-  }
-  if (!(await localBytes(root, `public${asset.path}`)).equals(bytes)) throw new Error("Published original changed during assembly");
-}
-async function decodedImage(bytes: Buffer) {
-  const image = sharp(bytes, { limitInputPixels: 50_000_000 });
-  const metadata = await image.metadata();
-  if (!metadata.width || !metadata.height || !["jpeg", "png", "webp", "avif", "heif"].includes(metadata.format ?? "")) throw new Error("Invalid original cover");
-  await image.resize(1, 1).raw().toBuffer();
-  return metadata;
-}
 
 async function download(url: string, type: string, fetchImpl: typeof fetch): Promise<Buffer> {
   const controller = new AbortController();
@@ -125,7 +82,7 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
   return withWeeklyPublicationTransaction(root,async transaction=>{
   const layout = JSON.parse((await localBytes(root, "data/weekly-offer-layout.json")).toString()) as { sources: LayoutSource[] };
   if (!Array.isArray(layout.sources)) throw new Error("Missing reviewed layout");
-  const sources = layout.sources.filter(source => source.validFrom === week);
+  const sources = layout.sources.filter(source => source.validFrom === week && source.identity?.purpose !== "supplemental");
   if (!sources.length || sources.some(source => !["de", "nl"].includes(source.language)) || new Set(sources.map(source => source.language)).size !== sources.length) throw new Error("Missing or duplicate reviewed language");
   const rows = JSON.parse((await localBytes(root, "data/weekly-offers.json")).toString()) as PublishedOffer[];
   if (!Array.isArray(rows)) throw new Error("Invalid public offer rows");
@@ -133,6 +90,9 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
   let previous: WeeklyPublication | undefined;
   try { previous = parseWeeklyPublication(JSON.parse((await localBytes(root, manifestFile)).toString())); }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+  if(previous && previous.week!==week)throw new Error("Publication filename/date mismatch");
+  const globalIds=await countPublicationEditionIds(root);
+  if(sources.some(source=>(globalIds.get(source.flyerId)??0)>(previous?.editions.some(edition=>edition.id===source.flyerId)?1:0)))throw new Error("Globally duplicate edition ID");
   const editions: WeeklyEdition[] = [];
   const issues: { language: "de" | "nl"; message: string }[] = [];
   const assets: { asset: LocalAsset; bytes: Buffer }[] = [];
@@ -151,12 +111,16 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
       if (hash(pdfBytes) !== source.pdfSha256) throw new Error("Reviewed PDF changed");
       await validatePublicationPdf(pdfBytes, source.pageCount);
       let coverPath: string, coverFile: string, editionSource: WeeklyEdition["source"];
+      let editionIdentity:PublicationIdentity={language:source.language as "de"|"nl",purpose:"weekly",medium:"trinkgut"};
+      let approvedAt=source.approvedAt;
       if (source.language === "nl") {
-        const flyers = parseFlyerPackages(flyerRows.filter(row => row && typeof row === "object" && row.language === "nl" && (row.id === source.flyerId || (row.validFrom <= source.validTo && row.validTo >= week))));
+        const originalId=source.source?.kind==="agency"?source.source.originalId:source.source?.kind==="canva"?source.source.flyerId:source.flyerId;
+        const flyers = parseFlyerPackages(flyerRows.filter(row => row && typeof row === "object" && row.language === "nl" && (row.id === originalId || (row.identity?.purpose !== "supplemental" && row.validFrom <= source.validTo && row.validTo >= week))));
         const flyer = selectWeeklyNlFlyer(flyers, getCurrentWeekRange(new Date(`${week}T12:00:00Z`)));
-        if (!flyer || flyer.id !== source.flyerId) throw new Error("Missing or duplicate NL original");
+        if (!flyer || flyer.id !== originalId) throw new Error("Missing or duplicate NL original");
         coverPath = flyer.coverPath; coverFile = `public${coverPath}`;
-        editionSource = { kind: "canva", flyerId: flyer.id };
+        const original=flyers.find(item=>item.id===flyer.id)!;
+        editionSource = original.source; editionIdentity=original.identity; approvedAt=original.review?.approvedAt;
       } else {
         let imported: { pdf: LocalAsset; cover: LocalAsset } | undefined;
         const importedFile = path.join(path.dirname(source.privatePdf), "import.json");
@@ -176,6 +140,9 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
         editionSource = { kind: "trinkgut-official", catalogId: catalog.catalogId, catalogVersion: catalog.catalogVersion, metadataSha256: hash(candidateCatalogBytes) };
         if (imported && (imported.pdf.path !== source.publishedPdfPath || imported.pdf.sha256 !== source.pdfSha256 || imported.cover.sha256 !== source.coverSha256)) throw new Error("Imported original review mismatch");
       }
+      assertPublicationPolicy(editionIdentity,editionSource,source.validFrom,source.validTo,week);
+      if ((source.identity && !isDeepStrictEqual(source.identity,editionIdentity)) || (source.source && !isDeepStrictEqual(source.source,editionSource))
+        || (source.approvedAt && source.approvedAt!==approvedAt)) throw new Error("Reviewed provenance binding mismatch");
       const coverBytes = await localBytes(root, coverFile);
       if (hash(coverBytes) !== source.coverSha256) throw new Error("Reviewed cover mismatch");
       await decodedImage(coverBytes);
@@ -188,8 +155,9 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
         return { ...buildPublicOfferMetadata(source, page.page, offer, imagePath), imageSha256: row.imageSha256 };
       });
       const edition: WeeklyEdition = { id: source.flyerId, language: source.language as "de" | "nl", title: source.title ?? "Angebote der Woche", validFrom: source.validFrom, validTo: source.validTo, source: editionSource,
+        ...(week>="2026-10-12"?{identity:editionIdentity}:{}),
         pdf: { path: source.publishedPdfPath, sha256: source.pdfSha256, bytes: pdfBytes.length }, cover: { path: coverPath, sha256: source.coverSha256, bytes: coverBytes.length }, pageCount: source.pageCount,
-        review: { reviewedAt: source.reviewedAt, printedValidFrom: source.printedValidFrom, printedValidTo: source.printedValidTo, pageOfferCounts: source.pages.map(page => page.expectedOffers) }, offerIds: offers.map(offer => offer.id), offersSha256: hash(JSON.stringify(canonicalOffers)) };
+        review: { reviewedAt: source.reviewedAt, ...(week>="2026-10-12"?{approvedAt}:{}), printedValidFrom: source.printedValidFrom, printedValidTo: source.printedValidTo, pageOfferCounts: source.pages.map(page => page.expectedOffers) }, offerIds: offers.map(offer => offer.id), offersSha256: hash(JSON.stringify(canonicalOffers)) };
       for (const asset of [edition.pdf, edition.cover]) {
         const boundAsset = previous?.editions.flatMap(edition => [edition.pdf, edition.cover]).find(bound => bound.path === asset.path);
         if (boundAsset && (boundAsset.sha256 !== asset.sha256 || boundAsset.bytes !== asset.bytes)) throw new Error("Changed original requires a new unique published path");
@@ -205,7 +173,7 @@ export async function assembleWeeklyPublication(week: string, root: string): Pro
         issues.push({ language: source.language as "de" | "nl", message: error instanceof Error ? error.message : "Original validation failed" });
       }
     }
-    const publication = parseWeeklyPublication({ schemaVersion: 1, week, editions });
+    const publication = parseWeeklyPublication({ schemaVersion: week>="2026-10-12"?2:1, week, editions });
     if (issues.length && (previous || !editions.length)) throw new WeeklyPreparationError(publication, issues, false);
     // No catalog or manifest binding is replaced before all candidate validation succeeds.
     for (const { asset, bytes } of assets) {

@@ -5,6 +5,7 @@ import path from "node:path";
 import { PDFDocument } from "pdf-lib";
 import sharp from "sharp";
 import type { EditionSource } from "../../weekly-publication-types";
+import type { PublicationIdentity } from "../../flyer-source-policy";
 
 export const sha256 = (bytes: string | Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 
@@ -45,6 +46,8 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
     const flyerId = `${language}-${week}`;
     const publishedPdfPath = `/handzettel/${week}/${language}.pdf`;
     return {
+      ...(agency?{identity:{language:language as "de"|"nl",purpose:"weekly",medium:language==="de"?"trinkgut":medium} as PublicationIdentity,
+        source:(language==="nl"?{kind:"agency",originalId:flyerId,medium}:{kind:"trinkgut-official",catalogId,catalogVersion,metadataSha256:sha256(metadata)}) as EditionSource,approvedAt:`${week}T12:00:00Z`}:{}),
       language, flyerId, sourceUrl: language === "de" ? officialUrl : agency ? publishedPdfPath : "https://www.canva.com/design/SYNTHETIC/view",
       privatePdf: `public${publishedPdfPath}`, publishedPdfPath, pdfSha256: sha256(pdfs[index]),
       validFrom: week, validTo, reviewedAt: `${week}T12:00:00Z`, rightsStatus: "approved",
@@ -75,26 +78,28 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
     pdf: { path: source.publishedPdfPath, sha256: source.pdfSha256, bytes: pdfs[index].length },
     cover: { path: `/images/content/${week}/${source.language}.webp`, sha256: sha256(image), bytes: image.length },
     pageCount: source.pageCount,
-    review: { reviewedAt: source.reviewedAt, ...(agency && index === 1 ? { approvedAt: source.reviewedAt } : {}), printedValidFrom: week, printedValidTo: validTo,
+    review: { reviewedAt: source.reviewedAt, ...(agency ? { approvedAt: source.reviewedAt } : {}), printedValidFrom: week, printedValidTo: validTo,
       pageOfferCounts: source.pages.map(page => page.expectedOffers) },
     offerIds: offers.filter(offer => offer.language === source.language).map(offer => offer.id),
     offersSha256: sha256(JSON.stringify(offers.filter(offer => offer.language === source.language).sort((a, b) => a.id.localeCompare(b.id)))),
   }));
-  const flyer = {
+  const legacyFlyer = {
     id: sources[1].flyerId, language: "nl", title: "Synthetic original", validFrom: week, validTo,
     sourceUrl: sources[1].sourceUrl, designId: "SYNTHETIC", pageNumbers: [14], rightsStatus: "approved",
     exportedAt: sources[1].reviewedAt, pdfPath: editions[1].pdf.path, coverPath: editions[1].cover.path,
     pdfSha256: editions[1].pdf.sha256, coverSha256: editions[1].cover.sha256,
   };
+  const { sourceUrl, designId, pageNumbers, ...original } = legacyFlyer;
+  const flyer={...original,sourceUrl,designId,pageNumbers};
+  const originalFlyer = agency ? { ...original,
+    identity: { language: "nl", purpose: "weekly", medium } as const,
+    source: { kind: "agency", originalId: original.id, medium } as const, pageCount: 1,
+    review: { reviewedAt: sources[1].reviewedAt, approvedAt: sources[1].reviewedAt, printedValidFrom: week, printedValidTo: validTo },
+  } : flyer;
   const publication = { schemaVersion: 1 as const, week, editions };
   const save = async () => {
     await write(`data/editorial/weekly-publications/${week}.json`, JSON.stringify(publication));
-    const { sourceUrl, designId, pageNumbers, ...original } = flyer;
-    await write("data/editorial/flyers.json", JSON.stringify([agency ? { ...original,
-      identity: { language: "nl", purpose: "weekly", medium },
-      source: { kind: "agency", originalId: flyer.id, medium }, pageCount: 1,
-      review: { reviewedAt: sources[1].reviewedAt, approvedAt: sources[1].reviewedAt, printedValidFrom: week, printedValidTo: validTo },
-    } : { ...original, sourceUrl, designId, pageNumbers }]));
+    await write("data/editorial/flyers.json", JSON.stringify([originalFlyer]));
     await write("data/weekly-offer-layout.json", JSON.stringify({ schemaVersion: 1, week, sources }));
     await write("data/weekly-offers.json", JSON.stringify(offers));
   };
@@ -104,5 +109,5 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
   }
   for (const offer of offers) await write(`public${offer.image}`, crop);
   await save();
-  return { root, write, save, publication, editions, offers, sources, flyer, catalog, image, crop, pdfs };
+  return { root, write, save, publication, editions, offers, sources, flyer, originalFlyer, catalog, image, crop, pdfs };
 }

@@ -10,6 +10,7 @@ import * as importer from "../official-publication-import";
 import type { HandzettelCache } from "../handzettel-catalog";
 import { loadWeeklyPublications, verifyWeeklyEdition } from "../weekly-publication";
 import { sha256, weeklyPublicationFixture } from "./fixtures/weekly-publication";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
 
 // Keep real file operations; configurable exports allow deterministic pauses/failures at I/O boundaries.
 vi.mock("node:fs/promises",async importOriginal=>({...await importOriginal<typeof import("node:fs/promises")>()}));
@@ -56,6 +57,33 @@ describe("official original import", () => {
 });
 
 describe("weekly assembly", () => {
+  it("rejects an edition identity also declared in the supplemental register",async()=>{
+    const f=await supplementalPublicationFixture();roots.push(f.root);
+    f.supplemental.edition.id=f.editions[1].id;await f.save();
+    await expect(importer.assembleWeeklyPublication("2026-10-05",f.root)).rejects.toThrow(/duplicate edition ID/);
+  });
+  it("assembles same-date main sources independently of a supplemental source",async()=>{
+    const f=await supplementalPublicationFixture("2026-10-05","2026-10-10");roots.push(f.root);
+    const before=await readFile(path.join(f.root,`data/editorial/supplemental-publications/${f.supplemental.edition.id}.json`));
+    expect((await importer.assembleWeeklyPublication("2026-10-05",f.root)).editions.map(edition=>edition.id)).toEqual(["de-2026-10-05","nl-2026-10-05"]);
+    expect(await readFile(path.join(f.root,`data/editorial/supplemental-publications/${f.supplemental.edition.id}.json`))).toEqual(before);
+  });
+  it("emits explicit weekly v2 identity and approval using agency provenance",async()=>{
+    const f=await weeklyPublicationFixture("2026-10-12","2026-10-17","1399999");roots.push(f.root);
+    const result=await importer.assembleWeeklyPublication("2026-10-12",f.root);
+    expect(result.schemaVersion).toBe(2);
+    expect(result.editions.map(edition=>edition.identity)).toEqual([{language:"de",purpose:"weekly",medium:"trinkgut"},{language:"nl",purpose:"weekly",medium:"de-maas-driehoek"}]);
+    expect(result.editions[1].source).toEqual({kind:"agency",originalId:"nl-2026-10-12",medium:"de-maas-driehoek"});
+    expect(result.editions.every(edition=>edition.review.approvedAt==="2026-10-12T12:00:00Z")).toBe(true);
+  });
+  it("resolves a typed agency original reference distinct from the publication edition ID",async()=>{
+    const f=await weeklyPublicationFixture("2026-10-12","2026-10-17","1399999");roots.push(f.root);
+    const source={kind:"agency",originalId:"agency-original-row",medium:"de-maas-driehoek"} as const;
+    Object.assign(f.originalFlyer,{id:source.originalId,source});f.sources[1].source=source;f.editions[1].source=source;await f.save();
+    const result=await importer.assembleWeeklyPublication("2026-10-12",f.root);
+    expect(result.editions[1].id).toBe("nl-2026-10-12");expect(result.editions[1].source).toEqual(source);
+    expect((await buildWeeklyOffers(f.root,["--check"])).count).toBe(3);
+  });
   it("rejects saved reviewed PDF bytes missing their terminal EOF despite a matching hash and page count",async()=>{
     const f=await truncatedReviewedFixture();const manifest=path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json"),before=await readFile(manifest);
     await expect(importer.assembleWeeklyPublication("2026-10-05",f.root)).rejects.toMatchObject({issues:[expect.objectContaining({language:"de",message:expect.stringMatching(/completeness/)})],bound:false});
@@ -230,7 +258,7 @@ describe("multi-week offer generation", () => {
     expect(await readFile(path.join(current.root,"data/weekly-offers.json"))).toEqual(before);
     expect((await generator(current.root,["--check"])).code).toBe(1); // generated rows alone are not a publication binding
     await current.write("data/editorial/official-catalogs/2026-10-12.json",JSON.stringify(next.catalog));
-    await current.write("data/editorial/flyers.json",JSON.stringify([current.flyer,...(!missingNl?[next.flyer]:[])]));
+    await current.write("data/editorial/flyers.json",JSON.stringify([current.originalFlyer,...(!missingNl?[next.originalFlyer]:[])]));
     const manifestBefore=await readFile(path.join(current.root,"data/editorial/weekly-publications/2026-10-05.json"));
     const publication=await importer.assembleWeeklyPublication("2026-10-12",current.root);
     expect(publication.editions.map(edition=>edition.language)).toEqual(missingNl?["de"]:["de","nl"]);

@@ -171,6 +171,7 @@ export async function verifyPublicationEdition(edition: PublicationEdition, root
       || flyer.language !== "nl" || flyer.validFrom !== edition.validFrom || flyer.validTo !== edition.validTo
       || flyer.pdfPath !== edition.pdf.path || flyer.pdfSha256 !== edition.pdf.sha256
       || flyer.coverPath !== edition.cover.path || flyer.coverSha256 !== edition.cover.sha256) throw new Error("NL original binding mismatch");
+    if(flyer.review && (flyer.review.reviewedAt!==edition.review.reviewedAt || flyer.review.approvedAt!==edition.review.approvedAt))throw new Error("NL original review binding mismatch");
     await verifyFlyerFiles(flyer, root);
     originUrl = flyer.sourceUrl ?? flyer.pdfPath;
   }
@@ -179,6 +180,11 @@ export async function verifyPublicationEdition(edition: PublicationEdition, root
   const candidates = layout.sources.filter(value => value && typeof value === "object" && value.flyerId === edition.id && value.language === edition.language);
   if (candidates.length !== 1) throw new Error("Missing or duplicate reviewed source");
   const source = candidates[0] as LayoutSource;
+  if((edition.identity.purpose==="supplemental" || edition.validFrom>="2026-10-12" || Object.prototype.propertyIsEnumerable.call(edition,"identity"))
+    && (!source.identity||!source.source||!source.approvedAt))throw new Error("Missing reviewed provenance binding");
+  if ((source.identity && !isDeepStrictEqual(source.identity,edition.identity))
+    || (source.source && !isDeepStrictEqual(source.source,edition.source))
+    || (source.approvedAt && source.approvedAt!==edition.review.approvedAt)) throw new Error("Reviewed provenance binding mismatch");
   if (source.validFrom !== edition.validFrom || source.validTo !== edition.validTo || source.pdfSha256 !== edition.pdf.sha256
     || source.sourceUrl !== originUrl || source.rightsStatus !== "approved" || source.reviewedAt !== edition.review.reviewedAt
     || source.publishedPdfPath !== edition.pdf.path || source.coverSha256 !== edition.cover.sha256

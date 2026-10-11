@@ -8,6 +8,9 @@ export async function supplementalPublicationFixture(validFrom = "2026-10-07", v
   const source = structuredClone(f.sources[1]);
   source.sourceUrl = "https://www.canva.com/design/SYNTHETIC/view";
   source.flyerId = "maasduinen-synthetic";
+  source.identity={language:"nl",purpose:"supplemental",medium:"maasduinen"};
+  source.source={kind:"canva",flyerId:source.flyerId};
+  source.approvedAt=source.reviewedAt;
   source.validFrom = source.printedValidFrom = validFrom;
   source.validTo = source.printedValidTo = validTo;
   source.pages[0].offers[0].id = "maasduinen-synthetic-p1";

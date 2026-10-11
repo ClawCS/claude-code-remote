@@ -1,4 +1,6 @@
 import type { OriginalCrop } from "./weekly-offer-crops";
+import type { PublicationIdentity } from "./flyer-source-policy";
+import type { EditionSource } from "./weekly-publication-types";
 
 export type ReviewedWeeklyOffer = OriginalCrop & {
   id: string;
@@ -10,6 +12,9 @@ export type ReviewedWeeklyOffer = OriginalCrop & {
 };
 
 export type WeeklyOfferPublicSource = {
+  identity?: PublicationIdentity;
+  source?: EditionSource;
+  approvedAt?: string;
   language: string;
   flyerId: string;
   sourceUrl: string;
