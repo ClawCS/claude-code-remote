@@ -16,8 +16,55 @@ const flyer = {
   coverPath: "/images/content/maasduinen-2026-10-05.webp",
   pdfSha256: "a".repeat(64), coverSha256: "b".repeat(64),
 };
+const agency = {
+  id: "driehoek-synthetic-2026-10-12", language: "nl", title: "Synthetic agency original",
+  validFrom: "2026-10-12", validTo: "2026-10-17",
+  identity: { language: "nl", purpose: "weekly", medium: "de-maas-driehoek" },
+  source: { kind: "agency", originalId: "driehoek-synthetic-2026-10-12", medium: "de-maas-driehoek" },
+  pageCount: 1, rightsStatus: "approved", exportedAt: "2026-10-11T10:00:00Z",
+  review: { reviewedAt: "2026-10-11T11:00:00Z", approvedAt: "2026-10-11T12:00:00Z", printedValidFrom: "2026-10-12", printedValidTo: "2026-10-17" },
+  pdfPath: "/handzettel/2026/synthetic-agency.pdf", coverPath: "/images/content/synthetic-agency.webp",
+  pdfSha256: "a".repeat(64), coverSha256: "b".repeat(64),
+};
 
 describe("dated Canva flyer packages", () => {
+  it("accepts typed agency original without fictitious Canva URL or identity", () => {
+    const [parsed] = parseFlyerPackages([agency]);
+    expect(parsed).toMatchObject({ source: agency.source, identity: agency.identity, pageCount: 1 });
+    expect(parsed.sourceUrl).toBeUndefined();
+    expect(parsed.designId).toBeUndefined();
+    expect(selectWeeklyNlFlyer([parsed], { validFrom: "2026-10-12", validTo: "2026-10-17" })?.id).toBe(agency.id);
+  });
+  it.each([
+    { source: undefined }, { identity: undefined }, { pageCount: 2 }, { sourceUrl: "https://www.canva.com/design/fake/view" },
+    { source: { ...agency.source, medium: "udens-weekblad" } },
+    { identity: { ...agency.identity, language: "de" } }, { validFrom: "2025-10-12" },
+    { review: { ...agency.review, printedValidTo: "2026-10-18" } },
+    { review: { ...agency.review, approvedAt: "2026-02-30T12:00:00Z" } },
+    { review: { ...agency.review, reviewedAt: "2026-10-11" } },
+    { review: { ...agency.review, approvedAt: "2026-10-11T09:00:00Z" } },
+    { pdfSha256: "unverified" }, { extra: "private" },
+  ])("rejects incomplete or contradictory typed provenance %j", override => {
+    expect(() => parseFlyerPackages([{ ...agency, ...override }])).toThrow();
+  });
+  it("does not allow Maasduinen to satisfy the weekly NL requirement", () => {
+    const item = { ...agency, identity: { language: "nl", purpose: "supplemental", medium: "maasduinen" },
+      source: { kind: "canva", flyerId: agency.id }, sourceUrl: flyer.sourceUrl, designId: flyer.designId, pageNumbers: [14] };
+    const [parsed] = parseFlyerPackages([item]);
+    expect(selectWeeklyNlFlyer([parsed], { validFrom: "2026-10-12", validTo: "2026-10-17" })).toBeNull();
+  });
+  it("normalizes unchanged historical Canva provenance without mutating its input", () => {
+    const before = JSON.stringify(flyer);
+    expect(parseFlyerPackages([flyer])[0]).toMatchObject({
+      identity: { language: "nl", purpose: "weekly", medium: "legacy-canva" },
+      source: { kind: "canva", flyerId: flyer.id }, pageCount: 1,
+      pdfSha256: flyer.pdfSha256, coverSha256: flyer.coverSha256,
+    });
+    expect(JSON.stringify(flyer)).toBe(before);
+  });
+  it("rejects future untyped Canva weekly provenance", () => {
+    expect(() => parseFlyerPackages([{ ...flyer, validFrom: "2026-10-12", validTo: "2026-10-17" }])).toThrow();
+  });
   it("accepts the reviewed KW40 Friday-ending NL page without extending its printed validity",()=>{
     const item={...flyer,validFrom:"2026-09-28",validTo:"2026-10-02"};
     expect(selectWeeklyNlFlyer([item],{validFrom:"2026-09-28",validTo:"2026-10-03"})?.validTo).toBe("2026-10-02");

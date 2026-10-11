@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { PDFDocument } from "pdf-lib";
 import sharp from "sharp";
+import type { EditionSource } from "../../weekly-publication-types";
 
 export const sha256 = (bytes: string | Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 
@@ -25,6 +26,8 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
   identityDate.setUTCDate(identityDate.getUTCDate() + 4 - (identityDate.getUTCDay() || 7));
   const year = identityDate.getUTCFullYear();
   const kw = Math.ceil(((identityDate.valueOf() - Date.UTC(year, 0, 1, 12)) / 86400000 + 1) / 7);
+  const agency = week >= "2026-10-12";
+  const medium = kw % 2 === 0 ? "de-maas-driehoek" as const : "udens-weekblad" as const;
   const officialUrl = `https://werbung.trinkgut.de/frontend/catalogs/${catalogId}/${catalogVersion}/pdf/complete.pdf`;
   const catalog = {
     catalogId, catalogVersion, storeId: "13027", werbekreis: "3.6", kw, year,
@@ -42,7 +45,7 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
     const flyerId = `${language}-${week}`;
     const publishedPdfPath = `/handzettel/${week}/${language}.pdf`;
     return {
-      language, flyerId, sourceUrl: language === "de" ? officialUrl : "https://www.canva.com/design/SYNTHETIC/view",
+      language, flyerId, sourceUrl: language === "de" ? officialUrl : agency ? publishedPdfPath : "https://www.canva.com/design/SYNTHETIC/view",
       privatePdf: `public${publishedPdfPath}`, publishedPdfPath, pdfSha256: sha256(pdfs[index]),
       validFrom: week, validTo, reviewedAt: `${week}T12:00:00Z`, rightsStatus: "approved",
       printedValidFrom: week, printedValidTo: validTo, coverSha256: sha256(image),
@@ -65,13 +68,14 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
   const editions = sources.map((source, index) => ({
     id: source.flyerId, language: source.language as "de" | "nl", title: "Synthetic weekly original",
     validFrom: week, validTo,
-    source: index === 0
+    source: (index === 0
       ? { kind: "trinkgut-official" as const, catalogId, catalogVersion, metadataSha256: sha256(metadata) }
-      : { kind: "canva" as const, flyerId: source.flyerId },
+      : agency ? { kind: "agency" as const, originalId: source.flyerId, medium }
+      : { kind: "canva" as const, flyerId: source.flyerId }) as EditionSource,
     pdf: { path: source.publishedPdfPath, sha256: source.pdfSha256, bytes: pdfs[index].length },
     cover: { path: `/images/content/${week}/${source.language}.webp`, sha256: sha256(image), bytes: image.length },
     pageCount: source.pageCount,
-    review: { reviewedAt: source.reviewedAt, printedValidFrom: week, printedValidTo: validTo,
+    review: { reviewedAt: source.reviewedAt, ...(agency && index === 1 ? { approvedAt: source.reviewedAt } : {}), printedValidFrom: week, printedValidTo: validTo,
       pageOfferCounts: source.pages.map(page => page.expectedOffers) },
     offerIds: offers.filter(offer => offer.language === source.language).map(offer => offer.id),
     offersSha256: sha256(JSON.stringify(offers.filter(offer => offer.language === source.language).sort((a, b) => a.id.localeCompare(b.id)))),
@@ -85,7 +89,12 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
   const publication = { schemaVersion: 1 as const, week, editions };
   const save = async () => {
     await write(`data/editorial/weekly-publications/${week}.json`, JSON.stringify(publication));
-    await write("data/editorial/flyers.json", JSON.stringify([flyer]));
+    const { sourceUrl, designId, pageNumbers, ...original } = flyer;
+    await write("data/editorial/flyers.json", JSON.stringify([agency ? { ...original,
+      identity: { language: "nl", purpose: "weekly", medium },
+      source: { kind: "agency", originalId: flyer.id, medium }, pageCount: 1,
+      review: { reviewedAt: sources[1].reviewedAt, approvedAt: sources[1].reviewedAt, printedValidFrom: week, printedValidTo: validTo },
+    } : { ...original, sourceUrl, designId, pageNumbers }]));
     await write("data/weekly-offer-layout.json", JSON.stringify({ schemaVersion: 1, week, sources }));
     await write("data/weekly-offers.json", JSON.stringify(offers));
   };

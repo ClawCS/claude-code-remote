@@ -14,6 +14,38 @@ async function fixture(...args: Parameters<typeof weeklyPublicationFixture>) {
 afterEach(async () => { vi.unstubAllEnvs(); await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
 
 describe("immutable weekly publications", () => {
+  it("normalizes schema 1 identity without changing serialized historical data", async () => {
+    const f = await fixture();
+    const before = JSON.stringify(f.publication);
+    const parsed = parseWeeklyPublication(f.publication);
+    expect(parsed.editions.map(row => row.identity)).toEqual([
+      { purpose: "weekly", medium: "trinkgut", language: "de" },
+      { purpose: "weekly", medium: "legacy-canva", language: "nl" },
+    ]);
+    expect(JSON.stringify(f.publication)).toBe(before);
+    expect(JSON.stringify(parsed)).toBe(before);
+  });
+  it.each([1, 2])("rejects future Canva weekly binding independently of schema %s", async schemaVersion => {
+    const f = await fixture();
+    const edition = { ...f.editions[1], validFrom: "2026-10-12", validTo: "2026-10-17",
+      ...(schemaVersion === 2 ? { identity: { language: "nl", purpose: "weekly", medium: "legacy-canva" } } : {}),
+      review: { ...f.editions[1].review, printedValidFrom: "2026-10-12", printedValidTo: "2026-10-17", ...(schemaVersion === 2 ? { approvedAt: "2026-10-11T12:00:00Z" } : {}) } };
+    expect(() => parseWeeklyPublication({ schemaVersion, week: "2026-10-12", editions: [edition] })).toThrow();
+  });
+  it.each([
+    ["2026-10-12", "2026-10-17", "de-maas-driehoek"],
+    ["2026-10-19", "2026-10-24", "udens-weekblad"],
+    ["2026-12-28", "2027-01-02", "udens-weekblad"],
+  ])("accepts explicit schema 2 agency identity at %s", async (week, to, medium) => {
+    const f = await fixture();
+    const edition = { ...f.editions[1], validFrom: week, validTo: to,
+      identity: { purpose: "weekly", medium, language: "nl" },
+      source: { kind: "agency", originalId: "synthetic-original", medium },
+      review: { ...f.editions[1].review, approvedAt: "2026-10-11T12:00:00Z", printedValidFrom: week, printedValidTo: to } };
+    expect(parseWeeklyPublication({ schemaVersion: 2, week, editions: [edition] }).editions[0].source).toEqual(edition.source);
+    expect(() => parseWeeklyPublication({ schemaVersion: 2, week, editions: [{ ...edition, pageCount: 2 }] })).toThrow();
+    expect(() => parseWeeklyPublication({ schemaVersion: 2, week, editions: [{ ...edition, identity: { ...edition.identity, medium: "maasduinen" } }] })).toThrow();
+  });
   it("rejectsChangedOriginal: rejects changed original bytes rather than trusting metadata", async () => {
     const f = await fixture();
     await f.write(`public${f.editions[0].pdf.path}`, Buffer.from("%PDF-changed"));
@@ -168,7 +200,7 @@ describe("immutable weekly publications", () => {
     expect((await loadWeeklyPublications(f.root)).issues).toEqual([]);
   });
   it.each([
-    { schemaVersion: 2 }, { week: "2026-10-06" }, { extra: true },
+    { schemaVersion: 3 }, { week: "2026-10-06" }, { extra: true },
   ])("rejects an unknown version, non-Monday, or extra header key %j", async override => {
     const f = await fixture();
     expect(() => parseWeeklyPublication({ ...f.publication, ...override })).toThrow();

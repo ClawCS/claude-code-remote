@@ -9,8 +9,9 @@ import { parseFlyerPackages, verifyFlyerFiles } from "./flyer-packages";
 import { validateCatalog } from "./handzettel-catalog";
 import { getAcceptedNlOfferRanges, getOfficialOfferRange } from "./offer-validity";
 import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
-import type { LoadedWeeklyPublications, LocalAsset, PublishedOffer, VerifiedWeeklyEdition, WeeklyEdition, WeeklyPublication, WeeklyPublicationIssue } from "./weekly-publication-types";
+import type { LoadedWeeklyPublications, LocalAsset, ParsedWeeklyEdition, ParsedWeeklyPublication, PublishedOffer, VerifiedWeeklyEdition, WeeklyEdition, WeeklyPublicationIssue } from "./weekly-publication-types";
 import { assertWeeklyPublicationIdle } from "./weekly-publication-idle";
+import { assertPublicationPolicy, isPublicationTimestamp, type PublicationIdentity } from "./flyer-source-policy";
 
 const MAX_BYTES = 50 * 1024 * 1024;
 const HASH = /^[a-f0-9]{64}$/;
@@ -57,10 +58,13 @@ function asset(value: unknown, pattern: RegExp): LocalAsset {
   return item as unknown as LocalAsset;
 }
 
-export function parseWeeklyEdition(value: unknown, week: string): WeeklyEdition {
+export function parseWeeklyEdition(value: unknown, week: string, schemaVersion?: 1 | 2): ParsedWeeklyEdition {
   const range = weekRange(week);
   const item = record(value, "edition");
-  keys(item, ["id", "language", "title", "validFrom", "validTo", "source", "pdf", "cover", "pageCount", "review", "offerIds", "offersSha256"], "edition");
+  const explicit = Object.prototype.propertyIsEnumerable.call(item, "identity");
+  if (schemaVersion === 2 && !explicit) throw new TypeError("Missing explicit publication identity");
+  if (schemaVersion === 1 && explicit) throw new TypeError("Unexpected schema-1 publication identity");
+  keys(item, ["id", "language", "title", "validFrom", "validTo", "source", "pdf", "cover", "pageCount", "review", "offerIds", "offersSha256", ...(explicit ? ["identity"] : [])], "edition");
   text(item.id, "edition ID"); text(item.title, "title");
   if (!ID.test(item.id) || !["de", "nl"].includes(item.language as string)) throw new TypeError("Invalid edition identity");
   const source = record(item.source, "source");
@@ -75,12 +79,24 @@ export function parseWeeklyEdition(value: unknown, week: string): WeeklyEdition 
     keys(source, ["kind", "flyerId"], "NL source");
     if (typeof source.flyerId !== "string" || !ID.test(source.flyerId)) throw new TypeError("Invalid flyer reference");
     accepted = getAcceptedNlOfferRanges(range);
+  } else if (item.language === "nl" && source.kind === "agency") {
+    keys(source, ["kind", "originalId", "medium"], "agency source");
+    if (typeof source.originalId !== "string" || !ID.test(source.originalId)
+      || !["de-maas-driehoek", "udens-weekblad"].includes(source.medium as string)) throw new TypeError("Invalid agency source");
+    accepted = getAcceptedNlOfferRanges(range);
   } else throw new TypeError("Missing original source");
+  const identity = explicit ? record(item.identity, "publication identity") as unknown as PublicationIdentity
+    : { purpose: "weekly" as const, language: item.language as "de" | "nl", medium: source.kind === "trinkgut-official" ? "trinkgut" as const : source.kind === "agency" ? source.medium as "de-maas-driehoek" | "udens-weekblad" : "legacy-canva" as const };
+  if (identity.language !== item.language || identity.purpose !== "weekly") throw new TypeError("Mismatching weekly publication identity");
+  assertPublicationPolicy(identity, source as unknown as WeeklyEdition["source"], item.validFrom as string, item.validTo as string, week);
   if (!accepted.some(candidate => candidate.validFrom === item.validFrom && candidate.validTo === item.validTo)) throw new TypeError("Invalid printed validity range");
   asset(item.pdf, PDF_PATH); asset(item.cover, COVER_PATH);
   if (!positive(item.pageCount, 60) || (item.language === "nl" && item.pageCount !== 1)) throw new TypeError("Invalid page count");
   const review = record(item.review, "review");
-  keys(review, ["reviewedAt", "printedValidFrom", "printedValidTo", "pageOfferCounts"], "review");
+  const requiresApproval = schemaVersion === 2 || source.kind === "agency" || review.approvedAt !== undefined;
+  keys(review, ["reviewedAt", "printedValidFrom", "printedValidTo", "pageOfferCounts", ...(requiresApproval ? ["approvedAt"] : [])], "review");
+  if (requiresApproval && (!isPublicationTimestamp(review.reviewedAt) || !isPublicationTimestamp(review.approvedAt)
+    || Date.parse(review.approvedAt) < Date.parse(review.reviewedAt))) throw new TypeError("Invalid publication approval");
   if (!timestamp(review.reviewedAt) || review.printedValidFrom !== item.validFrom || review.printedValidTo !== item.validTo) throw new TypeError("Invalid review validity");
   if (!Array.isArray(review.pageOfferCounts) || review.pageOfferCounts.length !== item.pageCount
     || review.pageOfferCounts.some(count => !Number.isSafeInteger(count) || count < 0 || count > 1000)) throw new TypeError("Invalid page offer census");
@@ -88,22 +104,24 @@ export function parseWeeklyEdition(value: unknown, week: string): WeeklyEdition 
     || new Set(item.offerIds).size !== item.offerIds.length
     || review.pageOfferCounts.reduce((sum: number, count: number) => sum + count, 0) !== item.offerIds.length) throw new TypeError("Invalid offer census");
   if (typeof item.offersSha256 !== "string" || !HASH.test(item.offersSha256)) throw new TypeError("Invalid offer checksum");
-  return item as unknown as WeeklyEdition;
+  // Schema-1 normalization is internal only: legacy assembly serializes parsed rows.
+  // A non-enumerable identity preserves that existing on-disk representation and hash.
+  return Object.defineProperty({ ...item }, "identity", { value: identity, enumerable: explicit }) as unknown as ParsedWeeklyEdition;
 }
 
 function header(value: unknown, expectedWeek?: string) {
   const item = record(value, "weekly publication");
   keys(item, ["schemaVersion", "week", "editions"], "weekly publication");
   weekRange(item.week);
-  if (item.schemaVersion !== 1 || (expectedWeek && item.week !== expectedWeek) || !Array.isArray(item.editions)) throw new TypeError("Invalid weekly publication header");
-  return item as { schemaVersion: 1; week: string; editions: unknown[] };
+  if (![1, 2].includes(item.schemaVersion as number) || (expectedWeek && item.week !== expectedWeek) || !Array.isArray(item.editions)) throw new TypeError("Invalid weekly publication header");
+  return item as { schemaVersion: 1 | 2; week: string; editions: unknown[] };
 }
-export function parseWeeklyPublication(value: unknown): WeeklyPublication {
+export function parseWeeklyPublication(value: unknown): ParsedWeeklyPublication {
   const item = header(value);
-  const editions = item.editions.map(edition => parseWeeklyEdition(edition, item.week));
+  const editions = item.editions.map(edition => parseWeeklyEdition(edition, item.week, item.schemaVersion));
   if (new Set(editions.map(edition => edition.id)).size !== editions.length
     || new Set(editions.map(edition => edition.language)).size !== editions.length) throw new TypeError("Duplicate weekly edition");
-  return { schemaVersion: 1, week: item.week, editions };
+  return { schemaVersion: item.schemaVersion, week: item.week, editions };
 }
 
 const sha256 = (bytes: string | Uint8Array) => createHash("sha256").update(bytes).digest("hex");
@@ -162,7 +180,7 @@ export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string):
     const entries = await json(root, "data/editorial/flyers.json");
     if (!Array.isArray(entries)) throw new TypeError("Invalid flyer provenance");
     // Only parse the referenced provenance; an unrelated historical flyer cannot disable this edition.
-    const id = edition.source.flyerId;
+    const id = edition.source.kind === "agency" ? edition.source.originalId : edition.source.flyerId;
     const candidates = entries.filter(value => value && typeof value === "object" && value.id === id);
     if (candidates.length !== 1) throw new Error("Missing or duplicate NL original");
     const [flyer] = parseFlyerPackages(candidates);
@@ -170,7 +188,7 @@ export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string):
       || flyer.pdfPath !== edition.pdf.path || flyer.pdfSha256 !== edition.pdf.sha256
       || flyer.coverPath !== edition.cover.path || flyer.coverSha256 !== edition.cover.sha256) throw new Error("NL original binding mismatch");
     await verifyFlyerFiles(flyer, root);
-    originUrl = flyer.sourceUrl;
+    originUrl = flyer.sourceUrl ?? flyer.pdfPath;
     flyerId = flyer.id;
   }
   const layout = record(await json(root, "data/weekly-offer-layout.json"), "offer layout");
@@ -252,7 +270,7 @@ async function load(root: string): Promise<LoadedWeeklyPublications> {
       const value = raw && typeof raw === "object" ? raw as Record<string, unknown> : {};
       const language = value.language === "de" || value.language === "nl" ? value.language : undefined;
       try {
-        candidates.push(parseWeeklyEdition(raw, item.week));
+        candidates.push(parseWeeklyEdition(raw, item.week, item.schemaVersion));
       } catch { issues.push({ week, ...(language ? { language } : {}), code: "edition-invalid" }); }
     }
     // Malformed metadata cannot lend its raw identity to invalidate a valid sibling.
