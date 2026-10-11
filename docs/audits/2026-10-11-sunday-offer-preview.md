@@ -29,7 +29,22 @@ Die unveränderte Rückrollfunktion wurde in einem eigenen temporären Serverver
 
 Desktop-/Mobilabnahme des korrigierten lokalen Produktionsbuilds auf 390 und 1440 Pixeln bestanden: 82 Karten und 82 Vorschauhinweise, Filter DE 70/NL 12/alle 82, sechs Warengruppen (Bier 23, Sekt 2, alkoholfrei 26, Wein 9, Spirituosen 18, Lebensmittel 4), keine horizontalen Überläufe, keine Browserfehler, keine Befunde für die geprüften Axe-Regeln Kontrast/Alt-Texte/Link- und Buttonnamen. Angebotsbild dekodiert, beide Ansichten visuell geprüft. Lokale Haupt-Devroute ebenfalls mit 82 Karten/82 Hinweisen bestätigt und nicht gestoppt.
 
-Noch ausstehend zum Zeitpunkt dieses Vorbereitungscommits: frischer Linux-Release und tatsächliche öffentliche HTTPS-Prüfung. Ein lokaler Test oder Git-Push ist kein Veröffentlichungsnachweis. Dieser Abschnitt wird nach der öffentlichen Abnahme mit Commit und Zeit ergänzt.
+**Live:** App-Release `6314600b83915127bb0d570e3f1a5a3d1455ccd0`, erfolgreiche Bereitschaftsprüfung am 11.10.2026 um **20:06:04 UTC / 22:06:04 Europe/Berlin**. Vorheriger unveränderter Release `fbb4d0c80169ac9ad15a686ad0b5a8123c1752ce` ist das Rückrollziel. Archiv SHA-256 `9c2971ef8c2f02280c0ab6fb849c3663dc2d823313d86cf039cad96e5054919d` vor Extraktion geprüft; frischer Linux-Build des exakten gepushten Commits, kein Edit im laufenden Release.
+
+Linux-Webteilprüfung auf Node 22.23.3: **2.191 Tests in 114 Dateien**, Lint, Routentypen, TypeScript, 210 Originalangebote und Produktionsbuild erfolgreich. Die drei explizit im Runbook ausgeschlossenen Chromium-Testdateien sind im vollständigen lokalen Weblauf enthalten; keine zusätzlichen Ausschlüsse. Neun Sicherheitskonfigurationshashes vor/nach unverändert. Nach dem kurzen Neustart zunächst erwartbar noch keine Verbindung; die begrenzte Bereitschaftswiederholung bestand, kein Rückrollen erforderlich. Miete und Bewerbung weiterhin deaktiviert.
+
+### Tatsächliche öffentliche Prüfung
+
+- Normale Inhaltsprüfung auf `https://trinkgut-jammers.de`: `status:ok`, keine Fehler/Warnungen, `websiteVerified:true`, `deploymentVerified:true`, abgeschlossen 20:06:30 UTC.
+- Feste Zielwoche 12.10.2026: dasselbe Ergebnis um 20:06:39 UTC; echte Sonntagszeit, kein `--now` und keine Produktions-Testuhr.
+- Öffentliche APIs, Flyerflächen, vollständige Originale/Cover/Kacheln mit tatsächlichem GET und Typ-/Byte-/Hashabgleich bestanden. 82 Angebote (70 DE, 12 NL); Druckgültigkeit 12.–17.10. unverändert.
+- Unabhängiger HTTP-Lauf: **289 Seiten, 2.618 lokale Ressourcen, 31 API-Verträge**, fünf erwartete unbekannte 404-Seiten, null Fehler/Warnungen. 2.150 externe Links nicht flächendeckend abgerufen.
+- Aktuelle Gewinnspielcover: 18 Original-/Varianten-GETs, null Befunde.
+- Öffentlicher Chromium-Browser, 390/1440 Pixel: 82 Karten/82 Vorschauhinweise, Sprachfilter 70/12, alle sechs Warengruppen wie oben, keine Überläufe/Browserfehler; geprüfte Axe-Regeln ohne Befund. Beide Screenshots visuell geprüft.
+- Weitere neun öffentliche Browserfälle: Film-/Reduced-motion-/Save-data-Verhalten, gleichwertige vollständige DE/NL-Covers und sechs Eigenmarkenposter bestanden. Zusätzlich mobile/desktop Filmquelle sowie Abspielen/Pausieren auf 390/1440 Pixel erfolgreich geprüft.
+- Nur die beiden eigenen Testserver beendet; vorhandenen Entwicklungsport 3000 bewahrt. Nur das eigene temporäre Uploadarchiv nach öffentlicher Abnahme entfernt, keine alten Releases gelöscht. Danach 1.960.443.904 Bytes frei. Vor einem weiteren Release freien Platz erneut prüfen und gegebenenfalls spezifische Bereinigungsfreigabe einholen.
+
+`npm ci` meldet weiterhin fünf hohe Paketeinträge derselben bekannten Entwicklungsabhängigkeitskette `eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces` (S-01 im Projektaudit, eine DoS-Warnung). Frischer unabhängiger Produktions-Abhängigkeitsaudit mit `--omit=dev`: null gemeldete Advisories. Keine Abhängigkeitsänderung und keine allgemeine Sicherheitsgarantie daraus ableiten.
 
 ## Grenzen
 
