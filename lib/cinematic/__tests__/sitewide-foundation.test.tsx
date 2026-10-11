@@ -18,13 +18,14 @@ describe("shared editorial foundation", () => {
   test("acceptance matrix covers each customer template and only real catalog examples", () => {
     const templates = readdirSync("app", { recursive: true }).filter((file): file is string => typeof file === "string" && /(^|\/)page\.tsx$/.test(file))
       .map(file => `/${file.replace(/(^|\/)page\.tsx$/, "")}`);
-    expect(SITEWIDE_DESIGN_CASES).toHaveLength(37);
+    expect(SITEWIDE_DESIGN_CASES).toHaveLength(38);
     expect([...SITEWIDE_DESIGN_CASES, ...SITEWIDE_DESIGN_EXCLUSIONS].map(item => item.template).sort()).toEqual(templates.sort());
     const validExamples = [
       ...categories.map(category => `/kategorie/${category.slug}`),
       ...cocktailCatalog.categories.map(category => category.href),
       ...cocktailCatalog.recipes.map(recipe => recipe.href),
       ...courses.map(course => `/akademie/${course.slug}`),
+      ...courses.flatMap(course => course.lessons.slice(1).map((_, index) => `/akademie/${course.slug}/lektion/${index + 2}`)),
     ];
     for (const item of SITEWIDE_DESIGN_CASES.filter(item => item.template.includes("[slug]"))) expect(validExamples).toContain(item.path);
     expect(SITEWIDE_DESIGN_CASES.find(item => item.template === "/mietbestellung/[id]")?.path).toBe("/mietbestellung/design-missing-token");

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { courses } from "@/data/akademie";
 import { categories } from "@/lib/utils";
 import { cocktailCatalog } from "@/lib/cocktail-routes";
+import { lessonHref } from "@/lib/academy-routes";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://trinkgut-jammers.de";
@@ -35,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const detailRoutes = [
     ...categories.map(category => ({ path: `/kategorie/${category.slug}`, priority: 0.8, changeFrequency: "monthly" as const })),
-    ...courses.map(course => ({ path: `/akademie/${course.slug}`, priority: 0.6, changeFrequency: "monthly" as const })),
+    ...courses.flatMap(course => course.lessons.map((_, index) => ({ path: lessonHref(course.slug, index), priority: 0.6, changeFrequency: "monthly" as const }))),
     ...cocktailCatalog.recipes.map(recipe => ({ path: recipe.href, priority: 0.7, changeFrequency: "monthly" as const })),
     ...cocktailCatalog.categories.map(category => ({ path: category.href, priority: 0.7, changeFrequency: "monthly" as const })),
   ];

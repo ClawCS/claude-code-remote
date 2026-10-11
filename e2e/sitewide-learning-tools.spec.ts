@@ -30,11 +30,15 @@ for (const width of [390, 768, 1440]) {
     await ready(page, `/akademie/${course.slug}`);
     const answer = async (correct: number, right: boolean) => {
       const answers = page.getByRole("region", { name: "Wissensquiz" }).getByRole("button").filter({ hasText: /^[A-Z]\./ });
+      await expect(answers.first()).toBeVisible();
       await answers.nth(right ? correct : (correct + 1) % await answers.count()).click();
     };
     await expect(page.getByRole("button", { name: /Abschlusstest/ }).first()).toBeDisabled();
     for (const [index, lesson] of course.lessons.entries()) {
-      if (index) await page.getByRole("button", { name: "Nächste Lektion", exact: true }).click();
+      if (index) {
+        await page.getByRole("link", { name: "Nächste Lektion", exact: true }).click();
+        await expect(page).toHaveURL(new RegExp(`/lektion/${index + 1}$`));
+      }
       for (const [qIndex, question] of lesson.quiz.entries()) {
         await answer(question.correct, false);
         if (!index && !qIndex) await capture(page, `academy-quiz-feedback-${width}`);
@@ -43,6 +47,16 @@ for (const width of [390, 768, 1440]) {
     }
     await capture(page, `academy-unlocked-${width}`);
     await page.getByRole("button", { name: "Zum Abschlusstest", exact: true }).click();
+    if (width === 390) {
+      await page.goBack();
+      await expect(page).toHaveURL(/\/lektion\/19$/);
+      await expect(page.locator("#course-lesson h2")).toHaveText(course.lessons[18].title);
+      await expect(page.locator('[data-learning="exam"]')).toHaveCount(0);
+      await page.goForward();
+      await expect(page).toHaveURL(/\/lektion\/20$/);
+      await expect(page.getByText("20 Quiz abgeschlossen", { exact: false })).toBeVisible();
+      await page.getByRole("button", { name: "Zum Abschlusstest", exact: true }).click();
+    }
     await capture(page, `academy-final-${width}`);
     for (const [index, question] of course.finalExam.entries()) {
       await answer(question.correct, index < 6);
@@ -60,6 +74,20 @@ for (const width of [390, 768, 1440]) {
     }
     await expect(page.getByText("7 von 10 richtig (70%)")).toBeVisible();
     await capture(page, `academy-passed-${width}`);
+    if (width === 390) {
+      await page.goBack();
+      await expect(page).toHaveURL(/\/lektion\/20$/);
+      await expect(page.locator("#course-lesson h2")).toHaveText(course.lessons[19].title);
+      await expect(page.locator('[data-learning="result"]')).toHaveCount(0);
+      await expect(page.getByText("20 Quiz abgeschlossen", { exact: false })).toBeVisible();
+      await page.goForward();
+      await expect(page).toHaveURL(/\/akademie\/mineralwasser$/);
+      await expect(page.getByText("Quiz abgeschlossen — 0/3 richtig", { exact: true })).toBeVisible();
+      await page.getByRole("link", { name: "Akademie", exact: true }).click();
+      await page.locator('a[href="/akademie/bier"]').first().click();
+      await expect(page).toHaveURL(/\/akademie\/bier$/);
+      await expect(page.getByText("0 Quiz abgeschlossen", { exact: false })).toBeVisible();
+    }
   });
 
   test(`learning and tool families at ${width}px`, async ({ page }) => {
@@ -88,7 +116,7 @@ for (const width of [390, 768, 1440]) {
         const lesson = page.locator("#course-lesson");
         expect(await lesson.evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThanOrEqual(100);
         const course = courses.find(course => course.slug === "whiskey")!;
-        await page.getByRole("navigation", { name: "Kurslektionen" }).getByRole("button", { name: new RegExp(course.lessons.at(-1)!.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }).click();
+        await page.getByRole("navigation", { name: "Kurslektionen" }).getByRole("link", { name: new RegExp(course.lessons.at(-1)!.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }).click();
         await expect(lesson.getByRole("heading", { level: 2 })).toHaveText(course.lessons.at(-1)!.title);
       }
     }

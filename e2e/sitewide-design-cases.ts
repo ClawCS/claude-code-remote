@@ -1,4 +1,4 @@
-/** All 37 rendered customer templates. Examples come from the current catalog.
+/** All 38 rendered customer templates. Examples come from the current catalog.
  * Rental order is deliberately a missing-token error state, never a real order. */
 export const SITEWIDE_DESIGN_CASES = [
   { family: "entry", template: "/", path: "/" },
@@ -15,6 +15,7 @@ export const SITEWIDE_DESIGN_CASES = [
   { family: "recipes", template: "/cocktails/[slug]", path: "/cocktails/mojito" },
   { family: "academy", template: "/akademie", path: "/akademie" },
   { family: "academy", template: "/akademie/[slug]", path: "/akademie/bier" },
+  { family: "academy", template: "/akademie/[slug]/lektion/[lesson]", path: "/akademie/bier/lektion/2" },
   { family: "academy", template: "/akademie/zertifikate", path: "/akademie/zertifikate" },
   { family: "people", template: "/marktleben", path: "/marktleben" },
   { family: "people", template: "/galerie", path: "/galerie" },

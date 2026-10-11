@@ -3,6 +3,13 @@ import sitemap from "@/app/sitemap";
 import { cocktailCatalog } from "@/lib/cocktail-routes";
 
 describe("public sitemap", () => {
+  it("includes 172 unique later-lesson destinations, excluding the lesson-one alias", () => {
+    const urls = sitemap().map(entry => entry.url);
+    expect(urls.filter(url => url.includes("/lektion/"))).toHaveLength(172);
+    expect(urls).toContain("https://trinkgut-jammers.de/akademie/mineralwasser/lektion/2");
+    expect(urls.some(url => url.endsWith("/lektion/1"))).toBe(false);
+    expect(new Set(urls).size).toBe(urls.length);
+  });
   it("includes all 65 recipe and six cocktail-category destinations once", () => {
     const urls = sitemap().map((entry) => entry.url);
     expect(urls.filter((url) => /\/cocktails\/(?!kategorie\/)/.test(url))).toHaveLength(65);

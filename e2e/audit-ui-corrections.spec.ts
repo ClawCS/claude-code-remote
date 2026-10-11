@@ -10,6 +10,7 @@ async function share(page: Page, key: string, value: number) {
 }
 async function answer(page: Page, correct: number, right = false) {
   const answers = page.locator("button").filter({ hasText: /^[A-Z]\./ });
+  await expect(answers.first()).toBeVisible();
   await answers.nth(right ? correct : (correct + 1) % await answers.count()).click();
 }
 
@@ -30,13 +31,15 @@ test("switching lessons resets selected answer, explanation, question and score"
   const course = courses[0];
   await page.goto(`/akademie/${course.slug}`);
   await answer(page, course.lessons[0].quiz[0].correct, true);
-  await page.getByRole("button", { name: "Nächste Lektion" }).click();
+  await page.getByRole("link", { name: "Nächste Lektion" }).click();
+  await expect(page).toHaveURL(/\/lektion\/2$/);
   await expect(page.getByRole("heading", { name: /Quiz — Frage 1 von/ })).toBeVisible();
   await expect(page.getByText("Richtig!", { exact: true })).toHaveCount(0);
   await expect(page.getByText("0/0 richtig", { exact: true })).toBeVisible();
   await answer(page, course.lessons[1].quiz[0].correct, true);
   await page.getByRole("button", { name: "Nächste Frage" }).click();
-  await page.getByRole("button", { name: "Vorherige" }).click();
+  await page.getByRole("link", { name: "Vorherige" }).click();
+  await expect(page).toHaveURL(new RegExp(`/akademie/${course.slug}$`));
   await expect(page.getByRole("heading", { name: /Quiz — Frage 1 von/ })).toBeVisible();
   await expect(page.getByText("0/0 richtig", { exact: true })).toBeVisible();
 });
@@ -87,7 +90,10 @@ test("final exam keeps the seventy-percent threshold and can be retried after fa
   const course = courses.find(course => course.slug === "mineralwasser")!;
   await page.goto(`/akademie/${course.slug}`);
   for (const [index, lesson] of course.lessons.entries()) {
-    if (index) await page.getByRole("button", { name: "Nächste Lektion" }).click();
+    if (index) {
+      await page.getByRole("link", { name: "Nächste Lektion" }).click();
+      await expect(page).toHaveURL(new RegExp(`/lektion/${index + 1}$`));
+    }
     for (const question of lesson.quiz) {
       await answer(page, question.correct);
       await page.getByRole("button", { name: /Nächste Frage|Ergebnis anzeigen/ }).click();

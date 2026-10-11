@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { buildPageMetadata } from "@/lib/search-metadata";
+import { notFound } from "next/navigation";
+import CourseShell from "@/components/academy/CourseShell";
 import { courses } from "@/data/akademie";
 
 // Nur existierende Kurs-Slugs sind gültig → sonst echtes 404
@@ -8,22 +8,14 @@ export function generateStaticParams() {
 }
 export const dynamicParams = false;
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export default async function Layout({ children, params }: { children: React.ReactNode; params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const course = courses.find((c) => c.slug === slug);
-  if (!course) {
-    return {
-      title: "Kurs nicht gefunden",
-      description: "Dieser Akademie-Kurs ist aktuell nicht verfügbar.",
-    };
-  }
-  return buildPageMetadata({
-    title: `${course.title} — ${course.lessons.length} Lektionen`,
-    description: course.description,
-    path: `/akademie/${course.slug}`,
-  });
-}
-
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  if (!course) notFound();
+  const navigation = {
+    slug: course.slug, title: course.title, description: course.description,
+    difficulty: course.difficulty, duration: course.duration, finalExam: course.finalExam,
+    lessons: course.lessons.map(({ title, quiz }) => ({ title, quiz })),
+  };
+  return <CourseShell key={course.slug} course={navigation}>{children}</CourseShell>;
 }

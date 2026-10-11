@@ -5,6 +5,7 @@ import CocktailRecipePage from "@/app/cocktails/[slug]/page";
 import CocktailCategoryPage from "@/app/cocktails/kategorie/[slug]/page";
 import AkademiePage from "@/app/akademie/page";
 import CoursePage from "@/app/akademie/[slug]/page";
+import CourseLayout from "@/app/akademie/[slug]/layout";
 import ZertifikatePage from "@/app/akademie/zertifikate/page";
 import FinderPage from "@/app/finder/page";
 import PartyplanerPage from "@/app/partyplaner/page";
@@ -19,7 +20,14 @@ import SearchBar from "@/components/SearchBar";
 const routeParams = vi.hoisted(() => ({ slug: "whiskey" }));
 vi.mock("next/navigation", async (original) => ({
   ...await original<typeof import("next/navigation")>(), useParams: () => routeParams,
+  usePathname: () => `/akademie/${routeParams.slug}`, useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({ push: () => {} }),
 }));
+
+async function renderCourse() {
+  const params = Promise.resolve({ slug: routeParams.slug });
+  return renderToStaticMarkup(await CourseLayout({ params, children: await CoursePage({ params }) }));
+}
 
 describe("learning and customer workspaces", () => {
   it("keeps the visible search label inside the accessible input name", () => {
@@ -35,7 +43,7 @@ describe("learning and customer workspaces", () => {
   });
   // A lost intro/heading or a page accidentally left on the legacy layout breaks these checks.
   it.each([
-    ["recipes", CocktailsPage], ["academy", AkademiePage], ["lesson", CoursePage],
+    ["recipes", CocktailsPage], ["academy", AkademiePage],
     ["certificates", ZertifikatePage], ["finder", FinderPage], ["planner", PartyplanerPage],
     ["games", PartyspielePage], ["deposit", LeergutPage], ["eco", OekoPage],
     ["community", CommunityPage], ["fridge", KuehlschrankPage],
@@ -59,25 +67,29 @@ describe("learning and customer workspaces", () => {
     expect(category).toContain('aria-current="page"');
   });
 
-  it("names course navigation and exposes full lesson names and the locked exam", () => {
-    const html = renderToStaticMarkup(<CoursePage />);
+  it("names course navigation and exposes full lesson names and the locked exam", async () => {
+    const html = await renderCourse();
+    expect(html.match(/<h1\b/g)).toHaveLength(1);
+    expect(html).toMatch(/<header[^>]*class="[^"]*intro/);
+    expect(html).toContain('data-learning="course"');
+    expect(html).not.toContain("page-hero-banner");
     expect(html).toContain('aria-label="Kurslektionen"');
     expect(html).toContain('aria-current="step"');
     expect(html).toContain("Erst alle Quiz abschließen");
     expect(html).not.toContain('class="truncate"');
   });
 
-  it("turns lesson section markers into readable semantic subheadings", () => {
-    const html = renderToStaticMarkup(<CoursePage />);
+  it("turns lesson section markers into readable semantic subheadings", async () => {
+    const html = await renderCourse();
     expect(html).toContain("<h3>Whisky — Eine Spirituose mit klaren Regeln</h3>");
     expect(html).not.toContain("## Whisky —");
     expect(html).toContain('href="#course-lesson"');
   });
 
-  it("preserves the deeper section hierarchy in mineral-water lessons", () => {
+  it("preserves the deeper section hierarchy in mineral-water lessons", async () => {
     routeParams.slug = "mineralwasser";
     try {
-      const html = renderToStaticMarkup(<CoursePage />);
+      const html = await renderCourse();
       expect(html).toContain("<h3>Was ist natürliches Mineralwasser?</h3>");
       expect(html).toContain("<h4>Die amtliche Anerkennung</h4>");
       expect(html).not.toContain("### Die amtliche");

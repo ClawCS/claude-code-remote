@@ -31,12 +31,12 @@
 .progress { padding: 1.5rem; border-block: 1px solid var(--cinematic-color-line); background: var(--cinematic-color-assortment-cream); }
 .progress p { color: var(--cinematic-color-muted); margin-block: 1rem; line-height: 1.6; }
 .progressSteps { display: flex; flex-wrap: wrap; gap: .5rem; }
-.progressSteps button { min-width: 44px; min-height: 44px; border: 1px solid var(--cinematic-color-line); background: white; }
-.progressSteps button[aria-current] { background: var(--cinematic-color-ink); color: white; }
+.progressSteps :is(button, a) { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border: 1px solid var(--cinematic-color-line); background: white; }
+.progressSteps :is(button, a)[aria-current] { background: var(--cinematic-color-ink); color: white; }
 .course { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 3rem; align-items: start; }
 .navigation { display: grid; gap: .35rem; }
-.navigation button { width: 100%; min-height: 48px; text-align: left; padding: .85rem 1rem; border-left: 2px solid transparent; line-height: 1.5; }
-.navigation button[aria-current] { border-color: var(--cinematic-color-red); background: var(--cinematic-color-assortment-cream); color: var(--cinematic-color-ink); font-weight: 600; }
+.navigation :is(button, a) { width: 100%; min-height: 48px; text-align: left; padding: .85rem 1rem; border-left: 2px solid transparent; line-height: 1.5; }
+.navigation :is(button, a)[aria-current] { border-color: var(--cinematic-color-red); background: var(--cinematic-color-assortment-cream); color: var(--cinematic-color-ink); font-weight: 600; }
 .navigation button:disabled { color: var(--cinematic-color-muted); cursor: not-allowed; }
 .examButton { border-top: 1px solid var(--cinematic-color-line); }
 .lesson { background: white; padding: clamp(1.25rem, 4vw, 2.5rem); border: 1px solid var(--cinematic-color-line); scroll-margin-top: 8rem; }

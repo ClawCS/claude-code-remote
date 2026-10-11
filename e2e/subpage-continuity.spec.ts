@@ -219,7 +219,7 @@ for (const width of [360, 390, 768, 1440]) {
     for (const answer of await quiz.locator("button[data-state]").all()) await expect(answer).toBeDisabled();
     await familyCapture(page, `academy-feedback-${width}`, lesson);
     const longLesson = courses.find(course => course.slug === "mineralwasser")!.lessons.at(-1)!;
-    await page.getByRole("navigation", { name: "Kurslektionen" }).getByRole("button", { name: new RegExp(longLesson.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }).click();
+    await page.getByRole("navigation", { name: "Kurslektionen" }).getByRole("link", { name: new RegExp(longLesson.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }).click();
     await expect(lesson.locator("h2")).toHaveText(longLesson.title);
     expect((await lesson.locator("h2").boundingBox())!.width).toBeLessThanOrEqual((await lesson.boundingBox())!.width);
     await familyCapture(page, `academy-long-lesson-${width}`, lesson);

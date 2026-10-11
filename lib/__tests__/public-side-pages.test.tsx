@@ -9,12 +9,20 @@ import LeergutPage from "@/app/leergut/page";
 import PartyspielePage from "@/app/partyspiele/page";
 import AkademiePage from "@/app/akademie/page";
 import CoursePage from "@/app/akademie/[slug]/page";
+import CourseLayout from "@/app/akademie/[slug]/layout";
 import FinderPage from "@/app/finder/page";
 
 vi.mock("next/navigation", async (importOriginal) => ({
   ...await importOriginal<typeof import("next/navigation")>(),
   useParams: () => ({ slug: "likoere" }),
+  usePathname: () => "/akademie/likoere", useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({ push: () => {} }),
 }));
+
+async function CoursePresentation() {
+  const params = Promise.resolve({ slug: "likoere" });
+  return CourseLayout({ params, children: await CoursePage({ params }) });
+}
 
 describe("public side-page presentation", () => {
   it.each([
@@ -24,10 +32,11 @@ describe("public side-page presentation", () => {
     ["Leergut", LeergutPage],
     ["Partyspiele", PartyspielePage],
     ["Akademie", AkademiePage],
-    ["Kurs", CoursePage],
+    ["Kurs", CoursePresentation],
     ["Finder", FinderPage],
-  ])("renders %s without the old animated particles or giant emoji illustrations", (_name, Page) => {
-    const html = renderToStaticMarkup(<CartProvider><Page /></CartProvider>);
+  ])("renders %s without the old animated particles or giant emoji illustrations", async (_name, Page) => {
+    const content = Page === CoursePresentation ? await CoursePresentation() : <Page />;
+    const html = renderToStaticMarkup(<CartProvider>{content}</CartProvider>);
     expect(html).not.toContain("particleFloat");
     expect(html).not.toMatch(/\bKI\b/);
     const largeText = [...html.matchAll(/<(?:span|p|div)\b[^>]*class="[^"]*text-(?:[3-9]xl|\[\d+px\])[^"]*"[^>]*>([^<]*)<\//g)];
