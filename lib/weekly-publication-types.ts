@@ -24,7 +24,9 @@ export type WeeklyEdition = Readonly<{
   offersSha256: string;
 }>;
 export type WeeklyPublication = Readonly<{ schemaVersion: 1 | 2; week: string; editions: readonly WeeklyEdition[] }>;
-export type ParsedWeeklyEdition = WeeklyEdition & Readonly<{ identity: PublicationIdentity }>;
+export type PublicationEdition = WeeklyEdition & Readonly<{ identity: PublicationIdentity }>;
+export type ParsedWeeklyEdition = PublicationEdition;
+export type VerifiedPublicationEdition = Readonly<{ edition: PublicationEdition; offers: readonly PublishedOffer[] }>;
 export type ParsedWeeklyPublication = Omit<WeeklyPublication, "editions"> & Readonly<{ editions: readonly ParsedWeeklyEdition[] }>;
 export type VerifiedWeeklyEdition = Readonly<{ edition: WeeklyEdition; offers: readonly PublishedOffer[] }>;
 export type WeeklyPublicationIssue = Readonly<{ week: string | null; language?: "de" | "nl"; code: string }>;

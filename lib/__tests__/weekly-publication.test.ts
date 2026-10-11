@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { PDFDocument } from "pdf-lib";
 import { loadWeeklyPublications, parseWeeklyEdition, parseWeeklyPublication, selectPublishedEditions, verifyWeeklyEdition } from "@/lib/weekly-publication";
 import { sha256, weeklyPublicationFixture } from "./fixtures/weekly-publication";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
 
 const roots: string[] = [];
 async function fixture(...args: Parameters<typeof weeklyPublicationFixture>) {
@@ -14,6 +15,13 @@ async function fixture(...args: Parameters<typeof weeklyPublicationFixture>) {
 afterEach(async () => { vi.unstubAllEnvs(); await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
 
 describe("immutable weekly publications", () => {
+  it("verifies weekly offers by exact edition rather than rejecting an overlapping supplemental stream", async () => {
+    const f = await supplementalPublicationFixture("2026-10-05", "2026-10-18");
+    roots.push(f.root);
+    const loaded = await loadWeeklyPublications(f.root);
+    expect(loaded.issues).toEqual([]);
+    expect(loaded.editions.flatMap(row => row.offers).map(row => row.id)).toEqual(["de-2026-10-05-p1", "de-2026-10-05-p2", "nl-2026-10-05-p1"]);
+  });
   it("normalizes schema 1 identity without changing serialized historical data", async () => {
     const f = await fixture();
     const before = JSON.stringify(f.publication);
