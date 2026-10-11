@@ -5,10 +5,36 @@ import {createHash} from "node:crypto";
 import {readFileSync} from "node:fs";
 import { loadWeeklyPublications } from "@/lib/weekly-publication";
 import { selectWeeklyOfferContent } from "@/lib/weekly-offer-selection";
+import { rm } from "node:fs/promises";
+import { assembleWeeklyPublication } from "@/lib/official-publication-import";
+import { assembleSupplementalPublication } from "@/lib/supplemental-publication-import";
+import { loadSupplementalPublications, selectSupplementalEditions } from "@/lib/supplemental-publication";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
 
 const LOCAL_DE_PDF = "/handzettel/2026/de-2026-10-05-be4b243ec0ddb84bee38054f051702a670ea8871fc897584190aefd9b8b4642a.pdf";
 
 describe("current flyer-only assortment", () => {
+  it.each([false,true])("keeps same-date Maasduinen separate from main-week assortment selection (missing main NL: %s)",async missingNl=>{
+    // A same-date supplement must neither displace the agency weekly original
+    // nor satisfy the main selector's mandatory NL slot when that original is absent.
+    const f=await supplementalPublicationFixture("2026-10-12","2026-10-25","2026-10-12","2026-10-17");
+    try {
+      if(missingNl){f.sources.splice(1,1);f.offers.splice(2,1);await f.save();}
+      await assembleWeeklyPublication("2026-10-12",f.root);
+      await assembleSupplementalPublication("maasduinen-synthetic",f.root);
+      const now=new Date("2026-10-14T12:00:00Z");
+      const supplemental=selectSupplementalEditions(await loadSupplementalPublications(f.root),now);
+      expect(supplemental.map(({edition})=>edition.id)).toEqual(["maasduinen-synthetic"]);
+      expect(supplemental[0].offers.map(offer=>offer.id)).toEqual(["maasduinen-synthetic-p1"]);
+      const content=selectWeeklyOfferContent(await loadWeeklyPublications(f.root),now);
+      expect(content.flyers.map(flyer=>flyer.id)).toEqual(missingNl?["de-2026-10-12"]:["de-2026-10-12","nl-2026-10-12"]);
+      expect(content.issues).toEqual(missingNl?["nl-flyer-missing"]:[]);
+      expect(content.status).toBe(missingNl?"degraded":"ok");
+      const expectedIds=missingNl?["de-2026-10-12-p1","de-2026-10-12-p2"]:["de-2026-10-12-p1","de-2026-10-12-p2","nl-2026-10-12-p1"];
+      expect(content.offers.map(offer=>offer.id)).toEqual(expectedIds);
+      expect(select(f.offers,content.flyers,now,"alkoholfrei").map(offer=>offer.id)).toEqual(expectedIds);
+    } finally {await rm(f.root,{recursive:true,force:true});}
+  });
   it("publishes the complete reviewed KW41 through verified local originals", async () => {
     const loaded = await loadWeeklyPublications();
     expect(loaded.issues).toEqual([]);
