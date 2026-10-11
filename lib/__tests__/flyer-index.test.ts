@@ -58,6 +58,8 @@ describe("shared verified flyer selection",()=>{
     boundary.load.mockResolvedValue(await loaded());
     const sunday=await getFlyerIndex(new Date("2026-10-04T12:00:00Z"));
     expect(sunday.flyers).toEqual([]);expect(sunday.scheduled.map(x=>x.id)).toEqual(["de-2026-10-05","nl-2026-10-05"]);
+    const preview=await getFlyerIndex(new Date("2026-10-04T14:00:00Z"));
+    expect(preview.flyers.map(x=>x.id)).toEqual(["de-2026-10-05","nl-2026-10-05"]);expect(preview.scheduled).toEqual([]);
     const monday=await getFlyerIndex(new Date("2026-10-04T22:00:00Z"));
     expect(monday.flyers.map(x=>x.id)).toEqual(["de-2026-10-05","nl-2026-10-05"]);expect(monday.scheduled).toEqual([]);
   });

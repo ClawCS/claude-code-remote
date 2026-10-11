@@ -60,7 +60,7 @@ export default function CurrentSection({
             <h3>{view.flyer.title}</h3>
             <p>{formatPageCount(view.flyer.pageCount)}</p>
             </div>
-            <FlyerViewer flyer={view.flyer} />
+            <FlyerViewer flyer={view.flyer} asOf={content.generatedAt} />
           </article>
         ) : (
           <div className={styles.fallback} data-current-fallback>
@@ -80,7 +80,7 @@ export default function CurrentSection({
             <h3>{view.nlFlyer.title}</h3>
             <p>1 pagina</p>
             </div>
-            <FlyerViewer flyer={view.nlFlyer} locale="nl" />
+            <FlyerViewer flyer={view.nlFlyer} locale="nl" asOf={content.generatedAt} />
           </article>
         ) : null}
         </div>

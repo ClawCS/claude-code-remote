@@ -21,7 +21,7 @@ export default function NlCurrentSection({ index }: { index: FlyerIndex }) {
           <h3 lang={flyer.language}>{flyer.title}</h3>
           <p>{flyer.pageCount} {flyer.pageCount === 1 ? "pagina" : "pagina’s"}</p>
         </div>
-        <FlyerViewer flyer={flyer} locale="nl" />
+        <FlyerViewer flyer={flyer} locale="nl" asOf={index.generatedAt} />
       </article>)}
     </div> : <div className={styles.fallback}><p>De volgende geldige folder wordt voorbereid. Verlopen folders worden niet als actuele aanbiedingen getoond.</p></div>}
     {index.issues.includes("nl-flyer-missing") && <p role="status" className={styles.notice}>De Nederlandse weekfolder is nog niet beschikbaar.</p>}

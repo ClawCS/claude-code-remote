@@ -6,7 +6,7 @@ import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "../
 import { fetchOfficialCatalog, validateCatalog } from "../lib/handzettel-catalog";
 import { loadFlyerPackages, selectWeeklyNlFlyer, verifyFlyerFiles } from "../lib/flyer-packages";
 import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, verifyPublishedOfferContent, verifyPublishedOfferMarkup, verifyLegacyPublishedFlyer, type PublishedFlyer } from "../lib/content-verification";
-import { loadWeeklyPublications, selectPublishedEditions } from "../lib/weekly-publication";
+import { loadWeeklyPublications, selectVisibleWeeklyEditions } from "../lib/weekly-publication";
 import { selectWeeklyOfferContent } from "../lib/weekly-offer-selection";
 import { loadSupplementalPublications, selectSupplementalEditions } from "../lib/supplemental-publication";
 import { getOfferDemandRange } from "../lib/offer-validity";
@@ -15,7 +15,7 @@ import { buildWeeklyOffers } from "./build-weekly-offers";
 import type { WeeklyPublication, WeeklyOfferContent, VerifiedWeeklyEdition } from "../lib/weekly-publication-types";
 
 const {prepare,now,week:explicitWeek,url:overrideUrl} = parseContentArguments(process.argv.slice(2));
-const range = explicitWeek ? getCurrentWeekRange(new Date(`${explicitWeek}T12:00:00Z`)) : prepare ? getPublicationWeekRange(now) : getCurrentWeekRange(now);
+const range = explicitWeek ? getCurrentWeekRange(new Date(`${explicitWeek}T12:00:00Z`)) : getPublicationWeekRange(now);
 const offersRequired = prepare || !!explicitWeek || berlinDateKey(now) <= getOfferDemandRange(range).validTo;
 if (explicitWeek && range.validFrom !== explicitWeek) throw new Error("--week muss ein gültiger Montag sein.");
 const root = process.cwd();
@@ -82,7 +82,7 @@ try {
     }
     const overlappingSupplements=supplements.editions.filter(({edition})=>edition.validFrom<=range.validTo&&edition.validTo>=range.validFrom);
     for (const issue of supplements.issues.filter(issue=>!issue.validFrom||!issue.validTo||(explicitWeek?issue.validFrom<=range.validTo&&issue.validTo>=range.validFrom:issue.validFrom<=berlinDateKey(now)&&issue.validTo>=berlinDateKey(now)))) errors.push(`Zusatzanzeige ungültig: ${issue.code}`);
-    checkedEditions=[...new Map([...selectPublishedEditions(loaded,now),...selectSupplementalEditions(supplements,now),...(explicitWeek?[...targetEditions,...overlappingSupplements]:[])].map(item=>[item.edition.id,item])).values()];
+    checkedEditions=[...new Map([...selectVisibleWeeklyEditions(loaded,now),...selectSupplementalEditions(supplements,now),...(explicitWeek?[...targetEditions,...overlappingSupplements]:[])].map(item=>[item.edition.id,item])).values()];
     for (const {edition} of checkedEditions) sources.push({source:edition.source.kind,id:edition.id,language:edition.language,validFrom:edition.validFrom,validTo:edition.validTo,result:"bound-and-verified",pdfSha256:edition.pdf.sha256});
   }
 
@@ -122,7 +122,7 @@ try {
       const page=await request(route);const html=await page.text();
       if (!page.headers.get("content-type")?.startsWith("text/html")) errors.push(`Wochenflyerseite liefert kein HTML: ${route}`);
       if (route==="/"&&!html.includes('id="aktuell"')) errors.push("Homepage oder Angebotsbereich nicht erreichbar.");
-      errors.push(...verifyPublishedFlyerMarkup(expectedFlyers,html,route,origin.origin));
+      errors.push(...verifyPublishedFlyerMarkup(expectedFlyers,html,route,origin.origin,now));
     }
     for (const route of ["/produkte",...new Set(expectedOffers.offers.map(offer=>`/kategorie/${offer.categorySlug}`))]) {
       const page=await request(route);const html=await page.text();

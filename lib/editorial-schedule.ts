@@ -85,10 +85,16 @@ export function getPublicationWeekRange(now = new Date()) {
   let { validFrom } = getCurrentWeekRange(now);
   const clock = berlinWeekdayAndTime(now);
   const minutes = Number(clock.hour) * 60 + Number(clock.minute);
-  if (clock.weekday === "Sun" && minutes >= 17 * 60) {
+  if (clock.weekday === "Sun" && minutes >= 16 * 60) {
     validFrom = addCalendarDays(validFrom, 7);
   }
   return { validFrom, validTo: addCalendarDays(validFrom, 5) } as const;
+}
+
+/** Visibility is not price validity. Only next Monday's weekly original gets a preview. */
+export function isWeeklyFlyerPreview(flyer: { validFrom: string; purpose?: string }, now: Date): boolean {
+  return flyer.purpose !== "supplemental" && flyer.validFrom > berlinDateKey(now)
+    && flyer.validFrom === getPublicationWeekRange(now).validFrom;
 }
 
 export function isEditorialPublishable(

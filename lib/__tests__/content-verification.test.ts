@@ -10,6 +10,16 @@ const flyer = {id:"catalog-1384969-v4",title:"Wochenangebote",language:"de" as c
 const nlFlyer = {id:"maasduinen-2026-09-28-v2",title:"Weekaanbiedingen",language:"nl" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"/flyers/2026-09-28/nl-v2.pdf",pdfUrl:"/flyers/2026-09-28/nl-v2.pdf",coverUrl:"/flyers/2026-09-28/nl-v2.jpg",pageCount:1,sourceUrl:"/nl"};
 
 describe("weekly publishing verification", () => {
+  it("requires a visible preview label on each future weekly original, not hidden or script-only text", () => {
+    const preview={...flyer,id:"de-preview",validFrom:"2026-10-12",validTo:"2026-10-17"};
+    const now=new Date("2026-10-11T14:00:00Z");
+    const original=`<a href="${preview.pdfUrl}">PDF</a><img src="${preview.coverUrl}">`;
+    const notice='<p data-flyer-preview="de-preview">Vorschau · gültig ab Montag</p>';
+    expect(verifyPublishedFlyerMarkup([preview],original+notice,"/angebote","https://markup.invalid",now)).toEqual([]);
+    for(const absent of ["",`<div hidden>${notice}</div>`,`<script>${notice}</script>`,notice.replace("gültig ab Montag","jetzt gültig")]) {
+      expect(verifyPublishedFlyerMarkup([preview],original+absent,"/angebote","https://markup.invalid",now)).not.toEqual([]);
+    }
+  });
   it("requires every reviewed summary fact in visible offer-card markup",()=>{
     const fixture=weeklyOfferFixtureContent("monday");
     const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};

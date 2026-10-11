@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import type { HomepageFlyer } from "@/lib/homepage-content";
 import { canRenderHomepageImage } from "@/lib/cinematic/presentation";
 import { useModalA11y } from "@/lib/useModalA11y";
+import { isWeeklyFlyerPreview } from "@/lib/editorial-schedule";
 
 import styles from "./current.module.css";
 
@@ -46,11 +47,15 @@ function ExternalFlyerLinks({
 export default function FlyerViewer({
   flyer,
   locale = "de",
+  asOf,
 }: {
   flyer: HomepageFlyer;
   locale?: "de" | "nl";
+  asOf?: string;
 }): React.JSX.Element {
   const copy = COPY[locale];
+  const preview = asOf && isWeeklyFlyerPreview(flyer, new Date(asOf));
+  const previewNotice = locale === "nl" ? "Vooruitblik · geldig vanaf maandag" : "Vorschau · gültig ab Montag";
   // The HTML arrives before its click handler. Keep the native links usable,
   // but expose the dialog action only once React can actually open it.
   const hydrated = useSyncExternalStore(
@@ -121,6 +126,7 @@ export default function FlyerViewer({
 
   return (
     <div className={styles.viewer} data-flyer-viewer>
+      {preview && <p className={styles.previewNotice} data-flyer-preview={flyer.id}>{previewNotice}</p>}
       <div className={`${styles.cover} ${flyer.pageCount === 1 ? styles.singlePageCover : ""}`} data-flyer-cover data-single-page={flyer.pageCount === 1 || undefined}>
         {canRenderCover ? (
           <Image
@@ -173,6 +179,7 @@ export default function FlyerViewer({
               {copy.close}
             </button>
             <h2 id={headingId}>{flyer.title} {copy.viewTitle}</h2>
+            {preview && <p className={styles.previewNotice}>{previewNotice}</p>}
             {viewerState === "error" ? (
               <div
                 className={styles.viewerError}

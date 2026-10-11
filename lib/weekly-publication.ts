@@ -1,6 +1,6 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
-import { berlinDateKey, getCurrentWeekRange } from "./editorial-schedule";
+import { berlinDateKey, getCurrentWeekRange, getPublicationWeekRange } from "./editorial-schedule";
 import type { LoadedWeeklyPublications, ParsedWeeklyEdition, ParsedWeeklyPublication, VerifiedWeeklyEdition, WeeklyEdition, WeeklyPublicationIssue } from "./weekly-publication-types";
 import { assertWeeklyPublicationIdle } from "./weekly-publication-idle";
 import { parsePublicationEdition, verifyPublicationEdition, publicationRecord as record, assertPublicationKeys as keys, publicationWeekRange as weekRange, readPublicationJson as json, countPublicationEditionIds } from "./publication-integrity";
@@ -92,5 +92,13 @@ export function selectPublishedEditions(loaded: LoadedWeeklyPublications, now: D
   const today = berlinDateKey(now);
   const week = getCurrentWeekRange(now).validFrom;
   return loaded.editions.filter(({ edition }) => edition.validFrom === week && edition.validFrom <= today && today <= edition.validTo)
+    .toSorted((a, b) => a.edition.language.localeCompare(b.edition.language));
+}
+
+/** Fully verified weekly originals may be previewed on Sunday; offer validity stays separate. */
+export function selectVisibleWeeklyEditions(loaded: LoadedWeeklyPublications, now: Date): readonly VerifiedWeeklyEdition[] {
+  const today = berlinDateKey(now);
+  const week = getPublicationWeekRange(now).validFrom;
+  return loaded.editions.filter(({ edition }) => edition.validFrom === week && today <= edition.validTo)
     .toSorted((a, b) => a.edition.language.localeCompare(b.edition.language));
 }

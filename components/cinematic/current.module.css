@@ -283,3 +283,12 @@
   }
 
 }
+.previewNotice {
+  margin: 0;
+  padding: var(--cinematic-spacing-sm) var(--cinematic-spacing-md);
+  background: var(--cinematic-color-assortment-cream);
+  color: var(--cinematic-color-ink);
+  font-size: var(--cinematic-typography-size-body);
+  font-weight: var(--cinematic-typography-weight-bold);
+  line-height: var(--cinematic-typography-line-height-body);
+}

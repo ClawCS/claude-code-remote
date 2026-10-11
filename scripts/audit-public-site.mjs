@@ -96,7 +96,11 @@ async function main() {
   const berlinDate = new Intl.DateTimeFormat("en-CA", {timeZone:"Europe/Berlin"});
   const today = berlinDate.format(auditNow);
   const monday = new Date(`${today}T12:00:00Z`);
+  const sunday = monday.getUTCDay() === 0;
+  const berlinHour = Number(new Intl.DateTimeFormat("en-GB", {timeZone:"Europe/Berlin",hour:"2-digit",hourCycle:"h23"}).format(auditNow));
   monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));
+  // Flyer visibility starts Sunday 16:00. Never change the printed price interval.
+  if (sunday && berlinHour >= 16) monday.setUTCDate(monday.getUTCDate()+7);
   const week = monday.toISOString().slice(0,10);
   const saturday = new Date(monday);saturday.setUTCDate(saturday.getUTCDate()+5);
   // Same source-reviewed KW40 exception as lib/offer-validity.ts; never infer holidays.
@@ -287,7 +291,7 @@ async function main() {
     && offers.offers.every(o=>safeImage(o.image,"offers")&&Number.isSafeInteger(o.sourcePage)&&o.sourcePage>0&&flyers.some(f=>f.id===o.flyerId&&f.language===o.language&&f.pdfUrl===o.sourceUrl&&f.pdfSha256===o.pdfSha256&&f.validFrom===o.validFrom&&f.validTo===o.validTo&&f.pageCount>=o.sourcePage));
   if (!valid) fail("api-weekly-contract","/api/content/offers","Current, flyer and offer APIs do not expose the same locally bound package");
   if (offers?.status==="degraded") fail("api-weekly-integrity","/api/content/offers","Main editions are missing or a declared publication failed integrity verification");
-  if (today <= demandTo && !["de","nl"].every(language => Array.isArray(flyers) && flyers.some(f=>rowObject(f)&&f.purpose==="weekly"&&f.language===language&&f.validFrom===week&&f.validFrom<=today&&today<=f.validTo))) {
+  if (today <= demandTo && !["de","nl"].every(language => Array.isArray(flyers) && flyers.some(f=>rowObject(f)&&f.purpose==="weekly"&&f.language===language&&f.validFrom===week&&today<=f.validTo))) {
     fail("api-weekly-integrity","/api/content/offers","Required current main editions are missing at the actual audit date");
   }
   const de=Array.isArray(flyers)?flyers.find(f=>rowObject(f)&&f.language==="de"):null;
@@ -328,7 +332,7 @@ async function main() {
           } catch {fail("weekly-manifest-integrity","/api/content/offers",`${supplemental?"Supplemental":"Current or unassignable weekly"} publication manifest could not be read or parsed`);}
         }
       }
-      const expectedActive=manifests.filter(e=>e&&e.validFrom<=today&&today<=e.validTo&&(e.auditSupplemental||e.validFrom===week));
+      const expectedActive=manifests.filter(e=>e&&today<=e.validTo&&(e.auditSupplemental?e.validFrom<=today:e.validFrom===week));
       if(!isDeepStrictEqual(expectedActive.map(e=>e.id).sort(),flyers.map(f=>f.id).sort()))throw new Error("Incomplete active original set");
       const boundOffers=JSON.parse(await readFile(resolve("data/weekly-offers.json"),"utf8"));
       const assets=new Map();
@@ -338,8 +342,17 @@ async function main() {
         const edition=matches[0];
         if(edition.pdf.path!==flyer.pdfUrl||edition.pdf.sha256!==flyer.pdfSha256||edition.cover.path!==flyer.coverUrl||edition.validFrom!==flyer.validFrom||edition.validTo!==flyer.validTo)throw new Error("Mismatching local edition");
         assets.set(edition.pdf.path,edition.pdf);assets.set(edition.cover.path,edition.cover);
-        if(!isDeepStrictEqual([...edition.offerIds].sort(),offers.offers.filter(o=>o.flyerId===flyer.id).map(o=>o.id).sort()))throw new Error("Incomplete active offer census");
+        const priceActive=edition.validFrom<=today&&today<=edition.validTo;
+        if(!isDeepStrictEqual(priceActive?[...edition.offerIds].sort():[],offers.offers.filter(o=>o.flyerId===flyer.id).map(o=>o.id).sort()))throw new Error("Incomplete active offer census or premature prices");
+        // The API must bind each active offer to its own original tile, not just any safe image.
         for(const offer of offers.offers.filter(item=>item.flyerId===flyer.id)) {
+          const matches=boundOffers.filter(item=>item.id===offer.id);
+          if(matches.length!==1||matches[0].image!==offer.image)throw new Error("Mismatching public offer image binding");
+        }
+        // Preview packages must already contain every original crop, even before cards activate.
+        const editionOffers=boundOffers.filter(item=>edition.offerIds.includes(item.id));
+        if(!isDeepStrictEqual(editionOffers.map(item=>item.id).sort(),[...edition.offerIds].sort()))throw new Error("Incomplete preview offer census");
+        for(const offer of editionOffers) {
           const matches=boundOffers.filter(item=>item.id===offer.id);
           if(matches.length!==1||!edition.offerIds.includes(offer.id)||matches[0].image!==offer.image)throw new Error("Invalid local offer binding");
           const local=await readFile(resolve(`public${offer.image}`));

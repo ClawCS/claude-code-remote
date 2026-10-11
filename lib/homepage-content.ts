@@ -9,7 +9,8 @@ import {
 } from "@/lib/handzettel-catalog";
 import {
   berlinDateKey,
-  getCurrentWeekRange,
+  getPublicationWeekRange,
+  isWeeklyFlyerPreview,
   isEditorialPublishable,
   type EditorialSource,
 } from "@/lib/editorial-schedule";
@@ -193,7 +194,7 @@ function isCurrentFlyer(flyer: HomepageFlyer, now: Date): boolean {
     return false;
   }
   const today = berlinDateKey(now);
-  return flyer.validFrom <= today && today <= flyer.validTo;
+  return (flyer.validFrom <= today || isWeeklyFlyerPreview(flyer, now)) && today <= flyer.validTo;
 }
 
 function selectEvent(
@@ -262,7 +263,7 @@ export function aggregateHomepageContent({
   archive,
 }: AggregateHomepageContentInput): HomepageContent {
   const currentFlyer = flyer && flyer.purpose !== "supplemental" && isCurrentFlyer(flyer, now) ? flyer : null;
-  const range = getCurrentWeekRange(now);
+  const range = getPublicationWeekRange(now);
   const currentNlFlyer = nlFlyer && nlFlyer.purpose !== "supplemental" && nlFlyer.pageCount === 1 && getAcceptedNlOfferRanges(range).some(accepted => nlFlyer.validFrom === accepted.validFrom && nlFlyer.validTo === accepted.validTo) && isCurrentFlyer(nlFlyer, now) ? nlFlyer : null;
   let event: HomepageEvent | null = null;
   let currentArchive: readonly HomepageArchiveItem[] = [];

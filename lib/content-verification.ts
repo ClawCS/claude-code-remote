@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { parseWeeklyOfferContent } from "./weekly-offer-refresh";
 import type { WeeklyOfferContent } from "./weekly-publication-types";
 import { renderedTree, visibleRenderedMarkup, walk } from "./rendered-html.mjs";
+import { isWeeklyFlyerPreview } from "./editorial-schedule";
 
 export function verifyPublishedOfferContent(expected: WeeklyOfferContent, actual: unknown): string[] {
   let content:WeeklyOfferContent;
@@ -65,14 +66,25 @@ export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actu
   return errors;
 }
 
-export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], html: string, route: string, checkedOrigin = "https://markup.invalid"): string[] {
+export function verifyPublishedFlyerMarkup(expected: readonly PublishedFlyer[], html: string, route: string, checkedOrigin = "https://markup.invalid", now?: Date): string[] {
   const errors: string[] = [];
   const links: string[] = [], images: string[] = [];
+  const previewLabels = new Map<string, string>();
   walk(renderedTree(html), (node: {tag:string;attrs:Record<string,string>}) => {
     if (node.tag === "a" && node.attrs.href) links.push(node.attrs.href);
     if (node.tag === "img" && node.attrs.src) images.push(node.attrs.src);
+    if (node.attrs["data-flyer-preview"]) {
+      let text = "";
+      walk(node, (child: {tag:string;value?:string}) => { if (child.tag === "#text") text += child.value ?? ""; });
+      previewLabels.set(node.attrs["data-flyer-preview"], text);
+    }
   });
   for (const flyer of expected) {
+    if (now && isWeeklyFlyerPreview(flyer, now)) {
+      const label = previewLabels.get(flyer.id) ?? "";
+      const localized = route === "/nl" || (route === "/" && flyer.language === "nl");
+      if (!label.includes(localized ? "Vooruitblik · geldig vanaf maandag" : "Vorschau · gültig ab Montag")) errors.push(`Sichtbarer Vorschauhinweis fehlt auf ${route}: ${flyer.id}`);
+    }
     if (!links.includes(flyer.pdfUrl)) errors.push(`Geprüfter ${flyer.language.toUpperCase()}-Flyer-PDF-Link fehlt auf ${route}: ${flyer.id}`);
     const hasCover = images.some(src => {
       if (src === flyer.coverUrl) return true;

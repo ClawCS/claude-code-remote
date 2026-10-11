@@ -242,7 +242,7 @@ describe("homepage content", () => {
     expect(aggregate({ flyer: makeFlyer({ pageCount: 61 }) }).flyer).toBeNull();
   });
 
-  it("hides a Sunday-preloaded Monday flyer until Berlin Monday", () => {
+  it("hides a Sunday-preloaded Monday flyer until Berlin Sunday 16:00", () => {
     const mondayFlyer = makeFlyer({
       id: "catalog-13027-30-2026",
       validFrom: "2026-07-20",
@@ -250,13 +250,13 @@ describe("homepage content", () => {
     });
     expect(
       aggregate({
-        now: new Date("2026-07-19T15:00:00.000Z"),
+        now: new Date("2026-07-19T13:59:59.000Z"),
         flyer: mondayFlyer,
       }).flyer,
     ).toBeNull();
     expect(
       aggregate({
-        now: new Date("2026-07-19T22:00:00.000Z"),
+        now: new Date("2026-07-19T14:00:00.000Z"),
         flyer: mondayFlyer,
       }).flyer?.id,
     ).toBe("catalog-13027-30-2026");

@@ -14,12 +14,13 @@ afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await
 
 type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string; malformedRow?: { collection: "offers" | "flyers" | "indexFlyers"; value: unknown } };
 
-async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hideSupplement?:boolean; hideMain?:boolean; missingMainManifest?:boolean; snapshotNow?:string; auditNow?:string; manifestDamage?:"supplemental-json"|"supplemental-shape"|"supplemental-read"|"weekly-current"|"weekly-unknown"|"weekly-historical"; corruptAsset?:string; application?: { config: unknown; post: number } } = {}) {
+async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hideSupplement?:boolean; hideMain?:boolean; missingMainManifest?:boolean; swappedOfferImage?:boolean; snapshotNow?:string; auditNow?:string; manifestDamage?:"supplemental-json"|"supplemental-shape"|"supplemental-read"|"weekly-current"|"weekly-unknown"|"weekly-historical"; corruptAsset?:string; application?: { config: unknown; post: number } } = {}) {
   const source=options.activeSupplement?await supplementalPublicationFixture():undefined;
   if(source) cleanup.push(()=>rm(source.root,{recursive:true,force:true}));
   const snapshotNow=options.snapshotNow??(source?"2026-10-08T12:00:00Z":"2026-10-11T12:00:00Z");
   const selected=source?selectWeeklyOfferContent(await loadWeeklyPublications(source.root),new Date(snapshotNow),await loadSupplementalPublications(source.root)):undefined;
   const active=selected?{...selected,flyers:selected.flyers.filter(f=>!(options.hideSupplement&&f.purpose==="supplemental")&&!(options.hideMain&&f.purpose==="weekly")),offers:selected.offers.filter(o=>!(options.hideSupplement&&o.flyerId==="maasduinen-synthetic")&&!(options.hideMain&&o.flyerId!=="maasduinen-synthetic"))}:undefined;
+  if(active&&options.swappedOfferImage) active.offers=active.offers.map((offer,index)=>index===0?{...offer,image:active.offers[1].image}:offer);
   if(source&&options.missingMainManifest)await rm(join(source.root,"data/editorial/weekly-publications/2026-10-05.json"));
   if(source&&options.manifestDamage) {
     const file=options.manifestDamage.startsWith("supplemental")?"data/editorial/supplemental-publications/maasduinen-synthetic.json":`data/editorial/weekly-publications/${options.manifestDamage==="weekly-historical"?"2026-09-28":options.manifestDamage==="weekly-unknown"?"undatable":"2026-10-05"}.json`;
@@ -128,6 +129,20 @@ async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hi
 }
 
 describe("public HTTP forensic audit CLI", () => {
+  it("rejects an active API offer whose image points to another correctly served original tile", async () => {
+    const result = await fixture({ activeSupplement: true, swappedOfferImage: true });
+    expect(result.code, result.text).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"weekly-asset-integrity"}));
+  });
+  it("accepts verified Sunday previews with zero premature product offers", async () => {
+    const result = await fixture({ activeSupplement: true, snapshotNow: "2026-10-04T14:00:00Z" });
+    expect(result.report.findings.filter((f: {severity:string}) => f.severity === "error")).toEqual([]);
+  });
+  it("requires next-week originals at the preview deadline even when APIs agree on no flyers", async () => {
+    const result = await fixture({ snapshotNow: "2026-10-11T14:00:00Z" });
+    expect(result.code).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"api-weekly-integrity"}));
+  });
   it("fails an internally consistent stale API snapshot at the audit's actual execution date",async()=>{
     const result=await fixture({activeSupplement:true,auditNow:"2026-10-11T12:00:00Z"});
     expect(result.code,result.text).toBe(1);

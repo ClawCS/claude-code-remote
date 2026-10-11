@@ -1,5 +1,13 @@
 # Wochenredaktion Trinkgut Jammers
 
+## Vorrangige Betreiberregel vom 11.10.2026: Sonntag 16:00
+
+Die geprüften DE-/NL-Handzettel der folgenden Woche sind ab **Sonntag 16:00 Europe/Berlin** sofort sichtbar: vollständige Covers, Viewer und PDFs auf `/`, `/angebote`, `/handzettel` und `/nl`. Bis Montag steht an jedem Original „Vorschau · gültig ab Montag“ bzw. „Vooruitblik · geldig vanaf maandag“. Gedruckte Start-/Enddaten bleiben unverändert; einzelne Sortimentsangebote werden erst innerhalb ihres Originalzeitraums aktiv. Maasduinen bleibt an seinen eigenen Zeitraum gebunden. Diese neue Regel ersetzt sämtliche nachstehenden Montag-only-/17:00-/19:00-Vorgaben; historische Berichte bleiben Nachweise ihres damaligen Standes.
+
+Der bestehende Wochenlauf wurde auf **Sonntag 16:00 ACTIVE** umgestellt; die tägliche **06:15-Kontrolle bleibt PAUSED**. Keine neue Automation, keine Reaktivierung und kein Server-Cron. Automatischer Import/Release bleibt vom eingeschalteten Mac, Codex und Quellenzugang abhängig. Bereits vollständig veröffentlichte Pakete werden durch die echte Berliner Zeit sichtbar. Prüfungen vor dem Umschalttermin müssen die 15:59:59-/16:00-Grenze einschließlich Winterzeit und Zeitumstellung berücksichtigen.
+
+`content:check` prüft ohne `--week` ab Sonntag 16:00 die Folgewoche: beide Pflichtoriginale, vollständigen Angebotscensus, alle PDF-/Cover-/Kachelbytes, Vorschauhinweise und unveränderte APIs. `audit:public` unterscheidet unabhängig sichtbare Originale von bereits gültigen Angebotskacheln. Eine fehlende Sprache bleibt ein Fehler; eine gültige Gegenausgabe bleibt sichtbar. Keine Änderung/Neuerzeugung unveränderter geprüfter KW42-Originale nötig. Plan: `superpowers/plans/2026-10-11-sunday-flyer-preview.md`.
+
 ## Quellenkorrektur vom 11.10.2026 — lokal umgesetzt, öffentliche Abnahme ausstehend
 
 Niko unterscheidet ausdrücklich drei niederländische Anzeigenreihen:

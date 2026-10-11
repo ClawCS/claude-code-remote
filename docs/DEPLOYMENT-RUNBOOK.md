@@ -1,5 +1,7 @@
 # Betrieb und Releases auf Hetzner
 
+**Vorrangige Wochenregel seit 11.10.2026:** Niko hat die sichtbare Veröffentlichung der geprüften Folgewoche ab Sonntag **16:00 Europe/Berlin** beauftragt. Covers/PDFs mit eindeutigem Vorschauhinweis sofort zeigen; originale Preisgültigkeit und einzelne Angebotskarten erst ab Originalstart. Das ersetzt die älteren Montag-only- und Sonntag-19:00-Angaben unten. Bestehende Sonntagsautomation 16:00 ACTIVE, tägliche 06:15-Aufgabe weiterhin PAUSED. Prüfumfang, echte Produktionsuhr, neue unveränderliche Linux-Releases und sämtliche Betriebs-/Sicherheitsgrenzen bleiben erhalten. Siehe `CONTENT-UPDATE-RUNBOOK.md`.
+
 Stand: 08.10.2026. Diese Anleitung beschreibt die Zielkonfiguration; die Dateien allein sind kein Nachweis einer erfolgten Installation oder öffentlichen Abnahme. Tatsächliche Versionsnummern, Commit, Prüfresultate und Änderungen am Server im Liveschaltungsbericht festhalten.
 
 ## Festgelegter Umfang

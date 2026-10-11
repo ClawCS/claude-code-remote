@@ -20,5 +20,5 @@ export async function getFlyerIndex(now = new Date()): Promise<FlyerIndex> {
     ...supplemental.editions.filter(({edition})=>edition.validFrom>today&&!supplemental.issues.some(issue=>issue.editionId===edition.id))
       .map(({edition:{id,title,language,validFrom,validTo}})=>({id,title,language,validFrom,validTo})),
   ];
-  return {status:content.status,issues:content.issues,generatedAt:content.generatedAt,flyers:content.flyers,scheduled};
+  return {status:content.status,issues:content.issues,generatedAt:content.generatedAt,flyers:content.flyers,scheduled:scheduled.filter(item => !content.flyers.some(flyer => flyer.id === item.id))};
 }
