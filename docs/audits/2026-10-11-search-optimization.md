@@ -1,6 +1,37 @@
-# SEO, GEO und AEO: lokaler Umsetzungs- und Abnahmenachweis
+# SEO, GEO und AEO: Umsetzungs- und öffentlicher Abnahmenachweis
 
-Stand: 11.10.2026. Die freigegebenen Suchverbesserungen sind lokal umgesetzt, unabhängig gegengeprüft und auf GitHub gesichert. Dieser Bericht ist **kein Nachweis eines öffentlichen Releases**. Die Veröffentlichung ist vom Betreiber nach bestandenen Prüfungen beauftragt; frischer Linux-Webbuild und echte öffentliche Abnahme bleiben offen. Die separat angefragte Entfernung dreier alter Releases ist noch nicht freigegeben. Rund 2,1 GiB freier Serverplatz reichen nicht als Nachweis, dass ein neuer Release sicher gebaut werden kann; nichts wurde dafür gelöscht.
+Stand: 11.10.2026, 20:32 Europe/Berlin. Die freigegebenen Suchverbesserungen sind **live veröffentlicht und öffentlich geprüft**. Exakter App-Release `f0540ec67a10fb248ad87a8c8c8e2bb8997e541c`, Aktivierung 18:28:15 UTC / 20:28:15 Europe/Berlin, Linux-Build-ID `CjupFswvycpvVfG3-K2pQ`. Vorheriger geprüfter Release `2858e5256fd3ba1024b1a5f48d3b0cece234826e` bleibt als Rückrollziel erhalten. Die spätere reine Abschlussdokumentation benötigt keinen weiteren App-Release.
+
+## Öffentliche Veröffentlichung und Abschlussprüfung
+
+Niko genehmigte ausdrücklich die Entfernung ausschließlich der drei inaktiven Releases vom 8. Oktober `bce0e582b5b5137fc52f5a2d5d081c5c767c39b8`, `b0812f7592046b5fcc846ef166b08e710f4e0311`, `d93f932c69a097026624a56365bd58f2dba024a7`. Vor Entfernung: festes Host-/Pfadziel, keine aktiven Symlinks/Prozess-Arbeitsverzeichnisse oder verschachtelten Mounts, aktuelle und jüngste Rückfallversionen geprüft. Nur diese drei wurden entfernt; freier Platz stieg von rund 2,1 auf 6,5 GiB. Nach neuem Release und Entfernung ausschließlich des eigenen temporären Transportarchivs rund 4,9 GiB frei. Fehlgeschlagene Buildartefakte wurden für Diagnose erhalten.
+
+GitHub-Synchronisation vor Arbeit per Fetch/Fast-forward: bereits aktuell, exakter Kandidat f0540ec. Quellarchiv über die Runbook-Positivliste, ohne private Arbeitsdaten, Secrets, Mac-Abhängigkeiten oder Mac-Builds. SHA-256 beim Transfer identisch: `a2ab729297e90d3917898dbcfa91a9e02ca9d9b5c387f12383cc61940ab6c69a`. Frischer Linux-Release als Benutzer jammers; `npm ci --include=dev --ignore-scripts`, ausschließlich genehmigter IMAP-Patch, Tests unter `NODE_ENV=test`, Build/Betrieb production ohne Testuhr. Keine installierten Sicherheitskonfigurationen geändert.
+
+| Tatsächliche Schlussprüfung | Ergebnis |
+| --- | --- |
+| Frischer lokaler Webgate | 2.198/2.198 Tests, 116/116 Dateien bestanden, 32,54 s; native Bewerbungsqualifikation ausgeschlossen |
+| Linux-Webgate | 2.163/2.163 Tests, 113/113 Dateien bestanden, 137,93 s; genau drei Chromiumdateien mit 35 Tests lokal statt auf Linux geprüft |
+| Linux Releasegates | ESLint ohne Fehler, next typegen, TypeScript, 210 Originalangebote/Bilder und Produktionsbuild bestanden |
+| Öffentlicher HTTP-Audit | 289 Seiten, 1.692 lokale Ressourcen, 5 unbekannte Pfade, 31 API-Verträge; null Fehler/Warnungen; externe Ziele nicht vollständig abgefragt |
+| Unabhängiger SEO-GET-Audit | Alle 280 Sitemapziele, 65 Rezepte, 180 vollständige Lektionstexte/8 Wurzeln, 9 Weiterleitungen, 59 Fehlerpfade, 3 Utilities, 5 Schutz-/Konfigurationsprüfungen ohne Befund |
+| CSS/Fonts | Fünf öffentliche Routen mit null Inline-CSS; unveränderlich cachebare gleichursprüngliche CSS-Dateien ohne Redirect. Vier WOFF2-GETs mit 200, korrektem Typ/Signatur, nichtleer |
+| Gewinnspielbilder | 18 echte Original-/Optimierer-Bilddownloads, dekodiert, null Befunde |
+| Inhalte bei echter Zeit | Normale und KW42-gezielte öffentliche content:check-Läufe: `status:ok`, `websiteVerified:true`, `deploymentVerified:true`, keine Warnungen/Fehler |
+| Erreichbarkeit | IPv4/IPv6 HTTPS 200; HTTP 308 zu HTTPS; www 301 zum identischen Canonicalpfad samt Query; privates Manifest 404 |
+| Betrieb | Dienst aktiv, richtiges current-Ziel, alle neun installierten Sicherheitskonfigurationshashes vor/nach identisch. Bewerbung/Mietbetrieb/Onlinezahlung weiterhin deaktiviert |
+
+Die Umschaltung hatte eine automatische Rückrollabsicherung auf 2858e525 bei fehlender Bereitschaft. Der erste unmittelbare localhost-Versuch direkt beim Dienstneustart erhielt erwartbar connection-refused; begrenzter Retry bestätigte anschließend alle Bereitschaftskriterien. Kein Rollback nötig. Nach öffentlicher Abnahme Dienst und Dateirechte erneut geprüft: Quellcode root:root, nur Cache jammers:jammers 0750.
+
+Öffentliche Browserabnahme bei 1440×900 und 390×844: korrektes filmisches Layout ohne horizontalen Überlauf, Desktop-/Mobilvideo tatsächlich geladen (readyState 4), Pause funktioniert, sechs Originalflaschen dekodiert, Fokus mit Sortennamen sichtbar. Native Untermenüs per Enter bedienbar; mobile Navigation → Akademie → Bier → neue Lektion 2 erfolgreich, Browser-zurück führt zu Lektion 1. Mobiles Mojito-Rezept mit Foto/Zutaten/Zubereitung und NL-Seite mit Besuchsantworten sichtbar. Browser-Screenshots bleiben beim privaten Prüfmaterial. Zwei anfängliche Testselektoren passten nicht zum nativen `summary`; nach DOM-Abgleich funktionierte der tatsächliche Summary-Enter-Test, keine Websiteänderung dafür. Lokale Reduced-Motion-/Quiz-/History-Gates sind getrennt vom begrenzten öffentlichen Browsertest dokumentiert.
+
+Sonntags sind abgelaufene Wochenangebote korrekt nicht aktiv. Das KW42-Paar und alle 82 Originalkacheln sind öffentlich bereitgestellt und per tatsächlichem GET/Hash geprüft; die Angebote werden ausschließlich vom 12.–17.10. aktiv. Keine Produktionsuhr verändert. Regulärer NL-Handzettel stammt aus dem Agentur-/Betreiberordner Handzettel Holland (gerade KW42: De Maas Driehoek), nicht aus Canva. Maasduinen bleibt separat und ersetzt keine Woche.
+
+### Build-Zwischenfehler transparent dokumentiert
+
+Der erste Linux-Build und eine identische warme Wiederholung scheiterten mit 20 Next-Font-Importmap-Fehlern. Schriftdefinition und Lockfile waren gegenüber dem funktionierenden Release unverändert. Das Fehlermuster passt zum [bekannten Next-Font-URL-Parserproblem](https://github.com/vercel/next.js/issues/99114). Der [gepinnten Next-16.3.8-Implementierung](https://raw.githubusercontent.com/vercel/next.js/v16.3.8/crates/next-core/src/next_font/google/mod.rs) zufolge können Queryzeichen in einer extern gelieferten Font-URL die interne Importmap beschädigen. Der konkrete fehlgeschlagene Google-Antwortkörper wurde nicht erfasst; diese Ursache ist stark gestützt, nicht abschließend bewiesen.
+
+Die installierte Next-Version hält Build-/Fetchzustand im persistenten Turbopack-Cache; tatsächlich lagen 100 MiB Cache vor. Ein frischer lesender Google-CSS-Abruf lieferte normale WOFF2-URLs. Nach unabhängiger Prüfung wurden ausschließlich die fehlgeschlagenen, nie aktiven Kandidaten-Builddateien beiseitegelegt. Ein sauberer Neubuild **desselben Codes** bestand: 21,6 s Kompilierung plus TypeScript/Seitenbuild. Keine Schriftmigration, Bibliotheksänderung, Mock-/Prüfungsumgehung oder Sicherheitsänderung. Das ist erfolgreiche Veröffentlichung, kein dauerhaft reparierter Upstream-Buildfehler. Eine separat geprüfte lokale Schriftquelle bleibt mögliche Folgearbeit.
 
 ## Abschließende Gegenprüfung und GitHub-Sicherung
 
@@ -8,13 +39,13 @@ Die unabhängige Gesamtprüfung von `ad83f26..376fc74` fand keine kritischen ode
 
 `git push origin HEAD:codex/cinematic-production` war erfolgreich. Ein anschließendes `git ls-remote` bestätigte exakt `7e6a361a2b7a739419d68b431e45786eb67f053d` auf diesem Branch. Dieser Nachweis bezieht sich auf den geprüften Code-/Teststand; spätere reine Abschlussdokumentation ändert den Appstand nicht.
 
-Letzte lesende Serverkontrolle: bestehender Dienst aktiv, weiterhin Release `2858e5256fd3ba1024b1a5f48d3b0cece234826e`, 95 % Datenträgerbelegung / 2,1 GiB frei. Öffentliche Startseite am 11.10.2026 um 17:57:33 UTC: HTTPS 200. Keine Serveränderung oder Löschung durch diesen Auftrag. Für den neuen Release ausstehend: gesonderte Freigabe zur Entfernung ausschließlich der drei inaktiven 8.-Oktober-Releases `bce0e582b5b5137fc52f5a2d5d081c5c767c39b8`, `b0812f7592046b5fcc846ef166b08e710f4e0311`, `d93f932c69a097026624a56365bd58f2dba024a7` (zusammen rund 4,5 GiB), danach reguläre Linux- und öffentliche Abnahme. Aktuelle Version und jüngere Rückfallversionen bleiben erhalten.
+Historischer Vorabstand vor der gesonderten Bereinigungsfreigabe: Dienst2858e525 aktiv,95%Datenträgerbelegung/2,1GiB frei, öffentliche Startseite17:57:33UTC HTTPS200. Damals noch keine Serveränderung. Die anschließend konkret erteilte Freigabe, begrenzte Entfernung und vollständige Veröffentlichung sind im neuen Abschlussabschnitt oben belegt.
 
 ## Ausgangs- und Endstand
 
 Ausgangspunkt der Suche-Umsetzung: `ad83f26961f22e3094ccbe478589323d58b31edd`. App-Endstand nach Tasks 1–5: `292d5e78870b58fa80413e238db6697e9b3d3acc`. Lokal geprüft gegen die frische Produktionsvorschau auf Port 3110 mit Build-ID `LW_A9iQYKA5yjYXfwg1jf`, echter Uhr, `RENTAL_MODE=disabled` und ohne `CINEMATIC_E2E`/`CINEMATIC_TEST_NOW`. Spätere Audit-/Test-/Dokumentänderungen ändern nicht den laufenden Appbuild.
 
-Laut gesonderter lesender Controllerprüfung läuft öffentlich weiterhin App-Release `2858e5256fd3ba1024b1a5f48d3b0cece234826e`; neun installierte Konfigurationshashes sind unverändert. Diese Serverauskunft ist kein öffentlicher Nachweis für die neuen Suchänderungen. Dev3000, fremde Screenshots, der vorhandene Bewerbungsaudit und private Quellen wurden bewahrt. Keine Konten, Automationen, Tracking-, Mail-, Upload-, Miet-, Zahlungs-, Lösch- oder Sicherheitsfunktionen geändert/aktiviert. Native Bewerbungsqualifikation bleibt offen.
+Die frühere lesende Controllerprüfung bezog sich noch auf2858e525; sie wurde erst durch die oben dokumentierte tatsächliche f0540ec-Veröffentlichung abgelöst. Dev3000, fremde Screenshots, der vorhandene Bewerbungsaudit und private Quellen wurden bewahrt. Keine Konten, Automationen, Tracking-, Mail-, Upload-, Miet-, Zahlungs-, Lösch- oder Sicherheitsfunktionen geändert/aktiviert. Native Bewerbungsqualifikation bleibt offen.
 
 ## Umgesetzt
 
@@ -96,4 +127,4 @@ Zeitpunkte relativ zum **tatsächlich öffentlich abgenommenen** Release, nicht 
 - [ ] Tag 28: Suchimpressionen/Klicks/CTR für Rezepte, Akademie, lokale Besuchsfragen und NL getrennt mit gleich langem Vorzeitraum vergleichen; Position nur mit Quelle/Zeitraum/Volumen. Neue URLs haben keinen erfundenen historischen Null-Baseline. Saisonalität, Angebotswochen und andere Änderungen nennen; Schema-Ausspielung nicht voraussetzen. GBP-Aufrufe/Interaktionen nur aus echtem freigegebenem Export.
 - [ ] Tag 90: Stabile Indexierung, relevante Query-/Landingpagegruppen und messbare Besuchsaktionen aus vorhandenen zulässigen Daten bewerten. Feld-CWV nur bei verfügbarer ausreichender Quelle/Abdeckung, ansonsten begrenzte Labordaten. Reproduzierbar dokumentierte KI-Antwort-/Zitatproben als Einzelfälle, nicht als repräsentativer Sichtbarkeitsindex. Editorial-/Performancefolgearbeit nach Wirkung priorisieren; keine kausale Rankingzusage aus Vorher/Nachher ableiten.
 
-Öffentliche Abnahme und Linuxresultate müssen nach tatsächlichem Release ergänzt werden; der geprüfte GitHub-Code-SHA ist oben belegt. Bis dahin lautet der Status: lokal und auf GitHub geprüfte Umsetzung, öffentlich weiterhin vorheriger Release.
+Die öffentliche Abnahme und Linuxresultate sind im Abschlussabschnitt ergänzt. Messcheckliste und redaktionelle/externe Folgethemen bleiben offen; sie sind keine bereits nachgewiesenen Ranking-, Rich-Result- oder KI-Zitationsverbesserungen.
