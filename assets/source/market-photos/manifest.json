@@ -1,9 +1,32 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-09-30",
-  "releaseBasis": "user-approved-canva-pool-2026-09-30",
+  "reviewedAt": "2026-10-11",
+  "releaseBasis": "user-approved-canva-pool-2026-10-11",
   "provenance": "Only operator-reviewed, lossless source crops from the approved Canva pool; no account/design/page IDs or raw promotional collages are published.",
   "entries": [
+    {
+      "id": "safari-display",
+      "kind": "photo",
+      "source": "safari-display.png",
+      "sourceHash": "72347389fec710722ff654ea84411ffe21590ac557b55e8559236afd6a973c37",
+      "sourceDimensions": {
+        "width": 660,
+        "height": 627
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 660,
+        "height": 627
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "markt-aufbauten",
+      "output": {
+        "name": "safari-display.webp",
+        "maxBytes": 150000,
+        "sha256": "25bb1b6d09ab30dd8c6374da26d9b07d69112985d755441a1548af1e38d88aef"
+      }
+    },
     {
       "id": "gift-basket",
       "kind": "photo",

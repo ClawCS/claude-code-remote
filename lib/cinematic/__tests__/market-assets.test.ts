@@ -55,6 +55,36 @@ async function waitForStaging(root: string, child: ChildProcess, error: () => st
 }
 
 describe("verified Canva market-photo derivatives", () => {
+  it("refuses source preparation that would omit an existing public asset", async () => {
+    const f = fixture({ raw: true });
+    const publicFolder = join(f.root, sourceFolder);
+    mkdirSync(publicFolder, { recursive: true });
+    const publicManifestPath = join(publicFolder, "manifest.json");
+    const publicManifest = JSON.stringify({ schemaVersion: 1, entries: [...inputs, { id: "giveaway-preserved" }] });
+    writeFileSync(publicManifestPath, publicManifest);
+    const sentinel = join(publicFolder, "giveaway-preserved.png");
+    writeFileSync(sentinel, "preserve existing source bytes");
+    const privateManifest = readFileSync(f.manifestPath, "utf8");
+    const result = await f.run(["--prepare-sources"]).completion;
+    expect(result.code).toBe(1);
+    expect(result.text).toMatch(/omit.*giveaway-preserved/i);
+    expect(readFileSync(publicManifestPath, "utf8")).toBe(publicManifest);
+    expect(readFileSync(sentinel, "utf8")).toBe("preserve existing source bytes");
+    expect(readFileSync(f.manifestPath, "utf8")).toBe(privateManifest);
+    expect(readdirSync(join(f.root, "assets/source")).some(name => name.includes("staging"))).toBe(false);
+  });
+
+  it("preserves the current review date and release basis when preparing public source crops", async () => {
+    const f = fixture({ raw: true });
+    f.manifest.reviewedAt = "2026-10-11";
+    f.manifest.releaseBasis = "user-approved-canva-pool-2026-10-11";
+    f.save();
+    const result = await f.run(["--prepare-sources"]).completion;
+    expect(result.code, result.text).toBe(0);
+    const manifest = JSON.parse(readFileSync(join(f.root, "assets/source/market-photos/manifest.json"), "utf8"));
+    expect(manifest).toMatchObject({ reviewedAt: "2026-10-11", releaseBasis: "user-approved-canva-pool-2026-10-11" });
+  });
+
   it("prepares publishable lossless source crops without leaking raw account provenance", async () => {
     const f = fixture({ raw: true });
     const result = await f.run(["--prepare-sources"]).completion;
@@ -103,6 +133,7 @@ describe("verified Canva market-photo derivatives", () => {
     const expected = {
       "gift-basket.webp": "2fd0c3a3c78134f0a077e11a09b524e54a16b0498ce8222ccf3635f13d5638f2",
       "salitos-market.webp": "178308dcb2a5af95336e051a3df4c3779cbcd793e0b07cc63db89166a5d84da8",
+      "safari-display.webp": "25bb1b6d09ab30dd8c6374da26d9b07d69112985d755441a1548af1e38d88aef",
       "regional-tante-dele.webp": "57b88cd7870aee9a9ce4c4d9553d580a3a02088cfe180ae8d559c25ee3ea3d56",
       "regional-schokolaedchen.webp": "211414d28abf4a6bb1af657ed26d583ea29b8e92a9146001419ebfd65adf6118",
       "regional-kaeffchen.webp": "2b364a9797e549a983527093b8e04107908dc7923ae49d3a55c1862cea30babd",

@@ -70,7 +70,7 @@ async function validatedInputs() {
     if (metadata.orientation && metadata.orientation !== 1) throw new Error(`Source orientation requires a separately reviewed crop: ${entry.id}`);
     jobs.push(Object.freeze({ ...entry, bytes }));
   }
-  return Object.freeze(jobs);
+  return Object.freeze({ jobs: Object.freeze(jobs), manifest });
 }
 
 async function validateOutput(bytes, job) {
@@ -109,15 +109,22 @@ async function installTarget(staging, target = OUTPUT_DIR) {
   }
 }
 
-async function prepareSourceCrops(jobs) {
+async function prepareSourceCrops(jobs, privateManifest) {
+  const existingManifestPath = join(SOURCE_ROOT, "manifest.json");
+  if (await exists(existingManifestPath)) {
+    const existingManifest = JSON.parse(await readFile(existingManifestPath, "utf8"));
+    if (!Array.isArray(existingManifest.entries)) throw new Error("Invalid existing public source manifest");
+    const preparedIds = new Set(jobs.map(job => job.id));
+    const omittedIds = existingManifest.entries.filter(entry => !preparedIds.has(entry.id)).map(entry => entry.id);
+    if (omittedIds.length) throw new Error(`Source preparation would omit existing public assets: ${omittedIds.join(", ")}`);
+  }
   await mkdir(dirname(SOURCE_ROOT), { recursive: true });
   const staging = await mkdtemp(join(dirname(SOURCE_ROOT), ".market-photos.staging-"));
   const publicManifest = {
-    schemaVersion: 1, reviewedAt: "2026-09-30", releaseBasis: "user-approved-canva-pool-2026-09-30",
+    schemaVersion: 1, reviewedAt: privateManifest.reviewedAt, releaseBasis: privateManifest.releaseBasis,
     provenance: "Only operator-reviewed, lossless source crops from the approved Canva pool; no account/design/page IDs or raw promotional collages are published.",
     entries: [],
   };
-  const privateManifest = JSON.parse(await readFile(MANIFEST, "utf8"));
   try {
     for (const job of jobs) {
       const bytes = await sharp(job.bytes).extract(job.crop).toColourspace("srgb").png({ compressionLevel: 9, palette: false }).toBuffer();
@@ -147,8 +154,8 @@ async function prepareSourceCrops(jobs) {
 }
 
 async function main() {
-  const jobs = await validatedInputs();
-  if (PREPARE_MODE) return prepareSourceCrops(jobs);
+  const { jobs, manifest } = await validatedInputs();
+  if (PREPARE_MODE) return prepareSourceCrops(jobs, manifest);
   await mkdir(dirname(OUTPUT_DIR), { recursive: true });
   const staging = await mkdtemp(join(dirname(OUTPUT_DIR), `.${basename(OUTPUT_DIR)}.staging-`));
   try {
