@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCocktailPhoto } from "@/data/cocktail-images";
@@ -15,7 +16,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const recipe = findCocktail((await params).slug);
   if (!recipe) notFound();
-  return { title: `${recipe.cocktail.name} – Cocktail-Rezept`, description: `${recipe.cocktail.name}: ${recipe.cocktail.ingredients.length} Zutaten, Zubereitung und Tipps. Schwierigkeit: ${recipe.cocktail.difficulty}.`, alternates: { canonical: recipe.href } };
+  return buildPageMetadata({ title: `${recipe.cocktail.name} – Cocktail-Rezept`, description: `${recipe.cocktail.name}: ${recipe.cocktail.ingredients.length} Zutaten, Zubereitung und Tipps. Schwierigkeit: ${recipe.cocktail.difficulty}.`, path: recipe.href });
 }
 export default async function CocktailRecipePage({ params }: Props) {
   const recipe = findCocktail((await params).slug);

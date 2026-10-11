@@ -1,11 +1,16 @@
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/transaction.module.css";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { MARKET } from "@/lib/cinematic/site";
 import { loadRentalConfig } from "@/lib/rental-orders/config";
 import { APPLICATION_EMAIL } from "@/lib/application-contact";
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = {title:"Datenschutzerklärung"};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Datenschutzerklärung",
+  description: "Hinweise zur Verarbeitung personenbezogener Daten auf der Website von Trinkgut Jammers in Goch.",
+  path: "/datenschutz",
+});
 export default function DatenschutzPage() {
   const config = loadRentalConfig();
   return <><PrivacyBase /><ApplicationPrivacy />{config.enabled && <section className={styles.legal}><h2>Zusätzlich: Mietbestellungen</h2><p className="whitespace-pre-wrap">{config.privacyText}</p><p className="mt-4">Die vorstehenden Angaben zu Nachrichtentwürfen betreffen ausschließlich unverbindliche Anfragen. Mietbestellungen werden dagegen serverseitig gespeichert; Bestell- und Belegmails werden separat versendet. Der Marktbereich nutzt ein technisch notwendiges, geschütztes Sitzungscookie für bis zu sechs Stunden.</p><p className="mt-4">Um doppelte Mietbestellungen bei Verbindungsabbrüchen zu verhindern, speichert der Checkout im Sitzungsspeicher dieses Tabs technische Wiederholungsschlüssel und Fingerabdrücke noch unbestätigter Anfragen (jammers-rental-pending-submissions-v1), nicht die Klartext-Kontaktdaten. Der jeweilige Eintrag wird nach sicherer Bestellrückmeldung entfernt; übrige Einträge enden mit der Browsersitzung. Diese Angaben werden nicht für Werbung oder Analyse verwendet.</p></section>}</>;

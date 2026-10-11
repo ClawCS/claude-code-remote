@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { RecipeCategories, RecipeGrid, RecipeIntro } from "@/components/recipes/RecipeCollection";
 import { cocktailCatalog } from "@/lib/cocktail-routes";
 import styles from "@/components/editorial/learning.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Cocktail-Rezepte",
   description: "65 Cocktail-Rezepte mit Zutaten, Zubereitung und Tipps. Entdecke Klassiker und neue Drinks in sechs Kategorien bei trinkgut Jammers.",
-  alternates: { canonical: "/cocktails" },
-};
+  path: "/cocktails",
+});
 
 export default function CocktailsPage() {
   return (

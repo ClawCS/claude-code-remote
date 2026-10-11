@@ -2,10 +2,11 @@ import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/transaction.module.css";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { MARKET } from "@/lib/cinematic/site";
 import { loadRentalConfig } from "@/lib/rental-orders/config";
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = {title:"Hinweise zu unverbindlichen Anfragen", description:"So funktionieren Artikel- und Leihartikelanfragen bei Trinkgut Jammers Goch."};
+export const metadata: Metadata = buildPageMetadata({title:"Hinweise zu unverbindlichen Anfragen", description:"So funktionieren Artikel- und Leihartikelanfragen bei Trinkgut Jammers Goch.", path:"/agb"});
 export default function AGBPage() {
   const config = loadRentalConfig();
   if (config.enabled) return <><PageIntro className={styles.legalIntro} title="Mietbestellungen und Anfragen" /><div className={styles.legal} data-service="legal">{config.mode === "test" && <p className={styles.notice}>Lokaler Testbetrieb: kein echter Vertrag, keine echte Zahlung.</p>}<section className="space-y-4"><h2 className="text-xl font-bold">Mietbestellungen</h2><p>Eine automatische Eingangsbestätigung ist noch keine Annahme. Erst die ausdrückliche Marktbestätigung nach Termin- und Verfügbarkeitsprüfung führt zum Vertrag. Anschließend erfolgt die Zahlung per bereitgestelltem Online-Link oder bar bei Abholung.</p><p className="whitespace-pre-wrap">{config.termsText}</p><p className="text-sm">Version: {config.termsVersion}</p><h2 className="text-xl font-bold pt-5">Unverbindliche Anfragen</h2><p>Sortimentsartikel, gemischte Warenkörbe und Leihartikel ohne festgelegten Preis bleiben im gesonderten Anfrageweg. E-Mail- und WhatsApp-Entwürfe müssen selbst versendet werden; sie sind keine Bestellung.</p><Link href="/datenschutz" className="underline text-primary">Datenschutz</Link></section></div></>;

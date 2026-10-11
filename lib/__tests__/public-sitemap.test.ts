@@ -13,10 +13,23 @@ describe("public sitemap", () => {
     expect(new Set(urls).size).toBe(urls.length);
   });
 
-  it("retains the existing public routes and adds the inquiry-list and contest archive", () => {
+  it("retains indexable public routes without aliases and noindex utilities", () => {
     const urls = sitemap().map((entry) => entry.url);
-    for (const path of ["/marktleben", "/geschenkideen", "/regionale-spirituosen", "/merkzettel", "/gewinnspiel/archiv", "/kontakt", "/nl", "/handzettel", "/akademie", "/finder", "/partyplaner", "/partyspiele", "/vermietung"]) {
+    for (const path of ["/marktleben", "/geschenkideen", "/regionale-spirituosen", "/kontakt", "/nl", "/akademie", "/finder", "/partyplaner", "/partyspiele", "/vermietung"]) {
       expect(urls).toContain(`https://trinkgut-jammers.de${path}`);
     }
+    for (const path of ["/handzettel", "/gewinnspiel/archiv", "/merkzettel", "/bewerbung", "/bewerbung/verwaltung"]) {
+      expect(urls).not.toContain(`https://trinkgut-jammers.de${path}`);
+    }
+  });
+
+  it("declares reciprocal translations only for the real homepage pair", () => {
+    const entries = sitemap();
+    for (const path of ["/", "/nl"]) {
+      expect(entries.find(entry => entry.url === `https://trinkgut-jammers.de${path}`)?.alternates?.languages).toEqual({
+        de: "https://trinkgut-jammers.de/", nl: "https://trinkgut-jammers.de/nl",
+      });
+    }
+    expect(entries.filter(entry => entry.alternates)).toHaveLength(2);
   });
 });

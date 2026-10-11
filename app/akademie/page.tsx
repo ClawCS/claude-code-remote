@@ -5,13 +5,14 @@ import styles from "@/components/editorial/learning.module.css";
 import editorial from "@/components/editorial/editorial.module.css";
 import { courses } from "@/data/akademie";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { academyCertificates } from "@/data/academy-certificates";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Getränkeakademie",
   description: "Lernen rund um Bier, Wein und Spirituosen: kostenlose Lektionen, Quiz und Abschlusstests sowie Hinweise auf externe Weiterbildungen.",
-  alternates: { canonical: "/akademie" },
-};
+  path: "/akademie",
+});
 
 export default function AkademiePage() {
   return <>

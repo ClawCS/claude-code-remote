@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import GiveawayCard from "@/components/giveaways/GiveawayCard";
 import styles from "@/components/giveaways/giveaways.module.css";
 import { GIVEAWAYS_2026, GIVEAWAYS_UPDATED_ON } from "@/data/giveaways";
@@ -8,7 +9,10 @@ import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 import PageIntro from "@/components/editorial/PageIntro";
 import collection from "@/components/editorial/collection.module.css";
 
-export const metadata: Metadata = { title: "Gewinnspielarchiv 2026", robots: { index: false, follow: true } };
+export const metadata: Metadata = {
+  ...buildPageMetadata({ title: "Gewinnspielarchiv 2026", description: "Beendete Gewinnspiele von Trinkgut Jammers aus 2026 mit Links zu den Originalbeiträgen und Teilnahmebedingungen.", path: "/gewinnspiel/archiv" }),
+  robots: { index: false, follow: true },
+};
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 

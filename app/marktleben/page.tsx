@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { MARKET_PHOTOS } from "@/data/market-photos";
@@ -7,11 +8,11 @@ import { USER_MARKET_PHOTOS } from "@/data/user-market-photos";
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/collection.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Marktleben in Goch",
   description: "Echte Einblicke in den Getränke- und Marktalltag bei Trinkgut Jammers in Goch. Menschen, Aufbauten und persönliche Beratung.",
-  alternates: { canonical: "/marktleben" },
-};
+  path: "/marktleben",
+});
 
 export default function MarktlebenPage() {
   const groups = [

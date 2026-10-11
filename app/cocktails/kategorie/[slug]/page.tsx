@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { notFound } from "next/navigation";
 import { RecipeCategories, RecipeGrid, RecipeIntro } from "@/components/recipes/RecipeCollection";
 import { cocktailCatalog, findCocktailCategory } from "@/lib/cocktail-routes";
@@ -12,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = findCocktailCategory((await params).slug);
   if (!category) notFound();
-  return { title: `Cocktails mit ${category.name}`, description: `${category.recipes.length} Cocktail-Rezepte mit ${category.name}: Zutaten, Zubereitung und Tipps.`, alternates: { canonical: category.href } };
+  return buildPageMetadata({ title: `Cocktails mit ${category.name}`, description: `${category.recipes.length} Cocktail-Rezepte mit ${category.name}: Zutaten, Zubereitung und Tipps.`, path: category.href });
 }
 export default async function CocktailCategoryPage({ params }: Props) {
   const category = findCocktailCategory((await params).slug);

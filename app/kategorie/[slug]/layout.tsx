@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { categories } from "@/lib/utils";
 
 // Nur existierende Kategorie-Slugs sind gültig → sonst echtes 404
@@ -16,11 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: "Diese Kategorie ist aktuell nicht verfügbar.",
     };
   }
-  return {
+  return buildPageMetadata({
     title: `${category.name} — Sortiment`,
     description: `${category.name} aus unserem Sortiment bei Trinkgut Jammers Goch — Top-Marken auf einen Blick.`,
-    alternates: { canonical: `/kategorie/${category.slug}` },
-  };
+    path: `/kategorie/${category.slug}`,
+  });
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

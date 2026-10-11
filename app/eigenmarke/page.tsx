@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import Image from "next/image";
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/collection.module.css";
@@ -6,10 +7,11 @@ import { eigenmarken } from "@/data/eigenmarken";
 import AcademyEntry from "@/components/AcademyEntry";
 import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
   description: "Sechs handwerklich kuratierte Eigenmarken-Liköre — exklusiv bei Trinkgut Jammers in Goch.",
-};
+  path: "/eigenmarke",
+});
 
 export default function EigenmarkePage() {
   const photo = EIGENMARKEN_GROUP_SCENE;

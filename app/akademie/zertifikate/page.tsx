@@ -3,13 +3,14 @@ import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/learning.module.css";
 import editorial from "@/components/editorial/editorial.module.css";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { academyCertificates as zertifikatskurse } from "@/data/academy-certificates";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Professionelle Zertifikatskurse | Getränkeakademie",
   description: `${zertifikatskurse.length} Weiterbildungshinweise zu IHK, WSET und Sommelier-Qualifikationen. Termine, Preise und Anmeldung bitte beim jeweiligen Anbieter prüfen.`,
-  alternates: { canonical: "/akademie/zertifikate" },
-};
+  path: "/akademie/zertifikate",
+});
 
 const kategorien = [
   { key: "wein" as const, label: "Wein", icon: "\uD83C\uDF77", color: "from-purple-600 to-purple-800" },

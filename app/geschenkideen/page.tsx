@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
@@ -8,7 +9,7 @@ import { SITE_LINKS } from "@/lib/cinematic/site";
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/collection.module.css";
 
-export const metadata: Metadata = { title: "Geschenkideen aus Goch", description: "Getränke als Geschenk, Geschenkkörbe und persönliche Beratung bei Trinkgut Jammers in Goch. Zusammenstellung und Verfügbarkeit persönlich abstimmen.", alternates: { canonical: "/geschenkideen" } };
+export const metadata: Metadata = buildPageMetadata({ title: "Geschenkideen aus Goch", description: "Getränke als Geschenk, Geschenkkörbe und persönliche Beratung bei Trinkgut Jammers in Goch. Zusammenstellung und Verfügbarkeit persönlich abstimmen.", path: "/geschenkideen" });
 
 export default function GeschenkideenPage() {
   const photo = MARKET_PHOTOS.gifts;

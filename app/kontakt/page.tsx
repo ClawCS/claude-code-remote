@@ -2,14 +2,16 @@ import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/transaction.module.css";
 import editorial from "@/components/editorial/editorial.module.css";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Kontakt",
   description: "Kontaktiere Trinkgut Jammers in Goch — Telefon, WhatsApp, E-Mail, Adresse und Öffnungszeiten.",
-};
+  path: "/kontakt",
+});
 
 export default function KontaktPage() {
   return (

@@ -1,11 +1,14 @@
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/transaction.module.css";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { MARKET } from "@/lib/cinematic/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Impressum",
-};
+  description: "Anbieterangaben und Kontaktinformationen von Trinkgut Jammers in Goch.",
+  path: "/impressum",
+});
 
 export default function ImpressumPage() {
   return (

@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { REGIONAL_SPECIALTIES } from "@/data/regional-specialties";
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/collection.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Regionale Spirituosen in Goch",
   description: "Brüdergeist-Spezialitäten und regionale Genussideen bei Trinkgut Jammers in Goch. Persönlich beraten lassen und Verfügbarkeit im Markt abstimmen.",
-  alternates: { canonical: "/regionale-spirituosen" },
-};
+  path: "/regionale-spirituosen",
+});
 
 export default function RegionaleSpirituosenPage() {
   return <>

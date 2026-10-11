@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { courses } from "@/data/akademie";
 
 // Nur existierende Kurs-Slugs sind gültig → sonst echtes 404
@@ -16,11 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: "Dieser Akademie-Kurs ist aktuell nicht verfügbar.",
     };
   }
-  return {
+  return buildPageMetadata({
     title: `${course.title} — ${course.lessons.length} Lektionen`,
     description: course.description,
-    alternates: { canonical: `/akademie/${course.slug}` },
-  };
+    path: `/akademie/${course.slug}`,
+  });
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

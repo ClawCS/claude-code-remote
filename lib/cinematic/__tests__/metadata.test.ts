@@ -14,14 +14,14 @@ import {
 
 describe("homepage metadata", () => {
   test("canonicalizes catalogue filters and duplicate handzettel views to their own destinations", () => {
-    expect(academyMetadata.alternates?.canonical).toBe("/akademie");
+    expect(academyMetadata.alternates?.canonical).toBe("https://trinkgut-jammers.de/akademie");
     expect(academyMetadata.description).toMatch(/Lektionen|Lernen/);
-    expect(productsMetadata.alternates?.canonical).toBe("/produkte");
-    expect(offersMetadata.alternates?.canonical).toBe("/angebote");
-    expect(flyersMetadata.alternates?.canonical).toBe("/angebote");
+    expect(productsMetadata.alternates?.canonical).toBe("https://trinkgut-jammers.de/produkte");
+    expect(offersMetadata.alternates?.canonical).toBe("https://trinkgut-jammers.de/angebote");
+    expect(flyersMetadata.alternates?.canonical).toBe("https://trinkgut-jammers.de/angebote");
     for (const metadata of [offersMetadata, flyersMetadata]) {
       expect(metadata.description).toMatch(/Originalhandzettel/);
-      expect(metadata.title).toBe(String(metadata.title).trim());
+      expect(metadata.title).toEqual({ absolute: metadata.openGraph?.title });
     }
   });
   test("keeps root-only canonical, hreflang, and OG out of site metadata", () => {
@@ -46,7 +46,7 @@ describe("homepage metadata", () => {
       ],
     });
     expect(nlMetadata.alternates).toEqual({
-      canonical: "/nl",
+      canonical: "https://trinkgut-jammers.de/nl",
       languages: { de: "/", nl: "/nl" },
     });
     expect(nlMetadata.keywords).toBeUndefined();

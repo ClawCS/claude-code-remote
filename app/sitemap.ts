@@ -11,7 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/", priority: 1.0, changeFrequency: "daily" },
     { path: "/produkte", priority: 0.9, changeFrequency: "daily" },
     { path: "/angebote", priority: 0.9, changeFrequency: "daily" },
-    { path: "/handzettel", priority: 0.9, changeFrequency: "weekly" },
     { path: "/eigenmarke", priority: 0.9, changeFrequency: "monthly" },
     { path: "/geschenkideen", priority: 0.7, changeFrequency: "monthly" },
     { path: "/marktleben", priority: 0.7, changeFrequency: "monthly" },
@@ -24,8 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/galerie", priority: 0.7, changeFrequency: "monthly" },
     { path: "/community", priority: 0.7, changeFrequency: "weekly" },
     { path: "/gewinnspiel", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/gewinnspiel/archiv", priority: 0.5, changeFrequency: "monthly" },
-    { path: "/merkzettel", priority: 0.6, changeFrequency: "monthly" },
     { path: "/leergut", priority: 0.7, changeFrequency: "monthly" },
     { path: "/oeko-tracker", priority: 0.6, changeFrequency: "weekly" },
     { path: "/partyspiele", priority: 0.7, changeFrequency: "monthly" },
@@ -47,5 +44,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${r.path}`,
     changeFrequency: r.changeFrequency,
     priority: r.priority,
+    ...(r.path === "/" || r.path === "/nl" ? {
+      alternates: { languages: { de: `${baseUrl}/`, nl: `${baseUrl}/nl` } },
+    } : {}),
   }));
 }

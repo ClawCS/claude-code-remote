@@ -1,23 +1,19 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/search-metadata";
 import { MARKET } from "@/lib/cinematic/site";
 
 const description =
   `Bekijk de actuele folders van Trinkgut Jammers, ${MARKET.street} in Goch. Persoonlijk advies, feestbenodigdheden en verhuur. Plan je bezoek: ma–za 08:00–20:00 uur.`;
 
 export const metadata: Metadata = {
-  title: {
-    absolute: "Jouw drankenadres in Goch | Trinkgut Jammers",
-  },
-  description,
-  openGraph: {
+  ...buildPageMetadata({
     title: "Jouw drankenadres in Goch | Trinkgut Jammers",
     description,
     locale: "nl_NL",
-    type: "website",
-    siteName: "Trinkgut Jammers",
-  },
+    path: "/nl",
+  }),
   alternates: {
-    canonical: "/nl",
+    canonical: "https://trinkgut-jammers.de/nl",
     languages: {
       de: "/",
       nl: "/nl",
