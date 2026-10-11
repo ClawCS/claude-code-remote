@@ -25,7 +25,7 @@ for (const route of routes) {
     for (const href of hrefs) {
       const url = new URL(href, base);
       if (url.origin !== base.origin) throw new Error(`cross-origin CSS ${url.origin}`);
-      const cssResponse = await fetch(url, { signal: AbortSignal.timeout(25000) });
+      const cssResponse = await fetch(url, { redirect: "error", signal: AbortSignal.timeout(25000) });
       if (cssResponse.status !== 200 || !cssResponse.headers.get("content-type")?.includes("text/css")) {
         throw new Error(`CSS not retrievable: ${url.pathname} (${cssResponse.status})`);
       }
