@@ -8,7 +8,7 @@
 
 **Tech Stack:** Existing Next.js 16.3.8 / React 19.2.4 / TypeScript / Vitest / Playwright / Sharp / pdf-lib, Node >=22.13.0; existing Hetzner Linux deployment. No new provider, database, dependency or server service.
 
-**Spec:** `docs/superpowers/specs/2026-10-11-nl-publication-streams-design.md`; approved chat presentation is the business basis, this technical plan remains awaiting review.
+**Spec:** `docs/superpowers/specs/2026-10-11-nl-publication-streams-design.md`; technical plan and recommended separated implementation/review method approved by Niko with `leg los` on 11.10.2026. Execution ledger: `.superpowers/sdd/2026-10-11-nl-publication-streams/progress.md`.
 
 ## Global Constraints
 

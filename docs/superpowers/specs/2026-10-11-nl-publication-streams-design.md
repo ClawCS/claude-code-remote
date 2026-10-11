@@ -43,6 +43,6 @@ Stand: 11.10.2026. Die fachliche Darstellung wurde im Chat erklärt und von Niko
 
 ## Abnahme
 
-Unabhängiger Builder-Check am 11.10.2026: keine wichtigen unbeantworteten Fragen. Der technische Plan wartet auf die vorgesehene Betreiberprüfung; keine Implementierung erfolgt.
+Unabhängiger Builder-Check am 11.10.2026: keine wichtigen unbeantworteten Fragen. Anschließend bestätigt Niko den gespeicherten technischen Plan samt getrennter Umsetzung/Prüfung mit `leg los`. Umsetzung und KW42-Veröffentlichung nach bestandenen Gates sind beauftragt; dieser Vermerk ist noch kein Ausführungsnachweis.
 
 Reguläre KW42-PDFs, vollständige Covers und sämtliche Originalangebote hashgebunden; richtige Quellen und vollständige Zählung. Zusatzfälle mit echten oder eindeutig synthetischen Testdaten: Überlappung, anderer Starttag, Sonntag, Monats-/Jahreswechsel, Berliner Mitternacht/DST, fehlende Wochenwerbung, defekte Zusatzdatei. Keine gültige Gegenausgabe verschwindet durch einen eindeutig zuordenbaren Quellenfehler. Alle APIs und sichtbaren Seiten stimmen überein; Mobil/Desktop und Tastaturbedienung bleiben nutzbar. Erst tatsächliche HTTPS-Prüfungen nach frischem Linux-Webrelease erlauben die Meldung „veröffentlicht“.
