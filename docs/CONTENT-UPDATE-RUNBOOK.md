@@ -1,5 +1,25 @@
 # Wochenredaktion Trinkgut Jammers
 
+## Quellenkorrektur vom 11.10.2026 — Vorgabe dokumentiert, technische Umstellung offen
+
+Niko unterscheidet ausdrücklich drei niederländische Anzeigenreihen:
+
+| Medium | Rhythmus | Originalquelle |
+| --- | --- | --- |
+| Maasduinen | Zwölf Schaltungen pro Jahr; keine festen monatlichen Termine bestätigt | Vom Markt selbst gestaltete Canva-Anzeige |
+| De Maas Driehoek | Gerade ISO-Kalenderwochen | Agenturoriginal im Betreiberordner `Fotos Homepage/Handzettel Holland/De Maas driehoek/` |
+| Udens Weekblad | Ungerade ISO-Kalenderwochen | Agenturoriginal im Betreiberordner `Fotos Homepage/Handzettel Holland/Udens Weekblad/` |
+
+Damit ist die frühere Gleichsetzung „NL-Wochenwerbung = Maasduinen aus Canva“ fachlich überholt. „De“ im Zeitungsnamen ist kein Sprachcode: Beide Agenturanzeigen sind der niederländischen Werbung zuzuordnen. Der offizielle deutsche Goch-Handzettel bleibt davon unberührt. Maßgeblich bleibt immer der tatsächlich gedruckte Angebotszeitraum samt Jahr; Dateiname, Wochenparität oder Canva-Änderungsdatum reichen allein nicht aus. Keine regelmäßigen Monatstermine aus zwölf Schaltungen ableiten.
+
+**Geprüfter Eingang, noch nicht importiert:** `KW 42 De Maas Driehoek.pdf` ist vorhanden, enthält genau eine Seite und druckt „42e week: 12.10. - 17.10.2026“. PDF und vollständiger Seitenrender wurden lokal gelesen; die Zuordnung zum Medium stammt aus Betreiberangabe und Ablage, nicht aus einem sichtbaren Zeitungstitel auf der Seite. Umfang: 3.113.358 Bytes; SHA-256 `b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d`. Dies ist eine Quellen-/Datumsinventur, noch keine vollständige Preis-, Angebotskachel- oder Veröffentlichungsabnahme. Der geprüfte Ordner für Udens Weekblad ist derzeit leer.
+
+**Umsetzungsgrenze:** `lib/flyer-packages.ts`, die Wochenpakettypen/-validierung, der Importer und `scripts/content-weekly.ts` setzen NL bisher auf Canva-Herkunft fest. `data/editorial/source-config.json` führt Maasduinen noch als verpflichtendes Canva-Design. Die folgenden Canva-exklusiven Arbeitsschritte beschreiben diesen bisherigen technischen Stand und dürfen nicht dazu führen, Agenturmaterial als Canva zu deklarieren oder Maasduinen automatisch als Ersatz für eine fehlende Agenturwoche zu verwenden. Vor Agenturimport sind getrennte belegbare Quellentypen, Validierung, Tests und passende Automationsprompts erforderlich; keine erfundenen Design-IDs oder Prüf-Bypässe. Die tatsächliche Herkunft der bereits veröffentlichten KW41-Ausgabe und ihre historischen Nachweise bleiben unverändert.
+
+**Offene Darstellungsentscheidung:** Soll eine datumsrichtige Maasduinen-Anzeige zusätzlich zur regulären wöchentlichen NL-Ausgabe erscheinen? Empfehlung: separate zusätzliche Anzeige innerhalb ihres gedruckten Zeitraums, nicht als Ersatz der Wochenwerbung. Das derzeitige Paketmodell erlaubt nur eine NL-Ausgabe je Woche und untersagt überlappende NL-Zeiträume; eine parallele Darstellung erfordert eine geprüfte Modellerweiterung. Bis zur Entscheidung keine zusätzliche Ausgabe eigenmächtig aktivieren.
+
+Dieser Nachtrag ändert weder Content-Dateien noch Importlogik, Zeitpläne, gespeicherte Automationsprompts oder die Live-Website. Vorbereitung und Veröffentlichung der neuen Agenturquelle bleiben offen.
+
 ## Wochenpaket-Umstellung vom 08.10.2026: öffentlich geprüft
 
 Seit 08.10.2026, 20:08 UTC, liefert App-Release `eb1338c` die geprüften DE-/NL-Originale, vollständigen Vorschauen und alle 128 KW41-Angebote vom eigenen Server aus. Originalquellen bleiben Trinkgut (DE) und Canva (NL). Ein Manifest unter `data/editorial/weekly-publications/<Montag>.json` bindet die Dateien und vollständigen Angebotskacheln. Import, redaktionelle Vollständigkeit, Release und öffentliche Abnahme sind getrennte Schritte. Der [Paketbericht](audits/2026-10-08-weekly-publication-packages.md) enthält die tatsächliche HTTPS-Abnahme: Content-Prüfung erfolgreich, HTTP-Audit mit 117 Seiten / 2.821 Ressourcen / 30 API-Prüfungen ohne Fehler und Warnungen. Der vorherige Release `53c01a0` bleibt als Rückrollziel erhalten. Beide bestehenden Automationen sind auf diesen Ablauf aktualisiert, ihre Zeitpläne unverändert.
