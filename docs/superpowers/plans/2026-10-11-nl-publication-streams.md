@@ -4,6 +4,8 @@
 
 **Goal:** Agency-sourced main NL weekly flyers plus independently dated supplemental Maasduinen advertisements, followed by a verified KW42 release.
 
+**Execution status, 11 October 2026:** Tasks 1–6 completed, independently reviewed and released as `8613344`. Fresh Linux build and real public HTTPS/content/browser checks passed. KW42 is scheduled for its original 12–17 October dates, not active prematurely on Sunday. Detailed outcomes, four explicit workflow rulings and remaining unrelated operational limits are recorded in `docs/audits/2026-10-11-nl-publication-streams.md`. Checklists below preserve the approved task instructions; execution evidence supersedes the historical pending-review wording.
+
 **Architecture:** Preserve historical weekly bindings, add typed agency provenance and a separate per-issue supplemental registry, and reuse the immutable asset/layout verification and transaction mechanism. One verified selection feeds all public pages and APIs; old offer clients retain their wire contract.
 
 **Tech Stack:** Existing Next.js 16.3.8 / React 19.2.4 / TypeScript / Vitest / Playwright / Sharp / pdf-lib, Node >=22.13.0; existing Hetzner Linux deployment. No new provider, database, dependency or server service.
