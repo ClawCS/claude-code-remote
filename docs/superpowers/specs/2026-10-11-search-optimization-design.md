@@ -2,6 +2,8 @@
 
 Niko hat den zwölfseitigen SEO-/GEO-/AEO-Report vom 11.10.2026 mit „ok dann umsetzen“ freigegeben. Dies konkretisiert den dortigen Plan, kein neuer Designauftrag.
 
+**Veröffentlichungsfreigabe im laufenden Auftrag:** „Nach Prüfung direkt live stellen“. Die nachfolgende Bedingung der gesonderten Veröffentlichungsbestätigung ist damit erfüllt; Tests, unabhängige Prüfung, frischer Linux-Release und öffentliche Abnahme bleiben verpflichtend. Weitere Hosting-/Sicherheitsänderungen sind damit nicht freigegeben.
+
 ## Ziel
 
 Bestehende Inhalte eindeutig indexierbar, als Antworten direkt erreichbar und technisch leichter machen. Den filmischen Look, die Originalmedien, die Wochenpakete und sämtliche Betriebsgrenzen erhalten. Keine Ranking-, Rich-Result- oder KI-Zitatgarantie.
