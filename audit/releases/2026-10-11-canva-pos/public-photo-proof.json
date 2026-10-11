@@ -1,0 +1,71 @@
+{
+  "at": "2026-10-11T14:49:30.835Z",
+  "origin": "https://trinkgut-jammers.de",
+  "files": [
+    {
+      "path": "/images/editorial/canva/safari-display.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 101222,
+      "sha256": "25bb1b6d09ab30dd8c6374da26d9b07d69112985d755441a1548af1e38d88aef"
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-il-padrino.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 100884,
+      "sha256": "87ddbab3be745ff2b5a67ef4cff449353fbed4f063b35d730d3cc33bef461922"
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-moritz-fiege.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 135654,
+      "sha256": "393de30badc0dd647ba2d563b096fa309c837187a718150e1b0296dc15e0a8a8"
+    },
+    {
+      "path": "/images/editorial/canva/likoer-verkostung.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 85486,
+      "sha256": "ebdfd93431362b6332085da2cacf4c7dca16732d223e718967573469b130ed25"
+    },
+    {
+      "path": "/images/editorial/canva/almdudler-aufbau.webp",
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 135840,
+      "sha256": "b2983a94c7507103aa2211ab876bfdf471ea90a10d894106ccc78d9faa8144a6"
+    }
+  ],
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": [
+        "verkostung-moritz-fiege"
+      ]
+    },
+    {
+      "path": "/marktleben",
+      "status": 200,
+      "expected": [
+        "safari-display",
+        "verkostung-il-padrino",
+        "verkostung-moritz-fiege",
+        "likoer-verkostung",
+        "almdudler-aufbau"
+      ]
+    }
+  ],
+  "modes": [
+    {
+      "path": "/api/rentals/config",
+      "enabled": false
+    },
+    {
+      "path": "/api/bewerbung/config",
+      "enabled": false
+    }
+  ]
+}

@@ -1,6 +1,34 @@
 # Canva-Fotoergänzung — 11. Oktober 2026
 
-## Stand: alle ausgewählten Motive lokal umgesetzt, nicht veröffentlicht
+## Stand: veröffentlicht und öffentlich geprüft
+
+- App-Release `f3a1cbdf782983973e7c458c0654fffbff7d1c75`, Umschaltung **11.10.2026, 14:43:35 UTC / 16:43:35 Europe/Berlin** auf `https://trinkgut-jammers.de`. Rückrollziel `8613344dca4aa2644e03dcf50b35a360e16dbab1` erhalten.
+- Nach Nikos gesonderter Antwort „freigabe erteilt“ ausschließlich die vorher konkret angefragten inaktiven Releases `077412ba7211e94fc40de26f8f02f87325c85038` und `9b9dd9a87991a9a2cdd22927d9d3f64813ad991f` entfernt. Vorher Host, aktuelles Ziel, Rückfallversionen, Mounts und Prozessnutzung geprüft. Aktuelle und beide jüngsten Rückfallversionen blieben erhalten; keine weitere Releasebereinigung. Abschließend rund 3,8 GiB frei nach Entfernung des eigenen temporären Übertragungsarchivs.
+- Sauberes Archiv ausschließlich aus dem geprüften Commit und der Runbook-Positivliste; SHA-256 `868fa1ff2cada34c86e6efd272df6287d067437c324b9a949a2336e8cffcfd08`. Keine privaten Rohquellen, Zugangsdaten oder fremden Arbeitsänderungen im Paket. Linux-Neubuild in neuem Releaseverzeichnis; laufendes `current` nicht editiert.
+- Frisch lokal **108 Dateien / 1.904 Webtests** bestanden. Linux: **105 Dateien / 1.869 Webtests**, Lint, TypeScript, 210 Originalangebote samt Bildern, Asset-/Paketprüfung und Produktionsbuild bestanden. Die drei browserabhängigen Tests ausschließlich wie im Runbook auf Linux ausgeschlossen und lokal bestanden; native Bewerbungsdienste nicht als vollständig abgenommen ausgeben.
+- Unabhängige Nur-Lese-Prüfung von App-Diff, Bestands-/Bildhashes, Archivweg und Umschaltskript ohne Releaseblocker. Mount-Inventar vor Löschung auf fehlgeschlagene Inventarisierung absichernd korrigiert. Vererbter Bash-ERR-Trap isoliert über einen absichtlich fehlgeschlagenen Funktionsaufruf geprüft; kein absichtlicher Produktionsausfall.
+
+### Öffentlicher Nachweis und Bildoptimierer-Vorfall
+
+Die erste öffentliche HTTP-Prüfung war grün, deckte aber einen anschließend visuell bemerkten Zustand einzelner AVIF-Bildgrößen nicht ab:
+
+1. Almdudler und Likör-Verkostung bei Breite 360: AVIF-GET jeweils 30 Sekunden ohne Antwort; derselbe Almdudler-GET direkt gegen localhost 12 Sekunden ohne Antwort. Originaldatei 200 in 0,004 Sekunden, WebP-Variante 200 in 0,176 Sekunden, neue AVIF-Größe 390 in 0,449 Sekunden. Keine defekte Originaldatei und kein belegter Proxy-/DNS-Fehler.
+2. Derselbe Prozesszustand war bereits im Atmosphäre-Release dokumentiert. Prozess-/Release-/Konfigurationszustand vor dem Eingriff aufgenommen; unabhängige Gegenprüfung bestätigte die Eingrenzung auf einzelne Optimierer-Schlüssel. Eine ungelöste gemeinsame Bildberechnung ist plausibel, aber **nicht als bewiesene Ursache ausgeben**. Ein gleichzeitiger `NoFallbackError` bei der HTTP-Prüfung beweist keinen Zusammenhang.
+3. Ein kontrollierter Neustart ausschließlich der bestehenden Next-Unit, ohne Code-, Format-, Cache-, Caddy- oder Sicherheitsänderungen. Bereitschaft abgesichert, alter Release als Fehler-Rückfall vorhanden. Um **14:48:51 UTC** gleicher App-Release aktiv; beide zuvor hängenden lokalen AVIF-GETs 200 in 0,820 bzw. 0,227 Sekunden. Kurze Verbindungsablehnung unmittelbar nach Dienststart wurde durch die begrenzte Bereitschaftsprobe erwartungsgemäß aufgefangen.
+4. Danach **33 tatsächlich geladene und dekodierte öffentliche AVIF-Varianten** bestanden: fünf neue Fotos in 360/768/1280 sowie sechs Originalflaschen in 256/360/640. Langsamste Anfrage 722 ms. Kein HEAD-Ersatz. Fünf öffentliche WebP-Dateien erneut mit Typ, Bytezahl und SHA-256 gegen lokal geprüft, identisch. Das ist eine Wiederherstellung des Betriebs, keine bewiesene dauerhafte Fehlerkorrektur; bei erneutem Stillstand Rückfall/gezielte Ursachenprüfung statt fortlaufender Neustarts.
+
+Nach dem Neustart erneut:
+
+- `content:check -- --url https://trinkgut-jammers.de`: grün, echte Berliner Sonntagszeit; regulär abgelaufene KW41 nicht als aktiv angezeigt.
+- `content:check -- --week 2026-10-12 --url https://trinkgut-jammers.de`: grün, DE und De Maas Driehoek einschließlich öffentlicher Original-/Cover-/Kachelbindung für 12.–17.10.2026 geprüft; keine Testuhr und keine vorgezogene Aktivierung der 70 DE-/12 NL-Angebote.
+- `audit:public`: **117 Seiten, 1.689 lokale Ressourcen, 31 API-Verträge, fünf unbekannte Pfade**, keine Fehler/Warnungen. 1.119 externe Links nicht abgerufen; kein Vollcheck fremder Websites behaupten.
+- Browser 1440px/390px: Moritz-Fiege-Einstieg und Link zu `/marktleben`, neue Verkostungs-/Aufbautenfotos geladen, natürliche Seitenverhältnisse mit `contain`, kein horizontaler Überlauf. Film abspielen/pausieren, Desktop-/Mobilquelle, mobile Sortiment-Navigation und sichtbarer Tastaturfokus an der Flaschenbühne geprüft; alle sechs Originalflaschen auch im Mobilbrowser dekodiert. Reduced-motion-Verhalten war Teil der frisch bestandenen lokalen Chromium-Suite, nicht erneut öffentlich emuliert. Zwei zunächst unpassende Prüfselektoren korrigiert; keine App-Fehler daraus abgeleitet. Temporären Viewport zurückgesetzt.
+- IPv4/IPv6 HTTPS jeweils 200; neun Sicherheits-/Dienstkonfigurationshashes identisch. Mietbetrieb `enabled:false`, `testMode:false`, `onlinePayment:false`; Bewerbung `enabled:false`, `mode:disabled`.
+- `npm ci` meldete fünf hohe Audit-Pakete aus demselben bereits dokumentierten `braces`-Befund der ESLint-Entwicklungskette (Audit S-01). Paketdateien gegenüber vorherigem Live-Stand unverändert; frischer Produktions-Abhängigkeitsaudit ohne Advisory. Keine pauschale Sicherheitsfreigabe und kein automatisches Abhängigkeitsupdate.
+
+Nur dieser Fotoumfang ist abgeschlossen. Native Bewerbungsqualifikation, andere Projektaudit-Befunde und bestehende Betriebsgrenzen bleiben offen/unverändert. Keine Canva-Änderungen, echten Mails, Bewerbungen, Zahlungen oder Löschläufe. Die beiden folgenden Abschnitte dokumentieren die lokale Vorbereitung und damalige Zwischenstände.
+
+## Lokale Vorbereitung vor Veröffentlichung
 
 ### Ergänzung nach Personenfreigabe
 
@@ -45,6 +73,6 @@ Auftrag: Weitere Bilder aus der vorgelegten Point-of-Sale-Collage passend in die
 - Lokaler Browser: Startseite und Marktleben-Foto laden; Desktop und 390px Mobil ohne horizontalen Überlauf, natürliche Bildproportionen und keine Preisbeschriftung. Temporären Viewport zurückgesetzt.
 - Unabhängige Nur-Lese-Prüfung: keine kritischen/wichtigen Befunde im Safari-Teilumfang; alle 15 bisherigen Einträge und sämtliche 16 Dateipaare unabhängig gehasht.
 
-## Offen vor Veröffentlichung
+## Historischer Freigabestand vor dem Live-Lauf
 
-Die Personenfreigabe ist inzwischen erteilt und umgesetzt. Weiterhin fehlt die separat angefragte Freigabe zur Entfernung zweier genau benannter alter Server-Releases (`077412ba…`, `9b9dd9a…`); keine eigenmächtige Speicherbereinigung. Ein neuer Linux-Release/Produktionsbuild und öffentlicher Abgleich wurden in diesem Fotolauf nicht ausgeführt. Lokal/Git ist kein Live-Nachweis. Die Veröffentlichung der Fotoergänzung ist daher noch offen.
+Beim Abschluss der lokalen Vorbereitung war die Personenfreigabe erteilt, die separate Release-Löschfreigabe noch ausstehend. Diese ist anschließend ausdrücklich erteilt und ausschließlich für die beiden benannten Releases umgesetzt worden. Der neue Linux-Release und die öffentliche Abnahme sind im aktuellen Stand oben dokumentiert; die frühere Veröffentlichungssperre dieses Fotopakets ist aufgehoben.
