@@ -9,7 +9,7 @@ import { createElement } from "react";
 import { streamReactMarkup } from "./fixtures/streamed-markup";
 
 const repo=process.cwd();
-async function prepareReviewed(options:{missingNl?:boolean;badCover?:boolean;stageOnly?:boolean;corruptNl?:boolean}={}) {
+async function prepareReviewed(options:{missingNl?:boolean;badCover?:boolean;stageOnly?:boolean;corruptNl?:boolean;futureWeek?:boolean}={}) {
   const f=await weeklyPublicationFixture();
   try {
     if(options.missingNl) { f.sources.splice(1);f.offers.splice(2);await f.save();await f.write("data/editorial/flyers.json","[]"); }
@@ -21,21 +21,34 @@ async function prepareReviewed(options:{missingNl?:boolean;badCover?:boolean;sta
       const viewer='<!doctype html><meta http-equiv="expires" content="Sat, 10 Oct 2026 23:59:59 CEST"><title>KW41 2747 RHEINRUHR</title><script>var catalogId = \'1390117\'; var catalogGroupId = \'13027\'; var catalogVersion = \'1\'; var catalogName = \'KW41 2747 RHEINRUHR\';</script>';
       const xml='<catalog name="KW41 2747 RHEINRUHR" nofpages="2"><structure><detaillevel name="normal" width="625" height="905" path="../normal/" filename="bk_" extension="jpg"/><detaillevel name="thumb" width="83" height="120" path="../thumbnails/" filename="bk_" extension="jpg"/></structure><mapping><range id_start="1" nr_start="1" pages="2"/></mapping></catalog>';
       await f.write("test-original.pdf",f.pdfs[0]);await f.write("test-cover.jpg",await sharp(f.image).jpeg().toBuffer());
-      await f.write("test-official-import.json",JSON.stringify({viewer,xml,base,pdfUrl:f.catalog.pdfUrl,viewerUrl:f.catalog.viewerUrl}));
+      const future=(text:string)=>options.futureWeek?text.replaceAll("1390117","1394743").replaceAll("KW41","KW42").replace("10 Oct 2026","17 Oct 2026"):text;
+      await f.write("test-official-import.json",JSON.stringify({viewer:future(viewer),xml:future(xml),base:future(base),pdfUrl:future(f.catalog.pdfUrl),viewerUrl:f.catalog.viewerUrl}));
     }
     await f.write("data/editorial/source-config.json",JSON.stringify({publicUrl:null}));
     const manifest=await readFile(path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json"));
     const metadata=await readFile(path.join(f.root,"data/editorial/official-catalogs/2026-10-05.json"));
     const result=await new Promise<{code:number|null;report:{errors:string[];sources:Record<string,unknown>[];packageVerified?:boolean;packageScope?:string;subsequentReleaseGates?:string[]}}>((resolve,reject)=>{
-      const child=spawn(process.execPath,["--import",path.join(repo,"node_modules/tsx/dist/loader.mjs"),"--import",path.join(repo,"lib/__tests__/fixtures/content-check-fetch.mjs"),path.join(repo,"scripts/content-weekly.ts"),"--prepare","--week","2026-10-05","--now","2026-10-08T12:00:00Z"],{cwd:f.root,env:{...process.env,TSX_TSCONFIG_PATH:path.join(repo,"tsconfig.json")}});
+      const child=spawn(process.execPath,["--import",path.join(repo,"node_modules/tsx/dist/loader.mjs"),"--import",path.join(repo,"lib/__tests__/fixtures/content-check-fetch.mjs"),path.join(repo,"scripts/content-weekly.ts"),"--prepare","--week",options.futureWeek?"2026-10-12":"2026-10-05","--now",options.futureWeek?"2026-10-11T15:00:00Z":"2026-10-08T12:00:00Z"],{cwd:f.root,env:{...process.env,TSX_TSCONFIG_PATH:path.join(repo,"tsconfig.json")}});
       let stdout="",stderr="";child.stdout.on("data",chunk=>stdout+=chunk);child.stderr.on("data",chunk=>stderr+=chunk);child.on("error",reject);child.on("close",code=>{try{resolve({code,report:JSON.parse(stdout)});}catch{reject(new Error(stderr));}});
     });
     const staged=result.report.sources.find(source=>source.result==="staged-awaiting-original-layout-review");
     const stagedPdf=staged?await readFile(path.join(f.root,staged.stagingDirectory as string,"original.pdf")):undefined;
-    return {...result,stagedPdf,originalPdf:f.pdfs[0],manifestBefore:manifest,manifestAfter:await readFile(path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json")),metadataBefore:metadata,metadataAfter:await readFile(path.join(f.root,"data/editorial/official-catalogs/2026-10-05.json"))};
+    const stagedCatalog=staged?JSON.parse(await readFile(path.join(f.root,staged.stagingDirectory as string,"catalog.json"),"utf8")):undefined;
+    return {...result,stagedPdf,stagedCatalog,originalPdf:f.pdfs[0],manifestBefore:manifest,manifestAfter:await readFile(path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json")),metadataBefore:metadata,metadataAfter:await readFile(path.join(f.root,"data/editorial/official-catalogs/2026-10-05.json"))};
   } finally {await rm(f.root,{recursive:true,force:true});}
 }
 describe("reviewed local preparation",()=>{
+  it("stamps a Sunday future-week original acquisition with real execution time, not target Monday or --now",async()=>{
+    const started=Date.now();
+    const result=await prepareReviewed({stageOnly:true,futureWeek:true});
+    const finished=Date.now();
+    expect(result.code).toBe(1); // unreviewed originals remain staging-only
+    expect(result.stagedCatalog).toMatchObject({catalogId:"1394743",kw:42,validFrom:"2026-10-12",validTo:"2026-10-17"});
+    expect(Date.parse(result.stagedCatalog.fetchedAt)).toBeGreaterThanOrEqual(started);
+    expect(Date.parse(result.stagedCatalog.fetchedAt)).toBeLessThanOrEqual(finished);
+    expect(result.manifestAfter).toEqual(result.manifestBefore);
+    expect(result.metadataAfter).toEqual(result.metadataBefore);
+  });
   it("uses complete local originals despite later origin failure and preserves bound metadata bytes",async()=>{
     const result=await prepareReviewed();expect(result.code).toBe(0);expect(result.report.errors).toEqual([]);expect(result.metadataAfter).toEqual(result.metadataBefore);
     expect(result.report.packageScope).toBe("weekly-main");

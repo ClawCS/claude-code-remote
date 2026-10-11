@@ -57,6 +57,8 @@ try {
     if (!preparedPublication?.editions.some(edition => edition.language === "de")) {
       try {
         let catalog = await fetchOfficialCatalog(new Date(`${range.validFrom}T12:00:00Z`));
+        // Target-week validation must not masquerade as the original acquisition time.
+        catalog = { ...catalog, fetchedAt: new Date().toISOString() };
         validateCatalog(catalog, range);
         try {
           const bound = JSON.parse(await readFile(path.join(root, `data/editorial/official-catalogs/${range.validFrom}.json`), "utf8"));
