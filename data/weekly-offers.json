@@ -3699,5 +3699,2485 @@
     "conditions": "24 × 0,33 Liter laut Original. Teilweise koffeinhaltig.",
     "sourceWarning": "Der gedruckte Grundpreis weicht rechnerisch vom Preis und Gebinde ab. Das Original wurde nicht verändert; bitte im Markt klären.",
     "imageSha256": "a43b19e103aed1287928ca46b759dd4aba5ea1d63bf6aa0790efebcffe214b83"
+  },
+  {
+    "id": "de-2026-42-p01-01",
+    "name": "Warsteiner Pilsener, versch. Sorten, auch alkoholfrei",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-01-b14b6cb26b98371c58639a2fadb6169e86ff5d7b25ba9feff985f7e5fb5ad94c.webp",
+    "sourcePage": 1,
+    "rect": [
+      84,
+      375,
+      1318,
+      489
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        84,
+        375,
+        980,
+        489
+      ],
+      [
+        1064,
+        440,
+        338,
+        424
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Warsteiner Pilsener, versch. Sorten, auch alkoholfrei. Originalpreis/Gebinde (EUR): 11.99; APP 10.99; 20 x 0.5 l / 24 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.20 / 1.51 je Liter; APP 1.10 / 1.39. Pfand/gedruckte Bedingungen: 3.10 / 3.42; APP-Bedingungen wie bei diesem Angebot angegeben. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. APP-/PAYBACK-Angebote nur bei Vorlage der PAYBACK Karte, PAYBACK APP oder trinkgut APP an der Kasse. APP-Preise und PAYBACK-Punkte gelten nicht für Mischkästen. 11.99 EUR regulär; 10.99 EUR nur unter diesen APP-Bedingungen; gedruckte APP-Grundpreise 1.10 / 1.39 EUR/l. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 11.99 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "b14b6cb26b98371c58639a2fadb6169e86ff5d7b25ba9feff985f7e5fb5ad94c"
+  },
+  {
+    "id": "de-2026-42-p01-02",
+    "name": "Rotkäppchen Sekt o. Fruchtsecco, versch. Sorten, auch alkoholfrei",
+    "categorySlug": "sekt",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-02-960a1897b95f0cb3e09cf1a269d24a07684b1ea29d94b71688bfa93c622de7cc.webp",
+    "sourcePage": 1,
+    "rect": [
+      84,
+      865,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Rotkäppchen Sekt o. Fruchtsecco, versch. Sorten, auch alkoholfrei. Originalpreis/Gebinde (EUR): 2.99; 0.75 l Flasche. Gedruckter Grundpreis (EUR): 3.99/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 2.66 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "960a1897b95f0cb3e09cf1a269d24a07684b1ea29d94b71688bfa93c622de7cc"
+  },
+  {
+    "id": "de-2026-42-p01-03",
+    "name": "Sinalco Limonaden, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-03-0a41e198cb291c216283dd15a3ffd2bca9ed1887ea9bf4a3b0131cefb5b560c1.webp",
+    "sourcePage": 1,
+    "rect": [
+      533,
+      865,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Sinalco Limonaden, versch. Sorten. Originalpreis/Gebinde (EUR): 8.49; 12 x 1 l PET Kasten. Gedruckter Grundpreis (EUR): 0.71/l. Pfand/gedruckte Bedingungen: 3.30; teilweise koffeinhaltig. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 7.99 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "0a41e198cb291c216283dd15a3ffd2bca9ed1887ea9bf4a3b0131cefb5b560c1"
+  },
+  {
+    "id": "de-2026-42-p01-04",
+    "name": "Gerolsteiner Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-04-75b314e02831126cd36cf1325f36e9aee8ef8950a5442f102c6b36fdefed5303.webp",
+    "sourcePage": 1,
+    "rect": [
+      981,
+      865,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Gerolsteiner Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 10.00 für 2 Kästen, je 12 x 0.75 l Glas. Gedruckter Grundpreis (EUR): 0.56/l. Pfand/gedruckte Bedingungen: 3.30 je Kasten, nicht 3.30 insgesamt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. 10.00 EUR für 2 Kästen, jeder Kasten 12 x 0.75 l Glas. Zzgl. 3.30 EUR Pfand je Kasten, nicht für beide zusammen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 8.88 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "75b314e02831126cd36cf1325f36e9aee8ef8950a5442f102c6b36fdefed5303"
+  },
+  {
+    "id": "de-2026-42-p01-05",
+    "name": "Freixenet Mederano o. Mia (Spanien), versch. Sorten, auch Mia alkoholfrei",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-05-546e73999a24a754eda71ca35ad068fb7448ec415dbfef6406284b7a2dbc40fd.webp",
+    "sourcePage": 1,
+    "rect": [
+      84,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Freixenet Mederano o. Mia (Spanien), versch. Sorten, auch Mia alkoholfrei. Originalpreis/Gebinde (EUR): 2.99; 0.75 l Flasche. Gedruckter Grundpreis (EUR): 3.99/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "546e73999a24a754eda71ca35ad068fb7448ec415dbfef6406284b7a2dbc40fd"
+  },
+  {
+    "id": "de-2026-42-p01-06",
+    "name": "Ahrtal Quelle Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-06-711a14e7b7cb66b79c15159b7ef9dd3e82ef61d7576ff3169ad3332c96e6822a.webp",
+    "sourcePage": 1,
+    "rect": [
+      533,
+      1259,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Ahrtal Quelle Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 4.99; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.55/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "711a14e7b7cb66b79c15159b7ef9dd3e82ef61d7576ff3169ad3332c96e6822a"
+  },
+  {
+    "id": "de-2026-42-p01-07",
+    "name": "Römerwall Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-07-a0e77a4169946296bc43b7fa68378628b91932479c0ac7b8c134f52e54134bb9.webp",
+    "sourcePage": 1,
+    "rect": [
+      981,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Römerwall Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 4.99; 12 x 1 l PET Kasten. Gedruckter Grundpreis (EUR): 0.42/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a0e77a4169946296bc43b7fa68378628b91932479c0ac7b8c134f52e54134bb9"
+  },
+  {
+    "id": "de-2026-42-p01-08",
+    "name": "Yeni Raki, 45% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-08-9ea9e38bcbfac12e206d10420e7a5f2884d090cd500db09921e21e75f3a7b3b1.webp",
+    "sourcePage": 1,
+    "rect": [
+      84,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Yeni Raki, 45% Vol. Originalpreis/Gebinde (EUR): 12.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 18.56/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 12.99 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "9ea9e38bcbfac12e206d10420e7a5f2884d090cd500db09921e21e75f3a7b3b1"
+  },
+  {
+    "id": "de-2026-42-p01-09",
+    "name": "Bolten Alt o. Cola-Mix und weitere Sorten",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-09-228326b236e74486f0cb5bc5af4690b210a0f04999a168a8d1d305ff05e8f6f9.webp",
+    "sourcePage": 1,
+    "rect": [
+      533,
+      1652,
+      420,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Bolten Alt o. Cola-Mix und weitere Sorten. Originalpreis/Gebinde (EUR): 11.99; 20 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.82/l. Pfand/gedruckte Bedingungen: 4.50. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "228326b236e74486f0cb5bc5af4690b210a0f04999a168a8d1d305ff05e8f6f9"
+  },
+  {
+    "id": "de-2026-42-p01-10",
+    "name": "Rut Wiess Kölsch",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p01-10-977f3d8c665f0b511a3952b15db06a5b33a91273bb8ee6c0a81c10a494a91116.webp",
+    "sourcePage": 1,
+    "rect": [
+      981,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Rut Wiess Kölsch. Originalpreis/Gebinde (EUR): 12.99; 20 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.97/l. Pfand/gedruckte Bedingungen: 4.50. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 13.99 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "977f3d8c665f0b511a3952b15db06a5b33a91273bb8ee6c0a81c10a494a91116"
+  },
+  {
+    "id": "de-2026-42-p02-01",
+    "name": "Red Bull Energy Drink, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-01-4f092cf78dad25cbc21150560b1721917c74e91af0e7128bcafc57edde552b1f.webp",
+    "sourcePage": 2,
+    "rect": [
+      375,
+      446,
+      991,
+      411
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Red Bull Energy Drink, versch. Sorten. Originalpreis/Gebinde (EUR): 0.99; 250 ml Dose. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: 0.25; taurin- und koffeinhaltig. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "4f092cf78dad25cbc21150560b1721917c74e91af0e7128bcafc57edde552b1f"
+  },
+  {
+    "id": "de-2026-42-p02-02",
+    "name": "afri cola o. Bluna, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-02-d5bc792ad8af8e91582c121a6d817dfdcc86725285deea68405c2dc29eb5322b.webp",
+    "sourcePage": 2,
+    "rect": [
+      49,
+      865,
+      421,
+      377
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "afri cola o. Bluna, versch. Sorten. Originalpreis/Gebinde (EUR): 0.99; 1 l PET Flasche. Gedruckter Grundpreis (EUR): keine gesonderte Umrechnung gedruckt. Pfand/gedruckte Bedingungen: 0.25; teilweise koffeinhaltig. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "d5bc792ad8af8e91582c121a6d817dfdcc86725285deea68405c2dc29eb5322b"
+  },
+  {
+    "id": "de-2026-42-p02-03",
+    "name": "Nürburg Quelle o. PurBorn Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-03-2498fc5edf52526cd27dbf12e37d683105bffaaa3228269139b3932957a0a70b.webp",
+    "sourcePage": 2,
+    "rect": [
+      498,
+      865,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Nürburg Quelle o. PurBorn Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 3.99; 6 x 1.5 l PET Packung. Gedruckter Grundpreis (EUR): 0.44/l. Pfand/gedruckte Bedingungen: 1.50. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "2498fc5edf52526cd27dbf12e37d683105bffaaa3228269139b3932957a0a70b"
+  },
+  {
+    "id": "de-2026-42-p02-04",
+    "name": "Sinalco Aquintell Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-04-6331f137b8e506693fe7d3d39774d0cbb890d0a93ac8a32be660aa284203d517.webp",
+    "sourcePage": 2,
+    "rect": [
+      945,
+      865,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Sinalco Aquintell Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 5.49; 12 x 1 l PET Kasten. Gedruckter Grundpreis (EUR): 0.46/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "6331f137b8e506693fe7d3d39774d0cbb890d0a93ac8a32be660aa284203d517"
+  },
+  {
+    "id": "de-2026-42-p02-05",
+    "name": "Coca-Cola, Fanta o. Sprite und weitere Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-05-5cf7061f55d0d75b6c8672bc99f64feedf388f03ebf513e8ede39e003b60a3a9.webp",
+    "sourcePage": 2,
+    "rect": [
+      49,
+      1253,
+      421,
+      397
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Coca-Cola, Fanta o. Sprite und weitere Sorten. Originalpreis/Gebinde (EUR): 1.19; 1.25 l PET Flasche. Gedruckter Grundpreis (EUR): 0.95/l. Pfand/gedruckte Bedingungen: 0.25; teilweise koffeinhaltig. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "5cf7061f55d0d75b6c8672bc99f64feedf388f03ebf513e8ede39e003b60a3a9"
+  },
+  {
+    "id": "de-2026-42-p02-06",
+    "name": "Landpark Bio-Quelle Erfrischungsgetränke, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-06-b60c85db0d6e4854e223bbf402e4a114780a317c74f43a66ad1859ff923170d4.webp",
+    "sourcePage": 2,
+    "rect": [
+      498,
+      1259,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Landpark Bio-Quelle Erfrischungsgetränke, versch. Sorten. Originalpreis/Gebinde (EUR): 5.99; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.67/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "b60c85db0d6e4854e223bbf402e4a114780a317c74f43a66ad1859ff923170d4"
+  },
+  {
+    "id": "de-2026-42-p02-07",
+    "name": "Teinacher Genuss-Limonade, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-07-e450509718a26947a4c26e5795752809a01f2049309aba7cbccd4600823e7eed.webp",
+    "sourcePage": 2,
+    "rect": [
+      945,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Teinacher Genuss-Limonade, versch. Sorten. Originalpreis/Gebinde (EUR): 9.99; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 1.11/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "e450509718a26947a4c26e5795752809a01f2049309aba7cbccd4600823e7eed"
+  },
+  {
+    "id": "de-2026-42-p02-08",
+    "name": "Capri-Sun, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-08-cbad2770c24c99c5d3ed45c7ad35ae615818a65627ff6d32fedbe27c113649af.webp",
+    "sourcePage": 2,
+    "rect": [
+      49,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        49,
+        1652,
+        421,
+        351
+      ],
+      [
+        107,
+        2003,
+        363,
+        15
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Capri-Sun, versch. Sorten. Originalpreis/Gebinde (EUR): 3.49; 10 x 0.2 l Packung. Gedruckter Grundpreis (EUR): 1.75/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "cbad2770c24c99c5d3ed45c7ad35ae615818a65627ff6d32fedbe27c113649af"
+  },
+  {
+    "id": "de-2026-42-p02-09",
+    "name": "Amecke Säfte, versch. Sorten - Kasten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-09-432aeb4aceb4daf2867e613854bc966ad2ba2fd6c260d79bf8bef872eb2873b2.webp",
+    "sourcePage": 2,
+    "rect": [
+      498,
+      1652,
+      540,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Amecke Säfte, versch. Sorten - Kasten. Originalpreis/Gebinde (EUR): 9.99; 6 x 0.75 l Glas. Gedruckter Grundpreis (EUR): 2.22/l. Pfand/gedruckte Bedingungen: 2.40. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "432aeb4aceb4daf2867e613854bc966ad2ba2fd6c260d79bf8bef872eb2873b2"
+  },
+  {
+    "id": "de-2026-42-p02-10",
+    "name": "Amecke Säfte - Einzelflasche",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p02-10-e1d4d85ad17b1ab47995442c33e19ae505e10da74bf934e32393cbb3f77e0cb4.webp",
+    "sourcePage": 2,
+    "rect": [
+      498,
+      1652,
+      868,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        498,
+        1652,
+        169,
+        104
+      ],
+      [
+        1007,
+        1695,
+        205,
+        320
+      ],
+      [
+        1212,
+        1652,
+        154,
+        185
+      ],
+      [
+        1149,
+        1837,
+        217,
+        168
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Amecke Säfte - Einzelflasche. Originalpreis/Gebinde (EUR): 1.89; Einzelflasche. Gedruckter Grundpreis (EUR): 2.52/l. Pfand/gedruckte Bedingungen: 0.15; gleiches gedrucktes 0.75 l Gebinde; Bezeichnung \"Einzelflasche\". Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Einzelflasche 0.75 l Glas: 1.89 EUR, gedruckter Grundpreis 2.52 EUR/l, zzgl. 0.15 EUR Pfand. Die Kastenangaben 9.99 EUR / 6 x 0.75 l / 2.22 EUR/l / 2.40 EUR Pfand gelten nicht für diese Einzelflasche. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "e1d4d85ad17b1ab47995442c33e19ae505e10da74bf934e32393cbb3f77e0cb4"
+  },
+  {
+    "id": "de-2026-42-p03-01",
+    "name": "Landpark Bio-Quelle Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-01-ab29160448ab85b685829be074c41eb2d781468b9468a557c5071c207cd44578.webp",
+    "sourcePage": 3,
+    "rect": [
+      84,
+      865,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Landpark Bio-Quelle Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 5.49; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.61/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "ab29160448ab85b685829be074c41eb2d781468b9468a557c5071c207cd44578"
+  },
+  {
+    "id": "de-2026-42-p03-02",
+    "name": "Christinen Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-02-3717b003c6f7080e2e968b0ff28b113403433422b1916f6e87d626614b86a51f.webp",
+    "sourcePage": 3,
+    "rect": [
+      533,
+      865,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Christinen Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 5.49; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.61/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "3717b003c6f7080e2e968b0ff28b113403433422b1916f6e87d626614b86a51f"
+  },
+  {
+    "id": "de-2026-42-p03-03",
+    "name": "Valensina Sport+ Elektrolyt Drink, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-03-d27517ee1050e01d367db7d8f8cc876b68e3b14911e97fd747a24bb2c7fec5ed.webp",
+    "sourcePage": 3,
+    "rect": [
+      981,
+      865,
+      421,
+      377
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Valensina Sport+ Elektrolyt Drink, versch. Sorten. Originalpreis/Gebinde (EUR): 1.19; 500 ml PET Flasche. Gedruckter Grundpreis (EUR): 2.38/l. Pfand/gedruckte Bedingungen: 0.25. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "d27517ee1050e01d367db7d8f8cc876b68e3b14911e97fd747a24bb2c7fec5ed"
+  },
+  {
+    "id": "de-2026-42-p03-04",
+    "name": "Steinsieker Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-04-8da12a83c1ccfb07a2bc9d414363fe18ef7bbb63a901af2afc56074c83fe8da8.webp",
+    "sourcePage": 3,
+    "rect": [
+      84,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Steinsieker Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 5.99; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.67/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "8da12a83c1ccfb07a2bc9d414363fe18ef7bbb63a901af2afc56074c83fe8da8"
+  },
+  {
+    "id": "de-2026-42-p03-05",
+    "name": "Schloss Quelle Mineralwasser, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-05-69c6331fcc2bbab7526a00da152a0e2aaaaf658888dd75d295ddd2af6f89cfaa.webp",
+    "sourcePage": 3,
+    "rect": [
+      533,
+      1259,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Schloss Quelle Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 5.99; 12 x 1 l PET Kasten. Gedruckter Grundpreis (EUR): 0.50/l. Pfand/gedruckte Bedingungen: 4.50. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "69c6331fcc2bbab7526a00da152a0e2aaaaf658888dd75d295ddd2af6f89cfaa"
+  },
+  {
+    "id": "de-2026-42-p03-06",
+    "name": "EDEKA Herzstücke Saft, Nektar o. Fruchtsaftgetränke, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-06-539985c60d84a553341e6c2d764e7abcafeb8a79073a7c4972703bbf91809ffa.webp",
+    "sourcePage": 3,
+    "rect": [
+      981,
+      1253,
+      421,
+      397
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "EDEKA Herzstücke Saft, Nektar o. Fruchtsaftgetränke, versch. Sorten. Originalpreis/Gebinde (EUR): 1.49; 1 l PET Flasche. Gedruckter Grundpreis (EUR): keine gesonderte Umrechnung gedruckt. Pfand/gedruckte Bedingungen: 0.25. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "539985c60d84a553341e6c2d764e7abcafeb8a79073a7c4972703bbf91809ffa"
+  },
+  {
+    "id": "de-2026-42-p03-07",
+    "name": "St. Leonhards Quelle, medium oder still",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-07-f1f5de7bc6b3d16038dea97922ef69485e34c2912488f081c18cf2d997b4fc94.webp",
+    "sourcePage": 3,
+    "rect": [
+      84,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "St. Leonhards Quelle, medium oder still. Originalpreis/Gebinde (EUR): 7.49; 6 x 1 l Glas Kasten. Gedruckter Grundpreis (EUR): 1.25/l. Pfand/gedruckte Bedingungen: 2.40. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "f1f5de7bc6b3d16038dea97922ef69485e34c2912488f081c18cf2d997b4fc94"
+  },
+  {
+    "id": "de-2026-42-p03-08",
+    "name": "Hirschquelle Heilwasser",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-08-a6b3e55a6e619c498773fe1279989c40ff21c34beff2e31f29560c1a51092ec1.webp",
+    "sourcePage": 3,
+    "rect": [
+      533,
+      1652,
+      420,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Hirschquelle Heilwasser. Originalpreis/Gebinde (EUR): 6.99; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.78/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a6b3e55a6e619c498773fe1279989c40ff21c34beff2e31f29560c1a51092ec1"
+  },
+  {
+    "id": "de-2026-42-p03-09",
+    "name": "Rauch happy day, versch. Sorten",
+    "categorySlug": "alkoholfrei",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p03-09-91bb3f70cc367b315e2bac2b941cc7168bc643c8cd950d2bc3a38c30954cdc91.webp",
+    "sourcePage": 3,
+    "rect": [
+      981,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        981,
+        1652,
+        421,
+        353
+      ],
+      [
+        981,
+        2005,
+        249,
+        13
+      ],
+      [
+        1306,
+        2005,
+        96,
+        13
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Rauch happy day, versch. Sorten. Originalpreis/Gebinde (EUR): 1.99; 1 l Karton. Gedruckter Grundpreis (EUR): keine gesonderte Umrechnung gedruckt. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "91bb3f70cc367b315e2bac2b941cc7168bc643c8cd950d2bc3a38c30954cdc91"
+  },
+  {
+    "id": "de-2026-42-p04-01",
+    "name": "Kloster Andechs Weißbier Hell, Weißbier alkoholfrei oder Apfelweiße alkoholfrei",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-01-7121313c64c8169b67ac74f5c24f97e677684e3d140012348c287204b6797a0f.webp",
+    "sourcePage": 4,
+    "rect": [
+      49,
+      509,
+      864,
+      731
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        49,
+        509,
+        601,
+        225
+      ],
+      [
+        49,
+        734,
+        864,
+        506
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Kloster Andechs Weißbier Hell, Weißbier alkoholfrei oder Apfelweiße alkoholfrei. Originalpreis/Gebinde (EUR): 18.99; 20 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 1.90/l. Pfand/gedruckte Bedingungen: 3.10; 2 Flaschen je 0.5 l Apfelweiße alkoholfrei GRATIS, Fußnote 2 zzgl. Pfand; gedruckter Geschenkabzug 2.58; entspricht rechnerisch 16.41 je Kasten. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. 18.99 EUR zahlbarer Kastenpreis zzgl. 3.10 EUR Pfand. Zwei Flaschen Apfelweiße alkoholfrei zu je 0.5 l GRATIS, ebenfalls zzgl. Pfand (Fußnote 2). Gedruckter Geschenkabzug 2.58 EUR; „entspricht rechnerisch 16.41 je Kasten“ ist eine Wertberechnung, kein weiterer zahlbarer Preis. Auf diesem Geschenkbeleg keine APP-Pflicht gedruckt. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "7121313c64c8169b67ac74f5c24f97e677684e3d140012348c287204b6797a0f"
+  },
+  {
+    "id": "de-2026-42-p04-02",
+    "name": "Hofbräuhaus München Helles Vollbier",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-02-ced26425bcaade4a565446286ca1f04418d502fa8d256a336d383100a8878974.webp",
+    "sourcePage": 4,
+    "rect": [
+      885,
+      544,
+      545,
+      696
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        885,
+        544,
+        545,
+        383
+      ],
+      [
+        950,
+        927,
+        440,
+        313
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Hofbräuhaus München Helles Vollbier. Originalpreis/Gebinde (EUR): 15.99; 20 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 2.42/l. Pfand/gedruckte Bedingungen: 3.10. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "ced26425bcaade4a565446286ca1f04418d502fa8d256a336d383100a8878974"
+  },
+  {
+    "id": "de-2026-42-p04-03",
+    "name": "Bitburger Pils, Herb 0.0% o. Radler naturtrüb",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-03-2c0887e278f011299c33ef8bd1374274a540b7ceef7ac7a0fbf59eb92e486e20.webp",
+    "sourcePage": 4,
+    "rect": [
+      49,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Bitburger Pils, Herb 0.0% o. Radler naturtrüb. Originalpreis/Gebinde (EUR): 0.89; 0.5 l Dose. Gedruckter Grundpreis (EUR): 1.78/l. Pfand/gedruckte Bedingungen: 0.25. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "2c0887e278f011299c33ef8bd1374274a540b7ceef7ac7a0fbf59eb92e486e20"
+  },
+  {
+    "id": "de-2026-42-p04-04",
+    "name": "Karlsberg Mixery, versch. Sorten, auch alkoholfrei",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-04-d89203799c5b1d659061a9105b3647c95160aaae2b8e802a79778260b9d5da8e.webp",
+    "sourcePage": 4,
+    "rect": [
+      498,
+      1259,
+      440,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Karlsberg Mixery, versch. Sorten, auch alkoholfrei. Originalpreis/Gebinde (EUR): 0.99; 0.5 l Dose. Gedruckter Grundpreis (EUR): 1.98/l. Pfand/gedruckte Bedingungen: 0.25; teilweise koffeinhaltig; \"Neu im Sortiment!\". Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "d89203799c5b1d659061a9105b3647c95160aaae2b8e802a79778260b9d5da8e"
+  },
+  {
+    "id": "de-2026-42-p04-05",
+    "name": "Brinkhoff's No. 1, versch. Sorten",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-05-2c9b2f7a62ac42f329a144858889c8e1145653ca5737bb0946b6ec114a6b9866.webp",
+    "sourcePage": 4,
+    "rect": [
+      945,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Brinkhoff's No. 1, versch. Sorten. Originalpreis/Gebinde (EUR): 3.79; 6 x 0.33 l Packung. Gedruckter Grundpreis (EUR): 1.91/l. Pfand/gedruckte Bedingungen: 0.48. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "2c9b2f7a62ac42f329a144858889c8e1145653ca5737bb0946b6ec114a6b9866"
+  },
+  {
+    "id": "de-2026-42-p04-06",
+    "name": "tut gut Malzbier",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-06-8058ab589b9ff7d7e4049ebcaa49a671f17c842ec1944dda7cf952bc1e1d4404.webp",
+    "sourcePage": 4,
+    "rect": [
+      49,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        49,
+        1652,
+        421,
+        351
+      ],
+      [
+        107,
+        2003,
+        363,
+        15
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "tut gut Malzbier. Originalpreis/Gebinde (EUR): 3.99; 6 x 0.33 l Packung. Gedruckter Grundpreis (EUR): 2.02/l. Pfand/gedruckte Bedingungen: 0.48. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "8058ab589b9ff7d7e4049ebcaa49a671f17c842ec1944dda7cf952bc1e1d4404"
+  },
+  {
+    "id": "de-2026-42-p04-07",
+    "name": "Clausthaler Original oder Naturradler",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-07-1f333f317c8bfdaeb6c15fb5553fe218e365afb545608c891c966a875689dd97.webp",
+    "sourcePage": 4,
+    "rect": [
+      498,
+      1652,
+      420,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Clausthaler Original oder Naturradler. Originalpreis/Gebinde (EUR): 3.99; 6 x 0.33 l Packung. Gedruckter Grundpreis (EUR): 2.02/l. Pfand/gedruckte Bedingungen: 0.48. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "1f333f317c8bfdaeb6c15fb5553fe218e365afb545608c891c966a875689dd97"
+  },
+  {
+    "id": "de-2026-42-p04-08",
+    "name": "Krombacher's Fassbrause, versch. Sorten",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p04-08-9722a014becdf364f5a3d7d4137a76e4142cc30f8b68b17f95bfcc721daa2fa2.webp",
+    "sourcePage": 4,
+    "rect": [
+      945,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        945,
+        1652,
+        421,
+        353
+      ],
+      [
+        945,
+        2005,
+        327,
+        13
+      ],
+      [
+        1346,
+        2005,
+        20,
+        13
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Krombacher's Fassbrause, versch. Sorten. Originalpreis/Gebinde (EUR): 4.79; 6 x 0.33 l Packung. Gedruckter Grundpreis (EUR): 2.42/l. Pfand/gedruckte Bedingungen: 0.48. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "9722a014becdf364f5a3d7d4137a76e4142cc30f8b68b17f95bfcc721daa2fa2"
+  },
+  {
+    "id": "de-2026-42-p05-01",
+    "name": "Veltins helles Pülleken, Pülleken 0.0% o. Zitrönken",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-01-31466dc7dc8779f47e9bfcdde92795a93eb6418f57c4f0076001fc594221b831.webp",
+    "sourcePage": 5,
+    "rect": [
+      75,
+      130,
+      1327,
+      720
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Veltins helles Pülleken, Pülleken 0.0% o. Zitrönken. Originalpreis/Gebinde (EUR): 14.99; 24 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.89/l. Pfand/gedruckte Bedingungen: 3.42; ein Sixpack Veltins helles Pülleken 6 x 0.33 l GRATIS, Fußnote 2 zzgl. Pfand; Geschenkabzug 4.99; entspricht rechnerisch 10.00 je Kasten. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. 14.99 EUR zahlbarer Kastenpreis zzgl. 3.42 EUR Pfand. Ein Sixpack Veltins helles Pülleken 6 x 0.33 l GRATIS, ebenfalls zzgl. Pfand (Fußnote 2). Gedruckter Geschenkabzug 4.99 EUR; „entspricht rechnerisch 10.00 je Kasten“ ist eine Wertberechnung, kein weiterer zahlbarer Preis. Auf diesem Geschenkbeleg keine APP-Pflicht gedruckt. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "31466dc7dc8779f47e9bfcdde92795a93eb6418f57c4f0076001fc594221b831"
+  },
+  {
+    "id": "de-2026-42-p05-02",
+    "name": "Traugott Simon Pilsener, Pilsener alkoholfrei 0.0%, Alt oder Gold",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-02-a61eb112679f54ac03a97231a71ecffb2b6fb36a57d72af51e7de81af746cb4f.webp",
+    "sourcePage": 5,
+    "rect": [
+      84,
+      865,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Traugott Simon Pilsener, Pilsener alkoholfrei 0.0%, Alt oder Gold. Originalpreis/Gebinde (EUR): 8.99; 20 x 0.5 l / 24 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 0.90 / 1.14 je Liter. Pfand/gedruckte Bedingungen: 3.10 / 3.42. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a61eb112679f54ac03a97231a71ecffb2b6fb36a57d72af51e7de81af746cb4f"
+  },
+  {
+    "id": "de-2026-42-p05-03",
+    "name": "Radeberger Pilsner",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-03-4af20b38ea4cf809937d57b656674213f7621f1a0b469a67be9d4dbf142f19ff.webp",
+    "sourcePage": 5,
+    "rect": [
+      533,
+      865,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Radeberger Pilsner. Originalpreis/Gebinde (EUR): 9.49; 11 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 1.73/l. Pfand/gedruckte Bedingungen: 2.38. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "4af20b38ea4cf809937d57b656674213f7621f1a0b469a67be9d4dbf142f19ff"
+  },
+  {
+    "id": "de-2026-42-p05-04",
+    "name": "Th. König Zwickl, Kellerbier naturtrüb",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-04-0bb7ec91d2905177dfacccae221df1f8e79a2ebeb47fe28c8688db56378cd8cd.webp",
+    "sourcePage": 5,
+    "rect": [
+      981,
+      865,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Th. König Zwickl, Kellerbier naturtrüb. Originalpreis/Gebinde (EUR): 12.99; 20 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.97/l. Pfand/gedruckte Bedingungen: 3.10. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "0bb7ec91d2905177dfacccae221df1f8e79a2ebeb47fe28c8688db56378cd8cd"
+  },
+  {
+    "id": "de-2026-42-p05-05",
+    "name": "Guinness Extra Stout o. Kilkenny Irish Beer",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-05-8e0d4c26913d5b6beb5d8a36e10ed07d0f66c081e66e4c72f32c5adea7372366.webp",
+    "sourcePage": 5,
+    "rect": [
+      84,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Guinness Extra Stout o. Kilkenny Irish Beer. Originalpreis/Gebinde (EUR): 14.49; 11 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 2.63/l. Pfand/gedruckte Bedingungen: 2.38. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "8e0d4c26913d5b6beb5d8a36e10ed07d0f66c081e66e4c72f32c5adea7372366"
+  },
+  {
+    "id": "de-2026-42-p05-06",
+    "name": "Allgäuer Büble, versch. Sorten",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-06-a594e29639b45ca1a42c5f583588b8f218e806fc553ce033dcca7836c343b41b.webp",
+    "sourcePage": 5,
+    "rect": [
+      533,
+      1259,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Allgäuer Büble, versch. Sorten. Originalpreis/Gebinde (EUR): 14.99; 20 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 1.50/l. Pfand/gedruckte Bedingungen: 4.50. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a594e29639b45ca1a42c5f583588b8f218e806fc553ce033dcca7836c343b41b"
+  },
+  {
+    "id": "de-2026-42-p05-07",
+    "name": "HB Hofbräu Original",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-07-13fb973de331497611f1857735769789073ee0bfa2ef8e82dedfd85b56b1a1a0.webp",
+    "sourcePage": 5,
+    "rect": [
+      981,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "HB Hofbräu Original. Originalpreis/Gebinde (EUR): 15.99; 20 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 1.60/l. Pfand/gedruckte Bedingungen: 3.10. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "13fb973de331497611f1857735769789073ee0bfa2ef8e82dedfd85b56b1a1a0"
+  },
+  {
+    "id": "de-2026-42-p05-08",
+    "name": "Tyskie, polnisches Premium Pils oder Radler",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-08-9aa373f4ba411e9966803d2d016df72218003974b78d8afd530c588f1cf35770.webp",
+    "sourcePage": 5,
+    "rect": [
+      84,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Tyskie, polnisches Premium Pils oder Radler. Originalpreis/Gebinde (EUR): 15.99; 20 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 1.60/l. Pfand/gedruckte Bedingungen: 3.10. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "9aa373f4ba411e9966803d2d016df72218003974b78d8afd530c588f1cf35770"
+  },
+  {
+    "id": "de-2026-42-p05-09",
+    "name": "Budweiser Budvar Original o. Budvar 0.0%",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-09-beaf21bcec2e98a0b8b1a1f0bd5d44327a680ab9ec038a3d2ffd70bec3f5a330.webp",
+    "sourcePage": 5,
+    "rect": [
+      533,
+      1652,
+      420,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Budweiser Budvar Original o. Budvar 0.0%. Originalpreis/Gebinde (EUR): 15.99; 20 x 0.5 l / 24 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.60 / 2.02 je Liter. Pfand/gedruckte Bedingungen: 3.10 / 3.42. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "beaf21bcec2e98a0b8b1a1f0bd5d44327a680ab9ec038a3d2ffd70bec3f5a330"
+  },
+  {
+    "id": "de-2026-42-p05-10",
+    "name": "Kloster Andechs Bergbock Hell oder Doppelbock Dunkel",
+    "categorySlug": "bier",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p05-10-d63a73271d4de1df3258e4a3e1a394c544815b201ab652f28cf37f2ac6139eda.webp",
+    "sourcePage": 5,
+    "rect": [
+      981,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        981,
+        1652,
+        421,
+        353
+      ],
+      [
+        981,
+        2005,
+        249,
+        13
+      ],
+      [
+        1306,
+        2005,
+        96,
+        13
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Kloster Andechs Bergbock Hell oder Doppelbock Dunkel. Originalpreis/Gebinde (EUR): 19.99; 20 x 0.5 l Kasten. Gedruckter Grundpreis (EUR): 2.00/l. Pfand/gedruckte Bedingungen: 3.10. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "d63a73271d4de1df3258e4a3e1a394c544815b201ab652f28cf37f2ac6139eda"
+  },
+  {
+    "id": "de-2026-42-p07-01",
+    "name": "LEGO FunPack - Treueaktion",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p07-01-a10be3e0a733f6f2f994088f83ce284748e639000a9060a5e8a11d6730f9803c.webp",
+    "sourcePage": 7,
+    "rect": [
+      0,
+      0,
+      1450,
+      2100
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "LEGO FunPack - Treueaktion. Originalpreis/Gebinde (EUR): 5.99 EUR mit 5 Treuepunkten; 11.99 EUR (UVP) ohne Abgabe von trinkgut APP-Treuepunkten. Gedruckter Grundpreis (EUR): nicht gedruckt. Pfand/gedruckte Bedingungen: Alle acht exklusiven Sets als eine Preisfamilie: Sammelbox mit Brettspiel, LEGO Set, Spielkarten, Rätselheft. Je 5 EUR Einkaufswert ein Treuepunkt, nur in der trinkgut APP, Sammlung 24.08.2026-17.10.2026; Einlösung bis 31.10.2026. Nur solange der Vorrat reicht. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a10be3e0a733f6f2f994088f83ce284748e639000a9060a5e8a11d6730f9803c"
+  },
+  {
+    "id": "de-2026-42-p08-01",
+    "name": "Captain Morgan, versch. Sorten, 25%-40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p08-01-35ccb2735b8f1e8cb4ea1a2bc97a44e356f4b359189d168b42d70f328267ec8b.webp",
+    "sourcePage": 8,
+    "rect": [
+      49,
+      493,
+      1317,
+      752
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Captain Morgan, versch. Sorten, 25%-40% Vol. Originalpreis/Gebinde (EUR): 9.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 14.27/l. Pfand/gedruckte Bedingungen: auch 0.0% alkoholfrei im Angebot; Unbepreistes Captain-Bahama-Mama-Rezept gehört zum Originalkontext. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Das unbepreiste Captain-Bahama-Mama-Rezept ist ursprünglicher Angebotskontext, kein separates Angebot. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "35ccb2735b8f1e8cb4ea1a2bc97a44e356f4b359189d168b42d70f328267ec8b"
+  },
+  {
+    "id": "de-2026-42-p08-02",
+    "name": "Smirnoff Vodka No. 21 oder Raspberry Crush, 37.5% / 25% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p08-02-991a8e1c8482f811a2d8d510ed64c0cc9afea343fdb4b5bbc01086700490c9d6.webp",
+    "sourcePage": 8,
+    "rect": [
+      49,
+      1259,
+      421,
+      759
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        49,
+        1259,
+        421,
+        744
+      ],
+      [
+        107,
+        2003,
+        363,
+        15
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Smirnoff Vodka No. 21 oder Raspberry Crush, 37.5% / 25% Vol. Originalpreis/Gebinde (EUR): 9.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 14.27/l. Pfand/gedruckte Bedingungen: auch Mango Passionfruit Twist 25% Vol. im Angebot. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "991a8e1c8482f811a2d8d510ed64c0cc9afea343fdb4b5bbc01086700490c9d6"
+  },
+  {
+    "id": "de-2026-42-p08-03",
+    "name": "Ballantine's Finest, Blended Scotch Whisky, 40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p08-03-f30c89445af5c9f8e12692c19ef4657802c0f5ae77a0a703de08a572de4fc470.webp",
+    "sourcePage": 8,
+    "rect": [
+      498,
+      1259,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Ballantine's Finest, Blended Scotch Whisky, 40% Vol. Originalpreis/Gebinde (EUR): 11.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 17.13/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "f30c89445af5c9f8e12692c19ef4657802c0f5ae77a0a703de08a572de4fc470"
+  },
+  {
+    "id": "de-2026-42-p08-04",
+    "name": "Killepitsch Premium Kräuterlikör, 42% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p08-04-9d4c5e74c87d58e45bef41be5800145999a559c1b61d52adeea9d6ae673c29da.webp",
+    "sourcePage": 8,
+    "rect": [
+      945,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Killepitsch Premium Kräuterlikör, 42% Vol. Originalpreis/Gebinde (EUR): 13.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 19.99/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "9d4c5e74c87d58e45bef41be5800145999a559c1b61d52adeea9d6ae673c29da"
+  },
+  {
+    "id": "de-2026-42-p08-05",
+    "name": "Meukow V.S.O.P. Superior Cognac, 40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p08-05-bb5f83ec56d551cf22b019d14cb5eafbc226d9fe27feb55f777aa783fa5b086b.webp",
+    "sourcePage": 8,
+    "rect": [
+      498,
+      1652,
+      420,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Meukow V.S.O.P. Superior Cognac, 40% Vol. Originalpreis/Gebinde (EUR): 29.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 42.84/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "bb5f83ec56d551cf22b019d14cb5eafbc226d9fe27feb55f777aa783fa5b086b"
+  },
+  {
+    "id": "de-2026-42-p08-06",
+    "name": "Diplomatico Reserva Exclusiva Premium Rum, 40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p08-06-a0da6c19098fec381d75505dfbe60ef99c9cf61de3a779b49dec81429a76124a.webp",
+    "sourcePage": 8,
+    "rect": [
+      945,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        945,
+        1652,
+        421,
+        353
+      ],
+      [
+        945,
+        2005,
+        327,
+        13
+      ],
+      [
+        1346,
+        2005,
+        20,
+        13
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Diplomatico Reserva Exclusiva Premium Rum, 40% Vol. Originalpreis/Gebinde (EUR): 29.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 42.84/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a0da6c19098fec381d75505dfbe60ef99c9cf61de3a779b49dec81429a76124a"
+  },
+  {
+    "id": "de-2026-42-p09-01",
+    "name": "Gordon's London Dry Gin, 37.5% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-01-8d518ebb1c44a605fad0f474190e1bda8e8a1c1204f85eaab2b90a2758e1db1a.webp",
+    "sourcePage": 9,
+    "rect": [
+      84,
+      94,
+      826,
+      1136
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        84,
+        94,
+        811,
+        403
+      ],
+      [
+        895,
+        300,
+        15,
+        197
+      ],
+      [
+        84,
+        497,
+        456,
+        733
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Gordon's London Dry Gin, 37.5% Vol. Originalpreis/Gebinde (EUR): 9.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 14.27/l. Pfand/gedruckte Bedingungen: auch Sicilian Lemon, Premium Pink und Alcohol Free im Angebot; Auch alkoholfrei. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Das unbepreiste Gin-Tonic-Rezept ist ursprünglicher Angebotskontext, kein separates Angebot. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "8d518ebb1c44a605fad0f474190e1bda8e8a1c1204f85eaab2b90a2758e1db1a"
+  },
+  {
+    "id": "de-2026-42-p09-02",
+    "name": "Campari, italienischer Aperitif, 25% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-02-ac2f31da9663ea717b8f3da057a059aafe83292e0dd9169a5dbfdb4609ff7ece.webp",
+    "sourcePage": 9,
+    "rect": [
+      545,
+      505,
+      380,
+      725
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Campari, italienischer Aperitif, 25% Vol. Originalpreis/Gebinde (EUR): 10.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 15.70/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "ac2f31da9663ea717b8f3da057a059aafe83292e0dd9169a5dbfdb4609ff7ece"
+  },
+  {
+    "id": "de-2026-42-p09-03",
+    "name": "Finlandia Vodka, 40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-03-b913bba40aa2b8847c7e6e4e73e973edd791c86879d3fe263a09120b6585b27f.webp",
+    "sourcePage": 9,
+    "rect": [
+      955,
+      463,
+      450,
+      767
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Finlandia Vodka, 40% Vol. Originalpreis/Gebinde (EUR): 11.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 17.13/l. Pfand/gedruckte Bedingungen: Zugehöriger unbepreister redaktioneller Text ist Originalkontext. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "b913bba40aa2b8847c7e6e4e73e973edd791c86879d3fe263a09120b6585b27f"
+  },
+  {
+    "id": "de-2026-42-p09-04",
+    "name": "Zoladkowa Gorzka Liköre, versch. Sorten, 25%-32% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-04-8b6024736b4309763cd81cd9eda6678c23043120c845414bb8cefeaf1ec0cfed.webp",
+    "sourcePage": 9,
+    "rect": [
+      84,
+      1259,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Zoladkowa Gorzka Liköre, versch. Sorten, 25%-32% Vol. Originalpreis/Gebinde (EUR): 5.99; 0.5 l Flasche. Gedruckter Grundpreis (EUR): 11.98/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "8b6024736b4309763cd81cd9eda6678c23043120c845414bb8cefeaf1ec0cfed"
+  },
+  {
+    "id": "de-2026-42-p09-05",
+    "name": "Helbing, Hamburgs feines Original, 32% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-05-66fea10139fb344c5ff9da1f73153a77233361eddee1f5a85c8f9299c490a779.webp",
+    "sourcePage": 9,
+    "rect": [
+      533,
+      1259,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Helbing, Hamburgs feines Original, 32% Vol. Originalpreis/Gebinde (EUR): 8.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 12.84/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "66fea10139fb344c5ff9da1f73153a77233361eddee1f5a85c8f9299c490a779"
+  },
+  {
+    "id": "de-2026-42-p09-06",
+    "name": "Canadian Club, 40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-06-4534dac5fa27d0958d7b1bb0ab80b564ea67be82dadbf021bf92d5c81c12bc27.webp",
+    "sourcePage": 9,
+    "rect": [
+      981,
+      1259,
+      421,
+      759
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "sourceRegions": [
+      [
+        981,
+        1259,
+        421,
+        746
+      ],
+      [
+        981,
+        2005,
+        249,
+        13
+      ],
+      [
+        1306,
+        2005,
+        96,
+        13
+      ]
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Canadian Club, 40% Vol. Originalpreis/Gebinde (EUR): 12.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 18.56/l. Pfand/gedruckte Bedingungen: Zugehöriger unbepreister Text ist Originalkontext, kein weiteres Angebot. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "4534dac5fa27d0958d7b1bb0ab80b564ea67be82dadbf021bf92d5c81c12bc27"
+  },
+  {
+    "id": "de-2026-42-p09-07",
+    "name": "Amarula Cream with Marula Spirit, 17% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-07-f05f68f147ea63436e67c72e792278bac683ed31513ffafb89b35bba7b566dbe.webp",
+    "sourcePage": 9,
+    "rect": [
+      84,
+      1652,
+      421,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Amarula Cream with Marula Spirit, 17% Vol. Originalpreis/Gebinde (EUR): 9.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 14.27/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "f05f68f147ea63436e67c72e792278bac683ed31513ffafb89b35bba7b566dbe"
+  },
+  {
+    "id": "de-2026-42-p09-08",
+    "name": "Asbach Uralt, 36% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p09-08-8580c978e21183f0582a43212c53c103d5c534bee716db04e865205dfa1cfcb7.webp",
+    "sourcePage": 9,
+    "rect": [
+      533,
+      1652,
+      420,
+      366
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Asbach Uralt, 36% Vol. Originalpreis/Gebinde (EUR): 9.99; 0.7 l Flasche. Gedruckter Grundpreis (EUR): 14.27/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "8580c978e21183f0582a43212c53c103d5c534bee716db04e865205dfa1cfcb7"
+  },
+  {
+    "id": "de-2026-42-p10-01",
+    "name": "Weingenuss (Deutschland), versch. Sorten",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-01-9eacdee8dc4f434e63de41666e100e3f7db3f50090fa9d0fd5d5a5588d4af3c7.webp",
+    "sourcePage": 10,
+    "rect": [
+      49,
+      260,
+      437,
+      576
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Weingenuss (Deutschland), versch. Sorten. Originalpreis/Gebinde (EUR): 1.99; 1 l Flasche. Gedruckter Grundpreis (EUR): keine gesonderte Umrechnung gedruckt. Pfand/gedruckte Bedingungen: Tatsächliche Flaschengröße 1 l, nicht 0.75 l. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "9eacdee8dc4f434e63de41666e100e3f7db3f50090fa9d0fd5d5a5588d4af3c7"
+  },
+  {
+    "id": "de-2026-42-p10-02",
+    "name": "Weingut Lucashof (Deutschland - Pfalz), versch. Sorten, trocken",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-02-58384f7af04d1b0d401222b1360bea23b9a154c3df0dff3be3a63d092437151f.webp",
+    "sourcePage": 10,
+    "rect": [
+      497,
+      280,
+      421,
+      563
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Weingut Lucashof (Deutschland - Pfalz), versch. Sorten, trocken. Originalpreis/Gebinde (EUR): 6.99; 0.75 l / 1 l Flasche. Gedruckter Grundpreis (EUR): 9.32 / 6.99 je Liter. Pfand/gedruckte Bedingungen: Eine Preisfamilie mit beiden Flaschengrößen. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "58384f7af04d1b0d401222b1360bea23b9a154c3df0dff3be3a63d092437151f"
+  },
+  {
+    "id": "de-2026-42-p10-03",
+    "name": "Intrigo o. Mezzacorona (Italien), versch. Sorten, trocken / halbtrocken",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-03-b4b7ccb137616ea4cf61852c90801c90dec89e1adcfae93319c4361b4fe75c09.webp",
+    "sourcePage": 10,
+    "rect": [
+      49,
+      865,
+      421,
+      553
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Intrigo o. Mezzacorona (Italien), versch. Sorten, trocken / halbtrocken. Originalpreis/Gebinde (EUR): 3.99; 0.75 l Flasche. Gedruckter Grundpreis (EUR): 5.32/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "b4b7ccb137616ea4cf61852c90801c90dec89e1adcfae93319c4361b4fe75c09"
+  },
+  {
+    "id": "de-2026-42-p10-04",
+    "name": "Grand Corbier o. Mont Saint Jean Rosé (Frankreich), versch. Sorten, trocken",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-04-f29ed5cb95e0b8fbfd0e7464465542bb017403d49bbbfcb70982850793b7c4b5.webp",
+    "sourcePage": 10,
+    "rect": [
+      498,
+      865,
+      420,
+      553
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Grand Corbier o. Mont Saint Jean Rosé (Frankreich), versch. Sorten, trocken. Originalpreis/Gebinde (EUR): 3.99; 0.75 l Flasche. Gedruckter Grundpreis (EUR): 5.32/l. Kein separater Pfandbetrag gedruckt. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "f29ed5cb95e0b8fbfd0e7464465542bb017403d49bbbfcb70982850793b7c4b5"
+  },
+  {
+    "id": "de-2026-42-p10-05",
+    "name": "Rioja Vega Reserva (Spanien - Rioja)",
+    "categorySlug": "wein",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-05-f322c94bc8307d849705832b46263ef285aca87e67ea3d8013aff1381d0ecc89.webp",
+    "sourcePage": 10,
+    "rect": [
+      945,
+      865,
+      421,
+      553
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Rioja Vega Reserva (Spanien - Rioja). Originalpreis/Gebinde (EUR): 8.99; 0.75 l Flasche. Gedruckter Grundpreis (EUR): 11.99/l. Pfand/gedruckte Bedingungen: Auszeichnungen gelten laut gedruckter Fußnote „für den 2019er“. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Sämtliche abgebildeten Auszeichnungen sind durch die gedruckte Fußnote „**für den 2019er“ qualifiziert. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "f322c94bc8307d849705832b46263ef285aca87e67ea3d8013aff1381d0ecc89"
+  },
+  {
+    "id": "de-2026-42-p10-06",
+    "name": "De Beukelaer Prinzen Rolle, versch. Sorten",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-06-bbefd329bea10d7c8aaba12e8aff968c8f72b22b409a81c5745ff36b62c2d59d.webp",
+    "sourcePage": 10,
+    "rect": [
+      49,
+      1449,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "De Beukelaer Prinzen Rolle, versch. Sorten. Originalpreis/Gebinde (EUR): 1.79; 330 g - 400 g Packung. Gedruckter Grundpreis (EUR): ab 4.48/kg. Pfand/gedruckte Bedingungen: Fußnote 3: gedruckte Markt-Einschränkungen gelten; Grundpreis mit „ab“. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Ausnahme für dieses Produkt: 2.49 EUR; historischer Vergleich, kein zusätzlicher aktueller Preis. Fußnote 3: Diese markierten Rückseitenartikel werden nicht angeboten in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6. Drogerieartikel sind im Markt Andernach nicht erhältlich. Goch ist nicht als ausgeschlossen genannt. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "bbefd329bea10d7c8aaba12e8aff968c8f72b22b409a81c5745ff36b62c2d59d"
+  },
+  {
+    "id": "de-2026-42-p10-07",
+    "name": "Pringles, versch. Sorten",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-07-76ec68a2e77032d51a6efedc18e9b80aef97bc231657a92b320cf02c701a61b5.webp",
+    "sourcePage": 10,
+    "rect": [
+      498,
+      1449,
+      420,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Pringles, versch. Sorten. Originalpreis/Gebinde (EUR): 1.49; 185 g Dose. Gedruckter Grundpreis (EUR): 8.05/kg. Pfand/gedruckte Bedingungen: Fußnote 3: gedruckte Markt-Einschränkungen gelten. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Fußnote 3: Diese markierten Rückseitenartikel werden nicht angeboten in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6. Drogerieartikel sind im Markt Andernach nicht erhältlich. Goch ist nicht als ausgeschlossen genannt. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "76ec68a2e77032d51a6efedc18e9b80aef97bc231657a92b320cf02c701a61b5"
+  },
+  {
+    "id": "de-2026-42-p10-08",
+    "name": "Maggi Ravioli, versch. Sorten",
+    "categorySlug": "lebensmittel",
+    "language": "de",
+    "flyerId": "catalog-13027-42-2026",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/de-2026-42-p10-08-54dcc04c6aedd87863b2c0b1c77f0c1ab33190677f23ebe815b0c728cd0dac85.webp",
+    "sourcePage": 10,
+    "rect": [
+      945,
+      1449,
+      421,
+      367
+    ],
+    "sourceDimensions": [
+      1450,
+      2100
+    ],
+    "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+    "sourceUrl": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Maggi Ravioli, versch. Sorten. Originalpreis/Gebinde (EUR): 1.99; 800 g Dose. Gedruckter Grundpreis (EUR): 2.49/kg. Pfand/gedruckte Bedingungen: Fußnote 3: gedruckte Markt-Einschränkungen gelten. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Fußnote 3: Diese markierten Rückseitenartikel werden nicht angeboten in Andernach, Koblenzer Str. 58; Meerbusch-Osterath, Breite Str. 3-5; Straelen, Wankumer Str. 6. Drogerieartikel sind im Markt Andernach nicht erhältlich. Goch ist nicht als ausgeschlossen genannt. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "54dcc04c6aedd87863b2c0b1c77f0c1ab33190677f23ebe815b0c728cd0dac85"
+  },
+  {
+    "id": "nl-2026-42-p01-r1c1",
+    "name": "Red Bull Energy Drink, diverse soorten",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r1c1-bd5dbf8269947ceb3cf81bc31dad0cc7b0aaf518cacecab32ee0a06918b138cb.webp",
+    "sourcePage": 1,
+    "rect": [
+      24,
+      486,
+      376,
+      388
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Red Bull Energy Drink, diverse soorten. Originalpreis/Gebinde (EUR): 0.99; 0.25 l blik. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; taurin- en cafeïnehoudend; WEEKKNALLER. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "bd5dbf8269947ceb3cf81bc31dad0cc7b0aaf518cacecab32ee0a06918b138cb"
+  },
+  {
+    "id": "nl-2026-42-p01-r1c2",
+    "name": "Intrigo of Mezzacorona Wijn (Italië), diverse soorten",
+    "categorySlug": "wein",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r1c2-2319ac1de924a27f1eb348375ebb982028bbc6b97cdebf3b2fa4a43401f17e3b.webp",
+    "sourcePage": 1,
+    "rect": [
+      411,
+      497,
+      265,
+      377
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Intrigo of Mezzacorona Wijn (Italië), diverse soorten. Originalpreis/Gebinde (EUR): 3.99; 0.75 l fles. Gedruckter Grundpreis (EUR): 5.32/l. Kein separater Pfandbetrag gedruckt. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "2319ac1de924a27f1eb348375ebb982028bbc6b97cdebf3b2fa4a43401f17e3b"
+  },
+  {
+    "id": "nl-2026-42-p01-r1c3",
+    "name": "Freixenet Mederano of Mia (Spanje), diverse soorten",
+    "categorySlug": "wein",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r1c3-567e94d5b05ab54c7f95b67755fbec34920332d895c34773f284468cfbd65cd9.webp",
+    "sourcePage": 1,
+    "rect": [
+      683,
+      497,
+      289,
+      377
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "sourceRegions": [
+      [
+        683,
+        497,
+        282,
+        333
+      ],
+      [
+        683,
+        830,
+        289,
+        44
+      ]
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Freixenet Mederano of Mia (Spanje), diverse soorten. Originalpreis/Gebinde (EUR): 2.99; 0.75 l fles. Gedruckter Grundpreis (EUR): 3.99/l. Pfand/gedruckte Bedingungen: Ook Mia alcoholvrij. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "567e94d5b05ab54c7f95b67755fbec34920332d895c34773f284468cfbd65cd9"
+  },
+  {
+    "id": "nl-2026-42-p01-r1c4",
+    "name": "Weingenuss Wijn (Duitsland), diverse soorten",
+    "categorySlug": "wein",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r1c4-ca16d8073d659fab8ea0a69eb471d8e574cfda98b31e59fbcf082556d6b1f6b7.webp",
+    "sourcePage": 1,
+    "rect": [
+      965,
+      497,
+      210,
+      377
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "sourceRegions": [
+      [
+        965,
+        497,
+        210,
+        333
+      ],
+      [
+        972,
+        830,
+        203,
+        39
+      ],
+      [
+        965,
+        869,
+        210,
+        5
+      ]
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Weingenuss Wijn (Duitsland), diverse soorten. Originalpreis/Gebinde (EUR): 1.99; 1 l fles. Gedruckter Grundpreis (EUR): keine gesonderte Umrechnung gedruckt. Pfand/gedruckte Bedingungen: Gedrucktes gelbes Größenetikett „1 ltr. Fles“. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "ca16d8073d659fab8ea0a69eb471d8e574cfda98b31e59fbcf082556d6b1f6b7"
+  },
+  {
+    "id": "nl-2026-42-p01-r2c1",
+    "name": "Coca-Cola, Fanta of Sprite, ook andere soorten",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r2c1-2fa0d17e50cd1e39fbc36920ef89ee51d053557a9965d8f46bcd246f587b52ea.webp",
+    "sourcePage": 1,
+    "rect": [
+      38,
+      883,
+      295,
+      379
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Coca-Cola, Fanta of Sprite, ook andere soorten. Originalpreis/Gebinde (EUR): 1.19; 1.25 l PET-fles. Gedruckter Grundpreis (EUR): 0.95/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; bevat gedeeltelijk cafeïnehoudend. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "2fa0d17e50cd1e39fbc36920ef89ee51d053557a9965d8f46bcd246f587b52ea"
+  },
+  {
+    "id": "nl-2026-42-p01-r2c2",
+    "name": "EDEKA Herzstücke Saft, Nektar of Fruchtsaftgetränke, diverse soorten",
+    "categorySlug": "alkoholfrei",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r2c2-7dd33f58a8e4e049ddb6d7b3fa749b958c334db5d0d2429da2471a3225b261f3.webp",
+    "sourcePage": 1,
+    "rect": [
+      338,
+      883,
+      319,
+      379
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "EDEKA Herzstücke Saft, Nektar of Fruchtsaftgetränke, diverse soorten. Originalpreis/Gebinde (EUR): 1.49; 1 l PET-fles. Gedruckter Grundpreis (EUR): keine gesonderte Umrechnung gedruckt. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "7dd33f58a8e4e049ddb6d7b3fa749b958c334db5d0d2429da2471a3225b261f3"
+  },
+  {
+    "id": "nl-2026-42-p01-r2c3",
+    "name": "Rotkäppchen-Sekt of Fruchtsecco, bubbelwijn, diverse soorten",
+    "categorySlug": "sekt",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r2c3-36d7c9fa1fb22fb834f9531ffe651023465de7fc3cde4706258eed7d407821d1.webp",
+    "sourcePage": 1,
+    "rect": [
+      658,
+      883,
+      273,
+      379
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Rotkäppchen-Sekt of Fruchtsecco, bubbelwijn, diverse soorten. Originalpreis/Gebinde (EUR): 2.99; 0.75 l fles. Gedruckter Grundpreis (EUR): 3.99/l. Pfand/gedruckte Bedingungen: Ook alcoholvrij. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "36d7c9fa1fb22fb834f9531ffe651023465de7fc3cde4706258eed7d407821d1"
+  },
+  {
+    "id": "nl-2026-42-p01-r2c4",
+    "name": "Yeni Raki, 45% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r2c4-5f4f4eb1ff2597a011e85a858602e7fe40e5f35d0f87e72b87f2b24fc49c0cba.webp",
+    "sourcePage": 1,
+    "rect": [
+      933,
+      883,
+      242,
+      379
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Yeni Raki, 45% Vol. Originalpreis/Gebinde (EUR): 12.99; 0.7 l fles. Gedruckter Grundpreis (EUR): 18.56/l. Kein separater Pfandbetrag gedruckt. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "5f4f4eb1ff2597a011e85a858602e7fe40e5f35d0f87e72b87f2b24fc49c0cba"
+  },
+  {
+    "id": "nl-2026-42-p01-r3c1",
+    "name": "Captain Morgan, diverse soorten, 25%-40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r3c1-a9efac8522a9dced1686401f25243d1d3c9164870e451ff74539b9b628037bcc.webp",
+    "sourcePage": 1,
+    "rect": [
+      38,
+      1275,
+      315,
+      378
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Captain Morgan, diverse soorten, 25%-40% Vol. Originalpreis/Gebinde (EUR): 9.99; 0.7 l fles. Gedruckter Grundpreis (EUR): 14.27/l. Pfand/gedruckte Bedingungen: Ook alcoholvrij. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "a9efac8522a9dced1686401f25243d1d3c9164870e451ff74539b9b628037bcc"
+  },
+  {
+    "id": "nl-2026-42-p01-r3c2",
+    "name": "Ballantine's Finest, Blended Scotch Whisky, 40% Vol.",
+    "categorySlug": "spirituosen",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r3c2-d42ab4422e0f94e9954ad7a211707348a6cfcbceff020529bcd3586de6377b51.webp",
+    "sourcePage": 1,
+    "rect": [
+      355,
+      1275,
+      260,
+      378
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Ballantine's Finest, Blended Scotch Whisky, 40% Vol. Originalpreis/Gebinde (EUR): 11.99; 0.7 l fles. Gedruckter Grundpreis (EUR): 17.13/l. Kein separater Pfandbetrag gedruckt. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "imageSha256": "d42ab4422e0f94e9954ad7a211707348a6cfcbceff020529bcd3586de6377b51"
+  },
+  {
+    "id": "nl-2026-42-p01-r3c3",
+    "name": "Warsteiner Pilsener, diverse soorten",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r3c3-84f0f54517669a86b7a5ce15ac835b89db00d69d33be6ffc7d284c1c2db6d0d5.webp",
+    "sourcePage": 1,
+    "rect": [
+      615,
+      1275,
+      312,
+      378
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Warsteiner Pilsener, diverse soorten. Originalpreis/Gebinde (EUR): 11.99; APP 10.99; 20 x 0.5 l / 24 x 0.33 l Kasten. Gedruckter Grundpreis (EUR): 1.25 / 1.58 je Liter. Pfand/gedruckte Bedingungen: excl. 3.10 / 3.42 statiegeld; Ook alcoholvrij; Gedrucktes APP-Etikett „Alleen met de APP“. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. 11.99 EUR regulär, 10.99 EUR nur „Alleen met de APP“. Gedruckte Grundpreise 1.25 / 1.58 EUR/l unverändert; kein APP-Grundpreis gedruckt. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "sourceWarning": "Originalangaben widersprüchlich: Packung, Preis und Grundpreis stimmen rechnerisch nicht überein. Originalwerte und unveränderter Originalhandzettel bleiben erhalten; bitte im Markt bestätigen lassen. Die Quelle legt nicht fest, welcher Wert fehlerhaft ist.",
+    "imageSha256": "84f0f54517669a86b7a5ce15ac835b89db00d69d33be6ffc7d284c1c2db6d0d5"
+  },
+  {
+    "id": "nl-2026-42-p01-r3c4",
+    "name": "Hertog Jan",
+    "categorySlug": "bier",
+    "language": "nl",
+    "flyerId": "nl-2026-10-12-de-maas-driehoek",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "image": "/images/offers/nl-2026-42-p01-r3c4-c2aef1ff621c848cd61ed460544e9e0e90a8088026b33a4cd0a4290062462d1b.webp",
+    "sourcePage": 1,
+    "rect": [
+      925,
+      1275,
+      250,
+      378
+    ],
+    "sourceDimensions": [
+      1213,
+      1800
+    ],
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "rightsStatus": "approved",
+    "reviewedAt": "2026-10-11T09:30:33.782Z",
+    "conditions": "Hertog Jan. Originalpreis/Gebinde (EUR): 13.99; gedruckt: Krat = 24 x 0.3 ltr. Gedruckter Grundpreis (EUR): 1.40/l. Pfand/gedruckte Bedingungen: excl. 3.90 statiegeld. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "sourceWarning": "Originalangaben widersprüchlich: Packung, Preis und Grundpreis stimmen rechnerisch nicht überein. Originalwerte und unveränderter Originalhandzettel bleiben erhalten; bitte im Markt bestätigen lassen. Die Quelle legt nicht fest, welcher Wert fehlerhaft ist.",
+    "imageSha256": "c2aef1ff621c848cd61ed460544e9e0e90a8088026b33a4cd0a4290062462d1b"
   }
 ]

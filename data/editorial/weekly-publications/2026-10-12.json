@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 2,
+  "week": "2026-10-12",
+  "editions": [
+    {
+      "id": "catalog-13027-42-2026",
+      "language": "de",
+      "title": "Angebote der Woche · KW 42",
+      "validFrom": "2026-10-12",
+      "validTo": "2026-10-17",
+      "source": {
+        "kind": "trinkgut-official",
+        "catalogId": "1394743",
+        "catalogVersion": "1",
+        "metadataSha256": "8de597de0bcc1fc9116498f258ba7f036203cc6a245d8a91f87dc7e39e3fcce7"
+      },
+      "identity": {
+        "language": "de",
+        "purpose": "weekly",
+        "medium": "trinkgut"
+      },
+      "pdf": {
+        "path": "/handzettel/2026/de-2026-10-12-a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e.pdf",
+        "sha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e",
+        "bytes": 6829343
+      },
+      "cover": {
+        "path": "/images/content/de-2026-10-12-b18e7ad83cb55540eae62ffaf3a5a4e7f242c9024586da2bf7c50fe133297682.jpg",
+        "sha256": "b18e7ad83cb55540eae62ffaf3a5a4e7f242c9024586da2bf7c50fe133297682",
+        "bytes": 160004
+      },
+      "pageCount": 10,
+      "review": {
+        "reviewedAt": "2026-10-11T09:30:33.782Z",
+        "approvedAt": "2026-10-11T09:30:33.782Z",
+        "printedValidFrom": "2026-10-12",
+        "printedValidTo": "2026-10-17",
+        "pageOfferCounts": [
+          10,
+          10,
+          9,
+          8,
+          10,
+          0,
+          1,
+          6,
+          8,
+          8
+        ]
+      },
+      "offerIds": [
+        "de-2026-42-p01-01",
+        "de-2026-42-p01-02",
+        "de-2026-42-p01-03",
+        "de-2026-42-p01-04",
+        "de-2026-42-p01-05",
+        "de-2026-42-p01-06",
+        "de-2026-42-p01-07",
+        "de-2026-42-p01-08",
+        "de-2026-42-p01-09",
+        "de-2026-42-p01-10",
+        "de-2026-42-p02-01",
+        "de-2026-42-p02-02",
+        "de-2026-42-p02-03",
+        "de-2026-42-p02-04",
+        "de-2026-42-p02-05",
+        "de-2026-42-p02-06",
+        "de-2026-42-p02-07",
+        "de-2026-42-p02-08",
+        "de-2026-42-p02-09",
+        "de-2026-42-p02-10",
+        "de-2026-42-p03-01",
+        "de-2026-42-p03-02",
+        "de-2026-42-p03-03",
+        "de-2026-42-p03-04",
+        "de-2026-42-p03-05",
+        "de-2026-42-p03-06",
+        "de-2026-42-p03-07",
+        "de-2026-42-p03-08",
+        "de-2026-42-p03-09",
+        "de-2026-42-p04-01",
+        "de-2026-42-p04-02",
+        "de-2026-42-p04-03",
+        "de-2026-42-p04-04",
+        "de-2026-42-p04-05",
+        "de-2026-42-p04-06",
+        "de-2026-42-p04-07",
+        "de-2026-42-p04-08",
+        "de-2026-42-p05-01",
+        "de-2026-42-p05-02",
+        "de-2026-42-p05-03",
+        "de-2026-42-p05-04",
+        "de-2026-42-p05-05",
+        "de-2026-42-p05-06",
+        "de-2026-42-p05-07",
+        "de-2026-42-p05-08",
+        "de-2026-42-p05-09",
+        "de-2026-42-p05-10",
+        "de-2026-42-p07-01",
+        "de-2026-42-p08-01",
+        "de-2026-42-p08-02",
+        "de-2026-42-p08-03",
+        "de-2026-42-p08-04",
+        "de-2026-42-p08-05",
+        "de-2026-42-p08-06",
+        "de-2026-42-p09-01",
+        "de-2026-42-p09-02",
+        "de-2026-42-p09-03",
+        "de-2026-42-p09-04",
+        "de-2026-42-p09-05",
+        "de-2026-42-p09-06",
+        "de-2026-42-p09-07",
+        "de-2026-42-p09-08",
+        "de-2026-42-p10-01",
+        "de-2026-42-p10-02",
+        "de-2026-42-p10-03",
+        "de-2026-42-p10-04",
+        "de-2026-42-p10-05",
+        "de-2026-42-p10-06",
+        "de-2026-42-p10-07",
+        "de-2026-42-p10-08"
+      ],
+      "offersSha256": "10a077dfd0843450a2c2e7181836c5d396c36a804a773886ca6ec9a3aab23a36"
+    },
+    {
+      "id": "nl-2026-10-12-de-maas-driehoek",
+      "language": "nl",
+      "title": "Nederlandse weekaanbiedingen · KW 42",
+      "validFrom": "2026-10-12",
+      "validTo": "2026-10-17",
+      "source": {
+        "kind": "agency",
+        "originalId": "nl-2026-10-12-de-maas-driehoek",
+        "medium": "de-maas-driehoek"
+      },
+      "identity": {
+        "language": "nl",
+        "purpose": "weekly",
+        "medium": "de-maas-driehoek"
+      },
+      "pdf": {
+        "path": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+        "sha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+        "bytes": 3113358
+      },
+      "cover": {
+        "path": "/images/content/nl-2026-10-12-de-maas-driehoek-c57ce5b5d8c81d6791399e0d245ced49e3e802a865911d22f9d40769fc69d3b5.png",
+        "sha256": "c57ce5b5d8c81d6791399e0d245ced49e3e802a865911d22f9d40769fc69d3b5",
+        "bytes": 1270692
+      },
+      "pageCount": 1,
+      "review": {
+        "reviewedAt": "2026-10-11T09:30:33.782Z",
+        "approvedAt": "2026-10-11T09:30:33.782Z",
+        "printedValidFrom": "2026-10-12",
+        "printedValidTo": "2026-10-17",
+        "pageOfferCounts": [
+          12
+        ]
+      },
+      "offerIds": [
+        "nl-2026-42-p01-r1c1",
+        "nl-2026-42-p01-r1c2",
+        "nl-2026-42-p01-r1c3",
+        "nl-2026-42-p01-r1c4",
+        "nl-2026-42-p01-r2c1",
+        "nl-2026-42-p01-r2c2",
+        "nl-2026-42-p01-r2c3",
+        "nl-2026-42-p01-r2c4",
+        "nl-2026-42-p01-r3c1",
+        "nl-2026-42-p01-r3c2",
+        "nl-2026-42-p01-r3c3",
+        "nl-2026-42-p01-r3c4"
+      ],
+      "offersSha256": "2919aa7d4b82b68a24a51923bdbda94a478dcb5e67f2a8ec62db5aa43fb4625e"
+    }
+  ]
+}

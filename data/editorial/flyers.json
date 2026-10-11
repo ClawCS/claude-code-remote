@@ -14,5 +14,35 @@
     "coverPath": "/images/content/nl-2026-10-05.webp",
     "pdfSha256": "65fedf4c7016dfd91229ee5f0e2221b0d08aae4090572df0c35bb674c46db7d4",
     "coverSha256": "a64e80d7087932e064b2d1c9686442bf3a4efc2ce230ac1a18dc1a2b21b0eeb2"
+  },
+  {
+    "id": "nl-2026-10-12-de-maas-driehoek",
+    "language": "nl",
+    "title": "Nederlandse weekaanbiedingen · KW 42",
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "rightsStatus": "approved",
+    "exportedAt": "2026-10-11T09:30:33.782Z",
+    "pdfPath": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
+    "coverPath": "/images/content/nl-2026-10-12-de-maas-driehoek-c57ce5b5d8c81d6791399e0d245ced49e3e802a865911d22f9d40769fc69d3b5.png",
+    "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d",
+    "coverSha256": "c57ce5b5d8c81d6791399e0d245ced49e3e802a865911d22f9d40769fc69d3b5",
+    "identity": {
+      "language": "nl",
+      "purpose": "weekly",
+      "medium": "de-maas-driehoek"
+    },
+    "source": {
+      "kind": "agency",
+      "originalId": "nl-2026-10-12-de-maas-driehoek",
+      "medium": "de-maas-driehoek"
+    },
+    "pageCount": 1,
+    "review": {
+      "reviewedAt": "2026-10-11T09:30:33.782Z",
+      "approvedAt": "2026-10-11T09:30:33.782Z",
+      "printedValidFrom": "2026-10-12",
+      "printedValidTo": "2026-10-17"
+    }
   }
 ]
