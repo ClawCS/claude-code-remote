@@ -7,6 +7,8 @@ import CocktailPhoto from "@/components/recipes/CocktailPhoto";
 import { RecipeIntro } from "@/components/recipes/RecipeCollection";
 import { cocktailCatalog, findCocktail } from "@/lib/cocktail-routes";
 import styles from "@/components/editorial/learning.module.css";
+import JsonLdScript from "@/components/JsonLdScript";
+import { buildRecipeJsonLd, buildBreadcrumbJsonLd } from "@/lib/recipe-structured-data";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -26,6 +28,13 @@ export default async function CocktailRecipePage({ params }: Props) {
   const photo = getCocktailPhoto(cocktail.name);
   return (
     <>
+      <JsonLdScript value={buildRecipeJsonLd(cocktail, photo)} />
+      <JsonLdScript value={buildBreadcrumbJsonLd([
+        { name: "Start", path: "/" },
+        { name: "Cocktail-Rezepte", path: "/cocktails" },
+        { name: category.name, path: category.href },
+        { name: cocktail.name, path: recipe.href },
+      ])} />
       <RecipeIntro title={cocktail.name} description={`${cocktail.category} · ${cocktail.difficulty} · ${cocktail.ingredients.length} Zutaten`} category={category} />
       <article data-learning="recipe" className={styles.body}>
         <div className="flex flex-wrap gap-4 mb-8 text-sm">

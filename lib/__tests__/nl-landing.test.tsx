@@ -39,6 +39,9 @@ describe("Dutch visitor landing page", () => {
     for (const name of ["Pralle Kirsche", "Dicke Nüsse", "Süsse Sünde", "Caramello", "Schwarzer Teufel", "Weisser Engel"]) {
       expect(brands).toContain(name);
     }
+    for (const slug of ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"]) {
+      expect(brands).toContain(`href="/eigenmarke#${slug}"`);
+    }
     expect(brands).not.toMatch(/\bKI\b|AI-gegenereerd|Google-foto/);
   });
 
@@ -90,6 +93,21 @@ describe("Dutch visitor landing page", () => {
       expect(url.pathname).toBe("/491752492386");
       expect(url.searchParams.get("text")).toBe("Hallo Trinkgut Jammers, ik heb een vraag.");
     }
+  });
+
+  it("answers local visitor questions without inventing stock or immediate booking", async () => {
+    const html = renderToStaticMarkup(await NederlandsPage());
+    const answers = html.match(/<section[^>]*data-local-answers="nl"[\s\S]*?<\/section>/)?.[0] ?? "";
+    expect(answers).toContain("Jurgensstraße 20");
+    expect(answers).toContain("geldigheidsperiode");
+    expect(answers).toContain("persoonlijk");
+    expect(answers).toContain("drie werkdagen");
+    const rentalAnswer = answers.split("Hoe werkt de verhuur?")[1]?.split("</dd>")[0] ?? "";
+    expect(rentalAnswer).toContain("maandag t/m zaterdag, behalve feestdagen in Noordrijn-Westfalen");
+    expect(rentalAnswer).toContain("afhaal- en retourdag tellen mee");
+    expect(answers).toContain("Alleen afhalen");
+    expect(answers).toContain('href="/vermietung"');
+    expect(answers).not.toMatch(/op voorraad|direct boeken|gratis parkeren|goedkoper|FAQPage/i);
   });
 
   it("preserves Dutch missing-flyer feedback without inventing available offers", async () => {

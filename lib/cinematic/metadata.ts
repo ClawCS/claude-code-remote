@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
+import { MARKET_PHOTOS } from "@/data/market-photos";
 
 const description =
   `Persönliche Beratung, Partybedarf und Vermietung bei Trinkgut Jammers, ${MARKET.street} in Goch.`;
@@ -46,6 +47,7 @@ export const LOCAL_BUSINESS_JSON_LD = Object.freeze({
   name: MARKET.displayName,
   legalName: MARKET.legalName,
   url: "https://trinkgut-jammers.de",
+  image: `https://trinkgut-jammers.de${MARKET_PHOTOS.market.src}`,
   telephone: "+49 2823 418707",
   email: MARKET.email,
   owner: { "@type": "Person", name: MARKET.owner },
@@ -71,7 +73,7 @@ export const LOCAL_BUSINESS_JSON_LD = Object.freeze({
       closes: "20:00",
     },
   ],
-  sameAs: [SITE_LINKS.instagram],
+  sameAs: [SITE_LINKS.instagram, "https://www.trinkgut.de/markt/jammers"],
 });
 
 export function serializeJsonLd(value: unknown): string {

@@ -6,6 +6,7 @@ import { buildPageMetadata } from "@/lib/search-metadata";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
+import LocalAnswers from "@/components/LocalAnswers";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Kontakt",
@@ -87,6 +88,7 @@ export default function KontaktPage() {
           </div>
         </section>
 
+        <LocalAnswers topic="contact" />
         <div className={styles.notice}>
           <p className="text-sm text-muted">
             Für rechtliche Angaben siehe{" "}

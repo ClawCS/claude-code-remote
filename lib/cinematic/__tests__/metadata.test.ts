@@ -63,6 +63,7 @@ describe("homepage metadata", () => {
       name: "Trinkgut Jammers",
       legalName: "Getränkesupermarkt Jammers e.K.",
       url: "https://trinkgut-jammers.de",
+      image: "https://trinkgut-jammers.de/images/editorial/canva/salitos-market.webp",
       telephone: "+49 2823 418707",
       email: "jammers-goch@trinkgut.de",
       owner: { "@type": "Person", name: "Nikolaos Jammers" },
@@ -88,7 +89,7 @@ describe("homepage metadata", () => {
           closes: "20:00",
         },
       ],
-      sameAs: ["https://www.instagram.com/trinkgutjammers_goch/"],
+      sameAs: ["https://www.instagram.com/trinkgutjammers_goch/", "https://www.trinkgut.de/markt/jammers"],
     });
     expect(JSON.stringify(LOCAL_BUSINESS_JSON_LD)).not.toMatch(
       /7(?:[.,\s]?000)|liefer(?:ung|n)|inStock|priceRange|25\s*%/i,

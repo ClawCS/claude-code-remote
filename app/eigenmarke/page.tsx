@@ -6,6 +6,7 @@ import styles from "@/components/editorial/collection.module.css";
 import { eigenmarken } from "@/data/eigenmarken";
 import AcademyEntry from "@/components/AcademyEntry";
 import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
+import LocalAnswers from "@/components/LocalAnswers";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
@@ -53,6 +54,7 @@ export default function EigenmarkePage() {
         ))}
       </div>
 
+      <LocalAnswers topic="brands" />
       <AcademyEntry category="eigenmarke" />
     </div>
     </>

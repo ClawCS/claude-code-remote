@@ -14,6 +14,7 @@ import { quoteRentals, type RentalQuote } from "@/lib/rental-pricing";
 import { money } from "@/lib/rental-cart";
 import { MARKET } from "@/lib/cinematic/site";
 import { RENTAL_QUANTITY_UNAVAILABLE } from "@/lib/rental-messages";
+import LocalAnswers from "@/components/LocalAnswers";
 
 export default function VermietungPage() {
   const { items, addItem } = useCart();
@@ -137,6 +138,7 @@ export default function VermietungPage() {
           </div>
           <p role="status" aria-live="polite" className="mt-4 max-w-2xl">{message}</p>
         </section>
+        <LocalAnswers topic="rental" />
       </div>
     </div>
   );

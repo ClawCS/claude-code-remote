@@ -1,0 +1,7 @@
+.section { margin-block: 2.5rem; padding-block: 1.5rem; border-top: 1px solid currentColor; }
+.section h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1.5rem; }
+.answers dt { font-weight: 700; margin-bottom: .5rem; }
+.answers dd { margin: 0; line-height: 1.7; }
+.answers a { text-decoration: underline; text-underline-offset: .2em; }
+.answers a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
