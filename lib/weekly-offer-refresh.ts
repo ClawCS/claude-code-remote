@@ -1,5 +1,6 @@
 import type { WeeklyOfferContent } from "./weekly-publication-types";
 import { expectedNlAgencyMedium } from "./flyer-source-policy";
+import { validateOfferSummary } from "./weekly-offer-metadata";
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new TypeError("Invalid weekly content");
   return value as Record<string, unknown>;
@@ -25,7 +26,8 @@ export function parseWeeklyOfferContent(value: unknown): WeeklyOfferContent {
     } else if (f.purpose !== "weekly" || (f.language === "de" ? f.medium !== "trinkgut" : f.pageCount !== 1 || f.medium !== ((f.validFrom as string) >= "2026-10-12" ? expectedNlAgencyMedium(f.validFrom as string) : "legacy-canva"))) throw new TypeError("Invalid weekly flyer");
   }
   for (const raw of item.offers) {
-    const o=record(raw); keys(o,["id","name","categorySlug","language","flyerId","validFrom","validTo","image","sourcePage","rect","pdfSha256","sourceUrl","conditions"],["sourceWarning"]);
+    const o=record(raw); keys(o,["id","name","categorySlug","language","flyerId","validFrom","validTo","image","sourcePage","rect","pdfSha256","sourceUrl","conditions"],["sourceWarning","summary"]);
+    validateOfferSummary(o.summary);
     if (!text(o.id)||!text(o.name)||!text(o.categorySlug)||!text(o.flyerId)||!["de","nl"].includes(o.language as string)||!date(o.validFrom)||!date(o.validTo)
       ||!image(o.image,"offers")||!pdf(o.sourceUrl)||!hash(o.pdfSha256)||typeof o.conditions!=="string"||(o.sourceWarning!==undefined&&typeof o.sourceWarning!=="string")
       ||!Number.isInteger(o.sourcePage)||(o.sourcePage as number)<1||!Array.isArray(o.rect)||o.rect.length!==4||!o.rect.every(Number.isSafeInteger)||o.rect[0]<0||o.rect[1]<0||o.rect[2]<1||o.rect[3]<1) throw new TypeError("Invalid offer");
@@ -38,7 +40,9 @@ export function parseWeeklyOfferContent(value: unknown): WeeklyOfferContent {
 export function projectLegacyOfferContent(content: WeeklyOfferContent) {
   return {...content,flyers:content.flyers.map(flyer => Object.fromEntries(
     Object.entries(flyer).filter(([key]) => key !== "purpose" && key !== "medium")
-  ) as Omit<typeof flyer, "purpose" | "medium">)};
+  ) as Omit<typeof flyer, "purpose" | "medium">),offers:content.offers.map(offer=>Object.fromEntries(
+    Object.entries(offer).filter(([key])=>key!=="summary")
+  ) as Omit<typeof offer,"summary">)};
 }
 export function createOfferRefresh(request: (signal: AbortSignal)=>Promise<unknown>,publish: (value:WeeklyOfferContent|null)=>void) {
   let sequence=0; let controller:AbortController|undefined; let disposed=false;

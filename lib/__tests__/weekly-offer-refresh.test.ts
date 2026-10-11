@@ -3,6 +3,17 @@ import { createOfferRefresh, parseWeeklyOfferContent, projectLegacyOfferContent 
 import { weeklyOfferFixtureContent } from "@/lib/cinematic/weekly-offer-fixture";
 const empty={status:"ok",issues:[],generatedAt:"2026-10-08T12:00:00.000Z",flyers:[],offers:[]};
 describe("offer refresh boundary",()=>{
+  const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};
+  it("accepts reviewed summary facts in v2 while preserving the old v1 offer projection",()=>{
+    const fixture=weeklyOfferFixtureContent("monday");
+    const typed={...fixture,offers:fixture.offers.map(offer=>({...offer,summary}))};
+    expect(parseWeeklyOfferContent(typed)).toEqual(typed);
+    expect(projectLegacyOfferContent(typed).offers).toEqual(fixture.offers);
+  });
+  it.each([null,{}, {...summary,price:4.99},{...summary,stock:"yes"},{...summary,deposit:""},{...summary,package:"x".repeat(161)},{...summary,unitPrice:"<script>oops</script>"}])("rejects the entire v2 payload for an invalid summary %j",summary=>{
+    const fixture=weeklyOfferFixtureContent("monday");
+    expect(()=>parseWeeklyOfferContent({...fixture,offers:fixture.offers.map(offer=>({...offer,summary}))})).toThrow();
+  });
   it("accepts typed metadata but strips only purpose and medium for old clients",()=>{
     const fixture=weeklyOfferFixtureContent("monday");
     const typed={...fixture,flyers:fixture.flyers.map(f=>({...f,purpose:"weekly" as const,medium:"trinkgut" as const}))};

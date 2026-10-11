@@ -42,6 +42,7 @@ export function selectWeeklyOfferContent(loaded:LoadedWeeklyPublications, now:Da
     sourcePage: offer.sourcePage, rect: offer.rect, pdfSha256: offer.pdfSha256,
     sourceUrl: edition.pdf.path, conditions: offer.conditions,
     ...(offer.sourceWarning === undefined ? {} : { sourceWarning: offer.sourceWarning }),
+    ...(offer.summary === undefined ? {} : { summary: offer.summary }),
   })));
   return { status: issues.length ? "degraded" : "ok", issues: [...new Set(issues)], generatedAt: now.toISOString(), flyers, offers };
 }

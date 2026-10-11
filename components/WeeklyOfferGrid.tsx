@@ -25,6 +25,12 @@ export default function WeeklyOfferGrid({ content, category, search = "", langua
         </a>
         <div className={styles.offerText}><p className={styles.meta}>{flyer.purpose === "supplemental" ? "Maasduinen · Zusatzanzeige" : flyer.medium === "de-maas-driehoek" ? "De Maas Driehoek · NL-Handzettel" : flyer.medium === "udens-weekblad" ? "Udens Weekblad · NL-Handzettel" : offer.language === "nl" ? "NL-Handzettel" : "DE-Handzettel"} · {formatDateRange(offer.validFrom, offer.validTo)}</p>
           <h2>{offer.name}</h2>
+          {offer.summary && <dl className={styles.offerSummary} aria-label="Gedruckte Angebotsangaben">
+            <div><dt>Preis</dt><dd>{offer.summary.price}</dd></div>
+            <div><dt>Gebinde</dt><dd>{offer.summary.package}</dd></div>
+            <div><dt>Pfand</dt><dd>{offer.summary.deposit}</dd></div>
+            <div><dt>Grundpreis</dt><dd>{offer.summary.unitPrice}</dd></div>
+          </dl>}
           <p className={styles.fineprint}>Originalausschnitt. Preise, Pfand, Varianten und Aktionsbedingungen bitte vollständig beachten. Keine Live-Bestandsanzeige.</p>
           {offer.conditions && <details className={styles.conditions}><summary>Bedingungen zum Angebot</summary><p>{offer.conditions}</p></details>}
           {offer.sourceWarning && <p className={styles.warning}><strong>Hinweis zum Original:</strong> {offer.sourceWarning}</p>}

@@ -36,7 +36,7 @@ export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"
     if (matches.length!==1) {errors.push(`Geprüfte Angebotskachel fehlt auf ${route}: ${offer.id}`);continue;}
     const markup=matches[0][2];
     errors.push(...verifyPublishedFlyerMarkup([{id:offer.id,language:offer.language as "de"|"nl",title:offer.name,validFrom:offer.validFrom,validTo:offer.validTo,pdfUrl:`${offer.sourceUrl}#page=${offer.sourcePage}`,viewerUrl:offer.sourceUrl,sourceUrl:offer.sourceUrl,coverUrl:offer.image,pageCount:1}],markup,route));
-    for (const text of [offer.name,offer.conditions,offer.sourceWarning??""]) if (text && !markup.replace(/<[^>]*>/g," ").includes(escaped(text))) errors.push(`Geprüfter Angebotstext fehlt auf ${route}: ${offer.id}`);
+    for (const text of [offer.name,offer.conditions,offer.sourceWarning??"",...Object.values(offer.summary??{})]) if (text && !markup.replace(/<[^>]*>/g," ").includes(escaped(text))) errors.push(`Geprüfter Angebotstext fehlt auf ${route}: ${offer.id}`);
   }
   return errors;
 }

@@ -5,7 +5,7 @@ import { isDeepStrictEqual } from "node:util";
 import { validatePublicationPdf } from "../lib/publication-pdf";
 import sharp from "sharp";
 import { renderOfferCrop } from "../lib/weekly-offer-crops";
-import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "../lib/weekly-offer-metadata";
+import { buildPublicOfferMetadata, validateOfferSummary, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "../lib/weekly-offer-metadata";
 import { parseWeeklyPublication } from "../lib/weekly-publication";
 import type { PublicationEdition, PublishedOffer } from "../lib/weekly-publication-types";
 import { getCurrentWeekRange } from "../lib/editorial-schedule";
@@ -75,6 +75,7 @@ async function imageIntegrity(bytes:Buffer,offer:ReviewedWeeklyOffer,expectedHas
   await image.resize(1,1).raw().toBuffer();
 }
 function reviewedOffer(offer:ReviewedWeeklyOffer) {
+  validateOfferSummary(offer.summary);
   const dimensions=offer.sourceDimensions;
   const inside=(rect:number[],bounds:number[])=>Array.isArray(rect) && rect.length===4 && rect.every(Number.isSafeInteger) && rect[2]>0 && rect[3]>0 && rect[0]>=bounds[0] && rect[1]>=bounds[1] && rect[0]+rect[2]<=bounds[0]+bounds[2] && rect[1]+rect[3]<=bounds[1]+bounds[3];
   if (!Array.isArray(dimensions) || dimensions.length!==2 || dimensions.some(n=>!Number.isSafeInteger(n)||n<1||n>50_000_000) || !inside(offer.rect,[0,0,...dimensions])
@@ -149,9 +150,12 @@ export async function buildWeeklyOffers(root:string,args:readonly string[]) {
             const expected=buildPublicOfferMetadata(source,page.page,offer,imagePath);
             const {imageSha256,...metadata}=old;
             // Only build may migrate same-byte DE delivery from its reviewed origin to the local PDF.
-            // Every other field, including original hash, crop and conditions, must remain exact.
+            // Delivery migration remains exact; reviewed text updates may reuse identical
+            // original/crop bytes in build mode only. Check always requires the full record.
             const deliveryMigration=!check && source.language==="de" && isDeepStrictEqual(metadata,{...expected,sourceUrl:source.sourceUrl});
-            if (!isDeepStrictEqual(metadata,expected) && !deliveryMigration) throw new Error(`Offer differs from reviewed source: ${offer.id}`);
+            const immutableMetadata=(row:typeof metadata)=>Object.fromEntries(Object.entries(row).filter(([key])=>!["summary","conditions","sourceWarning"].includes(key)));
+            const reviewedTextUpdate=!check && isDeepStrictEqual(immutableMetadata(metadata),immutableMetadata(expected));
+            if (!isDeepStrictEqual(metadata,expected) && !deliveryMigration && !reviewedTextUpdate) throw new Error(`Offer differs from reviewed source: ${offer.id}`);
             await imageIntegrity(await safeRead(root,`public${imagePath}`),offer,imageSha256);
             rows.push({...expected,imageSha256}); continue;
           }

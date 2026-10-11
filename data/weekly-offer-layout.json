@@ -2703,6 +2703,7 @@
           "offers": [
             {
               "id": "de-2026-42-p01-01",
+              "imagePath": "/images/offers/de-2026-42-p01-01-b14b6cb26b98371c58639a2fadb6169e86ff5d7b25ba9feff985f7e5fb5ad94c.webp",
               "name": "Warsteiner Pilsener, versch. Sorten, auch alkoholfrei",
               "categorySlug": "bier",
               "rect": [
@@ -2733,6 +2734,7 @@
             },
             {
               "id": "de-2026-42-p01-02",
+              "imagePath": "/images/offers/de-2026-42-p01-02-960a1897b95f0cb3e09cf1a269d24a07684b1ea29d94b71688bfa93c622de7cc.webp",
               "name": "Rotkäppchen Sekt o. Fruchtsecco, versch. Sorten, auch alkoholfrei",
               "categorySlug": "sekt",
               "rect": [
@@ -2749,6 +2751,7 @@
             },
             {
               "id": "de-2026-42-p01-03",
+              "imagePath": "/images/offers/de-2026-42-p01-03-0a41e198cb291c216283dd15a3ffd2bca9ed1887ea9bf4a3b0131cefb5b560c1.webp",
               "name": "Sinalco Limonaden, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2765,6 +2768,7 @@
             },
             {
               "id": "de-2026-42-p01-04",
+              "imagePath": "/images/offers/de-2026-42-p01-04-75b314e02831126cd36cf1325f36e9aee8ef8950a5442f102c6b36fdefed5303.webp",
               "name": "Gerolsteiner Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2781,6 +2785,7 @@
             },
             {
               "id": "de-2026-42-p01-05",
+              "imagePath": "/images/offers/de-2026-42-p01-05-546e73999a24a754eda71ca35ad068fb7448ec415dbfef6406284b7a2dbc40fd.webp",
               "name": "Freixenet Mederano o. Mia (Spanien), versch. Sorten, auch Mia alkoholfrei",
               "categorySlug": "wein",
               "rect": [
@@ -2797,6 +2802,13 @@
             },
             {
               "id": "de-2026-42-p01-06",
+              "imagePath": "/images/offers/de-2026-42-p01-06-711a14e7b7cb66b79c15159b7ef9dd3e82ef61d7576ff3169ad3332c96e6822a.webp",
+              "summary": {
+                "price": "4,99 €",
+                "package": "12 × 0,75 l Glas",
+                "deposit": "zzgl. 3,30 € Pfand",
+                "unitPrice": "0,55 €/l"
+              },
               "name": "Ahrtal Quelle Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2813,6 +2825,7 @@
             },
             {
               "id": "de-2026-42-p01-07",
+              "imagePath": "/images/offers/de-2026-42-p01-07-a0e77a4169946296bc43b7fa68378628b91932479c0ac7b8c134f52e54134bb9.webp",
               "name": "Römerwall Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2829,6 +2842,7 @@
             },
             {
               "id": "de-2026-42-p01-08",
+              "imagePath": "/images/offers/de-2026-42-p01-08-9ea9e38bcbfac12e206d10420e7a5f2884d090cd500db09921e21e75f3a7b3b1.webp",
               "name": "Yeni Raki, 45% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -2845,6 +2859,7 @@
             },
             {
               "id": "de-2026-42-p01-09",
+              "imagePath": "/images/offers/de-2026-42-p01-09-228326b236e74486f0cb5bc5af4690b210a0f04999a168a8d1d305ff05e8f6f9.webp",
               "name": "Bolten Alt o. Cola-Mix und weitere Sorten",
               "categorySlug": "bier",
               "rect": [
@@ -2861,6 +2876,7 @@
             },
             {
               "id": "de-2026-42-p01-10",
+              "imagePath": "/images/offers/de-2026-42-p01-10-977f3d8c665f0b511a3952b15db06a5b33a91273bb8ee6c0a81c10a494a91116.webp",
               "name": "Rut Wiess Kölsch",
               "categorySlug": "bier",
               "rect": [
@@ -2887,6 +2903,13 @@
           "offers": [
             {
               "id": "de-2026-42-p02-01",
+              "imagePath": "/images/offers/de-2026-42-p02-01-4f092cf78dad25cbc21150560b1721917c74e91af0e7128bcafc57edde552b1f.webp",
+              "summary": {
+                "price": "0,99 €",
+                "package": "250 ml Dose",
+                "deposit": "zzgl. 0,25 € Pfand",
+                "unitPrice": "3,96 €/l"
+              },
               "name": "Red Bull Energy Drink, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2903,6 +2926,7 @@
             },
             {
               "id": "de-2026-42-p02-02",
+              "imagePath": "/images/offers/de-2026-42-p02-02-d5bc792ad8af8e91582c121a6d817dfdcc86725285deea68405c2dc29eb5322b.webp",
               "name": "afri cola o. Bluna, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2919,6 +2943,7 @@
             },
             {
               "id": "de-2026-42-p02-03",
+              "imagePath": "/images/offers/de-2026-42-p02-03-2498fc5edf52526cd27dbf12e37d683105bffaaa3228269139b3932957a0a70b.webp",
               "name": "Nürburg Quelle o. PurBorn Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2935,6 +2960,7 @@
             },
             {
               "id": "de-2026-42-p02-04",
+              "imagePath": "/images/offers/de-2026-42-p02-04-6331f137b8e506693fe7d3d39774d0cbb890d0a93ac8a32be660aa284203d517.webp",
               "name": "Sinalco Aquintell Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2951,6 +2977,7 @@
             },
             {
               "id": "de-2026-42-p02-05",
+              "imagePath": "/images/offers/de-2026-42-p02-05-5cf7061f55d0d75b6c8672bc99f64feedf388f03ebf513e8ede39e003b60a3a9.webp",
               "name": "Coca-Cola, Fanta o. Sprite und weitere Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2967,6 +2994,7 @@
             },
             {
               "id": "de-2026-42-p02-06",
+              "imagePath": "/images/offers/de-2026-42-p02-06-b60c85db0d6e4854e223bbf402e4a114780a317c74f43a66ad1859ff923170d4.webp",
               "name": "Landpark Bio-Quelle Erfrischungsgetränke, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2983,6 +3011,7 @@
             },
             {
               "id": "de-2026-42-p02-07",
+              "imagePath": "/images/offers/de-2026-42-p02-07-e450509718a26947a4c26e5795752809a01f2049309aba7cbccd4600823e7eed.webp",
               "name": "Teinacher Genuss-Limonade, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -2999,6 +3028,7 @@
             },
             {
               "id": "de-2026-42-p02-08",
+              "imagePath": "/images/offers/de-2026-42-p02-08-cbad2770c24c99c5d3ed45c7ad35ae615818a65627ff6d32fedbe27c113649af.webp",
               "name": "Capri-Sun, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3029,6 +3059,7 @@
             },
             {
               "id": "de-2026-42-p02-09",
+              "imagePath": "/images/offers/de-2026-42-p02-09-432aeb4aceb4daf2867e613854bc966ad2ba2fd6c260d79bf8bef872eb2873b2.webp",
               "name": "Amecke Säfte, versch. Sorten - Kasten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3045,6 +3076,7 @@
             },
             {
               "id": "de-2026-42-p02-10",
+              "imagePath": "/images/offers/de-2026-42-p02-10-e1d4d85ad17b1ab47995442c33e19ae505e10da74bf934e32393cbb3f77e0cb4.webp",
               "name": "Amecke Säfte - Einzelflasche",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3097,6 +3129,7 @@
           "offers": [
             {
               "id": "de-2026-42-p03-01",
+              "imagePath": "/images/offers/de-2026-42-p03-01-ab29160448ab85b685829be074c41eb2d781468b9468a557c5071c207cd44578.webp",
               "name": "Landpark Bio-Quelle Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3113,6 +3146,7 @@
             },
             {
               "id": "de-2026-42-p03-02",
+              "imagePath": "/images/offers/de-2026-42-p03-02-3717b003c6f7080e2e968b0ff28b113403433422b1916f6e87d626614b86a51f.webp",
               "name": "Christinen Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3129,6 +3163,7 @@
             },
             {
               "id": "de-2026-42-p03-03",
+              "imagePath": "/images/offers/de-2026-42-p03-03-d27517ee1050e01d367db7d8f8cc876b68e3b14911e97fd747a24bb2c7fec5ed.webp",
               "name": "Valensina Sport+ Elektrolyt Drink, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3145,6 +3180,7 @@
             },
             {
               "id": "de-2026-42-p03-04",
+              "imagePath": "/images/offers/de-2026-42-p03-04-8da12a83c1ccfb07a2bc9d414363fe18ef7bbb63a901af2afc56074c83fe8da8.webp",
               "name": "Steinsieker Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3161,6 +3197,7 @@
             },
             {
               "id": "de-2026-42-p03-05",
+              "imagePath": "/images/offers/de-2026-42-p03-05-69c6331fcc2bbab7526a00da152a0e2aaaaf658888dd75d295ddd2af6f89cfaa.webp",
               "name": "Schloss Quelle Mineralwasser, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3177,6 +3214,7 @@
             },
             {
               "id": "de-2026-42-p03-06",
+              "imagePath": "/images/offers/de-2026-42-p03-06-539985c60d84a553341e6c2d764e7abcafeb8a79073a7c4972703bbf91809ffa.webp",
               "name": "EDEKA Herzstücke Saft, Nektar o. Fruchtsaftgetränke, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3193,6 +3231,7 @@
             },
             {
               "id": "de-2026-42-p03-07",
+              "imagePath": "/images/offers/de-2026-42-p03-07-f1f5de7bc6b3d16038dea97922ef69485e34c2912488f081c18cf2d997b4fc94.webp",
               "name": "St. Leonhards Quelle, medium oder still",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3209,6 +3248,7 @@
             },
             {
               "id": "de-2026-42-p03-08",
+              "imagePath": "/images/offers/de-2026-42-p03-08-a6b3e55a6e619c498773fe1279989c40ff21c34beff2e31f29560c1a51092ec1.webp",
               "name": "Hirschquelle Heilwasser",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3225,6 +3265,7 @@
             },
             {
               "id": "de-2026-42-p03-09",
+              "imagePath": "/images/offers/de-2026-42-p03-09-91bb3f70cc367b315e2bac2b941cc7168bc643c8cd950d2bc3a38c30954cdc91.webp",
               "name": "Rauch happy day, versch. Sorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -3271,6 +3312,7 @@
           "offers": [
             {
               "id": "de-2026-42-p04-01",
+              "imagePath": "/images/offers/de-2026-42-p04-01-7121313c64c8169b67ac74f5c24f97e677684e3d140012348c287204b6797a0f.webp",
               "name": "Kloster Andechs Weißbier Hell, Weißbier alkoholfrei oder Apfelweiße alkoholfrei",
               "categorySlug": "bier",
               "rect": [
@@ -3301,6 +3343,7 @@
             },
             {
               "id": "de-2026-42-p04-02",
+              "imagePath": "/images/offers/de-2026-42-p04-02-ced26425bcaade4a565446286ca1f04418d502fa8d256a336d383100a8878974.webp",
               "name": "Hofbräuhaus München Helles Vollbier",
               "categorySlug": "bier",
               "rect": [
@@ -3331,6 +3374,7 @@
             },
             {
               "id": "de-2026-42-p04-03",
+              "imagePath": "/images/offers/de-2026-42-p04-03-2c0887e278f011299c33ef8bd1374274a540b7ceef7ac7a0fbf59eb92e486e20.webp",
               "name": "Bitburger Pils, Herb 0.0% o. Radler naturtrüb",
               "categorySlug": "bier",
               "rect": [
@@ -3347,6 +3391,7 @@
             },
             {
               "id": "de-2026-42-p04-04",
+              "imagePath": "/images/offers/de-2026-42-p04-04-d89203799c5b1d659061a9105b3647c95160aaae2b8e802a79778260b9d5da8e.webp",
               "name": "Karlsberg Mixery, versch. Sorten, auch alkoholfrei",
               "categorySlug": "bier",
               "rect": [
@@ -3363,6 +3408,7 @@
             },
             {
               "id": "de-2026-42-p04-05",
+              "imagePath": "/images/offers/de-2026-42-p04-05-2c9b2f7a62ac42f329a144858889c8e1145653ca5737bb0946b6ec114a6b9866.webp",
               "name": "Brinkhoff's No. 1, versch. Sorten",
               "categorySlug": "bier",
               "rect": [
@@ -3379,6 +3425,7 @@
             },
             {
               "id": "de-2026-42-p04-06",
+              "imagePath": "/images/offers/de-2026-42-p04-06-8058ab589b9ff7d7e4049ebcaa49a671f17c842ec1944dda7cf952bc1e1d4404.webp",
               "name": "tut gut Malzbier",
               "categorySlug": "bier",
               "rect": [
@@ -3409,6 +3456,7 @@
             },
             {
               "id": "de-2026-42-p04-07",
+              "imagePath": "/images/offers/de-2026-42-p04-07-1f333f317c8bfdaeb6c15fb5553fe218e365afb545608c891c966a875689dd97.webp",
               "name": "Clausthaler Original oder Naturradler",
               "categorySlug": "bier",
               "rect": [
@@ -3425,6 +3473,7 @@
             },
             {
               "id": "de-2026-42-p04-08",
+              "imagePath": "/images/offers/de-2026-42-p04-08-9722a014becdf364f5a3d7d4137a76e4142cc30f8b68b17f95bfcc721daa2fa2.webp",
               "name": "Krombacher's Fassbrause, versch. Sorten",
               "categorySlug": "bier",
               "rect": [
@@ -3471,6 +3520,7 @@
           "offers": [
             {
               "id": "de-2026-42-p05-01",
+              "imagePath": "/images/offers/de-2026-42-p05-01-31466dc7dc8779f47e9bfcdde92795a93eb6418f57c4f0076001fc594221b831.webp",
               "name": "Veltins helles Pülleken, Pülleken 0.0% o. Zitrönken",
               "categorySlug": "bier",
               "rect": [
@@ -3487,6 +3537,7 @@
             },
             {
               "id": "de-2026-42-p05-02",
+              "imagePath": "/images/offers/de-2026-42-p05-02-a61eb112679f54ac03a97231a71ecffb2b6fb36a57d72af51e7de81af746cb4f.webp",
               "name": "Traugott Simon Pilsener, Pilsener alkoholfrei 0.0%, Alt oder Gold",
               "categorySlug": "bier",
               "rect": [
@@ -3503,6 +3554,7 @@
             },
             {
               "id": "de-2026-42-p05-03",
+              "imagePath": "/images/offers/de-2026-42-p05-03-4af20b38ea4cf809937d57b656674213f7621f1a0b469a67be9d4dbf142f19ff.webp",
               "name": "Radeberger Pilsner",
               "categorySlug": "bier",
               "rect": [
@@ -3519,6 +3571,7 @@
             },
             {
               "id": "de-2026-42-p05-04",
+              "imagePath": "/images/offers/de-2026-42-p05-04-0bb7ec91d2905177dfacccae221df1f8e79a2ebeb47fe28c8688db56378cd8cd.webp",
               "name": "Th. König Zwickl, Kellerbier naturtrüb",
               "categorySlug": "bier",
               "rect": [
@@ -3535,6 +3588,7 @@
             },
             {
               "id": "de-2026-42-p05-05",
+              "imagePath": "/images/offers/de-2026-42-p05-05-8e0d4c26913d5b6beb5d8a36e10ed07d0f66c081e66e4c72f32c5adea7372366.webp",
               "name": "Guinness Extra Stout o. Kilkenny Irish Beer",
               "categorySlug": "bier",
               "rect": [
@@ -3551,6 +3605,7 @@
             },
             {
               "id": "de-2026-42-p05-06",
+              "imagePath": "/images/offers/de-2026-42-p05-06-a594e29639b45ca1a42c5f583588b8f218e806fc553ce033dcca7836c343b41b.webp",
               "name": "Allgäuer Büble, versch. Sorten",
               "categorySlug": "bier",
               "rect": [
@@ -3567,6 +3622,7 @@
             },
             {
               "id": "de-2026-42-p05-07",
+              "imagePath": "/images/offers/de-2026-42-p05-07-13fb973de331497611f1857735769789073ee0bfa2ef8e82dedfd85b56b1a1a0.webp",
               "name": "HB Hofbräu Original",
               "categorySlug": "bier",
               "rect": [
@@ -3583,6 +3639,7 @@
             },
             {
               "id": "de-2026-42-p05-08",
+              "imagePath": "/images/offers/de-2026-42-p05-08-9aa373f4ba411e9966803d2d016df72218003974b78d8afd530c588f1cf35770.webp",
               "name": "Tyskie, polnisches Premium Pils oder Radler",
               "categorySlug": "bier",
               "rect": [
@@ -3599,6 +3656,7 @@
             },
             {
               "id": "de-2026-42-p05-09",
+              "imagePath": "/images/offers/de-2026-42-p05-09-beaf21bcec2e98a0b8b1a1f0bd5d44327a680ab9ec038a3d2ffd70bec3f5a330.webp",
               "name": "Budweiser Budvar Original o. Budvar 0.0%",
               "categorySlug": "bier",
               "rect": [
@@ -3615,6 +3673,7 @@
             },
             {
               "id": "de-2026-42-p05-10",
+              "imagePath": "/images/offers/de-2026-42-p05-10-d63a73271d4de1df3258e4a3e1a394c544815b201ab652f28cf37f2ac6139eda.webp",
               "name": "Kloster Andechs Bergbock Hell oder Doppelbock Dunkel",
               "categorySlug": "bier",
               "rect": [
@@ -3670,6 +3729,7 @@
           "offers": [
             {
               "id": "de-2026-42-p07-01",
+              "imagePath": "/images/offers/de-2026-42-p07-01-a10be3e0a733f6f2f994088f83ce284748e639000a9060a5e8a11d6730f9803c.webp",
               "name": "LEGO FunPack - Treueaktion",
               "categorySlug": "lebensmittel",
               "rect": [
@@ -3696,6 +3756,7 @@
           "offers": [
             {
               "id": "de-2026-42-p08-01",
+              "imagePath": "/images/offers/de-2026-42-p08-01-35ccb2735b8f1e8cb4ea1a2bc97a44e356f4b359189d168b42d70f328267ec8b.webp",
               "name": "Captain Morgan, versch. Sorten, 25%-40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3712,6 +3773,7 @@
             },
             {
               "id": "de-2026-42-p08-02",
+              "imagePath": "/images/offers/de-2026-42-p08-02-991a8e1c8482f811a2d8d510ed64c0cc9afea343fdb4b5bbc01086700490c9d6.webp",
               "name": "Smirnoff Vodka No. 21 oder Raspberry Crush, 37.5% / 25% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3742,6 +3804,7 @@
             },
             {
               "id": "de-2026-42-p08-03",
+              "imagePath": "/images/offers/de-2026-42-p08-03-f30c89445af5c9f8e12692c19ef4657802c0f5ae77a0a703de08a572de4fc470.webp",
               "name": "Ballantine's Finest, Blended Scotch Whisky, 40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3758,6 +3821,7 @@
             },
             {
               "id": "de-2026-42-p08-04",
+              "imagePath": "/images/offers/de-2026-42-p08-04-9d4c5e74c87d58e45bef41be5800145999a559c1b61d52adeea9d6ae673c29da.webp",
               "name": "Killepitsch Premium Kräuterlikör, 42% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3774,6 +3838,7 @@
             },
             {
               "id": "de-2026-42-p08-05",
+              "imagePath": "/images/offers/de-2026-42-p08-05-bb5f83ec56d551cf22b019d14cb5eafbc226d9fe27feb55f777aa783fa5b086b.webp",
               "name": "Meukow V.S.O.P. Superior Cognac, 40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3790,6 +3855,7 @@
             },
             {
               "id": "de-2026-42-p08-06",
+              "imagePath": "/images/offers/de-2026-42-p08-06-a0da6c19098fec381d75505dfbe60ef99c9cf61de3a779b49dec81429a76124a.webp",
               "name": "Diplomatico Reserva Exclusiva Premium Rum, 40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3836,6 +3902,7 @@
           "offers": [
             {
               "id": "de-2026-42-p09-01",
+              "imagePath": "/images/offers/de-2026-42-p09-01-8d518ebb1c44a605fad0f474190e1bda8e8a1c1204f85eaab2b90a2758e1db1a.webp",
               "name": "Gordon's London Dry Gin, 37.5% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3872,6 +3939,7 @@
             },
             {
               "id": "de-2026-42-p09-02",
+              "imagePath": "/images/offers/de-2026-42-p09-02-ac2f31da9663ea717b8f3da057a059aafe83292e0dd9169a5dbfdb4609ff7ece.webp",
               "name": "Campari, italienischer Aperitif, 25% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3888,6 +3956,7 @@
             },
             {
               "id": "de-2026-42-p09-03",
+              "imagePath": "/images/offers/de-2026-42-p09-03-b913bba40aa2b8847c7e6e4e73e973edd791c86879d3fe263a09120b6585b27f.webp",
               "name": "Finlandia Vodka, 40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3904,6 +3973,7 @@
             },
             {
               "id": "de-2026-42-p09-04",
+              "imagePath": "/images/offers/de-2026-42-p09-04-8b6024736b4309763cd81cd9eda6678c23043120c845414bb8cefeaf1ec0cfed.webp",
               "name": "Zoladkowa Gorzka Liköre, versch. Sorten, 25%-32% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3920,6 +3990,7 @@
             },
             {
               "id": "de-2026-42-p09-05",
+              "imagePath": "/images/offers/de-2026-42-p09-05-66fea10139fb344c5ff9da1f73153a77233361eddee1f5a85c8f9299c490a779.webp",
               "name": "Helbing, Hamburgs feines Original, 32% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3936,6 +4007,7 @@
             },
             {
               "id": "de-2026-42-p09-06",
+              "imagePath": "/images/offers/de-2026-42-p09-06-4534dac5fa27d0958d7b1bb0ab80b564ea67be82dadbf021bf92d5c81c12bc27.webp",
               "name": "Canadian Club, 40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3972,6 +4044,7 @@
             },
             {
               "id": "de-2026-42-p09-07",
+              "imagePath": "/images/offers/de-2026-42-p09-07-f05f68f147ea63436e67c72e792278bac683ed31513ffafb89b35bba7b566dbe.webp",
               "name": "Amarula Cream with Marula Spirit, 17% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -3988,6 +4061,7 @@
             },
             {
               "id": "de-2026-42-p09-08",
+              "imagePath": "/images/offers/de-2026-42-p09-08-8580c978e21183f0582a43212c53c103d5c534bee716db04e865205dfa1cfcb7.webp",
               "name": "Asbach Uralt, 36% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -4014,6 +4088,7 @@
           "offers": [
             {
               "id": "de-2026-42-p10-01",
+              "imagePath": "/images/offers/de-2026-42-p10-01-9eacdee8dc4f434e63de41666e100e3f7db3f50090fa9d0fd5d5a5588d4af3c7.webp",
               "name": "Weingenuss (Deutschland), versch. Sorten",
               "categorySlug": "wein",
               "rect": [
@@ -4030,6 +4105,7 @@
             },
             {
               "id": "de-2026-42-p10-02",
+              "imagePath": "/images/offers/de-2026-42-p10-02-58384f7af04d1b0d401222b1360bea23b9a154c3df0dff3be3a63d092437151f.webp",
               "name": "Weingut Lucashof (Deutschland - Pfalz), versch. Sorten, trocken",
               "categorySlug": "wein",
               "rect": [
@@ -4046,6 +4122,7 @@
             },
             {
               "id": "de-2026-42-p10-03",
+              "imagePath": "/images/offers/de-2026-42-p10-03-b4b7ccb137616ea4cf61852c90801c90dec89e1adcfae93319c4361b4fe75c09.webp",
               "name": "Intrigo o. Mezzacorona (Italien), versch. Sorten, trocken / halbtrocken",
               "categorySlug": "wein",
               "rect": [
@@ -4062,6 +4139,7 @@
             },
             {
               "id": "de-2026-42-p10-04",
+              "imagePath": "/images/offers/de-2026-42-p10-04-f29ed5cb95e0b8fbfd0e7464465542bb017403d49bbbfcb70982850793b7c4b5.webp",
               "name": "Grand Corbier o. Mont Saint Jean Rosé (Frankreich), versch. Sorten, trocken",
               "categorySlug": "wein",
               "rect": [
@@ -4078,6 +4156,7 @@
             },
             {
               "id": "de-2026-42-p10-05",
+              "imagePath": "/images/offers/de-2026-42-p10-05-f322c94bc8307d849705832b46263ef285aca87e67ea3d8013aff1381d0ecc89.webp",
               "name": "Rioja Vega Reserva (Spanien - Rioja)",
               "categorySlug": "wein",
               "rect": [
@@ -4094,6 +4173,7 @@
             },
             {
               "id": "de-2026-42-p10-06",
+              "imagePath": "/images/offers/de-2026-42-p10-06-bbefd329bea10d7c8aaba12e8aff968c8f72b22b409a81c5745ff36b62c2d59d.webp",
               "name": "De Beukelaer Prinzen Rolle, versch. Sorten",
               "categorySlug": "lebensmittel",
               "rect": [
@@ -4110,6 +4190,7 @@
             },
             {
               "id": "de-2026-42-p10-07",
+              "imagePath": "/images/offers/de-2026-42-p10-07-76ec68a2e77032d51a6efedc18e9b80aef97bc231657a92b320cf02c701a61b5.webp",
               "name": "Pringles, versch. Sorten",
               "categorySlug": "lebensmittel",
               "rect": [
@@ -4126,6 +4207,7 @@
             },
             {
               "id": "de-2026-42-p10-08",
+              "imagePath": "/images/offers/de-2026-42-p10-08-54dcc04c6aedd87863b2c0b1c77f0c1ab33190677f23ebe815b0c728cd0dac85.webp",
               "name": "Maggi Ravioli, versch. Sorten",
               "categorySlug": "lebensmittel",
               "rect": [
@@ -4182,6 +4264,7 @@
           "offers": [
             {
               "id": "nl-2026-42-p01-r1c1",
+              "imagePath": "/images/offers/nl-2026-42-p01-r1c1-bd5dbf8269947ceb3cf81bc31dad0cc7b0aaf518cacecab32ee0a06918b138cb.webp",
               "name": "Red Bull Energy Drink, diverse soorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -4194,10 +4277,12 @@
                 1213,
                 1800
               ],
-              "conditions": "Red Bull Energy Drink, diverse soorten. Originalpreis/Gebinde (EUR): 0.99; 0.25 l blik. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; taurin- en cafeïnehoudend; WEEKKNALLER. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu."
+              "conditions": "Red Bull Energy Drink, diverse soorten. Originalpreis/Gebinde (EUR): 0.99; 0,25 ml Blik. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; taurin- en cafeïnehoudend; WEEKKNALLER. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+              "sourceWarning": "Im Original steht „0,25 ml Blik“. Diese gedruckte Einheitenangabe ist widersprüchlich; bitte die Gebindegröße im Markt klären. Keine stillschweigende Korrektur auf 0,25 l."
             },
             {
               "id": "nl-2026-42-p01-r1c2",
+              "imagePath": "/images/offers/nl-2026-42-p01-r1c2-2319ac1de924a27f1eb348375ebb982028bbc6b97cdebf3b2fa4a43401f17e3b.webp",
               "name": "Intrigo of Mezzacorona Wijn (Italië), diverse soorten",
               "categorySlug": "wein",
               "rect": [
@@ -4214,6 +4299,7 @@
             },
             {
               "id": "nl-2026-42-p01-r1c3",
+              "imagePath": "/images/offers/nl-2026-42-p01-r1c3-567e94d5b05ab54c7f95b67755fbec34920332d895c34773f284468cfbd65cd9.webp",
               "name": "Freixenet Mederano of Mia (Spanje), diverse soorten",
               "categorySlug": "wein",
               "rect": [
@@ -4244,6 +4330,7 @@
             },
             {
               "id": "nl-2026-42-p01-r1c4",
+              "imagePath": "/images/offers/nl-2026-42-p01-r1c4-ca16d8073d659fab8ea0a69eb471d8e574cfda98b31e59fbcf082556d6b1f6b7.webp",
               "name": "Weingenuss Wijn (Duitsland), diverse soorten",
               "categorySlug": "wein",
               "rect": [
@@ -4280,6 +4367,13 @@
             },
             {
               "id": "nl-2026-42-p01-r2c1",
+              "imagePath": "/images/offers/nl-2026-42-p01-r2c1-2fa0d17e50cd1e39fbc36920ef89ee51d053557a9965d8f46bcd246f587b52ea.webp",
+              "summary": {
+                "price": "1,19 €",
+                "package": "1,25 l PET-fles",
+                "deposit": "excl. 0,25 € statiegeld",
+                "unitPrice": "0,95 €/l"
+              },
               "name": "Coca-Cola, Fanta of Sprite, ook andere soorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -4296,6 +4390,7 @@
             },
             {
               "id": "nl-2026-42-p01-r2c2",
+              "imagePath": "/images/offers/nl-2026-42-p01-r2c2-7dd33f58a8e4e049ddb6d7b3fa749b958c334db5d0d2429da2471a3225b261f3.webp",
               "name": "EDEKA Herzstücke Saft, Nektar of Fruchtsaftgetränke, diverse soorten",
               "categorySlug": "alkoholfrei",
               "rect": [
@@ -4312,6 +4407,7 @@
             },
             {
               "id": "nl-2026-42-p01-r2c3",
+              "imagePath": "/images/offers/nl-2026-42-p01-r2c3-36d7c9fa1fb22fb834f9531ffe651023465de7fc3cde4706258eed7d407821d1.webp",
               "name": "Rotkäppchen-Sekt of Fruchtsecco, bubbelwijn, diverse soorten",
               "categorySlug": "sekt",
               "rect": [
@@ -4328,6 +4424,7 @@
             },
             {
               "id": "nl-2026-42-p01-r2c4",
+              "imagePath": "/images/offers/nl-2026-42-p01-r2c4-5f4f4eb1ff2597a011e85a858602e7fe40e5f35d0f87e72b87f2b24fc49c0cba.webp",
               "name": "Yeni Raki, 45% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -4344,6 +4441,7 @@
             },
             {
               "id": "nl-2026-42-p01-r3c1",
+              "imagePath": "/images/offers/nl-2026-42-p01-r3c1-a9efac8522a9dced1686401f25243d1d3c9164870e451ff74539b9b628037bcc.webp",
               "name": "Captain Morgan, diverse soorten, 25%-40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -4360,6 +4458,7 @@
             },
             {
               "id": "nl-2026-42-p01-r3c2",
+              "imagePath": "/images/offers/nl-2026-42-p01-r3c2-d42ab4422e0f94e9954ad7a211707348a6cfcbceff020529bcd3586de6377b51.webp",
               "name": "Ballantine's Finest, Blended Scotch Whisky, 40% Vol.",
               "categorySlug": "spirituosen",
               "rect": [
@@ -4376,6 +4475,7 @@
             },
             {
               "id": "nl-2026-42-p01-r3c3",
+              "imagePath": "/images/offers/nl-2026-42-p01-r3c3-84f0f54517669a86b7a5ce15ac835b89db00d69d33be6ffc7d284c1c2db6d0d5.webp",
               "name": "Warsteiner Pilsener, diverse soorten",
               "categorySlug": "bier",
               "rect": [
@@ -4393,6 +4493,7 @@
             },
             {
               "id": "nl-2026-42-p01-r3c4",
+              "imagePath": "/images/offers/nl-2026-42-p01-r3c4-c2aef1ff621c848cd61ed460544e9e0e90a8088026b33a4cd0a4290062462d1b.webp",
               "name": "Hertog Jan",
               "categorySlug": "bier",
               "rect": [

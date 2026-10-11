@@ -10,6 +10,38 @@ const content:WeeklyOfferContent={status:"ok",issues:[],generatedAt:"2026-10-08T
 ],offers:offers.map(({id,name,categorySlug,language,flyerId,validFrom,validTo,image,sourcePage,rect,pdfSha256,conditions,sourceWarning})=>({id,name,categorySlug,language:language as "de"|"nl",flyerId,validFrom,validTo,image,sourcePage,rect:rect as [number,number,number,number],pdfSha256,conditions,sourceWarning,sourceUrl:language==="de"?"/handzettel/2026/complete.pdf":"/handzettel/2026/nl-2026-10-05.pdf"}))};
 
 describe("complete original offer cards",()=>{
+  it("renders the three actual KW42 pilot records and the unchanged NL unit warning in an isolated render fixture",()=>{
+    const ids=["de-2026-42-p01-06","de-2026-42-p02-01","nl-2026-42-p01-r2c1","nl-2026-42-p01-r1c1"];
+    const pilotOffers=offers.filter(o=>ids.includes(o.id)).map(o=>({...o,rect:o.rect as [number,number,number,number]}));
+    const fixture:WeeklyOfferContent={status:"ok",issues:[],generatedAt:"2026-10-12T12:00:00Z",offers:pilotOffers,flyers:content.flyers.map(f=>{
+      const row=pilotOffers.find(o=>o.language===f.language)!;
+      return {...f,id:row.flyerId,validFrom:row.validFrom,validTo:row.validTo,pdfSha256:row.pdfSha256,pdfUrl:row.sourceUrl,sourceUrl:row.sourceUrl,viewerUrl:row.sourceUrl,medium:f.language==="nl"?"de-maas-driehoek":"trinkgut"};
+    })};
+    const html=renderToStaticMarkup(<WeeklyOfferGrid content={fixture}/>);
+    expect(html.match(/<dl\b/g)).toHaveLength(3);expect(html.match(/data-offer-id=/g)).toHaveLength(4);
+    for(const text of ["4,99 €","12 × 0,75 l Glas","zzgl. 3,30 € Pfand","0,55 €/l","0,99 €","250 ml Dose","zzgl. 0,25 € Pfand","3,96 €/l","1,19 €","1,25 l PET-fles","excl. 0,25 € statiegeld","0,95 €/l","taurin- und koffeinhaltig","bevat gedeeltelijk cafeïnehoudend","0,25 ml Blik","bitte die Gebindegröße im Markt klären"])expect(html).toContain(text);
+    expect(html).toContain("#page=2");
+    for(const generatedAt of ["2026-10-11T21:59:59Z","2026-10-17T22:00:00Z"])expect(renderToStaticMarkup(<WeeklyOfferGrid content={{...fixture,generatedAt}}/>)).not.toContain('<dl');
+  });
+  const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};
+  it("renders reviewed printed facts in a visible description list beside all conditions and warnings",()=>{
+    const offer={...content.offers[0],summary,conditions:"All printed terms",sourceWarning:"Printed inconsistency"};
+    const html=renderToStaticMarkup(<WeeklyOfferGrid content={{...content,offers:[offer]}}/>);
+    expect(html).toContain('<dl');
+    for(const [label,value] of [["Preis",summary.price],["Gebinde",summary.package],["Pfand",summary.deposit],["Grundpreis",summary.unitPrice]]) {
+      expect(html).toContain(`<dt>${label}</dt><dd>${value}</dd>`);
+    }
+    expect(html).toContain("All printed terms");expect(html).toContain("Printed inconsistency");
+    expect(html).not.toMatch(/itemProp="price"|schema.org\/Offer/);
+  });
+  it.each(["2026-10-04T21:59:59Z","2026-10-10T22:00:00Z"])("never renders summary text outside actual Berlin validity: %s",generatedAt=>{
+    const html=renderToStaticMarkup(<WeeklyOfferGrid content={{...content,generatedAt,offers:[{...content.offers[0],summary}]}}/>);
+    expect(html).not.toContain("4,99 €");expect(html).not.toContain('<dl');
+  });
+  it("keeps historical omission as an image and full-text card with no empty summary",()=>{
+    const html=renderToStaticMarkup(<WeeklyOfferGrid content={{...content,offers:[content.offers[0]]}}/>);
+    expect(html).not.toContain('<dl');expect(html).toContain("Originalhandzettel öffnen");
+  });
   it("keeps same-product supplemental conditions separate and labels the actual original",()=>{
     const source={...content.flyers[1],id:"supplemental",purpose:"supplemental" as const,medium:"maasduinen" as const,validFrom:"2026-10-07",validTo:"2026-10-18"};
     const original=content.offers.find(o=>o.language==="nl")!;

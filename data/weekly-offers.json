@@ -3874,6 +3874,12 @@
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-11T09:30:33.782Z",
     "conditions": "Ahrtal Quelle Mineralwasser, versch. Sorten. Originalpreis/Gebinde (EUR): 4.99; 12 x 0.75 l Glas Kasten. Gedruckter Grundpreis (EUR): 0.55/l. Pfand/gedruckte Bedingungen: 3.30. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Vergleichspreismarkierung 1: Niedrigster Gesamtpreis der letzten 30 Tage. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "summary": {
+      "price": "4,99 €",
+      "package": "12 × 0,75 l Glas",
+      "deposit": "zzgl. 3,30 € Pfand",
+      "unitPrice": "0,55 €/l"
+    },
     "imageSha256": "711a14e7b7cb66b79c15159b7ef9dd3e82ef61d7576ff3169ad3332c96e6822a"
   },
   {
@@ -4009,6 +4015,12 @@
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-11T09:30:33.782Z",
     "conditions": "Red Bull Energy Drink, versch. Sorten. Originalpreis/Gebinde (EUR): 0.99; 250 ml Dose. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: 0.25; taurin- und koffeinhaltig. Gültig 12.10.2026-17.10.2026. Für Druckfehler keine Haftung; Abbildungen nicht verbindlich. Abgabe nur in haushaltsüblichen Mengen, solange der Vorrat reicht. Preise gelten bei Abholung im Markt und können beim Lieferservice abweichen. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "summary": {
+      "price": "0,99 €",
+      "package": "250 ml Dose",
+      "deposit": "zzgl. 0,25 € Pfand",
+      "unitPrice": "3,96 €/l"
+    },
     "imageSha256": "4f092cf78dad25cbc21150560b1721917c74e91af0e7128bcafc57edde552b1f"
   },
   {
@@ -5844,7 +5856,8 @@
     "sourceUrl": "/handzettel/2026/nl-2026-10-12-de-maas-driehoek-b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d.pdf",
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-11T09:30:33.782Z",
-    "conditions": "Red Bull Energy Drink, diverse soorten. Originalpreis/Gebinde (EUR): 0.99; 0.25 l blik. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; taurin- en cafeïnehoudend; WEEKKNALLER. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "conditions": "Red Bull Energy Drink, diverse soorten. Originalpreis/Gebinde (EUR): 0.99; 0,25 ml Blik. Gedruckter Grundpreis (EUR): 3.96/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; taurin- en cafeïnehoudend; WEEKKNALLER. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "sourceWarning": "Im Original steht „0,25 ml Blik“. Diese gedruckte Einheitenangabe ist widersprüchlich; bitte die Gebindegröße im Markt klären. Keine stillschweigende Korrektur auf 0,25 l.",
     "imageSha256": "bd5dbf8269947ceb3cf81bc31dad0cc7b0aaf518cacecab32ee0a06918b138cb"
   },
   {
@@ -5987,6 +6000,12 @@
     "rightsStatus": "approved",
     "reviewedAt": "2026-10-11T09:30:33.782Z",
     "conditions": "Coca-Cola, Fanta of Sprite, ook andere soorten. Originalpreis/Gebinde (EUR): 1.19; 1.25 l PET-fles. Gedruckter Grundpreis (EUR): 0.95/l. Pfand/gedruckte Bedingungen: excl. 0.25 statiegeld; bevat gedeeltelijk cafeïnehoudend. Geldig 12.10.2026-17.10.2026. Geen wederverkoop, zolang de voorraad strekt. Druk en zetfouten voorbehouden. Alle artikelen zonder decoratie. UP is vrijblijvende adviesprijs van de fabrikant. Gedruckte Pfand-/Statiegeldbeträge kommen zusätzlich zum Angebotspreis hinzu.",
+    "summary": {
+      "price": "1,19 €",
+      "package": "1,25 l PET-fles",
+      "deposit": "excl. 0,25 € statiegeld",
+      "unitPrice": "0,95 €/l"
+    },
     "imageSha256": "2fa0d17e50cd1e39fbc36920ef89ee51d053557a9965d8f46bcd246f587b52ea"
   },
   {

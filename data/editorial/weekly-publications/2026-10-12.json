@@ -120,7 +120,7 @@
         "de-2026-42-p10-07",
         "de-2026-42-p10-08"
       ],
-      "offersSha256": "10a077dfd0843450a2c2e7181836c5d396c36a804a773886ca6ec9a3aab23a36"
+      "offersSha256": "54ba27c0737a0af08c2d587daedf0c4c72062c97e78b283bf0b1a162fa1a0c61"
     },
     {
       "id": "nl-2026-10-12-de-maas-driehoek",
@@ -172,7 +172,7 @@
         "nl-2026-42-p01-r3c3",
         "nl-2026-42-p01-r3c4"
       ],
-      "offersSha256": "2919aa7d4b82b68a24a51923bdbda94a478dcb5e67f2a8ec62db5aa43fb4625e"
+      "offersSha256": "184ab982d4d966f063da94c7c968eb2e7f67905c520bd2d1b32808c3689856f8"
     }
   ]
 }

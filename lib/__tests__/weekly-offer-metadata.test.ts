@@ -29,6 +29,9 @@ async function runFixture(options: {
   plain?: boolean;
   nl?: boolean;
   legacyDe?: boolean;
+  summary?: unknown;
+  reviewedText?: boolean;
+  corruptImage?: boolean;
   mutate?: (row: Record<string, unknown>) => void;
 } = {}) {
   const f=await weeklyPublicationFixture();const root=f.root;
@@ -49,6 +52,8 @@ async function runFixture(options: {
     const offer = { id: "de-test", name: "Original mineral water", categorySlug: "alkoholfrei",
       rect: [1, 1, 4, 3], sourceDimensions: [8, 6], conditions: "2 cases; deposit extra",
       ...(!options.plain ? { sourceRegions: [[1, 1, 4, 3]], sourceWarning: "Printed source warning" } : {}) };
+    if (options.summary !== undefined) Object.assign(offer, { summary: options.summary });
+    if (options.reviewedText) Object.assign(offer, { conditions: "Reviewed printed text", sourceWarning: "Reviewed original inconsistency" });
     await writeFile(path.join(root, "data/weekly-offer-layout.json"), JSON.stringify({ sources: [{
       language: options.nl ? "nl" : "de", flyerId: "de-week-41",
       sourceUrl: options.nl ? "https://www.canva.com/design/private-source/view" : options.build ? "https://example.com/reviewed.pdf" : f.catalog.pdfUrl,
@@ -77,6 +82,7 @@ async function runFixture(options: {
       review:{reviewedAt:expectedMetadata.reviewedAt,printedValidFrom:"2026-10-05",printedValidTo:"2026-10-10",pageOfferCounts:[1]},offerIds:["de-test"],offersSha256:createHash("sha256").update(JSON.stringify([canonical])).digest("hex"),
     }]}));
     options.mutate?.(row);
+    if (options.corruptImage) await writeFile(path.join(root, "public/images/offers/de-test.webp"), "broken");
     await writeFile(path.join(root, "data/weekly-offers.json"), JSON.stringify([row]));
     const result = await new Promise<{ code: number | null; stderr: string }>((resolve, reject) => {
       const child = spawn(process.execPath, ["--import", path.join(repo, "node_modules/tsx/dist/loader.mjs"),
@@ -95,6 +101,23 @@ async function runFixture(options: {
 }
 
 describe("weekly offer CLI public metadata binding", () => {
+  it.each([null,{}, {price:"1,19 €",package:"1,25 l",deposit:"",unitPrice:"0,95 €/l"}, {price:"1,19 €",package:"1,25 l",deposit:"excl. 0,25 €",unitPrice:"0,95 €/l",stock:"yes"}])("rejects invalid reviewed summaries before replacing generated rows: %j",async summary=>{
+    const result=await runFixture({build:true,summary});expect(result.code).toBe(1);expect(result.stderr).toMatch(/summary/i);expect(result.rows[0]).not.toHaveProperty("summary");
+  });
+  it("reuses exact original bytes for reviewed summary and text updates in build mode only", async () => {
+    const summary = { price: "4,99 €", package: "12 × 0,75 l Glas", deposit: "zzgl. 3,30 € Pfand", unitPrice: "0,55 €/l" };
+    const built = await runFixture({ build: true, summary, reviewedText: true });
+    expect(built.code, built.stderr).toBe(0);
+    expect(built.rows[0]).toMatchObject({ summary, conditions: "Reviewed printed text", sourceWarning: "Reviewed original inconsistency", image: "/images/offers/de-test.webp" });
+    expect((await runFixture({ summary, reviewedText: true })).code).toBe(1);
+  });
+  it.each(["name", "categorySlug", "validFrom", "validTo", "pdfSha256", "rect"])("does not permit %s drift during a reviewed-text reuse", async field => {
+    const value = field === "rect" ? [0, 1, 4, 3] : field === "pdfSha256" ? "a".repeat(64) : "Changed";
+    expect((await runFixture({ build: true, reviewedText: true, mutate: row => { row[field] = value; } })).code).toBe(1);
+  });
+  it("does not reuse corrupt image bytes during a reviewed-text update", async () => {
+    expect((await runFixture({ build: true, reviewedText: true, corruptImage: true })).code).toBe(1);
+  });
   it("reuses identical reviewed DE bytes for the build-only transition from origin to local PDF", async () => {
     const result=await runFixture({build:true,legacyDe:true});expect(result.code).toBe(0);expect(result.rows[0].sourceUrl).toBe("/handzettel/2026/de-test.pdf");expect(result.rows[0].image).toBe("/images/offers/de-test.webp");expect(result.rows[0].conditions).toBe("2 cases; deposit extra");
   });
@@ -162,6 +185,15 @@ describe("weekly offer CLI public metadata binding", () => {
 });
 
 describe("generated weekly data imported by the public client", () => {
+  const summary = { price: "4,99 €", package: "12 × 0,75 l Glas", deposit: "zzgl. 3,30 € Pfand", unitPrice: "0,55 €/l" };
+  const build = (value: unknown) => buildPublicOfferMetadata({ ...expectedMetadata, publishedPdfPath: "/handzettel/2026/de-test.pdf" }, 1, { ...expectedMetadata, summary: value } as Parameters<typeof buildPublicOfferMetadata>[2], "/images/offers/de-test.webp");
+  it("carries only the four reviewed printed summary facts without changing omission", () => {
+    expect(build(summary)).toMatchObject({ summary });
+    expect(build(undefined)).toEqual(expectedMetadata);
+  });
+  it.each([null, [], "4,99 €", {}, { ...summary, stock: "available" }, { ...summary, price: 4.99 }, { ...summary, package: " " }, { ...summary, deposit: "x".repeat(161) }, { ...summary, unitPrice: "<b>0,55 €/l</b>" }, { ...summary, price: "4,99 €\n" }, { price: "4,99 €", package: "12 × 0,75 l Glas", deposit: "zzgl. 3,30 € Pfand" }])("rejects malformed, non-plain, oversized or unsolicited summary facts: %j", value => {
+    expect(() => build(value)).toThrow(/summary/i);
+  });
   it.each([
     undefined,
     "assets/source/private.pdf",

@@ -10,6 +10,15 @@ const flyer = {id:"catalog-1384969-v4",title:"Wochenangebote",language:"de" as c
 const nlFlyer = {id:"maasduinen-2026-09-28-v2",title:"Weekaanbiedingen",language:"nl" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"/flyers/2026-09-28/nl-v2.pdf",pdfUrl:"/flyers/2026-09-28/nl-v2.pdf",coverUrl:"/flyers/2026-09-28/nl-v2.jpg",pageCount:1,sourceUrl:"/nl"};
 
 describe("weekly publishing verification", () => {
+  it("requires every reviewed summary fact in visible offer-card markup",()=>{
+    const fixture=weeklyOfferFixtureContent("monday");
+    const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};
+    const content={...fixture,offers:fixture.offers.map(offer=>({...offer,summary}))};
+    const html=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte")).toEqual([]);
+    for(const value of Object.values(summary))expect(verifyPublishedOfferMarkup(content.offers,html.replaceAll(value,"missing"),"/produkte")).not.toEqual([]);
+    expect(verifyPublishedOfferMarkup(content.offers,html.replace('<dl ','<dl hidden '),"/produkte")).not.toEqual([]);
+  });
   it("checks supplemental parity separately without substituting for the main NL homepage slot",()=>{
     const supplement={...nlFlyer,id:"supplement",purpose:"supplemental" as const,medium:"maasduinen" as const};
     expect(comparePublishedFlyers([flyer,supplement],[flyer,supplement],flyer,null,[supplement])).toEqual([]);

@@ -6,11 +6,26 @@ import { supplementalPublicationFixture } from "./fixtures/supplemental-publicat
 import { loadSupplementalPublications } from "@/lib/supplemental-publication";
 import { loadWeeklyPublications } from "@/lib/weekly-publication";
 import { createWeeklyOfferContentLoader, mapPublishedEditionToFlyer } from "@/lib/weekly-offer-content";
+import { sha256 } from "./fixtures/weekly-publication";
 const roots: string[] = [];
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true }); });
 const now = new Date("2026-10-08T12:00:00Z");
 async function fixture() { const f = await weeklyPublicationFixture(); roots.push(f.root); return f; }
 describe("verified public weekly content", () => {
+  it("projects only the source-reviewed summary into public content and removes it outside validity", async () => {
+    const f=await fixture();
+    const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};
+    Object.assign(f.sources[0].pages[0].offers[0],{summary});
+    const {imageSha256,...metadata}=f.offers[0];
+    f.offers[0]={...metadata,summary,imageSha256} as typeof f.offers[number];
+    f.editions[0].offersSha256=sha256(JSON.stringify(f.offers.filter(o=>o.language==="de")));
+    await f.save();
+    const loader=createWeeklyOfferContentLoader(()=>loadWeeklyPublications(f.root),()=>loadSupplementalPublications(f.root));
+    const current=await loader(now);
+    expect(current.status).toBe("ok");expect(current.offers[0]).toMatchObject({summary});
+    expect(current.offers[1]).not.toHaveProperty("summary");
+    for(const time of ["2026-10-04T21:59:59Z","2026-10-10T22:00:00Z"])expect((await loader(new Date(time))).offers).toEqual([]);
+  });
   it("keeps main requirements separate while adding every independently active supplemental offer", async () => {
     const f = await supplementalPublicationFixture(); roots.push(f.root);
     const weekly = await loadWeeklyPublications(f.root);

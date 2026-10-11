@@ -15,6 +15,32 @@ async function fixture(...args: Parameters<typeof weeklyPublicationFixture>) {
 afterEach(async () => { vi.unstubAllEnvs(); await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
 
 describe("immutable weekly publications", () => {
+  const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};
+  async function summaryFixture() {
+    const f=await fixture();
+    Object.assign(f.sources[0].pages[0].offers[0],{summary});
+    const {imageSha256,...metadata}=f.offers[0];
+    f.offers[0]={...metadata,summary,imageSha256} as typeof f.offers[number];
+    f.editions[0].offersSha256=sha256(JSON.stringify(f.offers.filter(o=>o.language==="de")));
+    await f.save();return f;
+  }
+  it("verifies a complete reviewed summary through the canonical offer checksum",async()=>{
+    const f=await summaryFixture();
+    await expect(verifyWeeklyEdition(f.editions[0],f.root)).resolves.toMatchObject({offers:[{summary},{}]});
+  });
+  it("rejects summary tampering even when the reviewed layout and public row agree but manifest hash is old",async()=>{
+    const f=await summaryFixture();
+    Object.assign(f.sources[0].pages[0].offers[0],{summary:{...summary,price:"5,99 €"}});
+    Object.assign(f.offers[0],{summary:{...summary,price:"5,99 €"}});
+    await f.save();
+    await expect(verifyWeeklyEdition(f.editions[0],f.root)).rejects.toThrow(/checksum/i);
+  });
+  it.each([null,{}, {...summary,stock:"yes"},{...summary,price:4.99},{...summary,deposit:" "},{...summary,package:"x".repeat(161)},{...summary,unitPrice:"<b>0,55 €/l</b>"}])("rejects malformed source summary independently of matching public data and checksum: %j",async invalid=>{
+    const f=await summaryFixture();
+    Object.assign(f.sources[0].pages[0].offers[0],{summary:invalid});Object.assign(f.offers[0],{summary:invalid});
+    f.editions[0].offersSha256=sha256(JSON.stringify(f.offers.filter(o=>o.language==="de")));
+    await f.save();await expect(verifyWeeklyEdition(f.editions[0],f.root)).rejects.toThrow(/summary/i);
+  });
   it("verifies weekly offers by exact edition rather than rejecting an overlapping supplemental stream", async () => {
     const f = await supplementalPublicationFixture("2026-10-05", "2026-10-18");
     roots.push(f.root);

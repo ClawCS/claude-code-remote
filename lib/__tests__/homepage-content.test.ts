@@ -126,15 +126,28 @@ describe("homepage content", () => {
       expect(content.supplementalFlyers?.map(f=>f.id)).toEqual(["maasduinen-synthetic"]);
     } finally {await rm(f.root,{recursive:true,force:true});}
   });
-  it("uses verified local editions even when an external cache would take priority", async () => {
+  it.each([false,true])("uses verified local editions even when an external cache would take priority (unrelated root locked: %s)", async locked => {
     const f = await weeklyPublicationFixture("2026-07-13", "2026-07-18", "1335913", "2");
+    const ambient = await weeklyPublicationFixture();
     try {
-      const content = await createHomepageContentLoader({loadWeeklyPublications: () => loadWeeklyPublications(f.root),loadValidatedHandzettelCache: async () => makeCache(),loadApprovedCampaigns:async()=>[makeCampaign()],loadEditorialArchive:async()=>[makeArchive()]})(NOW);
+      if(locked)await ambient.write("data/editorial/.weekly-offers.lock","synthetic unrelated transaction");
+      const cwd=vi.spyOn(process,"cwd").mockReturnValue(ambient.root);
+      if(locked)expect((await loadSupplementalPublications()).issues).toEqual([{register:"supplemental",code:"preparation-incomplete"}]);
+      const content = await createHomepageContentLoader({loadWeeklyPublications: () => loadWeeklyPublications(f.root),loadSupplementalPublications: () => loadSupplementalPublications(f.root),loadValidatedHandzettelCache: async () => makeCache(),loadApprovedCampaigns:async()=>[makeCampaign()],loadEditorialArchive:async()=>[makeArchive()]})(NOW);
       expect(content.flyer?.pdfUrl).toBe("/handzettel/2026-07-13/de.pdf");
       expect(content.nlFlyer?.pdfUrl).toBe("/handzettel/2026-07-13/nl.pdf");
       expect(content.event?.id).toBe("strikerball-2026-07-24");
       expect(content.archive[0]?.id).toBe("archive-item");
-    } finally { await rm(f.root,{recursive:true,force:true}); }
+      expect(content.fallbackMessage).toBeNull();cwd.mockRestore();
+    } finally { vi.restoreAllMocks();await rm(f.root,{recursive:true,force:true});await rm(ambient.root,{recursive:true,force:true}); }
+  });
+  it("keeps both flyers suppressed when the injected publication root itself is locked", async()=>{
+    const f=await weeklyPublicationFixture("2026-07-13","2026-07-18","1335913","2");
+    try {
+      await f.write("data/editorial/.weekly-offers.lock","synthetic same-root transaction");
+      const content=await createHomepageContentLoader({loadWeeklyPublications:()=>loadWeeklyPublications(f.root),loadSupplementalPublications:()=>loadSupplementalPublications(f.root),loadApprovedCampaigns:async()=>[],loadEditorialArchive:async()=>[]})(NOW);
+      expect(content.flyer).toBeNull();expect(content.nlFlyer).toBeNull();expect(content.fallbackMessage).toBe("Der nächste Handzettel wird vorbereitet.");
+    }finally{await rm(f.root,{recursive:true,force:true});}
   });
   it("retains a source-approved Friday-ending KW40 NL page on Friday only",()=>{
     const nlFlyer=makeFlyer({id:"nl-kw40",validFrom:"2026-09-28",validTo:"2026-10-02",pageCount:1,viewerUrl:"/handzettel/2026/nl.pdf",pdfUrl:"/handzettel/2026/nl.pdf",coverUrl:"/images/content/nl.webp",sourceUrl:"https://www.canva.com/design/test/view"});
@@ -484,6 +497,7 @@ describe("homepage content loader", () => {
     try {
       const content = await createHomepageContentLoader({
         loadWeeklyPublications: () => loadWeeklyPublications(f.root),
+        loadSupplementalPublications: () => loadSupplementalPublications(f.root),
         loadApprovedCampaigns: source === "campaigns" ? unavailable : async () => [makeCampaign()],
         loadEditorialArchive: source === "archive" ? unavailable : async () => [makeArchive()],
       })(NOW);

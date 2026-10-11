@@ -32,5 +32,5 @@ export type VerifiedWeeklyEdition = Readonly<{ edition: WeeklyEdition; offers: r
 export type WeeklyPublicationIssue = Readonly<{ week: string | null; language?: "de" | "nl"; code: string }>;
 export type LoadedWeeklyPublications = Readonly<{ editions: readonly VerifiedWeeklyEdition[]; issues: readonly WeeklyPublicationIssue[] }>;
 export type PublicFlyer = import("./homepage-content").HomepageFlyer & Readonly<{language: "de" | "nl"; pdfSha256: string; purpose: PublicationIdentity["purpose"]; medium: PublicationIdentity["medium"]}>;
-export type PublicOfferView = Readonly<Pick<PublishedOffer, "id" | "name" | "categorySlug" | "language" | "flyerId" | "validFrom" | "validTo" | "image" | "sourcePage" | "rect" | "pdfSha256" | "sourceUrl" | "conditions" | "sourceWarning">>;
+export type PublicOfferView = Readonly<Pick<PublishedOffer, "id" | "name" | "categorySlug" | "language" | "flyerId" | "validFrom" | "validTo" | "image" | "sourcePage" | "rect" | "pdfSha256" | "sourceUrl" | "conditions" | "sourceWarning" | "summary">>;
 export type WeeklyOfferContent = Readonly<{ status: "ok" | "degraded"; issues: readonly string[]; generatedAt: string; flyers: readonly PublicFlyer[]; offers: readonly PublicOfferView[] }>;

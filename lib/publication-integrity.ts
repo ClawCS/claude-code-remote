@@ -8,7 +8,7 @@ import { getCurrentWeekRange } from "./editorial-schedule";
 import { parseFlyerPackages, verifyFlyerFiles } from "./flyer-packages";
 import { validateCatalog } from "./handzettel-catalog";
 import { getAcceptedNlOfferRanges, getOfficialOfferRange } from "./offer-validity";
-import { buildPublicOfferMetadata, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
+import { buildPublicOfferMetadata, validateOfferSummary, type ReviewedWeeklyOffer, type WeeklyOfferPublicSource } from "./weekly-offer-metadata";
 import type { LocalAsset, PublicationEdition, PublishedOffer, VerifiedPublicationEdition, WeeklyEdition } from "./weekly-publication-types";
 import { assertPublicationPolicy, isPublicationTimestamp, type PublicationIdentity } from "./flyer-source-policy";
 
@@ -197,6 +197,7 @@ export async function verifyPublicationEdition(edition: PublicationEdition, root
     if (page.page !== index + 1 || !Array.isArray(page.offers) || page.expectedOffers !== page.offers.length
       || page.expectedOffers !== edition.review.pageOfferCounts[index]) throw new Error("Incomplete original page offer census");
     for (const offer of page.offers) {
+      validateOfferSummary(offer?.summary);
       if (!offer || typeof offer.id !== "string" || !ID.test(offer.id) || expected.has(offer.id)) throw new Error("Duplicate or invalid original offer ID");
       if (!Array.isArray(offer.rect) || offer.rect.length !== 4 || !offer.rect.every(Number.isSafeInteger)
         || offer.rect[0] < 0 || offer.rect[1] < 0 || offer.rect[2] < 1 || offer.rect[3] < 1
