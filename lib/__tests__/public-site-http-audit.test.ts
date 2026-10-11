@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { spawn } from "node:child_process";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -14,11 +14,18 @@ afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await
 
 type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string; malformedRow?: { collection: "offers" | "flyers" | "indexFlyers"; value: unknown } };
 
-async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hideSupplement?:boolean; corruptAsset?:string; application?: { config: unknown; post: number } } = {}) {
+async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hideSupplement?:boolean; hideMain?:boolean; missingMainManifest?:boolean; snapshotNow?:string; auditNow?:string; manifestDamage?:"supplemental-json"|"supplemental-shape"|"supplemental-read"|"weekly-current"|"weekly-unknown"|"weekly-historical"; corruptAsset?:string; application?: { config: unknown; post: number } } = {}) {
   const source=options.activeSupplement?await supplementalPublicationFixture():undefined;
   if(source) cleanup.push(()=>rm(source.root,{recursive:true,force:true}));
-  const selected=source?selectWeeklyOfferContent(await loadWeeklyPublications(source.root),new Date("2026-10-08T12:00:00Z"),await loadSupplementalPublications(source.root)):undefined;
-  const active=selected&&options.hideSupplement?{...selected,flyers:selected.flyers.filter(f=>f.purpose==="weekly"),offers:selected.offers.filter(o=>o.flyerId!=="maasduinen-synthetic")}:selected;
+  const snapshotNow=options.snapshotNow??(source?"2026-10-08T12:00:00Z":"2026-10-11T12:00:00Z");
+  const selected=source?selectWeeklyOfferContent(await loadWeeklyPublications(source.root),new Date(snapshotNow),await loadSupplementalPublications(source.root)):undefined;
+  const active=selected?{...selected,flyers:selected.flyers.filter(f=>!(options.hideSupplement&&f.purpose==="supplemental")&&!(options.hideMain&&f.purpose==="weekly")),offers:selected.offers.filter(o=>!(options.hideSupplement&&o.flyerId==="maasduinen-synthetic")&&!(options.hideMain&&o.flyerId!=="maasduinen-synthetic"))}:undefined;
+  if(source&&options.missingMainManifest)await rm(join(source.root,"data/editorial/weekly-publications/2026-10-05.json"));
+  if(source&&options.manifestDamage) {
+    const file=options.manifestDamage.startsWith("supplemental")?"data/editorial/supplemental-publications/maasduinen-synthetic.json":`data/editorial/weekly-publications/${options.manifestDamage==="weekly-historical"?"2026-09-28":options.manifestDamage==="weekly-unknown"?"undatable":"2026-10-05"}.json`;
+    if(options.manifestDamage==="supplemental-read") {await rm(join(source.root,file));await mkdir(join(source.root,file));}
+    else await source.write(file,options.manifestDamage==="supplemental-shape"?JSON.stringify({schemaVersion:1,edition:{}}):"broken");
+  }
   const requests: Array<{ path: string; method: string; authorization?: string; origin?: string; body: string; version?:string }> = [];
   const server = createServer(async (request: IncomingMessage, response: ServerResponse) => {
     const url = new URL(request.url ?? "/", "http://fixture.invalid");
@@ -51,17 +58,17 @@ async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hi
         if(url.pathname.endsWith("offers")) response.setHeader("Vary","X-Jammers-Content-Version");
         if(active) {
           const main=active.flyers.filter(f=>f.purpose==="weekly");
-          response.end(JSON.stringify(url.pathname.endsWith("current")?{flyer:main[0],nlFlyer:main[1],supplementalFlyers:active.flyers.filter(f=>f.purpose==="supplemental")}:active));return;
+          response.end(JSON.stringify(url.pathname.endsWith("current")?{generatedAt:active.generatedAt,flyer:main[0]??null,nlFlyer:main[1]??null,supplementalFlyers:active.flyers.filter(f=>f.purpose==="supplemental")}:active));return;
         }
-        const empty={status:"ok",issues:[],generatedAt:"2026-10-11T12:00:00Z",flyers:[],offers:[]};
+        const empty={status:"ok",issues:[],generatedAt:snapshotNow,flyers:[],offers:[]};
         if (options.malformedRow && url.pathname === (options.malformedRow.collection === "indexFlyers" ? "/api/content/flyers" : "/api/content/offers")) {
           const collection = options.malformedRow.collection === "indexFlyers" ? "flyers" : options.malformedRow.collection;
           response.end(JSON.stringify({ ...empty, [collection]: [options.malformedRow.value] })); return;
         }
-        response.end(JSON.stringify(url.pathname.endsWith("current")?{flyer:null,nlFlyer:null}:url.pathname.endsWith("offers")&&options.broken==="offers"?{...empty,offers:[{id:"unbound"}]}:empty));return;
+        response.end(JSON.stringify(url.pathname.endsWith("current")?{generatedAt:snapshotNow,flyer:null,nlFlyer:null}:url.pathname.endsWith("offers")&&options.broken==="offers"?{...empty,offers:[{id:"unbound"}]}:empty));return;
       }
       if (url.pathname==="/api/handzettel/fetch"&&request.method==="GET"&&!url.search) {
-        if(active) {const f=active.flyers[0];response.end(JSON.stringify({...f,status:"ok",pages:[{number:1,imageUrl:f.coverUrl,thumbnailUrl:f.coverUrl}]}));return;}
+        if(active?.flyers.some(f=>f.language==="de")) {const f=active.flyers.find(f=>f.language==="de")!;response.end(JSON.stringify({...f,status:"ok",pages:[{number:1,imageUrl:f.coverUrl,thumbnailUrl:f.coverUrl}]}));return;}
         response.end(JSON.stringify({status:"fallback",pageCount:0,pages:options.broken==="legacy-get"?[{number:1,imageUrl:"https://provider.invalid/image.jpg"}]:[],viewerUrl:null,pdfUrl:null}));return;
       }
       if (/^\/api\/(rentals|rental-admin)\//.test(url.pathname)) {
@@ -110,7 +117,7 @@ async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hi
   cleanup.push(() => rm(directory, { recursive: true, force: true }));
   const output = join(directory, "evidence.json");
   const result = await new Promise<{ code: number | null; text: string }>(resolve => {
-    const child = spawn(process.execPath, [join(process.cwd(),"scripts/audit-public-site.mjs"), "--url", `http://127.0.0.1:${address.port}`, "--output", output], { cwd: source?.root??process.cwd() });
+    const child = spawn(process.execPath, ["--import",join(process.cwd(),"lib/__tests__/fixtures/public-site-audit-clock.mjs"),join(process.cwd(),"scripts/audit-public-site.mjs"), "--url", `http://127.0.0.1:${address.port}`, "--output", output], { cwd: source?.root??process.cwd(),env:{...process.env,JAMMERS_AUDIT_FIXTURE_NOW:options.auditNow??snapshotNow} });
     let text = "";
     child.stdout.on("data", chunk => { text += chunk.toString(); });
     child.stderr.on("data", chunk => { text += chunk.toString(); });
@@ -121,6 +128,37 @@ async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hi
 }
 
 describe("public HTTP forensic audit CLI", () => {
+  it("fails an internally consistent stale API snapshot at the audit's actual execution date",async()=>{
+    const result=await fixture({activeSupplement:true,auditNow:"2026-10-11T12:00:00Z"});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"api-weekly-clock",path:"/api/content/offers"}));
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"weekly-asset-integrity"}));
+  });
+  it("fails an internally consistent future API snapshot",async()=>{
+    const result=await fixture({activeSupplement:true,auditNow:"2026-10-07T12:00:00Z"});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"api-weekly-clock"}));
+  });
+  it("requires current main editions even when every API falsely reports a healthy supplemental-only snapshot",async()=>{
+    const result=await fixture({activeSupplement:true,hideMain:true,missingMainManifest:true});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"api-weekly-integrity"}));
+  });
+  it.each(["supplemental-json","supplemental-shape","supplemental-read"] as const)("fails %s corruption hidden by otherwise healthy APIs",async manifestDamage=>{
+    const result=await fixture({activeSupplement:true,hideSupplement:true,manifestDamage});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"weekly-manifest-integrity"}));
+    expect(JSON.stringify(result.report)).not.toContain("maasduinen-synthetic.json");
+  });
+  it.each(["weekly-current","weekly-unknown"] as const)("fails %s manifest corruption that cannot be isolated as historical",async manifestDamage=>{
+    const result=await fixture({activeSupplement:true,hideMain:manifestDamage==="weekly-current",manifestDamage});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"weekly-manifest-integrity"}));
+  });
+  it("isolates a corrupt weekly manifest whose valid filename proves it historical",async()=>{
+    const result=await fixture({activeSupplement:true,manifestDamage:"weekly-historical"});
+    expect(result.code,result.text).toBe(0);
+  });
   it("requests typed offers and checks exact GET bytes for active main and supplemental originals and tiles",async()=>{
     const result=await fixture({activeSupplement:true});
     expect(result.code,result.text).toBe(0);

@@ -92,6 +92,15 @@ async function main() {
     safety: { externalRequests: false, authorizationHeaders: false, persistedBodies: false, postBody: "empty object", authorizedRefresh: false },
     summary: {}, pages: [], unknownPages: [], resources: [], apis: [], findings: [],
   };
+  const auditNow = new Date(report.auditedAt);
+  const berlinDate = new Intl.DateTimeFormat("en-CA", {timeZone:"Europe/Berlin"});
+  const today = berlinDate.format(auditNow);
+  const monday = new Date(`${today}T12:00:00Z`);
+  monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));
+  const week = monday.toISOString().slice(0,10);
+  const saturday = new Date(monday);saturday.setUTCDate(saturday.getUTCDate()+5);
+  // Same source-reviewed KW40 exception as lib/offer-validity.ts; never infer holidays.
+  const demandTo = week === "2026-09-28" ? "2026-10-02" : saturday.toISOString().slice(0,10);
   const findings = report.findings;
   const fail = (code, path, detail) => findings.push({ severity: "error", code, path, detail });
   const warn = (code, path, detail) => findings.push({ severity: "warning", code, path, detail });
@@ -254,6 +263,12 @@ async function main() {
   }
 
   const current=weeklyResponses.get("/api/content/current"),index=weeklyResponses.get("/api/content/flyers"),offers=weeklyResponses.get("/api/content/offers"),legacy=weeklyResponses.get("/api/handzettel/fetch");
+  for (const [path,value] of [["/api/content/current",current],["/api/content/flyers",index],["/api/content/offers",offers]]) {
+    const generatedAt = typeof value?.generatedAt === "string" ? Date.parse(value.generatedAt) : NaN;
+    if (!Number.isFinite(generatedAt) || generatedAt > Date.now() || berlinDate.format(new Date(generatedAt)) !== today) {
+      fail("api-weekly-clock",path,"Publication snapshot timestamp is invalid, future, or not from the actual audit date");
+    }
+  }
   const fields=["id","title","language","validFrom","validTo","viewerUrl","pdfUrl","sourceUrl","coverUrl","pageCount","pdfSha256","purpose","medium"];
   const sameFlyer=(a,b)=>Boolean(a&&b&&fields.every(key=>a[key]===b[key]));
   const safePdf=value=>typeof value==="string"&&/^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(value)&&!value.includes("//");
@@ -272,6 +287,9 @@ async function main() {
     && offers.offers.every(o=>safeImage(o.image,"offers")&&Number.isSafeInteger(o.sourcePage)&&o.sourcePage>0&&flyers.some(f=>f.id===o.flyerId&&f.language===o.language&&f.pdfUrl===o.sourceUrl&&f.pdfSha256===o.pdfSha256&&f.validFrom===o.validFrom&&f.validTo===o.validTo&&f.pageCount>=o.sourcePage));
   if (!valid) fail("api-weekly-contract","/api/content/offers","Current, flyer and offer APIs do not expose the same locally bound package");
   if (offers?.status==="degraded") fail("api-weekly-integrity","/api/content/offers","Main editions are missing or a declared publication failed integrity verification");
+  if (today <= demandTo && !["de","nl"].every(language => Array.isArray(flyers) && flyers.some(f=>rowObject(f)&&f.purpose==="weekly"&&f.language===language&&f.validFrom===week&&f.validFrom<=today&&today<=f.validTo))) {
+    fail("api-weekly-integrity","/api/content/offers","Required current main editions are missing at the actual audit date");
+  }
   const de=Array.isArray(flyers)?flyers.find(f=>rowObject(f)&&f.language==="de"):null;
   if (!(de ? Boolean(legacy&&fields.filter(key=>!["purpose","medium"].includes(key)).every(key=>de[key]===legacy[key]))&&legacy.status==="ok"&&isDeepStrictEqual(legacy.pages,[{number:1,imageUrl:de.coverUrl,thumbnailUrl:de.coverUrl}])
     : legacy?.status==="fallback"&&legacy.pageCount===0&&legacy.pdfUrl===null&&legacy.viewerUrl===null&&isDeepStrictEqual(legacy.pages,[]))) fail("api-weekly-contract","/api/handzettel/fetch","Legacy GET must expose only the bound local PDF and its verified cover, or the truthful empty fallback");
@@ -280,19 +298,36 @@ async function main() {
   if (valid) {
     try {
       const manifests=[];
+      const calendarDate = value => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(`${value}T12:00:00Z`)) && new Date(`${value}T12:00:00Z`).toISOString().slice(0,10)===value;
+      const editionHeader = edition => rowObject(edition) && typeof edition.id==="string" && /^[a-z0-9][a-z0-9-]{0,149}$/.test(edition.id) && calendarDate(edition.validFrom) && calendarDate(edition.validTo) && edition.validFrom<=edition.validTo;
       for (const [directory,supplemental] of [["data/editorial/weekly-publications",false],["data/editorial/supplemental-publications",true]]) {
         let files;
-        try { files=await readdir(resolve(directory)); } catch(error) {if(supplemental&&error.code==="ENOENT")continue;throw error;}
-        for(const file of files.filter(name=>name.endsWith(".json"))) {
+        try { files=await readdir(resolve(directory),{withFileTypes:true}); }
+        catch(error) {
+          if(!(supplemental&&error.code==="ENOENT"))fail("weekly-manifest-integrity","/api/content/offers",`${supplemental?"Supplemental":"Weekly"} publication register could not be read`);
+          continue;
+        }
+        for(const file of files) {
           try {
-            const value=JSON.parse(await readFile(resolve(directory,file),"utf8"));
-            manifests.push(...(supplemental?[{...value.edition,auditSupplemental:true}]:value.editions));
-          } catch { /* Unrelated historical corruption cannot lend an active ID. */ }
+            if(!file.isFile())throw new Error("Invalid manifest file");
+            const filenameWeek=/^(\d{4}-\d{2}-\d{2})\.json$/.exec(file.name)?.[1];
+            if(!supplemental) {
+              if(!calendarDate(filenameWeek)||new Date(`${filenameWeek}T12:00:00Z`).getUTCDay()!==1)throw new Error("Unassignable weekly manifest");
+              // A canonical Monday filename is the loader's binding: other weeks cannot lend current IDs.
+              if(filenameWeek!==week)continue;
+            } else if(!/^[a-z0-9][a-z0-9-]{0,149}\.json$/.test(file.name))throw new Error("Invalid supplemental manifest filename");
+            const value=JSON.parse(await readFile(resolve(directory,file.name),"utf8"));
+            if(!rowObject(value))throw new Error("Invalid manifest header");
+            if(supplemental) {
+              if(value.schemaVersion!==1||!editionHeader(value.edition)||file.name!==`${value.edition.id}.json`)throw new Error("Invalid supplemental manifest");
+              manifests.push({...value.edition,auditSupplemental:true});
+            } else {
+              if(![1,2].includes(value.schemaVersion)||value.week!==filenameWeek||!Array.isArray(value.editions)||!value.editions.every(e=>editionHeader(e)&&e.validFrom===filenameWeek))throw new Error("Invalid weekly manifest");
+              manifests.push(...value.editions);
+            }
+          } catch {fail("weekly-manifest-integrity","/api/content/offers",`${supplemental?"Supplemental":"Current or unassignable weekly"} publication manifest could not be read or parsed`);}
         }
       }
-      const today=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Berlin"}).format(new Date(offers.generatedAt));
-      const monday=new Date(`${today}T12:00:00Z`);monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));
-      const week=monday.toISOString().slice(0,10);
       const expectedActive=manifests.filter(e=>e&&e.validFrom<=today&&today<=e.validTo&&(e.auditSupplemental||e.validFrom===week));
       if(!isDeepStrictEqual(expectedActive.map(e=>e.id).sort(),flyers.map(f=>f.id).sort()))throw new Error("Incomplete active original set");
       const boundOffers=JSON.parse(await readFile(resolve("data/weekly-offers.json"),"utf8"));
