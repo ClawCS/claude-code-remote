@@ -16,7 +16,9 @@ const nextConfig: NextConfig = {
     "/api/content/current": ["assets/source/preislisten/**/*"],
   },
   images: {
-    formats: ["image/avif", "image/webp"],
+    // WebP keeps responsive optimization without the repeatedly stalled AVIF
+    // cache keys observed in production (see the 2026-10-11 giveaway audit).
+    formats: ["image/webp"],
     deviceSizes: [640, 768, 1024, 1280, 1440, 1920, 2560],
     imageSizes: [32, 48, 64, 96, 128, 256, 360, 390, 512],
     remotePatterns: [

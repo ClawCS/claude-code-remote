@@ -209,7 +209,7 @@ describe("cinematic image pipeline", () => {
   });
 
   test("uses a valid ordered Next 16 candidate partition", () => {
-    expect(nextConfig.images?.formats).toEqual(["image/avif", "image/webp"]);
+    expect(nextConfig.images?.formats).toEqual(["image/webp"]);
     expect(nextConfig.images?.deviceSizes).toEqual([
       640, 768, 1024, 1280, 1440, 1920, 2560,
     ]);

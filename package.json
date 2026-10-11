@@ -31,7 +31,8 @@
     "assets:google-market:check": "node scripts/build-google-market-assets.mjs --check",
     "assets:user-market": "node scripts/build-user-market-assets.mjs",
     "assets:user-market:check": "node scripts/build-user-market-assets.mjs --check",
-    "audit:public": "node scripts/audit-public-site.mjs"
+    "audit:public": "node scripts/audit-public-site.mjs",
+    "audit:giveaway-images": "node scripts/audit-giveaway-images.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

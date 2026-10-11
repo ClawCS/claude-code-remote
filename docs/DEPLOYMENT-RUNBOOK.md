@@ -237,10 +237,13 @@ Aus einer vollständigen Tooling-Arbeitskopie desselben Commits (die CLI schreib
 
 ```sh
 npm run audit:public -- --url https://trinkgut-jammers.de --output /tmp/jammers-live-http-audit.json
+npm run audit:giveaway-images -- --url https://trinkgut-jammers.de --output /tmp/jammers-live-giveaway-images.json
 npm run content:check -- --url https://trinkgut-jammers.de
 ```
 
 Die HTTP-Prüfung enthält neben GET/HEAD nur leere, unautorisierte Ablehnungsproben der geprüften Endpunkte; keinen autorisierten Refresh oder Bestellversand. `source-config.json.publicUrl` muss die tatsächlich bestätigte Hauptorigin enthalten, sonst bleibt `deploymentVerified` trotz `--url` falsch. Zusätzlich Desktop/Mobil visuell prüfen: `/`, Angebote/Sortiment, DE/NL-Handzettel, Bilder/PDFs, Navigation, Kontakt/Impressum/Datenschutz und der Anfrageweg mit dem richtigen E-Mail-Empfänger. Ein Mailto-Link ist kein Zustellnachweis. APIs/HTML dürfen keine internen Canva-Design-URLs oder privaten Provenienzdateien offenlegen.
+
+**Bildauslieferung ab 11.10.2026:** Wiederholt hängende einzelne AVIF-Optimiererschlüssel betrafen zuletzt beide aktuellen Gewinnspielcover in 1280 Pixeln, während dieselben Originale und WebP-Varianten antworteten. Next verwendet deshalb nur noch das unterstützte WebP-Ausgabeformat; responsive Größen und unveränderte Originaldateien bleiben erhalten. Das ist eine gezielte Vermeidung des beobachteten AVIF-Fehlerpfads, kein Nachweis einer behobenen internen Next-/Sharp-Ursache. AVIF nicht ungeprüft wieder aktivieren. Die zusätzliche Gewinnspielprüfung lädt echte Bildkörper mit AVIF-bevorzugenden und WebP-Accept-Headern, prüft Originalhashes und dekodiert die Varianten. HEAD-Status, vorhandene `<img>`-Tags und ein Dienstneustart allein reichen nicht als Abnahme. Keine Testuhr gegen Produktion; Startseite und Gewinnspielseite zusätzlich im Browser prüfen.
 
 ## Wochenpflege, Rollback und Sicherungen
 
