@@ -1,6 +1,14 @@
 # SEO, GEO und AEO: lokaler Umsetzungs- und Abnahmenachweis
 
-Stand: 11.10.2026. Die freigegebenen Suchverbesserungen sind lokal umgesetzt. Dieser Bericht ist **kein Nachweis eines öffentlichen Releases**. Die Veröffentlichung ist vom Betreiber nach bestandenen Prüfungen beauftragt; unabhängige Gesamtschlussprüfung, Push/Remote-SHA, frischer Linux-Webbuild und echte öffentliche Abnahme bleiben getrennte Controller-Gates. Die separat angefragte Entfernung dreier alter Releases ist noch nicht freigegeben. Rund 2,1 GiB freier Serverplatz reichen nicht als Nachweis, dass ein neuer Release sicher gebaut werden kann; nichts wurde dafür gelöscht.
+Stand: 11.10.2026. Die freigegebenen Suchverbesserungen sind lokal umgesetzt, unabhängig gegengeprüft und auf GitHub gesichert. Dieser Bericht ist **kein Nachweis eines öffentlichen Releases**. Die Veröffentlichung ist vom Betreiber nach bestandenen Prüfungen beauftragt; frischer Linux-Webbuild und echte öffentliche Abnahme bleiben offen. Die separat angefragte Entfernung dreier alter Releases ist noch nicht freigegeben. Rund 2,1 GiB freier Serverplatz reichen nicht als Nachweis, dass ein neuer Release sicher gebaut werden kann; nichts wurde dafür gelöscht.
+
+## Abschließende Gegenprüfung und GitHub-Sicherung
+
+Die unabhängige Gesamtprüfung von `ad83f26..376fc74` fand keine kritischen oder wichtigen Fehler. Der einzige kleine Befund am CSS-Prüfer wurde in `7e6a361a2b7a739419d68b431e45786eb67f053d` behoben; die einmalige, unabhängige Nachprüfung bestätigt „adressiert, keine neue Fehlfunktion“. Abschließender Webgate: **2.198 Tests / 116 Dateien bestanden**. Alle sechs lokalen Umsetzungsschritte sind fachlich-technisch im dokumentierten Umfang abgenommen; native Bewerbungsfunktionen und redaktionelle Kursfakten sind damit nicht qualifiziert.
+
+`git push origin HEAD:codex/cinematic-production` war erfolgreich. Ein anschließendes `git ls-remote` bestätigte exakt `7e6a361a2b7a739419d68b431e45786eb67f053d` auf diesem Branch. Dieser Nachweis bezieht sich auf den geprüften Code-/Teststand; spätere reine Abschlussdokumentation ändert den Appstand nicht.
+
+Letzte lesende Serverkontrolle: bestehender Dienst aktiv, weiterhin Release `2858e5256fd3ba1024b1a5f48d3b0cece234826e`, 95 % Datenträgerbelegung / 2,1 GiB frei. Öffentliche Startseite am 11.10.2026 um 17:57:33 UTC: HTTPS 200. Keine Serveränderung oder Löschung durch diesen Auftrag. Für den neuen Release ausstehend: gesonderte Freigabe zur Entfernung ausschließlich der drei inaktiven 8.-Oktober-Releases `bce0e582b5b5137fc52f5a2d5d081c5c767c39b8`, `b0812f7592046b5fcc846ef166b08e710f4e0311`, `d93f932c69a097026624a56365bd58f2dba024a7` (zusammen rund 4,5 GiB), danach reguläre Linux- und öffentliche Abnahme. Aktuelle Version und jüngere Rückfallversionen bleiben erhalten.
 
 ## Ausgangs- und Endstand
 
@@ -88,4 +96,4 @@ Zeitpunkte relativ zum **tatsächlich öffentlich abgenommenen** Release, nicht 
 - [ ] Tag 28: Suchimpressionen/Klicks/CTR für Rezepte, Akademie, lokale Besuchsfragen und NL getrennt mit gleich langem Vorzeitraum vergleichen; Position nur mit Quelle/Zeitraum/Volumen. Neue URLs haben keinen erfundenen historischen Null-Baseline. Saisonalität, Angebotswochen und andere Änderungen nennen; Schema-Ausspielung nicht voraussetzen. GBP-Aufrufe/Interaktionen nur aus echtem freigegebenem Export.
 - [ ] Tag 90: Stabile Indexierung, relevante Query-/Landingpagegruppen und messbare Besuchsaktionen aus vorhandenen zulässigen Daten bewerten. Feld-CWV nur bei verfügbarer ausreichender Quelle/Abdeckung, ansonsten begrenzte Labordaten. Reproduzierbar dokumentierte KI-Antwort-/Zitatproben als Einzelfälle, nicht als repräsentativer Sichtbarkeitsindex. Editorial-/Performancefolgearbeit nach Wirkung priorisieren; keine kausale Rankingzusage aus Vorher/Nachher ableiten.
 
-Öffentliche Abnahme, Remote-SHA und Linuxresultate müssen nach tatsächlichem Release ergänzt werden. Bis dahin lautet der Status: lokal geprüfte Umsetzung, öffentlich weiterhin vorheriger Release.
+Öffentliche Abnahme und Linuxresultate müssen nach tatsächlichem Release ergänzt werden; der geprüfte GitHub-Code-SHA ist oben belegt. Bis dahin lautet der Status: lokal und auf GitHub geprüfte Umsetzung, öffentlich weiterhin vorheriger Release.
