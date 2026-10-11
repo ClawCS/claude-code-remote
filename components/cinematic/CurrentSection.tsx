@@ -50,7 +50,7 @@ export default function CurrentSection({
         <Link href="/angebote" prefetch={false} className={styles.allOffers}>Alle aktuellen Angebote <ArrowUpRight /></Link>
       </div>
       <div className={styles.stage}>
-        <div className={styles.flyers}>
+        <div className={styles.flyers} data-flyer-group="weekly">
         {view.flyer ? (
           <article className={styles.flyer} data-current-flyer>
             <div className={styles.flyerCopy}>
@@ -84,6 +84,13 @@ export default function CurrentSection({
           </article>
         ) : null}
         </div>
+        {view.supplementalFlyers.length > 0 && <section className={styles.supplemental} data-flyer-group="supplemental" aria-label="Zusätzliche Anzeigen">
+          <h3>Zusätzliche Anzeigen</h3>
+          <div className={styles.flyers}>{view.supplementalFlyers.map(flyer => <article key={flyer.id} className={styles.flyer} data-supplemental-flyer>
+            <div className={styles.flyerCopy}><p className={styles.validity}>Maasduinen · Niederländische Zusatzanzeige · Gültig {formatDateRange(flyer.validFrom, flyer.validTo)}</p><h3 lang="nl">{flyer.title}</h3><p>1 Seite</p></div>
+            <FlyerViewer flyer={flyer} />
+          </article>)}</div>
+        </section>}
 
         {view.event ? (
           <article className={styles.event} data-current-event>

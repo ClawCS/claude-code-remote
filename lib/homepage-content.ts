@@ -18,6 +18,8 @@ import { getAcceptedNlOfferRanges } from "@/lib/offer-validity";
 import { loadWeeklyPublications } from "./weekly-publication";
 import { createWeeklyOfferContentLoader } from "./weekly-offer-content";
 import type { LoadedWeeklyPublications } from "./weekly-publication-types";
+import type { PublicationMedium, PublicationPurpose } from "./flyer-source-policy";
+import { loadSupplementalPublications, type LoadedSupplementalPublications } from "./supplemental-publication";
 
 export type HomepageFlyer = Readonly<{
   id: string;
@@ -30,6 +32,8 @@ export type HomepageFlyer = Readonly<{
   coverUrl: string;
   /** Public original only; internal editorial provenance stays in FlyerPackage. */
   sourceUrl: string;
+  purpose?: PublicationPurpose;
+  medium?: PublicationMedium;
 }>;
 
 export type HomepageEvent = Readonly<{
@@ -55,6 +59,7 @@ export type HomepageContent = Readonly<{
   generatedAt: string;
   flyer: HomepageFlyer | null;
   nlFlyer?: HomepageFlyer | null;
+  supplementalFlyers?: readonly HomepageFlyer[];
   event: HomepageEvent | null;
   archive: readonly HomepageArchiveItem[];
   fallbackMessage: string | null;
@@ -62,6 +67,7 @@ export type HomepageContent = Readonly<{
 
 export type HomepageContentSources = Readonly<{
   loadWeeklyPublications?: () => Promise<LoadedWeeklyPublications>;
+  loadSupplementalPublications?: () => Promise<LoadedSupplementalPublications>;
   /** Legacy test/import tooling only; never a public fallback. */
   loadValidatedHandzettelCache?: (
     now: Date,
@@ -75,6 +81,7 @@ type AggregateHomepageContentInput = Readonly<{
   now: Date;
   flyer: HomepageFlyer | null;
   nlFlyer?: HomepageFlyer | null;
+  supplementalFlyers?: readonly HomepageFlyer[];
   campaigns: readonly EditorialCampaign[];
   archive: readonly EditorialArchiveItem[];
 }>;
@@ -250,12 +257,13 @@ export function aggregateHomepageContent({
   now,
   flyer,
   nlFlyer = null,
+  supplementalFlyers = [],
   campaigns,
   archive,
 }: AggregateHomepageContentInput): HomepageContent {
-  const currentFlyer = flyer && isCurrentFlyer(flyer, now) ? flyer : null;
+  const currentFlyer = flyer && flyer.purpose !== "supplemental" && isCurrentFlyer(flyer, now) ? flyer : null;
   const range = getCurrentWeekRange(now);
-  const currentNlFlyer = nlFlyer && nlFlyer.pageCount === 1 && getAcceptedNlOfferRanges(range).some(accepted => nlFlyer.validFrom === accepted.validFrom && nlFlyer.validTo === accepted.validTo) && isCurrentFlyer(nlFlyer, now) ? nlFlyer : null;
+  const currentNlFlyer = nlFlyer && nlFlyer.purpose !== "supplemental" && nlFlyer.pageCount === 1 && getAcceptedNlOfferRanges(range).some(accepted => nlFlyer.validFrom === accepted.validFrom && nlFlyer.validTo === accepted.validTo) && isCurrentFlyer(nlFlyer, now) ? nlFlyer : null;
   let event: HomepageEvent | null = null;
   let currentArchive: readonly HomepageArchiveItem[] = [];
   try {
@@ -272,6 +280,7 @@ export function aggregateHomepageContent({
     generatedAt: now.toISOString(),
     flyer: currentFlyer,
     nlFlyer: currentNlFlyer,
+    supplementalFlyers: supplementalFlyers.filter(flyer => flyer.purpose === "supplemental" && flyer.medium === "maasduinen" && flyer.pageCount === 1 && isCurrentFlyer(flyer, now)),
     event,
     archive: currentArchive,
     fallbackMessage: currentFlyer ? null : FLYER_FALLBACK,
@@ -283,7 +292,7 @@ export function createHomepageContentLoader(
 ): (now?: Date) => Promise<HomepageContent> {
   return async (now = new Date()) => {
     const [weeklyResult, campaignsResult, archiveResult] = await Promise.allSettled([
-      createWeeklyOfferContentLoader(sources.loadWeeklyPublications ?? loadWeeklyPublications)(now),
+      createWeeklyOfferContentLoader(sources.loadWeeklyPublications ?? loadWeeklyPublications, sources.loadSupplementalPublications ?? loadSupplementalPublications)(now),
       Promise.resolve().then(() => sources.loadApprovedCampaigns()),
       Promise.resolve().then(() => sources.loadEditorialArchive()),
     ]);
@@ -291,8 +300,9 @@ export function createHomepageContentLoader(
 
     return aggregateHomepageContent({
       now,
-      flyer: flyers.find(flyer => flyer.language === "de") ?? null,
-      nlFlyer: flyers.find(flyer => flyer.language === "nl") ?? null,
+      flyer: flyers.find(flyer => flyer.language === "de" && flyer.purpose === "weekly") ?? null,
+      nlFlyer: flyers.find(flyer => flyer.language === "nl" && flyer.purpose === "weekly") ?? null,
+      supplementalFlyers: flyers.filter(flyer => flyer.purpose === "supplemental"),
       campaigns:
         campaignsResult.status === "fulfilled" ? campaignsResult.value : [],
       archive: archiveResult.status === "fulfilled" ? archiveResult.value : [],

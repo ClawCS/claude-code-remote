@@ -4,17 +4,25 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
+import { loadWeeklyPublications } from "@/lib/weekly-publication";
+import { loadSupplementalPublications } from "@/lib/supplemental-publication";
+import { selectWeeklyOfferContent } from "@/lib/weekly-offer-selection";
 
 const cleanup: Array<() => Promise<void>> = [];
 afterEach(async () => { for (const dispose of cleanup.splice(0).reverse()) await dispose(); });
 
 type FixtureOptions = { broken?: "link" | "asset" | "heading" | "legacy" | "redirect" | "api" | "security" | "fragment" | "rental-auth" | "rental-referrer" | "offers" | "legacy-get" | "content-post"; streamed?: boolean; hiddenQuotedAttribute?:boolean; completionAttrs?:string; malformedRow?: { collection: "offers" | "flyers" | "indexFlyers"; value: unknown } };
 
-async function fixture(options: FixtureOptions & { application?: { config: unknown; post: number } } = {}) {
-  const requests: Array<{ path: string; method: string; authorization?: string; origin?: string; body: string }> = [];
-  const server = createServer((request: IncomingMessage, response: ServerResponse) => {
+async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hideSupplement?:boolean; corruptAsset?:string; application?: { config: unknown; post: number } } = {}) {
+  const source=options.activeSupplement?await supplementalPublicationFixture():undefined;
+  if(source) cleanup.push(()=>rm(source.root,{recursive:true,force:true}));
+  const selected=source?selectWeeklyOfferContent(await loadWeeklyPublications(source.root),new Date("2026-10-08T12:00:00Z"),await loadSupplementalPublications(source.root)):undefined;
+  const active=selected&&options.hideSupplement?{...selected,flyers:selected.flyers.filter(f=>f.purpose==="weekly"),offers:selected.offers.filter(o=>o.flyerId!=="maasduinen-synthetic")}:selected;
+  const requests: Array<{ path: string; method: string; authorization?: string; origin?: string; body: string; version?:string }> = [];
+  const server = createServer(async (request: IncomingMessage, response: ServerResponse) => {
     const url = new URL(request.url ?? "/", "http://fixture.invalid");
-    const entry = { path: `${url.pathname}${url.search}`, method: request.method ?? "GET", authorization: request.headers.authorization, origin: request.headers.origin, body: "" };
+    const entry = { path: `${url.pathname}${url.search}`, method: request.method ?? "GET", authorization: request.headers.authorization, origin: request.headers.origin, body: "", version:request.headers["x-jammers-content-version"] as string|undefined };
     requests.push(entry);
     request.on("data", chunk => { entry.body += chunk.toString(); });
     if (options.broken !== "security") {
@@ -40,6 +48,11 @@ async function fixture(options: FixtureOptions & { application?: { config: unkno
       }
       if (url.pathname.startsWith("/api/content/")) {
         if (request.method==="POST") {response.statusCode=options.broken==="content-post"?200:405;response.end();return;}
+        if(url.pathname.endsWith("offers")) response.setHeader("Vary","X-Jammers-Content-Version");
+        if(active) {
+          const main=active.flyers.filter(f=>f.purpose==="weekly");
+          response.end(JSON.stringify(url.pathname.endsWith("current")?{flyer:main[0],nlFlyer:main[1],supplementalFlyers:active.flyers.filter(f=>f.purpose==="supplemental")}:active));return;
+        }
         const empty={status:"ok",issues:[],generatedAt:"2026-10-11T12:00:00Z",flyers:[],offers:[]};
         if (options.malformedRow && url.pathname === (options.malformedRow.collection === "indexFlyers" ? "/api/content/flyers" : "/api/content/offers")) {
           const collection = options.malformedRow.collection === "indexFlyers" ? "flyers" : options.malformedRow.collection;
@@ -48,6 +61,7 @@ async function fixture(options: FixtureOptions & { application?: { config: unkno
         response.end(JSON.stringify(url.pathname.endsWith("current")?{flyer:null,nlFlyer:null}:url.pathname.endsWith("offers")&&options.broken==="offers"?{...empty,offers:[{id:"unbound"}]}:empty));return;
       }
       if (url.pathname==="/api/handzettel/fetch"&&request.method==="GET"&&!url.search) {
+        if(active) {const f=active.flyers[0];response.end(JSON.stringify({...f,status:"ok",pages:[{number:1,imageUrl:f.coverUrl,thumbnailUrl:f.coverUrl}]}));return;}
         response.end(JSON.stringify({status:"fallback",pageCount:0,pages:options.broken==="legacy-get"?[{number:1,imageUrl:"https://provider.invalid/image.jpg"}]:[],viewerUrl:null,pdfUrl:null}));return;
       }
       if (/^\/api\/(rentals|rental-admin)\//.test(url.pathname)) {
@@ -66,6 +80,11 @@ async function fixture(options: FixtureOptions & { application?: { config: unkno
     }
     if (url.pathname.startsWith("/missing") || url.pathname.includes("__audit_unknown__")) {
       response.statusCode = 404; response.end("not found"); return;
+    }
+    if(source&&/^\/(?:handzettel|images\/content|images\/offers)\//.test(url.pathname)) {
+      const bytes=await readFile(join(source.root,"public",url.pathname));
+      response.setHeader("Content-Type",url.pathname.endsWith(".pdf")?"application/pdf":"image/webp");
+      response.end(options.corruptAsset===url.pathname?Buffer.concat([bytes,Buffer.from("changed")]):bytes);return;
     }
     if (url.pathname === "/photo.webp" || url.pathname === "/site.css" || url.pathname === "/site.js") {
       response.statusCode = options.broken === "asset" && url.pathname === "/photo.webp" ? 404 : 200;
@@ -91,7 +110,7 @@ async function fixture(options: FixtureOptions & { application?: { config: unkno
   cleanup.push(() => rm(directory, { recursive: true, force: true }));
   const output = join(directory, "evidence.json");
   const result = await new Promise<{ code: number | null; text: string }>(resolve => {
-    const child = spawn(process.execPath, ["scripts/audit-public-site.mjs", "--url", `http://127.0.0.1:${address.port}`, "--output", output], { cwd: process.cwd() });
+    const child = spawn(process.execPath, [join(process.cwd(),"scripts/audit-public-site.mjs"), "--url", `http://127.0.0.1:${address.port}`, "--output", output], { cwd: source?.root??process.cwd() });
     let text = "";
     child.stdout.on("data", chunk => { text += chunk.toString(); });
     child.stderr.on("data", chunk => { text += chunk.toString(); });
@@ -102,6 +121,22 @@ async function fixture(options: FixtureOptions & { application?: { config: unkno
 }
 
 describe("public HTTP forensic audit CLI", () => {
+  it("requests typed offers and checks exact GET bytes for active main and supplemental originals and tiles",async()=>{
+    const result=await fixture({activeSupplement:true});
+    expect(result.code,result.text).toBe(0);
+    expect(result.requests.find(r=>r.path==="/api/content/offers"&&r.method==="GET")?.version).toBe("2");
+    expect(result.requests.some(r=>r.path==="/images/offers/nl-2026-10-05-p1.webp"&&r.method==="GET")).toBe(true);
+  });
+  it("fails changed active GET asset bytes even when the API metadata is exact",async()=>{
+    const result=await fixture({activeSupplement:true,corruptAsset:"/images/offers/nl-2026-10-05-p1.webp"});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings.some((f:{code:string})=>f.code==="weekly-asset-integrity")).toBe(true);
+  });
+  it("fails an active supplemental original silently omitted from all public APIs",async()=>{
+    const result=await fixture({activeSupplement:true,hideSupplement:true});
+    expect(result.code,result.text).toBe(1);
+    expect(result.report.findings.some((f:{code:string})=>f.code==="weekly-asset-integrity")).toBe(true);
+  });
   it.each([
     ["disabled", false, 503, true], ["enabled", true, 403, true], ["enabled", false, 403, true], ["pilot", false, 403, true],
     ["disabled", true, 503, false], ["pilot", true, 403, false], ["enabled", true, 503, false], ["disabled", false, 403, false], ["enabled", true, 202, false],

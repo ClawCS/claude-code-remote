@@ -5,7 +5,7 @@ import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
 const defaultRuntime = {
   now: () => new Date(),
   request: async (signal:AbortSignal):Promise<unknown> => {
-    const response=await fetch("/api/content/offers",{cache:"no-store",signal:AbortSignal.any([signal,AbortSignal.timeout(8000)])});
+    const response=await fetch("/api/content/offers",{cache:"no-store",headers:{"X-Jammers-Content-Version":"2"},signal:AbortSignal.any([signal,AbortSignal.timeout(8000)])});
     if (!response.ok) throw new Error("Weekly offers unavailable");
     return response.json();
   },

@@ -19,6 +19,8 @@ import {
 import * as currentContentRoute from "@/app/api/content/current/route";
 import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
 import { loadWeeklyPublications } from "@/lib/weekly-publication";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
+import { loadSupplementalPublications } from "@/lib/supplemental-publication";
 import { rm } from "node:fs/promises";
 
 const NOW = new Date("2026-07-14T12:00:00.000Z");
@@ -115,6 +117,15 @@ function aggregate(overrides: {
 }
 
 describe("homepage content", () => {
+  it("does not promote a supplemental NL advertisement into the missing main slot", async () => {
+    const f=await supplementalPublicationFixture();
+    try {
+      const weekly=await loadWeeklyPublications(f.root);
+      const content=await createHomepageContentLoader({loadWeeklyPublications:async()=>({...weekly,editions:weekly.editions.filter(x=>x.edition.language==="de")}),loadSupplementalPublications:()=>loadSupplementalPublications(f.root),loadApprovedCampaigns:async()=>[],loadEditorialArchive:async()=>[]})(new Date("2026-10-08T12:00:00Z"));
+      expect(content.flyer?.id).toBe("de-2026-10-05"); expect(content.nlFlyer).toBeNull();
+      expect(content.supplementalFlyers?.map(f=>f.id)).toEqual(["maasduinen-synthetic"]);
+    } finally {await rm(f.root,{recursive:true,force:true});}
+  });
   it("uses verified local editions even when an external cache would take priority", async () => {
     const f = await weeklyPublicationFixture("2026-07-13", "2026-07-18", "1335913", "2");
     try {
@@ -494,6 +505,7 @@ describe("homepage content loader", () => {
       generatedAt: NOW.toISOString(),
       flyer: null,
       nlFlyer: null,
+      supplementalFlyers: [],
       event: {
         id: "strikerball-2026-07-24",
         title: "Striker Ball Challenge",

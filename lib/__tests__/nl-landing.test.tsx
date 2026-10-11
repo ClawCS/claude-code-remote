@@ -18,6 +18,7 @@ const index: FlyerIndex = {
   status: "ok", issues: [], generatedAt: "2026-10-08T10:00:00.000Z", scheduled: [],
   flyers: ["de", "nl"].map((language) => ({
     id: `test-${language}`, language: language as "de" | "nl", title: `Original ${language}`,
+    purpose: "weekly", medium: language === "de" ? "trinkgut" : "legacy-canva",
     validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: language === "nl" ? 1 : 8,
     viewerUrl: `/handzettel/2026/test-${language}.pdf`, pdfUrl: `/handzettel/2026/test-${language}.pdf`,
     coverUrl: `/images/content/test-${language}.webp`, sourceUrl: `/handzettel/2026/test-${language}.pdf`,pdfSha256:"a".repeat(64),

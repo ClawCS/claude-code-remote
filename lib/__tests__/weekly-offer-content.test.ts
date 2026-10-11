@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { rm } from "node:fs/promises";
 vi.mock("server-only", () => ({}));
 import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
+import { loadSupplementalPublications } from "@/lib/supplemental-publication";
 import { loadWeeklyPublications } from "@/lib/weekly-publication";
 import { createWeeklyOfferContentLoader, mapPublishedEditionToFlyer } from "@/lib/weekly-offer-content";
 const roots: string[] = [];
@@ -9,6 +11,43 @@ afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { rec
 const now = new Date("2026-10-08T12:00:00Z");
 async function fixture() { const f = await weeklyPublicationFixture(); roots.push(f.root); return f; }
 describe("verified public weekly content", () => {
+  it("keeps main requirements separate while adding every independently active supplemental offer", async () => {
+    const f = await supplementalPublicationFixture(); roots.push(f.root);
+    const weekly = await loadWeeklyPublications(f.root);
+    const supplements = await loadSupplementalPublications(f.root);
+    const content = await createWeeklyOfferContentLoader(async () => weekly, async () => supplements)(now);
+    expect(content.status).toBe("ok");
+    expect(content.flyers.map(f => [f.id, f.purpose, f.medium])).toEqual([
+      ["de-2026-10-05", "weekly", "trinkgut"], ["nl-2026-10-05", "weekly", "legacy-canva"], ["maasduinen-synthetic", "supplemental", "maasduinen"],
+    ]);
+    expect(content.offers.map(o => o.id)).toEqual(["de-2026-10-05-p1", "de-2026-10-05-p2", "nl-2026-10-05-p1", "maasduinen-synthetic-p1"]);
+    const missing = await createWeeklyOfferContentLoader(async () => ({...weekly, editions:weekly.editions.filter(x => x.edition.language === "de")}), async () => supplements)(now);
+    expect(missing.issues).toEqual(["nl-flyer-missing"]);
+    expect(missing.flyers.map(f => f.id)).toEqual(["de-2026-10-05", "maasduinen-synthetic"]);
+    const expired = await createWeeklyOfferContentLoader(async () => ({editions:[], issues:[]}), async () => supplements)(new Date("2026-10-18T22:00:00Z"));
+    expect(expired.flyers).toEqual([]); expect(expired.offers).toEqual([]);
+  });
+  it("isolates a corrupt supplement without poisoning healthy weekly originals", async () => {
+    const f = await supplementalPublicationFixture(); roots.push(f.root);
+    await f.write(`data/editorial/supplemental-publications/${f.supplemental.edition.id}.json`, "broken");
+    const content = await createWeeklyOfferContentLoader(() => loadWeeklyPublications(f.root), () => loadSupplementalPublications(f.root))(now);
+    expect(content.issues).toEqual(["supplemental-edition-invalid"]);
+    expect(content.flyers.map(f => f.id)).toEqual(["de-2026-10-05", "nl-2026-10-05"]);
+    expect(content.offers).toHaveLength(3);
+  });
+  it("fails both streams closed when either loader observes the durable preparation lock", async () => {
+    const f=await supplementalPublicationFixture(); roots.push(f.root);
+    const weekly=await loadWeeklyPublications(f.root), supplements=await loadSupplementalPublications(f.root);
+    const content=await createWeeklyOfferContentLoader(async()=>weekly,async()=>({...supplements,issues:[{register:"supplemental",code:"preparation-incomplete"}]}))(now);
+    expect(content.flyers).toEqual([]);expect(content.offers).toEqual([]);
+  });
+  it("reports unassignable supplemental corruption without invalidating a separately verified sibling",async()=>{
+    const f=await supplementalPublicationFixture();roots.push(f.root);
+    const weekly=await loadWeeklyPublications(f.root),supplements=await loadSupplementalPublications(f.root);
+    const content=await createWeeklyOfferContentLoader(async()=>weekly,async()=>({...supplements,issues:[{register:"supplemental",code:"edition-invalid"}]}))(now);
+    expect(content.status).toBe("degraded");expect(content.issues).toEqual(["supplemental-edition-invalid"]);
+    expect(content.flyers.map(f=>f.id)).toEqual(["de-2026-10-05","nl-2026-10-05","maasduinen-synthetic"]);
+  });
   it("serves complete local originals and crops without leaking private provenance", async () => {
     const f = await fixture();
     const content = await createWeeklyOfferContentLoader(() => loadWeeklyPublications(f.root))(now);

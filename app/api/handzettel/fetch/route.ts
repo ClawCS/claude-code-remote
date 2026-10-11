@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { isAuthorizedBearer } from "@/lib/cron-auth";
 import { getWeeklyOfferContent } from "@/lib/weekly-offer-content";
+import { projectLegacyOfferContent } from "@/lib/weekly-offer-refresh";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" } as const;
@@ -32,7 +33,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   const shouldRefresh = new URL(request.url).searchParams.get("refresh") === "true";
   if (!shouldRefresh) {
     const content = await getWeeklyOfferContent(resolveHomepageNow());
-    const flyer = content.flyers.find(item=>item.language==="de");
+    const flyer = projectLegacyOfferContent(content).flyers.find(item=>item.language==="de");
     if (!flyer) return json({status:"fallback",pageCount:0,pages:[],viewerUrl:null,pdfUrl:null,generatedAt:content.generatedAt,message:"Der nächste Handzettel wird vorbereitet."});
     // Only the cover is a verified page image. Never invent images for other pages.
     return json({...flyer,status:"ok",fetchedAt:content.generatedAt,pages:[{number:1,imageUrl:flyer.coverUrl,thumbnailUrl:flyer.coverUrl}]});

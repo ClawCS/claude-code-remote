@@ -1,18 +1,24 @@
 import { berlinDateKey, getCurrentWeekRange } from "./editorial-schedule";
 import { getOfferDemandRange } from "./offer-validity";
 import { selectPublishedEditions } from "./weekly-publication";
+import { selectSupplementalEditions, type LoadedSupplementalPublications } from "./supplemental-publication";
 import type { LoadedWeeklyPublications, PublicFlyer, PublicOfferView, WeeklyEdition, WeeklyOfferContent } from "./weekly-publication-types";
 
 export function mapPublishedEditionToFlyer(edition: WeeklyEdition): PublicFlyer {
   return { id: edition.id, language: edition.language, title: edition.title,
     validFrom: edition.validFrom, validTo: edition.validTo, viewerUrl: edition.pdf.path,
     pdfUrl: edition.pdf.path, sourceUrl: edition.pdf.path, coverUrl: edition.cover.path,
-    pageCount: edition.pageCount, pdfSha256: edition.pdf.sha256 };
+    pageCount: edition.pageCount, pdfSha256: edition.pdf.sha256,
+    purpose: edition.identity?.purpose ?? "weekly",
+    medium: edition.identity?.medium ?? (edition.language === "de" ? "trinkgut" : "legacy-canva") };
 }
 
 
 /** CLI-safe public projection of an already verified package. No I/O or source fallbacks. */
-export function selectWeeklyOfferContent(loaded:LoadedWeeklyPublications, now:Date):WeeklyOfferContent {
+export function selectWeeklyOfferContent(loaded:LoadedWeeklyPublications, now:Date, supplemental:LoadedSupplementalPublications = {editions:[],issues:[]}):WeeklyOfferContent {
+  if ([...loaded.issues, ...supplemental.issues].some(issue => issue.code === "preparation-incomplete")) {
+    return {status:"degraded",issues:["preparation-incomplete"],generatedAt:now.toISOString(),flyers:[],offers:[]};
+  }
   const range = getCurrentWeekRange(now);
   const relevant = loaded.issues.filter(issue => issue.week === null || issue.week === range.validFrom);
   // Unassignable corruption cannot be proved unrelated; no public selection is safe.
@@ -23,8 +29,14 @@ export function selectWeeklyOfferContent(loaded:LoadedWeeklyPublications, now:Da
     if (!selected.some(item => item.edition.language === "de")) issues.push("official-flyer-missing");
     if (!selected.some(item => item.edition.language === "nl")) issues.push("nl-flyer-missing");
   }
-  const flyers = selected.map(({ edition }) => mapPublishedEditionToFlyer(edition));
-  const offers: PublicOfferView[] = selected.flatMap(({ edition, offers }) => offers.map(offer => ({
+  const today = berlinDateKey(now);
+  const supplementalIssues = supplemental.issues.filter(issue => !issue.validFrom || !issue.validTo || (issue.validFrom <= today && today <= issue.validTo));
+  issues.push(...supplementalIssues.map(issue => `supplemental-${issue.code}`));
+  const supplementalSelected = selectSupplementalEditions(supplemental, now)
+    .filter(item => !supplementalIssues.some(issue => issue.editionId === item.edition.id));
+  const complete = [...selected, ...supplementalSelected];
+  const flyers = complete.map(({ edition }) => mapPublishedEditionToFlyer(edition));
+  const offers: PublicOfferView[] = complete.flatMap(({ edition, offers }) => offers.map(offer => ({
     id: offer.id, name: offer.name, categorySlug: offer.categorySlug, language: offer.language,
     flyerId: edition.id, validFrom: offer.validFrom, validTo: offer.validTo, image: offer.image,
     sourcePage: offer.sourcePage, rect: offer.rect, pdfSha256: offer.pdfSha256,

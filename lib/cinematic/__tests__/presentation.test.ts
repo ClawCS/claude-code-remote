@@ -32,6 +32,7 @@ describe("homepage presentation adapter", () => {
   test("passes the adapter-owned empty state through verbatim", () => {
     expect(buildCurrentView(base)).toEqual({
       flyer: null,
+      supplementalFlyers: [],
       event: null,
       fallbackMessage: "Der nächste Handzettel wird vorbereitet.",
     });
@@ -62,6 +63,7 @@ describe("homepage presentation adapter", () => {
 
     expect(buildCurrentView({ ...base, flyer, event })).toEqual({
       flyer,
+      supplementalFlyers: [],
       event,
       fallbackMessage: null,
     });

@@ -14,23 +14,24 @@ export default function WeeklyOfferGrid({ content, category, search = "", langua
   const offers = selectWeeklyOffers(current.offers, current.flyers, now, category).filter(offer =>
     (language === "alle" || offer.language === language) && offer.name.toLocaleLowerCase("de").includes(search.toLocaleLowerCase("de")));
   return <section aria-label="Aktuelle Einzelangebote" className={styles.results}>
-    <p role="status" className={offers.length ? styles.resultCount : editorial.emptyState}>{offers.length ? `${offers.length} ${offers.length === 1 ? "Angebot" : "Angebote"} aus den aktuellen Handzetteln` : "Hier ist derzeit kein passendes Einzelangebot freigegeben. Alle aktuellen Angebote findest du in unseren Handzetteln."}</p>
+    <p role="status" className={offers.length ? styles.resultCount : editorial.emptyState}>{offers.length ? `${offers.length} ${offers.length === 1 ? "Angebot" : "Angebote"} aus den aktuellen Handzetteln und Zusatzanzeigen` : "Hier ist derzeit kein passendes Einzelangebot freigegeben. Alle aktuellen Angebote findest du in unseren Handzetteln und Zusatzanzeigen."}</p>
     <div className={styles.offerGrid}>{offers.map(offer => {
       const flyer = current.flyers.find(source => source.id === offer.flyerId)!;
       const originalUrl = `${flyer.pdfUrl.split("#")[0]}#page=${offer.sourcePage}`;
+      const originalLabel = flyer.purpose === "supplemental" ? "Originalanzeige" : "Originalhandzettel";
       return <article key={`${offer.id}-${offer.pdfSha256}`} data-offer-id={offer.id} className={styles.offer}>
-        <a href={originalUrl} target="_blank" rel="noopener noreferrer" aria-label={`${offer.name} im Originalhandzettel öffnen`}>
+        <a href={originalUrl} target="_blank" rel="noopener noreferrer" aria-label={`${offer.name}: ${originalLabel} öffnen`}>
           <Image src={offer.image} alt={`Originalangebot: ${offer.name} – Preis, Gebinde und Bedingungen im abgebildeten Handzettelausschnitt`} width={offer.rect[2]} height={offer.rect[3]} className={styles.offerImage} sizes="(max-width:752px) 90vw, (max-width:1008px) 45vw, 30vw" />
         </a>
-        <div className={styles.offerText}><p className={styles.meta}>{offer.language === "nl" ? "NL-Handzettel" : "DE-Handzettel"} · {formatDateRange(offer.validFrom, offer.validTo)}</p>
+        <div className={styles.offerText}><p className={styles.meta}>{flyer.purpose === "supplemental" ? "Maasduinen · Zusatzanzeige" : flyer.medium === "de-maas-driehoek" ? "De Maas Driehoek · NL-Handzettel" : flyer.medium === "udens-weekblad" ? "Udens Weekblad · NL-Handzettel" : offer.language === "nl" ? "NL-Handzettel" : "DE-Handzettel"} · {formatDateRange(offer.validFrom, offer.validTo)}</p>
           <h2>{offer.name}</h2>
           <p className={styles.fineprint}>Originalausschnitt. Preise, Pfand, Varianten und Aktionsbedingungen bitte vollständig beachten. Keine Live-Bestandsanzeige.</p>
           {offer.conditions && <details className={styles.conditions}><summary>Bedingungen zum Angebot</summary><p>{offer.conditions}</p></details>}
           {offer.sourceWarning && <p className={styles.warning}><strong>Hinweis zum Original:</strong> {offer.sourceWarning}</p>}
-          <a href={originalUrl} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>Originalhandzettel öffnen <ArrowUpRight /></a>
+          <a href={originalUrl} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>{originalLabel} öffnen <ArrowUpRight /></a>
         </div>
       </article>;
     })}</div>
-    <Link href="/angebote" className={styles.sourceLink}>Alle Angebote im deutschen und niederländischen Handzettel →</Link>
+    <Link href="/angebote" className={styles.sourceLink}>Alle Handzettel und Zusatzanzeigen ansehen →</Link>
   </section>;
 }

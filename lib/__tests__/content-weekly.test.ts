@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import sharp from "sharp";
 import { weeklyPublicationFixture } from "./fixtures/weekly-publication";
+import { supplementalPublicationFixture } from "./fixtures/supplemental-publication";
 import { createElement } from "react";
 import { streamReactMarkup } from "./fixtures/streamed-markup";
 
@@ -25,7 +26,7 @@ async function prepareReviewed(options:{missingNl?:boolean;badCover?:boolean;sta
     await f.write("data/editorial/source-config.json",JSON.stringify({publicUrl:null}));
     const manifest=await readFile(path.join(f.root,"data/editorial/weekly-publications/2026-10-05.json"));
     const metadata=await readFile(path.join(f.root,"data/editorial/official-catalogs/2026-10-05.json"));
-    const result=await new Promise<{code:number|null;report:{errors:string[];sources:Record<string,unknown>[];packageVerified?:boolean}}>((resolve,reject)=>{
+    const result=await new Promise<{code:number|null;report:{errors:string[];sources:Record<string,unknown>[];packageVerified?:boolean;packageScope?:string;subsequentReleaseGates?:string[]}}>((resolve,reject)=>{
       const child=spawn(process.execPath,["--import",path.join(repo,"node_modules/tsx/dist/loader.mjs"),"--import",path.join(repo,"lib/__tests__/fixtures/content-check-fetch.mjs"),path.join(repo,"scripts/content-weekly.ts"),"--prepare","--week","2026-10-05","--now","2026-10-08T12:00:00Z"],{cwd:f.root,env:{...process.env,TSX_TSCONFIG_PATH:path.join(repo,"tsconfig.json")}});
       let stdout="",stderr="";child.stdout.on("data",chunk=>stdout+=chunk);child.stderr.on("data",chunk=>stderr+=chunk);child.on("error",reject);child.on("close",code=>{try{resolve({code,report:JSON.parse(stdout)});}catch{reject(new Error(stderr));}});
     });
@@ -37,6 +38,8 @@ async function prepareReviewed(options:{missingNl?:boolean;badCover?:boolean;sta
 describe("reviewed local preparation",()=>{
   it("uses complete local originals despite later origin failure and preserves bound metadata bytes",async()=>{
     const result=await prepareReviewed();expect(result.code).toBe(0);expect(result.report.errors).toEqual([]);expect(result.metadataAfter).toEqual(result.metadataBefore);
+    expect(result.report.packageScope).toBe("weekly-main");
+    expect(result.report.subsequentReleaseGates).toEqual(["offers:check","content:check"]);
   });
   it("retains an isolated DE package but exits nonzero when mandatory NL is missing",async()=>{
     const result=await prepareReviewed({missingNl:true});expect(result.code).toBe(1);expect(result.report.packageVerified).not.toBe(true);expect(result.report.errors.some(message=>/NL/.test(message))).toBe(true);expect(JSON.parse(result.manifestAfter.toString()).editions.map((edition:{language:string})=>edition.language)).toEqual(["de"]);
@@ -51,18 +54,22 @@ describe("reviewed local preparation",()=>{
     const result=await prepareReviewed({corruptNl:true});expect(result.code).toBe(1);expect(result.report.errors.some(message=>/NL/.test(message))).toBe(true);expect(result.report.sources.some(source=>source.language==="de"&&source.result==="verified-partial-package")).toBe(true);expect(result.manifestAfter).toEqual(result.manifestBefore);
   });
 });
-async function runBoundCheck(options:{now?:string;missingNl?:boolean;empty?:boolean;sourceOnly?:boolean;corrupt?:string;missingOffer?:boolean;wrongHash?:boolean;badLegacy?:boolean;missingCard?:boolean;missingLink?:boolean;badType?:boolean;prepare?:boolean;week?:string;staleLink?:string;streamed?:boolean;unresolved?:boolean}={}) {
-  const f=await weeklyPublicationFixture();
+async function runBoundCheck(options:{supplement?:boolean;supplementCorrupt?:boolean;now?:string;missingNl?:boolean;empty?:boolean;sourceOnly?:boolean;corrupt?:string;missingOffer?:boolean;wrongHash?:boolean;badLegacy?:boolean;missingCard?:boolean;missingLink?:boolean;badType?:boolean;prepare?:boolean;week?:string;staleLink?:string;streamed?:boolean;unresolved?:boolean}={}) {
+  const supplementFixture=options.supplement ? await supplementalPublicationFixture() : undefined;
+  const f=supplementFixture ?? await weeklyPublicationFixture();
   try {
     if(options.missingNl) { f.publication.editions.splice(1);f.sources.splice(1);f.offers.splice(2);await f.save(); }
     if(options.empty||options.sourceOnly) { f.publication.editions.length=0;await f.save(); }
     const now=options.now??"2026-10-08T12:00:00Z";
     const active=now.slice(0,10)<="2026-10-10"&&!options.sourceOnly&&!options.empty;
-    const flyers=active?f.editions.map(e=>({id:e.id,language:e.language,title:e.title,validFrom:e.validFrom,validTo:e.validTo,pdfUrl:e.pdf.path,viewerUrl:e.pdf.path,sourceUrl:e.pdf.path,coverUrl:e.cover.path,pageCount:e.pageCount,pdfSha256:e.pdf.sha256})):[];
-    const offers=active?f.offers.map(o=>({id:o.id,name:o.name,categorySlug:o.categorySlug,language:o.language,flyerId:o.flyerId,validFrom:o.validFrom,validTo:o.validTo,image:o.image,sourcePage:o.sourcePage,rect:o.rect,pdfSha256:o.pdfSha256,sourceUrl:o.sourceUrl,conditions:o.conditions})):[];
+    const extra=supplementFixture?.supplemental.edition;
+    const selected=[...(active?f.editions:[]),...(extra&&extra.validFrom<=now.slice(0,10)&&now.slice(0,10)<=extra.validTo?[extra]:[])];
+    const flyers=selected.map(e=>({id:e.id,language:e.language,purpose:"identity" in e ? e.identity.purpose : "weekly",medium:"identity" in e ? e.identity.medium : e.language==="de"?"trinkgut":"legacy-canva",title:e.title,validFrom:e.validFrom,validTo:e.validTo,pdfUrl:e.pdf.path,viewerUrl:e.pdf.path,sourceUrl:e.pdf.path,coverUrl:e.cover.path,pageCount:e.pageCount,pdfSha256:e.pdf.sha256}));
+    const offers=f.offers.filter(o=>selected.some(e=>e.id===o.flyerId)).map(o=>({id:o.id,name:o.name,categorySlug:o.categorySlug,language:o.language,flyerId:o.flyerId,validFrom:o.validFrom,validTo:o.validTo,image:o.image,sourcePage:o.sourcePage,rect:o.rect,pdfSha256:o.pdfSha256,sourceUrl:o.sourceUrl,conditions:o.conditions}));
+    if(options.supplementCorrupt&&extra) await f.write(`data/editorial/supplemental-publications/${extra.id}.json`,"broken");
     const missing=active&&!flyers.some(e=>e.language==="nl");
     const content={status:missing?"degraded":"ok",issues:missing?["nl-flyer-missing"]:[],generatedAt:now,flyers,offers};
-    const flyer=flyers.find(e=>e.language==="de")??null,nlFlyer=flyers.find(e=>e.language==="nl")??null;
+    const flyer=flyers.find(e=>e.language==="de"&&e.purpose==="weekly")??null,nlFlyer=flyers.find(e=>e.language==="nl"&&e.purpose==="weekly")??null;
     const flyerHtml=flyers.map(e=>`<a href="${e.pdfUrl}">PDF</a><img src="${e.coverUrl}">`).join("");
     const cards=offers.map(o=>`<article data-offer-id="${o.id}"><h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`).join("");
     const pages={"/":'<section id="aktuell">'+flyerHtml+"</section>","/angebote":flyerHtml,"/handzettel":flyerHtml,"/nl":flyerHtml,"/produkte":options.missingCard?"":cards,"/kategorie/alkoholfrei":options.missingLink?cards.replaceAll(/#page=\d+/g,""):cards};
@@ -72,7 +79,7 @@ async function runBoundCheck(options:{now?:string;missingNl?:boolean;empty?:bool
     }
     if (options.staleLink) pages["/angebote"]+=`<a href="${options.staleLink}">Expired</a>`;
     const legacy=flyer?{...flyer,status:"ok",pages:[{number:1,imageUrl:flyer.coverUrl,thumbnailUrl:flyer.coverUrl}]}:{status:"fallback",pageCount:0,pages:[],viewerUrl:null,pdfUrl:null};
-    await f.write("test-published.json",JSON.stringify({current:{flyer,nlFlyer},index:{status:content.status,issues:content.issues,flyers},offers:{...content,offers:options.missingOffer?offers.slice(1):options.wrongHash?offers.map(o=>({...o,pdfSha256:"b".repeat(64)})):offers},legacy:options.badLegacy?{...legacy,pages:[{number:2,imageUrl:"/wrong.webp",thumbnailUrl:"/wrong.webp"}]}:legacy,pages,corruptPath:options.corrupt,badType:options.badType}));
+    await f.write("test-published.json",JSON.stringify({current:{flyer,nlFlyer,supplementalFlyers:flyers.filter(e=>e.purpose==="supplemental")},index:{status:content.status,issues:content.issues,flyers},offers:{...content,offers:options.missingOffer?offers.slice(1):options.wrongHash?offers.map(o=>({...o,pdfSha256:"b".repeat(64)})):offers},legacy:options.badLegacy?{...legacy,pages:[{number:2,imageUrl:"/wrong.webp",thumbnailUrl:"/wrong.webp"}]}:legacy,pages,corruptPath:options.corrupt,badType:options.badType}));
     await f.write("data/editorial/source-config.json",JSON.stringify({publicUrl:"https://trinkgut-jammers.de"}));
     return await new Promise<{code:number|null;report:{errors:string[];sources:Record<string,unknown>[];websiteVerified?:boolean;deploymentVerified:boolean;target:{validFrom:string};warnings:string[]}}>((resolve,reject)=>{
       const child=spawn(process.execPath,["--import",path.join(repo,"node_modules/tsx/dist/loader.mjs"),"--import",path.join(repo,"lib/__tests__/fixtures/content-check-fetch.mjs"),path.join(repo,"scripts/content-weekly.ts"),options.prepare?"--prepare":"--check","--now",now,"--url","http://127.0.0.1:39001",...(options.week?["--week",options.week]:[])],{cwd:f.root,env:{...process.env,TSX_TSCONFIG_PATH:path.join(repo,"tsconfig.json")}});
@@ -81,6 +88,16 @@ async function runBoundCheck(options:{now?:string;missingNl?:boolean;empty?:bool
   } finally {await rm(f.root,{recursive:true,force:true});}
 }
 describe("bound weekly CLI completeness",()=>{
+  it("checks independent supplemental offers and originals across their overlap with an explicit target week",async()=>{
+    const result=await runBoundCheck({supplement:true,week:"2026-10-05"});
+    expect(result.code).toBe(0);expect(result.report.errors).toEqual([]);
+    expect(result.report.sources.find(s=>s.id==="maasduinen-synthetic")).toMatchObject({validFrom:"2026-10-07",validTo:"2026-10-18"});
+  });
+  it("fails a declared supplemental corruption without calling it a missing main NL",async()=>{
+    const result=await runBoundCheck({supplement:true,supplementCorrupt:true});
+    expect(result.code).toBe(1);expect(result.report.errors.some(e=>/Zusatzanzeige/.test(e))).toBe(true);
+    expect(result.report.errors.some(e=>/Pflicht-NL/.test(e))).toBe(false);
+  });
   it("verifies complete real SSR streamed products and categories without claiming deployment",async()=>{
     const result=await runBoundCheck({streamed:true});expect(result.code).toBe(0);expect(result.report.errors).toEqual([]);expect(result.report.websiteVerified).toBe(true);expect(result.report.deploymentVerified).toBe(false);
   });

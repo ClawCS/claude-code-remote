@@ -34,6 +34,8 @@
 .sourceLink { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; margin-top: 1rem; color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .25em; font-weight: 600; }
 .flyers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
 .flyer { min-width: 0; border-top: 1px solid var(--cinematic-color-line); padding-top: 1.5rem; }
+.supplemental { margin-top: clamp(2rem, 5vw, 4rem); }
+.supplemental > h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); margin-bottom: 1.5rem; }
 .flyer h2, .flyer h3 { font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; line-height: 1.2; margin: .75rem 0 1.5rem; overflow-wrap: anywhere; }
 .story { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 5rem); border-top: 1px solid var(--cinematic-color-line); }
 .story figure { min-width: 0; margin: 0; }

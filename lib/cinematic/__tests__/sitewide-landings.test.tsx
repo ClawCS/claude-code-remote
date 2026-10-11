@@ -18,8 +18,8 @@ import CinematicHome from "@/components/cinematic/CinematicHome";
 import NederlandsPage from "@/app/nl/page";
 
 const flyers: FlyerIndex["flyers"] = [
-  { id: "de-current", language: "de", title: "Angebote der Woche", validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: 10, coverUrl: "/images/content/de-original.webp", pdfUrl: "/handzettel/de-original.pdf", viewerUrl: "/handzettel/de-original.pdf", sourceUrl: "https://werbung.trinkgut.de/catalog/original/view", pdfSha256: "a".repeat(64) },
-  { id: "nl-current", language: "nl", title: "Nederlandse weekfolder met alle aanbiedingen voor een gezellig weekend in Goch", validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: 1, coverUrl: "/images/content/nl-original.webp", pdfUrl: "/handzettel/nl-original.pdf", viewerUrl: "/handzettel/nl-original.pdf", sourceUrl: "https://www.canva.com/design/original/view", pdfSha256: "b".repeat(64) },
+  { id: "de-current", language: "de", purpose:"weekly", medium:"trinkgut", title: "Angebote der Woche", validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: 10, coverUrl: "/images/content/de-original.webp", pdfUrl: "/handzettel/de-original.pdf", viewerUrl: "/handzettel/de-original.pdf", sourceUrl: "https://werbung.trinkgut.de/catalog/original/view", pdfSha256: "a".repeat(64) },
+  { id: "nl-current", language: "nl", purpose:"weekly", medium:"legacy-canva", title: "Nederlandse weekfolder met alle aanbiedingen voor een gezellig weekend in Goch", validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: 1, coverUrl: "/images/content/nl-original.webp", pdfUrl: "/handzettel/nl-original.pdf", viewerUrl: "/handzettel/nl-original.pdf", sourceUrl: "https://www.canva.com/design/original/view", pdfSha256: "b".repeat(64) },
 ];
 const content: HomepageContent = { generatedAt: "2026-10-10T10:00:00Z", flyer: flyers[0], nlFlyer: flyers[1], event: null, archive: [], fallbackMessage: null };
 function home() { return renderToStaticMarkup(<CinematicHome content={content} nowIso={content.generatedAt} />); }

@@ -1,8 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { fixtureEnabled, weeklyOfferFixtureContent } from "../weekly-offer-fixture";
+import { fixtureEnabled, weeklyOfferFixtureContent, publicationStreamFixtureContent } from "../weekly-offer-fixture";
 import { parseWeeklyOfferContent } from "@/lib/weekly-offer-refresh";
 import { selectWeeklyOffers } from "@/lib/catalog";
 describe("isolated weekly-offer browser fixture",()=>{
+  it("provides typed main and independently dated supplemental UI cases without production access",()=>{
+    const content=publicationStreamFixtureContent("active");
+    expect(parseWeeklyOfferContent(content)).toEqual(content);
+    expect(content.flyers.map(f=>f.purpose)).toEqual(["weekly","weekly","supplemental"]);
+    expect(publicationStreamFixtureContent("supplement-only").flyers.map(f=>f.id)).toEqual(["synthetic-maasduinen"]);
+    expect(publicationStreamFixtureContent("main-only").flyers).toHaveLength(2);
+    expect(publicationStreamFixtureContent("expired").flyers).toHaveLength(0);
+  });
   it("is inaccessible in production and without explicit test marker",()=>{
     expect(fixtureEnabled({NODE_ENV:"production",CINEMATIC_E2E:"1"})).toBe(false);
     expect(fixtureEnabled({NODE_ENV:"development"})).toBe(false);

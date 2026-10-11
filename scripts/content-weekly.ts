@@ -8,6 +8,7 @@ import { loadFlyerPackages, selectWeeklyNlFlyer, verifyFlyerFiles } from "../lib
 import { comparePublishedFlyers, isProductionOrigin, parseContentArguments, verifyPublishedFlyerMarkup, verifyPublishedOfferContent, verifyPublishedOfferMarkup, verifyLegacyPublishedFlyer, type PublishedFlyer } from "../lib/content-verification";
 import { loadWeeklyPublications, selectPublishedEditions } from "../lib/weekly-publication";
 import { selectWeeklyOfferContent } from "../lib/weekly-offer-selection";
+import { loadSupplementalPublications, selectSupplementalEditions } from "../lib/supplemental-publication";
 import { getOfferDemandRange } from "../lib/offer-validity";
 import { assembleWeeklyPublication, importOfficialPublication, WeeklyPreparationError } from "../lib/official-publication-import";
 import { buildWeeklyOffers } from "./build-weekly-offers";
@@ -20,7 +21,7 @@ if (explicitWeek && range.validFrom !== explicitWeek) throw new Error("--week mu
 const root = process.cwd();
 const lockPath = path.join(root, "data/editorial/.content-update.lock");
 const runId = `${now.toISOString().replace(/[:.]/g, "-")}-${prepare ? "prepare" : "check"}-${randomUUID().slice(0,8)}`;
-const report: Record<string, unknown> = { runId, mode: prepare ? "prepare" : "check", startedAt: new Date().toISOString(), evaluatedAt: now.toISOString(), timeZone: "Europe/Berlin", target: range, sources: [], errors: [], warnings: [], websiteVerified: false, deploymentVerified: false };
+const report: Record<string, unknown> = { runId, mode: prepare ? "prepare" : "check", ...(prepare ? {packageScope:"weekly-main",subsequentReleaseGates:["offers:check","content:check"]} : {}), startedAt: new Date().toISOString(), evaluatedAt: now.toISOString(), timeZone: "Europe/Berlin", target: range, sources: [], errors: [], warnings: [], websiteVerified: false, deploymentVerified: false };
 const errors = report.errors as string[];
 const warnings = report.warnings as string[];
 const sources = report.sources as Record<string, unknown>[];
@@ -69,14 +70,17 @@ try {
     }
   } else {
     const loaded=await loadWeeklyPublications(root);
-    expectedOffers=selectWeeklyOfferContent(loaded,now);
+    const supplements=await loadSupplementalPublications(root);
+    expectedOffers=selectWeeklyOfferContent(loaded,now,supplements);
     expectedFlyers.push(...expectedOffers.flyers);
     const targetEditions=loaded.editions.filter(item=>item.edition.validFrom===range.validFrom);
     for (const issue of loaded.issues.filter(issue=>issue.week===null||issue.week===range.validFrom)) errors.push(`Wochenbindung ungültig: ${issue.language?.toUpperCase()??"DE/NL"} ${issue.code}`);
     if (offersRequired) for (const language of ["de","nl"]) {
       if (!targetEditions.some(item=>item.edition.language===language)) errors.push(`Pflicht-${language.toUpperCase()}-Angebotspaket fehlt: vollständige geprüfte Wochenbindung erforderlich.`);
     }
-    checkedEditions=[...new Map([...selectPublishedEditions(loaded,now),...(explicitWeek?targetEditions:[])].map(item=>[item.edition.id,item])).values()];
+    const overlappingSupplements=supplements.editions.filter(({edition})=>edition.validFrom<=range.validTo&&edition.validTo>=range.validFrom);
+    for (const issue of supplements.issues.filter(issue=>!issue.validFrom||!issue.validTo||(explicitWeek?issue.validFrom<=range.validTo&&issue.validTo>=range.validFrom:issue.validFrom<=berlinDateKey(now)&&issue.validTo>=berlinDateKey(now)))) errors.push(`Zusatzanzeige ungültig: ${issue.code}`);
+    checkedEditions=[...new Map([...selectPublishedEditions(loaded,now),...selectSupplementalEditions(supplements,now),...(explicitWeek?[...targetEditions,...overlappingSupplements]:[])].map(item=>[item.edition.id,item])).values()];
     for (const {edition} of checkedEditions) sources.push({source:edition.source.kind,id:edition.id,language:edition.language,validFrom:edition.validFrom,validTo:edition.validTo,result:"bound-and-verified",pdfSha256:edition.pdf.sha256});
   }
 
@@ -87,8 +91,7 @@ try {
       try { await verifyFlyerFiles(item,root); }
       catch(error) {errors.push(error instanceof Error?error.message:`Dateifehler: ${item.id}`);}
     }
-    if (!nlFlyer) errors.push("Pflicht-NL-Flyer fehlt: genau eine geprüfte Canva-Seite für die vollständige Zielwoche erforderlich.");
-    if (nlFlyer&&!preparedPublication?.editions.some(edition=>edition.language==="nl")) errors.push("Pflicht-NL-Angebotspaket fehlt: Original-/Layoutprüfung und vollständige Angebotskacheln erforderlich.");
+    if (!preparedPublication?.editions.some(edition=>edition.language==="nl")) errors.push("Pflicht-NL-Angebotspaket fehlt: genau eine geprüfte Originalseite, Layoutprüfung und vollständige Angebotskacheln erforderlich.");
   }
 
   const config = JSON.parse(await readFile(path.join(root, "data/editorial/source-config.json"), "utf8"));
@@ -97,7 +100,7 @@ try {
     const origin = new URL(publicUrl);
     if (origin.username || origin.password || !["https:", "http:"].includes(origin.protocol)) throw new Error("Ungültige Prüf-URL.");
     const request=async (route:string)=>{
-      const response=await fetch(new URL(route,origin),{cache:"no-store",redirect:"manual",signal:AbortSignal.timeout(20_000)});
+      const response=await fetch(new URL(route,origin),{cache:"no-store",headers:{"X-Jammers-Content-Version":"2"},redirect:"manual",signal:AbortSignal.timeout(20_000)});
       if (!response.ok) errors.push(`Veröffentlichter Abruf nicht erfolgreich: ${route} (${response.status}).`);
       return response;
     };
@@ -109,7 +112,7 @@ try {
     const content=await json("/api/content/current");
     const index=await json("/api/content/flyers");
     const offers=await json("/api/content/offers");
-    errors.push(...comparePublishedFlyers(expectedFlyers,index.flyers,content.flyer,content.nlFlyer));
+    errors.push(...comparePublishedFlyers(expectedFlyers,index.flyers,content.flyer,content.nlFlyer,content.supplementalFlyers));
     if (index.status!==expectedOffers.status || !isDeepStrictEqual([...(index.issues??[])].sort(),[...expectedOffers.issues].sort())) errors.push("Veröffentlichter Flyerindex meldet nicht den geprüften Integritätsstatus.");
     errors.push(...verifyPublishedOfferContent(expectedOffers,offers));
     errors.push(...verifyLegacyPublishedFlyer(expectedFlyers.find(item=>item.language==="de"),await json("/api/handzettel/fetch")));

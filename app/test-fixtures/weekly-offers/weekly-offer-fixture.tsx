@@ -4,8 +4,9 @@ import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import { WeeklyOfferRuntimeContext } from "@/components/WeeklyOfferRuntime";
 import { weeklyOfferFixtureContent, type WeeklyFixtureStage } from "@/lib/cinematic/weekly-offer-fixture";
 import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
+import ProductCatalogue from "@/components/ProductCatalogue";
 type Pending={id:number;content:WeeklyOfferContent;resolve:(value:unknown)=>void};
-export default function WeeklyOfferFixture({initial}:{initial:WeeklyOfferContent}) {
+export default function WeeklyOfferFixture({initial,catalogue=false}:{initial:WeeklyOfferContent;catalogue?:boolean}) {
   const snapshot=useRef(initial);const hold=useRef(false);const pending=useRef<Pending[]>([]);const serial=useRef(0);
   const [pendingIds,setPendingIds]=useState<number[]>([]);const [clock,setClock]=useState(initial.generatedAt);const [settled,setSettled]=useState("");
   const [runtime]=useState(()=>({now:()=>new Date(snapshot.current.generatedAt),request:async():Promise<unknown>=>{
@@ -33,6 +34,6 @@ export default function WeeklyOfferFixture({initial}:{initial:WeeklyOfferContent
       <button className="border p-3" onClick={()=>request("expired")}>Nach Wochenablauf</button>
     </div>
     <div aria-label="Ausstehende Antworten" className="flex gap-3 my-6">{pendingIds.map(id=><button className="border p-3" key={id} onClick={()=>complete(id)}>Antwort {id} abschließen</button>)}</div>
-    <WeeklyOfferRuntimeContext.Provider value={runtime}><WeeklyOfferGrid content={initial}/></WeeklyOfferRuntimeContext.Provider>
+    <WeeklyOfferRuntimeContext.Provider value={runtime}>{catalogue?<ProductCatalogue content={initial}>{null}</ProductCatalogue>:<WeeklyOfferGrid content={initial}/>}</WeeklyOfferRuntimeContext.Provider>
   </main>;
 }

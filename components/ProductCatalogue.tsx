@@ -17,7 +17,7 @@ export default function ProductCatalogue({children,content,initialSearch=""}:{ch
   }
   const [language,setLanguage]=useState("alle");
   return <>
-    <PageIntro eyebrow="Trinkgut Jammers · Goch" title="Sortiment & Wochenangebote" description="Alle Produktangebote aus dem deutschen und niederländischen Wochenhandzettel – nach Warengruppen sortiert. Gemeinsam beworbene Varianten und Mengenstaffeln bleiben zusammen. Das vollständige Marktsortiment findest du bei uns vor Ort." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment" }]}>
+    <PageIntro eyebrow="Trinkgut Jammers · Goch" title="Sortiment & Wochenangebote" description="Alle Produktangebote aus dem deutschen und niederländischen Wochenhandzettel sowie gültigen Zusatzanzeigen – nach Warengruppen sortiert. Gemeinsam beworbene Varianten und Mengenstaffeln bleiben zusammen. Das vollständige Marktsortiment findest du bei uns vor Ort." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment" }]}>
       <Link href="/angebote" className={editorial.secondaryLink}>DE- und NL-Handzettel ansehen</Link>
       <Link href="/finder" className={editorial.secondaryLink}>Getränkefinder</Link>
     </PageIntro>

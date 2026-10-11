@@ -10,6 +10,12 @@ const flyer = {id:"catalog-1384969-v4",title:"Wochenangebote",language:"de" as c
 const nlFlyer = {id:"maasduinen-2026-09-28-v2",title:"Weekaanbiedingen",language:"nl" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"/flyers/2026-09-28/nl-v2.pdf",pdfUrl:"/flyers/2026-09-28/nl-v2.pdf",coverUrl:"/flyers/2026-09-28/nl-v2.jpg",pageCount:1,sourceUrl:"/nl"};
 
 describe("weekly publishing verification", () => {
+  it("checks supplemental parity separately without substituting for the main NL homepage slot",()=>{
+    const supplement={...nlFlyer,id:"supplement",purpose:"supplemental" as const,medium:"maasduinen" as const};
+    expect(comparePublishedFlyers([flyer,supplement],[flyer,supplement],flyer,null,[supplement])).toEqual([]);
+    expect(comparePublishedFlyers([flyer,supplement],[flyer,supplement],flyer,supplement,[])).not.toEqual([]);
+    expect(comparePublishedFlyers([flyer,supplement],[flyer,supplement],flyer,null,[])).not.toEqual([]);
+  });
   it("verifies the actual offer grid after a real React SSR segment completes", async()=>{
     const content=weeklyOfferFixtureContent("monday");
     const html=await streamReactMarkup(createElement(WeeklyOfferGrid,{content}));

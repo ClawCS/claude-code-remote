@@ -44,19 +44,24 @@ export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"
 export type PublishedFlyer = HomepageFlyer & {language: "de" | "nl"; pdfSha256?:string};
 const fields = ["id","title","validFrom","validTo","viewerUrl","pdfUrl","coverUrl","pageCount","sourceUrl","pdfSha256"] as const;
 
-export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actual: unknown, home: unknown, nlHome: unknown = null): string[] {
+export function comparePublishedFlyers(expected: readonly PublishedFlyer[], actual: unknown, home: unknown, nlHome: unknown = null, supplementalHome: unknown = []): string[] {
   const errors: string[] = [];
   if (!Array.isArray(actual)) return ["Veröffentlichter Flyerindex ist keine Liste."];
   if (actual.length !== expected.length) errors.push("Die Anzahl der veröffentlichten Flyer weicht vom geprüften Paket ab.");
   for (const item of expected) {
     if (item.language === "nl" && item.pageCount !== 1) errors.push(`Der geprüfte niederländische Handzettel muss genau eine Seite enthalten: ${item.id}`);
     const matches = actual.filter((entry) => entry?.id === item.id);
-    if (matches.length !== 1 || [...fields,"language"].some(key => matches[0]?.[key] !== item[key as keyof PublishedFlyer])) errors.push(`Veröffentlichter Flyer stimmt nicht mit dem geprüften Paket überein: ${item.id}`);
+    if (matches.length !== 1 || [...fields,"language","purpose","medium"].some(key => matches[0]?.[key] !== item[key as keyof PublishedFlyer])) errors.push(`Veröffentlichter Flyer stimmt nicht mit dem geprüften Paket überein: ${item.id}`);
   }
-  const expectedHome = expected.find(item => item.language === "de");
+  const expectedHome = expected.find(item => item.language === "de" && item.purpose !== "supplemental");
   if (expectedHome ? !home || typeof home !== "object" || fields.some(key => (home as Record<string,unknown>)[key] !== expectedHome[key]) : home !== null) errors.push("Die Homepage zeigt nicht den geprüften deutschen Handzettel.");
-  const expectedNlHome = expected.find(item => item.language === "nl");
+  const expectedNlHome = expected.find(item => item.language === "nl" && item.purpose !== "supplemental");
   if (expectedNlHome ? !nlHome || typeof nlHome !== "object" || fields.some(key => (nlHome as Record<string,unknown>)[key] !== expectedNlHome[key]) : nlHome != null) errors.push("Die Homepage zeigt nicht den geprüften niederländischen Handzettel.");
+  const expectedSupplemental=expected.filter(item=>item.purpose==="supplemental");
+  if (!Array.isArray(supplementalHome) || supplementalHome.length!==expectedSupplemental.length || expectedSupplemental.some(item=> {
+    const matches=supplementalHome.filter(raw=>raw?.id===item.id);
+    return matches.length!==1 || [...fields,"language","purpose","medium"].some(key=>matches[0]?.[key]!==item[key as keyof PublishedFlyer]);
+  })) errors.push("Die Homepage zeigt nicht die vollständigen geprüften Zusatzanzeigen.");
   return errors;
 }
 

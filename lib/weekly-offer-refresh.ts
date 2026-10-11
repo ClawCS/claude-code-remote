@@ -1,4 +1,5 @@
 import type { WeeklyOfferContent } from "./weekly-publication-types";
+import { expectedNlAgencyMedium } from "./flyer-source-policy";
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new TypeError("Invalid weekly content");
   return value as Record<string, unknown>;
@@ -16,9 +17,12 @@ export function parseWeeklyOfferContent(value: unknown): WeeklyOfferContent {
   if (!["ok","degraded"].includes(item.status as string) || !Array.isArray(item.issues) || !item.issues.every(text)
     || typeof item.generatedAt!=="string" || !Number.isFinite(Date.parse(item.generatedAt)) || !Array.isArray(item.flyers) || !Array.isArray(item.offers)) throw new TypeError("Invalid weekly content");
   for (const raw of item.flyers) {
-    const f=record(raw); keys(f,["id","title","language","validFrom","validTo","viewerUrl","pdfUrl","sourceUrl","coverUrl","pageCount","pdfSha256"]);
+    const f=record(raw); keys(f,["id","title","language","purpose","medium","validFrom","validTo","viewerUrl","pdfUrl","sourceUrl","coverUrl","pageCount","pdfSha256"]);
     if (!text(f.id)||!text(f.title)||!["de","nl"].includes(f.language as string)||!date(f.validFrom)||!date(f.validTo)||!pdf(f.pdfUrl)
       ||(f.validFrom as string)>(f.validTo as string)||f.viewerUrl!==f.pdfUrl||f.sourceUrl!==f.pdfUrl||!image(f.coverUrl,"content")||!hash(f.pdfSha256)||!Number.isInteger(f.pageCount)||(f.pageCount as number)<1||(f.pageCount as number)>60) throw new TypeError("Invalid flyer");
+    if (f.purpose === "supplemental") {
+      if (f.language !== "nl" || f.medium !== "maasduinen" || f.pageCount !== 1) throw new TypeError("Invalid supplemental flyer");
+    } else if (f.purpose !== "weekly" || (f.language === "de" ? f.medium !== "trinkgut" : f.pageCount !== 1 || f.medium !== ((f.validFrom as string) >= "2026-10-12" ? expectedNlAgencyMedium(f.validFrom as string) : "legacy-canva"))) throw new TypeError("Invalid weekly flyer");
   }
   for (const raw of item.offers) {
     const o=record(raw); keys(o,["id","name","categorySlug","language","flyerId","validFrom","validTo","image","sourcePage","rect","pdfSha256","sourceUrl","conditions"],["sourceWarning"]);
@@ -29,6 +33,12 @@ export function parseWeeklyOfferContent(value: unknown): WeeklyOfferContent {
   }
   if (new Set(item.flyers.map(f=>f.id)).size!==item.flyers.length||new Set(item.offers.map(o=>o.id)).size!==item.offers.length) throw new TypeError("Duplicate content");
   return value as WeeklyOfferContent;
+}
+/** Compatibility projection preserves offers, IDs, original assets and printed dates. */
+export function projectLegacyOfferContent(content: WeeklyOfferContent) {
+  return {...content,flyers:content.flyers.map(flyer => Object.fromEntries(
+    Object.entries(flyer).filter(([key]) => key !== "purpose" && key !== "medium")
+  ) as Omit<typeof flyer, "purpose" | "medium">)};
 }
 export function createOfferRefresh(request: (signal: AbortSignal)=>Promise<unknown>,publish: (value:WeeklyOfferContent|null)=>void) {
   let sequence=0; let controller:AbortController|undefined; let disposed=false;

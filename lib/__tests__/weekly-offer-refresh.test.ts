@@ -1,8 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { createOfferRefresh, parseWeeklyOfferContent } from "@/lib/weekly-offer-refresh";
+import { createOfferRefresh, parseWeeklyOfferContent, projectLegacyOfferContent } from "@/lib/weekly-offer-refresh";
 import { weeklyOfferFixtureContent } from "@/lib/cinematic/weekly-offer-fixture";
 const empty={status:"ok",issues:[],generatedAt:"2026-10-08T12:00:00.000Z",flyers:[],offers:[]};
 describe("offer refresh boundary",()=>{
+  it("accepts typed metadata but strips only purpose and medium for old clients",()=>{
+    const fixture=weeklyOfferFixtureContent("monday");
+    const typed={...fixture,flyers:fixture.flyers.map(f=>({...f,purpose:"weekly" as const,medium:"trinkgut" as const}))};
+    expect(parseWeeklyOfferContent(typed)).toEqual(typed);
+    const legacy=projectLegacyOfferContent(typed);
+    expect(legacy.offers).toEqual(typed.offers);
+    expect(legacy.flyers[0]).toEqual(Object.fromEntries(Object.entries(typed.flyers[0]).filter(([key])=>!["purpose","medium"].includes(key))));
+    expect(()=>parseWeeklyOfferContent(legacy)).toThrow();
+    expect(()=>parseWeeklyOfferContent({...typed,flyers:[{...typed.flyers[0],purpose:"supplemental",medium:"maasduinen"}]})).toThrow();
+  });
   it("rejects a reversed validity interval rather than accepting part of a malformed payload",()=>{
     const valid=weeklyOfferFixtureContent("monday");
     expect(()=>parseWeeklyOfferContent({...valid,offers:[],flyers:[{...valid.flyers[0],validFrom:"2026-10-18"}]})).toThrow();
