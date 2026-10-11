@@ -127,7 +127,7 @@ try {
     for (const route of ["/produkte",...new Set(expectedOffers.offers.map(offer=>`/kategorie/${offer.categorySlug}`))]) {
       const page=await request(route);const html=await page.text();
       if (!page.headers.get("content-type")?.startsWith("text/html")) errors.push(`Angebotsseite liefert kein HTML: ${route}`);
-      errors.push(...verifyPublishedOfferMarkup(route==="/produkte"?expectedOffers.offers:expectedOffers.offers.filter(offer=>route===`/kategorie/${offer.categorySlug}`),html,route));
+      errors.push(...verifyPublishedOfferMarkup(route==="/produkte"?expectedOffers.offers:expectedOffers.offers.filter(offer=>route===`/kategorie/${offer.categorySlug}`),html,route,{flyers:expectedOffers.flyers,now}));
     }
     const assets=new Map<string,{sha256:string;bytes:number}>();
     for (const {edition,offers} of checkedEditions) {

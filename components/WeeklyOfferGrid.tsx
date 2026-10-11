@@ -3,6 +3,7 @@ import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import Link from "next/link";
 import { selectWeeklyOffers } from "@/lib/catalog";
+import { isWeeklyFlyerPreview } from "@/lib/editorial-schedule";
 import { formatDateRange } from "@/lib/cinematic/presentation";
 import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
 import { useWeeklyOfferContent } from "./WeeklyOfferRuntime";
@@ -20,6 +21,7 @@ export default function WeeklyOfferGrid({ content, category, search = "", langua
       const originalUrl = `${flyer.pdfUrl.split("#")[0]}#page=${offer.sourcePage}`;
       const originalLabel = flyer.purpose === "supplemental" ? "Originalanzeige" : "Originalhandzettel";
       return <article key={`${offer.id}-${offer.pdfSha256}`} data-offer-id={offer.id} className={styles.offer}>
+        {isWeeklyFlyerPreview(flyer, now) && <p className={styles.previewNotice} data-offer-preview={offer.id}>Vorschau · gültig ab Montag</p>}
         <a href={originalUrl} target="_blank" rel="noopener noreferrer" aria-label={`${offer.name}: ${originalLabel} öffnen`}>
           <Image src={offer.image} alt={`Originalangebot: ${offer.name} – Preis, Gebinde und Bedingungen im abgebildeten Handzettelausschnitt`} width={offer.rect[2]} height={offer.rect[3]} className={styles.offerImage} sizes="(max-width:752px) 90vw, (max-width:1008px) 45vw, 30vw" />
         </a>

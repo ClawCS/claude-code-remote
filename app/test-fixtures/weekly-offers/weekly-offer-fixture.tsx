@@ -27,7 +27,8 @@ export default function WeeklyOfferFixture({initial,catalogue=false}:{initial:We
     <p>Nur synthetische Daten. Kein Produktionsuhr-Override, keine externen Requests.</p>
     <p role="status">Testuhr: {clock} · {settled}</p>
     <div className="flex flex-wrap gap-3 my-6">
-      <button className="border p-3" onClick={()=>request("sunday")}>Sonntag vor Mitternacht</button>
+      <button className="border p-3" onClick={()=>request("sunday")}>Sonntag vor 16 Uhr</button>
+      <button className="border p-3" onClick={()=>request("preview")}>Sonntag 16 Uhr Vorschau</button>
       <button className="border p-3" onClick={()=>request("monday")}>Montag aktivieren</button>
       <button className="border p-3" onClick={()=>request("monday",true)}>Ältere Antwort anfordern</button>
       <button className="border p-3" onClick={()=>request("latest",true)}>Neuere Antwort anfordern</button>

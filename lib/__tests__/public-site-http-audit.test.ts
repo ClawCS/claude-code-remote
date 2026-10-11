@@ -21,6 +21,7 @@ async function fixture(options: FixtureOptions & { activeSupplement?:boolean; hi
   const selected=source?selectWeeklyOfferContent(await loadWeeklyPublications(source.root),new Date(snapshotNow),await loadSupplementalPublications(source.root)):undefined;
   const active=selected?{...selected,flyers:selected.flyers.filter(f=>!(options.hideSupplement&&f.purpose==="supplemental")&&!(options.hideMain&&f.purpose==="weekly")),offers:selected.offers.filter(o=>!(options.hideSupplement&&o.flyerId==="maasduinen-synthetic")&&!(options.hideMain&&o.flyerId!=="maasduinen-synthetic"))}:undefined;
   if(active&&options.swappedOfferImage) active.offers=active.offers.map((offer,index)=>index===0?{...offer,image:active.offers[1].image}:offer);
+  if(active&&options.broken==="offers") active.offers=[];
   if(source&&options.missingMainManifest)await rm(join(source.root,"data/editorial/weekly-publications/2026-10-05.json"));
   if(source&&options.manifestDamage) {
     const file=options.manifestDamage.startsWith("supplemental")?"data/editorial/supplemental-publications/maasduinen-synthetic.json":`data/editorial/weekly-publications/${options.manifestDamage==="weekly-historical"?"2026-09-28":options.manifestDamage==="weekly-unknown"?"undatable":"2026-10-05"}.json`;
@@ -134,9 +135,14 @@ describe("public HTTP forensic audit CLI", () => {
     expect(result.code, result.text).toBe(1);
     expect(result.report.findings).toContainEqual(expect.objectContaining({code:"weekly-asset-integrity"}));
   });
-  it("accepts verified Sunday previews with zero premature product offers", async () => {
+  it("accepts verified Sunday previews with the complete product census", async () => {
     const result = await fixture({ activeSupplement: true, snapshotNow: "2026-10-04T14:00:00Z" });
     expect(result.report.findings.filter((f: {severity:string}) => f.severity === "error")).toEqual([]);
+  });
+  it("rejects empty Sunday assortment even when both preview flyers are present", async () => {
+    const result = await fixture({ activeSupplement: true, snapshotNow: "2026-10-04T14:00:00Z", broken: "offers" });
+    expect(result.code).toBe(1);
+    expect(result.report.findings).toContainEqual(expect.objectContaining({code:"weekly-asset-integrity"}));
   });
   it("requires next-week originals at the preview deadline even when APIs agree on no flyers", async () => {
     const result = await fixture({ snapshotNow: "2026-10-11T14:00:00Z" });

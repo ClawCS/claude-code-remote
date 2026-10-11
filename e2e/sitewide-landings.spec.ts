@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import type { FlyerIndex } from "../lib/flyer-index";
+import { isWeeklyFlyerPreview } from "../lib/editorial-schedule";
 
 const proof = process.env.AUDIT_SCREENSHOT_DIR ?? ".superpowers/sdd/2026-10-10-sitewide-filmisch/screenshots";
 
@@ -20,7 +21,7 @@ for (const width of [390, 768, 1440]) {
       expect(response.status()).toBe(200);
       const index: FlyerIndex = await response.json();
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date(index.generatedAt));
-      expect(index.flyers.every(flyer => flyer.validFrom <= today && flyer.validTo >= today)).toBe(true);
+      expect(index.flyers.every(flyer => (flyer.validFrom <= today || isWeeklyFlyerPreview(flyer,new Date(index.generatedAt))) && flyer.validTo >= today)).toBe(true);
       await expect(flyers).toHaveCount(index.flyers.length);
       for (const [position, flyer] of index.flyers.entries()) {
         await expect(flyers.nth(position).locator("h3")).toHaveText(flyer.title);

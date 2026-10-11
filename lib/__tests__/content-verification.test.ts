@@ -10,6 +10,17 @@ const flyer = {id:"catalog-1384969-v4",title:"Wochenangebote",language:"de" as c
 const nlFlyer = {id:"maasduinen-2026-09-28-v2",title:"Weekaanbiedingen",language:"nl" as const,validFrom:"2026-09-28",validTo:"2026-10-03",viewerUrl:"/flyers/2026-09-28/nl-v2.pdf",pdfUrl:"/flyers/2026-09-28/nl-v2.pdf",coverUrl:"/flyers/2026-09-28/nl-v2.jpg",pageCount:1,sourceUrl:"/nl"};
 
 describe("weekly publishing verification", () => {
+  it("requires a visible notice on each preview offer and rejects it after Monday starts",()=>{
+    const fixture=weeklyOfferFixtureContent("monday");
+    const content={...fixture,generatedAt:"2026-10-11T14:00:00Z"};
+    const html=renderToStaticMarkup(createElement(WeeklyOfferGrid,{content}));
+    const context={flyers:content.flyers,now:new Date(content.generatedAt)};
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte",context)).toEqual([]);
+    for(const absent of [html.replace("data-offer-preview=","data-unused="),html.replace("data-offer-preview=","hidden data-offer-preview="),html.replace("gültig ab Montag","jetzt gültig")]) {
+      expect(verifyPublishedOfferMarkup(content.offers,absent,"/produkte",context)).not.toEqual([]);
+    }
+    expect(verifyPublishedOfferMarkup(content.offers,html,"/produkte",{...context,now:new Date("2026-10-11T22:00:00Z")})).not.toEqual([]);
+  });
   it("requires a visible preview label on each future weekly original, not hidden or script-only text", () => {
     const preview={...flyer,id:"de-preview",validFrom:"2026-10-12",validTo:"2026-10-17"};
     const now=new Date("2026-10-11T14:00:00Z");

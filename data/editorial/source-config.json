@@ -1,6 +1,6 @@
 {
   "timeZone": "Europe/Berlin",
-  "prepare": "Sunday 19:00",
+  "prepare": "Sunday 16:00",
   "prepareStatus": "ACTIVE",
   "check": "Daily 06:15",
   "checkStatus": "PAUSED",

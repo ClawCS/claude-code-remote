@@ -67,7 +67,7 @@ describe("reviewed local preparation",()=>{
     const result=await prepareReviewed({corruptNl:true});expect(result.code).toBe(1);expect(result.report.errors.some(message=>/NL/.test(message))).toBe(true);expect(result.report.sources.some(source=>source.language==="de"&&source.result==="verified-partial-package")).toBe(true);expect(result.manifestAfter).toEqual(result.manifestBefore);
   });
 });
-async function runBoundCheck(options:{preview?:boolean;prematureOffers?:boolean;supplement?:boolean;supplementCorrupt?:boolean;now?:string;missingNl?:boolean;empty?:boolean;sourceOnly?:boolean;corrupt?:string;missingOffer?:boolean;wrongHash?:boolean;badLegacy?:boolean;missingCard?:boolean;missingLink?:boolean;badType?:boolean;prepare?:boolean;week?:string;staleLink?:string;streamed?:boolean;unresolved?:boolean}={}) {
+async function runBoundCheck(options:{preview?:boolean;missingPreviewOffers?:boolean;missingPreviewLabels?:boolean;supplement?:boolean;supplementCorrupt?:boolean;now?:string;missingNl?:boolean;empty?:boolean;sourceOnly?:boolean;corrupt?:string;missingOffer?:boolean;wrongHash?:boolean;badLegacy?:boolean;missingCard?:boolean;missingLink?:boolean;badType?:boolean;prepare?:boolean;week?:string;staleLink?:string;streamed?:boolean;unresolved?:boolean}={}) {
   const supplementFixture=options.supplement ? await supplementalPublicationFixture() : undefined;
   const f=supplementFixture ?? await weeklyPublicationFixture(options.preview?"2026-10-12":undefined,options.preview?"2026-10-17":undefined);
   try {
@@ -78,13 +78,13 @@ async function runBoundCheck(options:{preview?:boolean;prematureOffers?:boolean;
     const extra=supplementFixture?.supplemental.edition;
     const selected=[...(active?f.editions:[]),...(extra&&extra.validFrom<=now.slice(0,10)&&now.slice(0,10)<=extra.validTo?[extra]:[])];
     const flyers=selected.map(e=>({id:e.id,language:e.language,purpose:"identity" in e ? e.identity.purpose : "weekly",medium:"identity" in e ? e.identity.medium : e.language==="de"?"trinkgut":options.preview?"de-maas-driehoek":"legacy-canva",title:e.title,validFrom:e.validFrom,validTo:e.validTo,pdfUrl:e.pdf.path,viewerUrl:e.pdf.path,sourceUrl:e.pdf.path,coverUrl:e.cover.path,pageCount:e.pageCount,pdfSha256:e.pdf.sha256}));
-    const offers=f.offers.filter(o=>(!options.preview||options.prematureOffers)&&selected.some(e=>e.id===o.flyerId)).map(o=>({id:o.id,name:o.name,categorySlug:o.categorySlug,language:o.language,flyerId:o.flyerId,validFrom:o.validFrom,validTo:o.validTo,image:o.image,sourcePage:o.sourcePage,rect:o.rect,pdfSha256:o.pdfSha256,sourceUrl:o.sourceUrl,conditions:o.conditions}));
+    const offers=f.offers.filter(o=>!options.missingPreviewOffers&&selected.some(e=>e.id===o.flyerId)).map(o=>({id:o.id,name:o.name,categorySlug:o.categorySlug,language:o.language,flyerId:o.flyerId,validFrom:o.validFrom,validTo:o.validTo,image:o.image,sourcePage:o.sourcePage,rect:o.rect,pdfSha256:o.pdfSha256,sourceUrl:o.sourceUrl,conditions:o.conditions}));
     if(options.supplementCorrupt&&extra) await f.write(`data/editorial/supplemental-publications/${extra.id}.json`,"broken");
     const missing=active&&!flyers.some(e=>e.language==="nl");
     const content={status:missing?"degraded":"ok",issues:missing?["nl-flyer-missing"]:[],generatedAt:now,flyers,offers};
     const flyer=flyers.find(e=>e.language==="de"&&e.purpose==="weekly")??null,nlFlyer=flyers.find(e=>e.language==="nl"&&e.purpose==="weekly")??null;
     const flyerHtml=flyers.map(e=>`<a href="${e.pdfUrl}">PDF</a><img src="${e.coverUrl}">`).join("");
-    const cards=offers.map(o=>`<article data-offer-id="${o.id}"><h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`).join("");
+    const cards=offers.map(o=>`<article data-offer-id="${o.id}">${options.preview&&!options.missingPreviewLabels?`<p data-offer-preview="${o.id}">Vorschau · gültig ab Montag</p>`:""}<h2>${o.name}</h2><p>${o.conditions}</p><img src="${o.image}"><a href="${o.sourceUrl}#page=${o.sourcePage}">Original</a></article>`).join("");
     const pages={"/":'<section id="aktuell">'+flyerHtml+"</section>","/angebote":flyerHtml,"/handzettel":flyerHtml,"/nl":flyerHtml,"/produkte":options.missingCard?"":cards,"/kategorie/alkoholfrei":options.missingLink?cards.replaceAll(/#page=\d+/g,""):cards};
     if(options.preview) for(const route of ["/","/angebote","/handzettel","/nl"] as const) pages[route]+=flyers.map(f=>`<p data-flyer-preview="${f.id}">${route==="/nl"||(route==="/"&&f.language==="nl")?"Vooruitblik · geldig vanaf maandag":"Vorschau · gültig ab Montag"}</p>`).join("");
     if(options.streamed) for(const route of ["/produkte","/kategorie/alkoholfrei"] as const) {
@@ -102,7 +102,7 @@ async function runBoundCheck(options:{preview?:boolean;prematureOffers?:boolean;
   } finally {await rm(f.root,{recursive:true,force:true});}
 }
 describe("bound weekly CLI completeness",()=>{
-  it("checks all preview originals and crops without demanding active product cards",async()=>{
+  it("checks all preview originals, crops and visible product cards",async()=>{
     const result=await runBoundCheck({preview:true,now:"2026-10-11T14:00:00Z"});
     expect(result.code,result.report.errors.join("\n")).toBe(0);expect(result.report.target.validFrom).toBe("2026-10-12");
     expect(result.report.sources).toHaveLength(2);
@@ -111,8 +111,8 @@ describe("bound weekly CLI completeness",()=>{
     const result=await runBoundCheck({preview:true,now:"2026-10-11T14:00:00Z",corrupt});expect(result.code).toBe(1);
     expect(result.report.errors.some(e=>e.includes(corrupt))).toBe(true);
   });
-  it("rejects premature product cards even when the preview flyers are correct",async()=>{
-    const result=await runBoundCheck({preview:true,prematureOffers:true,now:"2026-10-11T14:00:00Z"});expect(result.code).toBe(1);
+  it.each([{missingPreviewOffers:true},{missingPreviewLabels:true}])("rejects incomplete preview cards or missing notices: %j",async options=>{
+    const result=await runBoundCheck({preview:true,...options,now:"2026-10-11T14:00:00Z"});expect(result.code).toBe(1);
   });
   it("checks independent supplemental offers and originals across their overlap with an explicit target week",async()=>{
     const result=await runBoundCheck({supplement:true,week:"2026-10-05"});

@@ -1,4 +1,5 @@
 import { expect, test } from "./test-fixtures";
+import { selectWeeklyOffers } from "../lib/catalog";
 
 for (const width of [320,667,1023,1024,1025,1151,1152,1153,1279,1280,1281]) test(`responsive controls do not clip at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:width === 667 ? 375 : 900});await page.goto("/");await page.evaluate(()=>document.fonts.ready);
@@ -58,10 +59,9 @@ test("assortment uses current dated originals while finder and party list do not
   await page.goto("/produkte");
   await page.waitForLoadState("networkidle");
   await expect(page.getByRole("heading",{name:"Sortiment & Wochenangebote",exact:true})).toBeVisible();
-  const offersResponse = await request.get("/api/content/offers");expect(offersResponse.status()).toBe(200);
+  const offersResponse = await request.get("/api/content/offers",{headers:{"X-Jammers-Content-Version":"2"}});expect(offersResponse.status()).toBe(200);
   const content = await offersResponse.json();
-  const today = new Intl.DateTimeFormat("en-CA", { timeZone:"Europe/Berlin" }).format(new Date(content.generatedAt));
-  expect(content.offers.every((offer: {validFrom:string;validTo:string}) => offer.validFrom <= today && offer.validTo >= today)).toBe(true);
+  expect(selectWeeklyOffers(content.offers,content.flyers,new Date(content.generatedAt))).toHaveLength(content.offers.length);
   await expect(page.locator("[data-offer-id]")).toHaveCount(content.offers.length);
   for (const offer of content.offers) {
     const article=page.locator(`[data-offer-id="${offer.id}"]`);

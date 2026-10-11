@@ -36,7 +36,9 @@ export function selectWeeklyOfferContent(loaded:LoadedWeeklyPublications, now:Da
     .filter(item => !supplementalIssues.some(issue => issue.editionId === item.edition.id));
   const complete = [...selected, ...supplementalSelected];
   const flyers = complete.map(({ edition }) => mapPublishedEditionToFlyer(edition));
-  const offers: PublicOfferView[] = complete.filter(({edition}) => edition.validFrom <= today && today <= edition.validTo).flatMap(({ edition, offers }) => offers.map(offer => ({
+  // Weekly originals and their complete census share the Sunday preview window.
+  // Supplemental editions above remain restricted to their actual printed period.
+  const offers: PublicOfferView[] = complete.flatMap(({ edition, offers }) => offers.map(offer => ({
     id: offer.id, name: offer.name, categorySlug: offer.categorySlug, language: offer.language,
     flyerId: edition.id, validFrom: offer.validFrom, validTo: offer.validTo, image: offer.image,
     sourcePage: offer.sourcePage, rect: offer.rect, pdfSha256: offer.pdfSha256,

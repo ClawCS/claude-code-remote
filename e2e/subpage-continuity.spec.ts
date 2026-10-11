@@ -405,12 +405,19 @@ for (const route of ["/cocktails", "/gewinnspiel", "/kategorie/bier", "/finder",
   });
 }
 
-test("[fixture] synthetic weekly offers preserve Sunday empty, refresh ordering and expiry", async ({ page }) => {
+test("[fixture] synthetic weekly offers preserve Sunday preview, refresh ordering and expiry", async ({ page }) => {
   await familyReady(page, "/test-fixtures/weekly-offers");
   await expect(page.getByRole("heading", { name: "Isolierte Wochenangebote-Fixture", exact: true })).toBeVisible();
   await expect(page.locator("[data-offer-id]")).toHaveCount(0);
+  await page.getByRole("button", { name: "Sonntag 16 Uhr Vorschau", exact: true }).click();
+  await expect(page.locator('[data-offer-id="synthetic-monday-original"]')).toHaveCount(1);
+  await expect(page.locator("[data-offer-preview]")).toHaveText("Vorschau · gültig ab Montag");
+  const previewAccessibility = await new AxeBuilder({ page }).include("[data-offer-preview]").withRules(["color-contrast"]).analyze();
+  expect(previewAccessibility.violations).toEqual([]);
+  await expect(page.locator('[data-offer-id="synthetic-monday-original"]')).toContainText("12.–17.10.2026");
   await page.getByRole("button", { name: "Montag aktivieren", exact: true }).click();
   await expect(page.locator('[data-offer-id="synthetic-monday-original"]')).toHaveCount(1);
+  await expect(page.locator("[data-offer-preview]")).toHaveCount(0);
   await page.getByRole("button", { name: "Ältere Antwort anfordern", exact: true }).click();
   await expect(page.getByRole("button", { name: "Antwort 1 abschließen", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Neuere Antwort anfordern", exact: true }).click();

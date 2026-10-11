@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
-import offers from "../data/weekly-offers.json";
+import { selectWeeklyOffers } from "../lib/catalog";
 import { eigenmarken } from "../data/eigenmarken";
 import { GIVEAWAYS_2026 } from "../data/giveaways";
 import type { FlyerIndex } from "../lib/flyer-index";
@@ -10,7 +10,7 @@ const routes = ["/angebote", "/handzettel", "/produkte", "/kategorie/bier", "/ei
 
 for (const width of [390, 768, 1440]) {
   for (const path of routes) {
-    test(`${path} collection at ${width}px keeps full originals and editorial hierarchy`, async ({ page }) => {
+    test(`${path} collection at ${width}px keeps full originals and editorial hierarchy`, async ({ page, request }) => {
       test.setTimeout(120_000);
       const errors: string[] = [];
       page.on("pageerror", error => errors.push(error.message));
@@ -25,8 +25,10 @@ for (const width of [390, 768, 1440]) {
       await expect(main.locator("h1")).toHaveCSS("color", "rgb(25, 25, 24)");
       await expect(main.locator(".page-hero-banner, .category-intro")).toHaveCount(0);
       if (path === "/produkte") {
-        const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date());
-        const valid = offers.filter(offer => offer.validFrom <= today && offer.validTo >= today);
+        const response=await request.get("/api/content/offers",{headers:{"X-Jammers-Content-Version":"2"}});
+        expect(response.ok()).toBe(true);
+        const content=await response.json();
+        const valid=selectWeeklyOffers<import("../lib/weekly-publication-types").PublicOfferView>(content.offers,content.flyers,new Date(content.generatedAt));
         await expect(main.locator("[data-offer-id]")).toHaveCount(valid.length);
         for (const offer of valid) {
           const article = main.locator(`[data-offer-id="${offer.id}"]`);

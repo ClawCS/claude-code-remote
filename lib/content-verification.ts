@@ -25,7 +25,7 @@ export function verifyLegacyPublishedFlyer(expected: PublishedFlyer | undefined,
   return valid?[]:["Legacy-GET stimmt nicht mit dem geprüften lokalen Original und seiner einzigen belegten Vorschauseite überein."];
 }
 
-export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"], html:string, route:string):string[] {
+export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"], html:string, route:string, context?: {flyers: WeeklyOfferContent["flyers"]; now: Date}):string[] {
   const errors:string[]=[];
   const visible=visibleRenderedMarkup(html);
   const cards=Array.from(visible.matchAll(/<article\b([^>]*)>([\s\S]*?)<\/article\s*>/gi)).filter(match=>/\bdata-offer-id\s*=/.test(match[1]));
@@ -36,6 +36,19 @@ export function verifyPublishedOfferMarkup(expected: WeeklyOfferContent["offers"
     const matches=cards.filter(card=>id(card[1])===offer.id);
     if (matches.length!==1) {errors.push(`Geprüfte Angebotskachel fehlt auf ${route}: ${offer.id}`);continue;}
     const markup=matches[0][2];
+    if (context) {
+      const flyer=context.flyers.find(f=>f.id===offer.flyerId);
+      const preview=flyer && isWeeklyFlyerPreview(flyer,context.now);
+      const labels:string[]=[];
+      walk(renderedTree(markup),(node:{tag:string;attrs:Record<string,string>})=>{
+        if (node.attrs["data-offer-preview"]!==offer.id) return;
+        let text="";
+        walk(node,(child:{tag:string;value?:string})=>{if(child.tag==="#text")text+=child.value??"";});
+        labels.push(text);
+      });
+      if (preview && (labels.length!==1 || !labels[0].includes("Vorschau · gültig ab Montag"))) errors.push(`Sichtbarer Angebots-Vorschauhinweis fehlt auf ${route}: ${offer.id}`);
+      if (!preview && labels.length) errors.push(`Überholter Angebots-Vorschauhinweis auf ${route}: ${offer.id}`);
+    }
     errors.push(...verifyPublishedFlyerMarkup([{id:offer.id,language:offer.language as "de"|"nl",title:offer.name,validFrom:offer.validFrom,validTo:offer.validTo,pdfUrl:`${offer.sourceUrl}#page=${offer.sourcePage}`,viewerUrl:offer.sourceUrl,sourceUrl:offer.sourceUrl,coverUrl:offer.image,pageCount:1}],markup,route));
     for (const text of [offer.name,offer.conditions,offer.sourceWarning??"",...Object.values(offer.summary??{})]) if (text && !markup.replace(/<[^>]*>/g," ").includes(escaped(text))) errors.push(`Geprüfter Angebotstext fehlt auf ${route}: ${offer.id}`);
   }

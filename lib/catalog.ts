@@ -1,19 +1,20 @@
 import rawProducts from "@/data/products.json";
 import type { Product } from "@/lib/utils";
-import { berlinDateKey } from "@/lib/editorial-schedule";
+import { berlinDateKey, isWeeklyFlyerPreview } from "@/lib/editorial-schedule";
 
-type DatedSource = { id: string; language: string; validFrom: string; validTo: string; pdfUrl?: string; pdfSha256?: string };
+type DatedSource = { id: string; language: string; validFrom: string; validTo: string; pdfUrl?: string; pdfSha256?: string; purpose?: string };
 type DatedOffer = Omit<DatedSource, "id"> & { flyerId: string; categorySlug: string; sourceUrl?: string };
 
 /** A crop never outlives its validated original, even when an old tab is open. */
 export function selectWeeklyOffers<T extends DatedOffer>(offers: readonly T[], flyers: readonly DatedSource[], now = new Date(), category?: string): T[] {
   const today = berlinDateKey(now);
   return offers.filter(offer => (!category || offer.categorySlug === category)
-    && offer.validFrom <= today && today <= offer.validTo
+    && today <= offer.validTo
     && flyers.some(flyer => flyer.id === offer.flyerId && flyer.language === offer.language
       && flyer.validFrom === offer.validFrom && flyer.validTo === offer.validTo
       && Boolean(offer.pdfSha256) && flyer.pdfSha256 === offer.pdfSha256
-      && flyer.validFrom <= today && today <= flyer.validTo));
+      && today <= flyer.validTo
+      && (flyer.validFrom <= today || (flyer.purpose === "weekly" && isWeeklyFlyerPreview(flyer, now)))));
 }
 
 /** Historical flyers are a product pool, never a current price/stock source. */

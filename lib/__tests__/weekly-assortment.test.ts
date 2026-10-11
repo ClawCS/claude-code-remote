@@ -79,11 +79,12 @@ describe("current flyer-only assortment", () => {
     const rows=[{id:"a",flyerId:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"bier",pdfSha256:"a"},{id:"b",flyerId:"nl-41",language:"nl",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"wein",pdfSha256:"a"}];
     expect(select(rows,[{id:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfSha256:"a"}],new Date("2026-10-08T12:00:00Z"),"bier").map(x=>x.id)).toEqual(["a"]);
   });
-  it("hides expired and not-yet-started offer crops at Berlin boundaries", () => {
+  it("hides expired and not-yet-published offer crops at Berlin boundaries", () => {
     const rows=[{id:"a",flyerId:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",categorySlug:"bier",pdfSha256:"a"}];
-    const flyers=[{id:"de-41",language:"de",validFrom:"2026-10-05",validTo:"2026-10-10",pdfSha256:"a"}];
+    const flyers=[{id:"de-41",language:"de",purpose:"weekly",validFrom:"2026-10-05",validTo:"2026-10-10",pdfSha256:"a"}];
     expect(select(rows,flyers,new Date("2026-10-10T21:59:59Z")).map(x=>x.id)).toEqual(["a"]);
-    expect(select(rows,flyers,new Date("2026-10-04T21:59:59Z"))).toEqual([]);
+    expect(select(rows,flyers,new Date("2026-10-04T13:59:59Z"))).toEqual([]);
+    expect(select(rows,flyers,new Date("2026-10-04T14:00:00Z")).map(x=>x.id)).toEqual(["a"]);
     expect(select(rows,flyers,new Date("2026-10-10T22:00:00Z"))).toEqual([]);
     expect(select(rows,[],new Date("2026-10-08T12:00:00Z"))).toEqual([]);
   });

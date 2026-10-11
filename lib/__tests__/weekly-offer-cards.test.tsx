@@ -21,7 +21,9 @@ describe("complete original offer cards",()=>{
     expect(html.match(/<dl\b/g)).toHaveLength(3);expect(html.match(/data-offer-id=/g)).toHaveLength(4);
     for(const text of ["4,99 €","12 × 0,75 l Glas","zzgl. 3,30 € Pfand","0,55 €/l","0,99 €","250 ml Dose","zzgl. 0,25 € Pfand","3,96 €/l","1,19 €","1,25 l PET-fles","excl. 0,25 € statiegeld","0,95 €/l","taurin- und koffeinhaltig","bevat gedeeltelijk cafeïnehoudend","0,25 ml Blik","bitte die Gebindegröße im Markt klären"])expect(html).toContain(text);
     expect(html).toContain("#page=2");
-    for(const generatedAt of ["2026-10-11T21:59:59Z","2026-10-17T22:00:00Z"])expect(renderToStaticMarkup(<WeeklyOfferGrid content={{...fixture,generatedAt}}/>)).not.toContain('<dl');
+    const preview=renderToStaticMarkup(<WeeklyOfferGrid content={{...fixture,generatedAt:"2026-10-11T14:00:00Z"}}/>);
+    expect(preview.match(/<dl\b/g)).toHaveLength(3);expect(preview.match(/data-offer-preview=/g)).toHaveLength(4);
+    for(const generatedAt of ["2026-10-11T13:59:59Z","2026-10-17T22:00:00Z"])expect(renderToStaticMarkup(<WeeklyOfferGrid content={{...fixture,generatedAt}}/>)).not.toContain('<dl');
   });
   const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};
   it("renders reviewed printed facts in a visible description list beside all conditions and warnings",()=>{
@@ -34,7 +36,7 @@ describe("complete original offer cards",()=>{
     expect(html).toContain("All printed terms");expect(html).toContain("Printed inconsistency");
     expect(html).not.toMatch(/itemProp="price"|schema.org\/Offer/);
   });
-  it.each(["2026-10-04T21:59:59Z","2026-10-10T22:00:00Z"])("never renders summary text outside actual Berlin validity: %s",generatedAt=>{
+  it.each(["2026-10-04T13:59:59Z","2026-10-10T22:00:00Z"])("never renders summary text outside the Berlin publication window: %s",generatedAt=>{
     const html=renderToStaticMarkup(<WeeklyOfferGrid content={{...content,generatedAt,offers:[{...content.offers[0],summary}]}}/>);
     expect(html).not.toContain("4,99 €");expect(html).not.toContain('<dl');
   });

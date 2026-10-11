@@ -21,6 +21,20 @@ const roots:string[]=[];
 beforeEach(()=>{vi.useFakeTimers({toFake:["Date"]});vi.setSystemTime(new Date("2026-10-08T12:00:00Z"));boundary.load.mockResolvedValue({editions:[],issues:[]});boundary.supplemental.mockResolvedValue({editions:[],issues:[]});});
 afterEach(async()=>{vi.useRealTimers();vi.unstubAllEnvs();vi.restoreAllMocks();for(const root of roots.splice(0)) await rm(root,{recursive:true,force:true});});
 describe("public weekly routes",()=>{
+  it("exposes all Sunday preview offers in both API versions without changing printed dates",async()=>{
+    vi.setSystemTime(new Date("2026-10-11T14:00:00Z"));
+    const f=await weeklyPublicationFixture("2026-10-12","2026-10-17");roots.push(f.root);
+    const actual=await vi.importActual<typeof import("@/lib/weekly-publication")>("@/lib/weekly-publication");
+    boundary.load.mockResolvedValue(await actual.loadWeeklyPublications(f.root));
+    for(const headers of [new Headers(),new Headers({"X-Jammers-Content-Version":"2"})]) {
+      const response=await offersGET(new Request("https://example.test/api/content/offers",{headers}));
+      expect(response.headers.get("Cache-Control")).toBe("no-store");
+      expect(response.headers.get("Vary")).toBe("X-Jammers-Content-Version");
+      const body=await response.json();
+      expect(body.offers).toHaveLength(3);
+      expect(body.offers.every((o:{validFrom:string;validTo:string})=>o.validFrom==="2026-10-12"&&o.validTo==="2026-10-17")).toBe(true);
+    }
+  });
   it("exposes complete active original ID parity across all three APIs and four flyer compositions",async()=>{
     const f=await supplementalPublicationFixture();roots.push(f.root);
     const weekly=await vi.importActual<typeof import("@/lib/weekly-publication")>("@/lib/weekly-publication");

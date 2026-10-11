@@ -7,6 +7,7 @@ import {
 } from "@playwright/test";
 import { test } from "./test-fixtures";
 import type { HomepageContent } from "../lib/homepage-content";
+import { isWeeklyFlyerPreview } from "../lib/editorial-schedule";
 
 const PRODUCTION_ORIGIN = "https://trinkgut-jammers.de";
 const HOME_TITLE = "Goch schenkt ein. | Trinkgut Jammers";
@@ -105,7 +106,7 @@ async function expectCurrentPublication(page: Page) {
   for (const [flyer, selector] of [[content.flyer, "[data-current-flyer]"], [content.nlFlyer, "[data-current-nl-flyer]"]] as const) {
     const card = page.locator(selector);
     if (!flyer) { await expect(card).toHaveCount(0); continue; }
-    expect(flyer.validFrom <= today && today <= flyer.validTo).toBe(true);
+    expect((flyer.validFrom <= today || isWeeklyFlyerPreview(flyer,new Date(content.generatedAt))) && today <= flyer.validTo).toBe(true);
     await expect(card.getByRole("heading", { level: 3 })).toHaveText(flyer.title);
     await expect(card.locator(`a[href="${flyer.pdfUrl}"]`)).toHaveCount(1);
     await expect(card.locator("img")).toHaveAttribute("src", new RegExp(encodeURIComponent(flyer.coverUrl).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
