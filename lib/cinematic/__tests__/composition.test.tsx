@@ -245,7 +245,8 @@ describe("cinematic homepage composition", () => {
     expect(hero).toContain('poster="/images/home/jammers-film-poster.webp"');
     expect(hero).toContain('preload="none"');
     expect(hero).not.toMatch(/(?:src|href)="[^"]*\.mp4/);
-    expect(hero).toContain("Werbefilm · beispielhafte Partyszene");
+    expect(hero).not.toContain("Werbefilm · beispielhafte Partyszene");
+    expect(hero).toContain("Illustrative Werbung, keine dokumentarische Markt- oder pixelidentische Produktaufnahme.");
     expect(hero).not.toContain("KI-Werbefilm");
     expect(hero).toContain('data-film-copy');
     expect(hero).toContain('href="#aktuell"');
@@ -257,13 +258,13 @@ describe("cinematic homepage composition", () => {
     expectSafeExternalLink(quickLinks, "https://www.google.com/maps/dir/?api=1&destination=Trinkgut%20Jammers%2C%20Jurgensstra%C3%9Fe%2020%2C%2047574%20Goch%2C%20Deutschland");
   });
 
-  test("pairs the party service with an honestly described market photo and preserves personal service", () => {
+  test("pairs the party service with the approved garden scene and preserves personal service", () => {
     const service = extractElement(render(populatedContent), "section", 'id="service"');
-    expect(service).toContain('/images/editorial/user/schneider-weisse.webp');
-    expect(service).toContain('alt="Schneider-Weisse-Aufbau mit blauen Getränkekisten bei Jammers"');
+    expect(service).toContain('/images/party/garden-party-jammers-v1.webp');
+    expect(service).toContain('alt="Gartenparty mit fünf Erwachsenen, Getränken und einer einleitigen Zapfanlage mit Jammers-Logo"');
     expect(service).toContain('href="/vermietung"');
     expect(service).toContain('href="/partyplaner"');
-    expect(service).toContain("Wir beraten dich persönlich");
+    expect(service).toContain("Verfügbarkeit und Konditionen klären wir persönlich.");
   });
 
   test("passes through the exact empty state and exposes no phantom action", () => {
@@ -337,7 +338,7 @@ describe("cinematic homepage composition", () => {
   test("renders only confirmed copy, evidence labels, and contact destinations", () => {
     const html = render(populatedContent);
 
-    expect(html).toContain("Wir beraten dich persönlich");
+    expect(html).toContain("Verfügbarkeit und Konditionen klären wir persönlich.");
     expect(html).toContain('href="/vermietung"');
     expect(html).toContain("Eine Anfrage ist noch keine bestätigte Reservierung.");
     expect(html).not.toMatch(/Bestand (?:laut|nach) Liste|Bestandsstand/);

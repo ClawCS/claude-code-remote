@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import Link from "next/link";
 import { MARKET_DISCOVERIES } from "@/data/market-photos";
@@ -11,7 +12,7 @@ export default function MarketDiscoveries() {
       </figure>
       <div className={styles.discoveryCopy}>
       <h3>{item.title}</h3><p>{item.text}</p>
-      <Link href={item.href} prefetch={false}>Mehr entdecken <span aria-hidden="true">↗</span></Link>
+      <Link href={item.href} prefetch={false}>Mehr entdecken <ArrowUpRight /></Link>
       </div>
     </article>)}
   </div>;

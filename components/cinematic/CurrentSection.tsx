@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import Link from "next/link";
 import SocialLink from "@/components/SocialLink";
@@ -46,7 +47,7 @@ export default function CurrentSection({
       <div className={styles.heading}>
         <div><p className={styles.eyebrow}>Gute Getränke. Gute Angebote.</p>
         <h2 id="aktuell-title">Deine Woche.<br />Ein guter Einkauf.</h2></div>
-        <Link href="/angebote" prefetch={false} className={styles.allOffers}>Alle aktuellen Angebote ↗</Link>
+        <Link href="/angebote" prefetch={false} className={styles.allOffers}>Alle aktuellen Angebote <ArrowUpRight /></Link>
       </div>
       <div className={styles.stage}>
         <div className={styles.flyers}>

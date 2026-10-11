@@ -37,7 +37,15 @@ test("equal-width complete DE/NL flyers and mobile film geometry survive respons
     expect(film!.width / film!.height).toBeCloseTo(16/9,2);
     const control = await page.getByRole("button", { name:"Film abspielen", exact:true }).boundingBox();
     expect(control).not.toBeNull();
-    expect(control!.y).toBeGreaterThanOrEqual(film!.y + film!.height);
+    expect(control!.x).toBeGreaterThanOrEqual(film!.x + film!.width / 2);
+    expect(control!.y).toBeGreaterThanOrEqual(film!.y + film!.height / 2);
+    expect(control!.x + control!.width).toBeLessThanOrEqual(film!.x + film!.width);
+    expect(control!.y + control!.height).toBeLessThanOrEqual(film!.y + film!.height);
+    expect(control!.width).toBeGreaterThanOrEqual(44);
+    expect(control!.height).toBeGreaterThanOrEqual(44);
+    const hero = await page.locator('[data-hero="cinematic"]').boundingBox();
+    expect(hero!.y + hero!.height).toBeCloseTo(film!.y + film!.height, 1);
+    expect(await page.locator("body").innerText()).not.toContain("Werbefilm · beispielhafte Partyszene");
     if (width < 768) expect(heading!.y + heading!.height).toBeLessThan(film!.y);
     const de = await page.locator("[data-current-flyer]").boundingBox();
     const nl = await page.locator("[data-current-nl-flyer]").boundingBox();

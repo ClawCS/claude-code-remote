@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
@@ -21,8 +22,8 @@ export default function PeopleSection(): React.JSX.Element {
         <h2 id="menschen-title">Menschen hinter Jammers</h2>
         <p>Dein Lieblingsgetränk finden, eine Feier planen oder einfach kurz schnacken: Wir sind für dich da.</p>
         <div className={styles.actionLinks}>
-          <Link href="/galerie" prefetch={false}>Unser Team kennenlernen ↗</Link>
-          <Link href="/bewerbung" prefetch={false}>Offene Stellen &amp; Bewerbung ↗</Link>
+          <Link href="/galerie" prefetch={false}>Unser Team kennenlernen <ArrowUpRight /></Link>
+          <Link href="/bewerbung" prefetch={false}>Offene Stellen &amp; Bewerbung <ArrowUpRight /></Link>
         </div>
       </div>
       </div>

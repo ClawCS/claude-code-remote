@@ -50,7 +50,7 @@ async function mount(options: { reduced?: boolean; saveData?: boolean; width?: n
   await page.addStyleTag({ content: css });
   if (options.tallCopy) await page.addStyleTag({ content: "[data-film-copy] { min-height:600px; } body { padding-bottom:1000px; }" });
   await page.addScriptTag({ content: bundle });
-  await page.locator("button").waitFor({ state: "visible" });
+  await page.locator("button").waitFor({ state: "attached" });
   await page.waitForFunction(() => !document.querySelector("button")?.disabled);
   return page;
 }
@@ -58,6 +58,37 @@ async function mount(options: { reduced?: boolean; saveData?: boolean; width?: n
 const label = async (page: Page) => page.locator("button").innerText();
 
 describe("HeroFilm loading and playback", () => {
+  it.each([390, 768, 1440])("keeps its keyboard-operable control inside the film without a caption band at %ipx", async (width) => {
+    const page = await mount({ width, reduced: true });
+    const media = page.locator("video");
+    const control = page.getByRole("button", { name: "Film abspielen", exact: true });
+    const filmBox = (await media.boundingBox())!;
+    const controlBox = (await control.boundingBox())!;
+    const wrapperBox = (await page.locator("[data-film-playing]").boundingBox())!;
+    expect(controlBox.x).toBeGreaterThanOrEqual(filmBox.x + filmBox.width / 2);
+    expect(controlBox.y).toBeGreaterThanOrEqual(filmBox.y + filmBox.height / 2);
+    expect(controlBox.x + controlBox.width).toBeLessThanOrEqual(filmBox.x + filmBox.width);
+    expect(controlBox.y + controlBox.height).toBeLessThanOrEqual(filmBox.y + filmBox.height);
+    expect(controlBox.width).toBeGreaterThanOrEqual(44);
+    expect(controlBox.height).toBeGreaterThanOrEqual(44);
+    expect(wrapperBox.y + wrapperBox.height).toBeCloseTo(filmBox.y + filmBox.height, 1);
+    expect(await page.locator("body").innerText()).not.toContain("Werbefilm · beispielhafte Partyszene");
+    const descriptionId = await media.getAttribute("aria-describedby");
+    const description = page.locator(`[id="${descriptionId}"]`);
+    expect(await description.textContent()).toContain("keine dokumentarische Markt-");
+    expect(await description.evaluate(node => getComputedStyle(node).clipPath)).toBe("inset(50%)");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    expect(await control.evaluate(node => node === document.activeElement)).toBe(true);
+    expect(await control.evaluate(node => getComputedStyle(node).outlineStyle)).toBe("solid");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    expect(await media.getAttribute("src")).toBe(`/videos/jammers-hero-v4-${width < 768 ? "mobile" : "desktop"}.mp4`);
+    await page.keyboard.press("Space");
+    expect(await label(page)).toBe("Film abspielen");
+    await page.close();
+  });
+
   it("does not load offscreen mobile media just because tall copy is visible", async () => {
     const page = await mount({ width: 390, height: 500, tallCopy: true });
     expect((await page.locator("video").boundingBox())!.y).toBeGreaterThanOrEqual(500);
@@ -103,7 +134,8 @@ describe("HeroFilm loading and playback", () => {
     expect(html).not.toContain(".mp4");
     expect(html).toContain('href="/angebote"');
     expect(html).toContain('disabled=""');
-    expect(html).toContain("Werbefilm · beispielhafte Partyszene");
+    expect(html).not.toContain("Werbefilm · beispielhafte Partyszene");
+    expect(html).toContain("Illustrative Werbung, keine dokumentarische Markt-");
     expect(html).not.toContain("KI-Werbefilm");
   });
 

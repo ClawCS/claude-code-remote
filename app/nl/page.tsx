@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
@@ -28,7 +29,7 @@ export default async function NederlandsPage() {
     <div className={styles.page} style={{ ...cinematicHomeTokenStyle, "--cinematic-color-red": "#a54108" } as CSSProperties} lang="nl">
       <a href="#main-content" className={styles.skipLink}>Naar de inhoud</a>
       <header className={styles.header}>
-        <div className={styles.infoBar}><span>Goch · Ma–za 08–20 uur</span><span className={styles.infoAddress}>{MARKET.street}</span><Link href="/" hrefLang="de" lang="de" prefetch={false}>Deutsch ↗</Link></div>
+        <div className={styles.infoBar}><span>Goch · Ma–za 08–20 uur</span><span className={styles.infoAddress}>{MARKET.street}</span><Link href="/" hrefLang="de" lang="de" prefetch={false}>Deutsch <ArrowUpRight /></Link></div>
         <div className={styles.headerInner}>
           <Link href="/" prefetch={false} aria-label="Trinkgut Jammers – Duitse startpagina" className={styles.logo}>
             <Image src="/images/home/brand-logo.webp" alt="Trinkgut Jammers" width={200} height={78} priority />
@@ -85,7 +86,7 @@ export default async function NederlandsPage() {
           <div className={styles.serviceGrid}>{services.map((service) => (
             <article key={service.number}>
               <h3>{service.title}</h3><p>{service.text}</p>
-              <Link href={service.href} prefetch={false} className={styles.textLink}>{service.label} <span aria-hidden="true">↗</span></Link>
+              <Link href={service.href} prefetch={false} className={styles.textLink}>{service.label} <ArrowUpRight /></Link>
               {"german" in service && <small>Deze pagina is in het Duits.</small>}
             </article>
           ))}</div>
@@ -94,21 +95,21 @@ export default async function NederlandsPage() {
         </section>
 
         <section className={styles.brands} aria-labelledby="nl-brands-title">
-          <div><p className={styles.eyebrow}>Van Jammers. Uit Goch.</p><h2 id="nl-brands-title">Zes eigen karakters.</h2><p>Maak kennis met onze eigen merken. Vraag ons team naar jouw favoriet.</p><ul>{eigenmarken.map(brand => <li key={brand.slug}><Link href="/eigenmarke" prefetch={false}>{brand.name} <span aria-hidden="true">↗</span></Link></li>)}</ul><small>De pagina over onze eigen merken is in het Duits.</small></div>
+          <div><p className={styles.eyebrow}>Van Jammers. Uit Goch.</p><h2 id="nl-brands-title">Zes eigen karakters.</h2><p>Maak kennis met onze eigen merken. Vraag ons team naar jouw favoriet.</p><ul>{eigenmarken.map(brand => <li key={brand.slug}><Link href="/eigenmarke" prefetch={false}>{brand.name} <ArrowUpRight /></Link></li>)}</ul><small>De pagina over onze eigen merken is in het Duits.</small></div>
           <Image src={EIGENMARKEN_GROUP_SCENE.src} width={EIGENMARKEN_GROUP_SCENE.width} height={EIGENMARKEN_GROUP_SCENE.height} alt={EIGENMARKEN_GROUP_SCENE.altNL} sizes="(max-width: 767px) 100vw, 50vw" />
         </section>
 
         <section id="contact" className={styles.contact} aria-labelledby="contact-title">
           <div><p className={styles.eyebrow}>Vragen? We zijn er voor je.</p><h2 id="contact-title">Tot ziens in Goch.</h2><p>Wil je iets weten over een product of de beschikbaarheid? Bel ons of stuur een WhatsApp-bericht voordat je langskomt.</p></div>
           <div className={styles.contactLinks}>
-            <a href={MARKET.phoneHref}>+49 2823 418707 <span aria-hidden="true">↗</span></a>
+            <a href={MARKET.phoneHref}>+49 2823 418707 <ArrowUpRight /></a>
             <SocialLink platform="whatsapp" href={SITE_LINKS.whatsappNl} label="Stuur een WhatsApp-bericht" className={styles.socialContact} />
-            <a href={"mailto:" + MARKET.email}>{MARKET.email} <span aria-hidden="true">↗</span></a>
+            <a href={"mailto:" + MARKET.email}>{MARKET.email} <ArrowUpRight /></a>
           </div>
         </section>
 
         <section className={styles.people} aria-label="Ons team">
-          <div className={styles.peopleHeading}><h2>De mensen achter Jammers.</h2><Link href="/galerie" prefetch={false} className={styles.textLink}>Ons team leren kennen ↗ <small>(Duits)</small></Link></div>
+          <div className={styles.peopleHeading}><h2>De mensen achter Jammers.</h2><Link href="/galerie" prefetch={false} className={styles.textLink}>Ons team leren kennen <ArrowUpRight /> <small>(Duits)</small></Link></div>
           <details>
             <summary>Maak kennis met ons team <span aria-hidden="true">+</span></summary>
             <div className={styles.peopleGrid}>
@@ -123,7 +124,7 @@ export default async function NederlandsPage() {
         </section>
         <aside className={styles.grailbid} aria-label="Trading cards bij GrailBid">
           <p><strong>Ook iets voor verzamelaars.</strong> Ontdek GrailBid, onze TCG-wereld voor trading cards. De externe webshop is nog in ontwikkeling.</p>
-          <a href={SITE_LINKS.grailbid} target="_blank" rel="noopener noreferrer" className={styles.textLink}>GrailBid.com <span aria-hidden="true">↗</span></a>
+          <a href={SITE_LINKS.grailbid} target="_blank" rel="noopener noreferrer" className={styles.textLink}>GrailBid.com <ArrowUpRight /></a>
         </aside>
       </main>
 

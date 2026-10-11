@@ -5,6 +5,7 @@
 .body[data-collection="market"] > .section a:not([data-brand-link]):not(:has(img)), .body[data-collection="gifts"] > .story a:not([data-brand-link]):not(:has(img)), .body[data-collection="regional"] > .section a:not([data-brand-link]):not(:has(img)) { color: var(--cinematic-color-burgundy); }
 .body[data-collection="market"] > .section, .body[data-collection="gifts"] > .section, .body[data-collection="gifts"] > .story, .body[data-collection="regional"] > .section, .body[data-collection="regional"] > .brandStories { margin-block: 1.5rem; padding-inline: clamp(1.25rem, 3vw, 2.5rem); background: var(--cinematic-color-assortment-cream); }
 .body[data-collection="regional"] > .brandStories { padding-block: 1.5rem; }
+.body[data-collection="market"] > .section, .body[data-collection="gifts"] > .section, .body[data-collection="gifts"] > .story, .body[data-collection="regional"] > .section { border-top: 3px solid var(--cinematic-color-burgundy); background-image: linear-gradient(130deg, transparent 50%, color-mix(in srgb, var(--cinematic-color-category-amber) 22%, transparent)); }
 .body[data-collection="catalogue"] .toolbar { margin-block: 1.5rem; padding-inline: clamp(1.25rem, 3vw, 2.5rem); background: var(--cinematic-color-assortment-cream); }
 .section p, .story p { max-width: 65ch; color: var(--cinematic-color-muted); line-height: 1.75; }
 .links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.5rem; }

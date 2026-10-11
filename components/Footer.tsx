@@ -1,5 +1,6 @@
 "use client";
 
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
@@ -53,7 +54,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-[#F59E0B] transition-colors"
                 >
-                  {MARKET.street}, {MARKET.postalCode} {MARKET.city} — Route planen ↗
+                  {MARKET.street}, {MARKET.postalCode} {MARKET.city} — Route planen <ArrowUpRight />
                 </a>
               </li>
               <li>Tel: <a href="tel:02823418707" className="hover:text-[#F59E0B] transition-colors">02823-418707</a></li>

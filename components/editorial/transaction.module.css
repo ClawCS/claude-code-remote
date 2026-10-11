@@ -9,7 +9,7 @@
 .body button:disabled, .drawerPanel button:disabled { opacity: .55; cursor: not-allowed; }
 .section { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
 .section > h2 { margin-bottom: 1.25rem; }
-.dates { padding: clamp(1.25rem, 3vw, 2rem); background: var(--cinematic-color-assortment-cream); margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.dates { padding: clamp(1.25rem, 3vw, 2rem); border-top: 3px solid var(--cinematic-color-burgundy); background: linear-gradient(120deg, var(--cinematic-color-assortment-cream), color-mix(in srgb, var(--cinematic-color-category-amber) 28%, var(--cinematic-color-assortment-cream))); margin-bottom: clamp(2.5rem, 5vw, 4rem); }
 .dates h2 { margin-bottom: 1rem; }
 .dateGrid { display: grid; gap: 1.25rem; margin-top: 1.5rem; max-width: 48rem; }
 .field { display: block; width: 100%; min-width: 0; min-height: 48px; margin-top: .5rem; padding: .75rem; border: 1px solid var(--cinematic-color-muted); border-radius: 2px; background: var(--cinematic-color-white); color: var(--cinematic-color-ink); font: inherit; }

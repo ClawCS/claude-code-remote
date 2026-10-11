@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import HeroFilm from "./HeroFilm";
 import styles from "./hero.module.css";
 
@@ -23,13 +24,13 @@ export default function HeroSection(): React.JSX.Element {
               className={styles.primary}
               href="#aktuell"
             >
-              Aktuelle Angebote <span aria-hidden="true">↗</span>
+              Aktuelle Angebote <ArrowUpRight />
             </a>
             <a
               className={styles.secondary}
               href="#service"
             >
-              Party &amp; Miete <span aria-hidden="true">↗</span>
+              Party &amp; Miete <ArrowUpRight />
             </a>
           </div>
       </HeroFilm>

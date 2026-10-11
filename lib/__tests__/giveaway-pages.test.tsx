@@ -28,7 +28,14 @@ describe("giveaway public pages", () => {
     expect(html).toContain("Teilnahme ausschließlich im Originalbeitrag");
     // The shared editorial introduction is a header, not duplicate site chrome.
     expect(html.match(/<header\b/g)).toHaveLength(1);
-    expect(html).not.toMatch(/<form|<iframe|<svg|role="banner"|<footer|shimmer/i);
+    expect(html).not.toMatch(/<form|<iframe|role="banner"|<footer|shimmer/i);
+    const icons = [...html.matchAll(/<svg\b[^>]*>/g)].map(([tag]) => tag);
+    expect(icons.length).toBeGreaterThan(0);
+    for (const icon of icons) {
+      expect(icon).toContain('data-arrow-icon="up-right"');
+      expect(icon).toContain('aria-hidden="true"');
+      expect(icon).toContain('focusable="false"');
+    }
     for (const id of ["2026-01", "2026-02", "2026-04", "2026-05", "2026-06", "2026-07"]) {
       expect(html).toContain(`data-giveaway-cover="${id}"`);
       expect(decodeURIComponent(html)).toContain(`/images/editorial/canva/giveaway-${id}.webp`);

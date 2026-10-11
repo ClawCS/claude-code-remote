@@ -15,7 +15,7 @@ it("makes each real category photograph part of its correctly named destination"
     const card = html.match(new RegExp(`<a[^>]*href="/kategorie/${slug}"[^>]*>[\\s\\S]*?</a>`))?.[0];
     expect(card, title).toBeDefined();
     expect(card).toContain("<img");
-    expect(decodeURIComponent(card!)).toContain(image);
+    expect(decodeURIComponent(card!.match(/<img[^>]*src="([^"]+)"/)![1])).toContain(image);
     expect(card).toContain(title);
   }
   expect(html).toContain("Aktuelle Preise und Verfügbarkeit bestätigen wir persönlich.");

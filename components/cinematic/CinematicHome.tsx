@@ -41,7 +41,7 @@ export default function CinematicHome({
       <CinematicHeader nowIso={nowIso} hasActions={hasActions} />
       <main id="main-content" tabIndex={-1}>
         <HeroSection />
-        <HomeQuickLinks />
+        <HomeQuickLinks content={content} />
         <CurrentSection content={content} />
         <ServiceSection />
         <AssortmentSection />

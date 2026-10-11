@@ -3,17 +3,27 @@
 .assortment { background:var(--cinematic-color-assortment-cream); }
 .assortment h2, .grailbid h2 { font-family:var(--cinematic-typography-family-sans); font-size:var(--cinematic-typography-size-editorial-heading); font-weight:var(--cinematic-typography-weight-extra-bold); line-height:var(--cinematic-typography-line-height-heading); letter-spacing:var(--cinematic-typography-tracking-tight); margin:0; }
 .sectionHeading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap:var(--cinematic-spacing-lg); margin-bottom:var(--cinematic-spacing-two-xl); }
+.assortment .sectionHeading { margin-bottom:var(--cinematic-spacing-lg); }
 .textLink { display:inline-flex; min-height:var(--cinematic-spacing-target); align-items:center; color:var(--cinematic-color-ink); text-underline-offset:.3em; font-size:var(--cinematic-typography-size-small); }
 .categories { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--cinematic-spacing-xl) var(--cinematic-spacing-md); }
-.categoryCard { display:block; min-width:0; min-height:var(--cinematic-spacing-target); color:var(--cinematic-color-ink); text-decoration:none; }
-.categoryPhoto { display:flex; aspect-ratio:3 / 4; overflow:hidden; align-items:center; justify-content:center; background:var(--cinematic-color-surface); }
-.categoryPhoto img { display:block; width:100%; height:100%; object-fit:contain; }
-.categoryMeta { display:grid; grid-template-columns:1fr auto; align-items:start; gap:var(--cinematic-spacing-sm); padding-top:var(--cinematic-spacing-md); }
-.categoryNumber { grid-column:1 / -1; color:var(--cinematic-color-burgundy); font-size:var(--cinematic-typography-size-label); font-weight:var(--cinematic-typography-weight-bold); }
+.categoryCard { display:flex; flex-direction:column; min-width:0; min-height:var(--cinematic-spacing-target); color:var(--cinematic-color-ink); text-decoration:none; border:0; }
+.categoryCard[data-category="bier"] { --cinematic-color-category-footer:var(--cinematic-color-category-amber); }
+.categoryCard[data-category="alkoholfrei"] { --cinematic-color-category-footer:var(--cinematic-color-category-olive); }
+.categoryCard[data-category="wein"] { --cinematic-color-category-footer:var(--cinematic-color-category-bordeaux); }
+.categoryCard[data-category="spirituosen"] { --cinematic-color-category-footer:var(--cinematic-color-category-spice); }
+.categoryPhoto { display:block; aspect-ratio:3 / 4; overflow:hidden; background:var(--cinematic-color-surface); }
+.categoryPhoto img { display:block; width:100%; height:100%; object-fit:cover; object-position:var(--category-photo-position); }
+.categoryMeta { display:grid; flex:1; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:var(--cinematic-spacing-sm); min-height:5.5rem; padding:var(--cinematic-spacing-md); background:var(--cinematic-color-category-footer); }
 .categoryTitle { min-width:0; font-size:var(--cinematic-typography-size-category-name); font-weight:var(--cinematic-typography-weight-extra-bold); line-height:var(--cinematic-typography-line-height-heading); letter-spacing:var(--cinematic-typography-tracking-tight); }
-.categoryArrow { font-size:var(--cinematic-typography-size-lead); }
+.categoryArrow { display:inline-flex; font-size:var(--cinematic-typography-size-lead); }
+.categoryArrow svg { display:block; }
 .categoryCard:hover .categoryTitle { text-decoration:underline; text-underline-offset:.15em; }
 .categoryCard:focus-visible { outline:3px solid var(--cinematic-color-burgundy); outline-offset:5px; }
+@media(prefers-reduced-motion:no-preference) {
+  .categoryPhoto img, .categoryArrow svg { transition:transform var(--cinematic-motion-duration-medium) var(--cinematic-motion-easing-standard); }
+  .categoryCard:hover .categoryPhoto img, .categoryCard:focus-visible .categoryPhoto img { transform:scale(1.035); }
+  .categoryCard:hover .categoryArrow svg, .categoryCard:focus-visible .categoryArrow svg { transform:translate(.15em,-.15em); }
+}
 .rangeNote { font-size:var(--cinematic-typography-size-small); color:var(--cinematic-color-muted); margin:var(--cinematic-spacing-md) 0 0; }
 .discoveries { display:grid; gap:var(--cinematic-spacing-section); margin-top:var(--cinematic-spacing-section); }
 .discoveries article { display:grid; gap:var(--cinematic-spacing-xl); align-items:center; min-width:0; }

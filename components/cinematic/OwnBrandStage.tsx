@@ -1,5 +1,6 @@
 "use client";
 
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import { useState, type CSSProperties } from "react";
 import { eigenmarken } from "@/data/eigenmarken";
@@ -21,7 +22,7 @@ export default function OwnBrandStage() {
             <span className={styles.bottle}><Image {...bottle} alt={`${brand.name} – vollständige Originalflasche`} sizes="(max-width: 767px) 15vw, 10vw" className={styles.image} /></span>
             <span className={styles.name}>{brand.name}</span>
             <span className={styles.flavorNote}>{brand.flavor}</span>
-            <span className={styles.discover}>Entdecken <span aria-hidden="true">↗</span></span>
+            <span className={styles.discover}>Entdecken <ArrowUpRight /></span>
           </a>
         </li>;
       })}

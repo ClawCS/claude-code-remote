@@ -1,0 +1,17 @@
+{
+  "asset": "garden-party-jammers-v1",
+  "createdAt": "2026-10-11",
+  "sourceType": "generated-advertising-scene",
+  "generator": "built-in image_gen",
+  "approval": "User requested a suitable celebrating-people photo, requested the official Jammers logo on the dispenser, approved the resulting image with 'perfekt so', then approved implementation of steps 1-5.",
+  "promptSummary": "Photorealistic warm garden celebration with five adults, natural expressions, drinks, a wooden table, string lights and one compact single-tap stainless dispenser; landscape composition. Localized edit adds the supplied official Trinkgut Jammers decal to the visible dispenser face, preserving the rest of the scene.",
+  "logoReference": "public/images/logo-trinkgut-jammers.png",
+  "original": "assets/source/party-scenes/garden-party-jammers-v1.png",
+  "originalSha256": "59b6e4b3d387cc6755d2486d0f33bd0fcd716255af19a6cd15090ceec7ba74aa",
+  "derivative": "public/images/party/garden-party-jammers-v1.webp",
+  "derivativeSha256": "4f9f29cf0facc78d8f8f8199d6111a7707d02b5a2baad4c5abac39f8e83229fa",
+  "width": 1672,
+  "height": 941,
+  "processing": "WebP quality 86; no crop, compositing, facial retouching or content changes after approved generation.",
+  "use": "Partyservice feature and compact party-planning entry only. Illustrative advertising, not current staff, a documented customer event or an exact rental-model promise."
+}

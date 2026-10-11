@@ -1,4 +1,5 @@
 "use client";
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import Link from "next/link";
 import { selectWeeklyOffers } from "@/lib/catalog";
@@ -26,7 +27,7 @@ export default function WeeklyOfferGrid({ content, category, search = "", langua
           <p className={styles.fineprint}>Originalausschnitt. Preise, Pfand, Varianten und Aktionsbedingungen bitte vollständig beachten. Keine Live-Bestandsanzeige.</p>
           {offer.conditions && <details className={styles.conditions}><summary>Bedingungen zum Angebot</summary><p>{offer.conditions}</p></details>}
           {offer.sourceWarning && <p className={styles.warning}><strong>Hinweis zum Original:</strong> {offer.sourceWarning}</p>}
-          <a href={originalUrl} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>Originalhandzettel öffnen ↗</a>
+          <a href={originalUrl} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>Originalhandzettel öffnen <ArrowUpRight /></a>
         </div>
       </article>;
     })}</div>

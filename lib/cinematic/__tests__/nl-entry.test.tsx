@@ -20,7 +20,8 @@ describe("public header Dutch entry", () => {
     expect(attributes).toContain('aria-label="Nederlands"');
     expect(content).toContain("Nederlands");
     expect(content).toMatch(/<span\b[^>]*aria-hidden="true"[^>]*>🇳🇱<\/span>/);
-    expect(content).toMatch(/<span\b[^>]*aria-hidden="true"[^>]*>↗<\/span>/);
+    expect(content).toMatch(/<svg\b[^>]*aria-hidden="true"[^>]*focusable="false"/);
+    expect(content).not.toContain("↗");
     expect(html.indexOf(link)).toBeLessThan(html.indexOf('aria-label="Hauptnavigation"'));
     expect(html.indexOf(link)).toBeLessThan(html.indexOf("<details"));
     expect(attributes).not.toMatch(/(?:^|\s)hidden(?:[=\s]|$)/);

@@ -42,6 +42,10 @@ export const CINEMATIC_TOKENS = deepFreeze({
     nlText: "#784700",
     assortmentCream: "#F5ECDD",
     stageName: "#F6EBDD",
+    categoryAmber: "#E7D0A2",
+    categoryOlive: "#DCE1C2",
+    categoryBordeaux: "#E1C8CE",
+    categorySpice: "#DBC1AC",
   },
   typography: {
     family: {

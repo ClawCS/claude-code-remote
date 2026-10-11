@@ -5,7 +5,7 @@
 .panel { padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--cinematic-color-line); background: white; }
 .panel h2 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 700; letter-spacing: -.03em; margin-bottom: 1rem; }
 .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
-.choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border-block: 1px solid var(--cinematic-color-line); background: var(--cinematic-color-assortment-cream); }
+.choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border-top: 3px solid var(--cinematic-color-burgundy); border-bottom: 1px solid var(--cinematic-color-line); background: linear-gradient(120deg, var(--cinematic-color-assortment-cream), color-mix(in srgb, var(--cinematic-color-category-amber) 28%, var(--cinematic-color-assortment-cream))); }
 .choice:hover { border-color: var(--cinematic-color-red); }
 .body .choice :global(.text-primary) { color: var(--cinematic-color-burgundy); }
 .choice h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; margin-block: 1rem; }

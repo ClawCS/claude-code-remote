@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Image from "next/image";
 import type { Giveaway } from "@/data/giveaways";
 import type { GiveawayStatus } from "@/lib/giveaways";
@@ -18,7 +19,7 @@ export default function GiveawayCard({ giveaway, status, label, layout = "grid" 
       <h3>{giveaway.title}</h3>
       <p className={styles.description}>{giveaway.description}</p>
       <p className={styles.deadline}>Teilnahmeschluss: <time dateTime={giveaway.verifiedEndsDate}>{day}.{month}.{year}</time><br />23:59 Uhr · Europe/Berlin</p>
-      <a className={styles.sourceLink} href={giveaway.sourceURL} target="_blank" rel="noopener noreferrer">{status === "active" ? "Originalbeitrag & Teilnahmebedingungen" : "Originalbeitrag ansehen"}<span aria-hidden="true"> ↗</span></a>
+      <a className={styles.sourceLink} href={giveaway.sourceURL} target="_blank" rel="noopener noreferrer">{status === "active" ? "Originalbeitrag & Teilnahmebedingungen" : "Originalbeitrag ansehen"}<ArrowUpRight /></a>
       </div>
     </article>
   );

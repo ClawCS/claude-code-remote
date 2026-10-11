@@ -1,3 +1,4 @@
+import ArrowUpRight from "@/components/ArrowUpRight";
 import Link from "next/link";
 import Image from "next/image";
 import brandLogo from "@/public/images/home/brand-logo.webp";
@@ -38,7 +39,7 @@ export default function CinematicHeader({
             aria-label="Nederlands"
           >
             <span aria-hidden="true">🇳🇱</span>
-            <span>Nederlands</span><span aria-hidden="true">↗</span>
+            <span>Nederlands</span><ArrowUpRight />
           </Link>
         </div>
       </div>
