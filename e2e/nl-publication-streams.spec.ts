@@ -9,7 +9,7 @@ for(const width of [390,768,1440]) for(const landing of ["home","nl","index","ha
     await page.goto(`/test-fixtures/weekly-flyer?landing=${landing}&state=active`);
     const main=page.locator('[data-flyer-group="weekly"]'), supplemental=page.locator('[data-flyer-group="supplemental"]');
     await expect(main.locator("article")).toHaveCount(2);await expect(supplemental.locator("article")).toHaveCount(1);
-    await expect(supplemental).toContainText(landing==="nl"?"Aanvullende advertenties":"Zusätzliche Anzeigen");
+    await expect(supplemental.getByRole("heading",{name:landing==="nl"?"Ook actueel: Maasduinen":"Zusätzlich aktuell: Maasduinen",exact:true})).toBeVisible();
     await expect(supplemental).toContainText("07.–18.10.2026");
     const [a,b,s]=await Promise.all([main.locator("article").nth(0).boundingBox(),main.locator("article").nth(1).boundingBox(),supplemental.boundingBox()]);
     if(width>=768) expect(a!.y).toBeCloseTo(b!.y,0);else expect(b!.y).toBeGreaterThan(a!.y+a!.height);

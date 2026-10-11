@@ -31,8 +31,9 @@ it("shows the German NL-specific missing notice on the German index",()=>{
 it("groups independent supplemental originals below main flyers with localized labels",()=>{
   const supplement={...index.flyers[0],id:"supplement",language:"nl" as const,purpose:"supplemental" as const,medium:"maasduinen" as const,title:"Maasduinen original",validFrom:"2026-09-20",validTo:"2026-10-18"};
   const grouped={...index,status:"degraded" as const,issues:["nl-flyer-missing"],flyers:[index.flyers[0],supplement]};
-  for (const [html,label] of [[renderToStaticMarkup(<FlyerIndexView index={grouped}/>),"Zusätzliche Anzeigen"],[renderToStaticMarkup(<NlCurrentSection index={grouped}/>),"Aanvullende advertenties"],[renderToStaticMarkup(<CurrentSection content={{generatedAt:index.generatedAt,flyer:index.flyers[0],nlFlyer:null,supplementalFlyers:[supplement],event:null,archive:[],fallbackMessage:null}}/>),"Zusätzliche Anzeigen"]]) {
-    expect(html).toContain(label);
+  for (const [html,label] of [[renderToStaticMarkup(<FlyerIndexView index={grouped}/>),"Zusätzlich aktuell: Maasduinen"],[renderToStaticMarkup(<FlyerIndexView index={grouped} compact/>),"Ook actueel: Maasduinen"],[renderToStaticMarkup(<NlCurrentSection index={grouped}/>),"Ook actueel: Maasduinen"],[renderToStaticMarkup(<CurrentSection content={{generatedAt:index.generatedAt,flyer:index.flyers[0],nlFlyer:null,supplementalFlyers:[supplement],event:null,archive:[],fallbackMessage:null}}/>),"Zusätzlich aktuell: Maasduinen"]]) {
+    expect(html).toMatch(new RegExp(`<h[23]>${label}</h[23]>`));
+    expect(html).toContain(`aria-label="${label}"`);
     expect(html).toContain('data-flyer-group="supplemental"');
     expect(html.indexOf("Originaltitel")).toBeLessThan(html.indexOf(label));
     expect(html).toContain("Maasduinen original");

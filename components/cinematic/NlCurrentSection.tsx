@@ -25,7 +25,7 @@ export default function NlCurrentSection({ index }: { index: FlyerIndex }) {
       </article>)}
     </div> : <div className={styles.fallback}><p>De volgende geldige folder wordt voorbereid. Verlopen folders worden niet als actuele aanbiedingen getoond.</p></div>}
     {index.issues.includes("nl-flyer-missing") && <p role="status" className={styles.notice}>De Nederlandse weekfolder is nog niet beschikbaar.</p>}
-    {supplements.length > 0 && <section className={styles.supplemental} data-flyer-group="supplemental" aria-label="Aanvullende advertenties"><h3>Aanvullende advertenties</h3><div className={styles.flyers}>{supplements.map(flyer=><article key={flyer.id} className={styles.flyer}>
+    {supplements.length > 0 && <section className={styles.supplemental} data-flyer-group="supplemental" aria-label="Ook actueel: Maasduinen"><h3>Ook actueel: Maasduinen</h3><div className={styles.flyers}>{supplements.map(flyer=><article key={flyer.id} className={styles.flyer}>
       <div className={styles.flyerCopy}><p className={styles.validity}>Maasduinen · Nederlands · {formatDateRange(flyer.validFrom,flyer.validTo)}</p><h3>{flyer.title}</h3><p>1 pagina</p></div><FlyerViewer flyer={flyer} locale="nl"/>
     </article>)}</div></section>}
     {index.scheduled.length > 0 && <div className={styles.scheduled}><h3>Binnenkort</h3><ul>{index.scheduled.map(item => <li key={item.id}>{item.title} ({item.language.toUpperCase()}) · vanaf {formatDateRange(item.validFrom, item.validTo)}</li>)}</ul></div>}

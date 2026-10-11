@@ -84,8 +84,8 @@ export default function CurrentSection({
           </article>
         ) : null}
         </div>
-        {view.supplementalFlyers.length > 0 && <section className={styles.supplemental} data-flyer-group="supplemental" aria-label="Zusätzliche Anzeigen">
-          <h3>Zusätzliche Anzeigen</h3>
+        {view.supplementalFlyers.length > 0 && <section className={styles.supplemental} data-flyer-group="supplemental" aria-label="Zusätzlich aktuell: Maasduinen">
+          <h3>Zusätzlich aktuell: Maasduinen</h3>
           <div className={styles.flyers}>{view.supplementalFlyers.map(flyer => <article key={flyer.id} className={styles.flyer} data-supplemental-flyer>
             <div className={styles.flyerCopy}><p className={styles.validity}>Maasduinen · Niederländische Zusatzanzeige · Gültig {formatDateRange(flyer.validFrom, flyer.validTo)}</p><h3 lang="nl">{flyer.title}</h3><p>1 Seite</p></div>
             <FlyerViewer flyer={flyer} />
