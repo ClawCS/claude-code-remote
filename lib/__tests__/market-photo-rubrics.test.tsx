@@ -13,7 +13,7 @@ import RegionaleSpirituosenPage from "@/app/regionale-spirituosen/page";
 
 test("places local market and gift motifs behind their own relevant rubric links", () => {
   const html = decodeURIComponent(renderToStaticMarkup(<AssortmentSection />));
-  expect(html).toContain("/images/editorial/canva/safari-display.webp");
+  expect(html).toContain("/images/editorial/canva/verkostung-moritz-fiege.webp");
   expect(html).toContain("/images/editorial/canva/gift-basket.webp");
   expect(html).toContain('href="/geschenkideen"');
   expect(html).toContain('href="/regionale-spirituosen"');
@@ -29,7 +29,7 @@ test("keeps the homepage discoveries bounded and pairs each photo with its match
   expect(articles).toHaveLength(3);
   expect(html).not.toContain("<figcaption");
   for (const [source, destination] of [
-    ["/images/editorial/canva/safari-display.webp", "/marktleben"],
+    ["/images/editorial/canva/verkostung-moritz-fiege.webp", "/marktleben"],
     ["/images/editorial/canva/gift-basket.webp", "/geschenkideen"],
     ["/images/editorial/canva/regional-tante-dele.webp", "/regionale-spirituosen"],
   ]) {
@@ -45,7 +45,7 @@ test("keeps market groups and approved photos without decorative captions or the
     expect(html).toMatch(new RegExp(`<h2[^>]*>${heading.replaceAll("&", "&amp;")}<\\/h2>`));
   }
   const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
-  expect(images).toHaveLength(16);
+  expect(images).toHaveLength(20);
   for (const filename of ["safari-display.webp", "salitos-market.webp", "verkostung.webp", "desperados-detail.webp", "baileys-aufbau.webp", "regionaler-hofaufbau.webp", "grillbegleiter.webp"]) {
     expect(images.some(image => image.includes(filename)), filename).toBe(true);
   }
@@ -54,6 +54,31 @@ test("keeps market groups and approved photos without decorative captions or the
   expect(html).not.toMatch(/Rückblick|Mit Herz|mit anpacken|niko-market-life|Reinigungshandschuh|Sprühflasche|hinter die Kulissen mit Niko/i);
   expect(html).toMatch(/sichtbare Preise[^<]*nicht aktuell/);
   expect(html).not.toMatch(/Justin|Gabelstapler|forklift|googleusercontent|maps\.google/i);
+});
+
+test("places all four approved portfolio people photos in their relevant market groups", () => {
+  const html = decodeURIComponent(renderToStaticMarkup(<MarktlebenPage />));
+  const tastings = html.match(/<section[^>]*aria-labelledby="menschen-marktmomente"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  const displays = html.match(/<section[^>]*aria-labelledby="aufbauten-entdeckungen"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  for (const [filename, height] of [
+    ["verkostung-il-padrino.webp", 976],
+    ["verkostung-moritz-fiege.webp", 976],
+    ["likoer-verkostung.webp", 1007],
+  ] as const) {
+    const image = tastings?.match(/<img\b[^>]*>/g)?.find(item => item.includes(filename));
+    expect(image, filename).toBeDefined();
+    expect(image).toContain('width="660"');
+    expect(image).toContain(`height="${height}"`);
+    expect(image).toContain('loading="lazy"');
+    expect(displays).not.toContain(filename);
+  }
+  const almdudler = displays?.match(/<article\b[^>]*>[\s\S]*?<\/article>/g)?.find(item => item.includes("almdudler-aufbau.webp"));
+  expect(almdudler).toContain('width="660"');
+  expect(almdudler).toContain('height="899"');
+  expect(almdudler).toContain("keine aktuelle Gewinnspielankündigung");
+  expect(almdudler).not.toMatch(/Jetzt gewinnen|Jetzt teilnehmen|26,99|Letzte Chance/);
+  expect(tastings).not.toContain("almdudler-aufbau.webp");
+  expect(html).not.toMatch(/pending-person-clearance|Portfolio Messe|DAGykk|export-download\.canva/);
 });
 
 test("places the price-free portfolio display with market discoveries, not current offers", () => {

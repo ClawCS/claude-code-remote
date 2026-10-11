@@ -1,6 +1,28 @@
 # Canva-Fotoergänzung — 11. Oktober 2026
 
-## Stand: teilweise lokal umgesetzt, nicht veröffentlicht
+## Stand: alle ausgewählten Motive lokal umgesetzt, nicht veröffentlicht
+
+### Ergänzung nach Personenfreigabe
+
+Niko hat die offene Foto-Rückfrage mit „dürfen alle abgebildet werden“ beantwortet. Diese Freigabe gilt für die vier vorbereiteten Personenmotive der vorgelegten Collage; keine erneute Rückfrage und keine Identifizierung anhand von Gesichtern. Andere frühere Fotoausschlüsse bleiben bestehen.
+
+- Startseite: Moritz-Fiege-Verkostung als Marktleben-Einstieg, weiterhin genau drei Entdeckungskarten.
+- `/marktleben` → Menschen & Marktmomente: Moritz Fiege, Il Padrino und die Likör-Verkostung; vorhandene Fotos bleiben erhalten.
+- `/marktleben` → Aufbauten & Entdeckungen: Almdudler ergänzt; Safari und Salitos bleiben. Der historische Gewinnspielhinweis ist ausdrücklich keine aktuelle Ankündigung. Keine Preise oder Aktionen aus Fotos in aktuelle Angebotsdaten übernommen.
+- Vier Originalausschnitte unverändert aus der hochauflösenden Canva-Seite abgeleitet, natürliche Seitenverhältnisse ohne weiteren CSS-Beschnitt, keine generierten oder nachbearbeiteten Gesichter. Öffentlicher neutraler Dateiname `likoer-verkostung` vermeidet die unzutreffende frühere private Arbeitsbezeichnung „Boennecken“.
+- Jetzt 20 geprüfte Canva-Assets. Alle 16 vorherigen Manifest-Einträge sowie ihre 32 PNG-/WebP-Dateien byteidentisch erhalten. Private Original-/Freigabebelege separat archiviert.
+
+Prüfung dieser Ergänzung:
+
+- TDD: vier erwartete rote Seiten-/Zuordnungsprüfungen und fehlende neue Asset-Datei vor Implementierung; anschließend 13/13 Rubrik-/Desktopfototests und 22/22 Assettests bestanden.
+- Vollständige Webtests ohne private Laufzeitkopien und native Bewerbungsdienste: **108 Dateien / 1.904 Tests bestanden** (`NODE_ENV=test npm test -- --exclude '.superpowers/**' --exclude 'services/**'`). Die unten dokumentierten Grenzen der nativen Gesamtprüfung bleiben bestehen.
+- TypeScript ohne Fehler; Lint 0 Fehler / 21 bestehende Warnungen außerhalb der Änderung. Assetcheck: alle 20 Ausgaben bestanden, vier neue WebPs jeweils unter 150 kB und ohne EXIF/XMP/ICC.
+- Unabhängige Nur-Lese-Prüfung ohne kritische, wichtige oder kleinere Befunde; 30/30 fokussierte Tests und vollständiger Bestands-/Crop-/Hashvergleich. Ein erster ungefilterter Review-Test sammelte alte `.superpowers`-Kopien ein; sauber gefilterter Wiederholungslauf grün.
+- Lokaler Browser: Startseitenlink führt nach Marktleben; alle vier neuen Bilder geladen, `object-fit: contain`, natürliche Proportionen auf Desktop und 390px Mobil; kein horizontaler Überlauf, auch im mobilen Startseiten-Einstieg. Temporäre Bildschirmgröße danach zurückgesetzt. Kurzer erster 3-Sekunden-HTTP-Check lief in ein Timeout; vorhandener korrekter Devprozess antwortete beim folgenden 20-Sekunden-Check mit 200, kein Neustart oder Codefix notwendig.
+- Lokaler HTTP-Abgleich: beide geänderten Seiten mit 200 und neuen Bildpfaden im HTML; alle vier WebP-Dateien tatsächlich geladen, Typ/Größe/SHA-256 identisch mit den geprüften lokalen Ausgaben. Kein öffentlicher Live-Nachweis daraus abgeleitet.
+- Keine Canva-Änderung, keine Betriebs-, Hosting-, Upload- oder Mailaktivierung. Öffentliche Veröffentlichung dieses Fotopakets bleibt ausstehend.
+
+### Vorheriger Teillauf (Safari; unverändert dokumentiert)
 
 Auftrag: Weitere Bilder aus der vorgelegten Point-of-Sale-Collage passend in die bestehende Website aufnehmen. Kein Designumbau, keine Änderungen in Canva.
 
@@ -25,4 +47,4 @@ Auftrag: Weitere Bilder aus der vorgelegten Point-of-Sale-Collage passend in die
 
 ## Offen vor Veröffentlichung
 
-Vier Personenmotive brauchen die bereits gestellte konkrete Bestätigung. Außerdem fehlt weiterhin die separat angefragte Freigabe zur Entfernung zweier genau benannter alter Server-Releases; keine eigenmächtige Speicherbereinigung. Ein neuer Linux-Release/Produktionsbuild und öffentlicher Abgleich wurden in diesem Fotolauf nicht ausgeführt. Lokal/Git ist kein Live-Nachweis. Der vollständige Bilderauftrag ist daher noch nicht abgeschlossen.
+Die Personenfreigabe ist inzwischen erteilt und umgesetzt. Weiterhin fehlt die separat angefragte Freigabe zur Entfernung zweier genau benannter alter Server-Releases (`077412ba…`, `9b9dd9a…`); keine eigenmächtige Speicherbereinigung. Ein neuer Linux-Release/Produktionsbuild und öffentlicher Abgleich wurden in diesem Fotolauf nicht ausgeführt. Lokal/Git ist kein Live-Nachweis. Die Veröffentlichung der Fotoergänzung ist daher noch offen.

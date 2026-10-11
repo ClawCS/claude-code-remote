@@ -5,6 +5,98 @@
   "provenance": "Only operator-reviewed, lossless source crops from the approved Canva pool; no account/design/page IDs or raw promotional collages are published.",
   "entries": [
     {
+      "id": "verkostung-il-padrino",
+      "kind": "photo",
+      "source": "verkostung-il-padrino.png",
+      "sourceHash": "0610b7cf3fe0aeed364d5c95696f92293f89581f96975096e138556433eddf37",
+      "sourceDimensions": {
+        "width": 660,
+        "height": 976
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 660,
+        "height": 976
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "markt-verkostungen",
+      "output": {
+        "name": "verkostung-il-padrino.webp",
+        "maxBytes": 150000,
+        "sha256": "87ddbab3be745ff2b5a67ef4cff449353fbed4f063b35d730d3cc33bef461922"
+      }
+    },
+    {
+      "id": "verkostung-moritz-fiege",
+      "kind": "photo",
+      "source": "verkostung-moritz-fiege.png",
+      "sourceHash": "853095c0fb433ac4165173cf4fda28b6bc4513d31b5fe39564bb90c3b9b94e93",
+      "sourceDimensions": {
+        "width": 660,
+        "height": 976
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 660,
+        "height": 976
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "markt-verkostungen",
+      "output": {
+        "name": "verkostung-moritz-fiege.webp",
+        "maxBytes": 150000,
+        "sha256": "393de30badc0dd647ba2d563b096fa309c837187a718150e1b0296dc15e0a8a8"
+      }
+    },
+    {
+      "id": "likoer-verkostung",
+      "kind": "photo",
+      "source": "likoer-verkostung.png",
+      "sourceHash": "ff4f1f3200aca9b29943f6b10d0d22f857bd665f9e4b778dc53b2ea77afe3da5",
+      "sourceDimensions": {
+        "width": 660,
+        "height": 1007
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 660,
+        "height": 1007
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "markt-verkostungen",
+      "output": {
+        "name": "likoer-verkostung.webp",
+        "maxBytes": 150000,
+        "sha256": "ebdfd93431362b6332085da2cacf4c7dca16732d223e718967573469b130ed25"
+      }
+    },
+    {
+      "id": "almdudler-aufbau",
+      "kind": "photo",
+      "source": "almdudler-aufbau.png",
+      "sourceHash": "f1b5cc47145ffce3e7db395959739afc0d0659997912617f7ecd636d06bbcc5d",
+      "sourceDimensions": {
+        "width": 660,
+        "height": 899
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 660,
+        "height": 899
+      },
+      "provenance": "operator-approved-canva",
+      "rubric": "markt-aufbauten",
+      "output": {
+        "name": "almdudler-aufbau.webp",
+        "maxBytes": 150000,
+        "sha256": "b2983a94c7507103aa2211ab876bfdf471ea90a10d894106ccc78d9faa8144a6"
+      }
+    },
+    {
       "id": "safari-display",
       "kind": "photo",
       "source": "safari-display.png",

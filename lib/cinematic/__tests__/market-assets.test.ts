@@ -55,6 +55,27 @@ async function waitForStaging(root: string, child: ChildProcess, error: () => st
 }
 
 describe("verified Canva market-photo derivatives", () => {
+  it("ships the four approved tasting and Almdudler photos with verified natural dimensions and hashes", async () => {
+    for (const entry of [
+      { id: "verkostung-il-padrino", width: 660, height: 976, sourceHash: "0610b7cf3fe0aeed364d5c95696f92293f89581f96975096e138556433eddf37", outputHash: "87ddbab3be745ff2b5a67ef4cff449353fbed4f063b35d730d3cc33bef461922" },
+      { id: "verkostung-moritz-fiege", width: 660, height: 976, sourceHash: "853095c0fb433ac4165173cf4fda28b6bc4513d31b5fe39564bb90c3b9b94e93", outputHash: "393de30badc0dd647ba2d563b096fa309c837187a718150e1b0296dc15e0a8a8" },
+      { id: "likoer-verkostung", width: 660, height: 1007, sourceHash: "ff4f1f3200aca9b29943f6b10d0d22f857bd665f9e4b778dc53b2ea77afe3da5", outputHash: "ebdfd93431362b6332085da2cacf4c7dca16732d223e718967573469b130ed25" },
+      { id: "almdudler-aufbau", width: 660, height: 899, sourceHash: "f1b5cc47145ffce3e7db395959739afc0d0659997912617f7ecd636d06bbcc5d", outputHash: "b2983a94c7507103aa2211ab876bfdf471ea90a10d894106ccc78d9faa8144a6" },
+    ]) {
+      const source = resolve(sourceFolder, `${entry.id}.png`);
+      const output = resolve("public/images/editorial/canva", `${entry.id}.webp`);
+      expect(existsSync(source), entry.id).toBe(true);
+      expect(existsSync(output), entry.id).toBe(true);
+      expect(hash(readFileSync(source))).toBe(entry.sourceHash);
+      const bytes = readFileSync(output);
+      expect(hash(bytes)).toBe(entry.outputHash);
+      expect(bytes.length).toBeLessThan(150000);
+      const metadata = await sharp(bytes).metadata();
+      expect(metadata).toMatchObject({ format: "webp", width: entry.width, height: entry.height });
+      expect(metadata.exif).toBeUndefined(); expect(metadata.xmp).toBeUndefined(); expect(metadata.icc).toBeUndefined();
+    }
+  });
+
   it("refuses source preparation that would omit an existing public asset", async () => {
     const f = fixture({ raw: true });
     const publicFolder = join(f.root, sourceFolder);
@@ -131,6 +152,10 @@ describe("verified Canva market-photo derivatives", () => {
     const result = await f.run().completion;
     expect(result.code, result.text).toBe(0);
     const expected = {
+      "verkostung-il-padrino.webp": "87ddbab3be745ff2b5a67ef4cff449353fbed4f063b35d730d3cc33bef461922",
+      "verkostung-moritz-fiege.webp": "393de30badc0dd647ba2d563b096fa309c837187a718150e1b0296dc15e0a8a8",
+      "likoer-verkostung.webp": "ebdfd93431362b6332085da2cacf4c7dca16732d223e718967573469b130ed25",
+      "almdudler-aufbau.webp": "b2983a94c7507103aa2211ab876bfdf471ea90a10d894106ccc78d9faa8144a6",
       "gift-basket.webp": "2fd0c3a3c78134f0a077e11a09b524e54a16b0498ce8222ccf3635f13d5638f2",
       "salitos-market.webp": "178308dcb2a5af95336e051a3df4c3779cbcd793e0b07cc63db89166a5d84da8",
       "safari-display.webp": "25bb1b6d09ab30dd8c6374da26d9b07d69112985d755441a1548af1e38d88aef",

@@ -16,9 +16,13 @@ export const metadata: Metadata = {
 export default function MarktlebenPage() {
   const groups = [
     { id: "menschen-marktmomente", title: "Menschen & Marktmomente", photos: [
+      { photo: MARKET_PHOTOS.moritzFiege, title: "Draußen zusammenkommen.", text: "Moritz Fiege zu Besuch: Ein Verkostungsstand unter freiem Himmel bringt Menschen und Braukunst zusammen." },
+      { photo: MARKET_PHOTOS.ilPadrino, title: "Am Fass ins Gespräch kommen.", text: "Il Padrino bei uns im Markt – mit Flaschen, Probiergläsern und Zeit für den Austausch." },
+      { photo: MARKET_PHOTOS.liqueurTasting, title: "Liköre gemeinsam entdecken.", text: "Flaschen auf der Theke, Menschen im Gespräch: ein Einblick in eine Verkostung bei Jammers.", href: "/kategorie/spirituosen", link: "Spirituosen entdecken" },
       { photo: GOOGLE_MARKET_PHOTOS.tasting, title: "Gemeinsam entdecken.", text: "Eine Verkostung mit unseren Eigenmarken: ein Moment zum Probieren und Austauschen.", href: "/eigenmarke", link: "Unsere Eigenmarken entdecken" },
     ] },
     { id: "aufbauten-entdeckungen", title: "Aufbauten & Entdeckungen", photos: [
+      { photo: MARKET_PHOTOS.almdudler, title: "Ein Platz mitten im Markt.", text: "Ein früherer Almdudler-Aufbau mit rotem Sonnenschirm, Bank und Getränkekisten. Das Aktionsschild im Foto ist keine aktuelle Gewinnspielankündigung.", href: "/gewinnspiel", link: "Zu unseren Gewinnspielen" },
       { photo: MARKET_PHOTOS.safari, title: "Ein Aufbau mit Charakter.", text: "Safari-Flaschen und markante Verpackungen – ein Detail aus unseren Warenaufbauten." },
       { photo: MARKET_PHOTOS.market, title: "Platz für Entdeckungen.", text: "Ein früherer Salitos-Aufbau zeigt, wie besondere Sortimente im Markt ihren Platz finden." },
       { photo: GOOGLE_MARKET_PHOTOS.desperados, title: "Ein Blick aufs Detail.", text: "Desperados auf weißen Getränkekisten – ein Ausschnitt aus dem Marktalltag." },
