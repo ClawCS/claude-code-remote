@@ -184,7 +184,8 @@ export async function verifyWeeklyEdition(edition: WeeklyEdition, root: string):
     const candidates = entries.filter(value => value && typeof value === "object" && value.id === id);
     if (candidates.length !== 1) throw new Error("Missing or duplicate NL original");
     const [flyer] = parseFlyerPackages(candidates);
-    if (flyer.language !== "nl" || flyer.validFrom !== edition.validFrom || flyer.validTo !== edition.validTo
+    if (!isDeepStrictEqual(flyer.source, edition.source) || !isDeepStrictEqual(flyer.identity, edition.identity)
+      || flyer.language !== "nl" || flyer.validFrom !== edition.validFrom || flyer.validTo !== edition.validTo
       || flyer.pdfPath !== edition.pdf.path || flyer.pdfSha256 !== edition.pdf.sha256
       || flyer.coverPath !== edition.cover.path || flyer.coverSha256 !== edition.cover.sha256) throw new Error("NL original binding mismatch");
     await verifyFlyerFiles(flyer, root);

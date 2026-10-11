@@ -51,6 +51,34 @@ describe("immutable weekly publications", () => {
     await f.write(`public${f.editions[0].pdf.path}`, Buffer.from("%PDF-changed"));
     await expect(verifyWeeklyEdition(f.editions[0], f.root)).rejects.toThrow();
   });
+  it.each([1, 2] as const)("rejects supplemental Canva provenance substituted for a schema %s agency weekly original", async schemaVersion => {
+    const f = await fixture("2026-10-12", "2026-10-17");
+    const edition = schemaVersion === 1 ? f.editions[1] : { ...f.editions[1],
+      identity: { language: "nl", purpose: "weekly", medium: "de-maas-driehoek" } as const };
+    const sourceUrl = "https://www.canva.com/design/SYNTHETIC/view";
+    const supplemental = { ...f.flyer, sourceUrl,
+      source: { kind: "canva", flyerId: f.flyer.id },
+      identity: { language: "nl", purpose: "supplemental", medium: "maasduinen" }, pageCount: 1,
+      review: { reviewedAt: f.sources[1].reviewedAt, approvedAt: f.sources[1].reviewedAt,
+        printedValidFrom: "2026-10-12", printedValidTo: "2026-10-17" } };
+    f.sources[1].sourceUrl = sourceUrl;
+    await f.save();
+    await f.write("data/editorial/flyers.json", JSON.stringify([supplemental]));
+    await expect(verifyWeeklyEdition(edition, f.root)).rejects.toThrow(/binding mismatch/i);
+    const loaded = await loadWeeklyPublications(f.root);
+    expect(loaded.editions.map(row => row.edition.language)).toEqual(["de"]);
+    expect(loaded.issues).toEqual([{ week: "2026-10-12", language: "nl", code: "edition-invalid" }]);
+  });
+  it("rejects a supplemental identity substituted while the exact historical Canva source stays unchanged", async () => {
+    const f = await fixture();
+    const supplemental = { ...f.flyer,
+      source: { kind: "canva", flyerId: f.flyer.id },
+      identity: { language: "nl", purpose: "supplemental", medium: "maasduinen" }, pageCount: 1,
+      review: { reviewedAt: f.sources[1].reviewedAt, approvedAt: f.sources[1].reviewedAt,
+        printedValidFrom: "2026-10-05", printedValidTo: "2026-10-10" } };
+    await f.write("data/editorial/flyers.json", JSON.stringify([supplemental]));
+    await expect(verifyWeeklyEdition(f.editions[1], f.root)).rejects.toThrow(/binding mismatch/i);
+  });
   it("isolatesCorruptNl: retains verified DE when the NL PDF is corrupt", async () => {
     const f = await fixture();
     await f.write(`public${f.editions[1].pdf.path}`, "corrupt");
