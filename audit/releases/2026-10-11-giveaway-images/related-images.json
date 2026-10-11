@@ -1,0 +1,335 @@
+{
+  "at": "2026-10-11T15:28:19.884Z",
+  "evidence": [
+    {
+      "path": "/images/editorial/canva/safari-display.webp",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 29768,
+      "decodedWidth": 360,
+      "decodedHeight": 342,
+      "elapsedMs": 369
+    },
+    {
+      "path": "/images/editorial/canva/safari-display.webp",
+      "width": 768,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 82522,
+      "decodedWidth": 660,
+      "decodedHeight": 627,
+      "elapsedMs": 192
+    },
+    {
+      "path": "/images/editorial/canva/safari-display.webp",
+      "width": 1280,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 82522,
+      "decodedWidth": 660,
+      "decodedHeight": 627,
+      "elapsedMs": 159
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-il-padrino.webp",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 29978,
+      "decodedWidth": 360,
+      "decodedHeight": 532,
+      "elapsedMs": 163
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-il-padrino.webp",
+      "width": 768,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 80022,
+      "decodedWidth": 660,
+      "decodedHeight": 976,
+      "elapsedMs": 223
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-il-padrino.webp",
+      "width": 1280,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 80022,
+      "decodedWidth": 660,
+      "decodedHeight": 976,
+      "elapsedMs": 174
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-moritz-fiege.webp",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 35068,
+      "decodedWidth": 360,
+      "decodedHeight": 532,
+      "elapsedMs": 139
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-moritz-fiege.webp",
+      "width": 768,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 110446,
+      "decodedWidth": 660,
+      "decodedHeight": 976,
+      "elapsedMs": 220
+    },
+    {
+      "path": "/images/editorial/canva/verkostung-moritz-fiege.webp",
+      "width": 1280,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 110446,
+      "decodedWidth": 660,
+      "decodedHeight": 976,
+      "elapsedMs": 170
+    },
+    {
+      "path": "/images/editorial/canva/likoer-verkostung.webp",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 26300,
+      "decodedWidth": 360,
+      "decodedHeight": 549,
+      "elapsedMs": 379
+    },
+    {
+      "path": "/images/editorial/canva/likoer-verkostung.webp",
+      "width": 768,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 66084,
+      "decodedWidth": 660,
+      "decodedHeight": 1007,
+      "elapsedMs": 284
+    },
+    {
+      "path": "/images/editorial/canva/likoer-verkostung.webp",
+      "width": 1280,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 66084,
+      "decodedWidth": 660,
+      "decodedHeight": 1007,
+      "elapsedMs": 206
+    },
+    {
+      "path": "/images/editorial/canva/almdudler-aufbau.webp",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 37380,
+      "decodedWidth": 360,
+      "decodedHeight": 490,
+      "elapsedMs": 93
+    },
+    {
+      "path": "/images/editorial/canva/almdudler-aufbau.webp",
+      "width": 768,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 108620,
+      "decodedWidth": 660,
+      "decodedHeight": 899,
+      "elapsedMs": 227
+    },
+    {
+      "path": "/images/editorial/canva/almdudler-aufbau.webp",
+      "width": 1280,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 108620,
+      "decodedWidth": 660,
+      "decodedHeight": 899,
+      "elapsedMs": 211
+    },
+    {
+      "path": "/images/eigenmarken-bottles/pralle-kirsche.png",
+      "width": 256,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 25336,
+      "decodedWidth": 256,
+      "decodedHeight": 1191,
+      "elapsedMs": 135
+    },
+    {
+      "path": "/images/eigenmarken-bottles/pralle-kirsche.png",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 25396,
+      "decodedWidth": 258,
+      "decodedHeight": 1200,
+      "elapsedMs": 173
+    },
+    {
+      "path": "/images/eigenmarken-bottles/pralle-kirsche.png",
+      "width": 640,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 25396,
+      "decodedWidth": 258,
+      "decodedHeight": 1200,
+      "elapsedMs": 146
+    },
+    {
+      "path": "/images/eigenmarken-bottles/dicke-nuesse.png",
+      "width": 256,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23142,
+      "decodedWidth": 256,
+      "decodedHeight": 1182,
+      "elapsedMs": 125
+    },
+    {
+      "path": "/images/eigenmarken-bottles/dicke-nuesse.png",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23022,
+      "decodedWidth": 260,
+      "decodedHeight": 1200,
+      "elapsedMs": 120
+    },
+    {
+      "path": "/images/eigenmarken-bottles/dicke-nuesse.png",
+      "width": 640,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23022,
+      "decodedWidth": 260,
+      "decodedHeight": 1200,
+      "elapsedMs": 128
+    },
+    {
+      "path": "/images/eigenmarken-bottles/suesse-suende.png",
+      "width": 256,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 20924,
+      "decodedWidth": 256,
+      "decodedHeight": 1186,
+      "elapsedMs": 132
+    },
+    {
+      "path": "/images/eigenmarken-bottles/suesse-suende.png",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 20884,
+      "decodedWidth": 259,
+      "decodedHeight": 1200,
+      "elapsedMs": 105
+    },
+    {
+      "path": "/images/eigenmarken-bottles/suesse-suende.png",
+      "width": 640,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 20884,
+      "decodedWidth": 259,
+      "decodedHeight": 1200,
+      "elapsedMs": 172
+    },
+    {
+      "path": "/images/eigenmarken-bottles/caramello.png",
+      "width": 256,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 22766,
+      "decodedWidth": 256,
+      "decodedHeight": 1182,
+      "elapsedMs": 144
+    },
+    {
+      "path": "/images/eigenmarken-bottles/caramello.png",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23126,
+      "decodedWidth": 260,
+      "decodedHeight": 1200,
+      "elapsedMs": 253
+    },
+    {
+      "path": "/images/eigenmarken-bottles/caramello.png",
+      "width": 640,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23126,
+      "decodedWidth": 260,
+      "decodedHeight": 1200,
+      "elapsedMs": 134
+    },
+    {
+      "path": "/images/eigenmarken-bottles/schwarzer-teufel.png",
+      "width": 256,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23140,
+      "decodedWidth": 256,
+      "decodedHeight": 1186,
+      "elapsedMs": 267
+    },
+    {
+      "path": "/images/eigenmarken-bottles/schwarzer-teufel.png",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23464,
+      "decodedWidth": 259,
+      "decodedHeight": 1200,
+      "elapsedMs": 104
+    },
+    {
+      "path": "/images/eigenmarken-bottles/schwarzer-teufel.png",
+      "width": 640,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 23464,
+      "decodedWidth": 259,
+      "decodedHeight": 1200,
+      "elapsedMs": 117
+    },
+    {
+      "path": "/images/eigenmarken-bottles/weisser-engel.png",
+      "width": 256,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 24566,
+      "decodedWidth": 256,
+      "decodedHeight": 1168,
+      "elapsedMs": 152
+    },
+    {
+      "path": "/images/eigenmarken-bottles/weisser-engel.png",
+      "width": 360,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 24890,
+      "decodedWidth": 263,
+      "decodedHeight": 1200,
+      "elapsedMs": 291
+    },
+    {
+      "path": "/images/eigenmarken-bottles/weisser-engel.png",
+      "width": 640,
+      "status": 200,
+      "contentType": "image/webp",
+      "bytes": 24890,
+      "decodedWidth": 263,
+      "decodedHeight": 1200,
+      "elapsedMs": 235
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "runId": "2026-10-11T15-28-12-876Z-check-2efdb0f3",
+  "mode": "check",
+  "startedAt": "2026-10-11T15:28:12.877Z",
+  "evaluatedAt": "2026-10-11T15:28:12.876Z",
+  "timeZone": "Europe/Berlin",
+  "target": {
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17"
+  },
+  "sources": [
+    {
+      "source": "trinkgut-official",
+      "id": "catalog-13027-42-2026",
+      "language": "de",
+      "validFrom": "2026-10-12",
+      "validTo": "2026-10-17",
+      "result": "bound-and-verified",
+      "pdfSha256": "a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e"
+    },
+    {
+      "source": "agency",
+      "id": "nl-2026-10-12-de-maas-driehoek",
+      "language": "nl",
+      "validFrom": "2026-10-12",
+      "validTo": "2026-10-17",
+      "result": "bound-and-verified",
+      "pdfSha256": "b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "websiteVerified": true,
+  "deploymentVerified": true,
+  "checkedUrl": "https://trinkgut-jammers.de",
+  "finishedAt": "2026-10-11T15:28:20.939Z",
+  "status": "ok"
+}
