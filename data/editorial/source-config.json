@@ -1,10 +1,21 @@
 {
   "timeZone": "Europe/Berlin",
-  "prepare": "Sunday 17:00",
+  "prepare": "Sunday 19:00",
+  "prepareStatus": "ACTIVE",
   "check": "Daily 06:15",
+  "checkStatus": "PAUSED",
   "official": {"storeId": "13027", "werbekreis": "3.6", "required": true},
+  "nlWeekly": {
+    "required": true,
+    "providerCutover": "2026-10-12",
+    "sourceType": "agency",
+    "evenIsoWeeks": "de-maas-driehoek",
+    "oddIsoWeeks": "udens-weekblad",
+    "requirePrintedDates": true,
+    "requireSinglePage": true
+  },
   "canvaDesigns": [
-    {"id": "DAHHqrttnew", "title": "Maasduinen HZ", "language": "nl", "required": true},
+    {"id": "DAHHqrttnew", "title": "Maasduinen HZ", "language": "nl", "required": false, "purpose": "supplemental", "medium": "maasduinen", "schedule": "12 placements/year; no fixed monthly dates", "validity": "independent printed dates"},
     {"id": "DAG6Qo7UYXQ", "title": "Story HZ Instagram", "language": "de", "required": false},
     {"id": "DAG_nBda110", "title": "Beiträge Instagram", "language": "de", "required": false},
     {"id": "DAG_4R3ee0E", "title": "Beiträge Instagram 4er Carousel", "language": "de", "required": false}
