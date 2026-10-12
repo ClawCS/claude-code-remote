@@ -4,8 +4,8 @@ import { courses } from "../data/akademie";
 
 const course = courses.find(course => course.slug === "mineralwasser")!;
 for (const index of [1, course.lessons.length - 1]) {
-  test(`lesson ${index + 1} has full server-readable content and own metadata without JavaScript`, async ({ browser }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false });
+  test(`lesson ${index + 1} has full server-readable content and own metadata without JavaScript`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
     const page = await context.newPage();
     const route = `/akademie/mineralwasser/lektion/${index + 1}`;
     const response = await page.goto(route);

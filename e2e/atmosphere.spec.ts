@@ -117,9 +117,28 @@ test("native brand navigation works without JavaScript", async ({ browser, baseU
     await page.locator('main a[href="#pralle-kirsche"]').first().click();
     await expect(page).toHaveURL(/#pralle-kirsche$/);
     await page.locator('main a[href="/eigenmarke/pralle-kirsche"]').first().click();
-    await expect(page.locator("main h1")).toContainText("Pralle Kirsche");
+    await expect(page).toHaveURL(/\/eigenmarke\/pralle-kirsche$/);
+    await expect(page.locator("main h1")).toHaveText("Pralle Kirsche.");
+    await expect(page.getByRole("heading", { level: 1, name: "Pralle Kirsche.", exact: true })).toBeVisible();
     await originals(page);
   } finally { await context.close(); }
+});
+
+test("a category with no released offers keeps its honest empty state and original portrait", async ({ page, context, request }) => {
+  await readOnly(context);
+  await page.setViewportSize({ width: 360, height: 900 });
+  const source = await request.get("/api/content/offers", { headers: { "X-Jammers-Content-Version": "2" } });
+  expect(source.ok()).toBe(true);
+  const content = await source.json();
+  // Marked browser-only response fixture: preserve source metadata and other
+  // categories, removing the selected category without changing the real clock.
+  await page.route("**/api/content/offers", route => route.fulfill({ json: { ...content, offers: content.offers.filter((offer: { categorySlug: string }) => offer.categorySlug !== "bier") } }));
+  await page.goto("/kategorie/bier");
+  await expect(page.locator("[data-offer-id]")).toHaveCount(0);
+  await expect(page.getByRole("status").filter({ hasText: "kein passendes Einzelangebot freigegeben" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Alle Handzettel und Zusatzanzeigen ansehen", exact: false })).toBeVisible();
+  await expect(page.locator("[data-intro-media] img")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
 
 for (const width of [390, 768]) {

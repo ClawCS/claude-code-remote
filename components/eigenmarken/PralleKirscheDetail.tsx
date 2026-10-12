@@ -15,7 +15,7 @@ export default function PralleKirscheDetail() {
         <nav className={styles.breadcrumbs} aria-label="Brotkrumennavigation"><Link href="/" prefetch={false}>Startseite</Link><Link href="/eigenmarke" prefetch={false}>Eigenmarken</Link><span aria-current="page">{brand.name}</span></nav>
         <div className={styles.detailGrid}>
           <div className={styles.detailCopy} data-brand-copy>
-            <p className={styles.eyebrow}>Jammers · 01 / 06</p><h1>Pralle<br /><span>Kirsche.</span></h1>
+            <p className={styles.eyebrow}>Jammers · 01 / 06</p><h1>Pralle{" "}<br /><span>Kirsche.</span></h1>
             <p className={styles.detailType}>{brand.flavor}</p><p className={styles.lead}>Fruchtige Kirsche. Eine feine Mandelnote.</p>
             <dl className={styles.detailFacts}><div><dt>Alkohol</dt><dd>{brand.abv}% Vol.</dd></div><div><dt>Flascheninhalt</dt><dd>{brand.volume} ml</dd></div></dl>
             <a className={`${styles.button} ${styles.rubyButton}`} href="#geschmack">Die Sorte kennenlernen <span aria-hidden="true">↓</span></a>

@@ -11,8 +11,13 @@ test("Escape returns mobile navigation focus to its visible trigger", async ({ p
   await page.waitForLoadState("networkidle");
   const trigger = page.getByRole("button", { name: "Menü öffnen", exact: true });
   await trigger.click();
-  await page.getByRole("navigation", { name: "Mobile Navigation", exact: true })
-    .getByRole("link", { name: "Cocktail-Rezepte", exact: true }).focus();
+  const navigation = page.getByRole("navigation", { name: "Mobile Navigation", exact: true });
+  const discovery = navigation.locator("summary").filter({ hasText: "Jammers entdecken" });
+  await discovery.click();
+  await navigation.getByRole("link", { name: "Cocktail-Rezepte", exact: true }).focus();
+  await page.keyboard.press("Escape");
+  await expect(navigation.locator("details[open]")).toHaveCount(0);
+  await expect(discovery).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(page.locator("[data-mobile-navigation]")).not.toHaveAttribute("open");
   await expect(trigger).toBeFocused();
