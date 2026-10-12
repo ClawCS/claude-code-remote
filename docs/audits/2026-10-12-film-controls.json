@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "scope": "Publish the approved icon-only homepage film control; playback logic and media unchanged",
+  "origin": "https://trinkgut-jammers.de",
+  "appCommit": "2dbdcec46a092dfa6480343a186367616de208a2",
+  "releaseReadyAt": "2026-10-12T16:13:11Z",
+  "releaseReadyLocal": "2026-10-12 18:13:11 Europe/Berlin",
+  "rollbackCommit": "059def3a247c19e422abb04da152b452a48c57bf",
+  "archiveSha256": "c78b5fb48c719ca18d46922b95e703d3bd06cd1d2cd2269fbaa9ece18d288263",
+  "implementation": {
+    "visibleControlText": "",
+    "icons": ["play", "pause", "cancel"],
+    "accessibleLabels": ["Film abspielen", "Film pausieren", "Wiedergabe abbrechen"],
+    "minimumTargetPixels": 44,
+    "playbackLogicUnchanged": true,
+    "independentCodeReview": "No critical, important or minor findings"
+  },
+  "preReleaseLocalVerification": {
+    "regressionRed": "Two icon-only tests failed against the previous visible-text control; 21 existing tests passed",
+    "webTestsPassed": 2366,
+    "testFilesPassed": 129,
+    "lintErrors": 0,
+    "existingLintWarnings": 20,
+    "typegen": "passed",
+    "typescript": "passed",
+    "originalOffersChecked": 210,
+    "productionBuild": "passed",
+    "focusedProductionBrowserTestsPassed": 7
+  },
+  "linuxVerification": {
+    "webTestsPassed": 2307,
+    "testFilesPassed": 125,
+    "chromiumTestFilesQualifiedLocallyNotOnLinux": [
+      "lib/cinematic/__tests__/hero-film.test.tsx",
+      "lib/cinematic/__tests__/own-brand-stage.test.tsx",
+      "lib/cinematic/__tests__/category-atmosphere.test.tsx",
+      "lib/cinematic/__tests__/shopping-provider-boundary.test.tsx"
+    ],
+    "nativeApplicationsQualificationExcluded": true,
+    "lint": "passed without errors",
+    "typegen": "passed",
+    "typescript": "passed",
+    "originalOffersChecked": 210,
+    "productionBuild": "passed",
+    "securityConfigurationHashesUnchanged": 9,
+    "readiness": "passed after bounded startup retries"
+  },
+  "publicVerification": {
+    "usesActualProductionTime": true,
+    "contentRunId": "2026-10-12T16-13-54-727Z-check-bf1d1545",
+    "contentStatus": "ok",
+    "deploymentVerified": true,
+    "validFrom": "2026-10-12",
+    "validTo": "2026-10-17",
+    "activeOriginalOffers": {"de": 70, "nl": 12, "total": 82},
+    "httpAuditPassed": true,
+    "httpFindings": 0,
+    "httpWarnings": 0,
+    "checkedPages": 293,
+    "checkedLocalResources": 2581,
+    "checkedApiContracts": 31,
+    "externalLinksNotFetched": 2151,
+    "giveawayImageGetsPassed": 18,
+    "focusedProductionBrowserTestsPassed": 7,
+    "additionalKeyboardIconChecks": [{"width": 390, "visibleText": "", "target": "44x44", "playPausePassed": true}, {"width": 1440, "visibleText": "", "target": "44x44", "playPausePassed": true}],
+    "exactMediaGetsPassed": 4,
+    "desktopVideoSha256": "06fd3bdde1a2d6045b056a73fcf0350c4a443a756ee121988e07967d15bd363f",
+    "mobileVideoSha256": "e2f94ee62e776519a7b4788a0f156123d056433ebd438f43a39f6d979dfecba3",
+    "posterSha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
+    "charitySymbolSha256": "7de07ec45267fb921ebc9b699526e4dd9f0ef9ce9b5eca65db4142bba3715102"
+  },
+  "approvedCleanup": {
+    "authorization": "Explicit operator approval of both named inactive releases and immediate publication on 2026-10-12",
+    "removedReleaseCommits": ["b2383232fb5dfdb3a25a96d01995d470b0a54889", "ef95c0204c2679660ed0fca684ebb5e81069a603"],
+    "checkedCurrentSymlinkAndConfigurationAndProcessReferences": true,
+    "currentAndRecentRollbackVersionsPreserved": true,
+    "onlyOwnHashVerifiedUploadArchiveRemoved": true,
+    "finalFreeBytes": 3471089664
+  },
+  "unchangedBoundaries": ["Server security configuration", "DNS", "Mail and SMTP", "Applications upload and erasure activation", "Rental order and payment activation", "Weekly content sources, original dates and bytes", "Foreign dirty screenshots and application audit"],
+  "completion": "Published and verified on the actual public HTTPS origin; no claim of activating excluded business operations"
+}
