@@ -12,7 +12,7 @@ Der Betreiber hat Informationsbetrieb und Impressumsangaben bestätigt. `RENTAL_
 
 ### Aktuelle Grenze für Website-Releases, 10.10.2026
 
-Suchabschluss vom 12.10.2026: Vor einem Release alle Quellen-/Quizkorrekturen, 245 Quellenansichten, öffentliche Karriere-Routen und komplette aktuellen Angebotsbeschreibungen lokal qualifizieren. Die Linux-Websuite schließt zusätzlich `lib/cinematic/__tests__/shopping-provider-boundary.test.tsx` aus: Diese neue Datei benötigt echtes Chromium und wird zusammen mit den bisherigen drei Chromiumdateien lokal ausgeführt. Die übrige Websuite bleibt vollständig; native Bewerbungsqualifikation unverändert ausgeschlossen. Dieser Zusatz ist keine Erlaubnis, Browserpakete oder Sicherheitseinstellungen auf dem Server zu ändern.
+Suchabschluss und Atmosphäre V2 vom 12.10.2026: Vor einem Release alle Quellen-/Quizkorrekturen, 245 Quellenansichten, öffentliche Karriere-Routen und komplette aktuellen Angebotsbeschreibungen lokal qualifizieren. Die Linux-Websuite hat die unten ausdrücklich aufgelistete Aufteilung von sieben Chromium-Testdateien; alle sieben müssen in der vollständigen lokalen Websuite bestehen. Die übrige Websuite bleibt vollständig; native Bewerbungsqualifikation unverändert ausgeschlossen. Dieser Zusatz ist keine Erlaubnis, Browserpakete oder Sicherheitseinstellungen auf dem Server zu ändern.
 
 Niko hat die Veröffentlichung fertig geprüfter Website-Änderungen erneut beauftragt, zugleich aber weitere Änderungen an der Server-Sicherheitskonfiguration ausdrücklich ausgesetzt. Für ein solches Folge-Release **nur** ein neues Quell-/Buildverzeichnis erstellen, prüfen und die bestehende Next-Unit nach atomarem Releasewechsel neu starten. Installierte Caddy-/Unit-/AppArmor-/Firewall-/Logging-/SSH-Konfigurationen unverändert lassen; die untenstehenden Einrichtungsabschnitte sind keine Erlaubnis, Bootstrap oder Härtung erneut auszuführen. Vor und nach dem Wechsel die bestehenden Konfigurationshashes vergleichen. Kein Caddy-Neustart, `daemon-reload` oder erneutes `enable` nötig, wenn keine Unit geändert wird.
 
@@ -129,7 +129,8 @@ git archive --format=tar.gz --output="$ARCHIVE" "$RELEASE_ID" -- \
   assets/fonts assets/source/market-photos assets/source/google-market-photos assets/source/team-photos-safe \
   assets/source/preislisten assets/source/contact-brands assets/source/user-market-photos \
   assets/source/hero-film/provenance.json assets/source/eigenmarken-bottles/provenance.json \
-  assets/source/eigenmarken-scenes/provenance.json assets/source/party-scenes/provenance.json
+  assets/source/eigenmarken-scenes/provenance.json assets/source/party-scenes/provenance.json \
+  assets/source/eigenmarken-scenes/v2-provenance.json
 tar -tzf "$ARCHIVE"
 shasum -a 256 "$ARCHIVE"
 ```
@@ -153,7 +154,10 @@ NODE_ENV=test npm test -- lib/ --maxWorkers=2 \
   --exclude lib/cinematic/__tests__/hero-film.test.tsx \
   --exclude lib/cinematic/__tests__/own-brand-stage.test.tsx \
   --exclude lib/cinematic/__tests__/category-atmosphere.test.tsx \
-  --exclude lib/cinematic/__tests__/shopping-provider-boundary.test.tsx
+  --exclude lib/cinematic/__tests__/shopping-provider-boundary.test.tsx \
+  --exclude lib/cinematic/__tests__/atmosphere.test.tsx \
+  --exclude lib/cinematic/__tests__/brand-world.test.tsx \
+  --exclude lib/cinematic/__tests__/atmosphere-family-layout.test.tsx
 npm run lint -- --quiet
 npx next typegen
 npx tsc --noEmit
@@ -163,9 +167,9 @@ npm run build
 
 Nur der Unit-Testprozess erhält `NODE_ENV=test`, damit ausdrücklich markierte Datumsfixtures funktionieren. Build und Website bleiben im Produktionsmodus; dort werden Testuhren bewusst ignoriert. Nicht den Produktionsschutz abschalten, um Datums-Tests zu erzwingen.
 
-**Explizite Browser-/Server-Aufteilung, erweitert am 12.10.2026:** Die vier oben exakt genannten Testdateien starten einen Chromium-Browser. Die dritte Datei prüft Warengruppen-Karten, die vierte die neuen Einkaufs-Providergrenzen einschließlich gespeicherter Auswahl und Datenschutzbereinigung. Die bestehende VM hat weder diesen Browser noch seine Systembibliotheken; für einen Website-Release werden keine zusätzlichen GUI-Pakete oder Sicherheitskonfigurationen installiert. Alle vier Dateien müssen vor Veröffentlichung in echtem lokalem Chromium vollständig bestehen, zusammen mit der vollständigen lokalen Web-Suite (`NODE_ENV=test npx vitest run --exclude 'services/applications/**' --exclude '.superpowers/**'`). Der Services-Ausschluss ist ausdrücklich nötig; etwa der Filter `app` trifft auch die getrennten nativen `services/applications`-Tests. `.superpowers` enthält fremde lokale Scratch-Prüfungen, die nicht Bestandteil der Web-Testmatrix oder des Releasepakets sind. Alle übrigen `lib/`-Tests laufen zusätzlich auf Linux; anschließend echte öffentliche Browserprüfung für Abspielen/Pausieren, mobile Quelle, sechs Originalflaschen, Kategorien, Fokus und Reduced-motion. Die Aufteilung und tatsächlichen Ergebnisse im Releasebericht nennen, **niemals als vollständigen Linux-Alltests-Pass darstellen**. Keine weiteren Dateien still ausschließen. Ein reproduzierbarer Film-/Bühnen-/Kartenfehler bleibt eine Veröffentlichungssperre; die bekannte fehlende native Bewerbungsqualifikation bleibt getrennt.
+**Explizite Browser-/Server-Aufteilung, erweitert für Atmosphäre V2 am 12.10.2026:** Die sieben oben exakt genannten Testdateien starten einen Chromium-Browser. Sie prüfen Film, Originalflaschen, Warengruppen, Einkaufs-Providergrenzen sowie die Atmosphäre-, Markenwelt- und Seitenfamilien-Komposition. Die bestehende VM hat weder diesen Browser noch seine Systembibliotheken; für einen Website-Release werden keine zusätzlichen GUI-Pakete oder Sicherheitskonfigurationen installiert. Alle sieben Dateien müssen vor Veröffentlichung in echtem lokalem Chromium vollständig bestehen, zusammen mit der vollständigen lokalen Web-Suite (`NODE_ENV=test npx vitest run --exclude 'services/applications/**' --exclude '.superpowers/**'`). Der Services-Ausschluss ist ausdrücklich nötig; etwa der Filter `app` trifft auch die getrennten nativen `services/applications`-Tests. `.superpowers` enthält fremde lokale Scratch-Prüfungen, die nicht Bestandteil der Web-Testmatrix oder des Releasepakets sind. Alle übrigen `lib/`-Tests laufen zusätzlich auf Linux; anschließend echte öffentliche Browserprüfung für Abspielen/Pausieren, mobile Quelle, sechs Originalflaschen, Kategorien, Fokus und Reduced-motion. Die Aufteilung und tatsächlichen Ergebnisse im Releasebericht nennen, **niemals als vollständigen Linux-Alltests-Pass darstellen**. Keine weiteren Dateien still ausschließen. Ein reproduzierbarer Film-/Bühnen-/Kartenfehler bleibt eine Veröffentlichungssperre; die bekannte fehlende native Bewerbungsqualifikation bleibt getrennt.
 
-Die vier zusätzlichen Provenienz-JSONs gehören zum geprüften Quellpaket. Die zugehörigen fertigen öffentlichen Film-/Bilddateien einschließlich getesteter historischer Filmversionen sind bereits über `public` enthalten. Private Film-/Generatororiginale werden nicht mitgepackt; auf Linux ist keine neue Videoerzeugung erforderlich. Beim neuen Partymotiv die WebP-Prüfsumme und Maße zusätzlich gegen `party-scenes/provenance.json` prüfen.
+Die fünf zusätzlichen Provenienz-JSONs gehören zum geprüften Quellpaket. Die zugehörigen fertigen öffentlichen Film-/Bilddateien einschließlich getesteter historischer Filmversionen sind bereits über `public` enthalten. Private Film-/Generatororiginale, insbesondere `eigenmarken-scenes/v2-originals`, werden nicht mitgepackt; auf Linux ist keine neue Bild-/Videoerzeugung erforderlich. Beim Partymotiv die WebP-Prüfsumme und Maße zusätzlich gegen `party-scenes/provenance.json` prüfen; bei den fünf V2-Hintergründen außerdem Bytegröße, SHA-256, WebP-Format, 1536 × 1024 Pixel und vollständige Dekodierung gegen `eigenmarken-scenes/v2-provenance.json`.
 
 Keine Mac-`node_modules` oder ungeprüfte Mac-`.next` hochladen: Sharp und SWC haben Linux-native Bestandteile. Die Schriften stammen seit dem Suchabschluss aus den unveränderten geprüften lokalen WOFF2-Dateien, nicht aus einem Build-Abruf bei Google. Die Paketinstallation benötigt weiterhin Netzwerkzugang. Der Prebuild prüft die vollständige redaktionelle Quellenabdeckung, Quellen/Derivate und den historischen Manifest-Stub; keine privaten Originale nachfordern, um diese Kontrolle zu umgehen. Build/Test dürfen den laufenden Release nie verändern. Nicht mehrere Builds gleichzeitig ausführen; Speicherfehler zuerst belegen, nicht die Inhaltsprüfung deaktivieren.
 
@@ -207,6 +211,8 @@ ss -ltnp
 ```
 
 Bei `Type=simple` bestätigt `systemctl is-active` nur den gestarteten Prozess, nicht die HTTP-Bereitschaft. Erst die erfolgreiche HTTP-Probe erlaubt den nächsten Prüfschritt. Sie wiederholt höchstens zehnmal, startet nach 45 Sekunden keinen weiteren Versuch und begrenzt jeden Versuch auf fünf Sekunden (insgesamt höchstens etwa 50 Sekunden). Bei einem Fehlercode abbrechen und den vorherigen geprüften Release wieder aktivieren; keine endlose Warteschleife. Dieselbe Bereitschaftsprobe nach Rollback und weiteren Dienstneustarts ausführen.
+
+**Fehlerweitergabe in Release-Skripten:** Vor dem Wechsel zusätzlich `.next/BUILD_ID` sowohl der neuen als auch der vorherigen Rückfallversion prüfen. In einer `ready()`-Funktion muss jeder Curl-/JSON-Prüfschritt ausdrücklich mit `|| return $?` abbrechen: Bash unterdrückt `set -e` innerhalb einer Funktion, wenn deren Aufruf beispielsweise in `if ready` oder `ready || …` steht. Ein später erfolgreicher Flyerabruf darf einen vorher fehlgeschlagenen Miet-Konfigurationsabruf niemals verdecken. Rückroll-Restart und Rückroll-Bereitschaft separat prüfen und Fehler getrennt melden; keine erfolgreiche Wiederherstellung ohne erfolgreiche HTTP-/Inhaltsprobe behaupten.
 
 Wenn ein Bash-Umschaltskript hierfür einen `ERR`-Trap verwendet, vor Funktionsaufrufen `set -Eeuo pipefail` setzen. Ohne `-E` wird der Trap nicht in Funktionen wie Bereitschaftsprüfung oder Umschaltung vererbt; ein Fehler kann dann ohne Rückrollen beenden. Den Fehlerpfad vor Einsatz isoliert prüfen, ohne den laufenden Dienst absichtlich ausfallen zu lassen. Befund und Gegenprüfung: `docs/audits/2026-10-10-academy-claim-removal.md`.
 
