@@ -55,6 +55,22 @@ Final text-delta candidate: `83f817c45ccbe6e1eac6d8af02c749c05639a7e8` (producti
 
 Final production smoke: 52 representative atmosphere/native-title cases passed (37.2s), plus 29 navigation/academy/accessibility cases passed (19.4s). Final integrity remains406/zero mismatches; no blocked request attempts were recorded. The obsolete owned3131 process was stopped after verifying its PID/cwd; other previews were preserved. Final runner color variables were unset; earlier NO_COLOR/FORCE_COLOR messages were runner warnings, not app-console findings.
 
-No unresolved visual defect was found in the scoped local checks. Independent whole-branch review remains the controller's gate. Ten known cocktail-photo gaps retain existing fallbacks. Native applications remain excluded/unqualified. Live readiness requires a fresh normal Linux release and separately authorized public/operational checks; none is inferred from this Mac webpack snapshot. No push or deployment was performed.
+Independent whole-document axe review then found one distinct confirmed contrast defect on `/gewinnspiel` at both widths: pending November/December labels inherited red `#e20f1d` over the new cool-gray `#f3f5f7`, only 4.448:1 for small text. The correction is scoped to `.pending .eyebrow`, using the existing burgundy token; no other brand color, content or state changes. Two computed-color browser regressions reproduced RED before the fix. Final production verification and review are recorded in the addendum/report. The 84-case independent review also returned 2,916 contrast-incomplete nodes, mostly gradients: those are not proof of AA conformance and require manual assessment. This audit is not full accessibility certification.
+
+Two concrete ARIA incompletes were also corrected narrowly: the labeled bottle-lineup and lesson-progress divs now have `role="group"`, supporting their existing names without changing layout or lesson state. Three route-level named-group tests reproduced RED first. Other legacy spans/progress behaviors were not redesigned.
+
+Independent whole-branch review remains the controller's gate. Ten known cocktail-photo gaps retain existing fallbacks. Native applications remain excluded/unqualified. Live readiness requires a fresh normal Linux release and separately authorized public/operational checks; none is inferred from this Mac webpack snapshot. No push or deployment was performed.
 
 For the preview, hard-refresh with Cmd+Shift+R (Mac) or Ctrl+Shift+R.
+
+## Final accessibility correction addendum — current preview
+
+Final source/test candidate `f313213cd475d9a498499ec873da39ce4000b75c` contains the one pending-label color rule and two group roles, following the previously verified native-title space. The full web suite passed again: 131 files / 2,418 tests, 40.94s. Full lint: 0 errors / 20 baseline warnings; TypeScript passed; integrity: 406 checked, zero mismatches.
+
+Fresh snapshot `/private/tmp/jammers-atmosphere-preview-final-3133-a11y` passed typegen, TypeScript and the disclosed production webpack build. Final focused production checks passed: 27 atmosphere/contrast/group/title/quiet-form/no-JS cases (24.5s) and 29 navigation/academy/accessibility cases (19.9s). The earlier 252-case layout matrix belongs to `3cf109a`; 52+29 intermediate smoke cases belong to `83f817c`. These are not represented as complete final-candidate reruns.
+
+At 360/1440px with JavaScript disabled, pending labels compute to `rgb(165,21,34)` on `rgb(243,245,247)`, **7.037858:1**. Three named-group route checks each expose exactly one group; native title remains exactly `Pralle Kirsche.`. See `final3133-a11y-proof.json` and `final3133-pending-{360,1440}.png` in the acceptance folder. No blocked request attempts were logged.
+
+Independent focused axe re-review on final `f313213` passed all **8/8 cases**: zero confirmed violations, zero other incomplete-rule issues, verified 7.0379:1 pending-label contrast and named groups. No runtime, font, started-image, geometry or blocked-request errors. Evidence: `/private/tmp/jammers-atmosphere-independent-a11y-rereview-2026-10-12.json`. Its **233 contrast incompletes** remain manual: 218 gradients, 14 symbols, one obstruction. The original 84-case report on `83f817c` is retained unchanged; this eight-case re-review is not a full final-candidate census. No blanket AA certification is claimed. Final whole-branch review remains the controller's gate.
+
+**Current preview: http://127.0.0.1:3133** — listener PID 62470, session 90464, left running. Prior owned 3131 and 3132 previews were stopped only after PID/cwd verification and successor checks. Other existing previews and repository Next outputs were preserved. Earlier preview references in this audit are historical.
