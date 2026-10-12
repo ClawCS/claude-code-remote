@@ -34,7 +34,7 @@ test.each(products)("renders %s as a separate original bottle and native product
 test("detail exposes only the verified facts, one title and original separate scene/product layers", () => {
   const html = renderToStaticMarkup(<PralleKirschePage />);
   expect(html.match(/<h1\b/g)).toHaveLength(1);
-  expect(html.match(/<h1\b[^>]*>(.*?)<\/h1>/s)?.[1].replace(/<[^>]*>/g, "")).toBe("Pralle Kirsche.");
+  expect(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "")).toBe("Pralle Kirsche.");
   for (const text of ["Kirsch-Mandel-Likör", "15% Vol.", "700 ml", 'data-atmosphere="spirits"', "data-brand-background", "data-brand-product", "data-brand-light", "data-brand-copy"]) expect(html).toContain(text);
   for (const href of ["/eigenmarke", "/kontakt", "#geschmack", "/akademie/likoere"]) expect(html).toContain(`href="${href}"`);
   for (const [slug] of products.slice(1)) expect(html).toContain(`href="/eigenmarke#${slug}"`);
