@@ -33,4 +33,14 @@ Ein Entwicklungsserver-Browserlauf zeigte zusätzlich Navigationstimeouts und ei
 
 ## Veröffentlichung
 
-Öffentliche Veröffentlichung und Linux-/HTTPS-Prüfresultate werden erst nach dem neuen Release ergänzt. Push oder localhost allein sind kein Live-Nachweis.
+Der exakt geprüfte App-Commit `00302feabe2698929c05d46723e6c9d8b85a7d57` ist auf der bestätigten Website-VM als neuer Linux-Release aktiv. Erfolgreiche Bereitschaftsprüfung abgeschlossen am **12.10.2026, 12:21:20 UTC / 14:21:20 Europe/Berlin**. Rückrollziel bleibt `3cbce2652040f3271464bb573ac121bf1cd47a9a`.
+
+- Linux-Webteilprüfung: 2.299 Tests / 124 Dateien bestanden; die vier lokal geprüften Chromiumdateien und die native Bewerbungsqualifikation sind auf Linux ausdrücklich ausgeschlossen. Lint, Typen, 210 Originalangebote und Produktionsbuild bestanden.
+- Erste Bereitschaftsprobe traf den kurzen Dienststart und wurde innerhalb der begrenzten Retry-Regel erfolgreich wiederholt. Mietkonfiguration weiterhin `enabled:false`, `testMode:false`, `onlinePayment:false`; Bewerbungen weiterhin deaktiviert. Aktuelle Angebots-API: Status `ok`, 82 Angebote mit 82 Zusammenfassungen, 70 DE / 12 NL, unveränderte Gültigkeit 12.–17.10.2026.
+- Alle neun Server-Sicherheitskonfigurationen vor/nach dem Wechsel hashidentisch. Keine Hosting-/DNS-/Mail-/Zahlungs-/Upload-/Löschaktivierung, keine alten Releases gelöscht. Nur das eigene hashgeprüfte temporäre Uploadarchiv anschließend entfernt; rund 3,56 GB frei.
+- Tatsächlicher HTTPS-Inhaltscheck: Status `ok`, keine Fehler/Warnungen, `websiteVerified=true`, `deploymentVerified=true`; abgeschlossen 12:22:16 UTC. Beide Originale/Cover und alle Kacheln geladen und gegen ihre Bindung geprüft.
+- Öffentlicher HTTP-Audit: 293 Seiten, 2.580 lokale Ressourcen, 31 API-Verträge und fünf unbekannte Routen geprüft; keine Fehler oder Warnungen. Externe Linkziele werden in diesem Audit nicht abgerufen.
+- Gewinnspiel-Bildprüfung: 18 tatsächliche Bild-GETs, keine Befunde.
+- Öffentliche Chromiumprüfung: 13/13 Fälle (vier Kürzungsverträge, neun Navigationsfälle) bei echter Zeit bestanden, ergänzt durch manuelle Startseite-/NL-/Datenschutzkontrolle. Keine Konsolenwarnungen, Browserfehler oder Seitenfehler. Desktop-/Mobilansicht geprüft; vier Warengruppenziele, fünf Hauptnavigationseinträge und die erhaltenen Unterseiten funktionieren.
+
+Quellstand und Abschlussdokumentation sind lokal und auf GitHub gesichert. Ausführliche Logs und Screenshots liegen im privaten lokalen Evidenzbereich; fremde Screenshot-/Auditänderungen bleiben unverändert. Der reine Abschlussdokumentationscommit verändert den laufenden App-Release nicht.
