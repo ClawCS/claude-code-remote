@@ -56,6 +56,7 @@ describe("source-gated team gallery", () => {
     expect(html).not.toContain("<button");
     expect(html).not.toContain("canva.com");
     expect(html).not.toMatch(/\bPB[A-Za-z0-9_-]{12,}\b/);
-    expect(html.match(/<figure/g)).toHaveLength(8);
+    expect(html.split('data-collection="team"')[1].match(/<figure/g)).toHaveLength(8);
+    expect(html).toContain('alt="Sven und Niko von Trinkgut Jammers"');
   });
 });

@@ -19,7 +19,7 @@ export default function AssortmentSection() {
     </div>
     <nav className={styles.categories} aria-label="Getränke entdecken">
       {categories.map(item => <Link key={item.href} href={item.href} prefetch={false} className={styles.categoryCard} data-category={item.slug} style={{ "--category-photo-position": item.position } as CSSProperties}>
-        <span className={styles.categoryPhoto}><Image src={item.photo.src} width={item.photo.width} height={item.photo.height} alt={item.photo.alt} sizes="(max-width: 767px) 40vw, 22vw" /></span>
+        <span className={styles.categoryPhoto}><Image src={item.photo.src} width={item.photo.width} height={item.photo.height} alt={item.photo.alt} sizes="(max-width: 767px) 100vw, 50vw" /></span>
         <span className={styles.categoryMeta}><span className={styles.categoryTitle}>{item.title}</span><span className={styles.categoryArrow}><ArrowUpRight /></span></span>
       </Link>)}
     </nav>

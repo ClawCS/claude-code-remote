@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "created": "2026-10-12",
+  "scope": "Local atmospheric design correction only; no deployment authority.",
+  "authorization": "Operator requested the prior Eigenmarken poster emotion restored as layered image-first scenes, with unmodified original bottle cutouts and native HTML text. Separate illustrative backgrounds explicitly approved.",
+  "generator": "Built-in image_gen.imagegen",
+  "method": "Five distinct one-image generation calls, no reference images passed. Existing original posters were visually inspected as art direction. Generated scenes contain ingredients and light only; no generated bottles, logos or text. Not documentary market photography.",
+  "invariants": [
+    "All six original bottle PNGs unchanged",
+    "Original posters unchanged",
+    "Existing approved cherry scene unchanged",
+    "No extra product detail routes or product facts"
+  ],
+  "consumers": [
+    "/",
+    "/eigenmarke"
+  ],
+  "files": [
+    {
+      "name": "hazelnut",
+      "prompt": "Use case: ads-marketing. Asset type: scene-only photographic background for an adult liqueur product website, landscape 3:2. Create a polished atmospheric ingredient still life, physically believable premium studio food photography, vivid and tactile rather than a flat gradient. Composition: a dark physical tabletop occupies the bottom quarter, the entire central 35% of the image must be visually calm and empty for a separate tall original bottle that will later be overlaid in HTML; ingredients only clustered at lower left and lower right edges, upper two-thirds softly lit atmospheric backdrop. Viewpoint just above tabletop level, realistic depth, delicate shallow focus, visible textures, rich chiaroscuro. NO bottle, NO container, NO glass, NO product, NO packaging, NO logo, NO text, NO lettering, NO people, NO hands, NO watermark, NO frame, NO poster layout. Ingredients stay plausible and modest; no floating objects, no excessive particle explosion. Scene: whole hazelnuts and split roasted hazelnuts, a few cracked shells on a burnished dark copper surface. Rich golden honey and copper light pours from upper left, warm amber rim lighting along nuts, deep toasted brown-black background with a restrained diffuse gold glow and subtle out-of-focus copper highlights. Luxurious, warm, nutty, sensory. Do not add chocolate or other ingredients.",
+      "source": {
+        "archivePath": "assets/source/eigenmarken-scenes/v2-originals/hazelnut.png",
+        "sha256": "303ece3e5fffdc05fb788fe958b2bf8ce4ed5c995929f903ea3103700574ee91"
+      },
+      "output": {
+        "path": "public/images/eigenmarken-scenes/v2-hazelnut.webp",
+        "sha256": "fe6f77f5cc36eabc9c064ded5c31412562cbcec44d14196a916d9753373e4dbb",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 104296,
+        "transform": "Complete frame; Sharp resize max-width 1536 without enlargement; WebP quality 85, effort 6; no crop, recoloring or compositing."
+      }
+    },
+    {
+      "name": "vanilla",
+      "prompt": "Use case: ads-marketing. Asset type: scene-only photographic background for an adult liqueur product website, landscape 3:2. Create a polished atmospheric ingredient still life, physically believable premium studio food photography, vivid and tactile rather than a flat gradient. Composition: a dark physical tabletop occupies the bottom quarter, the entire central 35% of the image must be visually calm and empty for a separate tall original bottle that will later be overlaid in HTML; ingredients only clustered at lower left and lower right edges, upper two-thirds softly lit atmospheric backdrop. Viewpoint just above tabletop level, realistic depth, delicate shallow focus, visible textures, rich chiaroscuro. NO bottle, NO container, NO glass, NO product, NO packaging, NO logo, NO text, NO lettering, NO people, NO hands, NO watermark, NO frame, NO poster layout. Ingredients stay plausible and modest; no floating objects, no excessive particle explosion. Scene: three richly textured dark vanilla pods and one small pale vanilla orchid near the lower side edges on a smooth dusky plum surface. Soft luminous ivory light from above-left sweeps through a deep muted plum and mauve atmosphere, silken light reflections with gentle golden accents, creamy dreamy mood but dark dimensional photography. Main palette plum-black, muted violet and ivory light, NOT a beige or cream flat background, no milk, no cream splashes, no dessert or bowls.",
+      "source": {
+        "archivePath": "assets/source/eigenmarken-scenes/v2-originals/vanilla.png",
+        "sha256": "7dfeb5d220e7e2a0b13c1897b7162d9350ea70dfd7bc4604e1081a2de1c73b70"
+      },
+      "output": {
+        "path": "public/images/eigenmarken-scenes/v2-vanilla.webp",
+        "sha256": "95ceb2e2e56d926cf28a5d75df1272182b928e32c6838816e5878bc5f6ed6aec",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 70824,
+        "transform": "Complete frame; Sharp resize max-width 1536 without enlargement; WebP quality 85, effort 6; no crop, recoloring or compositing."
+      }
+    },
+    {
+      "name": "caramel",
+      "prompt": "Use case: ads-marketing. Asset type: scene-only photographic background for an adult liqueur product website, landscape 3:2. Create a polished atmospheric ingredient still life, physically believable premium studio food photography, vivid and tactile rather than a flat gradient. Composition: a dark physical tabletop occupies the bottom quarter, the entire central 35% of the image must be visually calm and empty for a separate tall original bottle that will later be overlaid in HTML; ingredients only clustered at lower left and lower right edges, upper two-thirds softly lit atmospheric backdrop. Viewpoint just above tabletop level, realistic depth, delicate shallow focus, visible textures, rich chiaroscuro. NO bottle, NO container, NO glass, NO product, NO packaging, NO logo, NO text, NO lettering, NO people, NO hands, NO watermark, NO frame, NO poster layout. Ingredients stay plausible and modest; no floating objects, no excessive particle explosion. Scene: a few golden caramel cubes and a restrained glossy ribbon of melted caramel on dark copper-black stone at the lower edges. Burnt orange, amber, and fiery copper side-light produce luminous translucent caramel edges and a soft warm glow through the dark upper backdrop. Rich sensuous golden-brown reflective surface, restrained realism, not an explosion or flying splash. Do not add any other ingredients.",
+      "source": {
+        "archivePath": "assets/source/eigenmarken-scenes/v2-originals/caramel.png",
+        "sha256": "22576e9393ff30fb797cae706a097f3acb4164192a609a0043fbbd9f8cd0df9d"
+      },
+      "output": {
+        "path": "public/images/eigenmarken-scenes/v2-caramel.webp",
+        "sha256": "2b8f887729bd1551ff2ec350cfee75f4e611c21e547c36edaf0a21f923d181af",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 86712,
+        "transform": "Complete frame; Sharp resize max-width 1536 without enlargement; WebP quality 85, effort 6; no crop, recoloring or compositing."
+      }
+    },
+    {
+      "name": "licorice",
+      "prompt": "Use case: ads-marketing. Asset type: scene-only photographic background for an adult liqueur product website, landscape 3:2. Create a polished atmospheric ingredient still life, physically believable premium studio food photography, vivid and tactile rather than a flat gradient. Composition: a dark physical tabletop occupies the bottom quarter, the entire central 35% of the image must be visually calm and empty for a separate tall original bottle that will later be overlaid in HTML; ingredients only clustered at lower left and lower right edges, upper two-thirds softly lit atmospheric backdrop. Viewpoint just above tabletop level, realistic depth, delicate shallow focus, visible textures, rich chiaroscuro. NO bottle, NO container, NO glass, NO product, NO packaging, NO logo, NO text, NO lettering, NO people, NO hands, NO watermark, NO frame, NO poster layout. Ingredients stay plausible and modest; no floating objects, no excessive particle explosion. Scene: two coiled black licorice ribbons and a small piece of licorice root at the lower left; a few dark ripe cherries and a small broken pomegranate segment at lower right, with several ruby seeds nearby. Black polished stone surface with deep purple-black photographic backdrop, smoky violet rim light and dark ruby highlights. Dramatic, intense and tactile, very dark yet ingredient textures remain visible. No green light, no flames, no smoke clouds, no magical effects.",
+      "source": {
+        "archivePath": "assets/source/eigenmarken-scenes/v2-originals/licorice.png",
+        "sha256": "b1dc16a62dc10b4254ea37c7ed51470f4bb7e6b9dcf9c98f988843f60bb06aaf"
+      },
+      "output": {
+        "path": "public/images/eigenmarken-scenes/v2-licorice.webp",
+        "sha256": "2057164573b13a8b0dbb06834eff062694a2c1b615e2271dafbbf154f3b0eb9c",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 77094,
+        "transform": "Complete frame; Sharp resize max-width 1536 without enlargement; WebP quality 85, effort 6; no crop, recoloring or compositing."
+      }
+    },
+    {
+      "name": "anise",
+      "prompt": "Use case: ads-marketing. Asset type: scene-only photographic background for an adult liqueur product website, landscape 3:2. Create a polished atmospheric ingredient still life, physically believable premium studio food photography, vivid and tactile rather than a flat gradient. Composition: a dark physical tabletop occupies the bottom quarter, the entire central 35% of the image must be visually calm and empty for a separate tall original bottle that will later be overlaid in HTML; ingredients only clustered at lower left and lower right edges, upper two-thirds softly lit atmospheric backdrop. Viewpoint just above tabletop level, realistic depth, delicate shallow focus, visible textures, rich chiaroscuro. NO bottle, NO container, NO glass, NO product, NO packaging, NO logo, NO text, NO lettering, NO people, NO hands, NO watermark, NO frame, NO poster layout. Ingredients stay plausible and modest; no floating objects, no excessive particle explosion. Scene: a few star anise pods and clear irregular ice fragments at the lower left and right edges on dark blue slate lightly beaded with condensation. Luminous icy blue and silver-white side-light, crisp transparent ice edges, a restrained cool-blue glow through a midnight-blue atmospheric backdrop. Clean, fresh, refined, high-contrast studio photography with realistic tactile condensation, no snowy landscape, no snowflakes, no surreal glow.",
+      "source": {
+        "archivePath": "assets/source/eigenmarken-scenes/v2-originals/anise.png",
+        "sha256": "7f647edc6917c195a14dc3200fd665987759824ce1db958c9d358e7a57784483"
+      },
+      "output": {
+        "path": "public/images/eigenmarken-scenes/v2-anise.webp",
+        "sha256": "aa9d80d5fa7d0a0d2df145eeeb3dc53d591c6a49ff17e069b8a2b58efaf707ab",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 134708,
+        "transform": "Complete frame; Sharp resize max-width 1536 without enlargement; WebP quality 85, effort 6; no crop, recoloring or compositing."
+      }
+    }
+  ]
+}

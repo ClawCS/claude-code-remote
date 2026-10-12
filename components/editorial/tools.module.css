@@ -1,10 +1,10 @@
 .body { width: min(100%, 1152px); margin: auto; padding: clamp(2rem, 4vw, 3.5rem) var(--cinematic-spacing-gutter) clamp(3rem, 7vw, 6rem); }
-.body[data-tool="planner"] { background: radial-gradient(ellipse at 100% 0, var(--atmosphere-wash), transparent 40rem); }
+.body[data-tool="planner"] { background: white; }
 .body :is(h2, h3, label, button, a) { overflow-wrap: anywhere; }
 .body :global(.text-muted), .modal :global(.text-muted) { color: var(--cinematic-color-muted); }
 .narrow { max-width: 850px; }
 .workspace { display: grid; gap: 2rem; }
-.panel { padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--cinematic-color-line); border-radius: .75rem; background: white; }
+.panel { padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid #c7d0d6; border-radius: .5rem; background: white; box-shadow: 0 1rem 3rem #17212c08; }
 .panel h2 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 700; letter-spacing: -.03em; margin-bottom: 1rem; }
 .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
 .choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border: 1px solid var(--cinematic-color-line); border-top: 3px solid var(--atmosphere-accent, var(--cinematic-color-red)); border-radius: 0 0 .75rem .75rem; background: var(--cinematic-color-surface); }
@@ -16,16 +16,16 @@
 .steps { display: flex; gap: .5rem; margin-block: 1.5rem; }
 .steps span { flex: 1; height: 3px; background: var(--cinematic-color-line); }
 .steps span[data-active="true"] { background: var(--cinematic-color-red); }
-.option { width: 100%; min-height: 48px; padding: 1rem; border: 1px solid var(--cinematic-color-line); text-align: left; background: white; line-height: 1.5; }
+.option { width: 100%; min-height: 56px; padding: 1.1rem 1.25rem; border: 1px solid #aebac2; border-radius: .35rem; text-align: left; background: white; line-height: 1.5; }
 .option:hover { border-color: var(--cinematic-color-ink); background: var(--cinematic-color-surface); }
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1.5rem; }
 .mode[aria-pressed="true"] { background: var(--cinematic-color-ink); color: white; border-color: var(--cinematic-color-ink); }
 .planner { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: start; gap: 2rem; }
-.results { padding: clamp(1.25rem, 3vw, 2rem); background: var(--cinematic-color-surface); border-top: 3px solid var(--atmosphere-accent, var(--cinematic-color-red)); border-radius: 0 0 .75rem .75rem; }
+.results { padding: clamp(1.5rem, 3vw, 2.5rem); background: #eff4f0; border: 1px solid #c6d5c9; border-radius: .5rem; }
 .results h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
 .results dl { margin-block: 1.5rem; }
 .results dl > div { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1rem; border-bottom: 1px solid var(--cinematic-color-line); }
-.results dd { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.results dd { font-size: clamp(1.65rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; color: #164332; }
 .counterGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .counter { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; justify-content: space-between; padding: 1.25rem; background: white; border-bottom: 1px solid var(--cinematic-color-line); }
 .counter > :first-child { flex: 1 1 12rem; }
@@ -61,5 +61,10 @@
 .productPhoto > div { position: relative; aspect-ratio: 1; }
 .search { display: block; font-size: .875rem; font-weight: 500; }
 .search input { display: block; width: 100%; min-height: 48px; padding: .75rem 1rem; border: 1px solid var(--cinematic-color-muted); margin-top: .5rem; background: white; }
+.planner .panel label { display: block; font-weight: 600; }
+.planner .panel input:not([type="range"]):not([type="checkbox"]):not([type="radio"]), .planner .panel select { min-height: 52px; border-color: #84929d; border-radius: .35rem; background: white; }
+.counterControls button { border-color: #87969d; border-radius: .3rem; font-weight: 700; }
+.counterControls input { min-height: 48px; border-color: #87969d; border-radius: .3rem; }
+@media (min-width: 64rem) { .planner .results { position: sticky; top: 9rem; } }
 @media (max-width: 63.99rem) { .gameGrid, .productGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .planner { grid-template-columns: 1fr; } }
 @media (max-width: 39.99rem) { .choices, .gameGrid, .counterGrid, .productGrid { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat { padding: 1rem; } }

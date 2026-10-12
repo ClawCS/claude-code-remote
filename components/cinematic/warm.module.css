@@ -1,20 +1,20 @@
-.assortment { width:min(100%,var(--cinematic-layout-content-max)); margin:auto; padding:var(--cinematic-spacing-section) var(--cinematic-spacing-gutter); }
-.eyebrow { margin:0 0 var(--cinematic-spacing-sm); font-size:var(--cinematic-typography-size-label); font-weight:var(--cinematic-typography-weight-bold); letter-spacing:var(--cinematic-typography-tracking-wide); color:var(--cinematic-color-burgundy); }
-.assortment { background:linear-gradient(155deg,var(--cinematic-color-white) 15%,var(--cinematic-color-surface) 85%); }
-.assortment h2 { font-family:var(--cinematic-typography-family-sans); font-size:var(--cinematic-typography-size-editorial-heading); font-weight:var(--cinematic-typography-weight-extra-bold); line-height:var(--cinematic-typography-line-height-heading); letter-spacing:var(--cinematic-typography-tracking-tight); margin:0; }
-.sectionHeading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap:var(--cinematic-spacing-lg); margin-bottom:var(--cinematic-spacing-two-xl); }
-.assortment .sectionHeading { margin-bottom:var(--cinematic-spacing-lg); }
+.assortment { width:100%; margin: auto; padding: clamp(var(--cinematic-spacing-two-xl),6vw,var(--cinematic-spacing-four-xl)) max(var(--cinematic-spacing-gutter),calc((100vw - 82rem)/2)); }
+.eyebrow { margin: 0 0 var(--cinematic-spacing-sm); font-size:var(--cinematic-typography-size-label); font-weight:var(--cinematic-typography-weight-bold); letter-spacing:var(--cinematic-typography-tracking-wide); color:var(--cinematic-color-burgundy); }
+.assortment { background:var(--cinematic-color-home-scene-silver); }
+.assortment h2 { font-family:var(--cinematic-typography-family-sans); font-size: var(--cinematic-typography-home-scene-size-assortment); font-weight: var(--cinematic-typography-weight-extra-bold); line-height: var(--cinematic-typography-home-scene-line-height-entry); letter-spacing: var(--cinematic-typography-home-scene-tracking-display); margin: 0; max-width:12ch; }
+.sectionHeading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap: var(--cinematic-spacing-lg); margin-bottom: var(--cinematic-spacing-two-xl); }
+.assortment .sectionHeading { margin-bottom: var(--cinematic-spacing-home-scene-chapter-gap); }
 .textLink { display:inline-flex; min-height:var(--cinematic-spacing-target); align-items:center; color:var(--cinematic-color-ink); text-underline-offset:.3em; font-size:var(--cinematic-typography-size-small); }
-.categories { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--cinematic-spacing-xl) var(--cinematic-spacing-md); }
-.categoryCard { display:flex; flex-direction:column; min-width:0; min-height:var(--cinematic-spacing-target); color:var(--cinematic-color-ink); text-decoration:none; border:0; }
-.categoryCard[data-category="bier"] { --cinematic-color-category-footer:var(--cinematic-color-category-amber); }
-.categoryCard[data-category="alkoholfrei"] { --cinematic-color-category-footer:var(--cinematic-color-category-olive); }
-.categoryCard[data-category="wein"] { --cinematic-color-category-footer:var(--cinematic-color-category-bordeaux); }
-.categoryCard[data-category="spirituosen"] { --cinematic-color-category-footer:var(--cinematic-color-category-spice); }
-.categoryPhoto { display:block; aspect-ratio:3 / 4; overflow:hidden; background:var(--cinematic-color-surface); }
+.categories { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap: var(--cinematic-spacing-md); }
+.categoryCard { position:relative; display:flex; flex-direction:column; min-width:0; min-height:17rem; color:var(--cinematic-color-white); text-decoration:none; border:0; }
+.categoryCard[data-category="bier"] { --cinematic-color-category-footer:var(--cinematic-color-home-scene-forest); grid-column:1 / -1; min-height:23rem; }
+.categoryCard[data-category="alkoholfrei"] { --cinematic-color-category-footer:var(--cinematic-color-home-scene-petrol); }
+.categoryCard[data-category="wein"] { --cinematic-color-category-footer:var(--cinematic-color-home-scene-wine); }
+.categoryCard[data-category="spirituosen"] { --cinematic-color-category-footer:var(--cinematic-color-home-scene-slate); grid-column:1 / -1; min-height:18rem; }
+.categoryPhoto { position:absolute; inset:0; display:block; overflow:hidden; background:var(--cinematic-color-home-scene-photo-base); }
 .categoryPhoto img { display:block; width:100%; height:100%; object-fit:cover; object-position:var(--category-photo-position); }
-.categoryMeta { display:grid; flex:1; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:var(--cinematic-spacing-sm); min-height:5.5rem; padding:var(--cinematic-spacing-md); background:var(--cinematic-color-category-footer); }
-.categoryTitle { min-width:0; font-size:var(--cinematic-typography-size-category-name); font-weight:var(--cinematic-typography-weight-extra-bold); line-height:var(--cinematic-typography-line-height-heading); letter-spacing:var(--cinematic-typography-tracking-tight); }
+.categoryMeta { position:relative; z-index:1; display:grid; margin-top: auto; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap: var(--cinematic-spacing-xs); min-height:4.5rem; padding: var(--cinematic-spacing-home-scene-button-x); background:var(--cinematic-color-category-footer); }
+.categoryTitle { min-width:0; font-size: var(--cinematic-typography-home-scene-size-category); font-weight: var(--cinematic-typography-weight-extra-bold); line-height: var(--cinematic-typography-home-scene-line-height-category); letter-spacing: var(--cinematic-typography-tracking-tight); }
 .categoryArrow { display:inline-flex; font-size:var(--cinematic-typography-size-lead); }
 .categoryArrow svg { display:block; }
 .categoryCard:hover .categoryTitle { text-decoration:underline; text-underline-offset:.15em; }
@@ -24,19 +24,26 @@
   .categoryCard:hover .categoryPhoto img, .categoryCard:focus-visible .categoryPhoto img { transform:scale(1.035); }
   .categoryCard:hover .categoryArrow svg, .categoryCard:focus-visible .categoryArrow svg { transform:translate(.15em,-.15em); }
 }
-.rangeNote { font-size:var(--cinematic-typography-size-small); color:var(--cinematic-color-muted); margin:var(--cinematic-spacing-md) 0 0; }
-.discoveries { display:grid; gap:var(--cinematic-spacing-section); margin-top:var(--cinematic-spacing-section); }
-.discoveries article { display:grid; gap:var(--cinematic-spacing-xl); align-items:center; min-width:0; }
-.discoveries figure { margin:0; background:var(--cinematic-color-surface); }
+.rangeNote { font-size:var(--cinematic-typography-size-small); color:var(--cinematic-color-muted); margin: var(--cinematic-spacing-md) 0 0; }
+.discoveries { display:grid; gap: var(--cinematic-spacing-section); margin-top: var(--cinematic-spacing-section); }
+.discoveries article { display:grid; gap: var(--cinematic-spacing-xl); align-items:center; min-width:0; }
+.discoveries figure { margin: 0; background:var(--cinematic-color-surface); }
 .discoveryImage { display:block; width:100%; height:auto; max-height:38rem; object-fit:contain; }
 .discoveryCopy { min-width:0; }
-.discoveries h3 { font-size:var(--cinematic-typography-size-heading); line-height:var(--cinematic-typography-line-height-heading); font-weight:var(--cinematic-typography-weight-extra-bold); margin:0 0 var(--cinematic-spacing-lg); letter-spacing:var(--cinematic-typography-tracking-tight); }
+.discoveries h3 { font-size:var(--cinematic-typography-size-heading); line-height:var(--cinematic-typography-line-height-heading); font-weight:var(--cinematic-typography-weight-extra-bold); margin: 0 0 var(--cinematic-spacing-lg); letter-spacing:var(--cinematic-typography-tracking-tight); }
 .discoveries p { font-size:var(--cinematic-typography-size-lead); line-height:var(--cinematic-typography-line-height-body); max-width:42ch; color:var(--cinematic-color-muted); }
-.discoveries a { display:inline-flex; min-height:var(--cinematic-spacing-target); align-items:center; gap:var(--cinematic-spacing-md); margin-top:var(--cinematic-spacing-md); color:var(--cinematic-color-ink); text-underline-offset:.3em; font-size:var(--cinematic-typography-size-small); }
-.knowledge { margin-top:var(--cinematic-spacing-two-xl); }
+.discoveries a { display:inline-flex; min-height:var(--cinematic-spacing-target); align-items:center; gap: var(--cinematic-spacing-md); margin-top: var(--cinematic-spacing-md); color:var(--cinematic-color-ink); text-underline-offset:.3em; font-size:var(--cinematic-typography-size-small); }
+.knowledge { margin-top: var(--cinematic-spacing-two-xl); }
 @media(min-width:48rem) {
-  .categories { grid-template-columns:repeat(4,minmax(0,1fr)); }
-  .discoveries article { grid-template-columns:1.05fr .95fr; gap:var(--cinematic-spacing-three-xl); }
+  .categories { grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:repeat(2,minmax(16rem,19vw)); }
+  .categoryCard { min-height:0; }
+  .categoryCard[data-category="bier"] { grid-column:1 / 3; grid-row:1 / 3; min-height:0; }
+  .categoryCard[data-category="spirituosen"] { grid-column:3 / 5; grid-row:2; min-height:0; }
+  .categoryCard[data-category="bier"] .categoryTitle { font-size: var(--cinematic-typography-home-scene-size-category-featured); }
+  .categoryMeta { padding: var(--cinematic-spacing-home-scene-panel-x) var(--cinematic-spacing-lg); }
+  .categoryCard[data-category="alkoholfrei"] .categoryMeta, .categoryCard[data-category="wein"] .categoryMeta { padding-inline: var(--cinematic-spacing-md); }
+  .categoryCard[data-category="alkoholfrei"] .categoryTitle, .categoryCard[data-category="wein"] .categoryTitle { font-size: var(--cinematic-typography-home-scene-size-category-small); }
+  .discoveries article { grid-template-columns:1.05fr .95fr; gap: var(--cinematic-spacing-three-xl); }
   .discoveries article:nth-child(even) { grid-template-columns:.95fr 1.05fr; }
   .discoveries article:nth-child(even) figure { order:2; }
 }

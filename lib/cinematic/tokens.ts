@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { HOME_SCENE_TOKENS } from "./home-scene-tokens";
 
 type DeepReadonly<T> = T extends (...args: never[]) => unknown
   ? T
@@ -17,6 +18,7 @@ function deepFreeze<T extends object>(value: T): DeepReadonly<T> {
 
 export const CINEMATIC_TOKENS = deepFreeze({
   color: {
+    homeScene: HOME_SCENE_TOKENS.color,
     yellow: "#FEE005",
     red: "#E20F1D",
     blue: "#0086C8",
@@ -48,6 +50,7 @@ export const CINEMATIC_TOKENS = deepFreeze({
     categorySpice: "#DBC1AC",
   },
   typography: {
+    homeScene: HOME_SCENE_TOKENS.typography,
     family: {
       sans: "var(--font-jakarta)",
       display: "var(--font-jakarta)",
@@ -73,6 +76,7 @@ export const CINEMATIC_TOKENS = deepFreeze({
     tracking: { tight: "-0.045em", normal: "0em", label: "0.08em", wide: "0.14em" },
   },
   spacing: {
+    homeScene: HOME_SCENE_TOKENS.spacing,
     none: "0rem",
     hairline: "1px",
     twoXs: "0.25rem",

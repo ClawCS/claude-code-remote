@@ -6,11 +6,12 @@ import { formatDate } from "@/lib/cinematic/presentation";
 import { SITE_LINKS } from "@/lib/cinematic/site";
 
 import styles from "./editorial.module.css";
+import scenes from "./home-scenes.module.css";
 
 export default function InstagramSection(): React.JSX.Element {
   return (
     <section
-      className={styles.instagramSection}
+      className={`${styles.instagramSection} ${scenes.instagram}`}
       id="instagram"
       aria-labelledby="instagram-title"
     >

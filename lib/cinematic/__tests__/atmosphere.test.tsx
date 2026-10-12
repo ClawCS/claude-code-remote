@@ -45,7 +45,7 @@ describe("closed presentation route boundary", () => {
   });
 });
 
-const intro = <PageIntro theme="beer" title="Getränkespezialitäten entdecken" description="Originale und Informationen bleiben getrennt."
+const intro = <PageIntro theme="beer" mediaFit="contain" title="Getränkespezialitäten entdecken" description="Originale und Informationen bleiben getrennt."
   breadcrumbs={[{ label: "Sortiment", href: "/produkte" }, { label: "Bier" }]}
   media={{ src: "/images/test-portrait.webp", alt: "Freigegebenes Hochformatmotiv", width: 600, height: 900, position: "50% 40%" }}>
   <a href="/kontakt">Besuch planen</a>
@@ -101,7 +101,8 @@ test.each([360, 1440])("keeps full media and readable native text separate witho
     const title = await page.locator("h1").boundingBox();
     expect(image).not.toBeNull();
     expect(title).not.toBeNull();
-    expect(image!.x >= title!.x + title!.width || image!.y >= title!.y + title!.height).toBe(true);
+    expect(image!.x >= title!.x + title!.width || image!.y >= title!.y + title!.height
+      || image!.x + image!.width <= title!.x || image!.y + image!.height <= title!.y).toBe(true);
     expect(await media.evaluate(node => getComputedStyle(node).objectFit)).toBe("contain");
     expect(await media.evaluate(node => getComputedStyle(node).animationName)).toBe("none");
     expect(await page.locator("[data-intro-light]").getAttribute("aria-hidden")).toBe("true");

@@ -1,5 +1,4 @@
 "use client";
-import AcademyCover from "@/components/AcademyCover";
 import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/learning.module.css";
 import editorial from "@/components/editorial/editorial.module.css";
@@ -160,7 +159,7 @@ function CourseBody({ course, children, query }: { course: CourseNavigation; chi
 
   return (
     <>
-      <PageIntro theme="learning" eyebrow="Getränkeakademie" title={course.title} description={`${course.difficulty} · ${course.duration} · ${course.lessons.length} Lektionen + Abschlusstest`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Akademie", href: "/akademie" }, { label: course.title, ...(activeLesson ? { href: lessonHref(course.slug, 0) } : {}) }, ...(activeLesson ? [{ label: lesson.title }] : [])]}>
+      <PageIntro theme="learning" media={{ src: `/images/akademie/${course.slug}-editorial.webp`, alt: `${course.title} · Themenbild`, width: 1200, height: 800 }} eyebrow="Getränkeakademie" title={course.title} description={`${course.difficulty} · ${course.duration} · ${course.lessons.length} Lektionen + Abschlusstest`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Akademie", href: "/akademie" }, { label: course.title, ...(activeLesson ? { href: lessonHref(course.slug, 0) } : {}) }, ...(activeLesson ? [{ label: lesson.title }] : [])]}>
         <a href="#course-lesson" className={editorial.secondaryLink}>Zur aktuellen Lektion</a>
       </PageIntro>
       <div data-learning="course" className={styles.body}>
@@ -172,7 +171,6 @@ function CourseBody({ course, children, query }: { course: CourseNavigation; chi
               {course.lessons.map((l, i) => <Link key={i} href={lessonHref(course.slug, i)} prefetch={false} aria-label={`Lektion ${i + 1}: ${l.title}`} aria-current={i === activeLesson ? "step" : undefined}>{i + 1}{lessonQuizDone[i] !== undefined && <span aria-label="abgeschlossen"> ✓</span>}</Link>)}
             </div>
           </div>
-          <figure><AcademyCover slug={course.slug} /></figure>
         </div>
       <div className={styles.course}>
         {/* Sidebar */}

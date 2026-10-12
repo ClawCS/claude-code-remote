@@ -19,8 +19,9 @@ export default function LocationFooter(): React.JSX.Element {
       id="kontakt"
       aria-labelledby="kontakt-title"
     >
-      <p className={styles.eyebrow}>Dein Getränkemarkt in Goch</p>
-      <h2 id="kontakt-title">Komm vorbei.</h2>
+      <div className={styles.footerVisit}>
+      <div><p className={styles.eyebrow}>Dein Getränkemarkt in Goch</p>
+      <h2 id="kontakt-title">Komm vorbei.</h2></div>
       <address>
         <strong>{MARKET.displayName}</strong>
         <span>{MARKET.street}</span>
@@ -52,6 +53,8 @@ export default function LocationFooter(): React.JSX.Element {
           Für Grenzkunden: Nederlands
         </Link>
       </nav>
+      </div>
+      <div className={styles.footerInner}>
       <nav className={styles.legal} aria-label="Rechtliche Informationen">
         {legalLinks.map((link) => (
           <Link key={link.href} href={link.href} prefetch={false}>
@@ -74,6 +77,7 @@ export default function LocationFooter(): React.JSX.Element {
       <p className={styles.footerFineprint}>
         {MARKET.legalName} · Inhaber {MARKET.owner}
       </p>
+      </div>
     </footer>
   );
 }

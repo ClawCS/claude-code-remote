@@ -93,7 +93,10 @@ test.each([360, 768, 1440])("keeps the collection and cherry page readable witho
         expect(await product.evaluate(node => getComputedStyle(node).animationName)).toBe("none");
         const image = (await product.boundingBox())!;
         const copy = (await stage.locator("[data-brand-copy]").boundingBox())!;
-        expect(image.x >= copy.x + copy.width - 1 || image.y >= copy.y + copy.height - 1).toBe(true);
+        // Image-first mobile and alternating desktop stories are intentional;
+        // preserve the actual readability contract in all four directions.
+        expect(image.x >= copy.x + copy.width - 1 || image.y >= copy.y + copy.height - 1
+          || image.x + image.width <= copy.x + 1 || image.y + image.height <= copy.y + 1).toBe(true);
         expect(image.x).toBeGreaterThanOrEqual(0);
         expect(image.x + image.width).toBeLessThanOrEqual(width);
         expect(image.height).toBeGreaterThan(350);

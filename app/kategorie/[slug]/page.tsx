@@ -11,11 +11,11 @@ export const dynamic = "force-dynamic";
 
 // Explicit presentation choices for validated categories, not inventory claims.
 const presentation: Record<string, Pick<PageIntroProps, "theme" | "media">> = {
-  bier: { theme: "beer", media: { src: "/images/editorial/user/bueble-aufbau.webp", alt: "Büble-Aufbau im Getränkemarkt", width: 788, height: 1400 } },
-  alkoholfrei: { theme: "fresh", media: { src: "/images/editorial/user/spezi-regal.webp", alt: "Spezi-Regal im Getränkemarkt", width: 788, height: 1400 } },
-  wein: { theme: "wine", media: { src: "/images/editorial/user/weinregal.webp", alt: "Einblick in das Weinregal", width: 788, height: 1400 } },
-  sekt: { theme: "wine" },
-  spirituosen: { theme: "spirits", media: { src: "/images/editorial/google/baileys-aufbau.webp", alt: "Baileys-Aufbau im Getränkemarkt", width: 900, height: 1200 } },
+  bier: { theme: "beer", media: { src: "/images/akademie/bier-editorial.webp", alt: "Helles, bernsteinfarbenes und dunkles Bier im Glas · Themenbild", width: 1200, height: 800, position: "50% 58%" } },
+  alkoholfrei: { theme: "fresh", media: { src: "/images/akademie/mineralwasser-editorial.webp", alt: "Stilles und sprudelndes Wasser in Gläsern · Themenbild", width: 1200, height: 800, position: "50% 60%" } },
+  wein: { theme: "wine", media: { src: "/images/akademie/wein-editorial.webp", alt: "Weißwein, Rotwein und Rosé zur Verkostung · Themenbild", width: 1200, height: 800, position: "50% 56%" } },
+  sekt: { theme: "wine", media: { src: "/images/akademie/schaumwein-editorial.webp", alt: "Zwei Gläser Schaumwein mit feiner Perlage · Themenbild", width: 1200, height: 800 } },
+  spirituosen: { theme: "spirits", media: { src: "/images/akademie/whiskey-editorial.webp", alt: "Zwei Whisky-Verkostungsgläser mit unterschiedlichen Bernsteinfarben · Themenbild", width: 1200, height: 800, position: "50% 60%" } },
   lebensmittel: { theme: "neutral" },
 };
 
@@ -34,7 +34,7 @@ export default async function KategoriePage({ params }: { params: Promise<{ slug
   if (!category) notFound();
   const content = await getWeeklyOfferContent(resolveHomepageNow());
   return <>
-    <PageIntro {...presentation[slug]} eyebrow="Aktuelle Handzettelangebote" title={category.name} description={<><p>{introductions[slug]}</p><p>Das vollständige Sortiment findest du im Markt.</p>{presentation[slug]?.media && <p>Markteinblick – abgebildete Preise und Aufbauten sind keine aktuellen Angebote.</p>}</>} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: category.name }]} />
+    <PageIntro {...presentation[slug]} eyebrow="Unsere Getränkewelten" title={category.name} description={<><p>{introductions[slug]}</p><p>Das vollständige Sortiment findest du im Markt.</p></>} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: category.name }]} />
     <div className={styles.body} data-collection="category" data-category-intro>
       <nav className={styles.categories} aria-label="Warengruppen">{categories.map(item => <Link key={item.slug} href={`/kategorie/${item.slug}`} aria-current={slug === item.slug ? "page" : undefined}>{item.name}</Link>)}</nav>
       {slug === "spirituosen" && <p className="mb-8"><Link href="/regionale-spirituosen" className="text-primary underline font-bold">Regionale Spezialitäten vom Niederrhein entdecken</Link></p>}

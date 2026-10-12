@@ -42,7 +42,7 @@ test("keeps market groups and approved photos without decorative captions or the
   for (const heading of ["Menschen & Marktmomente", "Aufbauten & Entdeckungen", "Mehr als Getränke"]) {
     expect(html).toMatch(new RegExp(`<h2[^>]*>${heading.replaceAll("&", "&amp;")}<\\/h2>`));
   }
-  const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
+  const images = [...html.split('data-collection="market"')[1].matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
   expect(images).toHaveLength(20);
   for (const filename of ["safari-display.webp", "salitos-market.webp", "verkostung.webp", "desperados-detail.webp", "baileys-aufbau.webp", "regionaler-hofaufbau.webp", "grillbegleiter.webp"]) {
     expect(images.some(image => image.includes(filename)), filename).toBe(true);
@@ -89,7 +89,7 @@ test("places the price-free portfolio display with market discoveries, not curre
 
 test("adds greeting-card photos to gift ideas without replacing the gift-basket introduction", () => {
   const html = decodeURIComponent(renderToStaticMarkup(<GeschenkideenPage />));
-  const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image).filter(image => !image.includes('aria-hidden="true"'));
+  const images = [...html.split('data-collection="gifts"')[1].matchAll(/<img\b[^>]*>/g)].map(([image]) => image).filter(image => !image.includes('aria-hidden="true"'));
   expect(images).toHaveLength(3);
   expect(images[0]).toContain("/images/editorial/canva/gift-basket.webp");
   for (const filename of ["grusskarten-detail.webp", "karten-mit-charakter.webp"]) {
@@ -109,6 +109,6 @@ test.each([
 ] as const)("retains %s images without decorative captions", (_name, Page, count) => {
   const html = renderToStaticMarkup(<Page />);
   // The initiative mark is a logo; six original cutouts occur in lineup and stages.
-  expect([...html.matchAll(/<img\b[^>]*>/g)].filter(([image]) => !image.includes("/images/brands/jammers-hilft-symbol.png"))).toHaveLength(count);
+  expect([...html.matchAll(/<img\b[^>]*>/g)].filter(([image]) => !image.includes("/images/brands/jammers-hilft-symbol.png") && !image.includes('aria-hidden="true"'))).toHaveLength(count);
   expect(html).not.toContain("<figcaption");
 });

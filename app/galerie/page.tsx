@@ -10,7 +10,7 @@ import { galleryItems } from "@/data/gallery";
 export default function GaleriePage() {
   return (
     <div>
-      <PageIntro eyebrow="Unser Markt. Unsere Menschen." title="Team Jammers" description="Persönliche Gesichter aus unserem Markt in Goch – für deine Getränke, deine Feier und deine Fragen." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Unser Team" }]} />
+      <PageIntro theme="people" mediaFit="contain" media={{ src: "/images/home/cinematic/hero-team.webp", width: 915, height: 886, alt: "Sven und Niko von Trinkgut Jammers" }} eyebrow="Unser Markt. Unsere Menschen." title="Team Jammers" description="Persönliche Gesichter aus unserem Markt in Goch – für deine Getränke, deine Feier und deine Fragen." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Unser Team" }]} />
       <div className={styles.body} data-collection="team">
 
       <section className={styles.section} aria-labelledby="team-gallery-title">

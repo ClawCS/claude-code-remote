@@ -1,8 +1,8 @@
 .section {
   position: relative;
   width: min(100%, var(--cinematic-layout-content-max));
-  margin:auto;
-  padding:var(--cinematic-spacing-section) var(--cinematic-spacing-gutter);
+  margin: auto;
+  padding: var(--cinematic-spacing-section) var(--cinematic-spacing-gutter);
   background: var(--cinematic-color-paper);
   color: var(--cinematic-color-ink);
 }
@@ -21,13 +21,13 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: end;
-  margin-block-end:var(--cinematic-spacing-two-xl);
-  gap:var(--cinematic-spacing-sm);
+  margin-block-end: var(--cinematic-spacing-two-xl);
+  gap: var(--cinematic-spacing-sm);
 }
 
 .eyebrow,
 .validity {
-  margin:0;
+  margin: 0;
   color: var(--cinematic-color-red);
   font-size: var(--cinematic-typography-size-label);
   font-weight: var(--cinematic-typography-weight-bold);
@@ -37,7 +37,7 @@
 }
 
 .heading h2 {
-  margin:0;
+  margin: 0;
   font-family: var(--cinematic-typography-family-sans);
   font-size: var(--cinematic-typography-size-heading);
   font-weight: var(--cinematic-typography-weight-medium);
@@ -50,14 +50,14 @@
 
 .stage {
   display: grid;
-  gap:var(--cinematic-spacing-xl);
+  gap: var(--cinematic-spacing-xl);
   align-items: start;
 }
 
 .flyers {
   display: grid;
   min-width: 0;
-  gap:var(--cinematic-spacing-xl);
+  gap: var(--cinematic-spacing-xl);
 }
 
 .flyer,
@@ -69,12 +69,12 @@
 
 .flyer,
 .fallback {
-  padding:var(--cinematic-spacing-xl);
+  padding: var(--cinematic-spacing-xl);
 }
 
 .flyerCopy h3,
 .event > h3 {
-  margin:var(--cinematic-spacing-md) 0;
+  margin: var(--cinematic-spacing-md) 0;
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-lead);
   font-weight: var(--cinematic-typography-weight-bold);
@@ -84,7 +84,7 @@
 .flyerCopy > p:not(.validity),
 .event > p:not(.validity),
 .fallback p {
-  margin:0 0 var(--cinematic-spacing-md);
+  margin: 0 0 var(--cinematic-spacing-md);
   font-size: var(--cinematic-typography-size-body);
   line-height: var(--cinematic-typography-line-height-body);
 }
@@ -92,14 +92,14 @@
 .validity {
   display: inline-flex;
   min-height: var(--cinematic-spacing-target);
-  padding:0;
+  padding: 0;
   align-items: center;
   color: var(--cinematic-color-muted);
 }
 
 .event {
   position: relative;
-  padding:var(--cinematic-spacing-lg);
+  padding: var(--cinematic-spacing-lg);
   border-block-start: 1px solid var(--cinematic-color-line);
   background: transparent;
 }
@@ -109,7 +109,7 @@
   width: 100%;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  margin-block-end:var(--cinematic-spacing-lg);
+  margin-block-end: var(--cinematic-spacing-lg);
   background: var(--cinematic-color-gray);
 }
 
@@ -121,8 +121,8 @@
 .fallback a {
   display: inline-flex;
   min-block-size: var(--cinematic-spacing-target);
-  margin-inline-end:var(--cinematic-spacing-sm);
-  padding:0 var(--cinematic-spacing-md);
+  margin-inline-end: var(--cinematic-spacing-sm);
+  padding: 0 var(--cinematic-spacing-md);
   align-items: center;
   border: 1px solid var(--cinematic-color-red);
   color: var(--cinematic-color-red);
@@ -136,7 +136,7 @@
 .viewer {
   display: grid;
   min-width: 0;
-  gap:var(--cinematic-spacing-md);
+  gap: var(--cinematic-spacing-md);
 }
 
 .fallback a {
@@ -188,8 +188,8 @@
 .cover p {
   display: grid;
   min-height: 100%;
-  margin:0;
-  padding:var(--cinematic-spacing-lg);
+  margin: 0;
+  padding: var(--cinematic-spacing-lg);
   place-items: center;
   color: var(--cinematic-color-black);
 }
@@ -201,7 +201,7 @@
   min-block-size: var(--cinematic-spacing-target);
   align-items: center;
   justify-content: center;
-  padding:0 var(--cinematic-spacing-md);
+  padding: 0 var(--cinematic-spacing-md);
   border: 1px solid var(--cinematic-color-red);
   background: var(--cinematic-color-red);
   color:var(--cinematic-color-white);
@@ -214,7 +214,7 @@
 }
 
 .viewerHelp {
-  margin:0;
+  margin: 0;
   color: var(--cinematic-color-ink);
   font-size: var(--cinematic-typography-size-small);
   line-height: var(--cinematic-typography-line-height-body);
@@ -223,17 +223,17 @@
 .viewerLinks {
   display: flex;
   flex-wrap: wrap;
-  gap:var(--cinematic-spacing-sm);
+  gap: var(--cinematic-spacing-sm);
 }
 
-.viewerLinks a { padding:0; border:0; background:transparent; color:var(--cinematic-color-ink); font-weight:var(--cinematic-typography-weight-regular); text-decoration:underline; text-underline-offset:.25em; }
+.viewerLinks a { padding: 0; border:0; background:transparent; color:var(--cinematic-color-ink); font-weight:var(--cinematic-typography-weight-regular); text-decoration:underline; text-underline-offset:.25em; }
 
 .viewerBackdrop {
   position: fixed;
   z-index: 1000;
   inset: 0;
   display: grid;
-  padding:var(--cinematic-spacing-md);
+  padding: var(--cinematic-spacing-md);
   place-items: center;
   background: color-mix(
     in srgb,
@@ -247,15 +247,15 @@
   width: min(72rem, 100%);
   max-height: calc(100dvh - (2 * var(--cinematic-spacing-md)));
   overflow: auto;
-  padding:var(--cinematic-spacing-lg);
-  gap:var(--cinematic-spacing-md);
+  padding: var(--cinematic-spacing-lg);
+  gap: var(--cinematic-spacing-md);
   border: 1px solid var(--cinematic-color-line);
   background: var(--cinematic-color-surface);
   color: var(--cinematic-color-ink);
 }
 
 .viewerDialog h2 {
-  margin:0;
+  margin: 0;
   font-family: var(--cinematic-typography-family-display);
   font-size: var(--cinematic-typography-size-lead);
   font-weight: var(--cinematic-typography-weight-bold);
@@ -275,11 +275,11 @@
 
 .viewerError {
   display: grid;
-  gap:var(--cinematic-spacing-md);
+  gap: var(--cinematic-spacing-md);
 }
 
 .viewerError p {
-  margin:0;
+  margin: 0;
 }
 
 @media (min-width: 48rem) {
@@ -300,4 +300,33 @@
   font-size: var(--cinematic-typography-size-body);
   font-weight: var(--cinematic-typography-weight-bold);
   line-height: var(--cinematic-typography-line-height-body);
+}
+
+/* Homepage-only red chapter; other shared flyer surfaces stay neutral. */
+.homeStage {
+  width: 100%;
+  padding: clamp(var(--cinematic-spacing-home-scene-mobile-chapter), 6vw, var(--cinematic-spacing-four-xl)) max(var(--cinematic-spacing-gutter), calc((100vw - 82rem) / 2));
+  background: linear-gradient(125deg, var(--cinematic-color-home-scene-offer-start) 0%, var(--cinematic-color-home-scene-offer-mid) 72%, var(--cinematic-color-home-scene-offer-end) 100%);
+  color: var(--cinematic-color-white);
+}
+.homeStage::before { display: none; }
+.homeStage .heading { gap: var(--cinematic-spacing-xl); margin-bottom: var(--cinematic-spacing-two-xl); }
+.homeStage .eyebrow { margin-bottom: var(--cinematic-spacing-home-scene-button-x); color: var(--cinematic-color-white); font-size: var(--cinematic-typography-size-label); letter-spacing: var(--cinematic-typography-home-scene-tracking-offers); text-transform: uppercase; }
+.homeStage .heading h2 { font-size: var(--cinematic-typography-home-scene-size-offers); line-height: var(--cinematic-typography-home-scene-line-height-display); font-weight: var(--cinematic-typography-weight-extra-bold); letter-spacing: var(--cinematic-typography-home-scene-tracking-display); }
+.homeStage .allOffers { gap: var(--cinematic-spacing-md); color: var(--cinematic-color-white); font-weight: var(--cinematic-typography-weight-bold); font-size: var(--cinematic-typography-home-scene-size-link); }
+.homeStage .flyers { gap: clamp(var(--cinematic-spacing-md), 2.5vw, var(--cinematic-spacing-home-scene-chapter-gap)); }
+.homeStage .flyer { grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--cinematic-spacing-home-scene-button-x); padding: clamp(var(--cinematic-spacing-home-scene-button-x), 2.4vw, var(--cinematic-spacing-home-scene-chapter-gap)); background: var(--cinematic-color-white); color: var(--cinematic-color-home-scene-ink); box-shadow: 0 20px 60px var(--cinematic-color-home-scene-offer-shadow); }
+.homeStage .flyerCopy { padding: 0; min-height: 8.5rem; }
+.homeStage .flyerCopy h3 { margin: var(--cinematic-spacing-home-scene-detail) 0; font-size: var(--cinematic-typography-home-scene-size-flyer); font-weight: var(--cinematic-typography-weight-bold); letter-spacing: var(--cinematic-typography-home-scene-tracking-compact); line-height: var(--cinematic-typography-home-scene-line-height-flyer); }
+.homeStage .validity { color: var(--cinematic-color-home-scene-validity); font-size: var(--cinematic-typography-home-scene-size-micro); letter-spacing: var(--cinematic-typography-home-scene-tracking-validity); }
+.homeStage .cover { max-height: 33rem; }
+.homeStage .viewerTrigger { min-height: 48px; }
+.homeStage .event, .homeStage .fallback { padding: var(--cinematic-spacing-lg); background: var(--cinematic-color-white); color: var(--cinematic-color-home-scene-ink); }
+.homeStage .supplemental { border-color: var(--cinematic-color-translucent); }
+.homeStage .previewNotice { background: var(--cinematic-color-home-scene-notice); }
+.homeStage a:focus-visible, .homeStage button:focus-visible { outline: 3px solid var(--cinematic-color-home-scene-strong-focus); outline-offset: 4px; }
+@media (max-width: 47.999rem) {
+  .homeStage .heading { margin-bottom: var(--cinematic-spacing-xl); }
+  .homeStage .flyerCopy { min-height: 0; }
+  .homeStage .flyers { gap: var(--cinematic-spacing-lg); }
 }

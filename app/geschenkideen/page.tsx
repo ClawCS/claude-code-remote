@@ -14,7 +14,7 @@ export const metadata: Metadata = buildPageMetadata({ title: "Geschenkideen aus 
 export default function GeschenkideenPage() {
   const photo = MARKET_PHOTOS.gifts;
   return <>
-    <PageIntro eyebrow="Eine kleine Geste. Ein besonderer Anlass." title="Freude schenken. Mit Jammers." description="Ein Mitbringsel für die Einladung, ein Geburtstagsgruß oder ein Dankeschön: Wir helfen dir, eine passende Getränke-Geschenkidee zu finden." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: "Geschenkideen" }]} />
+    <PageIntro theme="spirits" mediaFit="contain" media={photo} eyebrow="Eine kleine Geste. Ein besonderer Anlass." title="Freude schenken. Mit Jammers." description="Ein Mitbringsel für die Einladung, ein Geburtstagsgruß oder ein Dankeschön: Wir helfen dir, eine passende Getränke-Geschenkidee zu finden." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: "Geschenkideen" }]} />
     <div className={styles.body} data-collection="gifts" data-category-photo="verified">
     <section className={styles.story} aria-labelledby="gift-advice"><figure><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 752px) 90vw, 45vw" /></figure>
       <div><h2 id="gift-advice">Für wen darf es sein?</h2><p>Sag uns, für welchen Anlass du etwas suchst, welche Getränke die Person gerne mag und welches Budget du im Blick hast. Inhalt, Verpackung, Preis und Verfügbarkeit stimmen wir persönlich mit dir ab.</p><p>Die Abbildung zeigt einen Geschenkkorb aus dem Markt. Die aktuell möglichen Produkte und Zusammenstellungen können davon abweichen.</p>

@@ -35,7 +35,7 @@ export default function MarktlebenPage() {
     ] },
   ];
   return <>
-    <PageIntro eyebrow="Jammers in Goch. Mit Menschen dahinter." title="Unser Markt. Nah dran." description="Bei uns geht es um Getränke – und um die Menschen, die den Markt jeden Tag mit Leben füllen. Echte Einblicke zeigen, wie unterschiedlich Marktalltag aussehen kann." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Marktleben" }]} />
+    <PageIntro theme="people" mediaFit="contain" media={MARKET_PHOTOS.moritzFiege} eyebrow="Jammers in Goch. Mit Menschen dahinter." title="Unser Markt. Nah dran." description="Bei uns geht es um Getränke – und um die Menschen, die den Markt jeden Tag mit Leben füllen. Echte Einblicke zeigen, wie unterschiedlich Marktalltag aussehen kann." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Marktleben" }]} />
     <div className={styles.body} data-collection="market">
     <p className={styles.fineprint}>Auf den Marktaufnahmen sichtbare Preise sind nicht aktuell; Sortiment und Verfügbarkeit bitte im Markt erfragen. Die Gas-Tauschwerbung findest du separat weiter unten.</p>
     {[

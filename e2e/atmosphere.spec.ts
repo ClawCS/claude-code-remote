@@ -24,10 +24,10 @@ async function originals(page: Page) {
 }
 
 const portraits = [
-  ["bier", "beer", "/images/editorial/user/bueble-aufbau.webp"],
-  ["alkoholfrei", "fresh", "/images/editorial/user/spezi-regal.webp"],
-  ["wein", "wine", "/images/editorial/user/weinregal.webp"],
-  ["spirituosen", "spirits", "/images/editorial/google/baileys-aufbau.webp"],
+  ["bier", "beer", "/images/akademie/bier-editorial.webp"],
+  ["alkoholfrei", "fresh", "/images/akademie/mineralwasser-editorial.webp"],
+  ["wein", "wine", "/images/akademie/wein-editorial.webp"],
+  ["spirituosen", "spirits", "/images/akademie/whiskey-editorial.webp"],
 ] as const;
 
 for (const [route, name] of [["/eigenmarke", "Die sechs Jammers-Originalflaschen"], ["/akademie/bier", "Lektionsfortschritt"], ["/akademie/bier/lektion/2", "Lektionsfortschritt"]]) {
@@ -77,7 +77,7 @@ test("party introductions show the intact illustration without replacing working
 });
 
 for (const width of [360, 1440]) {
-  test(`approved category portraits and independent copy at ${width}px`, async ({ page, context }) => {
+  test(`approved category scenes and independent readable copy at ${width}px`, async ({ page, context }) => {
     test.setTimeout(120_000);
     await readOnly(context);
     await page.setViewportSize({ width, height: 1000 });
@@ -88,12 +88,15 @@ for (const width of [360, 1440]) {
       const image = intro.locator("[data-intro-media] img");
       await expect(image).toHaveCount(1);
       expect(decodeURIComponent(await image.getAttribute("src") ?? "")).toContain(source);
-      await expect(image).toHaveCSS("object-fit", "contain");
+      await expect(image).toHaveCSS("object-fit", "cover");
       await originals(page);
       const bounds = await image.boundingBox();
-      expect(bounds!.height).toBeGreaterThan(bounds!.width);
+      expect(bounds!.width).toBeGreaterThan(bounds!.height);
       const title = await intro.locator("h1").boundingBox();
-      expect(title!.x + title!.width <= bounds!.x || title!.y + title!.height <= bounds!.y).toBe(true);
+      // On mobile a complete scene precedes the copy; desktop copy sits on
+      // a quiet opaque-to-transparent layer, not on an advertised original.
+      if (width < 1024) expect(bounds!.y + bounds!.height <= title!.y).toBe(true);
+      await expect(intro.locator("h1")).toHaveCSS("color", "rgb(255, 255, 255)");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     }
   });
@@ -101,7 +104,7 @@ for (const width of [360, 1440]) {
 
 test("validated dynamic templates opt into their mood while unknown paths stay neutral", async ({ page, context }) => {
   await readOnly(context);
-  for (const [route, mood] of [["/akademie/bier", "learning"], ["/akademie/bier/lektion/2", "learning"], ["/cocktails/mojito", "learning"], ["/cocktails/kategorie/rum", "learning"], ["/karriere/verkauf-vollzeit", "people"]]) {
+  for (const [route, mood] of [["/akademie/bier", "learning"], ["/akademie/bier/lektion/2", "learning"], ["/cocktails/mojito", "fresh"], ["/cocktails/kategorie/rum", "fresh"], ["/karriere/verkauf-vollzeit", "people"]]) {
     await page.goto(route);
     await expect(page.locator("[data-editorial-intro]")).toHaveAttribute("data-atmosphere", mood);
   }

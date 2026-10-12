@@ -15,7 +15,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function CareerIndexPage() {
   return <>
-    <PageIntro eyebrow="Team & Karriere" title="Dein nächster Schritt. Bei Jammers." description="Getränke, Menschen und ein Markt voller Leben: Entdecke unsere offenen Stellen in Goch." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Karriere" }]} />
+    <PageIntro theme="people" mediaFit="contain" media={{ src: "/images/home/cinematic/hero-team.webp", width: 915, height: 886, alt: "Sven und Niko von Trinkgut Jammers" }} eyebrow="Team & Karriere" title="Dein nächster Schritt. Bei Jammers." description="Getränke, Menschen und ein Markt voller Leben: Entdecke unsere offenen Stellen in Goch." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Karriere" }]} />
     <div className={styles.body} data-service="career">
       <div className={styles.jobGrid}>{PUBLIC_JOBS.map(job => <article key={job.slug} className={styles.jobCard}>
         <Link href={`/karriere/${job.slug}`} aria-label={`${job.title} – Stellenbeschreibung ansehen`} className={styles.jobPoster}><Image {...job.poster} alt={job.poster.alt} sizes="(max-width:640px) 85vw, (max-width:1024px) 42vw, 330px" className="w-full h-auto" /></Link>

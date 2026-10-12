@@ -12,7 +12,7 @@ const subjects: Record<string,string> = {
   rum: "Heller und gereifter Rum neben Zuckerrohr und Eichenholz",
 };
 
-export default function AcademyCover({slug}: {slug:string}) {
+export default function AcademyCover({slug, featured = false}: {slug:string; featured?:boolean}) {
   if (!subjects[slug]) return null;
-  return <Image src={`/images/akademie/${slug}-editorial.webp`} alt={`${subjects[slug]} · Themenbild`} width={1200} height={800} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className={`${styles.cover} object-contain`} />;
+  return <Image src={`/images/akademie/${slug}-editorial.webp`} alt={`${subjects[slug]} · Themenbild`} width={1200} height={800} sizes={featured ? "(max-width: 640px) 100vw, 65vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"} className={styles.cover} />;
 }

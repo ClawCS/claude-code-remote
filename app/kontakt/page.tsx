@@ -18,7 +18,7 @@ export default function KontaktPage() {
   return (
     <>
       <div className={styles.breadcrumb}><nav aria-label="Brotkrumennavigation"><Link href="/">Home</Link><span> / </span><span aria-current="page">Kontakt</span></nav></div>
-      <PageIntro title="Kontakt" description="Wir freuen uns auf deine Nachricht oder deinen Besuch im Markt." />
+      <PageIntro theme="people" title="Kontakt" description="Wir freuen uns auf deine Nachricht oder deinen Besuch im Markt." />
       <div className={styles.body} data-service="contact">
         <div className={styles.contactGrid}>
           {/* Adresse + Öffnungszeiten */}

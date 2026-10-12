@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { CocktailPhoto as Photo } from "@/data/cocktail-images";
 import styles from "@/components/editorial/learning.module.css";
 
-function Credit({ photo }: { photo: Photo }) {
+export function CocktailCredit({ photo }: { photo: Photo }) {
   return <p className="leading-relaxed">
     <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{photo.sourceTitle}</a>
     {" · "}{photo.creator}{" · "}
@@ -17,7 +17,7 @@ export default function CocktailPhoto({ photo, href }: { photo: Photo; href?: st
   return <figure data-cocktail-photo={photo.name} className={styles.photo}>
     {href ? <Link href={href} aria-label={`${photo.name} – Foto und Rezept`} tabIndex={-1} className={styles.photoFrame}>{picture}</Link> : <div className={styles.photoFrame}>{picture}</div>}
     <figcaption className={styles.credit}>
-      {href ? <details><summary className="cursor-pointer w-fit hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">Foto &amp; Lizenz</summary><div className="pt-2"><Credit photo={photo} /></div></details> : <Credit photo={photo} />}
+      {href ? <details><summary className="cursor-pointer w-fit hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">Foto &amp; Lizenz</summary><div className="pt-2"><CocktailCredit photo={photo} /></div></details> : <CocktailCredit photo={photo} />}
     </figcaption>
   </figure>;
 }

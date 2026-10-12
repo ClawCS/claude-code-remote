@@ -13,6 +13,7 @@ import {
 } from "@/lib/cinematic/presentation";
 
 import styles from "./editorial.module.css";
+import scenes from "./home-scenes.module.css";
 import { SITE_LINKS } from "@/lib/cinematic/site";
 import { getActiveGiveaways } from "@/lib/giveaways";
 import GiveawayCard from "@/components/giveaways/GiveawayCard";
@@ -45,7 +46,7 @@ export default function ActionsSection({
   const giveaways = getActiveGiveaways(new Date(nowIso));
   return (
     <section
-      className={styles.actionsStage}
+      className={`${styles.actionsStage} ${scenes.actions}`}
       id="aktionen"
       aria-labelledby="aktionen-title"
     >

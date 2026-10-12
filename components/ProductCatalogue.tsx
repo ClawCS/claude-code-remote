@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import PageIntro from "@/components/editorial/PageIntro";
@@ -8,6 +9,11 @@ import styles from "@/components/editorial/collection.module.css";
 import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import { categories } from "@/lib/utils";
 import type { WeeklyOfferContent } from "@/lib/weekly-publication-types";
+
+const categoryScenes: Record<string, string> = {
+  bier: "bier", alkoholfrei: "mineralwasser", wein: "wein", sekt: "schaumwein", spirituosen: "whiskey",
+};
+
 export default function ProductCatalogue({children,content,initialSearch=""}:{children:React.ReactNode;content:WeeklyOfferContent;initialSearch?:string}) {
   const [search,setSearch]=useState(initialSearch);
   const [previousSearch,setPreviousSearch]=useState(initialSearch);
@@ -17,12 +23,15 @@ export default function ProductCatalogue({children,content,initialSearch=""}:{ch
   }
   const [language,setLanguage]=useState("alle");
   return <>
-    <PageIntro eyebrow="Trinkgut Jammers · Goch" title="Sortiment & Wochenangebote" description="Alle Produktangebote aus dem deutschen und niederländischen Wochenhandzettel sowie gültigen Zusatzanzeigen – nach Warengruppen sortiert. Gemeinsam beworbene Varianten und Mengenstaffeln bleiben zusammen. Das vollständige Marktsortiment findest du bei uns vor Ort." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment" }]}>
+    <PageIntro className={styles.catalogueHero} theme="beer" media={{ src: "/images/akademie/bier-editorial.webp", alt: "Helles, bernsteinfarbenes und dunkles Bier im Glas · Themenbild", width: 1200, height: 800 }} eyebrow="Trinkgut Jammers · Goch" title="Sortiment & Wochenangebote" description="Alle Produktangebote aus dem deutschen und niederländischen Wochenhandzettel sowie gültigen Zusatzanzeigen – nach Warengruppen sortiert. Gemeinsam beworbene Varianten und Mengenstaffeln bleiben zusammen. Das vollständige Marktsortiment findest du bei uns vor Ort." breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment" }]}>
       <Link href="/angebote" className={editorial.secondaryLink}>DE- und NL-Handzettel ansehen</Link>
       <Link href="/finder" prefetch={false} className={editorial.secondaryLink}>Getränkefinder</Link>
     </PageIntro>
     <div className={styles.body} data-collection="catalogue">
-      <nav className={styles.categories} aria-label="Warengruppen">{categories.map(item=><Link href={`/kategorie/${item.slug}`} key={item.slug}>{item.name}</Link>)}</nav>
+      <nav className={styles.categoryScenes} aria-label="Warengruppen">{categories.map(item=><Link href={`/kategorie/${item.slug}`} key={item.slug} data-category={item.slug}>
+        {categoryScenes[item.slug] && <Image src={`/images/akademie/${categoryScenes[item.slug]}-editorial.webp`} alt="" width={1200} height={800} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 17vw" />}
+        <span>{item.name}<span aria-hidden="true">↗</span></span>
+      </Link>)}</nav>
       <div className={styles.toolbar}><div className={styles.search}><SearchBar value={search} onChange={setSearch}/></div>
         <div className={styles.filters} role="group" aria-label="Handzettel-Sprache">{[["alle","Alle Angebote"],["de","Deutsch"],["nl","Nederlands"]].map(([value,label])=><button key={value} type="button" aria-pressed={value===language} onClick={()=>setLanguage(value)}>{label}</button>)}</div>
       </div>

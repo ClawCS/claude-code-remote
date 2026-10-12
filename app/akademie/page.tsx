@@ -16,11 +16,13 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function AkademiePage() {
   return <>
-    <PageIntro eyebrow="Entdecken & Verstehen" title="Getränkeakademie" description={`${courses.length} Kurse mit ${courses.reduce((sum, c) => sum + c.lessons.length, 0)} Lektionen. Entdecke Getränkewissen in deinem Tempo – von Bierwissen bis Likör-Herstellung.`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Getränkeakademie" }]} />
+    <PageIntro theme="learning" media={{ src: "/images/akademie/wein-editorial.webp", alt: "Weißwein, Rotwein und Rosé zur Verkostung · Themenbild", width: 1200, height: 800 }} eyebrow="Entdecken & Verstehen" title={<>Getränke<wbr />akademie</>} description={`${courses.length} Kurse mit ${courses.reduce((sum, c) => sum + c.lessons.length, 0)} Lektionen. Entdecke Getränkewissen in deinem Tempo – von Bierwissen bis Likör-Herstellung.`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Getränkeakademie" }]}>
+      <a href="#academy-courses" className={editorial.secondaryLink}>Kurse entdecken</a>
+    </PageIntro>
     <div data-learning="academy" className={styles.body}>
-      <div className={styles.grid}>
-        {courses.map(course => <Link key={course.slug} href={`/akademie/${course.slug}`} className={styles.card}>
-          <AcademyCover slug={course.slug} />
+      <div id="academy-courses" className={styles.grid}>
+        {courses.map((course, index) => <Link key={course.slug} href={`/akademie/${course.slug}`} className={styles.card} data-featured={index === 0 ? true : undefined}>
+          <div className={styles.courseImage}><AcademyCover slug={course.slug} featured={index === 0} /><span className={styles.courseNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span></div>
           <div className={styles.cardBody}>
             <p className={styles.meta}>{course.difficulty} · {course.duration} · {course.lessons.length} Lektionen</p>
             <h2>{course.title}</h2>

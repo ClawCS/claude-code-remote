@@ -40,7 +40,7 @@ export default function CurrentSection({
 
   return (
     <section
-      className={styles.section}
+      className={`${styles.section} ${styles.homeStage}`}
       id="aktuell"
       aria-labelledby="aktuell-title"
     >

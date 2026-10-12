@@ -47,7 +47,7 @@ describe("public side-page presentation", () => {
 
   it("pairs every course destination with its approved cover without technical generation labels", () => {
     const html = renderToStaticMarkup(<AkademiePage />);
-    expect([...html.matchAll(/<img\b/g)]).toHaveLength(8);
+    expect([...html.split('data-learning="academy"')[1].matchAll(/<img\b/g)]).toHaveLength(8);
     expect(html).not.toMatch(/\bKI\b|KI-generiert/);
     const titles = [...html.matchAll(/<h2\b[^>]*>([^<]+)<\/h2>/g)].map(([, title]) => title.replaceAll("&amp;", "&"));
     for (const course of courses) {
@@ -60,7 +60,7 @@ describe("public side-page presentation", () => {
     const html = renderToStaticMarkup(<EigenmarkePage />).replaceAll("%2F", "/");
     const allImages = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
     expect(allImages.filter(image => image.includes("/images/brands/jammers-hilft-symbol.png"))).toHaveLength(1);
-    const images = allImages.filter(image => !image.includes("/images/brands/jammers-hilft-symbol.png"));
+    const images = allImages.filter(image => !image.includes("/images/brands/jammers-hilft-symbol.png") && !image.includes('aria-hidden="true"'));
     expect(images).toHaveLength(12);
     expect(html).not.toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
     expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");

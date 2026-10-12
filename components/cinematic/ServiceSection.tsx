@@ -13,13 +13,14 @@ export default function ServiceSection(): React.JSX.Element {
     >
       <div className={styles.serviceFrame}>
         <div className={styles.servicePhoto}>
-          <Image {...PARTY_SCENE} alt={PARTY_SCENE.alt} sizes="(max-width: 1312px) 100vw, 1312px" />
-        </div>
-        <div className={styles.serviceCopy}>
-          <div>
+          <Image {...PARTY_SCENE} alt={PARTY_SCENE.alt} sizes="100vw" />
+          <div className={styles.serviceTitle}>
             <p className={styles.eyebrow}>Dein Anlass. Unser Service.</p>
             <h2 id="service-title">Deine Feier.<br />Unsere Ausstattung.</h2>
           </div>
+        </div>
+        <div className={styles.serviceCopy}>
+          <p className={styles.serviceLead}>Du bringst die Gäste.<br /><span>Wir helfen beim Rest.</span></p>
           <div className={styles.serviceActions}>
             <p>Zapfanlagen, Gläser, Garnituren und Kühlung.</p>
             <Link className={styles.servicePrimary} href="/vermietung" prefetch={false}>

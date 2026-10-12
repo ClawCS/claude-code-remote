@@ -36,7 +36,7 @@ export default async function CocktailRecipePage({ params }: Props) {
         { name: category.name, path: category.href },
         { name: cocktail.name, path: recipe.href },
       ])} />
-      <RecipeIntro title={cocktail.name} description={`${cocktail.category} · ${cocktail.difficulty} · ${cocktail.ingredients.length} Zutaten`} category={category} />
+      <RecipeIntro title={cocktail.name} photo={photo} description={`${cocktail.category} · ${cocktail.difficulty} · ${cocktail.ingredients.length} Zutaten`} category={category} />
       <article data-learning="recipe" className={styles.body}>
         <div className="flex flex-wrap gap-4 mb-8 text-sm">
           <Link href="/cocktails" className="text-primary underline underline-offset-4">Alle Cocktail-Rezepte</Link>

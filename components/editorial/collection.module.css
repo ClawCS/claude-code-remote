@@ -1,7 +1,8 @@
 .body { width: min(100%, var(--cinematic-layout-content-max)); margin-inline: auto; padding: clamp(2rem, 4vw, 3.5rem) var(--cinematic-spacing-gutter) var(--cinematic-spacing-section); }
-.body[data-collection="category"] { background: radial-gradient(ellipse at 100% 0, var(--atmosphere-wash), transparent 42rem); }
+.catalogueHero.catalogueHero.catalogueHero h1 { max-width: none; font-size: clamp(2.1rem, 4vw, 4rem); overflow-wrap: normal; word-break: normal; }
+.body[data-collection="category"] { position: relative; background: white; }
 .body[data-collection="category"] .categories { margin-bottom: 2rem; }
-.body[data-collection="category"] .categories a[aria-current="page"] { border-color: var(--atmosphere-accent); background: var(--cinematic-color-ink); color: white; padding-inline: 1rem; }
+.body[data-collection="category"] .categories a[aria-current="page"] { border-color: var(--atmosphere-accent); background: var(--cinematic-color-ink); color: white; }
 .section { padding-block: clamp(2.5rem, 5vw, 5rem); border-top: 1px solid var(--cinematic-color-line); }
 .section h2, .story h2 { font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -.04em; margin-bottom: 1.25rem; }
 .body h3 { font-weight: 700; }
@@ -17,8 +18,8 @@
 .section p, .story p { max-width: 65ch; color: var(--cinematic-color-muted); line-height: 1.75; }
 .links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.5rem; }
 .links a { display: inline-flex; min-height: 44px; min-width: 44px; align-items: center; color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .25em; }
-.categories { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; padding-block: 1rem 2rem; border-bottom: 1px solid var(--cinematic-color-line); align-items: center; }
-.categories a { display: inline-flex; min-height: 44px; min-width: 44px; align-items: center; border-bottom: 2px solid transparent; font-weight: 600; }
+.categories { display: flex; flex-wrap: wrap; gap: .65rem; padding-block: .5rem 2rem; border-bottom: 1px solid var(--cinematic-color-line); align-items: center; }
+.categories a { display: inline-flex; min-height: 48px; min-width: 44px; padding: .65rem 1.1rem; align-items: center; border: 1px solid var(--cinematic-color-line); border-radius: 999px; font-weight: 600; background: white; }
 .categories a:hover, .categories a[aria-current="page"] { border-color: var(--cinematic-color-red); }
 .toolbar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.5rem; padding-block: 2rem; }
 .search { flex: 1 1 18rem; max-width: 32rem; }
@@ -80,6 +81,31 @@
 .showcase img { display: block; width: 100%; height: auto; object-fit: contain; }
 .showcase span { display: block; padding-block: 1rem; font-weight: 700; }
 .section a:not(:has(img)), .story a:not(:has(img)) { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.categoryScenes { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; margin-block: 0 2.5rem; }
+.categoryScenes > a { display: flex; flex-direction: column; justify-content: end; min-height: 12rem; min-width: 0; background: #15382f; color: white; }
+.categoryScenes img { width: 100%; height: 9rem; object-fit: cover; }
+.categoryScenes > a > span { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 4rem; padding: .8rem; font-weight: 700; font-size: .9rem; overflow-wrap: anywhere; }
+.categoryScenes [data-category="bier"] { background: #71471f; }
+.categoryScenes [data-category="alkoholfrei"] { background: #165960; }
+.categoryScenes [data-category="wein"], .categoryScenes [data-category="sekt"] { background: #642238; }
+.categoryScenes [data-category="spirituosen"] { background: #273542; }
+.categoryScenes > a:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 4px; }
+.categoryScenes > a:hover > span { text-decoration: underline; text-underline-offset: .25em; }
+.body[data-collection="catalogue"] .toolbar { border: 0; border-radius: 0; background: #edf1f3; padding: clamp(1.25rem, 3vw, 2rem); }
+.body[data-collection="catalogue"] .offer, .body[data-collection="category"] .offer { box-shadow: none; border-radius: 0; }
+.body[data-collection="catalogue"] .offerImage, .body[data-collection="category"] .offerImage { border-radius: 0; }
+.body[data-collection="market"] > .section, .body[data-collection="gifts"] > .section, .body[data-collection="gifts"] > .story, .body[data-collection="regional"] > .section, .body[data-collection="regional"] > .brandStories { padding-inline: 0; border: 0; border-radius: 0; background: white; }
+.body[data-collection="market"] .photoGrid { gap: clamp(2rem, 5vw, 5rem); }
+.body[data-collection="market"] .photoGrid article:nth-child(even) { margin-top: 5rem; }
+.body[data-collection="gifts"] > .story { gap: clamp(2rem, 6vw, 6rem); }
+.body[data-collection="regional"] .showcase { gap: 1.25rem; }
+.body[data-collection="regional"] .showcase a { background: #edf1f3; }
+.body[data-collection="regional"] .showcase span { padding: 1.25rem; font-size: 1.2rem; }
+.portraitGrid { gap: clamp(1.5rem, 4vw, 3rem); }
+.portraitGrid figcaption { padding: 1.25rem 0; border-bottom: 0; background: white; }
+.portraitGrid h3 { font-size: 1.5rem; }
+.teamLead { padding-block: clamp(1rem, 3vw, 2rem); gap: clamp(2rem, 6vw, 5rem); }
 .categories a:focus-visible, .filters button:focus-visible, .links a:focus-visible, .sourceLink:focus-visible, .offer a:focus-visible, .conditions summary:focus-visible, .showcase a:focus-visible { outline: 3px solid var(--cinematic-color-blue); outline-offset: 4px; }
-@media (max-width: 63rem) { .offerGrid, .portraitGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 63rem) { .offerGrid, .portraitGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .categoryScenes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 47rem) { .flyers, .story, .brand, .teamLead { grid-template-columns: minmax(0, 1fr); } .brand:nth-child(even) .poster { order: initial; } .poster { max-width: none; } .photoGrid, .portraitGrid, .offerGrid { grid-template-columns: minmax(0, 1fr); } .showcase { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
+@media (max-width: 39.99rem) { .categoryScenes { grid-template-columns: repeat(2, minmax(0, 1fr)); } .categoryScenes img { height: 8rem; } .categoryScenes > a { min-height: 11rem; } .body[data-collection="market"] .photoGrid article:nth-child(even) { margin-top: 0; } }
