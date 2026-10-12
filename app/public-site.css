@@ -1,4 +1,17 @@
 .public-site { flex: 1; background: var(--cinematic-color-paper); color: var(--cinematic-color-ink); }
+.public-subpage, .editorial-palette,
+.public-site:has(.public-subpage) [data-shopping-drawers-root],
+.public-site:has(.editorial-palette) [data-shopping-drawers-root] {
+  --cinematic-color-paper: #fff;
+  --cinematic-color-surface: #f3f5f7;
+  --cinematic-color-warm: #f3f5f7;
+  --cinematic-color-assortment-cream: #f3f5f7;
+  --cinematic-color-category-amber: #e9edf2;
+  --cinematic-color-ink: #171a1d;
+  --cinematic-color-muted: #505965;
+  --cinematic-color-line: #d9dfe5;
+}
+.public-subpage, .editorial-palette { background: var(--cinematic-color-paper); color: var(--cinematic-color-ink); }
 .public-subpage { min-height: 55vh; font-size: 1rem; line-height: 1.65; }
 .public-subpage h1, .public-subpage h2 { color: var(--cinematic-color-ink); }
 .public-subpage h2:where(.utility-heading) { color: var(--color-secondary); }

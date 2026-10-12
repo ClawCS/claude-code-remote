@@ -44,7 +44,7 @@ export default async function NederlandsPage() {
         </div>
       </header>
 
-      <main id="main-content" tabIndex={-1}>
+      <main id="main-content" tabIndex={-1} className="editorial-palette">
         <section className={styles.hero} aria-labelledby="nl-title">
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}><span aria-hidden="true">🇳🇱</span> Welkom bij Trinkgut Jammers</p>

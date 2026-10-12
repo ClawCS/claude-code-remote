@@ -1,7 +1,9 @@
 .entry, .context {
   margin-block: var(--cinematic-spacing-lg);
   padding: var(--cinematic-spacing-lg);
-  border-block: 1px solid var(--cinematic-color-line);
+  border: 1px solid var(--cinematic-color-line);
+  border-inline-start: 3px solid var(--cinematic-color-red);
+  border-radius: 0 8px 8px 0;
   background: var(--cinematic-color-assortment-cream);
   color: var(--cinematic-color-ink);
 }

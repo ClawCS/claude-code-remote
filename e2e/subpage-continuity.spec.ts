@@ -85,7 +85,7 @@ for (const width of [390, 1440]) {
 
 for (const width of [360, 390, 768, 1440]) {
   for (const { path } of introCases) {
-    test(`${path} has a warm full-width intro and bold hierarchy at ${width}px`, async ({ page }) => {
+    test(`${path} has a graphite full-width intro and bold hierarchy at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 });
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);
@@ -93,7 +93,7 @@ for (const width of [360, 390, 768, 1440]) {
       await expect(main.locator("h1")).toHaveCount(1);
       await expect(main.locator("h1")).toHaveCSS("font-weight", "800");
       const intro = main.locator("[data-editorial-intro]");
-      await expect(intro).toHaveCSS("background-color", "rgb(245, 236, 221)");
+      await expect(intro).toHaveCSS("background-color", "rgb(23, 26, 29)");
       const rect = await intro.boundingBox();
       expect(rect?.x).toBe(0);
       expect(rect?.width).toBe(width);
@@ -123,7 +123,8 @@ for (const width of [360, 390, 768, 1440]) {
       await expect(heading).toHaveCSS("font-weight", "700");
     }
     // All images, including the unchanged group motif, must decode and remain uncropped.
-    await expect(collection.locator("img")).toHaveCount(7);
+    await expect(collection.locator("img:not([data-jammers-hilft-symbol] img)")).toHaveCount(7);
+    await expect(collection.locator("[data-jammers-hilft-symbol] img")).toHaveCount(1);
     for (const slug of brands) {
       const article = collection.locator(`#${slug}`);
       await expect(article).toHaveCount(1);
@@ -136,7 +137,7 @@ for (const width of [360, 390, 768, 1440]) {
       await expect(image).toHaveCSS("object-fit", "contain");
     }
     // The group has an optimized Next URL; verify its original source without depending on that encoding.
-    expect(await collection.locator("section img").first().evaluate(node => new URL((node as HTMLImageElement).src).searchParams.get("url"))).toBe("/images/eigenmarken-scenes/group-dark-v1.webp");
+    expect(await collection.locator("section figure img").first().evaluate(node => new URL((node as HTMLImageElement).src).searchParams.get("url"))).toBe("/images/eigenmarken-scenes/group-dark-v1.webp");
     const academy = collection.getByRole("link", { name: /Alle Kurse der Getränkeakademie/ });
     await expect(academy).toHaveCSS("color", "rgb(246, 235, 221)");
     await academy.focus();
@@ -151,12 +152,12 @@ for (const width of [360, 390, 768, 1440]) {
   });
 }
 
-test("selected collection chapters are warm while offer originals remain on white", async ({ page }) => {
+test("selected collection chapters are neutral while offer originals remain on white", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   for (const route of ["/marktleben", "/geschenkideen", "/regionale-spirituosen"]) {
     await page.goto(route);
     const chapter = page.locator('[data-collection] > section').first();
-    await expect(chapter).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(chapter).toHaveCSS("background-color", "rgb(243, 245, 247)");
     await expect(chapter.locator("h2").first()).toHaveCSS("font-weight", "700");
     mkdirSync(proof, { recursive: true });
     await chapter.screenshot({ path: `${proof}/chapter-${route.slice(1)}-1440.png` });
@@ -172,7 +173,7 @@ test("legal intro keeps the existing narrow reading alignment inside its full-wi
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/impressum");
   const intro = page.locator("main [data-editorial-intro]");
-  await expect(intro).toHaveCSS("background-color", "rgb(245, 236, 221)");
+  await expect(intro).toHaveCSS("background-color", "rgb(23, 26, 29)");
   expect((await intro.boundingBox())!.width).toBe(1440);
   const title = await intro.locator("h1").boundingBox();
   const bodyHeading = await page.locator('[data-service="legal"] h2').first().boundingBox();
@@ -195,7 +196,7 @@ async function familyReady(page: Page, route: string) {
 }
 
 for (const width of [360, 390, 768, 1440]) {
-  // These catch lost family heading rules and warm panels without recoloring reading interiors.
+  // These catch lost family heading rules and neutral panels without recoloring reading interiors.
   test(`task2 learning hierarchy keeps recipe and lesson interiors calm at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -208,7 +209,7 @@ for (const width of [360, 390, 768, 1440]) {
     const lesson = page.getByRole("region", { name: "Lektion", exact: true });
     await expect(lesson.locator("h2")).toHaveCSS("font-weight", "700");
     await expect(lesson).toHaveCSS("background-color", "rgb(255, 255, 255)");
-    await expect(page.locator('[aria-label="Lektionsfortschritt"]').locator("..")).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(page.locator('[aria-label="Lektionsfortschritt"]').locator("..")).toHaveCSS("background-color", "rgb(243, 245, 247)");
     const exam = page.getByRole("button", { name: /Abschlusstest/ }).first();
     await expect(exam).toBeDisabled();
     const quiz = page.getByRole("region", { name: "Wissensquiz" });
@@ -225,7 +226,7 @@ for (const width of [360, 390, 768, 1440]) {
     await familyCapture(page, `academy-long-lesson-${width}`, lesson);
     await familyReady(page, "/kategorie/bier");
     const entry = page.locator("aside[data-academy-context]");
-    await expect(entry).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(entry).toHaveCSS("background-color", "rgb(243, 245, 247)");
     await expect(entry.locator("h2")).toHaveCSS("font-weight", "700");
     await expect(entry.getByRole("link").first()).toHaveAttribute("href", "/akademie/bier");
     await familyCapture(page, `academy-entry-${width}`, entry);
@@ -238,7 +239,7 @@ for (const width of [360, 390, 768, 1440]) {
     await expect(page.locator("#agenda-heading")).toHaveCSS("font-weight", "700");
     const card = page.locator("#jahresagenda [data-giveaway-id]").first();
     await expect(card.locator("h3")).toHaveCSS("font-weight", "700");
-    await expect(card.locator("h3").locator("..")).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(card.locator("h3").locator("..")).toHaveCSS("background-color", "rgb(243, 245, 247)");
     const cover = card.locator("img");
     await cover.scrollIntoViewIfNeeded();
     await expect.poll(() => cover.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
@@ -250,14 +251,14 @@ for (const width of [360, 390, 768, 1440]) {
     await familyCapture(page, `giveaway-original-${width}`, card);
   });
 
-  test(`task2 rental warm framing preserves errors disabled controls and drawer at ${width}px`, async ({ page }) => {
+  test(`task2 rental neutral framing preserves errors disabled controls and drawer at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.route("**/api/**", route => ["GET", "HEAD"].includes(route.request().method()) ? route.continue() : route.abort());
     await familyReady(page, "/vermietung");
     const dates = page.locator('[aria-labelledby="rental-dates"]');
     await expect(dates.locator("h2")).toHaveCSS("font-weight", "700");
-    await expect(dates).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(dates).toHaveCSS("background-image", /linear-gradient\(120deg, rgb\(243, 245, 247\),/);
     await expect(dates.locator("input").first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
     const article = page.locator('article[data-rental-name="Kühlanhänger"]');
     const decrease = article.getByRole("button", { name: /verringern/ });
@@ -301,7 +302,7 @@ for (const width of [360, 390, 768, 1440]) {
     await familyReady(page, "/finder");
     const finder = page.getByRole("button", { name: /Bierfinder/ });
     await expect(finder.locator("h2")).toHaveCSS("font-weight", "700");
-    await expect(finder).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(finder).toHaveCSS("background-image", /linear-gradient\(120deg, rgb\(243, 245, 247\),/);
     await finder.click();
     for (const name of ["Pils – herb & frisch", "Keine Präferenz", "Feierabendbier"]) await page.getByRole("button", { name, exact: true }).click();
     await expect(page.locator("[data-product-card]").first()).toBeVisible();
@@ -311,7 +312,7 @@ for (const width of [360, 390, 768, 1440]) {
     await calculate.click();
     const results = page.getByRole("region", { name: "Dein Getränkebedarf" });
     await expect(results.locator("h2")).toHaveCSS("font-weight", "700");
-    await expect(results).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(results).toHaveCSS("background-color", "rgb(243, 245, 247)");
     await expect(results.locator("dd")).toHaveText(["33 l", "8 l", "10 l", "0,8 l", "20 l"]);
     await familyCapture(page, `planner-results-${width}`);
     await page.locator("#party-beerDrinkers").fill("0");
@@ -342,13 +343,13 @@ for (const width of [360, 390, 768, 1440]) {
     const title = page.locator("#nl-title");
     await expect(title).toHaveCSS("font-weight", "800");
     await expect(title.locator("span")).toHaveCSS("color", "rgb(165, 65, 8)");
-    await expect(title.locator("..").locator("..")).toHaveCSS("background-color", "rgb(245, 236, 221)");
+    await expect(title.locator("..").locator("..")).toHaveCSS("background-color", "rgb(243, 245, 247)");
     expect(await title.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
     if (width === 360) expect((await title.boundingBox())!.height).toBeGreaterThan(80);
     for (const heading of await page.locator("#bezoek h2, #service h2, #contact h2, #nl-brands-title").all()) await expect(heading).toHaveCSS("font-weight", "700");
     await expect(page.locator("#service h2")).toHaveCSS("color", "rgb(246, 235, 221)");
     await expect(page.locator("#service h3").first()).toHaveCSS("font-weight", "700");
-    await expect(page.locator('section[aria-labelledby="nl-brands-title"] img')).toHaveCSS("object-fit", "contain");
+    for (const image of await page.locator('section[aria-labelledby="nl-brands-title"] img').all()) await expect(image).toHaveCSS("object-fit", "contain");
     await page.getByRole("link", { name: "Je bezoek", exact: true }).click();
     await expect(page).toHaveURL(/#bezoek$/);
     await expect(page.locator('#bezoek [data-brand-link="maps"]')).toBeVisible();
@@ -387,12 +388,12 @@ test("task2 academy overview editorial benefits retain the stronger section hier
 });
 
 for (const route of ["/cocktails", "/gewinnspiel", "/kategorie/bier", "/finder", "/geschenkideen", "/regionale-spirituosen", "/marktleben"]) {
-  test(`task2 warm-card links meet normal-text contrast on ${route}`, async ({ page }) => {
+  test(`task2 neutral-card links meet normal-text contrast on ${route}`, async ({ page }) => {
     await familyReady(page, route);
     const collectionLinks: Record<string, string[]> = {
       "/geschenkideen": ["Im Markt beraten lassen"],
       "/regionale-spirituosen": ["Persönlich beraten lassen", "Jammers-Eigenmarken entdecken", "Geschenkideen ansehen"],
-      "/marktleben": ["Unsere Eigenmarken entdecken", "Kontakt zum Markt", "Anfahrt und Kontakt", "Team kennenlernen", "Sortiment entdecken"],
+      "/marktleben": ["Spirituosen entdecken", "Unsere Eigenmarken entdecken", "Zu unseren Gewinnspielen", "Kontakt zum Markt", "Anfahrt und Kontakt", "Team kennenlernen", "Sortiment entdecken"],
     };
     if (collectionLinks[route]) {
       const anchors = page.locator('[data-collection] > section a:not([data-brand-link]):not(:has(img))');

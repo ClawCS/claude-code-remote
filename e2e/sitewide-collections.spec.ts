@@ -22,7 +22,7 @@ for (const width of [390, 768, 1440]) {
       await expect(main.locator("h1")).toHaveCount(1);
       await expect(main.locator("header h1")).toBeVisible();
       await expect(main.locator("[data-collection]")).toHaveCount(1);
-      await expect(main.locator("h1")).toHaveCSS("color", "rgb(25, 25, 24)");
+      await expect(main.locator("h1")).toHaveCSS("color", "rgb(255, 255, 255)");
       await expect(main.locator(".page-hero-banner, .category-intro")).toHaveCount(0);
       if (path === "/produkte") {
         const response=await request.get("/api/content/offers",{headers:{"X-Jammers-Content-Version":"2"}});
@@ -101,7 +101,7 @@ for (const width of [390, 768, 1440]) {
     await page.getByRole("navigation", { name: "Warengruppen" }).getByRole("link", { name: "Bier", exact: true }).click();
     await expect(page).toHaveURL(/\/kategorie\/bier$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Bier");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("color", "rgb(25, 25, 24)");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("color", "rgb(255, 255, 255)");
     const response = await page.goto("/kategorie/gibt-es-nicht");
     // A streamed Next 404 may have a 200 HTTP shell; the customer-visible not-found state is authoritative.
     expect([200, 404]).toContain(response!.status());
@@ -147,13 +147,13 @@ test("client navigation between image, market, people and action families keeps 
   for (const [href, family] of [["/geschenkideen", "gifts"], ["/marktleben", "market"], ["/gewinnspiel#jahresagenda", "giveaways"]]) {
     await page.getByRole("contentinfo").locator(`a[href="${href}"]`).click();
     await expect(page.locator(`[data-collection="${family}"]`)).toBeVisible();
-    await expect(page.getByRole("main").locator("h1")).toHaveCSS("color", "rgb(25, 25, 24)");
+    await expect(page.getByRole("main").locator("h1")).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(page.getByRole("main").locator("h1")).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     if (family === "market") {
       await page.getByRole("main").getByRole("link", { name: "Team kennenlernen", exact: true }).click();
       await expect(page.locator('[data-collection="team"] figcaption')).toHaveCount(7);
-      await expect(page.getByRole("main").locator("h1")).toHaveCSS("color", "rgb(25, 25, 24)");
+      await expect(page.getByRole("main").locator("h1")).toHaveCSS("color", "rgb(255, 255, 255)");
     }
   }
   expect(errors).toEqual([]);

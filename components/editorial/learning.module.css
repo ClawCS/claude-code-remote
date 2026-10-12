@@ -8,7 +8,21 @@
 .card { min-width: 0; border-bottom: 1px solid var(--cinematic-color-line); padding-bottom: 1.5rem; }
 .card h2 { font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -.035em; margin-block: .75rem; }
 .card p { color: var(--cinematic-color-muted); line-height: 1.65; }
-.cardBody { padding: 1.5rem; border-top: 3px solid var(--cinematic-color-burgundy); background: linear-gradient(120deg, var(--cinematic-color-assortment-cream), color-mix(in srgb, var(--cinematic-color-category-amber) 28%, var(--cinematic-color-assortment-cream))); }
+.cardBody { padding: 1.5rem; border-top: 3px solid var(--cinematic-color-burgundy); background: var(--cinematic-color-surface); }
+.body[data-learning="academy"] { padding-top: clamp(2rem, 4vw, 3.5rem); }
+.body[data-learning="academy"] .card { --course-accent: var(--cinematic-color-burgundy); display: flex; flex-direction: column; padding: 0; border: 1px solid var(--cinematic-color-line); border-radius: 8px; background: white; }
+.body[data-learning="academy"] .cover { border-radius: 8px 8px 0 0; }
+.body[data-learning="academy"] .cardBody { flex: 1; background: white; border-color: var(--course-accent); border-radius: 0 0 8px 8px; }
+.body[data-learning="academy"] .cardBody .textLink { color: var(--course-accent); }
+.body[data-learning="academy"] .card[href="/akademie/bier"] { --course-accent: #80541e; }
+.body[data-learning="academy"] .card[href="/akademie/whiskey"] { --course-accent: #805237; }
+.body[data-learning="academy"] .card[href="/akademie/mineralwasser"] { --course-accent: #006f86; }
+.body[data-learning="academy"] .card[href="/akademie/saft"] { --course-accent: #8b5c00; }
+.body[data-learning="academy"] .card[href="/akademie/wein"] { --course-accent: #8f274c; }
+.body[data-learning="academy"] .card[href="/akademie/schaumwein"] { --course-accent: #7e652c; }
+.body[data-learning="academy"] .card[href="/akademie/likoere"] { --course-accent: #a81b44; }
+.body[data-learning="academy"] .card[href="/akademie/rum"] { --course-accent: #6b573e; }
+.body[data-learning="academy"] .related { border-inline-start: 3px solid var(--cinematic-color-red); border-radius: 0 8px 8px 0; }
 .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; font-size: .8rem; color: var(--cinematic-color-muted); }
 .meta a, .textLink { color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .2em; }
 .cardBody .meta a, .cardBody .textLink { color: var(--cinematic-color-burgundy); }

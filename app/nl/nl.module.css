@@ -11,6 +11,12 @@
   font-family: var(--cinematic-typography-family-sans), sans-serif;
 }
 .page :is(h1, h2, h3) { font-family: inherit; line-height: 1.1; text-wrap: balance; font-weight: 700; }
+.page > main {
+  --nl-cream: var(--cinematic-color-paper);
+  --nl-ink: var(--cinematic-color-ink);
+  --nl-muted: var(--cinematic-color-muted);
+  --nl-line: var(--cinematic-color-line);
+}
 .page :is(a, summary):focus-visible { outline: 3px solid var(--nl-accent); outline-offset: 4px; }
 .page section[id] { scroll-margin-top: 1.5rem; }
 .skipLink { position: absolute; top: .5rem; left: 1rem; padding: .75rem 1rem; background: white; z-index: 200; transform: translateY(-200%); }

@@ -1,7 +1,7 @@
 /** Reviewed assets: filenames contain the first 16 hexadecimal SHA-256 digits. */
 export const HERO_MEDIA = {
-  mobile: "/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4",
-  desktop: "/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4",
+  mobile: "/videos/jammers-hero-v6-mobile-e2f94ee62e776519.mp4",
+  desktop: "/videos/jammers-hero-v6-desktop-06fd3bdde1a2d604.mp4",
   poster: "/images/home/jammers-film-poster-62abe3860959351d.webp",
 } as const;
 

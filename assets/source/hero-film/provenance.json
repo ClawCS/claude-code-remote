@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "kind": "operator-approved-ai-advertising-film",
   "approval": {
-    "date": "2026-10-10",
-    "basis": "Operator approved the v4 people-and-single-tap preview and explicitly approved local visual-polish implementation; no deployment authorized by this manifest.",
-    "specification": "docs/superpowers/specs/2026-10-10-visual-polish.md",
+    "date": "2026-10-12",
+    "basis": "Operator approved the corrected forward-facing single compact tap, stable garden sequence and existing devil/angel animated finale, then requested V6 website integration and live publication. This manifest records media approval, not proof of a completed release.",
+    "specification": "docs/superpowers/specs/2026-10-12-fresh-subpages-film-design.md",
     "exception": "Explicit exception to the Canva-only image rule for this accepted AI advertising film and its finale poster; not documentary market imagery or a pixel-identical product photograph.",
     "deploymentApprovedByThisManifest": false
   },
@@ -12,24 +12,33 @@
     "providers": [
       "Runway",
       "OpenAI imagegen",
-      "local AVFoundation assembly"
+      "local FFmpeg montage"
     ],
     "acceptedTaskIds": [
-      "269e26d5-7937-45b8-8127-1945b38bbb12",
-      "867270ee-eda9-4ec4-b102-68d422a1c4ed",
-      "c3cff79c-87fc-47b2-a6df-147cb7579339",
-      "b6d193fe-f5c0-4133-b64f-f3f001d099d8"
+      "07065f2c-f0cd-4ed1-b903-0c829b8464d9"
     ],
-    "finale": "Accepted static AI motif with a minimal 1% zoom, assembled into v2 from second 11. Rejected animated finale with changing label details is not used.",
+    "finale": "Approved existing devil/angel mascot animation begins at frame 264 (11 seconds), following one initial still frame at frame 263. The accepted six-bottle motif and existing full finale poster are retained; this is not a static-only finale.",
     "reference": "Operator-approved six-bottle product photograph; bottle identities informed the generated motif, which is not pixel-identical.",
-    "promptSummary": "Approved v4: adult toast, garden party with one-tap rectangular stainless-steel rear Jammers-logo dispensing setup, unchanged accepted v2 pouring and finale. Advertising imagery, not documentary evidence. Rejected edited close-up is excluded. No new generation for production derivatives."
+    "promptSummary": "Approved V6: original adult toast, corrected stable garden party with one compact forward-facing faucet and readable Jammers logo, original liqueur pour, one initial finale still frame and the existing devil/angel animated finale. No rejected rear tap tower or equipment close-up. Jammers-hilft heart-hands symbol is website-only and does not appear in this film or its bottle imagery. No new generation for production delivery."
   },
   "source": {
-    "filename": "jammers-hero-15s-v4.mp4",
-    "sha256": "59a70d3ef71c8eef46396005b3242f2109e3570a46b286f1b7f3fadbe0cc81a2",
-    "bytes": 16618455,
+    "filename": "jammers-hero-v6-master.mp4",
+    "sha256": "6062ba8e3bd56af9647c16ccbd03c9a21aa9ed5b6ac8f89872922e3a5c501e1b",
+    "bytes": 10893745,
     "width": 1920,
     "height": 1080,
+    "frames": 360,
+    "durationSeconds": 15,
+    "fps": 24,
+    "hasAudio": false
+  },
+  "desktopPreviewSource": {
+    "filename": "jammers-hero-v6-preview.mp4",
+    "sha256": "06fd3bdde1a2d6045b056a73fcf0350c4a443a756ee121988e07967d15bd363f",
+    "bytes": 3719740,
+    "width": 1280,
+    "height": 720,
+    "frames": 360,
     "durationSeconds": 15,
     "fps": 24,
     "hasAudio": false
@@ -40,42 +49,46 @@
     "fit": "Full motif contained in 16:9; no crop, no retouching."
   },
   "derivation": {
-    "encoder": "scripts/encode-hero-film.swift",
-    "codec": "H.264 High, MP4",
-    "desktopBitrate": 2500000,
-    "mobileBitrate": 1200000,
+    "encoder": "FFmpeg 7.1 libx264",
+    "codec": "H.264 High yuv420p, MP4",
+    "desktop": "Byte-identical copy of the exact operator-approved 1280x720 V6 preview; no re-encoding.",
+    "mobile": "Full-frame 640x360 Lanczos downscale of approved V6 master, libx264 veryslow preset, CRF 26, fast-start, map_metadata -1. Technical codec/container encoder tags remain.",
+    "mobileInputSha256": "6062ba8e3bd56af9647c16ccbd03c9a21aa9ed5b6ac8f89872922e3a5c501e1b",
+    "mobileEncoderArguments": ["-map", "0:v:0", "-an", "-sn", "-dn", "-vf", "scale=640:360:flags=lanczos,setsar=1", "-c:v", "libx264", "-preset", "veryslow", "-crf", "26", "-profile:v", "high", "-pix_fmt", "yuv420p", "-fps_mode", "passthrough", "-map_metadata", "-1", "-map_chapters", "-1", "-movflags", "+faststart"],
+    "frames": 360,
     "fps": 24,
     "durationSeconds": 15,
     "hasAudio": false,
     "fastStart": true,
-    "metadataStripped": true,
-    "fit": "Uniform full-frame 16:9 downscale, preserving all source imagery.",
-    "posterEncoding": "sharp WebP, 1280x720 contain, quality 84"
+    "fit": "Uniform full-frame 16:9 downscale only; no crop, trim, retiming, retouch or newly generated imagery.",
+    "posterEncoding": "Unchanged retained sharp WebP, 1280x720 contain, quality 84"
   },
   "files": [
     {
-      "path": "public/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4",
-      "sha256": "4d55447b17c1b23d1bf1a8c863c696fa3c018fa3681fdcfcc3dd83324694b76c",
-      "bytes": 980962,
-      "width": 960,
-      "height": 540,
+      "path": "public/videos/jammers-hero-v6-mobile-e2f94ee62e776519.mp4",
+      "sha256": "e2f94ee62e776519a7b4788a0f156123d056433ebd438f43a39f6d979dfecba3",
+      "bytes": 628843,
+      "width": 640,
+      "height": 360,
       "maxBytes": 1000000,
+      "frames": 360,
       "durationSeconds": 15,
       "fps": 24,
       "hasAudio": false,
-      "optimization": "FFmpeg 6.0 libx264, veryslow preset, CRF 28.25, full-frame Lanczos downscale directly from unchanged accepted v4 source, H.264 High yuv420p, fast-start, map_metadata -1; no content, crop, fps or duration edit. Technical codec/container encoder tags remain."
+      "optimization": "FFmpeg 7.1 libx264, veryslow preset, CRF 26, full-frame Lanczos downscale of approved V6, H.264 High yuv420p, fast-start, map_metadata -1; no crop, trim, fps or duration edit. Technical codec/container encoder tags remain."
     },
     {
-      "path": "public/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4",
-      "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
-      "bytes": 4785365,
+      "path": "public/videos/jammers-hero-v6-desktop-06fd3bdde1a2d604.mp4",
+      "sha256": "06fd3bdde1a2d6045b056a73fcf0350c4a443a756ee121988e07967d15bd363f",
+      "bytes": 3719740,
       "width": 1280,
       "height": 720,
       "maxBytes": 6000000,
+      "frames": 360,
       "durationSeconds": 15,
       "fps": 24,
       "hasAudio": false,
-      "optimization": "Byte-identical retained v4 desktop file at a SHA-256-bound path."
+      "optimization": "Byte-identical copy of the exact approved V6 desktop preview at a SHA-256-bound path."
     },
     {
       "path": "public/images/home/jammers-film-poster-62abe3860959351d.webp",
@@ -84,35 +97,6 @@
       "width": 1280,
       "height": 720,
       "optimization": "Byte-identical full-frame poster at a SHA-256-bound path."
-    },
-    {
-      "path": "public/videos/jammers-hero-v4-desktop.mp4",
-      "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
-      "bytes": 4785365,
-      "width": 1280,
-      "height": 720,
-      "maxBytes": 6000000,
-      "durationSeconds": 15,
-      "fps": 24,
-      "hasAudio": false
-    },
-    {
-      "path": "public/videos/jammers-hero-v4-mobile.mp4",
-      "sha256": "66141998ae290a8f8087dfe1921a53ddacffa6d7b9f9a4bd95ed42adce38797c",
-      "bytes": 2316048,
-      "width": 960,
-      "height": 540,
-      "maxBytes": 3000000,
-      "durationSeconds": 15,
-      "fps": 24,
-      "hasAudio": false
-    },
-    {
-      "path": "public/images/home/jammers-film-poster.webp",
-      "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
-      "bytes": 130626,
-      "width": 1280,
-      "height": 720
     }
   ],
   "history": [
@@ -153,44 +137,228 @@
         }
       ],
       "approvalBasis": "Operator approved direction A and requested the production design rebuild after viewing accepted v2."
+    },
+    {
+      "version": "v4",
+      "schemaVersion": 1,
+      "kind": "operator-approved-ai-advertising-film",
+      "approval": {
+        "date": "2026-10-10",
+        "basis": "Operator approved the v4 people-and-single-tap preview and explicitly approved local visual-polish implementation; no deployment authorized by this manifest.",
+        "specification": "docs/superpowers/specs/2026-10-10-visual-polish.md",
+        "exception": "Explicit exception to the Canva-only image rule for this accepted AI advertising film and its finale poster; not documentary market imagery or a pixel-identical product photograph.",
+        "deploymentApprovedByThisManifest": false
+      },
+      "generation": {
+        "providers": [
+          "Runway",
+          "OpenAI imagegen",
+          "local AVFoundation assembly"
+        ],
+        "acceptedTaskIds": [
+          "269e26d5-7937-45b8-8127-1945b38bbb12",
+          "867270ee-eda9-4ec4-b102-68d422a1c4ed",
+          "c3cff79c-87fc-47b2-a6df-147cb7579339",
+          "b6d193fe-f5c0-4133-b64f-f3f001d099d8"
+        ],
+        "finale": "Accepted static AI motif with a minimal 1% zoom, assembled into v2 from second 11. Rejected animated finale with changing label details is not used.",
+        "reference": "Operator-approved six-bottle product photograph; bottle identities informed the generated motif, which is not pixel-identical.",
+        "promptSummary": "Approved v4: adult toast, garden party with one-tap rectangular stainless-steel rear Jammers-logo dispensing setup, unchanged accepted v2 pouring and finale. Advertising imagery, not documentary evidence. Rejected edited close-up is excluded. No new generation for production derivatives."
+      },
+      "source": {
+        "filename": "jammers-hero-15s-v4.mp4",
+        "sha256": "59a70d3ef71c8eef46396005b3242f2109e3570a46b286f1b7f3fadbe0cc81a2",
+        "bytes": 16618455,
+        "width": 1920,
+        "height": 1080,
+        "durationSeconds": 15,
+        "fps": 24,
+        "hasAudio": false
+      },
+      "posterSource": {
+        "filename": "jammers-eigenmarken-finale-v1.png",
+        "sha256": "f2122a859e68538cee3520802606a9956f056d26bac1746c2bb29415d7a52ba8",
+        "fit": "Full motif contained in 16:9; no crop, no retouching."
+      },
+      "derivation": {
+        "encoder": "scripts/encode-hero-film.swift",
+        "codec": "H.264 High, MP4",
+        "desktopBitrate": 2500000,
+        "mobileBitrate": 1200000,
+        "fps": 24,
+        "durationSeconds": 15,
+        "hasAudio": false,
+        "fastStart": true,
+        "metadataStripped": true,
+        "fit": "Uniform full-frame 16:9 downscale, preserving all source imagery.",
+        "posterEncoding": "sharp WebP, 1280x720 contain, quality 84"
+      },
+      "files": [
+        {
+          "path": "public/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4",
+          "sha256": "4d55447b17c1b23d1bf1a8c863c696fa3c018fa3681fdcfcc3dd83324694b76c",
+          "bytes": 980962,
+          "width": 960,
+          "height": 540,
+          "maxBytes": 1000000,
+          "durationSeconds": 15,
+          "fps": 24,
+          "hasAudio": false,
+          "optimization": "FFmpeg 6.0 libx264, veryslow preset, CRF 28.25, full-frame Lanczos downscale directly from unchanged accepted v4 source, H.264 High yuv420p, fast-start, map_metadata -1; no content, crop, fps or duration edit. Technical codec/container encoder tags remain."
+        },
+        {
+          "path": "public/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4",
+          "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
+          "bytes": 4785365,
+          "width": 1280,
+          "height": 720,
+          "maxBytes": 6000000,
+          "durationSeconds": 15,
+          "fps": 24,
+          "hasAudio": false,
+          "optimization": "Byte-identical retained v4 desktop file at a SHA-256-bound path."
+        },
+        {
+          "path": "public/images/home/jammers-film-poster-62abe3860959351d.webp",
+          "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
+          "bytes": 130626,
+          "width": 1280,
+          "height": 720,
+          "optimization": "Byte-identical full-frame poster at a SHA-256-bound path."
+        },
+        {
+          "path": "public/videos/jammers-hero-v4-desktop.mp4",
+          "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
+          "bytes": 4785365,
+          "width": 1280,
+          "height": 720,
+          "maxBytes": 6000000,
+          "durationSeconds": 15,
+          "fps": 24,
+          "hasAudio": false
+        },
+        {
+          "path": "public/videos/jammers-hero-v4-mobile.mp4",
+          "sha256": "66141998ae290a8f8087dfe1921a53ddacffa6d7b9f9a4bd95ed42adce38797c",
+          "bytes": 2316048,
+          "width": 960,
+          "height": 540,
+          "maxBytes": 3000000,
+          "durationSeconds": 15,
+          "fps": 24,
+          "hasAudio": false
+        },
+        {
+          "path": "public/images/home/jammers-film-poster.webp",
+          "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
+          "bytes": 130626,
+          "width": 1280,
+          "height": 720
+        }
+      ],
+      "sceneTimeline": [
+        {
+          "startSeconds": 0,
+          "endSeconds": 4,
+          "scene": "Accepted adult toast",
+          "sourceFilename": "opening-source.mp4",
+          "sourceSha256": "03c51ead20d886543a7f856100df022613315ba45314c0c4b145d94b5cdf8cd9"
+        },
+        {
+          "startSeconds": 4,
+          "endSeconds": 7,
+          "scene": "Accepted single-tap rear-view garden party",
+          "sourceFilename": "opening-single-tap.mp4",
+          "sourceSha256": "ec69645e0f496ffbca50340299b04fb319dea4780b51468090cf822138783477"
+        },
+        {
+          "startSeconds": 7,
+          "endSeconds": 11,
+          "scene": "Unchanged v2 pouring"
+        },
+        {
+          "startSeconds": 11,
+          "endSeconds": 15,
+          "scene": "Unchanged accepted static finale with minimal zoom"
+        }
+      ],
+      "internalClassification": "AI advertising film; not documentary market footage or a pixel-identical product photograph. Internal provenance only; no technical public badge.",
+      "performanceReview": {
+        "date": "2026-10-12",
+        "approvalBasis": "Approved search-completion spec, mechanical mobile optimization and exact versioned media caching; no new generation or content change.",
+        "mobilePreviousBytes": 2316048,
+        "mobileCurrentBytes": 980962,
+        "all360FramesRetained": true,
+        "sameFrameVisualComparisonSeconds": [
+          2,
+          5,
+          9,
+          12.5,
+          14
+        ],
+        "vmafAgainstPrevious960x540Mobile": 90.599042,
+        "qualityScope": "Five actual decoded same-time frame pairs and mobile-view playback reviewed, preserving people, single tap, Jammers logo, bottle names and full finale. Lossy encoding, not pixel-identical. No crop, retouch or AI edit. Originals and previous derivatives retained.",
+        "cacheScope": "Exact reviewed SHA-256-bound paths only. Old mutable paths, flyers and manifests do not acquire immutable caching."
+      }
     }
   ],
   "sceneTimeline": [
     {
+      "startFrameInclusive": 0,
+      "endFrameExclusive": 94,
       "startSeconds": 0,
-      "endSeconds": 4,
-      "scene": "Accepted adult toast",
+      "endSeconds": 3.9166666666666665,
+      "scene": "Original approved adult toast",
       "sourceFilename": "opening-source.mp4",
-      "sourceSha256": "03c51ead20d886543a7f856100df022613315ba45314c0c4b145d94b5cdf8cd9"
+      "sourceSha256": "03c51ead20d886543a7f856100df022613315ba45314c0c4b145d94b5cdf8cd9",
+      "sourceFrames": "[0,94)"
     },
     {
-      "startSeconds": 4,
-      "endSeconds": 7,
-      "scene": "Accepted single-tap rear-view garden party",
-      "sourceFilename": "opening-single-tap.mp4",
-      "sourceSha256": "ec69645e0f496ffbca50340299b04fb319dea4780b51468090cf822138783477"
+      "startFrameInclusive": 94,
+      "endFrameExclusive": 167,
+      "startSeconds": 3.9166666666666665,
+      "endSeconds": 6.958333333333333,
+      "scene": "Corrected stable garden with one compact forward-facing tap",
+      "sourceFilename": "garden-front-tap-v1.mp4",
+      "sourceSha256": "82d6b5b304345a8156e45385bfde1e8429d2380eecf6a8bf25f1db4a7debe7e7",
+      "sourceFrames": "[0,73)"
     },
     {
-      "startSeconds": 7,
+      "startFrameInclusive": 167,
+      "endFrameExclusive": 263,
+      "startSeconds": 6.958333333333333,
+      "endSeconds": 10.958333333333334,
+      "scene": "Original approved liqueur pour",
+      "sourceFilename": "jammers-hero-15s-v2.mp4",
+      "sourceSha256": "dfb37e4e0ea987dce428afeaf93eb2c3030849603901264967671141289202c7",
+      "sourceFrames": "[168,264)"
+    },
+    {
+      "startFrameInclusive": 263,
+      "endFrameExclusive": 264,
+      "startSeconds": 10.958333333333334,
       "endSeconds": 11,
-      "scene": "Unchanged v2 pouring"
+      "scene": "One initial still finale frame",
+      "note": "One added still frame; no freeze or retiming of people."
     },
     {
+      "startFrameInclusive": 264,
+      "endFrameExclusive": 360,
       "startSeconds": 11,
       "endSeconds": 15,
-      "scene": "Unchanged accepted static finale with minimal zoom"
+      "scene": "Existing approved devil/angel mascot animation",
+      "sourceFilename": "finale-mascots-composite-v2.mp4",
+      "sourceFrames": "[0,96)"
     }
   ],
   "internalClassification": "AI advertising film; not documentary market footage or a pixel-identical product photograph. Internal provenance only; no technical public badge.",
   "performanceReview": {
     "date": "2026-10-12",
-    "approvalBasis": "Approved search-completion spec, mechanical mobile optimization and exact versioned media caching; no new generation or content change.",
-    "mobilePreviousBytes": 2316048,
-    "mobileCurrentBytes": 980962,
+    "approvalBasis": "Approved V6 integration; exact unchanged desktop preview and bounded full-frame mobile delivery with SHA-256-bound media caching.",
+    "mobilePreviousBytes": 980962,
+    "mobileCurrentBytes": 628843,
     "all360FramesRetained": true,
-    "sameFrameVisualComparisonSeconds": [2, 5, 9, 12.5, 14],
-    "vmafAgainstPrevious960x540Mobile": 90.599042,
-    "qualityScope": "Five actual decoded same-time frame pairs and mobile-view playback reviewed, preserving people, single tap, Jammers logo, bottle names and full finale. Lossy encoding, not pixel-identical. No crop, retouch or AI edit. Originals and previous derivatives retained.",
+    "qualityScope": "Accepted V6 scene and exact-frame seam review retained. Desktop delivery is byte-identical to the approved preview; mobile H.264 is a lossy full-frame downscale, not pixel-identical. Master, prior films, poster and historical provenance are preserved.",
     "cacheScope": "Exact reviewed SHA-256-bound paths only. Old mutable paths, flyers and manifests do not acquire immutable caching."
   }
 }

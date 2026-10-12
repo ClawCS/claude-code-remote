@@ -16,6 +16,7 @@ for (const width of [390, 768, 1440]) {
       await expect(page.getByRole("contentinfo")).toHaveCount(1);
       const root = path === "/" ? page.locator("[data-cinematic-root]") : page.locator("main").locator("..");
       await expect(root).toHaveCSS("background-color", "rgb(250, 249, 246)");
+      if (path === "/nl") await expect(page.getByRole("main")).toHaveCSS("background-color", "rgb(255, 255, 255)");
       const flyers = page.locator(path === "/" ? "#aktuell article:has([data-flyer-viewer])" : "#handzettel article:has([data-flyer-viewer])");
       const response = await request.get("/api/content/flyers");
       expect(response.status()).toBe(200);
@@ -34,7 +35,7 @@ for (const width of [390, 768, 1440]) {
         else expect(nl!.y).toBeGreaterThan(de!.y + de!.height);
       }
       for (const flyer of await flyers.all()) {
-        await expect(flyer).toHaveCSS("background-color", "rgb(242, 240, 236)");
+        await expect(flyer).toHaveCSS("background-color", path === "/" ? "rgb(242, 240, 236)" : "rgb(243, 245, 247)");
         await expect(flyer.locator("img")).toHaveCSS("object-fit", "contain");
         const heading = await flyer.locator("h3").boundingBox();
         const cover = await flyer.locator("[data-flyer-cover]").boundingBox();

@@ -1,10 +1,10 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import SocialLink from "@/components/SocialLink";
 import FlyerViewer from "@/components/cinematic/FlyerViewer";
 import { formatDateRange } from "@/lib/cinematic/presentation";
 import type { FlyerIndex } from "@/lib/flyer-index";
 import { SITE_LINKS } from "@/lib/cinematic/site";
-import { cinematicTokenStyle } from "@/lib/cinematic/tokens";
 import PageIntro from "./editorial/PageIntro";
 import styles from "./editorial/collection.module.css";
 import editorial from "./editorial/editorial.module.css";
@@ -12,7 +12,7 @@ import editorial from "./editorial/editorial.module.css";
 export default function FlyerIndexView({index, compact = false, showOverviewLink = false}: {index: FlyerIndex; compact?: boolean; showOverviewLink?: boolean}) {
   const CardHeading = compact ? "h3" : "h2";
   const accent = compact ? "text-[#a54108]" : "text-primary";
-  const theme = compact ? { ...cinematicTokenStyle, "--cinematic-color-red": "#a54108" } : cinematicTokenStyle;
+  const theme = compact ? { "--cinematic-color-red": "#a54108" } as CSSProperties : undefined;
   const main = index.flyers.filter(flyer => flyer.purpose !== "supplemental");
   const supplements = index.flyers.filter(flyer => flyer.purpose === "supplemental");
   const cards = (flyers: FlyerIndex["flyers"]) => <div className={styles.flyers}>{flyers.map((flyer) => <article key={flyer.id} className={styles.flyer}><p className={styles.meta}>{flyer.purpose === "supplemental" ? "Maasduinen · " : ""}{flyer.language === "nl" ? "Nederlands" : compact ? "Duits" : "Deutsch"} · {formatDateRange(flyer.validFrom,flyer.validTo)}</p><CardHeading lang={flyer.language}>{flyer.title}</CardHeading><FlyerViewer flyer={flyer} locale={compact ? "nl" : "de"} asOf={index.generatedAt}/></article>)}</div>;
