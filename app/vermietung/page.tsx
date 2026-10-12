@@ -15,6 +15,7 @@ import { money } from "@/lib/rental-cart";
 import { MARKET } from "@/lib/cinematic/site";
 import { RENTAL_QUANTITY_UNAVAILABLE } from "@/lib/rental-messages";
 import LocalAnswers from "@/components/LocalAnswers";
+import { PARTY_SCENE } from "@/data/party-scene";
 
 export default function VermietungPage() {
   const { items, addItem } = useCart();
@@ -76,7 +77,7 @@ export default function VermietungPage() {
 
   return (
     <div className="public-page rental-page">
-      <section data-rental-intro><PageIntro eyebrow="Trinkgut Jammers · Party & Miete" title="Deine Feier. Unser Leihsortiment." description="Kühlung, Ausschank, Mobiliar und Gläser: Wähle Menge und Zeitraum und sieh deinen Mietpreis. Termin und Verfügbarkeit bestätigen wir persönlich." /></section>
+      <section data-rental-intro><PageIntro theme="party" media={PARTY_SCENE} eyebrow="Trinkgut Jammers · Party & Miete" title="Deine Feier. Unser Leihsortiment." description="Kühlung, Ausschank, Mobiliar und Gläser: Wähle Menge und Zeitraum und sieh deinen Mietpreis. Termin und Verfügbarkeit bestätigen wir persönlich." /></section>
 
       <div className={styles.body}>
         <section aria-labelledby="rental-dates" className={styles.dates}>

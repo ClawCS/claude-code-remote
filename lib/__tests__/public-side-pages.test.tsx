@@ -56,31 +56,19 @@ describe("public side-page presentation", () => {
     }
   });
 
-  it("shows the original own-brand posters in full without cover-cropping or zoom", () => {
-    const html = renderToStaticMarkup(<EigenmarkePage />);
-    const posters = [...html.matchAll(/<img\b[^>]*>/g)].filter(([image]) => image.includes("/images/eigenmarken/"));
-    expect(posters).toHaveLength(6);
-    for (const [poster] of posters) {
-      expect(poster).toContain("object-contain");
-      expect(poster).not.toMatch(/object-cover|scale-105/);
-    }
-  });
-
-  it("introduces all six original posters with the separate full-frame dark bottle scene", () => {
+  it("shows all six original bottle cutouts in the lineup and their native product stages", () => {
     const html = renderToStaticMarkup(<EigenmarkePage />).replaceAll("%2F", "/");
     const allImages = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
     expect(allImages.filter(image => image.includes("/images/brands/jammers-hilft-symbol.png"))).toHaveLength(1);
     const images = allImages.filter(image => !image.includes("/images/brands/jammers-hilft-symbol.png"));
-    expect(images).toHaveLength(7);
-    expect(images[0]).toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
+    expect(images).toHaveLength(12);
+    expect(html).not.toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
     expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");
-    expect(images[0]).toContain('width="1536"');
-    expect(images[0]).toContain('height="1024"');
-    expect(images[0]).toContain('loading="lazy"');
-    expect(images[0]).not.toMatch(/object-cover|data-nimg="fill"/);
-    expect(images.filter(image => image.includes("/images/eigenmarken/"))).toHaveLength(6);
-    for (const poster of ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"]) {
-      expect(images.filter(image => image.includes(`/images/eigenmarken/${poster}.png`))).toHaveLength(1);
+    expect(images.filter(image => image.includes("/images/eigenmarken/"))).toHaveLength(0);
+    for (const slug of ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"]) {
+      expect(images.filter(image => image.includes(`/images/eigenmarken-bottles/${slug}.png`))).toHaveLength(2);
+      expect(html).toContain(`href="#${slug}"`);
+      expect(html).toContain(`id="${slug}"`);
     }
   });
 });

@@ -29,7 +29,11 @@ describe("source-backed rental catalog", () => {
     expect(result).not.toContain("01.01.2026");
     expect(result).not.toContain("Weinglas klein");
     expect(result).not.toContain("Preis auf Anfrage");
-    expect([...result.matchAll(/<img\b/g)]).toHaveLength(19);
+    const itemArticles = [...result.matchAll(/<article\b[^>]*data-rental-name[^>]*>([\s\S]*?)<\/article>/g)];
+    expect(itemArticles).toHaveLength(19);
+    for (const [, article] of itemArticles) expect([...article.matchAll(/<img\b/g)]).toHaveLength(1);
+    const intro = result.split("data-rental-intro")[1]?.split("</section>")[0];
+    expect(intro).toContain("garden-party-jammers-v1.webp");
     expect(result).toContain("Beispielbild · Modell und Ausführung können abweichen.");
     expect(result).not.toContain("KI-Beispielbild");
     expect(result).toContain("Bruchersatz");

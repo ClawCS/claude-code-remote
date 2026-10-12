@@ -26,7 +26,7 @@ export default async function PublicJobPage({ params }: Props) {
   if (!job) notFound();
   return <>
     <JsonLdScript value={buildBreadcrumbJsonLd([{ name: "Start", path: "/" }, { name: "Karriere", path: "/karriere" }, { name: job.title, path: `/karriere/${job.slug}` }])} />
-    <PageIntro eyebrow="Team & Karriere · Goch" title={job.title} description={job.introduction} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Karriere", href: "/karriere" }, { label: job.schedule }]} />
+    <PageIntro theme="people" eyebrow="Team & Karriere · Goch" title={job.title} description={job.introduction} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Karriere", href: "/karriere" }, { label: job.schedule }]} />
     <article className={styles.body} data-service="career">
       <div className={`${styles.jobGrid} ${styles.jobDetail}`}>
         <a href={job.poster.src} target="_blank" rel="noopener noreferrer" className={styles.jobPoster} aria-label={`${job.title} – vollständige Anzeige öffnen`}><Image {...job.poster} alt={job.poster.alt} sizes="(max-width:640px) 85vw, 450px" className="w-full h-auto" /></a>

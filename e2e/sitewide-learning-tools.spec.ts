@@ -167,7 +167,11 @@ for (const width of [390, 768, 1440]) {
 }
 
 test("academy discovery remains reachable from homepage, category and own-brand consumers", async ({ page }) => {
-  for (const route of ["/", "/kategorie/bier", "/eigenmarke"]) {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await ready(page, "/");
+  await expect(page.locator('aside[aria-label="Getränkeakademie"], aside[data-academy-context]')).toHaveCount(0);
+  await expect(page.getByRole("banner").locator('a[href="/akademie"]').first()).toHaveAttribute("href", "/akademie");
+  for (const route of ["/kategorie/bier", "/eigenmarke"]) {
     await ready(page, route);
     const entry = page.locator('aside[aria-label="Getränkeakademie"], aside[data-academy-context]');
     await expect(entry).toBeVisible();

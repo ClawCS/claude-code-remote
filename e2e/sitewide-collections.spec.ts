@@ -37,7 +37,7 @@ for (const width of [390, 768, 1440]) {
         }
       }
       if (path === "/eigenmarke") {
-        for (const brand of eigenmarken) await expect(main.locator(`#${brand.slug} h2`)).toHaveText(brand.name);
+        for (const brand of eigenmarken) await expect(main.locator(`#${brand.slug} h3`)).toHaveText(brand.name);
       }
       if (path === "/galerie") {
         await expect(main.locator("figcaption")).toHaveText(["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]);

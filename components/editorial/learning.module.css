@@ -1,14 +1,14 @@
-.body { width: min(100%, 1280px); margin: auto; padding: 0 var(--cinematic-spacing-gutter) clamp(3rem, 7vw, 6rem); }
+.body { width: min(100%, 1280px); margin: auto; padding: clamp(2rem, 4vw, 3.5rem) var(--cinematic-spacing-gutter) clamp(3rem, 7vw, 6rem); background: radial-gradient(ellipse at 100% 0, #365e940c, transparent 42rem); }
 .body :global(.text-muted) { color: var(--cinematic-color-muted); }
 .body[data-learning="academy"] h2 { font-weight: 700; }
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; padding-block: 0 2rem; border-bottom: 1px solid var(--cinematic-color-line); margin-bottom: 2rem; }
 .filters a { display: inline-flex; align-items: center; min-height: 44px; padding: .65rem 1rem; border: 1px solid var(--cinematic-color-line); font-size: .875rem; }
 .filters a[aria-current] { color: white; background: var(--cinematic-color-ink); border-color: var(--cinematic-color-ink); }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 2rem; }
-.card { min-width: 0; border-bottom: 1px solid var(--cinematic-color-line); padding-bottom: 1.5rem; }
+.card { min-width: 0; border: 1px solid var(--cinematic-color-line); border-radius: .75rem; background: white; overflow: visible; box-shadow: 0 .75rem 2rem rgb(23 26 29 / .04); }
 .card h2 { font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -.035em; margin-block: .75rem; }
 .card p { color: var(--cinematic-color-muted); line-height: 1.65; }
-.cardBody { padding: 1.5rem; border-top: 3px solid var(--cinematic-color-burgundy); background: var(--cinematic-color-surface); }
+.cardBody { padding: 1.5rem; border-top: 3px solid #88b4e5; background: white; }
 .body[data-learning="academy"] { padding-top: clamp(2rem, 4vw, 3.5rem); }
 .body[data-learning="academy"] .card { --course-accent: var(--cinematic-color-burgundy); display: flex; flex-direction: column; padding: 0; border: 1px solid var(--cinematic-color-line); border-radius: 8px; background: white; }
 .body[data-learning="academy"] .cover { border-radius: 8px 8px 0 0; }
@@ -28,7 +28,7 @@
 .cardBody .meta a, .cardBody .textLink { color: var(--cinematic-color-burgundy); }
 .photo { margin: 0; min-width: 0; }
 .photoFrame { display: block; position: relative; aspect-ratio: 4 / 3; background: var(--cinematic-color-surface); }
-.credit { padding: .75rem 0; font-size: .75rem; line-height: 1.6; color: var(--cinematic-color-muted); }
+.credit { padding: .75rem; font-size: .75rem; line-height: 1.6; color: var(--cinematic-color-muted); }
 .credit summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
 .cover { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: contain; background: var(--cinematic-color-surface); }
 .recipe { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
@@ -42,7 +42,7 @@
 .related h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
 .related p { max-width: 65ch; line-height: 1.7; margin-bottom: 1.5rem; }
 .courseLead { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 2rem; margin-bottom: 3rem; align-items: center; }
-.progress { padding: 1.5rem; border-block: 1px solid var(--cinematic-color-line); background: var(--cinematic-color-assortment-cream); }
+.progress { padding: clamp(1.5rem, 3vw, 2.5rem); border: 1px solid var(--cinematic-color-line); border-top: 3px solid #88b4e5; background: white; border-radius: 0 0 .75rem .75rem; }
 .progress p { color: var(--cinematic-color-muted); margin-block: 1rem; line-height: 1.6; }
 .progressSteps { display: flex; flex-wrap: wrap; gap: .5rem; }
 .progressSteps :is(button, a) { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border: 1px solid var(--cinematic-color-line); background: white; }
@@ -68,7 +68,12 @@
 .feedback { margin-block: 1.25rem; padding-left: 1rem; border-left: 3px solid var(--cinematic-color-ink); line-height: 1.65; }
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; justify-content: space-between; margin-top: 1.5rem; }
 .exam { max-width: 850px; }
-.result { padding: 2rem; border-block: 1px solid var(--cinematic-color-line); font-size: 1.25rem; line-height: 1.7; }
+.result { padding: clamp(1.25rem, 4vw, 2.5rem); border: 1px solid var(--cinematic-color-line); border-top: 3px solid #88b4e5; border-radius: 0 0 .75rem .75rem; background: white; font-size: 1.25rem; line-height: 1.7; }
+.body :is(h2, h3, a, button) { overflow-wrap: anywhere; }
+.body[data-learning="course"] .courseLead figure { margin: 0; min-width: 0; }
+.body[data-learning="course"] .cover { border-radius: .75rem; background: white; }
+.body[data-learning="course"] .navigation { background: var(--cinematic-color-surface); border-radius: .75rem; padding: .5rem; }
+.lesson, .quiz { border-radius: .75rem; }
 .certificate { padding-block: 1.75rem; border-bottom: 1px solid var(--cinematic-color-line); }
 .certificate h3 { font-weight: 600; font-size: 1.25rem; margin-bottom: .75rem; }
 .certificate p { line-height: 1.7; }

@@ -3,6 +3,7 @@ import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/tools.module.css";
 import editorial from "@/components/editorial/editorial.module.css";
 import Link from "next/link";
+import { PARTY_SCENE } from "@/data/party-scene";
 
 import { useState } from "react";
 import { calculateNeeds, distributionValidity, type PartyConfig } from "@/lib/party-planner";
@@ -41,7 +42,7 @@ export default function PartyplanerPage() {
 
   return (
     <>
-    <PageIntro eyebrow="Gut vorbereitet" title="Partyplaner" description="Wie viele Liter brauchst du für deine Feier? Berechne deinen Getränkebedarf nach Warengruppen – unabhängig von Marken und Wochenangeboten." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Partyplaner" }]} />
+    <PageIntro theme="party" media={PARTY_SCENE} eyebrow="Gut vorbereitet" title="Partyplaner" description="Wie viele Liter brauchst du für deine Feier? Berechne deinen Getränkebedarf nach Warengruppen – unabhängig von Marken und Wochenangeboten." breadcrumbs={[{ label: "Start", href: "/" }, { label: "Partyplaner" }]} />
     <div data-tool="planner" className={styles.body}>
       <div className={styles.planner}>
       {/* Config Form */}

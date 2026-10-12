@@ -118,7 +118,7 @@ function CourseBody({ course, children, query }: { course: CourseNavigation; chi
     const percent = Math.round((examScore / totalFinal) * 100);
     const passed = examScore / totalFinal >= 0.7;
     return (
-      <><PageIntro eyebrow="Abschlussprüfung" title={passed ? "Bestanden!" : "Nicht bestanden"} description={course.title} />
+      <><PageIntro theme="learning" eyebrow="Abschlussprüfung" title={passed ? "Bestanden!" : "Nicht bestanden"} description={course.title} />
       <div data-learning="result" className={`${styles.body} ${styles.exam}`}>
         <div role="status" className={styles.result}>
         <p>
@@ -151,7 +151,7 @@ function CourseBody({ course, children, query }: { course: CourseNavigation; chi
 
   if (showFinalExam) {
     return (
-      <><PageIntro eyebrow="Abschlussprüfung" title={`Abschlusstest: ${course.title}`} description={`${course.finalExam.length} Fragen — 70% zum Bestehen`} />
+      <><PageIntro theme="learning" eyebrow="Abschlussprüfung" title={`Abschlusstest: ${course.title}`} description={`${course.finalExam.length} Fragen — 70% zum Bestehen`} />
       <div data-learning="exam" className={`${styles.body} ${styles.exam}`}>
         <Quiz key={`${course.slug}:final`} questions={course.finalExam} onComplete={(s) => setExamScore(s)} />
       </div></>
@@ -160,7 +160,7 @@ function CourseBody({ course, children, query }: { course: CourseNavigation; chi
 
   return (
     <>
-      <PageIntro eyebrow="Getränkeakademie" title={course.title} description={`${course.difficulty} · ${course.duration} · ${course.lessons.length} Lektionen + Abschlusstest`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Akademie", href: "/akademie" }, { label: course.title, ...(activeLesson ? { href: lessonHref(course.slug, 0) } : {}) }, ...(activeLesson ? [{ label: lesson.title }] : [])]}>
+      <PageIntro theme="learning" eyebrow="Getränkeakademie" title={course.title} description={`${course.difficulty} · ${course.duration} · ${course.lessons.length} Lektionen + Abschlusstest`} breadcrumbs={[{ label: "Start", href: "/" }, { label: "Akademie", href: "/akademie" }, { label: course.title, ...(activeLesson ? { href: lessonHref(course.slug, 0) } : {}) }, ...(activeLesson ? [{ label: lesson.title }] : [])]}>
         <a href="#course-lesson" className={editorial.secondaryLink}>Zur aktuellen Lektion</a>
       </PageIntro>
       <div data-learning="course" className={styles.body}>

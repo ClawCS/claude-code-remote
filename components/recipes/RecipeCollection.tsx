@@ -6,7 +6,7 @@ import PageIntro from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/learning.module.css";
 
 export function RecipeIntro({ title, description, category }: { title: string; description: string; category?: { name: string; href: string } }) {
-  return <PageIntro eyebrow="Rezepte & Genuss" title={title} description={description} breadcrumbs={[
+  return <PageIntro theme="learning" eyebrow="Rezepte & Genuss" title={title} description={description} breadcrumbs={[
     { label: "Start", href: "/" },
     ...(title !== "Cocktail-Rezepte" ? [{ label: "Cocktail-Rezepte", href: "/cocktails" }] : []),
     ...(category ? [{ label: category.name, href: category.href }] : []),

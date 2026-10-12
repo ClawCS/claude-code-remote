@@ -10,8 +10,8 @@
 .handoverGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
 .handoverGrid figure { margin: 0; min-width: 0; }
 .activeGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; }
-.card { display: flex; flex-direction: column; gap: 1rem; min-width: 0; padding-top: 1rem; border-top: 1px solid var(--cinematic-color-line); color: var(--cinematic-color-ink); }
-.cardBody { display: flex; flex-direction: column; gap: 1rem; flex: 1; padding: 1.5rem; background: var(--cinematic-color-assortment-cream); }
+.card { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--cinematic-color-line); border-radius: .75rem; background: white; overflow: visible; color: var(--cinematic-color-ink); box-shadow: 0 .75rem 2rem rgb(23 26 29 / .04); }
+.cardBody { display: flex; flex-direction: column; gap: 1rem; flex: 1; padding: 1.5rem; border-top: 3px solid #ee5361; background: var(--cinematic-color-surface); }
 .cardTop { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .7rem; }
 .coverLink { display: block; width: 100%; }
 .coverLink:focus-visible { outline: 3px solid var(--cinematic-color-red); outline-offset: 4px; }
@@ -23,7 +23,7 @@
 .deadline { margin-top: auto; font-size: .8rem; line-height: 1.55; color: var(--cinematic-color-muted); }
 .sourceLink { display: inline-flex; align-items: center; min-height: 44px; font-size: .85rem; font-weight: 600; color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .25em; }
 .cardBody .sourceLink { color: var(--cinematic-color-burgundy); }
-.pending { background: transparent; border-style: dashed; min-height: 14rem; justify-content: space-between; }
+.pending { background: var(--cinematic-color-surface); border-style: dashed; min-height: 14rem; padding: 1.5rem; gap: 1rem; justify-content: space-between; box-shadow: none; }
 .pending h3 { font-size: 1.2rem; }
 .notice { border-left: 3px solid var(--cinematic-color-red); padding: .5rem 0 .5rem 1.2rem; color: var(--cinematic-color-muted); max-width: 75ch; }
 .notice strong { display: block; color: var(--cinematic-color-ink); margin-bottom: .3rem; }

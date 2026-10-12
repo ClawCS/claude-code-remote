@@ -1,11 +1,13 @@
-.body { width: min(100%, 1152px); margin: auto; padding: 0 var(--cinematic-spacing-gutter) clamp(3rem, 7vw, 6rem); }
+.body { width: min(100%, 1152px); margin: auto; padding: clamp(2rem, 4vw, 3.5rem) var(--cinematic-spacing-gutter) clamp(3rem, 7vw, 6rem); }
+.body[data-tool="planner"] { background: radial-gradient(ellipse at 100% 0, var(--atmosphere-wash), transparent 40rem); }
+.body :is(h2, h3, label, button, a) { overflow-wrap: anywhere; }
 .body :global(.text-muted), .modal :global(.text-muted) { color: var(--cinematic-color-muted); }
 .narrow { max-width: 850px; }
 .workspace { display: grid; gap: 2rem; }
-.panel { padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--cinematic-color-line); background: white; }
+.panel { padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--cinematic-color-line); border-radius: .75rem; background: white; }
 .panel h2 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 700; letter-spacing: -.03em; margin-bottom: 1rem; }
 .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
-.choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border-top: 3px solid var(--cinematic-color-burgundy); border-bottom: 1px solid var(--cinematic-color-line); background: linear-gradient(120deg, var(--cinematic-color-assortment-cream), color-mix(in srgb, var(--cinematic-color-category-amber) 28%, var(--cinematic-color-assortment-cream))); }
+.choice { display: block; min-width: 0; padding: 2rem 1.5rem; text-align: left; border: 1px solid var(--cinematic-color-line); border-top: 3px solid var(--atmosphere-accent, var(--cinematic-color-red)); border-radius: 0 0 .75rem .75rem; background: var(--cinematic-color-surface); }
 .choice:hover { border-color: var(--cinematic-color-red); }
 .body .choice :global(.text-primary) { color: var(--cinematic-color-burgundy); }
 .choice h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; margin-block: 1rem; }
@@ -19,7 +21,7 @@
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1.5rem; }
 .mode[aria-pressed="true"] { background: var(--cinematic-color-ink); color: white; border-color: var(--cinematic-color-ink); }
 .planner { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: start; gap: 2rem; }
-.results { padding: 2rem; background: var(--cinematic-color-assortment-cream); border-top: 3px solid var(--cinematic-color-red); }
+.results { padding: clamp(1.25rem, 3vw, 2rem); background: var(--cinematic-color-surface); border-top: 3px solid var(--atmosphere-accent, var(--cinematic-color-red)); border-radius: 0 0 .75rem .75rem; }
 .results h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
 .results dl { margin-block: 1.5rem; }
 .results dl > div { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1rem; border-bottom: 1px solid var(--cinematic-color-line); }
@@ -40,7 +42,7 @@
 .stat p { margin-top: .75rem; color: var(--cinematic-color-muted); font-size: .8rem; }
 .gameGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
 .modalOverlay { position: fixed; inset: 0; z-index: 110; display: grid; place-items: center; padding: 1rem; background: rgb(25 25 24 / .6); }
-.modal { width: min(100%, 640px); max-height: calc(100dvh - 2rem); overflow-y: auto; background: var(--cinematic-color-paper); border: 1px solid var(--cinematic-color-line); position: relative; }
+.modal { width: min(100%, 640px); max-height: calc(100dvh - 2rem); overflow-y: auto; background: white; border: 1px solid var(--cinematic-color-line); border-radius: .75rem; position: relative; }
 .modalHeader { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; justify-content: space-between; padding: 1.25rem; border-bottom: 1px solid var(--cinematic-color-line); background: white; }
 .modalHeader h2 { font-size: 1.25rem; font-weight: 700; }
 .modalBody { padding: clamp(1rem, 4vw, 2rem); }

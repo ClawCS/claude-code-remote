@@ -2,12 +2,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import WeeklyOfferGrid from "@/components/WeeklyOfferGrid";
 import AcademyEntry from "@/components/AcademyEntry";
-import PageIntro from "@/components/editorial/PageIntro";
+import PageIntro, { type PageIntroProps } from "@/components/editorial/PageIntro";
 import styles from "@/components/editorial/collection.module.css";
 import { categories } from "@/lib/utils";
 import { getWeeklyOfferContent } from "@/lib/weekly-offer-content";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 export const dynamic = "force-dynamic";
+
+// Explicit presentation choices for validated categories, not inventory claims.
+const presentation: Record<string, Pick<PageIntroProps, "theme" | "media">> = {
+  bier: { theme: "beer", media: { src: "/images/editorial/user/bueble-aufbau.webp", alt: "Büble-Aufbau im Getränkemarkt", width: 788, height: 1400 } },
+  alkoholfrei: { theme: "fresh", media: { src: "/images/editorial/user/spezi-regal.webp", alt: "Spezi-Regal im Getränkemarkt", width: 788, height: 1400 } },
+  wein: { theme: "wine", media: { src: "/images/editorial/user/weinregal.webp", alt: "Einblick in das Weinregal", width: 788, height: 1400 } },
+  sekt: { theme: "wine" },
+  spirituosen: { theme: "spirits", media: { src: "/images/editorial/google/baileys-aufbau.webp", alt: "Baileys-Aufbau im Getränkemarkt", width: 900, height: 1200 } },
+  lebensmittel: { theme: "neutral" },
+};
 
 const introductions: Record<string, string> = {
   bier: "Pils, Alt, Weizen und Fassbier: Entdecke eine Auswahl aus unserem Markt. Für die große Runde beraten wir dich auch zu Fassbier und Zapfanlagen.",
@@ -24,7 +34,7 @@ export default async function KategoriePage({ params }: { params: Promise<{ slug
   if (!category) notFound();
   const content = await getWeeklyOfferContent(resolveHomepageNow());
   return <>
-    <PageIntro eyebrow="Aktuelle Handzettelangebote" title={category.name} description={<><p>{introductions[slug]}</p><p>Das vollständige Sortiment findest du im Markt.</p></>} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: category.name }]} />
+    <PageIntro {...presentation[slug]} eyebrow="Aktuelle Handzettelangebote" title={category.name} description={<><p>{introductions[slug]}</p><p>Das vollständige Sortiment findest du im Markt.</p>{presentation[slug]?.media && <p>Markteinblick – abgebildete Preise und Aufbauten sind keine aktuellen Angebote.</p>}</>} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Sortiment", href: "/produkte" }, { label: category.name }]} />
     <div className={styles.body} data-collection="category" data-category-intro>
       <nav className={styles.categories} aria-label="Warengruppen">{categories.map(item => <Link key={item.slug} href={`/kategorie/${item.slug}`} aria-current={slug === item.slug ? "page" : undefined}>{item.name}</Link>)}</nav>
       {slug === "spirituosen" && <p className="mb-8"><Link href="/regionale-spirituosen" className="text-primary underline font-bold">Regionale Spezialitäten vom Niederrhein entdecken</Link></p>}

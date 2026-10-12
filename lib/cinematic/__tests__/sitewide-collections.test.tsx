@@ -28,7 +28,7 @@ describe("editorial collection families", () => {
   ])("%s gives customers one editorial heading and a separate collection body", (_, page) => {
     const html = renderToStaticMarkup(page);
     expect(html.match(/<h1\b/g)).toHaveLength(1);
-    expect(html).toMatch(/<header[^>]*class="[^"]*intro/);
+    expect(html).toMatch(/<header\b[^>]*>[\s\S]*?<h1\b/);
     expect(html).toContain("data-collection=");
     expect(html).not.toContain("page-hero-banner");
     expect(html).not.toContain('class="category-intro');

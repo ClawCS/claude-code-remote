@@ -104,11 +104,11 @@ test("adds greeting-card photos to gift ideas without replacing the gift-basket 
 });
 
 test.each([
-  ["own brands", EigenmarkePage, 7],
+  ["own brands", EigenmarkePage, 12],
   ["regional specialties", RegionaleSpirituosenPage, 3],
 ] as const)("retains %s images without decorative captions", (_name, Page, count) => {
   const html = renderToStaticMarkup(<Page />);
-  // The own-brand initiative mark is a logo, not a seventh poster/photo.
+  // The initiative mark is a logo; six original cutouts occur in lineup and stages.
   expect([...html.matchAll(/<img\b[^>]*>/g)].filter(([image]) => !image.includes("/images/brands/jammers-hilft-symbol.png"))).toHaveLength(count);
   expect(html).not.toContain("<figcaption");
 });
