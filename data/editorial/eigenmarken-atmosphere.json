@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "approvedOn": "2026-10-12",
+  "scope": "Local native website presentation; no live release authorization.",
+  "scene": {
+    "src": "/images/eigenmarken-scenes/cherry-b26593bf6dc6.webp",
+    "sha256": "b26593bf6dc63fc1fba4b9487efed5c629d5777e1be1b388ec3c0913e4b048f3",
+    "width": 1672,
+    "height": 941,
+    "sourceKind": "Generated illustrative cherry background from the approved local Eigenmarken design study",
+    "sourceRecord": "Approved cherry-scene.webp study asset; byte-identical copy",
+    "generator": "Not independently recorded in this implementation; do not infer a model or prompt",
+    "usage": "Decorative background only. Not a market photograph, bottle, label or product claim. Original PNG bottle and native HTML copy are separate layers."
+  },
+  "products": {
+    "source": "Existing data/eigenmarken.ts facts and original public/images/eigenmarken-bottles PNGs",
+    "treatment": "Unmodified alpha PNG source bytes; CSS contain. No generated labels, posters or composite group image.",
+    "taglines": "Not displayed; the unverified Pralle Kirsche tagline is omitted."
+  }
+}

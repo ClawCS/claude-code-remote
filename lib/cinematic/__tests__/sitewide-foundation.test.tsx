@@ -19,7 +19,7 @@ describe("shared editorial foundation", () => {
   test("acceptance matrix covers each customer template and only real catalog examples", () => {
     const templates = readdirSync("app", { recursive: true }).filter((file): file is string => typeof file === "string" && /(^|\/)page\.tsx$/.test(file))
       .map(file => `/${file.replace(/(^|\/)page\.tsx$/, "")}`);
-    expect(SITEWIDE_DESIGN_CASES).toHaveLength(40);
+    expect(SITEWIDE_DESIGN_CASES).toHaveLength(41);
     expect([...SITEWIDE_DESIGN_CASES, ...SITEWIDE_DESIGN_EXCLUSIONS].map(item => item.template).sort()).toEqual(templates.sort());
     const validExamples = [
       ...categories.map(category => `/kategorie/${category.slug}`),

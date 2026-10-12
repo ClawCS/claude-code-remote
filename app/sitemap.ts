@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/produkte", priority: 0.9, changeFrequency: "daily" },
     { path: "/angebote", priority: 0.9, changeFrequency: "daily" },
     { path: "/eigenmarke", priority: 0.9, changeFrequency: "monthly" },
+    { path: "/eigenmarke/pralle-kirsche", priority: 0.7, changeFrequency: "monthly" },
     { path: "/geschenkideen", priority: 0.7, changeFrequency: "monthly" },
     { path: "/marktleben", priority: 0.7, changeFrequency: "monthly" },
     { path: "/regionale-spirituosen", priority: 0.7, changeFrequency: "monthly" },
