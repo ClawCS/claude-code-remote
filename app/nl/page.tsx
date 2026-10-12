@@ -15,6 +15,7 @@ import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
 import { MARKET, SITE_LINKS } from "@/lib/cinematic/site";
 import styles from "./nl.module.css";
 import LocalAnswers from "@/components/LocalAnswers";
+import JammersHilftSymbol from "@/components/JammersHilftSymbol";
 
 export const dynamic = "force-dynamic";
 
@@ -96,7 +97,7 @@ export default async function NederlandsPage() {
         </section>
 
         <section className={styles.brands} aria-labelledby="nl-brands-title">
-          <div><p className={styles.eyebrow}>Van Jammers. Uit Goch.</p><h2 id="nl-brands-title">Zes eigen karakters.</h2><p>Maak kennis met onze eigen merken. Vraag ons team naar jouw favoriet.</p><ul>{eigenmarken.map(brand => <li key={brand.slug}><Link href={`/eigenmarke#${brand.slug}`} prefetch={false}>{brand.name} <ArrowUpRight /></Link></li>)}</ul><small>De pagina over onze eigen merken is in het Duits.</small></div>
+          <div><JammersHilftSymbol language="nl" /><p className={styles.eyebrow}>Van Jammers. Uit Goch.</p><h2 id="nl-brands-title">Zes eigen karakters.</h2><p>Maak kennis met onze eigen merken. Vraag ons team naar jouw favoriet.</p><ul>{eigenmarken.map(brand => <li key={brand.slug}><Link href={`/eigenmarke#${brand.slug}`} prefetch={false}>{brand.name} <ArrowUpRight /></Link></li>)}</ul><small>De pagina over onze eigen merken is in het Duits.</small></div>
           <Image src={EIGENMARKEN_GROUP_SCENE.src} width={EIGENMARKEN_GROUP_SCENE.width} height={EIGENMARKEN_GROUP_SCENE.height} alt={EIGENMARKEN_GROUP_SCENE.altNL} sizes="(max-width: 767px) 100vw, 50vw" />
         </section>
 

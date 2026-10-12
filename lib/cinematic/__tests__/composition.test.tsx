@@ -220,7 +220,9 @@ describe("cinematic homepage composition", () => {
     expect(flavorOrder.every(position => position >= 0)).toBe(true);
     expect(flavorOrder).toEqual([...flavorOrder].sort((left,right) => left-right));
     expect(spotlight).not.toContain('data-rail="cinematic"');
-    expect(count(spotlight, /<img\b/)).toBe(6);
+    expect(count(spotlight, /<img\b/)).toBe(7);
+    expect(count(spotlight, /src="\/images\/brands\/jammers-hilft-symbol\.png"/)).toBe(1);
+    expect(count(spotlight, /src="\/images\/eigenmarken-bottles\//)).toBe(6);
   });
 
   test("server-renders the approved film poster, copy and usable destination links without loading video", () => {

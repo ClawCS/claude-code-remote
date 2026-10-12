@@ -1,0 +1,28 @@
+{
+  "scope": "Original heart-and-hands symbol only in the three own-brand sections",
+  "status": "locally-verified-not-deployed",
+  "sourceManifest": "assets/source/jammers-hilft/provenance.json",
+  "verification": {
+    "websiteSuite": { "files": 129, "tests": 2359, "passed": 2359,
+      "command": "NODE_ENV=test npx vitest run --exclude 'services/applications/**' --exclude '.superpowers/**'",
+      "excludedNativeApplicationQualification": true },
+    "lint": { "exitCode": 0, "errors": 0, "existingWarnings": 20 },
+    "nextTypegen": "passed",
+    "typescript": "passed",
+    "productionBuild": "passed",
+    "originalFidelity": { "pureWhiteHandPixelsPreserved": 271, "maximumRGBDifferenceWhenRestoredToOriginalPaper": 2 },
+    "browser": { "routes": ["/", "/eigenmarke", "/nl"], "widths": [390, 1440],
+      "developmentCasesPassed": 6, "isolatedProductionCasesPassed": 6,
+      "symbolDisplayPixels": [56, 80], "pageOverflow": false,
+      "imageBackground": "transparent", "interactive": false,
+      "languageSpecificAltText": true },
+    "independentReview": "No blocking asset/integration issue; native brush-texture edge flecks inspected at actual size and retained for original fidelity."
+  },
+  "testCorrections": [
+    "Three old exact image-count assertions updated to distinguish the new logo from the unchanged six bottles/seven posters and scene photographs.",
+    "One focused command matched ignored historical test copies; they were not changed. Final website suite explicitly excludes historical scratch projects and passed in full."
+  ],
+  "unchanged": ["film", "bottle imagery", "visible donation copy", "global color palette", "weekly publications", "applications", "mail", "rental and payments", "server configuration", "live release"],
+  "deployment": { "performed": false, "publicReleaseChanged": false },
+  "preservation": "Pre-existing audit screenshots, application-audit document changes, private originals and generated content-run records were not staged or modified by this task."
+}

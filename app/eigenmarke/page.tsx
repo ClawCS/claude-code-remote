@@ -7,6 +7,7 @@ import { eigenmarken } from "@/data/eigenmarken";
 import AcademyEntry from "@/components/AcademyEntry";
 import { EIGENMARKEN_GROUP_SCENE } from "@/data/eigenmarken-scene";
 import LocalAnswers from "@/components/LocalAnswers";
+import JammersHilftSymbol from "@/components/JammersHilftSymbol";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Unsere Eigenmarken — 6 exklusive Liköre",
@@ -21,7 +22,7 @@ export default function EigenmarkePage() {
     <PageIntro eyebrow="Exklusiv bei Jammers" title="Unsere Eigenmarken" description={`${eigenmarken.length} exklusive Liköre — nur bei Trinkgut Jammers erhältlich.`} breadcrumbs={[{ label: "Startseite", href: "/" }, { label: "Unsere Eigenmarken" }]} />
     <div className={styles.body} data-collection="brands">
       <section className={styles.story} aria-labelledby="own-brand-bottles">
-        <div><h2 id="own-brand-bottles" className="text-3xl font-bold mb-4">Sechs eigene Charaktere.</h2>
+        <div><JammersHilftSymbol /><h2 id="own-brand-bottles" className="text-3xl font-bold mb-4">Sechs eigene Charaktere.</h2>
           <p className="max-w-xl">Unsere Eigenmarken zusammen im Bild. Von Kirsche und Haselnuss bis zu Lakritz und Anis: Unter dem Foto findest du die sechs Liköre mit ihren originalen Motiven.</p>
         </div>
         <figure><Image src={photo.src} width={photo.width} height={photo.height} alt={photo.altDE} sizes="(max-width: 752px) 90vw, 45vw" loading="lazy" /></figure>

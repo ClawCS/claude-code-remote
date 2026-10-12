@@ -1,12 +1,13 @@
 import ArrowUpRight from "@/components/ArrowUpRight";
 import Link from "next/link";
 import OwnBrandStage from "./OwnBrandStage";
+import JammersHilftSymbol from "@/components/JammersHilftSymbol";
 import styles from "./spotlight.module.css";
 
 export default function SpotlightSection(): React.JSX.Element {
   return <section className={styles.section} id="eigenmarken" data-signature="cinematic" aria-labelledby="eigenmarken-title">
     <div className={styles.intro}>
-      <div><p>Unsere Eigenmarken</p><h2 id="eigenmarken-title">Sechs eigene<br />Charaktere.</h2></div>
+      <div><JammersHilftSymbol /><p>Unsere Eigenmarken</p><h2 id="eigenmarken-title">Sechs eigene<br />Charaktere.</h2></div>
       <p className={styles.story}>Eine Familie aus Goch. Von fruchtig bis kräftig – finde deinen Favoriten und lerne die Geschichte dahinter kennen.</p>
     </div>
     <OwnBrandStage />

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "kind": "original-operator-brand-symbol",
+  "approval": {
+    "date": "2026-10-12",
+    "scope": "Only the original heart-and-clasped-hands symbol in the website's own-brand sections; no film or bottle-image integration and no new visible donation text.",
+    "deploymentApprovedByThisManifest": false
+  },
+  "source": {
+    "canvaDesignId": "DAGmrB3V5S0",
+    "title": "A5 Expertise Liköre",
+    "page": 2,
+    "identityEvidence": "Original mark visually inspected in the connected Canva design and matched to the existing local original sheet. No new original export or byte-identity comparison with a new Canva export is claimed.",
+    "path": "public/images/Expertise Liköre (A5)/2.png",
+    "sha256": "cadb058903f81e984c7a25e4a097339621d4edfcd6a6cc2adc6558b201ce3e1c"
+  },
+  "derivation": {
+    "script": "scripts/build-jammers-hilft-symbol.mjs",
+    "crop": { "left": 57, "top": 1644, "width": 250, "height": 250 },
+    "operation": "Native-resolution crop excluding surrounding words and arrow. Edge-connected paper pixels made transparent; only adjacent red antialias unmatted. White hands and original geometry preserved. No generation, redraw, recolor or source modification.",
+    "paperRGB": [251, 251, 242]
+  },
+  "output": {
+    "path": "public/images/brands/jammers-hilft-symbol.png",
+    "sha256": "7de07ec45267fb921ebc9b699526e4dd9f0ef9ce9b5eca65db4142bba3715102",
+    "bytes": 35134,
+    "width": 250,
+    "height": 250,
+    "hasAlpha": true,
+    "surfaces": ["/#eigenmarken", "/eigenmarke", "/nl"]
+  }
+}

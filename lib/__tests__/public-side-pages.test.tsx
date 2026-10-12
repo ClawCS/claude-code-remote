@@ -68,7 +68,9 @@ describe("public side-page presentation", () => {
 
   it("introduces all six original posters with the separate full-frame dark bottle scene", () => {
     const html = renderToStaticMarkup(<EigenmarkePage />).replaceAll("%2F", "/");
-    const images = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
+    const allImages = [...html.matchAll(/<img\b[^>]*>/g)].map(([image]) => image);
+    expect(allImages.filter(image => image.includes("/images/brands/jammers-hilft-symbol.png"))).toHaveLength(1);
+    const images = allImages.filter(image => !image.includes("/images/brands/jammers-hilft-symbol.png"));
     expect(images).toHaveLength(7);
     expect(images[0]).toContain("/images/eigenmarken-scenes/group-dark-v1.webp");
     expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");

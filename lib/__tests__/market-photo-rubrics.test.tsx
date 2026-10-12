@@ -108,6 +108,7 @@ test.each([
   ["regional specialties", RegionaleSpirituosenPage, 3],
 ] as const)("retains %s images without decorative captions", (_name, Page, count) => {
   const html = renderToStaticMarkup(<Page />);
-  expect([...html.matchAll(/<img\b[^>]*>/g)]).toHaveLength(count);
+  // The own-brand initiative mark is a logo, not a seventh poster/photo.
+  expect([...html.matchAll(/<img\b[^>]*>/g)].filter(([image]) => !image.includes("/images/brands/jammers-hilft-symbol.png"))).toHaveLength(count);
   expect(html).not.toContain("<figcaption");
 });
