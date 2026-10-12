@@ -30,6 +30,31 @@ const portraits = [
   ["spirituosen", "spirits", "/images/editorial/google/baileys-aufbau.webp"],
 ] as const;
 
+for (const width of [360, 1440]) {
+  test(`pending giveaway labels keep small-text contrast at ${width}px`, async ({ page, context }) => {
+    await readOnly(context);
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/gewinnspiel");
+    const labels = page.locator('article[class*="pending"] p[class*="eyebrow"]');
+    await expect(labels).toHaveCount(2);
+    for (const label of await labels.all()) {
+      const colors = await label.evaluate(node => ({
+        foreground: getComputedStyle(node).color,
+        background: getComputedStyle(node.closest("article")!).backgroundColor,
+      }));
+      const luminance = (rgb: string) => {
+        const channels = rgb.match(/[\d.]+/g)!.slice(0, 3).map(Number).map(value => {
+          const channel = value / 255;
+          return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+        });
+        return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+      };
+      const values = [luminance(colors.foreground), luminance(colors.background)].sort((a, b) => b - a);
+      expect((values[0] + 0.05) / (values[1] + 0.05), JSON.stringify(colors)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+}
+
 test("party introductions show the intact illustration without replacing working forms", async ({ page, context }) => {
   test.setTimeout(90_000);
   await readOnly(context);

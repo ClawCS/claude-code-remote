@@ -24,6 +24,7 @@
 .sourceLink { display: inline-flex; align-items: center; min-height: 44px; font-size: .85rem; font-weight: 600; color: var(--cinematic-color-red); text-decoration: underline; text-underline-offset: .25em; }
 .cardBody .sourceLink { color: var(--cinematic-color-burgundy); }
 .pending { background: var(--cinematic-color-surface); border-style: dashed; min-height: 14rem; padding: 1.5rem; gap: 1rem; justify-content: space-between; box-shadow: none; }
+.pending .eyebrow { color: var(--cinematic-color-burgundy); }
 .pending h3 { font-size: 1.2rem; }
 .notice { border-left: 3px solid var(--cinematic-color-red); padding: .5rem 0 .5rem 1.2rem; color: var(--cinematic-color-muted); max-width: 75ch; }
 .notice strong { display: block; color: var(--cinematic-color-ink); margin-bottom: .3rem; }
