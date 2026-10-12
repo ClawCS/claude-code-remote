@@ -1,0 +1,94 @@
+[
+  {
+    "route": "akademie",
+    "width": 390,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "produkte",
+    "width": 390,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "vermietung",
+    "width": 390,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "gewinnspiel",
+    "width": 390,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "nl",
+    "width": 390,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "media": {
+      "src": "https://trinkgut-jammers.de/videos/jammers-hero-v6-mobile-e2f94ee62e776519.mp4",
+      "width": 640,
+      "height": 360,
+      "duration": 15
+    },
+    "errors": []
+  },
+  {
+    "route": "akademie",
+    "width": 1440,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "produkte",
+    "width": 1440,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "vermietung",
+    "width": 1440,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "gewinnspiel",
+    "width": 1440,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "nl",
+    "width": 1440,
+    "mainBackground": "rgb(255, 255, 255)",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "media": {
+      "src": "https://trinkgut-jammers.de/videos/jammers-hero-v6-desktop-06fd3bdde1a2d604.mp4",
+      "width": 1280,
+      "height": 720,
+      "duration": 15
+    },
+    "errors": []
+  }
+]

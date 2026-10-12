@@ -32,7 +32,7 @@ All spec preservation and release boundaries apply. Original weekly packages and
 - [x] Run focused expectations against unchanged local website; expected color failures prove missing native palette.
 - [x] Apply shared variables and native module rules. Remove full flyer token reset, preserve compact NL accent.
 - [x] Run palette and relevant continuity browser gates, no-JS, mobile, axe and content checks. Expected: no failures, no overflow, unchanged original offer count and images.
-- [ ] Stage/commit only reviewed own palette changes; preserve unrelated worktree edits.
+- [x] Stage/commit only reviewed own palette changes; preserve unrelated worktree edits.
 
 ## Task 2: Correct V6 delivery
 
@@ -44,7 +44,7 @@ All spec preservation and release boundaries apply. Original weekly packages and
 - [x] Copy approved desktop preview unchanged, copy verified 628843-byte mobile derivative, and bind their exact hashes in constants/provenance. Archive V4 provenance in history; do not remove old files or change the poster.
 - [x] Verify actual MP4 decode, dimensions, 360 frames/24fps/15s/no audio, original source hashes, immutable cache rules and responsive playback/pause/reduced-motion.
 - [x] Run full local web suite, lint/typegen/TypeScript/offers/build. Expected: all documented web gates pass; native applications remain excluded/unqualified.
-- [ ] Commit/push only own reviewed files and qualified report.
+- [x] Commit/push only own reviewed files and qualified report.
 
 ## Task 3: Publish and prove
 
@@ -52,7 +52,7 @@ All spec preservation and release boundaries apply. Original weekly packages and
 
 - [x] Independently review the combined diff and scoped browser results.
 - [x] Confirm current/rollback targets, free space and nine unchanged security hashes; no cleanup without separate authorization.
-- [ ] Build/test a new Linux release from the exact committed archive, without test clocks or operating activation. Expected: Linux web subset/lint/types/offers/build pass.
-- [ ] Atomically switch and restart only the existing Next service; bounded readiness check and rollback on failure.
-- [ ] Run public content/audit/image checks and actual public browser playback/colors/links. Download/hash new MP4s and original weekly files. Expected: exact reviewed bytes and current 82 offers.
-- [ ] Save/push sanitized evidence, mark real release ID/time and remaining out-of-scope service limitations accurately.
+- [x] Build/test a new Linux release from the exact committed archive, without test clocks or operating activation. Expected: Linux web subset/lint/types/offers/build pass.
+- [x] Atomically switch and restart only the existing Next service; bounded readiness check and rollback on failure.
+- [x] Run public content/audit/image checks and actual public browser playback/colors/links. Download/hash new MP4s and original weekly files. Expected: exact reviewed bytes and current 82 offers.
+- [x] Save/push sanitized evidence, mark real release ID/time and remaining out-of-scope service limitations accurately.

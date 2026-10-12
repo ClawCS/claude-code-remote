@@ -28,7 +28,23 @@ Full final local web suite: **2,364 tests / 129 files passed**, excluding native
 
 Independent final review: no remaining Critical or Important findings. The initial P2 contrast regression was independently verified fixed at 390/1440 with JavaScript on/off, including correct secondary hover and unchanged primary backgrounds/targets. A minor review point was addressed: the routine catalogue test now compares current typed API counts rather than hardcoding KW42; this release's exact 82/70/12 census remains in the acceptance evidence.
 
-Publication is pending at this report checkpoint. The current public release is `00302feabe2698929c05d46723e6c9d8b85a7d57`. Pre-release read-only server check found 3,430,887,424 free bytes and an active existing Next service. Nine existing security configuration hashes match the initial check. No cleanup or configuration change is authorized by this task.
+App release **`059def3a247c19e422abb04da152b452a48c57bf`** became ready on **12 October 2026, 15:26:32 UTC / 17:26:32 Europe/Berlin**. Rollback remains `00302feabe2698929c05d46723e6c9d8b85a7d57`. The exact committed source archive had 1,688 allowed entries, no private environment/build/raw-source entries, and SHA-256 `8f97db9c355b14e7abc1fd0cba1d58093fe661cb5d32e12d6261b47959067c25`. Source install/build/test happened in a new Linux release as the existing service user, not in current.
+
+Linux qualification: Node 22.23.3; **2,307 web tests / 125 files passed**. Exactly four Chromium-dependent files were excluded on Linux and fully passed locally, as required by the runbook. Lint, route type generation, TypeScript, 210 original offers and production build passed. Nine security configuration hashes were identical before build, immediately before switch and after readiness. Only the existing Next service was restarted; no old release was removed. Pre-release free space was 3,430,887,424 bytes; the temporary upload archive was removed only after successful public integrity checks.
+
+Actual HTTPS evidence on `https://trinkgut-jammers.de`:
+
+- Normal content check with the real production date: `ok`, no errors/warnings, `websiteVerified:true`, `deploymentVerified:true`. Current KW42 (12–17 October) remains 70 DE + 12 NL offers, and originals/covers/tiles were compared by actual GET type, size and SHA-256. DE original `a8dfe6b0a728982667ce83ac8eed0e527c6cf2b6d03dd7b10fcd857112f4f37e`; agency NL original `b669c22d2e7bcb6466af9771cf68573f935312556db0d58e24db9a6e5bfe448d`.
+- Public HTTP audit: **293 pages, 2,581 local resources, five unknown-page probes and 31 API contracts**, zero errors or warnings. No external contact action was triggered.
+- Giveaway delivery: **18 actual image GETs**, zero findings.
+- Actual public GETs for both V6 MP4s, retained poster and original Jammers-hilft symbol matched all expected bytes, types and SHA-256. The three hash-versioned assets have their exact immutable cache rules.
+- Public browser palette/media gate: **85/85 passed**. Six additional public navigation/playback cases passed, including header destinations and Back with JavaScript enabled/disabled at 390/1440, and real play/pause/six-bottle finale controls. Twelve actual rendered mobile/desktop captures showed no overflow or runtime errors, and `currentSrc` was V6 mobile 640×360 or V6 desktop 1280×720, each 15 seconds. Forward-tap scene and academy/card surfaces were visually inspected from the public screenshots.
+- Main HTTPS route returned 200 with the expected security headers; www preserves the path and redirects to the canonical domain.
+- After removing only the exact own temporary upload archive, free server space was 1,790,525,440 bytes. Keep current/rollback releases; check space and obtain specific cleanup approval before a later release if necessary.
+
+Public screenshot and machine-readable evidence are saved under `audit/screenshots/fresh-subpages-film-2026-10-12/` and `audit/evidence/2026-10-12-fresh-subpages-film-*`. The current content run is `audit/content-runs/2026-10-12T15-27-27-657Z-check-9477904c.json`.
+
+Separate dependency note: full `npm audit` reported five high labels in the existing ESLint/fast-glob/micromatch/braces development-tool chain, based on one braces stack-exhaustion advisory. `npm audit --omit=dev` reported zero known vulnerabilities in the resolved production dependency set; this is not a guarantee against unknown issues. Package/lock versions are unchanged by this task. No forced dependency downgrade or automatic security rewrite was attempted.
 
 ## Boundaries
 

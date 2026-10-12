@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-12T15:28:00.039Z",
+  "origin": "https://trinkgut-jammers.de",
+  "release": "059def3a247c19e422abb04da152b452a48c57bf",
+  "checks": [
+    {
+      "path": "/videos/jammers-hero-v6-desktop-06fd3bdde1a2d604.mp4",
+      "status": 200,
+      "bytes": 3719740,
+      "sha256": "06fd3bdde1a2d6045b056a73fcf0350c4a443a756ee121988e07967d15bd363f",
+      "contentType": "video/mp4",
+      "cache": "public, max-age=31536000, immutable",
+      "valid": true
+    },
+    {
+      "path": "/videos/jammers-hero-v6-mobile-e2f94ee62e776519.mp4",
+      "status": 200,
+      "bytes": 628843,
+      "sha256": "e2f94ee62e776519a7b4788a0f156123d056433ebd438f43a39f6d979dfecba3",
+      "contentType": "video/mp4",
+      "cache": "public, max-age=31536000, immutable",
+      "valid": true
+    },
+    {
+      "path": "/images/home/jammers-film-poster-62abe3860959351d.webp",
+      "status": 200,
+      "bytes": 130626,
+      "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
+      "contentType": "image/webp",
+      "cache": "public, max-age=31536000, immutable",
+      "valid": true
+    },
+    {
+      "path": "/images/brands/jammers-hilft-symbol.png",
+      "status": 200,
+      "bytes": 35134,
+      "sha256": "7de07ec45267fb921ebc9b699526e4dd9f0ef9ce9b5eca65db4142bba3715102",
+      "contentType": "image/png",
+      "cache": "public, max-age=0",
+      "valid": true
+    }
+  ]
+}
