@@ -74,3 +74,21 @@ At 360/1440px with JavaScript disabled, pending labels compute to `rgb(165,21,34
 Independent focused axe re-review on final `f313213` passed all **8/8 cases**: zero confirmed violations, zero other incomplete-rule issues, verified 7.0379:1 pending-label contrast and named groups. No runtime, font, started-image, geometry or blocked-request errors. Evidence: `/private/tmp/jammers-atmosphere-independent-a11y-rereview-2026-10-12.json`. Its **233 contrast incompletes** remain manual: 218 gradients, 14 symbols, one obstruction. The original 84-case report on `83f817c` is retained unchanged; this eight-case re-review is not a full final-candidate census. No blanket AA certification is claimed. Final whole-branch review remains the controller's gate.
 
 **Current preview: http://127.0.0.1:3133** — listener PID 62470, session 90464, left running. Prior owned 3131 and 3132 previews were stopped only after PID/cwd verification and successor checks. Other existing previews and repository Next outputs were preserved. Earlier preview references in this audit are historical.
+
+## Controller final gate
+
+The independent whole-branch review of `7331962..1264f8e` found no Critical, Important or new actionable Minor defect and approved local human visual review. The controller then independently ran the final authorized web suite: `env -u NO_COLOR -u FORCE_COLOR NODE_ENV=test npx vitest run --exclude 'services/applications/**' --exclude '.superpowers/**'` — **131 files / 2,418 passed**, 29.03s, exit 0. Evidence: `/private/tmp/jammers-sitewide-atmosphere-2026-10-12/root-final-web.log`.
+
+Final controller checks: all 406 protected original/data/media hashes unchanged; the real-time preview API returns 82 offers and two flyers; native Pralle title is exactly `Pralle Kirsche.`. The actual Next overview and detail were opened visibly in the user's in-app browser and retained as deliverables. Reviewed source is backed up on the existing GitHub branch; this is not a deployment. Foreign dirty audit screenshots, historical JSON and the application interim document remain untouched and outside the commits.
+
+Local presentation is ready for the operator's visual approval. A public release still requires new authorization, a fresh Linux release/default build and public HTTPS readiness checks. No blanket WCAG certification, new performance benchmark or native application/ordering/mail/newsletter qualification is inferred.
+
+### Controller decisions and consequences
+
+1. Applied the explicitly approved brief locally without inventing live authorization. A mistaken scope reading would affect only local presentation, not production.
+2. Used an isolated production snapshot to preserve existing previews. A wrong snapshot identity would invalidate acceptance evidence; exact source identities are recorded above.
+3. Replaced obsolete presentation assertions, retaining functional/original-source contracts. Incorrectly classifying a functional assertion as cosmetic would conceal a regression; the full suite and fresh flows guard this boundary.
+4. Accepted section h2/product h3 semantics in the native brand overview. An incorrect hierarchy would hinder assistive navigation; semantic and browser checks retain the intended structure.
+5. Accepted Webpack for the isolated Mac symlink limitation only. Treating it as Linux/default-build approval would overstate release readiness; that gate stays open.
+6. Fixed actual native-title whitespace instead of allowing an inaccurate product name in tests. A test-only workaround would have concealed the semantic defect.
+7. Scoped accessibility corrections to pending-label color and two supported named groups. Incomplete gradient checks remain manual; treating them as passes would falsely claim accessibility conformance.
