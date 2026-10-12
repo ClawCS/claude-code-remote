@@ -124,10 +124,6 @@ export default async function NederlandsPage() {
             ))}</div>
           </details>
         </section>
-        <aside className={styles.grailbid} aria-label="Trading cards bij GrailBid">
-          <p><strong>Ook iets voor verzamelaars.</strong> Ontdek GrailBid, onze TCG-wereld voor trading cards. De externe webshop is nog in ontwikkeling.</p>
-          <a href={SITE_LINKS.grailbid} target="_blank" rel="noopener noreferrer" className={styles.textLink}>GrailBid.com <ArrowUpRight /></a>
-        </aside>
       </main>
 
       <footer className={styles.footer}>

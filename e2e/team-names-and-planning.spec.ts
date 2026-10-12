@@ -13,8 +13,8 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
   test(`portrait captions contain names only at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/");
-    await expect(page.locator("#menschen figcaption")).toHaveText(names);
-    await expect(page.locator('[data-hero="cinematic"] figcaption')).toHaveText("Sven & Niko");
+    await expect(page.locator("#menschen, [data-team-photo-placeholder]")).toHaveCount(0);
+    await expect(page.locator('main img[src*="team-"], main img[srcset*="team-"]')).toHaveCount(0);
     await expectNoDepartedProfiles(page);
 
     await page.goto("/galerie");
@@ -26,9 +26,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     await expectNoDepartedProfiles(page);
   });
 
-  test(`hero, service and footer planning links reach the interactive party planner at ${viewport.width}px`, async ({ page }) => {
+  test(`quick entry, service and footer planning links reach the interactive party planner at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    for (const selector of ['[data-hero="cinematic"] a[href="/partyplaner"]', '#service a[href="/partyplaner"]', 'footer a[href="/partyplaner"]']) {
+    for (const selector of ['[data-quick-entry="party"][href="/partyplaner"]', '#service a[href="/partyplaner"]', 'footer a[href="/partyplaner"]']) {
       await page.goto("/");
       await page.locator(selector).click();
       await expect(page).toHaveURL(/\/partyplaner$/);

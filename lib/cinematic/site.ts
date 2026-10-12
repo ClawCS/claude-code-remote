@@ -23,7 +23,6 @@ export const SITE_LINKS = Object.freeze({
   route: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     `${MARKET.displayName}, ${MARKET.street}, ${MARKET.postalCode} ${MARKET.city}, Deutschland`,
   )}`,
-  grailbid: "https://grailbid.com",
   instagram: "https://www.instagram.com/trinkgutjammers_goch/",
   nl: "/nl",
 } as const);
@@ -51,7 +50,6 @@ export const CINEMATIC_NAV: readonly NavItem[] = Object.freeze([
     { label: "Erleben", children: [
       { label: "Marktleben", href: "/marktleben" },
       { label: "Gewinnspiele", href: "/gewinnspiel" },
-      { label: "GrailBid · TCG-Shop", href: SITE_LINKS.grailbid },
     ] },
     { label: "Rezepte & Wissen", children: [
       { label: "Cocktail-Rezepte", href: "/cocktails" },

@@ -43,25 +43,31 @@ test("offers exact navigation, contact, route, Instagram, NL, and legal links", 
     ["Angebote", "/angebote"],
     ["Sortiment", "/produkte"],
     ["Party & Miete", "/vermietung"],
-    ["Eigenmarken", "/eigenmarke"],
-    ["Gewinnspiele", "/gewinnspiel"],
-    ["TCG", "https://grailbid.com"],
-    ["Kontakt", "/kontakt"],
+    ["Dein Besuch", "/kontakt"],
   ]) {
     const link = navigation.getByRole("link", { name: label, exact: true });
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", href);
   }
-  const teamDisclosure = navigation.locator('details:has(> summary:has-text("Team & Karriere"))');
-  await teamDisclosure.locator("summary").click();
+  const discover = navigation.locator('details:has(> summary:has-text("Jammers entdecken"))');
+  await discover.locator("summary").click();
   for (const [label, href] of [
+    ["Eigenmarken", "/eigenmarke"],
+    ["Gewinnspiele", "/gewinnspiel"],
+    ["Marktleben", "/marktleben"],
+    ["Geschenkideen", "/geschenkideen"],
+    ["Regionale Spezialitäten", "/regionale-spirituosen"],
+    ["Cocktail-Rezepte", "/cocktails"],
+    ["Getränkeakademie", "/akademie"],
     ["Unser Team", "/galerie"],
-    ["Offene Stellen & Bewerbung", "/bewerbung"],
+    ["Offene Stellen & Bewerbung", "/karriere"],
   ]) {
-    const link = teamDisclosure.getByRole("link", { name: label, exact: true });
+    const link = discover.getByRole("link", { name: label, exact: true });
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", href);
   }
+  await expect(navigation.locator('a[href*="grailbid"]')).toHaveCount(0);
+  await discover.locator("summary").click();
   await expect(navigation.locator('a[href^="#"]')).toHaveCount(0);
   await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /WhatsApp/ }).first()).toHaveAttribute(

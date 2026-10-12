@@ -14,8 +14,12 @@ for (const width of [320,667,1023,1024,1025,1151,1152,1153,1279,1280,1281]) test
   }
 });
 
-test("GrailBid bridge is explicit and safe",async({page})=>{
-  await page.goto("/");const link=page.locator('#grailbid a');await expect(link).toHaveAttribute("href","https://grailbid.com");await expect(link).toHaveAttribute("target","_blank");await expect(link).toHaveAttribute("rel","noopener noreferrer");await expect(page.locator("#grailbid")).toContainText("im Aufbau");
+test("homepage and Dutch landing contain no TCG bridge or navigation",async({page})=>{
+  for (const route of ["/", "/nl"]) {
+    await page.goto(route);
+    await expect(page.locator('#grailbid, a[href*="grailbid"], aside[aria-label="Trading cards bij GrailBid"]')).toHaveCount(0);
+    expect(await page.locator("body").innerText()).not.toMatch(/GrailBid|Trading Cards|\bTCG\b/i);
+  }
 });
 
 test("paused collection endpoints reject input without server-side processing",async({request})=>{

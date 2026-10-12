@@ -44,26 +44,13 @@ for (const width of [390, 768, 1440]) {
       expect(brokenAnchors).toEqual([]);
       if (path === "/") {
         await expect(page.locator("#service ol, #service dl")).toHaveCount(0);
-        const stories = page.locator("[data-market-story]");
-        await expect(stories).toHaveCount(3);
-        if (width >= 768) {
-          const photo = await page.locator('#service [class*="servicePhoto"]').boundingBox();
-          const copy = await page.locator('#service [class*="serviceIntro"]').boundingBox();
-          expect(photo!.height).toBeLessThanOrEqual(copy!.height + 1);
-          const image = await stories.first().locator("img").boundingBox();
-          expect(image!.width).toBeGreaterThan(width * .3);
-          const second = stories.nth(1);
-          expect((await second.locator("img").boundingBox())!.x).toBeGreaterThan((await second.locator("h3").boundingBox())!.x);
-        }
+        await expect(page.locator("[data-market-discoveries], [data-market-story]")).toHaveCount(0);
+        await expect(page.locator('#service a[href="/vermietung"]')).toBeVisible();
+        await expect(page.locator('#service a[href="/partyplaner"]')).toBeVisible();
+        await expect(page.locator("#sortiment [data-category]")).toHaveCount(4);
         await expect(page.locator("#eigenmarken li a")).toHaveCount(6);
         for (const image of await page.locator("#eigenmarken img").all()) await expect(image).toHaveCSS("object-fit", "contain");
-        await expect(page.locator('#menschen a[href="/galerie"]')).toBeVisible();
-        await expect(page.locator('#grailbid a[href="https://grailbid.com"]')).toBeVisible();
-        await page.locator("#menschen summary").click();
-        await expect(page.locator("#menschen figcaption")).toHaveText(["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]);
-        for (const caption of await page.locator("#menschen figcaption").all()) await expect(caption).toBeVisible();
-        await expect(page.getByText("Unser neues Teamfoto folgt", { exact: true })).toBeVisible();
-        await page.locator("#menschen summary").click();
+        await expect(page.locator("#menschen, #grailbid, [data-team-photo-placeholder]")).toHaveCount(0);
       } else {
         await page.getByRole("link", { name: "Je bezoek", exact: true }).click();
         await expect(page).toHaveURL(/#bezoek$/);
@@ -74,6 +61,7 @@ for (const width of [390, 768, 1440]) {
         await expect(page.getByText("Onze nieuwe teamfoto volgt", { exact: true })).toBeVisible();
         await page.getByText("Maak kennis met ons team", { exact: false }).click();
       }
+      await expect(page.locator('a[href*="grailbid"]')).toHaveCount(0);
       // Load all original images before the full-page evidence capture.
       for (const img of await page.locator("main img").all()) {
         if (!await img.isVisible()) continue;
@@ -85,7 +73,7 @@ for (const width of [390, 768, 1440]) {
       mkdirSync(proof, { recursive: true });
       await page.screenshot({ path: `${proof}/task2-${path === "/" ? "home" : "nl"}-${width}.png`, fullPage: true });
       if (width === 1440) {
-        for (const id of path === "/" ? ["aktuell", "service", "sortiment", "eigenmarken", "menschen", "grailbid"] : ["handzettel", "service", "bezoek"]) {
+        for (const id of path === "/" ? ["aktuell", "service", "sortiment", "eigenmarken", "aktionen"] : ["handzettel", "service", "bezoek"]) {
           await page.locator(`#${id}`).screenshot({ path: `${proof}/task2-${path === "/" ? "home" : "nl"}-${id}-1440.png` });
         }
       }

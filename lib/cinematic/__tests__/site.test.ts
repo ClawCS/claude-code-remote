@@ -25,7 +25,7 @@ describe("verified market contract", () => {
     expect(SITE_LINKS.whatsapp).toContain("491752492386");
   });
 
-  test("exposes useful market and GrailBid navigation destinations", () => {
+  test("keeps market destinations without an external trading-card shop", () => {
     const links = CINEMATIC_NAV.flatMap(item => [
       ...("href" in item && item.href ? [item.href] : []),
       ...("children" in item ? item.children.map(child => child.href) : []),
@@ -33,8 +33,9 @@ describe("verified market contract", () => {
     ]);
     expect(links).toEqual(expect.arrayContaining([
       "/angebote", "/produkte", "/cocktails", "/akademie", "/vermietung", "/eigenmarke",
-      "/gewinnspiel", "/galerie", "/karriere", "https://grailbid.com", "/kontakt",
+      "/gewinnspiel", "/galerie", "/karriere", "/kontakt",
     ]));
+    expect(links).not.toContain("https://grailbid.com");
   });
 
   test.each([

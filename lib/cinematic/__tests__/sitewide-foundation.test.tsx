@@ -37,9 +37,10 @@ describe("shared editorial foundation", () => {
       "Angebote", "Sortiment", "Party & Miete", "Jammers entdecken", "Dein Besuch",
     ]);
     const html = renderToStaticMarkup(<CinematicHeader nowIso="2026-10-10T10:00:00Z" hasActions />);
-    for (const href of ["/angebote", "/produkte", "/vermietung", "/partyplaner", "/warenkorb", "/eigenmarke", "/regionale-spirituosen", "/geschenkideen", "/marktleben", "/gewinnspiel", "https://grailbid.com", "/cocktails", "/akademie", "/galerie", "/karriere", "/kontakt"]) {
+    for (const href of ["/angebote", "/produkte", "/vermietung", "/partyplaner", "/warenkorb", "/eigenmarke", "/regionale-spirituosen", "/geschenkideen", "/marktleben", "/gewinnspiel", "/cocktails", "/akademie", "/galerie", "/karriere", "/kontakt"]) {
       expect(html).toContain(`href="${href}"`);
     }
+    expect(html).not.toMatch(/grailbid|TCG/i);
     expect(html).toMatch(/<a[^>]*href="\/vermietung"[^>]*>Party &amp; Miete<\/a>/);
     expect(html).toContain('aria-label="Party &amp; Miete – Untermenü öffnen"');
     expect(html).toMatch(/<a(?=[^>]*href="\/")(?=[^>]*aria-label="Trinkgut Jammers – Startseite")[^>]*>/);

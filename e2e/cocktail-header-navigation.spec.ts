@@ -10,7 +10,6 @@ const expectedLinks = [
   ["Party & Miete", "/vermietung"],
   ["Eigenmarken", "/eigenmarke"],
   ["Gewinnspiele", "/gewinnspiel"],
-  ["GrailBid · TCG-Shop", "https://grailbid.com"],
   ["Dein Besuch", "/kontakt"],
 ] as const;
 
@@ -18,6 +17,8 @@ async function expectPublicLinks(navigation: Locator): Promise<void> {
   await expect(navigation).toBeVisible();
   const discover = navigation.locator('details:has(> summary:has-text("Jammers entdecken"))');
   await discover.locator("summary").click();
+  await expect(navigation.locator('a[href*="grailbid"]')).toHaveCount(0);
+  await expect(navigation.getByRole("link", { name: /GrailBid|TCG|Trading Cards/i })).toHaveCount(0);
   for (const [name, href] of expectedLinks) {
     const link = navigation.getByRole("link", { name, exact: true });
     await expect(link).toBeVisible();
@@ -25,7 +26,7 @@ async function expectPublicLinks(navigation: Locator): Promise<void> {
   }
   for (const [name, href] of [
     ["Unser Team", "/galerie"],
-    ["Offene Stellen & Bewerbung", "/bewerbung"],
+    ["Offene Stellen & Bewerbung", "/karriere"],
   ]) {
     const link = navigation.getByRole("link", { name, exact: true });
     await expect(link).toBeVisible();

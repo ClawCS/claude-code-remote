@@ -50,11 +50,14 @@ describe("academy discovery in the existing assortment", () => {
     expect(html).toContain(liqueur.duration);
   });
 
-  test.each([
-    ["homepage assortment", async () => <AssortmentSection key="home" />],
-    ["product overview", async () => await ProduktePage({ searchParams: Promise.resolve({}) })],
-  ])("adds a compact academy destination to %s", async (_label, element) => {
-    const html = markup(await element());
+  test("keeps the academy teaser off the homepage assortment", () => {
+    const html = markup(<AssortmentSection />);
+    expect(html).not.toContain('href="/akademie"');
+    expect(html).not.toContain('href="/cocktails"');
+  });
+
+  test("retains the compact academy destination on the product overview", async () => {
+    const html = markup(await ProduktePage({ searchParams: Promise.resolve({}) }));
     expect(html).toMatch(/href="\/akademie"[^>]*>[^<]*Getränkeakademie/);
     expect(html).toContain(`${courses.length} Kurse`);
   });

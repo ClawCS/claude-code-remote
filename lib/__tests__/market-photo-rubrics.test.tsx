@@ -11,13 +11,11 @@ import GeschenkideenPage from "@/app/geschenkideen/page";
 import EigenmarkePage from "@/app/eigenmarke/page";
 import RegionaleSpirituosenPage from "@/app/regionale-spirituosen/page";
 
-test("places local market and gift motifs behind their own relevant rubric links", () => {
+test("keeps homepage assortment focused on its four beverage groups", () => {
   const html = decodeURIComponent(renderToStaticMarkup(<AssortmentSection />));
-  expect(html).toContain("/images/editorial/canva/verkostung-moritz-fiege.webp");
-  expect(html).toContain("/images/editorial/canva/gift-basket.webp");
-  expect(html).toContain('href="/geschenkideen"');
-  expect(html).toContain('href="/regionale-spirituosen"');
-  expect(html).toContain('href="/marktleben"');
+  for (const slug of ["bier", "alkoholfrei", "wein", "spirituosen"]) expect(html).toContain(`href="/kategorie/${slug}"`);
+  for (const href of ["/geschenkideen", "/regionale-spirituosen", "/marktleben"]) expect(html).not.toContain(`href="${href}"`);
+  expect(html).not.toContain("data-market-discoveries");
   expect(html).not.toContain("almdudler-market");
   expect(html).not.toContain("cdn.canva.com");
   expect(html).not.toContain('href="/#');

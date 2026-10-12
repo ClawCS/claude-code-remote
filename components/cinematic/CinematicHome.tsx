@@ -9,10 +9,8 @@ import HeroSection from "./HeroSection";
 import HomeQuickLinks from "./HomeQuickLinks";
 import InstagramSection from "./InstagramSection";
 import LocationFooter from "./LocationFooter";
-import PeopleSection from "./PeopleSection";
 import ServiceSection from "./ServiceSection";
 import SpotlightSection from "./SpotlightSection";
-import GrailBidSection from "./GrailBidSection";
 import AssortmentSection from "./AssortmentSection";
 
 type CinematicHomeProps = Readonly<{
@@ -49,8 +47,6 @@ export default function CinematicHome({
         {hasActions ? (
           <ActionsSection archive={content.archive} event={content.event} nowIso={nowIso} />
         ) : null}
-        <PeopleSection />
-        <GrailBidSection />
         <InstagramSection />
       </main>
       <LocationFooter />

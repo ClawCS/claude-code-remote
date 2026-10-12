@@ -16,6 +16,7 @@ vi.mock("@/lib/flyer-index", () => ({ getFlyerIndex: async () => state.index }))
 
 import CinematicHome from "@/components/cinematic/CinematicHome";
 import NederlandsPage from "@/app/nl/page";
+import DatenschutzPage from "@/app/datenschutz/page";
 
 const flyers: FlyerIndex["flyers"] = [
   { id: "de-current", language: "de", purpose:"weekly", medium:"trinkgut", title: "Angebote der Woche", validFrom: "2026-10-05", validTo: "2026-10-10", pageCount: 10, coverUrl: "/images/content/de-original.webp", pdfUrl: "/handzettel/de-original.pdf", viewerUrl: "/handzettel/de-original.pdf", sourceUrl: "https://werbung.trinkgut.de/catalog/original/view", pdfSha256: "a".repeat(64) },
@@ -26,6 +27,12 @@ function home() { return renderToStaticMarkup(<CinematicHome content={content} n
 function section(html: string, id: string) { return html.match(new RegExp(`<section[^>]*id="${id}"[^>]*>[\\s\\S]*?</section>`))?.[0] ?? ""; }
 
 describe("complete editorial landings", () => {
+  test("does not retain the removed trading-card shop in the public privacy page", () => {
+    const html = renderToStaticMarkup(<DatenschutzPage />);
+    expect(html).not.toMatch(/grailbid|trading cards|TCG/i);
+    expect(html).toContain("Instagram");
+    expect(html).toContain("Google Maps");
+  });
   // Removing a source/date or replacing a full cover with a marketing image loses a live destination.
   test("keeps both dated original flyers and direct PDF fallbacks in the home offer section", () => {
     const html = section(home(), "aktuell");
@@ -58,18 +65,23 @@ describe("complete editorial landings", () => {
     expect(html).not.toContain("/images/editorial/google/eigenmarken-flaschen.webp");
   });
 
-  test("provides visible editorial entrances to people, career, market stories and the external TCG shop", () => {
+  test("keeps discovery destinations in navigation without extending the homepage with removed teasers", () => {
     const html = home();
-    const people = section(html, "menschen");
-    expect(people).toContain('href="/galerie"');
-    expect(people).toContain('href="/bewerbung"');
-    for (const href of ["/marktleben", "/geschenkideen", "/regionale-spirituosen", "/akademie", "/cocktails", "/produkte"]) expect(section(html, "sortiment")).toContain(`href="${href}"`);
-    expect(section(html, "grailbid")).toMatch(/href="https:\/\/grailbid.com"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/);
+    const main = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/)![0];
+    for (const href of ["/marktleben", "/geschenkideen", "/regionale-spirituosen", "/akademie", "/cocktails", "/galerie", "/karriere"]) {
+      expect(main).not.toContain(`href="${href}"`);
+      expect(html).toContain(`href="${href}"`);
+    }
+    expect(main).not.toMatch(/data-market-discoveries|data-academy-entry|id="menschen"/);
+    for (const image of ["verkostung-moritz-fiege.webp", "gift-basket.webp", "regional-tante-dele.webp", "hero-team"]) expect(main).not.toContain(image);
+    expect(html).not.toMatch(/grailbid|trading cards|TCG/i);
+    for (const href of ["/produkte", "/kategorie/bier", "/kategorie/alkoholfrei", "/kategorie/wein", "/kategorie/spirituosen"]) expect(section(html, "sortiment")).toContain(`href="${href}"`);
   });
 
   test("renders Dutch dated originals, native visit controls and one landmark tree", async () => {
     state.index = { status: "ok", generatedAt: content.generatedAt, issues: [], flyers, scheduled: [] };
     const html = renderToStaticMarkup(await NederlandsPage());
+    expect(html).not.toMatch(/grailbid|trading cards|TCG/i);
     const current = section(html, "handzettel");
     expect(current).toContain('aria-labelledby="nl-current-title"');
     expect(current).toContain(flyers[1].title);

@@ -200,8 +200,6 @@ describe("cinematic homepage composition", () => {
       'id="sortiment"',
       'id="eigenmarken"',
       'id="aktionen"',
-      'id="menschen"',
-      'id="grailbid"',
       'id="instagram"',
       'id="kontakt"',
     ];
@@ -211,23 +209,10 @@ describe("cinematic homepage composition", () => {
     expectEveryFragmentResolvesOnce(html);
   });
 
-  test("renders the audited people and all six original-bottle destinations in exact order", () => {
+  test("keeps all six original-bottle destinations without a homepage team teaser", () => {
     const html = render(emptyContent);
-    const people = extractElement(html, "section", 'id="menschen"');
     const spotlight = extractElement(html, "section", 'id="eigenmarken"');
-
-    expect(count(people, /<figure\b/)).toBe(8);
-    const peopleCaptions = [...people.matchAll(/<figcaption\b[^>]*>([^<]*)<\/figcaption>/g)]
-      .map(([, caption]) => caption);
-    expect(peopleCaptions).toEqual([
-      "Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna",
-      "Henri", "Hannah",
-    ]);
-    expect(people).not.toMatch(/\b(?:Nils|Nico|Tim|Gabriella)\b/);
-    expect(people).not.toMatch(/team-(?:nils|nico|tim|gabriella)\b/);
-    expect(people).not.toContain("team-group");
-    expect(people).toContain("Unser neues Teamfoto folgt");
-    expect(people).toContain('/images/home/brand-logo.webp');
+    expect(html).not.toContain('id="menschen"');
 
     expect(spotlight).toContain("data-own-brand-stage");
     const flavorOrder = ["pralle-kirsche", "dicke-nuesse", "suesse-suende", "caramello", "schwarzer-teufel", "weisser-engel"]
@@ -369,7 +354,6 @@ describe("cinematic homepage composition", () => {
     for (const href of [
       "https://wa.me/491752492386?text=Hallo%20Trinkgut%20Jammers%2C%20ich%20habe%20eine%20Frage.",
       "https://www.google.com/maps/dir/?api=1&destination=Trinkgut%20Jammers%2C%20Jurgensstra%C3%9Fe%2020%2C%2047574%20Goch%2C%20Deutschland",
-      "https://grailbid.com",
       "https://www.instagram.com/trinkgutjammers_goch/",
     ]) {
       expectSafeExternalLink(html, href);

@@ -134,14 +134,14 @@ describe("editorial service pages", () => {
   // Freeze all visible legal/contact copy, excluding decorative contact emoji.
   // Contact's approved new local-answer section has its own source-backed tests;
   // exclude only that section so the original contact copy stays frozen.
-  // Privacy baseline includes only Niko's 10 Oct wording update: both recipient
-  // labels now say "externe Analyseanbieter"; no processing or retention change.
-  it.each([["contact", ContactPage, "aa02a5c0feca75f41b1f2fd4c7ca16e6496aef51183adbe1b81ec4079695f224"], ["imprint", ImprintPage, "abedc4922657d2edfad795bb48ad4c6ee9898d5209bfdcccf562a2bb4d8b9936"], ["privacy", PrivacyPage, "2de4d09b1534b61e6e75278e379d8d686aab3d895651e7e7f797bbf4c5198d06"], ["terms", TermsPage, "a8e42c6360a058831a6fc9fab429e8b69e6603e24020704dbc8e4c1c2d97238c"]] as const)("retains exact %s text", (_, Component, hash) => {
+  // Privacy baseline also includes the approved 12 Oct GrailBid removal and
+  // updated section date; no processing, recipient or retention change.
+  it.each([["contact", ContactPage, "aa02a5c0feca75f41b1f2fd4c7ca16e6496aef51183adbe1b81ec4079695f224"], ["imprint", ImprintPage, "abedc4922657d2edfad795bb48ad4c6ee9898d5209bfdcccf562a2bb4d8b9936"], ["privacy", PrivacyPage, "673776a593d682dcbe9fd1f3d69732935bd224c88d27737aedd7d080d10fdc97"], ["terms", TermsPage, "a8e42c6360a058831a6fc9fab429e8b69e6603e24020704dbc8e4c1c2d97238c"]] as const)("retains exact %s text", (_, Component, hash) => {
     const html = render(Component);
     const baseline = Component === ContactPage ? html.replace(/<section[^>]*data-local-answers="contact"[\s\S]*?<\/section>/, "") : html;
     expect(textHash(baseline)).toBe(hash);
   });
-  it.each([["privacy", PrivacyPage, "5598b790ba15d02b4b5cce4c93df386d0a22c7346e7a93d43c53060b1a1dde9b"], ["terms", TermsPage, "2e77ba25a96571893f62935f6e8ec60b834cbd29f0d97c3d85e05ccdd8b25cfe"]] as const)("[synthetic] retains exact enabled %s text", (_, Component, hash) => {
+  it.each([["privacy", PrivacyPage, "c84986eb0770ed304b1aacbec5d16fcc36006a720db75b64c661a61138c82b1c"], ["terms", TermsPage, "2e77ba25a96571893f62935f6e8ec60b834cbd29f0d97c3d85e05ccdd8b25cfe"]] as const)("[synthetic] retains exact enabled %s text", (_, Component, hash) => {
     vi.stubEnv("RENTAL_MODE", "test"); vi.stubEnv("RENTAL_DATA_DIR", "/tmp/jammers-privacy-test-fixture"); vi.stubEnv("RENTAL_PUBLIC_ORIGIN", "http://127.0.0.1:3104");
     expect(textHash(render(Component))).toBe(hash);
   });

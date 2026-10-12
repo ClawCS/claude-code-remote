@@ -5,8 +5,6 @@ import ArrowUpRight from "@/components/ArrowUpRight";
 import { USER_MARKET_PHOTOS } from "@/data/user-market-photos";
 import { GOOGLE_MARKET_PHOTOS } from "@/data/google-market-photos";
 import styles from "./warm.module.css";
-import MarketDiscoveries from "./MarketDiscoveries";
-import AcademyEntry from "@/components/AcademyEntry";
 const categories = [
   { slug: "bier", title: "Bier & Fassbier", href: "/kategorie/bier", photo: USER_MARKET_PHOTOS.bueble, position: "50% 62%" },
   { slug: "alkoholfrei", title: "Alkoholfrei", href: "/kategorie/alkoholfrei", photo: USER_MARKET_PHOTOS.spezi, position: "48% 50%" },
@@ -26,10 +24,5 @@ export default function AssortmentSection() {
       </Link>)}
     </nav>
     <p className={styles.rangeNote}>Einblicke aus unserem Markt. Fotopreise sind keine aktuelle Preis- oder Bestandszusage. Aktuelle Preise und Verfügbarkeit bestätigen wir persönlich.</p>
-    <MarketDiscoveries />
-    <div className={styles.knowledge}>
-      <AcademyEntry />
-      <Link href="/cocktails" prefetch={false} className={styles.textLink}>Neue Lieblingscocktails entdecken <ArrowUpRight /></Link>
-    </div>
   </section>;
 }

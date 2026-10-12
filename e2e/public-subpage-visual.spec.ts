@@ -76,10 +76,10 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
 
 async function expectNaturalEditorialImages(page: Page, path: string): Promise<void> {
   const images = path === "/"
-    ? page.locator("#menschen figure:not([data-team-photo-placeholder]) img, #eigenmarken [data-own-brand-stage] img")
+    ? page.locator("#eigenmarken [data-own-brand-stage] img")
     : path === "/galerie" ? page.locator("main figure:not([data-team-photo-placeholder]) img") : null;
   if (!images) return;
-  await expect(images).toHaveCount(path === "/" ? 13 : 7);
+  await expect(images).toHaveCount(path === "/" ? 6 : 7);
   for (const image of await images.all()) {
     const ratios = await image.evaluate((element: HTMLImageElement) => {
       const style = getComputedStyle(element);
@@ -98,6 +98,10 @@ async function expectNaturalEditorialImages(page: Page, path: string): Promise<v
     expect(ratios.displayed, `original content-box aspect ratio: ${await image.getAttribute("alt")}`).toBeCloseTo(ratios.original, 2);
     if (path === "/") await expect(image).toHaveCSS("object-fit", "contain");
   }
+  if (path === "/") {
+    await expect(page.locator("#menschen, [data-team-photo-placeholder]")).toHaveCount(0);
+    return;
+  }
   const placeholder = page.locator("[data-team-photo-placeholder]");
   await expect(placeholder).toHaveCount(1);
   await expect(placeholder).toContainText("Unser neues Teamfoto folgt");
@@ -106,13 +110,11 @@ async function expectNaturalEditorialImages(page: Page, path: string): Promise<v
   await expect(placeholder.getByRole("img", { name: "Trinkgut Jammers", exact: true })).toHaveCSS("object-fit", "contain");
   await expect(page.locator('img[src*="team-group"], img[src*="team-gruppenfoto"]')).toHaveCount(0);
 
-  const team = page.locator(path === "/" ? "#menschen" : 'section[aria-labelledby="team-gallery-title"]');
+  const team = page.locator('section[aria-labelledby="team-gallery-title"]');
   for (const name of ["Niko", "Sven", "Jasmin", "Jan Niklas", "Hanna", "Henri", "Hannah"]) {
     const alt = name === "Niko" ? "Nikolaos Jammers im Markt" : `${name} von Trinkgut Jammers`;
     await expect(team.getByRole("img", { name: alt, exact: true })).toHaveCount(1);
-    await expect(path === "/"
-      ? team.getByText(name, { exact: true })
-      : team.getByRole("heading", { name, exact: true })).toHaveCount(1);
+    await expect(team.getByRole("heading", { name, exact: true })).toHaveCount(1);
   }
   await expect(team.getByText(/\b(?:Harpe|Justin|Nils|Nico|Tim|Gabriella)\b/i)).toHaveCount(0);
   await expect(team.getByRole("img", { name: /\b(?:Harpe|Justin|Nils|Nico|Tim|Gabriella)\b/i })).toHaveCount(0);
@@ -134,7 +136,7 @@ async function saveViewportContext(page: Page, selector: string, path: string): 
 
 async function expectNaturalMarketImages(page: Page, path: string): Promise<void> {
   const expectedCounts: Record<string, number> = {
-    "/": 3,
+    "/": 0,
     "/kategorie/alkoholfrei": 0,
     "/geschenkideen": 3,
     "/regionale-spirituosen": 3,
@@ -216,8 +218,6 @@ for (const viewport of viewports) {
       await expect(page.getByRole("contentinfo")).toHaveCount(1);
       await expect(page.locator(".glass-header, [data-legacy-footer]")).toHaveCount(0);
 
-      // Portraits live in the approved native disclosure; open it before checking their actual pixels.
-      if (route.path === "/") await page.locator("#menschen summary").click();
       await settleVisibleImages(page);
       await expectNoHorizontalOverflow(page);
       await expectNaturalEditorialImages(page, route.path);
@@ -233,11 +233,16 @@ for (const viewport of viewports) {
       await page.screenshot({ path: fullPage, fullPage: true, animations: "disabled", caret: "hide" });
       await testInfo.attach(`${prefix}-full-page`, { path: fullPage, contentType: "image/png" });
       if (route.path === "/") {
-        for (const [selector, context] of [["#aktionen", "actions"], ["#menschen", "team"]]) {
+        for (const [selector, context] of [["#aktionen", "actions"]]) {
           const path = join(screenshotDirectory, `${prefix}-${context}-context.png`);
           await saveViewportContext(page, selector, path);
           await testInfo.attach(`${prefix}-${context}-context`, { path, contentType: "image/png" });
         }
+      }
+      if (route.path === "/galerie") {
+        const teamContext = join(screenshotDirectory, `${prefix}-team-context.png`);
+        await saveViewportContext(page, 'section[aria-labelledby="team-gallery-title"]', teamContext);
+        await testInfo.attach(`${prefix}-team-context`, { path: teamContext, contentType: "image/png" });
         const groupPlaceholder = join(screenshotDirectory, `${prefix}-team-placeholder.png`);
         await page.locator("[data-team-photo-placeholder]").screenshot({ path: groupPlaceholder, animations: "disabled", caret: "hide" });
         await testInfo.attach(`${prefix}-team-placeholder`, { path: groupPlaceholder, contentType: "image/png" });

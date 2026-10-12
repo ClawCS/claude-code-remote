@@ -239,6 +239,8 @@ test("[product-contract] native mobile navigation remains usable without JavaScr
     await expect(details).not.toHaveAttribute("open", "");
     await summary.click();
     await expect(details).toHaveAttribute("open", "");
+    const discover = details.locator('details:has(> summary:has-text("Jammers entdecken"))');
+    await discover.locator("summary").click();
 
     for (const [label, href] of [
       ["Angebote", "/angebote"],
@@ -247,13 +249,15 @@ test("[product-contract] native mobile navigation remains usable without JavaScr
       ["Eigenmarken", "/eigenmarke"],
       ["Gewinnspiele", "/gewinnspiel"],
       ["Unser Team", "/galerie"],
-      ["Offene Stellen & Bewerbung", "/bewerbung"],
-      ["Kontakt", "/kontakt"],
+      ["Offene Stellen & Bewerbung", "/karriere"],
+      ["Dein Besuch", "/kontakt"],
     ]) {
       const link = details.getByRole("link", { name: label, exact: true });
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute("href", href);
     }
+    await expect(details.locator('a[href*="grailbid"]')).toHaveCount(0);
+    await discover.locator("summary").click();
     await details.getByRole("link", { name: "Party & Miete" }).click();
     await expect(page).toHaveURL(/\/vermietung$/);
     await expect(page.getByRole("heading", { level: 1, name: "Deine Feier. Unser Leihsortiment." })).toBeVisible();

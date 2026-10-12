@@ -8,7 +8,7 @@ const destinations = [
   ["Geschenkideen", "/geschenkideen", "discover"], ["Marktleben", "/marktleben", "discover"],
   ["Gewinnspiele", "/gewinnspiel", "discover"], ["Cocktail-Rezepte", "/cocktails", "discover"],
   ["Getränkeakademie", "/akademie", "discover"], ["Unser Team", "/galerie", "discover"],
-  ["Offene Stellen & Bewerbung", "/bewerbung", "discover"],
+  ["Offene Stellen & Bewerbung", "/karriere", "discover"],
 ] as const;
 
 async function navigation(page: Page, width: number): Promise<Locator> {
@@ -37,11 +37,13 @@ for (const width of [390, 1440]) {
     }
     const nav = await navigation(page, width);
     await nav.locator("summary").filter({ hasText: "Jammers entdecken" }).click();
-    await expect(nav.getByRole("link", { name: "GrailBid · TCG-Shop", exact: true })).toHaveAttribute("href", "https://grailbid.com");
+    await expect(nav.locator('a[href*="grailbid"]')).toHaveCount(0);
+    await expect(nav.getByRole("link", { name: /GrailBid|TCG|Trading Cards/i })).toHaveCount(0);
     await page.locator('[data-cinematic-header] a[aria-label="Trinkgut Jammers – Startseite"]').click();
     await expect(page).toHaveURL(/\/$/);
     await page.locator('[data-cinematic-header] a[lang="nl"]').click();
     await expect(page).toHaveURL(/\/nl$/);
+    await expect(page.locator('a[href*="grailbid"], aside[aria-label="Trading cards bij GrailBid"]')).toHaveCount(0);
   });
 
   test(`keyboard disclosure returns focus and dismisses with Escape at ${width}px`, async ({ page }) => {
