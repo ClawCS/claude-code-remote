@@ -168,7 +168,7 @@ function CourseBody({ course, children, query }: { course: CourseNavigation; chi
           <div className={styles.progress}>
             <p>{course.description}</p>
             <p>Lektion {activeLesson + 1} von {course.lessons.length} · {completedLessons} Quiz abgeschlossen</p>
-            <div className={styles.progressSteps} aria-label="Lektionsfortschritt">
+            <div className={styles.progressSteps} role="group" aria-label="Lektionsfortschritt">
               {course.lessons.map((l, i) => <Link key={i} href={lessonHref(course.slug, i)} prefetch={false} aria-label={`Lektion ${i + 1}: ${l.title}`} aria-current={i === activeLesson ? "step" : undefined}>{i + 1}{lessonQuizDone[i] !== undefined && <span aria-label="abgeschlossen"> ✓</span>}</Link>)}
             </div>
           </div>

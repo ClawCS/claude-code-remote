@@ -24,7 +24,7 @@ export default function BrandWorld() {
           <a className={styles.button} href="#kollektion">Die Kollektion entdecken <span aria-hidden="true">↓</span></a>
           <p className={styles.index}>01 — 06 <span>Sechs eigene Charaktere.</span></p>
         </div>
-        <div className={styles.lineup} aria-label="Die sechs Jammers-Originalflaschen">
+        <div className={styles.lineup} role="group" aria-label="Die sechs Jammers-Originalflaschen">
           {eigenmarken.map((brand, index) => <div key={brand.slug} className={styles.lineupBottle} data-brand-tone={brand.slug}>
             <span className={styles.bottleLight} data-brand-light aria-hidden="true" />
             <Image src={`/images/eigenmarken-bottles/${brand.slug}.png`} width={bottleWidths[brand.slug]} height={1200}

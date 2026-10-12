@@ -30,6 +30,14 @@ const portraits = [
   ["spirituosen", "spirits", "/images/editorial/google/baileys-aufbau.webp"],
 ] as const;
 
+for (const [route, name] of [["/eigenmarke", "Die sechs Jammers-Originalflaschen"], ["/akademie/bier", "Lektionsfortschritt"], ["/akademie/bier/lektion/2", "Lektionsfortschritt"]]) {
+  test(`named wrapper exposes supported group semantics on ${route}`, async ({ page, context }) => {
+    await readOnly(context);
+    await page.goto(route);
+    await expect(page.getByRole("group", { name, exact: true })).toBeVisible();
+  });
+}
+
 for (const width of [360, 1440]) {
   test(`pending giveaway labels keep small-text contrast at ${width}px`, async ({ page, context }) => {
     await readOnly(context);
