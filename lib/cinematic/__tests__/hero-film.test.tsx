@@ -55,9 +55,25 @@ async function mount(options: { reduced?: boolean; saveData?: boolean; width?: n
   return page;
 }
 
-const label = async (page: Page) => page.locator("button").innerText();
+const label = async (page: Page) => page.locator("button").getAttribute("aria-label");
 
 describe("HeroFilm loading and playback", () => {
+  it.each([390,1440])("shows only accessible play/pause icons without visible caption at %ipx", async (width) => {
+    const page=await mount({width,reduced:true});
+    const control=page.getByRole("button",{name:"Film abspielen",exact:true});
+    expect(await control.innerText()).toBe("");
+    expect(await control.locator("svg").getAttribute("aria-hidden")).toBe("true");
+    expect(await control.locator("svg").getAttribute("focusable")).toBe("false");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    expect(await control.evaluate(node=>node===document.activeElement)).toBe(true);
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(()=>document.querySelector("button")?.getAttribute("aria-label")==="Film pausieren");
+    expect(await page.getByRole("button",{name:"Film pausieren",exact:true}).innerText()).toBe("");
+    await page.keyboard.press("Space");
+    expect(await page.getByRole("button",{name:"Film abspielen",exact:true}).innerText()).toBe("");
+    await page.close();
+  });
   it.each([390, 768, 1440])("keeps its keyboard-operable control inside the film without a caption band at %ipx", async (width) => {
     const page = await mount({ width, reduced: true });
     const media = page.locator("video");
@@ -82,7 +98,7 @@ describe("HeroFilm loading and playback", () => {
     expect(await control.evaluate(node => node === document.activeElement)).toBe(true);
     expect(await control.evaluate(node => getComputedStyle(node).outlineStyle)).toBe("solid");
     await page.keyboard.press("Enter");
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     expect(await media.getAttribute("src")).toBe(width < 768 ? "/videos/jammers-hero-v6-mobile-e2f94ee62e776519.mp4" : "/videos/jammers-hero-v6-desktop-06fd3bdde1a2d604.mp4");
     await page.keyboard.press("Space");
     expect(await label(page)).toBe("Film abspielen");
@@ -101,10 +117,10 @@ describe("HeroFilm loading and playback", () => {
     expect(await page.locator("video").getAttribute("src")).toBeNull();
     expect(await label(page)).toBe("Film abspielen");
     await page.locator("video").scrollIntoViewIfNeeded();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v6-mobile-e2f94ee62e776519.mp4");
     await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film abspielen");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film abspielen");
     expect((await page.locator("video").boundingBox())!.y).toBeGreaterThanOrEqual(500);
     await page.close();
   });
@@ -143,7 +159,7 @@ describe("HeroFilm loading and playback", () => {
     const page = await mount(options);
     expect(await page.locator("video").getAttribute("src")).toBeNull();
     await page.locator("button").click();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v6-desktop-06fd3bdde1a2d604.mp4");
     await page.locator("button").click();
     expect(await label(page)).toBe("Film abspielen");
@@ -159,7 +175,7 @@ describe("HeroFilm loading and playback", () => {
 
   it("respects manual pause across visibility changes", async () => {
     const page = await mount();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.locator("button").click();
     await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
     expect(await label(page)).toBe("Film abspielen");
@@ -168,12 +184,12 @@ describe("HeroFilm loading and playback", () => {
 
   it("pauses and detaches on new reduced-motion or data-saving preference", async () => {
     const page = await mount();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.waitForFunction(() => !document.querySelector("video")?.getAttribute("src"));
     expect(await label(page)).toBe("Film abspielen");
     await page.locator("button").click();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.evaluate(() => { const connection = (navigator as Navigator & { connection: EventTarget & { saveData: boolean } }).connection; connection.saveData = true; connection.dispatchEvent(new Event("change")); });
     await page.waitForFunction(() => !document.querySelector("video")?.getAttribute("src"));
     expect(await label(page)).toBe("Film abspielen");
@@ -182,7 +198,7 @@ describe("HeroFilm loading and playback", () => {
 
   it("does not accept a late playing event after a restrictive preference change", async () => {
     const page = await mount();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.waitForFunction(() => !document.querySelector("video")?.getAttribute("src"));
     await page.locator("video").dispatchEvent("playing");
@@ -199,7 +215,7 @@ describe("HeroFilm loading and playback", () => {
       };
     });
     await page.locator("button").click();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.locator("button").click();
     await page.evaluate(() => (window as Window & { rejectPlay?: () => void }).rejectPlay?.());
     await page.evaluate(() => { document.body.style.paddingBottom = "2000px"; window.scrollTo(0, 1600); });
@@ -214,13 +230,13 @@ describe("HeroFilm loading and playback", () => {
 
   it("pauses in background and outside the viewport, then resumes only eligible playback", async () => {
     const page = await mount();
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.evaluate(() => { Object.defineProperty(document, "hidden", { value: true, configurable: true }); document.dispatchEvent(new Event("visibilitychange")); });
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film abspielen");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film abspielen");
     await page.evaluate(() => { Object.defineProperty(document, "hidden", { value: false, configurable: true }); document.dispatchEvent(new Event("visibilitychange")); document.body.style.paddingBottom = "2000px"; });
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     await page.evaluate(() => window.scrollTo(0, 1600));
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film abspielen");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film abspielen");
     await page.close();
   });
 
@@ -256,7 +272,7 @@ describe("HeroFilm loading and playback", () => {
     await page.waitForFunction(() => { const video = document.querySelector("video"); return video && video.currentTime > 0; });
     expect(await page.locator("video").evaluate((video: HTMLVideoElement) => ({ width: video.videoWidth, height: video.videoHeight, duration: video.duration, muted: video.muted }))).toEqual({ width: videoWidth, height: videoHeight, duration: 15, muted: true });
     // Native playback can advance before React commits the playing-event label.
-    await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
+    await page.waitForFunction(() => document.querySelector("button")?.getAttribute("aria-label") === "Film pausieren");
     expect(await label(page)).toBe("Film pausieren");
     await page.locator("button").click();
     expect(await page.locator("video").evaluate((video: HTMLVideoElement) => video.paused)).toBe(true);

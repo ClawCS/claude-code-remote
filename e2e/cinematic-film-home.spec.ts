@@ -4,6 +4,10 @@ test("applies the approved near-white homepage palette above the shared inline t
   await page.goto("/");
   await expect(page.locator("[data-cinematic-root]")).toHaveCSS("background-color", "rgb(250, 249, 246)");
   await expect(page.locator("[data-current-flyer]")).toHaveCSS("background-color", "rgb(242, 240, 236)");
+  const control=page.locator('[data-hero="cinematic"] button');
+  await expect(control).toHaveText("");
+  await expect(control.locator("svg")).toHaveAttribute("aria-hidden","true");
+  await expect(control).toHaveAttribute("aria-label",/Film abspielen|Film pausieren|Wiedergabe abbrechen/);
 });
 
 for (const preference of ["reduced-motion", "save-data"] as const) {
