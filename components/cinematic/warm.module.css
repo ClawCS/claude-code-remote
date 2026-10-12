@@ -1,6 +1,6 @@
 .assortment { width:min(100%,var(--cinematic-layout-content-max)); margin:auto; padding:var(--cinematic-spacing-section) var(--cinematic-spacing-gutter); }
 .eyebrow { margin:0 0 var(--cinematic-spacing-sm); font-size:var(--cinematic-typography-size-label); font-weight:var(--cinematic-typography-weight-bold); letter-spacing:var(--cinematic-typography-tracking-wide); color:var(--cinematic-color-burgundy); }
-.assortment { background:var(--cinematic-color-assortment-cream); }
+.assortment { background:linear-gradient(155deg,var(--cinematic-color-white) 15%,var(--cinematic-color-surface) 85%); }
 .assortment h2 { font-family:var(--cinematic-typography-family-sans); font-size:var(--cinematic-typography-size-editorial-heading); font-weight:var(--cinematic-typography-weight-extra-bold); line-height:var(--cinematic-typography-line-height-heading); letter-spacing:var(--cinematic-typography-tracking-tight); margin:0; }
 .sectionHeading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap:var(--cinematic-spacing-lg); margin-bottom:var(--cinematic-spacing-two-xl); }
 .assortment .sectionHeading { margin-bottom:var(--cinematic-spacing-lg); }

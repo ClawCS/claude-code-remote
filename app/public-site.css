@@ -1,4 +1,27 @@
 .public-site { flex: 1; background: var(--cinematic-color-paper); color: var(--cinematic-color-ink); }
+[data-cinematic-root] {
+  --cinematic-color-atmosphere-surface: #f3f5f7;
+  --cinematic-color-atmosphere-ink: #171a1d;
+  --cinematic-color-atmosphere-muted: #505965;
+  --cinematic-color-atmosphere-line: #d9dfe5;
+  --cinematic-color-atmosphere-inverse: #e8edf2;
+  --cinematic-color-atmosphere-silver: #e9edf2;
+  --cinematic-color-atmosphere-mint: #d7ecea;
+  --cinematic-color-atmosphere-rose: #eadce2;
+  --cinematic-color-atmosphere-slate: #e4e5ec;
+}
+/* Closed presentation vocabulary. The neutral reset also stops parent moods
+   from leaking into an explicitly neutral intro or transaction surface. */
+[data-atmosphere] { --atmosphere-accent: #aab5c1; --atmosphere-glow: #59677338; --atmosphere-wash: #edf1f580; }
+[data-atmosphere="offers"] { --atmosphere-accent: #ff6975; --atmosphere-glow: #e20f1d55; --atmosphere-wash: #ff69750a; }
+[data-atmosphere="beer"] { --atmosphere-accent: #e5aa62; --atmosphere-glow: #ad6c2b66; --atmosphere-wash: #c1843a0c; }
+[data-atmosphere="fresh"] { --atmosphere-accent: #68d2cf; --atmosphere-glow: #168d9566; --atmosphere-wash: #3cb9b410; }
+[data-atmosphere="wine"] { --atmosphere-accent: #df9eb2; --atmosphere-glow: #822b506e; --atmosphere-wash: #822b500c; }
+[data-atmosphere="spirits"] { --atmosphere-accent: #d9a078; --atmosphere-glow: #98644861; --atmosphere-wash: #9864480c; }
+[data-atmosphere="party"] { --atmosphere-accent: #a2c59e; --atmosphere-glow: #45715975; --atmosphere-wash: #4571590c; }
+[data-atmosphere="learning"] { --atmosphere-accent: #88b4e5; --atmosphere-glow: #365e946b; --atmosphere-wash: #365e940c; }
+[data-atmosphere="people"] { --atmosphere-accent: #e6a48c; --atmosphere-glow: #a3523961; --atmosphere-wash: #a352390a; }
+[data-atmosphere="nl"] { --atmosphere-accent: #ffb376; --atmosphere-glow: #d36d3266; --atmosphere-wash: #ed7c2a0c; }
 .public-subpage, .editorial-palette,
 .public-site:has(.public-subpage) [data-shopping-drawers-root],
 .public-site:has(.editorial-palette) [data-shopping-drawers-root] {
@@ -13,6 +36,8 @@
 }
 .public-subpage, .editorial-palette { background: var(--cinematic-color-paper); color: var(--cinematic-color-ink); }
 .public-subpage { min-height: 55vh; font-size: 1rem; line-height: 1.65; }
+/* A quiet continuation below the intro, never a replacement for white originals. */
+.public-subpage[data-atmosphere]:not([data-atmosphere="neutral"]) { background-image: radial-gradient(ellipse at 95% 26rem, var(--atmosphere-wash), transparent 52rem); background-repeat: no-repeat; }
 .public-subpage h1, .public-subpage h2 { color: var(--cinematic-color-ink); }
 .public-subpage h2:where(.utility-heading) { color: var(--color-secondary); }
 .public-subpage h2:where(.utility-heading-inverse) { color: inherit; }

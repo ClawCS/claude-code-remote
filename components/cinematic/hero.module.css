@@ -1,4 +1,4 @@
-.hero { position:relative; background:var(--cinematic-color-paper); }
+.hero { position:relative; background:var(--cinematic-color-white); }
 .copy { color:var(--cinematic-color-ink); }
 .kicker { margin:0 0 var(--cinematic-spacing-lg); font-size:var(--cinematic-typography-size-label); font-weight:var(--cinematic-typography-weight-bold); letter-spacing:var(--cinematic-typography-tracking-wide); text-transform:uppercase; }
 .title { display:grid; margin:0 0 var(--cinematic-spacing-lg); font-family:var(--cinematic-typography-family-sans); font-size:var(--cinematic-typography-size-display); font-weight:var(--cinematic-typography-weight-medium); line-height:var(--cinematic-typography-line-height-display); letter-spacing:var(--cinematic-typography-tracking-tight); }

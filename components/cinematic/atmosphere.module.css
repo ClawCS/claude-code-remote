@@ -24,7 +24,7 @@
 .visit > a[data-brand-link] { position:absolute; bottom:1rem; right:1rem; z-index:3; }
 .visit .entryCopy > span { padding-right:var(--cinematic-spacing-lg); }
 .quickCard:focus-visible,.visitLink:focus-visible { outline:3px solid var(--cinematic-color-blue); outline-offset:-5px; }
-.service { background:var(--cinematic-color-charcoal); color:var(--cinematic-color-white); }
+.service { background:radial-gradient(ellipse at 85% 90%,color-mix(in srgb,var(--cinematic-color-category-olive) 12%,transparent),transparent 60%),var(--cinematic-color-charcoal); color:var(--cinematic-color-white); }
 .serviceFrame { max-width:var(--cinematic-layout-content-max); margin:auto; }
 .servicePhoto { position:relative; }
 .servicePhoto img { display:block; width:100%; height:auto; }

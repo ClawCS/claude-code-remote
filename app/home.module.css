@@ -2,11 +2,29 @@
   min-height: 100%;
   isolation: isolate;
   overflow: clip;
-  background: var(--cinematic-color-paper);
+  background: var(--cinematic-color-white);
   color: var(--cinematic-color-ink);
   font-family: var(--cinematic-typography-family-sans);
   font-size: var(--cinematic-typography-size-body);
   line-height: var(--cinematic-typography-line-height-body);
+}
+
+/* Local continuity only: preserve the original header, first-child film and
+   footer tokens, while every existing content chapter gets a cool paper base. */
+.home :global(main > :not(:first-child)) {
+  --cinematic-color-paper: var(--cinematic-color-white);
+  --cinematic-color-surface: var(--cinematic-color-atmosphere-surface);
+  --cinematic-color-warm: var(--cinematic-color-atmosphere-surface);
+  --cinematic-color-assortment-cream: var(--cinematic-color-atmosphere-surface);
+  --cinematic-color-ink: var(--cinematic-color-atmosphere-ink);
+  --cinematic-color-muted: var(--cinematic-color-atmosphere-muted);
+  --cinematic-color-line: var(--cinematic-color-atmosphere-line);
+  --cinematic-color-charcoal: var(--cinematic-color-atmosphere-ink);
+  --cinematic-color-stage-name: var(--cinematic-color-atmosphere-inverse);
+  --cinematic-color-category-amber: var(--cinematic-color-atmosphere-silver);
+  --cinematic-color-category-olive: var(--cinematic-color-atmosphere-mint);
+  --cinematic-color-category-bordeaux: var(--cinematic-color-atmosphere-rose);
+  --cinematic-color-category-spice: var(--cinematic-color-atmosphere-slate);
 }
 
 .skipLink {

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
+import type { AtmosphereTheme } from "@/lib/cinematic/atmosphere";
 import styles from "./editorial.module.css";
 
 export type PageIntroProps = Readonly<{
@@ -10,21 +12,31 @@ export type PageIntroProps = Readonly<{
   children?: ReactNode;
   className?: string;
   id?: string;
+  theme?: AtmosphereTheme;
+  media?: Readonly<{ src: string; alt: string; width: number; height: number; position?: string }>;
 }>;
 
 /** Pure presentation: safe to compose in either a server or client page. */
-export default function PageIntro({ eyebrow, title, description, breadcrumbs, children, className, id }: PageIntroProps) {
-  return <header id={id} data-editorial-intro className={styles.intro}>
-    <div className={[styles.container, className].filter(Boolean).join(" ")}>
-      {breadcrumbs?.length ? <nav aria-label="Brotkrumennavigation" className={styles.breadcrumbs}>
-        <ol>{breadcrumbs.map((crumb, index) => <li key={`${crumb.label}-${index}`}>
-          {crumb.href ? <Link href={crumb.href} prefetch={false}>{crumb.label}</Link> : <span aria-current={index === breadcrumbs.length - 1 ? "page" : undefined}>{crumb.label}</span>}
-        </li>)}</ol>
-      </nav> : null}
-      {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-      <h1>{title}</h1>
-      {description && <div className={styles.description}>{description}</div>}
-      {children && <div className={styles.introActions}>{children}</div>}
+export default function PageIntro({ eyebrow, title, description, breadcrumbs, children, className, id, theme, media }: PageIntroProps) {
+  return <header id={id} data-editorial-intro data-atmosphere={theme} data-has-media={media ? true : undefined} className={styles.intro}>
+    <div className={styles.introLight} data-intro-light aria-hidden="true" />
+    <div className={[styles.container, styles.introLayout, className].filter(Boolean).join(" ")}>
+      <div className={styles.introCopy}>
+        {breadcrumbs?.length ? <nav aria-label="Brotkrumennavigation" className={styles.breadcrumbs}>
+          <ol>{breadcrumbs.map((crumb, index) => <li key={`${crumb.label}-${index}`}>
+            {crumb.href ? <Link href={crumb.href} prefetch={false}>{crumb.label}</Link> : <span aria-current={index === breadcrumbs.length - 1 ? "page" : undefined}>{crumb.label}</span>}
+          </li>)}</ol>
+        </nav> : null}
+        {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+        <h1>{title}</h1>
+        {description && <div className={styles.description}>{description}</div>}
+        {children && <div className={styles.introActions}>{children}</div>}
+      </div>
+      {media && <figure className={styles.introMedia} data-intro-media>
+        <Image src={media.src} alt={media.alt} width={media.width} height={media.height}
+          sizes="(min-width: 64rem) 34vw, (min-width: 48rem) 42vw, 90vw"
+          style={{ objectPosition: media.position }} />
+      </figure>}
     </div>
   </header>;
 }

@@ -7,6 +7,15 @@
   color: var(--cinematic-color-ink);
 }
 
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0 var(--cinematic-spacing-gutter) auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cinematic-color-red), var(--cinematic-color-line) 35%, transparent);
+  pointer-events: none;
+}
+
 .heading {
   display: flex;
   flex-wrap: wrap;
