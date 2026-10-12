@@ -1,10 +1,7 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
-
 import PublicChrome from "@/components/PublicChrome";
 import JsonLdScript from "@/components/JsonLdScript";
 import RouteContent from "@/components/RouteContent";
-import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider } from "@/context/WishlistContext";
+import LegacyStorageCleanup from "@/components/LegacyStorageCleanup";
 import {
   LOCAL_BUSINESS_JSON_LD,
   SITE_METADATA,
@@ -12,16 +9,9 @@ import {
 
 import "./globals.css";
 import "./public-site.css";
+import "./jakarta-fonts.css";
 import { cinematicTokenStyle } from "@/lib/cinematic/tokens";
 import { resolveHomepageNow } from "@/lib/cinematic/server-clock";
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-jakarta",
-  display: "swap",
-  preload: false,
-});
 
 export const metadata = SITE_METADATA;
 
@@ -34,20 +24,18 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`h-full antialiased ${jakarta.variable}`}
+      className="h-full antialiased font-jakarta"
     >
       <body className="min-h-full flex flex-col font-sans">
         <JsonLdScript value={LOCAL_BUSINESS_JSON_LD} />
-        <CartProvider>
-          <WishlistProvider>
+        <LegacyStorageCleanup>
             <div className="public-site" style={cinematicTokenStyle}>
               <PublicChrome slot="header" nowIso={nowIso} />
               <RouteContent>{children}</RouteContent>
               <PublicChrome slot="footer" nowIso={nowIso} />
-              <PublicChrome slot="drawers" nowIso={nowIso} />
+              <div data-shopping-drawers-root />
             </div>
-          </WishlistProvider>
-        </CartProvider>
+        </LegacyStorageCleanup>
       </body>
     </html>
   );

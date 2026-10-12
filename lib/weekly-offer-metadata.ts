@@ -49,6 +49,12 @@ export type WeeklyOfferPublicSource = {
 /** The complete layout-derived publication record; imageSha256 comes from the actual image bytes. */
 export function buildPublicOfferMetadata(source: WeeklyOfferPublicSource, page: number, offer: ReviewedWeeklyOffer, imagePath: string) {
   const summary = validateOfferSummary(offer.summary);
+  // KW41 is an immutable legacy archive. From the approved KW42 completion
+  // onward, a weekly import must contain all four source-reviewed facts.
+  // A value absent from the original is a descriptive fact, never a calculation.
+  if (source.identity?.purpose !== "supplemental" && source.validFrom >= "2026-10-12" && summary === undefined) {
+    throw new TypeError(`Complete reviewed offer summary required: ${offer.id}`);
+  }
   if (!/^\/handzettel\/[a-zA-Z0-9/_-]+\.pdf$/.test(source.publishedPdfPath) || source.publishedPdfPath.includes("//")) throw new Error("Offers require a local published PDF");
   if (!/^\/images\/offers\/[a-zA-Z0-9/_-]+\.(?:webp|png|jpe?g|avif)$/.test(imagePath) || imagePath.includes("//")) throw new Error("Offers require a safe local derivative");
   return {

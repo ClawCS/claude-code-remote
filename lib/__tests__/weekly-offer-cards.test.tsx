@@ -10,7 +10,7 @@ const content:WeeklyOfferContent={status:"ok",issues:[],generatedAt:"2026-10-08T
 ],offers:offers.map(({id,name,categorySlug,language,flyerId,validFrom,validTo,image,sourcePage,rect,pdfSha256,conditions,sourceWarning})=>({id,name,categorySlug,language:language as "de"|"nl",flyerId,validFrom,validTo,image,sourcePage,rect:rect as [number,number,number,number],pdfSha256,conditions,sourceWarning,sourceUrl:language==="de"?"/handzettel/2026/complete.pdf":"/handzettel/2026/nl-2026-10-05.pdf"}))};
 
 describe("complete original offer cards",()=>{
-  it("renders the three actual KW42 pilot records and the unchanged NL unit warning in an isolated render fixture",()=>{
+  it("renders all four sampled KW42 summaries including the unchanged NL unit warning",()=>{
     const ids=["de-2026-42-p01-06","de-2026-42-p02-01","nl-2026-42-p01-r2c1","nl-2026-42-p01-r1c1"];
     const pilotOffers=offers.filter(o=>ids.includes(o.id)).map(o=>({...o,rect:o.rect as [number,number,number,number]}));
     const fixture:WeeklyOfferContent={status:"ok",issues:[],generatedAt:"2026-10-12T12:00:00Z",offers:pilotOffers,flyers:content.flyers.map(f=>{
@@ -18,11 +18,11 @@ describe("complete original offer cards",()=>{
       return {...f,id:row.flyerId,validFrom:row.validFrom,validTo:row.validTo,pdfSha256:row.pdfSha256,pdfUrl:row.sourceUrl,sourceUrl:row.sourceUrl,viewerUrl:row.sourceUrl,medium:f.language==="nl"?"de-maas-driehoek":"trinkgut"};
     })};
     const html=renderToStaticMarkup(<WeeklyOfferGrid content={fixture}/>);
-    expect(html.match(/<dl\b/g)).toHaveLength(3);expect(html.match(/data-offer-id=/g)).toHaveLength(4);
+    expect(html.match(/<dl\b/g)).toHaveLength(4);expect(html.match(/data-offer-id=/g)).toHaveLength(4);
     for(const text of ["4,99 €","12 × 0,75 l Glas","zzgl. 3,30 € Pfand","0,55 €/l","0,99 €","250 ml Dose","zzgl. 0,25 € Pfand","3,96 €/l","1,19 €","1,25 l PET-fles","excl. 0,25 € statiegeld","0,95 €/l","taurin- und koffeinhaltig","bevat gedeeltelijk cafeïnehoudend","0,25 ml Blik","bitte die Gebindegröße im Markt klären"])expect(html).toContain(text);
     expect(html).toContain("#page=2");
     const preview=renderToStaticMarkup(<WeeklyOfferGrid content={{...fixture,generatedAt:"2026-10-11T14:00:00Z"}}/>);
-    expect(preview.match(/<dl\b/g)).toHaveLength(3);expect(preview.match(/data-offer-preview=/g)).toHaveLength(4);
+    expect(preview.match(/<dl\b/g)).toHaveLength(4);expect(preview.match(/data-offer-preview=/g)).toHaveLength(4);
     for(const generatedAt of ["2026-10-11T13:59:59Z","2026-10-17T22:00:00Z"])expect(renderToStaticMarkup(<WeeklyOfferGrid content={{...fixture,generatedAt}}/>)).not.toContain('<dl');
   });
   const summary={price:"4,99 €",package:"12 × 0,75 l Glas",deposit:"zzgl. 3,30 € Pfand",unitPrice:"0,55 €/l"};

@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
 import { assortmentProducts as products } from "@/lib/catalog";
+import { useSessionList } from "@/lib/use-session-list";
 
 type WishlistContextType = {
   items: Product[];
@@ -17,27 +18,13 @@ type WishlistContextType = {
 };
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
+function parseSavedWishlist(parsed: unknown): Product[] {
+  return Array.isArray(parsed) ? products.filter(product => parsed.some(item => item?.id === product.id)) : [];
+}
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<Product[]>([]);
+  const [items, setItems] = useSessionList("trinkgut-wishlist", parseSavedWishlist);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = sessionStorage.getItem("trinkgut-wishlist") ?? localStorage.getItem("trinkgut-wishlist");
-      const parsed:unknown = stored ? JSON.parse(stored) : [];
-      if (Array.isArray(parsed)) setItems(products.filter(product=>parsed.some(item=>item?.id === product.id)) as Product[]);
-      localStorage.removeItem("trinkgut-wishlist");
-    } catch { /* Browser storage is optional for using the list. */ }
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated) {
-      try { if (items.length) sessionStorage.setItem("trinkgut-wishlist", JSON.stringify(items)); else sessionStorage.removeItem("trinkgut-wishlist"); } catch { /* Browser storage unavailable. */ }
-    }
-  }, [items, hydrated]);
 
   const addItem = (product: Product) => {
     setItems((prev) => {

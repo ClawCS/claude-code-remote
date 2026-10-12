@@ -3,9 +3,17 @@ import { courses } from "@/data/akademie";
 import { categories } from "@/lib/utils";
 import { cocktailCatalog } from "@/lib/cocktail-routes";
 import { lessonHref } from "@/lib/academy-routes";
+import { PUBLIC_JOBS } from "@/data/jobs";
+import reviews from "@/data/editorial/content-reviews.json";
+import pageUpdates from "@/data/editorial/page-updates.json";
+import { buildContentLastModified } from "@/lib/content-last-modified";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://trinkgut-jammers.de";
+  const lastModified = buildContentLastModified(pageUpdates, reviews.reviews, PUBLIC_JOBS);
+  const categoryDates = new Map(cocktailCatalog.categories.map(category => [category.href,
+    category.recipes.map(recipe => lastModified(recipe.href)).filter((date): date is string => Boolean(date)).toSorted().at(-1),
+  ]));
 
   // Statische Routes mit individueller Priorität
   const routes: { path: string; priority: number; changeFrequency: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never" }[] = [
@@ -22,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/partyplaner", priority: 0.8, changeFrequency: "weekly" },
     { path: "/vermietung", priority: 0.8, changeFrequency: "monthly" },
     { path: "/galerie", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/karriere", priority: 0.7, changeFrequency: "weekly" },
     { path: "/community", priority: 0.7, changeFrequency: "weekly" },
     { path: "/gewinnspiel", priority: 0.7, changeFrequency: "monthly" },
     { path: "/leergut", priority: 0.7, changeFrequency: "monthly" },
@@ -35,6 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const detailRoutes = [
+    ...PUBLIC_JOBS.map(job => ({ path: `/karriere/${job.slug}`, priority: 0.7, changeFrequency: "weekly" as const })),
     ...categories.map(category => ({ path: `/kategorie/${category.slug}`, priority: 0.8, changeFrequency: "monthly" as const })),
     ...courses.flatMap(course => course.lessons.map((_, index) => ({ path: lessonHref(course.slug, index), priority: 0.6, changeFrequency: "monthly" as const }))),
     ...cocktailCatalog.recipes.map(recipe => ({ path: recipe.href, priority: 0.7, changeFrequency: "monthly" as const })),
@@ -45,6 +55,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${r.path}`,
     changeFrequency: r.changeFrequency,
     priority: r.priority,
+    ...((lastModified(r.path) ?? categoryDates.get(r.path)) ? { lastModified: lastModified(r.path) ?? categoryDates.get(r.path) } : {}),
     ...(r.path === "/" || r.path === "/nl" ? {
       alternates: { languages: { de: `${baseUrl}/`, nl: `${baseUrl}/nl` } },
     } : {}),

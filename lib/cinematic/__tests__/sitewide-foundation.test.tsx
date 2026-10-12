@@ -8,6 +8,7 @@ import { SITEWIDE_DESIGN_CASES, SITEWIDE_DESIGN_EXCLUSIONS } from "@/e2e/sitewid
 import { cocktailCatalog } from "@/lib/cocktail-routes";
 import { categories } from "@/lib/utils";
 import { courses } from "@/data/akademie";
+import { PUBLIC_JOBS } from "@/data/jobs";
 
 vi.mock("@/public/images/home/brand-logo.webp", () => ({
   default: { src: "/images/home/brand-logo.webp", width: 520, height: 198 },
@@ -18,7 +19,7 @@ describe("shared editorial foundation", () => {
   test("acceptance matrix covers each customer template and only real catalog examples", () => {
     const templates = readdirSync("app", { recursive: true }).filter((file): file is string => typeof file === "string" && /(^|\/)page\.tsx$/.test(file))
       .map(file => `/${file.replace(/(^|\/)page\.tsx$/, "")}`);
-    expect(SITEWIDE_DESIGN_CASES).toHaveLength(38);
+    expect(SITEWIDE_DESIGN_CASES).toHaveLength(40);
     expect([...SITEWIDE_DESIGN_CASES, ...SITEWIDE_DESIGN_EXCLUSIONS].map(item => item.template).sort()).toEqual(templates.sort());
     const validExamples = [
       ...categories.map(category => `/kategorie/${category.slug}`),
@@ -26,6 +27,7 @@ describe("shared editorial foundation", () => {
       ...cocktailCatalog.recipes.map(recipe => recipe.href),
       ...courses.map(course => `/akademie/${course.slug}`),
       ...courses.flatMap(course => course.lessons.slice(1).map((_, index) => `/akademie/${course.slug}/lektion/${index + 2}`)),
+      ...PUBLIC_JOBS.map(job => `/karriere/${job.slug}`),
     ];
     for (const item of SITEWIDE_DESIGN_CASES.filter(item => item.template.includes("[slug]"))) expect(validExamples).toContain(item.path);
     expect(SITEWIDE_DESIGN_CASES.find(item => item.template === "/mietbestellung/[id]")?.path).toBe("/mietbestellung/design-missing-token");
@@ -35,7 +37,7 @@ describe("shared editorial foundation", () => {
       "Angebote", "Sortiment", "Party & Miete", "Jammers entdecken", "Dein Besuch",
     ]);
     const html = renderToStaticMarkup(<CinematicHeader nowIso="2026-10-10T10:00:00Z" hasActions />);
-    for (const href of ["/angebote", "/produkte", "/vermietung", "/partyplaner", "/warenkorb", "/eigenmarke", "/regionale-spirituosen", "/geschenkideen", "/marktleben", "/gewinnspiel", "https://grailbid.com", "/cocktails", "/akademie", "/galerie", "/bewerbung", "/kontakt"]) {
+    for (const href of ["/angebote", "/produkte", "/vermietung", "/partyplaner", "/warenkorb", "/eigenmarke", "/regionale-spirituosen", "/geschenkideen", "/marktleben", "/gewinnspiel", "https://grailbid.com", "/cocktails", "/akademie", "/galerie", "/karriere", "/kontakt"]) {
       expect(html).toContain(`href="${href}"`);
     }
     expect(html).toMatch(/<a[^>]*href="\/vermietung"[^>]*>Party &amp; Miete<\/a>/);

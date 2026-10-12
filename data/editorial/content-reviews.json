@@ -1,0 +1,3893 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "wine-eu",
+      "title": "Verordnung (EU) Nr. 1308/2013 — Weinbauerzeugnisse",
+      "url": "https://eur-lex.europa.eu/eli/reg/2013/1308/oj",
+      "publisher": "Europäische Union"
+    },
+    {
+      "id": "wine-label-eu",
+      "title": "Delegierte Verordnung (EU) 2019/33 — Weinbezeichnung und Kennzeichnung",
+      "url": "https://eur-lex.europa.eu/eli/reg_del/2019/33/oj",
+      "publisher": "Europäische Union"
+    },
+    {
+      "id": "wine-dwi-manual",
+      "title": "Seminarhandbuch Deutsches Weininstitut",
+      "url": "https://www.deutscheweine.de/fileadmin/DWI/Seminare-KD/pdf/Seminarhandbuch.pdf",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-sugar",
+      "title": "Geschmacksrichtungen",
+      "url": "https://www.deutscheweine.de/wein-speise/195/geschmacksrichtungen",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-must",
+      "title": "Mostgewichte",
+      "url": "https://www.deutscheweine.de/wein-probieren/182/mostgewichte",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-quality",
+      "title": "Qualitätsstandards",
+      "url": "https://www.deutscheweine.de/qualitaetsstandards",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-pradikat",
+      "title": "Prädikate",
+      "url": "https://www.deutscheweine.de/qualitaetstandard/449/pr%C3%A4dikate",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-storage",
+      "title": "Weinlagerung",
+      "url": "https://www.deutscheweine.de/wein-probieren/190/weinlagerung",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-climate",
+      "title": "Klima und Witterung",
+      "url": "https://www.deutscheweine.de/wein-speise/174/klima-witterung",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-dwi-piwi",
+      "title": "PIWIs — pilzwiderstandsfähige Reben",
+      "url": "https://www.deutscheweine.de/wein-speise/387/piwis-pilzwiderstandsf%C3%A4hige-reben",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "wine-champagne-white",
+      "title": "Champagne Blanc de Blancs",
+      "url": "https://www.champagne.fr/fr/deguster-le-champagne/types-de-Champagne/blanc-de-blancs",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "wine-champagne-maturation",
+      "title": "La maturation",
+      "url": "https://www.champagne.fr/fr/decouvrir-le-champagne/elaboration-du-champagne/la-maturation",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "wine-brunello",
+      "title": "Wines — Brunello di Montalcino",
+      "url": "https://www.consorziobrunellodimontalcino.it/en/583/wines",
+      "publisher": "Consorzio del Vino Brunello di Montalcino"
+    },
+    {
+      "id": "wine-chianti",
+      "title": "Characteristics of Chianti Classico",
+      "url": "https://www.chianticlassico.com/en/wine/characteristics/",
+      "publisher": "Consorzio Vino Chianti Classico"
+    },
+    {
+      "id": "wine-chianti-types",
+      "title": "Tipologie",
+      "url": "https://www.chianticlassico.com/vino/tipologie/",
+      "publisher": "Consorzio Vino Chianti Classico"
+    },
+    {
+      "id": "wine-awri-faults",
+      "title": "Wine faults and taints",
+      "url": "https://www.awri.com.au/industry_support/winemaking_resources/sensory_assessment/recognition-of-wine-faults-and-taints/wine_faults/",
+      "publisher": "Australian Wine Research Institute"
+    },
+    {
+      "id": "wine-awri-copper",
+      "title": "Copper — frequently asked questions",
+      "url": "https://www.awri.com.au/industry_support/winemaking_resources/frequently_asked_questions/copper/",
+      "publisher": "Australian Wine Research Institute"
+    },
+    {
+      "id": "wine-fish-iron",
+      "title": "Iron Is an Essential Cause of Fishy Aftertaste Formation in Wine and Seafood Pairing",
+      "url": "https://pubs.acs.org/doi/10.1021/jf901656k",
+      "publisher": "Journal of Agricultural and Food Chemistry"
+    },
+    {
+      "id": "wine-demeter",
+      "title": "Biodynamische Präparate",
+      "url": "https://www.demeter.de/biodynamisch/praeparate",
+      "publisher": "Demeter e. V."
+    },
+    {
+      "id": "wine-label-transition",
+      "title": "New rules for wine labelling enter into application",
+      "url": "https://agriculture.ec.europa.eu/media/news/new-rules-wine-labelling-enter-application-2023-12-07_en",
+      "publisher": "Europäische Kommission"
+    },
+    {
+      "id": "wine-bottling",
+      "title": "§ 38 Weinverordnung — Angaben zum Betrieb und zur Abfüllung",
+      "url": "https://www.gesetze-im-internet.de/weinv_1995/__38.html",
+      "publisher": "Bundesministerium der Justiz und Bundesamt für Justiz"
+    },
+    {
+      "id": "health-dge",
+      "title": "Alkohol — Fragen und Antworten",
+      "url": "https://www.dge.de/gesunde-ernaehrung/faq/alkohol/",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "health-who-cancer",
+      "title": "Alcohol and cancer",
+      "url": "https://www.who.int/europe/news-room/fact-sheets/item/alcohol-and-cancer",
+      "publisher": "World Health Organization"
+    },
+    {
+      "id": "health-who-tobacco",
+      "title": "Comprehensive assessment of evidence on oral cancer prevention",
+      "url": "https://www.who.int/news/item/29-11-2023-comprehensive-assessment-of-evidence-on-oral-cancer-prevention-released-29-november-2023",
+      "publisher": "World Health Organization"
+    },
+    {
+      "id": "sensory-nidcd",
+      "title": "Taste Disorders",
+      "url": "https://www.nidcd.nih.gov/health/taste-disorders",
+      "publisher": "National Institute on Deafness and Other Communication Disorders"
+    },
+    {
+      "id": "rum-eu",
+      "title": "Verordnung (EU) 2019/787 — Spirituosen",
+      "url": "https://eur-lex.europa.eu/eli/reg/2019/787/oj",
+      "publisher": "Europäische Union"
+    },
+    {
+      "id": "rum-mountgay-making",
+      "title": "Rum making",
+      "url": "https://www.mountgayrum.com/rum-making/",
+      "publisher": "Mount Gay"
+    },
+    {
+      "id": "rum-mountgay-history",
+      "title": "Mount Gay — since 1703",
+      "url": "https://www.mountgayrum.com/",
+      "publisher": "Mount Gay"
+    },
+    {
+      "id": "rum-mountgay-navy",
+      "title": "Eclipse Navy Strength",
+      "url": "https://www.mountgayrum.com/rum/eclipse-navy-strength/",
+      "publisher": "Mount Gay"
+    },
+    {
+      "id": "rum-hampden-pillars",
+      "title": "The Five Pillars of Hampden Estate",
+      "url": "https://hampdenestaterum.com/hampden-estate-five-pillars/",
+      "publisher": "Hampden Estate"
+    },
+    {
+      "id": "rum-hampden-marks",
+      "title": "Hampden 8 Marks Collection Unaged",
+      "url": "https://hampdenestaterum.com/hampden-8-marks-collection-unaged/",
+      "publisher": "Hampden Estate"
+    },
+    {
+      "id": "rum-bacardi-making",
+      "title": "Molasses to Mojitos: Making BACARDÍ Rum",
+      "url": "https://www.bacardi.com/culture/molasses-to-mojitos-making-bacardi-rum/",
+      "publisher": "BACARDÍ"
+    },
+    {
+      "id": "rum-bacardi-history",
+      "title": "Our history",
+      "url": "https://www.bacardilimited.com/our-company/our-history/",
+      "publisher": "Bacardi Limited"
+    },
+    {
+      "id": "rum-inao",
+      "title": "Rhum de la Martinique",
+      "url": "https://inao.gouv.fr/en/node/5785",
+      "publisher": "Institut national de l'origine et de la qualité"
+    },
+    {
+      "id": "rum-clement-vsop",
+      "title": "Clément VSOP",
+      "url": "https://www.rhum-clement.com/en/rhum/clement-vsop/",
+      "publisher": "Rhum Clément"
+    },
+    {
+      "id": "rum-el-dorado-enmore",
+      "title": "Enmore Single Still",
+      "url": "https://theeldoradorum.com/single-still-rums/enmore-single-still",
+      "publisher": "El Dorado Rum"
+    },
+    {
+      "id": "rum-velier",
+      "title": "Habitation Velier",
+      "url": "https://www.velier.it/en/rum/143-habitation-velier.html",
+      "publisher": "Velier"
+    },
+    {
+      "id": "rum-wray",
+      "title": "Wray & Nephew Overproof White Rum",
+      "url": "https://www.wrayandnephew.com/en-gb/white-overproof-rum/",
+      "publisher": "Wray & Nephew"
+    },
+    {
+      "id": "rum-spence",
+      "title": "Campari Group Sustainability Report 2022 — Joy Spence",
+      "url": "https://www.camparigroup.com/sites/default/files/downloads/sustainability/2022-campari-group-sustainability-report.pdf",
+      "publisher": "Campari Group"
+    },
+    {
+      "id": "rum-alcatraz",
+      "title": "Project Alcatraz",
+      "url": "https://www.santateresarum.com/project-alcatraz/",
+      "publisher": "Santa Teresa 1796"
+    },
+    {
+      "id": "rum-savanna",
+      "title": "Savanna High Ester HERR Limited Edition",
+      "url": "https://www.velier.it/en/traditional-rum/7893-savanna-high-ester-herr-limited-edition.html",
+      "publisher": "Velier"
+    },
+    {
+      "id": "rum-navy-history",
+      "title": "RNZN and the rum issue",
+      "url": "https://navymuseum.co.nz/explore/by-themes/customs-and-traditions/rnzn-and-the-rum-issue/",
+      "publisher": "National Museum of the Royal New Zealand Navy"
+    },
+    {
+      "id": "rum-maitai-history",
+      "title": "History of the Mai Tai",
+      "url": "https://tradervics.com/pages/history-of-the-mai-tai",
+      "publisher": "Trader Vic's"
+    },
+    {
+      "id": "risk-investment",
+      "title": "Finanzen. Information. Tipps.",
+      "url": "https://www.bafin.de/SharedDocs/Downloads/DE/Broschuere/BAGSO/BaFin_BAGSO_Geld_anlegen.pdf?__blob=publicationFile&v=4",
+      "publisher": "BaFin und BAGSO"
+    },
+    {
+      "id": "recipe-egg-safety",
+      "title": "Schutz vor Infektionen mit Salmonellen",
+      "url": "https://www.bfr.bund.de/fragen-und-antworten/thema/fragen-und-antworten-zum-schutz-vor-infektionen-mit-salmonellen/",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "recipe-copper-safety",
+      "title": "FDA Food Code",
+      "url": "https://www.fda.gov/food/retail-food-protection/fda-food-code",
+      "publisher": "U.S. Food and Drug Administration"
+    },
+    {
+      "id": "iba-mojito",
+      "title": "IBA — mojito",
+      "url": "https://iba-world.com/iba-cocktail/mojito/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-cuba-libre",
+      "title": "IBA — cuba libre",
+      "url": "https://iba-world.com/iba-cocktail/cuba-libre/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-daiquiri",
+      "title": "IBA — daiquiri",
+      "url": "https://iba-world.com/iba-cocktail/daiquiri/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-pina-colada",
+      "title": "IBA — pina colada",
+      "url": "https://iba-world.com/iba-cocktail/pina-colada/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-mai-tai",
+      "title": "IBA — mai tai",
+      "url": "https://iba-world.com/iba-cocktail/mai-tai/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-dark-n-stormy",
+      "title": "IBA — dark n stormy",
+      "url": "https://iba-world.com/iba-cocktail/dark-n-stormy/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-zombie",
+      "title": "IBA — zombie",
+      "url": "https://iba-world.com/iba-cocktail/zombie/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-planters-punch",
+      "title": "IBA — planters punch",
+      "url": "https://iba-world.com/iba-cocktail/planters-punch/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-caipirinha",
+      "title": "IBA — caipirinha",
+      "url": "https://iba-world.com/iba-cocktail/caipirinha/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-moscow-mule",
+      "title": "IBA — moscow mule",
+      "url": "https://iba-world.com/iba-cocktail/moscow-mule/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-cosmopolitan",
+      "title": "IBA — cosmopolitan",
+      "url": "https://iba-world.com/iba-cocktail/cosmopolitan/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-dry-martini",
+      "title": "IBA — dry martini",
+      "url": "https://iba-world.com/iba-cocktail/dry-martini/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-bloody-mary",
+      "title": "IBA — bloody mary",
+      "url": "https://iba-world.com/iba-cocktail/bloody-mary/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-espresso-martini",
+      "title": "IBA — espresso martini",
+      "url": "https://iba-world.com/iba-cocktail/espresso-martini/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-sex-on-the-beach",
+      "title": "IBA — sex on the beach",
+      "url": "https://iba-world.com/iba-cocktail/sex-on-the-beach/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-black-russian",
+      "title": "IBA — black russian",
+      "url": "https://iba-world.com/iba-cocktail/black-russian/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-whiskey-sour",
+      "title": "IBA — whiskey sour",
+      "url": "https://iba-world.com/iba-cocktail/whiskey-sour/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-lemon-drop-martini",
+      "title": "IBA — lemon drop martini",
+      "url": "https://iba-world.com/iba-cocktail/lemon-drop-martini/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-old-fashioned",
+      "title": "IBA — old fashioned",
+      "url": "https://iba-world.com/iba-cocktail/old-fashioned/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-manhattan",
+      "title": "IBA — manhattan",
+      "url": "https://iba-world.com/iba-cocktail/manhattan/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-mint-julep",
+      "title": "IBA — mint julep",
+      "url": "https://iba-world.com/iba-cocktail/mint-julep/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-irish-coffee",
+      "title": "IBA — irish coffee",
+      "url": "https://iba-world.com/iba-cocktail/irish-coffee/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-penicillin",
+      "title": "IBA — penicillin",
+      "url": "https://iba-world.com/iba-cocktail/penicillin/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-boulevardier",
+      "title": "IBA — boulevardier",
+      "url": "https://iba-world.com/iba-cocktail/boulevardier/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-sazerac",
+      "title": "IBA — sazerac",
+      "url": "https://iba-world.com/iba-cocktail/sazerac/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-negroni",
+      "title": "IBA — negroni",
+      "url": "https://iba-world.com/iba-cocktail/negroni/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-gin-fizz",
+      "title": "IBA — gin fizz",
+      "url": "https://iba-world.com/iba-cocktail/gin-fizz/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-john-collins",
+      "title": "IBA — john collins",
+      "url": "https://iba-world.com/iba-cocktail/john-collins/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-bramble",
+      "title": "IBA — bramble",
+      "url": "https://iba-world.com/iba-cocktail/bramble/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-aviation",
+      "title": "IBA — aviation",
+      "url": "https://iba-world.com/iba-cocktail/aviation/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-singapore-sling",
+      "title": "IBA — singapore sling",
+      "url": "https://iba-world.com/iba-cocktail/singapore-sling/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-last-word",
+      "title": "IBA — last word",
+      "url": "https://iba-world.com/iba-cocktail/last-word/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-french-75",
+      "title": "IBA — french 75",
+      "url": "https://iba-world.com/iba-cocktail/french-75/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-bees-knees",
+      "title": "IBA — bees knees",
+      "url": "https://iba-world.com/iba-cocktail/bees-knees/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-spritz",
+      "title": "IBA — spritz",
+      "url": "https://iba-world.com/iba-cocktail/spritz/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-bellini",
+      "title": "IBA — bellini",
+      "url": "https://iba-world.com/iba-cocktail/bellini/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-kir",
+      "title": "IBA — kir",
+      "url": "https://iba-world.com/iba-cocktail/kir/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-mimosa",
+      "title": "IBA — mimosa",
+      "url": "https://iba-world.com/iba-cocktail/mimosa/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-americano",
+      "title": "IBA — americano",
+      "url": "https://iba-world.com/iba-cocktail/americano/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-margarita",
+      "title": "IBA — margarita",
+      "url": "https://iba-world.com/iba-cocktail/margarita/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-paloma",
+      "title": "IBA — paloma",
+      "url": "https://iba-world.com/iba-cocktail/paloma/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-tequila-sunrise",
+      "title": "IBA — tequila sunrise",
+      "url": "https://iba-world.com/iba-cocktail/tequila-sunrise/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "iba-tommys-margarita",
+      "title": "IBA — tommys margarita",
+      "url": "https://iba-world.com/iba-cocktail/tommys-margarita/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "recipe-rum-punch",
+      "title": "BACARDÍ Tropical Punch",
+      "url": "https://www.bacardi.com/rum-cocktails/bacardi-tropical-punch/22289/",
+      "publisher": "BACARDÍ"
+    },
+    {
+      "id": "recipe-hurricane",
+      "title": "Hurricane recipes",
+      "url": "https://www.neworleans.com/drink/cocktails/hurricane/",
+      "publisher": "New Orleans & Company"
+    },
+    {
+      "id": "recipe-bahama-mama",
+      "title": "Malibu Bahama Mama",
+      "url": "https://www.malibudrinks.com/en-us/drinks/malibu-bahama-mama/",
+      "publisher": "Malibu"
+    },
+    {
+      "id": "recipe-screwdriver",
+      "title": "Screwdriver",
+      "url": "https://www.smirnoff.com/en/cocktail-recipes/screwdriver",
+      "publisher": "Smirnoff"
+    },
+    {
+      "id": "recipe-jack-coke",
+      "title": "Jack Daniel's and Coca-Cola ready-to-drink",
+      "url": "https://pressroom.jackdaniels.com/jack-daniels-and-coca-cola-ready-to-drink-launches-in-the-u-s/",
+      "publisher": "Jack Daniel's"
+    },
+    {
+      "id": "recipe-lynchburg-lemonade",
+      "title": "Lynchburg Lemonade",
+      "url": "https://www.jackdaniels.com/en-us/recipes/lynchburg-lemonade",
+      "publisher": "Jack Daniel's"
+    },
+    {
+      "id": "recipe-highball",
+      "title": "Whisky Highball",
+      "url": "https://www.suntory.co.jp/whisky/beginner/drink/highball.html",
+      "publisher": "Suntory"
+    },
+    {
+      "id": "recipe-gin-tonic",
+      "title": "Bombay Sapphire G&T",
+      "url": "https://www.bombaysapphire.com/us/en/gin-cocktails/bombay-sapphire-gandt/23255/",
+      "publisher": "Bombay Sapphire"
+    },
+    {
+      "id": "recipe-gimlet",
+      "title": "Gimlet",
+      "url": "https://www.plymouthgin.com/en/cocktail/gimlet/",
+      "publisher": "Plymouth Gin"
+    },
+    {
+      "id": "recipe-hugo",
+      "title": "Hugo Spritz",
+      "url": "https://www.stgermainliqueur.com/us/en/cocktails/hugo-spritz/",
+      "publisher": "St-Germain"
+    },
+    {
+      "id": "recipe-lillet-vive",
+      "title": "Lillet Vive",
+      "url": "https://www.lillet.com/de-de/cocktail-rezepte/lillet-vive/",
+      "publisher": "Lillet"
+    },
+    {
+      "id": "recipe-limoncello-spritz",
+      "title": "Luxardo Limoncello Spritz",
+      "url": "https://www.luxardo.it/archivio-cocktails/luxardo-limoncello-spritz/",
+      "publisher": "Luxardo"
+    },
+    {
+      "id": "recipe-mezcal-mule",
+      "title": "Mezcal Mule",
+      "url": "https://www.montelobos.com/es-mx/cocteles/mezcal-mule/",
+      "publisher": "Montelobos"
+    },
+    {
+      "id": "recipe-el-diablo",
+      "title": "El Diablo",
+      "url": "https://josecuervo.com.gr/el-diablo/",
+      "publisher": "Jose Cuervo"
+    },
+    {
+      "id": "recipe-mexican-mule",
+      "title": "Jalisco Mule",
+      "url": "https://www.patrontequila.com/en-gb/cocktails/patron-silver/jalisco-mule.html",
+      "publisher": "Patrón"
+    },
+    {
+      "id": "recipe-batanga",
+      "title": "La Batanga",
+      "url": "https://www.tequileno.com/la-batanga-cocktail",
+      "publisher": "El Tequileño"
+    },
+    {
+      "id": "recipe-ranch-water",
+      "title": "Ranch Water",
+      "url": "https://www.patrontequila.com/global-es/cocktails/patron-silver/ranch-water.html",
+      "publisher": "Patrón"
+    },
+    {
+      "id": "recipe-goslings-dark",
+      "title": "Dark 'n Stormy",
+      "url": "https://goslings.com/recipes/dark-n-stormy/",
+      "publisher": "Goslings"
+    },
+    {
+      "id": "liqueur-lgl-definition",
+      "title": "Zusammensetzung und Kennzeichnung von Spirituosen",
+      "url": "https://www.lgl.bayern.de/lebensmittel/warengruppen/wc_37_spirituosen/et_spirituosen_zusammensetzung_kennzeichnung.htm",
+      "publisher": "Bayerisches Landesamt für Gesundheit und Lebensmittelsicherheit"
+    },
+    {
+      "id": "liqueur-lgl-egg",
+      "title": "Eierlikör aus kleingewerblicher Herstellung",
+      "url": "https://www.lgl.bayern.de/lebensmittel/warengruppen/wc_37_spirituosen/et_eierlikoer_kleingewerbe.htm",
+      "publisher": "Bayerisches Landesamt für Gesundheit und Lebensmittelsicherheit"
+    },
+    {
+      "id": "liqueur-baileys",
+      "title": "Baileys: Produkt- und Lagerungsfragen",
+      "url": "https://www.baileys.com/en/frequently-asked-questions",
+      "publisher": "Baileys / Diageo"
+    },
+    {
+      "id": "liqueur-tia-maria",
+      "title": "Tia Maria: Arabica-Kaffee und Cold Brew",
+      "url": "https://www.tiamaria.com/",
+      "publisher": "Tia Maria / Illva Saronno"
+    },
+    {
+      "id": "liqueur-cointreau",
+      "title": "Cointreau Triple Sec",
+      "url": "https://www.cointreau.com/fr/fr/produits/cointreau-triple-sec",
+      "publisher": "Cointreau"
+    },
+    {
+      "id": "liqueur-chartreuse-history",
+      "title": "Geschichte der Chartreuse-Destillerien",
+      "url": "https://www.chartreuse.fr/histoire-distilleries-chartreuse/",
+      "publisher": "Chartreuse Diffusion"
+    },
+    {
+      "id": "liqueur-chartreuse-yellow",
+      "title": "Yellow Chartreuse: Produktangaben",
+      "url": "https://www.chartreuse.fr/en/produit/yellow-chartreuse/",
+      "publisher": "Chartreuse Diffusion"
+    },
+    {
+      "id": "liqueur-grand-marnier",
+      "title": "Grand Marnier: Kollektion und Cordon Rouge",
+      "url": "https://www.grandmarnier.com/en-us/our-collection/",
+      "publisher": "Grand Marnier"
+    },
+    {
+      "id": "liqueur-nonino",
+      "title": "Amaro Nonino Quintessentia",
+      "url": "https://www.grappanonino.it/amaro-e-liquori/amaro-nonino-quintessentia/",
+      "publisher": "Nonino"
+    },
+    {
+      "id": "liqueur-lazzaroni",
+      "title": "Amaretto Lazzaroni 1851",
+      "url": "https://www.lazzaroni.it/it/liquori-classici/amaretto-lazzaroni-1851-24%C2%B0-1.html",
+      "publisher": "Paolo Lazzaroni & Figli"
+    },
+    {
+      "id": "liqueur-frangelico",
+      "title": "Frangelico: italienischer Haselnusslikör",
+      "url": "https://frangelico.com/en-us/",
+      "publisher": "Frangelico"
+    },
+    {
+      "id": "liqueur-jaegermeister",
+      "title": "Herstellung von Jägermeister",
+      "url": "https://www.mast-jaegermeister.de/produkte/herstellung/",
+      "publisher": "Mast-Jägermeister"
+    },
+    {
+      "id": "liqueur-killepitsch",
+      "title": "Killepitsch: Produktangaben",
+      "url": "https://killepitsch.de/home/",
+      "publisher": "Peter Busch / Killepitsch"
+    },
+    {
+      "id": "liqueur-hardenberg",
+      "title": "Hardenberg-Wilthen: Unternehmensgeschichte",
+      "url": "https://www.hardenberg-wilthen.de/historie/",
+      "publisher": "Hardenberg-Wilthen"
+    },
+    {
+      "id": "liqueur-verpoorten",
+      "title": "Verpoorten: Hinweise zur Lagerung im Rezeptheft",
+      "url": "https://www.verpoorten.de/80256D2D003FD7BD/CurrentBaseLink/N26AZQSN700MDEMDE/%24file/Kaffee-nach-VERPOORTEN-Art.pdf",
+      "publisher": "Verpoorten"
+    },
+    {
+      "id": "liqueur-kahlua",
+      "title": "Kahlúa Original Coffee Liqueur",
+      "url": "https://www.kahlua.com/en/products/original-coffee-liqueur/",
+      "publisher": "Kahlúa"
+    },
+    {
+      "id": "liqueur-mozart",
+      "title": "Mozart Chocolate Liqueur: Produkte",
+      "url": "https://www.mozartchocolateliqueur.com/en/products",
+      "publisher": "Mozart Distillerie"
+    },
+    {
+      "id": "liqueur-bols",
+      "title": "Bols: Heritage",
+      "url": "https://bols.com/pages/bols-heritage",
+      "publisher": "Lucas Bols"
+    },
+    {
+      "id": "liqueur-angostura",
+      "title": "Angostura Bitters: Portfolio",
+      "url": "https://angosturabitters.com/portfolio/",
+      "publisher": "House of Angostura"
+    },
+    {
+      "id": "liqueur-maraschino",
+      "title": "Luxardo Maraschino Originale",
+      "url": "https://www.luxardo.it/liqueurs-and-distillates/maraschino-originale/",
+      "publisher": "Luxardo"
+    },
+    {
+      "id": "liqueur-bfr-plants",
+      "title": "Akute Lebensmittelvergiftungen: Kerne und unbekannte Pflanzen",
+      "url": "https://www.bfr.bund.de/fragen-und-antworten/thema/akute-lebensmittelvergiftungen-was-sind-moegliche-ursachen-und-wie-lassen-sie-sich-vermeiden/",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "liqueur-bmj-digestif",
+      "title": "Alkohol und Magenentleerung nach Käsefondue: randomisierte Cross-over-Studie",
+      "url": "https://www.bmj.com/content/341/bmj.c6731",
+      "publisher": "The BMJ / Heinrich et al."
+    },
+    {
+      "id": "liqueur-zoll",
+      "title": "Alkoholsteuer: Grundlagen und Begriffe",
+      "url": "https://www.zoll.de/DE/Fachthemen/Steuern/Verbrauchsteuern/Alkohol-Tabakwaren-Kaffee/Steueraussetzung/Steuerlager/Grundlagen-zum-Steuerlager/maginalspalte_faq_2.html?faqCalledDoc=293774",
+      "publisher": "Generalzolldirektion"
+    },
+    {
+      "id": "spark-champagne-brochure",
+      "title": "Champagne: From terroir to wine — maturation and production",
+      "url": "https://www.champagne.fr/system/files/2022-11/brochure_civc_2020_en_bd.pdf",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-champagne-service",
+      "title": "Le service du Champagne — fiche 2025",
+      "url": "https://www.champagne.fr/system/files/2025-09/FICHE%20SERVICE%20DU%20CHAMPAGNE%20EN%202025.pdf",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-champagne-glasses",
+      "title": "Laver les verres à Champagne",
+      "url": "https://www.champagne.fr/fr/deguster-le-champagne/preparez-vous-a-deguster-du-champagne/laver-les-verres",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-champagne-grapes",
+      "title": "Les cépages en Champagne",
+      "url": "https://www.champagne.fr/fr/decouvrir-le-champagne/un-grand-vin-d-assemblage/les-cepages-en-champagne",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-chardonnay-rose",
+      "title": "Chardonnay rose: Aufnahme in die Champagne-Spezifikation 2025",
+      "url": "https://www.champagne.fr/system/files/2025-10/Communique%CC%81%20de%20presse%20-%20Chardonnay%20Rose.pdf",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-champagne-history",
+      "title": "Champagne and its history",
+      "url": "https://www.champagne.fr/en/about-champagne/champagne-and-its-history",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-clicquot-history",
+      "title": "Madame Clicquot: Rütteltische und Entwicklung des Hauses",
+      "url": "https://www.veuveclicquot.com/fr-fr/madameclicquot.html",
+      "publisher": "Veuve Clicquot"
+    },
+    {
+      "id": "spark-champagne-faq",
+      "title": "Champagne: Erzeugercodes und Kennzeichnung",
+      "url": "https://www.champagne.fr/fr/foire-aux-questions-champagne?nid=612",
+      "publisher": "Comité Champagne"
+    },
+    {
+      "id": "spark-dwi-winzersekt",
+      "title": "Winzersekt",
+      "url": "https://www.deutscheweine.de/weinerzeugnis/259/winzersekt",
+      "publisher": "Deutsches Weininstitut"
+    },
+    {
+      "id": "spark-vdp-statute",
+      "title": "VDP.SEKT.STATUT",
+      "url": "https://www.vdp.de/de/die-weine/vdpsektstatut",
+      "publisher": "Verband Deutscher Prädikatsweingüter"
+    },
+    {
+      "id": "spark-tax",
+      "title": "Schaumwein- und Zwischenerzeugnissteuergesetz: § 2 Steuertarif",
+      "url": "https://www.gesetze-im-internet.de/schaumwzwstg_2009/BJNR189600009.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "spark-kessler",
+      "title": "Kessler: Chronik seit 1826",
+      "url": "https://www.kessler.de/de/chronik",
+      "publisher": "Kessler Sekt"
+    },
+    {
+      "id": "spark-cava-production",
+      "title": "Cava: Herstellung und Mindesthefelager",
+      "url": "https://www.cava.wine/en/origin-cava/winemaking/",
+      "publisher": "Consejo Regulador D.O. Cava"
+    },
+    {
+      "id": "spark-cava-reserva",
+      "title": "Cava Reserva: mindestens 18 Monate Reife",
+      "url": "https://www.cava.wine/es/categorias-tipos-de-cava/cava-reserva/",
+      "publisher": "Consejo Regulador D.O. Cava"
+    },
+    {
+      "id": "spark-cava-bio",
+      "title": "Cava de Guarda Superior: Bio-Anforderungen ab 2025",
+      "url": "https://www.cava.wine/documents/640/CAVA_2025_Announcement_Release_FINAL._2025_100_Organic_Cava.pdf",
+      "publisher": "Consejo Regulador D.O. Cava"
+    },
+    {
+      "id": "spark-corpinnat-rules",
+      "title": "Corpinnat: Zertifizierung von Weinberg und Ernte 2026",
+      "url": "https://www.corpinnat.com/en/news/news/641-from-vineyard-to-winery-how-the-harvest-is-certified-at-corpinnat",
+      "publisher": "Corpinnat"
+    },
+    {
+      "id": "spark-corpinnat-history",
+      "title": "Corpinnat: Markengeschichte und Regeln",
+      "url": "https://www.corpinnat.com/es/media-all/noticias/628-corpinnat-premiada-como-la-mejor-empresa-artesana-en-los-cata-mayor-2026",
+      "publisher": "Corpinnat"
+    },
+    {
+      "id": "spark-codorniu",
+      "title": "Codorníu: erste Flasche 1872",
+      "url": "https://www.codorniu.com/en/node/108",
+      "publisher": "Codorníu"
+    },
+    {
+      "id": "spark-franciacorta",
+      "title": "Franciacorta: geltende Produktspezifikation",
+      "url": "https://franciacorta.wine/it/consorzio/disciplinare/",
+      "publisher": "Consorzio Franciacorta"
+    },
+    {
+      "id": "spark-prosecco-rules",
+      "title": "Prosecco DOC: Produktspezifikation 2025",
+      "url": "https://www.prosecco.wine/wp-content/uploads/2025/11/Disciplinare-Prosecco-2025.pdf",
+      "publisher": "Consorzio di Tutela Prosecco DOC"
+    },
+    {
+      "id": "spark-prosecco-rive",
+      "title": "Conegliano Valdobbiadene: Rive und Cartizze",
+      "url": "https://www.prosecco.it/wp-content/uploads/2023/09/PDF-HO-N2-2023.pdf",
+      "publisher": "Consorzio di Tutela Conegliano Valdobbiadene Prosecco DOCG"
+    },
+    {
+      "id": "spark-inao-cremant-die",
+      "title": "Crémant de Die",
+      "url": "https://inao.gouv.fr/produit/cremant-de-die-20963",
+      "publisher": "Institut national de l’origine et de la qualité"
+    },
+    {
+      "id": "spark-inao-cremant-loire",
+      "title": "Crémant de Loire blanc",
+      "url": "https://www.inao.gouv.fr/produit/cremant-de-loire-blanc-18124",
+      "publisher": "Institut national de l’origine et de la qualité"
+    },
+    {
+      "id": "spark-inao-limoux",
+      "title": "Limoux: Blanquette und Méthode Ancestrale",
+      "url": "https://inao.gouv.fr/node/2915/printable/print",
+      "publisher": "Institut national de l’origine et de la qualité"
+    },
+    {
+      "id": "spark-inao-clairette-die",
+      "title": "Clairette de Die",
+      "url": "https://www.inao.gouv.fr/en/node/31884",
+      "publisher": "Institut national de l’origine et de la qualité"
+    },
+    {
+      "id": "spark-limoux-history",
+      "title": "Limoux: Herkunftsgeschichte Saint-Hilaire",
+      "url": "https://www.limoux-aoc.com/sites/default/files/2017_carnet_de_voyage.pdf",
+      "publisher": "Syndicat de l’AOC Limoux"
+    },
+    {
+      "id": "spark-roederer-estate",
+      "title": "Roederer Estate: Anderson Valley und Louis Roederer",
+      "url": "https://roedererestate.com/",
+      "publisher": "Roederer Estate"
+    },
+    {
+      "id": "spark-evremond",
+      "title": "Evremond: Taittingers englisches Projekt",
+      "url": "https://www.taittinger.com/en/webzine/evremond",
+      "publisher": "Champagne Taittinger"
+    },
+    {
+      "id": "spark-bubble-research",
+      "title": "Unraveling different chemical fingerprints between a champagne wine and its aerosols",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2753638/",
+      "publisher": "PNAS / Liger-Belair et al."
+    },
+    {
+      "id": "water-juice-mineral-law",
+      "title": "Mineral- und Tafelwasser-Verordnung",
+      "url": "https://www.gesetze-im-internet.de/min_tafelwv/BJNR010360984.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "water-juice-juice-law",
+      "title": "Fruchtsaft- und Erfrischungsgetränkeverordnung, aktuelle konsolidierte Fassung",
+      "url": "https://www.gesetze-im-internet.de/frsaftv_2004/BJNR101600004.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "water-juice-juice-nectar",
+      "title": "Fruchtsaftverordnung, Anlage 5: Mindestfruchtgehalte",
+      "url": "https://www.gesetze-im-internet.de/frsaftv_2004/anlage_5.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "water-juice-juice-brix",
+      "title": "Fruchtsaftverordnung, Anlage 6: Mindestbrixwerte",
+      "url": "https://www.gesetze-im-internet.de/frsaftv_2004/anlage_6.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "water-juice-dge-water",
+      "title": "DGE-Ernährungskreis: Getränke",
+      "url": "https://www.dge.de/gesunde-ernaehrung/gut-essen-und-trinken/dge-ernaehrungskreis/getraenke/",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "water-juice-dge-calcium",
+      "title": "DGE-Referenzwerte: Calcium",
+      "url": "https://www.dge.de/wissenschaft/referenzwerte/calcium/",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "water-juice-dge-magnesium",
+      "title": "DGE-Referenzwerte: Magnesium",
+      "url": "https://www.dge.de/wissenschaft/referenzwerte/magnesium",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "water-juice-dge-vitamin-c",
+      "title": "DGE-Referenzwerte: Vitamin C",
+      "url": "https://www.dge.de/wissenschaft/referenzwerte/vitamin-c/",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "water-juice-dge-iron",
+      "title": "DGE: Ausgewählte Fragen und Antworten zu Eisen",
+      "url": "https://www.dge.de/gesunde-ernaehrung/faq/eisen/",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "water-juice-bfr-pet",
+      "title": "PET-Flaschen: Keine Anhaltspunkte für ein gesundheitliches Risiko",
+      "url": "https://www.bfr.bund.de/fragen-und-antworten/thema/pet-flaschen-keine-anhaltspunkte-fuer-ein-gesundheitliches-risiko/",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "water-juice-bfr-water-hygiene",
+      "title": "Hygienischer Umgang mit Mineral-, Quell-, Tafel- und Trinkwasser",
+      "url": "https://www.bfr.bund.de/cm/343/hygienischer-umgang-mit-mineral-quell-und-tafel-sowie-trinkwasser-im-haushalt.pdf",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "water-juice-uba-packaging",
+      "title": "Mehrwegflaschen sind umweltfreundlicher als Einwegvarianten",
+      "url": "https://www.umweltbundesamt.de/umwelttipps-fuer-den-alltag/mehrwegflaschen-sind-umweltfreundlicher-als",
+      "publisher": "Umweltbundesamt"
+    },
+    {
+      "id": "water-juice-lfu-sources",
+      "title": "Quellen: Schichtquellen und artesische Quellen",
+      "url": "https://www.lfu.bayern.de/wasser/trinkwasser_quelle_verbraucher/trinkwassergewinnung/quellen/index.htm",
+      "publisher": "Bayerisches Landesamt für Umwelt"
+    },
+    {
+      "id": "water-juice-lfu-geology",
+      "title": "Hydrogeologie in Bayern",
+      "url": "https://www.lfu.bayern.de/geologie/hydrogeologie/index.htm",
+      "publisher": "Bayerisches Landesamt für Umwelt"
+    },
+    {
+      "id": "water-juice-lgrb-mineralwaters",
+      "title": "Heil- und Mineralwässer",
+      "url": "https://www.lgrb-bw.de/geologischer-dienst/hydrogeologie/heil-und-mineralwaesser",
+      "publisher": "Landesamt für Geologie, Rohstoffe und Bergbau Baden-Württemberg"
+    },
+    {
+      "id": "water-juice-gerolsteiner-naturell",
+      "title": "Gerolsteiner Naturell: konkrete Quellnutzung und Analysenauszug",
+      "url": "https://www.gerolsteiner.de/produkte/mineralwasser/naturell",
+      "publisher": "Gerolsteiner Brunnen"
+    },
+    {
+      "id": "water-juice-evian-analysis",
+      "title": "evian: Mineral composition and water attributes",
+      "url": "https://www.evian.com/en_gb/our-water/water-attributes",
+      "publisher": "evian"
+    },
+    {
+      "id": "water-juice-doemens-water",
+      "title": "Doemens Wassersommelier: externe Ausbildung und Hybridformat",
+      "url": "https://doemens.org/weiterbildungen/seminar-doemens-wassersommelier/",
+      "publisher": "Doemens"
+    },
+    {
+      "id": "water-juice-carbonation-study",
+      "title": "Chandrashekar et al. (2009): The Taste of Carbonation",
+      "url": "https://www.columbia.edu/cu/zukerlab/Publications_files/2009%20Science%20Chandrashekar.pdf",
+      "publisher": "Science / Forschungsgruppe Zuker, Universitätshost Columbia"
+    },
+    {
+      "id": "water-juice-sca-tds",
+      "title": "Addressing Water Quality Issues: The TDS Meter",
+      "url": "https://sca.coffee/sca-news/community/addressing-water-quality-issues-the-tds-meter-42f7t",
+      "publisher": "Specialty Coffee Association"
+    },
+    {
+      "id": "water-juice-water-hardness-law",
+      "title": "Wasch- und Reinigungsmittelgesetz § 9: Härtebereiche",
+      "url": "https://www.gesetze-im-internet.de/wrmg/__9.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "water-juice-dvgw-hardness",
+      "title": "Härtebereiche für Trinkwasser",
+      "url": "https://www.dvgw.de/themen/wasser/verbraucherinformationen/wasserhaerte",
+      "publisher": "Deutscher Verein des Gas- und Wasserfaches"
+    },
+    {
+      "id": "water-juice-vdm-market",
+      "title": "Marktdaten Mineralwasser: datierte Werte für 2024",
+      "url": "https://www.vdm-bonn.de/mineralwasser-fakten/marktdaten-mineralwasser/",
+      "publisher": "Verband Deutscher Mineralbrunnen"
+    },
+    {
+      "id": "water-juice-vdf-production",
+      "title": "Auf den Spuren der Saftmacher: Herstellung",
+      "url": "https://www.fruchtsaft.de/saftwissen/herstellung",
+      "publisher": "Verband der deutschen Fruchtsaft-Industrie"
+    },
+    {
+      "id": "water-juice-vdf-market",
+      "title": "Die deutsche Fruchtsaftindustrie in Zahlen: Werte für 2025",
+      "url": "https://www.fruchtsaft.de/saftfakten/branche",
+      "publisher": "Verband der deutschen Fruchtsaft-Industrie"
+    },
+    {
+      "id": "water-juice-eckes-history",
+      "title": "Eckes-Granini: Unsere Geschichte",
+      "url": "https://www.eckes-granini.de/unternehmen/historie/",
+      "publisher": "Eckes-Granini Deutschland"
+    },
+    {
+      "id": "water-juice-beckers-history",
+      "title": "beckers bester: Geschichte",
+      "url": "https://www.beckers-bester.de/ueber-uns/geschichte",
+      "publisher": "beckers bester"
+    },
+    {
+      "id": "water-juice-unesco-orchards",
+      "title": "Streuobstanbau: Bundesweites Verzeichnis des Immateriellen Kulturerbes",
+      "url": "https://www.unesco.de/staette/streuobstanbau/",
+      "publisher": "Deutsche UNESCO-Kommission"
+    },
+    {
+      "id": "water-juice-hpp",
+      "title": "What is HPP Technology: Druckbereich, Sporenresistenz und Kühlung",
+      "url": "https://www.hiperbaric.com/en/hpp-technology/what-is-hpp/",
+      "publisher": "Hiperbaric"
+    },
+    {
+      "id": "water-juice-food-hygiene",
+      "title": "Guidance on the implementation of Regulation (EC) No 852/2004",
+      "url": "https://food.ec.europa.eu/system/files/2018-10/biosafety_fh_legis_guidance_reg-2004-852_en.pdf",
+      "publisher": "Europäische Kommission"
+    },
+    {
+      "id": "water-juice-health-claims",
+      "title": "Nutrition and Health Claims: Rechtsrahmen und Register",
+      "url": "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/nutrition-and-health-claims_en",
+      "publisher": "Europäische Kommission"
+    },
+    {
+      "id": "water-juice-bio-logo",
+      "title": "The organic logo: Kontrolle, Herkunft und Verwendung",
+      "url": "https://agriculture.ec.europa.eu/farming/organic-farming/organic-logo_en",
+      "publisher": "Europäische Kommission"
+    },
+    {
+      "id": "water-juice-bfr-hemp",
+      "title": "Fragen und Antworten zu Risiken hanfhaltiger Lebensmittel",
+      "url": "https://www.bfr.bund.de/veroeffentlichung/fragen-und-antworten-zu-den-gesundheitlichen-risiken-von-hanfhaltigen-lebensmitteln-und-futtermitteln/",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "water-juice-mri-patulin",
+      "title": "Modernste Analysetechnik zur Bestimmung der Apfelqualität",
+      "url": "https://www.mri.bund.de/de/aktuelles/meldungen/meldungen-einzelansicht/modernste-analysetechnik-zur-bestimmung-der-apfelqualitaet/",
+      "publisher": "Max Rubner-Institut"
+    },
+    {
+      "id": "water-juice-bfr-mould",
+      "title": "Mould in foods: health risks and how to avoid them",
+      "url": "https://www.bfr.bund.de/en/service/frequently-asked-questions/topic/mould-in-foods-health-risks-and-how-to-avoid-them/",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "water-juice-usda-fcoj",
+      "title": "Quality Assurance Program Manual: Citrus juice abbreviations",
+      "url": "https://www.ams.usda.gov/sites/default/files/media/QualityAssuranceProgram.pdf",
+      "publisher": "USDA Agricultural Marketing Service"
+    },
+    {
+      "id": "water-juice-usda-hlb",
+      "title": "Citrus Greening and Asian Citrus Psyllid",
+      "url": "https://www.aphis.usda.gov/plant-pests-diseases/citrus-diseases/citrus-greening-and-asian-citrus-psyllid",
+      "publisher": "USDA Animal and Plant Health Inspection Service"
+    },
+    {
+      "id": "water-juice-sgf",
+      "title": "Safe – Global – Fair: freiwillige Saft-Selbstkontrolle und Profiling",
+      "url": "https://www.sgf.org/de/",
+      "publisher": "SGF International"
+    },
+    {
+      "id": "water-juice-wilhelmshof-verjus",
+      "title": "Verjus: Herstellung aus unreif geernteten Trauben",
+      "url": "https://www.wilhelmshof.de/rezept-verjus/",
+      "publisher": "Wein- und Sektgut Wilhelmshof"
+    },
+    {
+      "id": "water-juice-amg-approval",
+      "title": "Arzneimittelgesetz § 25: Entscheidung über die Zulassung",
+      "url": "https://www.gesetze-im-internet.de/amg_1976/__25.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "water-juice-who-sugars",
+      "title": "WHO: Guideline recommendations on free sugars",
+      "url": "https://www.who.int/news/item/04-03-2015-who-calls-on-countries-to-reduce-sugars-intake-among-adults-and-children",
+      "publisher": "World Health Organization"
+    },
+    {
+      "id": "water-juice-bio-production",
+      "title": "Organic production and products: zugelassene Stoffe und Verfahren",
+      "url": "https://agriculture.ec.europa.eu/farming/organic-farming/organic-production-and-products_en",
+      "publisher": "Europäische Kommission"
+    },
+    {
+      "id": "wine-qvevri-unesco",
+      "title": "Qvevri-Weinbereitung: UNESCO-Entscheidung 2013",
+      "url": "https://ich.unesco.org/en/decisions/8.COM/8.13",
+      "publisher": "UNESCO"
+    },
+    {
+      "id": "wine-rioja-classification",
+      "title": "Rioja: Klassifikation nach Herkunft, Weinfarbe und Reife",
+      "url": "https://riojawine.com/en-us/the-designation/classification/",
+      "publisher": "Consejo Regulador DOCa Rioja"
+    },
+    {
+      "id": "wine-carmenere",
+      "title": "Viña Carmen: Wiedererkennung von Carménère 1994",
+      "url": "https://www.carmen.com/en/noticias/carmen-celebrates-23-years-rediscovery-carmenere/",
+      "publisher": "Viña Carmen"
+    },
+    {
+      "id": "wine-barossa",
+      "title": "Barossa Valley: Rebsorten und Klima",
+      "url": "https://www.wineaustralia.com/market-insights/regions-and-varieties/south-australia-wines/barossa",
+      "publisher": "Wine Australia"
+    },
+    {
+      "id": "wine-australia-regions",
+      "title": "Australien: Regionen und Weinbaustile",
+      "url": "https://www.wineaustralia.com/getmedia/f77af85a-95a4-44ab-97e8-7823b87b64ec/DIGI_Web_Discover_v2.pdf",
+      "publisher": "Wine Australia"
+    },
+    {
+      "id": "wine-pinotage",
+      "title": "Pinotage: Züchtung und historische Entwicklung",
+      "url": "https://pinotage.co.za/about/heritage/",
+      "publisher": "Pinotage Association"
+    },
+    {
+      "id": "wine-montelena",
+      "title": "Chateau Montelena: Judgment of Paris 1976",
+      "url": "https://montelena.com/",
+      "publisher": "Chateau Montelena"
+    },
+    {
+      "id": "wine-argentina-torrontes",
+      "title": "Torrontés: Sortenbericht 2024",
+      "url": "https://www.argentina.gob.ar/noticias/informe-de-variedad-torrontes-0",
+      "publisher": "Instituto Nacional de Vitivinicultura"
+    },
+    {
+      "id": "wine-sherry-grapes",
+      "title": "Sherry: zugelassene Rebsorten",
+      "url": "https://www.sherry.wine/sherry-wine/production/viticulture",
+      "publisher": "Consejo Regulador Jerez-Xérès-Sherry"
+    },
+    {
+      "id": "rum-kew-cane",
+      "title": "Saccharum officinarum: natürliches Herkunftsgebiet",
+      "url": "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:419977-1",
+      "publisher": "Royal Botanic Gardens, Kew"
+    },
+    {
+      "id": "liqueur-benedictine",
+      "title": "Bénédictine: Produkte und 27 Pflanzenbestandteile",
+      "url": "https://www.benedictinedom.com/collection/",
+      "publisher": "Bénédictine"
+    },
+    {
+      "id": "liqueur-bfr-thujone",
+      "title": "Absinth: Thujon- und Alkoholrisiken",
+      "url": "https://www.bfr.bund.de/presseinformation/modegetraenk-absinth-bfr-raet-beim-konsum-zur-vorsicht/",
+      "publisher": "Bundesinstitut für Risikobewertung"
+    },
+    {
+      "id": "liqueur-limoncello-region",
+      "title": "Limoncello: Zitronen aus Amalfi und Sorrent",
+      "url": "https://www.limoncellodiamalfi.it/limoni-le-varieta-italiane/",
+      "publisher": "Casa d’Amalfi"
+    },
+    {
+      "id": "wine-mouton-1973",
+      "title": "Mouton Rothschild: Aufstieg 1973",
+      "url": "https://www.chateau-mouton-rothschild.com/l-histoire/dates-clefs/dates-clefs-1973?lang=fr",
+      "publisher": "Château Mouton Rothschild"
+    },
+    {
+      "id": "wine-cantemerle-history",
+      "title": "Cantemerle: historische Ergänzung der Klassifikation",
+      "url": "https://www.cantemerle.com/nos-origines/",
+      "publisher": "Château Cantemerle"
+    },
+    {
+      "id": "wine-burgundy-unesco",
+      "title": "The Climats, terroirs of Burgundy",
+      "url": "https://whc.unesco.org/en/list/1425",
+      "publisher": "UNESCO World Heritage Centre"
+    },
+    {
+      "id": "wine-barolo-regulations",
+      "title": "Barolo DOCG: Produktspezifikation und Reifeanforderungen",
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/24322",
+      "publisher": "Ministero dell’agricoltura, della sovranità alimentare e delle foreste"
+    },
+    {
+      "id": "wine-barbaresco-regulations",
+      "title": "Barbaresco DOCG: Produktspezifikation",
+      "url": "https://www.langhevini.it/wp-content/uploads/2019/05/DOCG-Barbaresco-.pdf",
+      "publisher": "Consorzio di tutela Barolo Barbaresco Alba Langhe e Dogliani"
+    },
+    {
+      "id": "beer-whisky-bjcp-styles",
+      "title": "2021 Beer Style Guidelines",
+      "url": "https://www.bjcp.org/download/2021_guidelines_consolidated-pdf",
+      "publisher": "Beer Judge Certification Program"
+    },
+    {
+      "id": "beer-whisky-bjcp-process",
+      "title": "Beer Exam Study Guide: ingredients, process and flavour",
+      "url": "https://legacy.bjcp.org/docs/BJCP_Study_Guide.pdf",
+      "publisher": "Beer Judge Certification Program"
+    },
+    {
+      "id": "beer-whisky-lager-yeast",
+      "title": "SafLager W-34/70: manufacturer specification",
+      "url": "https://fermentis.com/en/product/saflager-w-34-70/",
+      "publisher": "Fermentis / Lesaffre"
+    },
+    {
+      "id": "beer-whisky-wheat-yeast",
+      "title": "WLP300 Hefeweizen Ale Yeast",
+      "url": "https://www.whitelabs.com/yeast-single?id=148&type=YEAST",
+      "publisher": "White Labs"
+    },
+    {
+      "id": "beer-whisky-yeast-catalog",
+      "title": "White Labs Product Catalog: WLP550 and yeast management",
+      "url": "https://www.whitelabs.com/public/uploads/ckeditor/5f8914dc7a8c71602819292.pdf",
+      "publisher": "White Labs"
+    },
+    {
+      "id": "beer-whisky-craft-definition",
+      "title": "Craft Brewer Definition",
+      "url": "https://www.brewersassociation.org/statistics-and-data/craft-brewer-definition/",
+      "publisher": "Brewers Association"
+    },
+    {
+      "id": "beer-whisky-hop-creep",
+      "title": "Hop Creep – Technical Brief",
+      "url": "https://www.brewersassociation.org/educational-publications/hop-creep-technical-brief/",
+      "publisher": "Brewers Association / Oregon State University"
+    },
+    {
+      "id": "beer-whisky-dry-hop-study",
+      "title": "Impact of static dry-hopping rate on the sensory and analytical profiles of beer",
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/jib.517",
+      "publisher": "Journal of the Institute of Brewing / Wiley"
+    },
+    {
+      "id": "beer-whisky-unesco-beer",
+      "title": "Beer culture in Belgium: Representative List, 2016",
+      "url": "https://ich.unesco.org/en/RL/beer-culture-in-belgium-01062",
+      "publisher": "UNESCO"
+    },
+    {
+      "id": "beer-whisky-unesco-inventory",
+      "title": "Belgium: Lists and Nominations — Intangible Cultural Heritage",
+      "url": "https://www.unesco.org/en/countries/be/lists-and-nominations",
+      "publisher": "UNESCO"
+    },
+    {
+      "id": "beer-whisky-trappist",
+      "title": "Authentic Trappist Product: criteria",
+      "url": "https://www.trappist.be/en/faqs/",
+      "publisher": "International Trappist Association"
+    },
+    {
+      "id": "beer-whisky-westmalle",
+      "title": "100 years of Westmalle Dubbel",
+      "url": "https://www.trappistwestmalle.be/en/blog/100-years-of-westmalle-dubbel/",
+      "publisher": "Brewery Westmalle"
+    },
+    {
+      "id": "beer-whisky-cask-ale",
+      "title": "Real Ale: cask conditioning and gravity dispense",
+      "url": "https://birmingham.camra.org.uk/realale",
+      "publisher": "Campaign for Real Ale, Birmingham"
+    },
+    {
+      "id": "beer-whisky-pilsner",
+      "title": "From Oak to Aluminium: A Short History of the Beer Keg",
+      "url": "https://www.pilsnerurquell.com/stories/from-oak-to-aluminium-a-short-history-of-the-beer-keg/page=4/",
+      "publisher": "Plzeňský Prazdroj / Pilsner Urquell"
+    },
+    {
+      "id": "beer-whisky-galaxy",
+      "title": "Galaxy: Australian hop variety",
+      "url": "https://hops.com.au/galaxy/",
+      "publisher": "Hop Products Australia"
+    },
+    {
+      "id": "beer-whisky-beer-law",
+      "title": "Bierverordnung § 1: Schutz der Bezeichnung Bier",
+      "url": "https://www.gesetze-im-internet.de/bierv/__1.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "beer-whisky-bock-law",
+      "title": "Bierverordnung § 3: Kenntlichmachung der Biergattungen",
+      "url": "https://www.gesetze-im-internet.de/bierv/__3.html",
+      "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz"
+    },
+    {
+      "id": "beer-whisky-wesseloh",
+      "title": "Oliver Wesseloh verstärkt Doemens",
+      "url": "https://doemens.org/aktuelles/oliver-wesseloh-verstaerkt-doemens/",
+      "publisher": "Doemens"
+    },
+    {
+      "id": "beer-whisky-schlenkerla",
+      "title": "Schlenkerla: Sortenübersicht, Helles Lager",
+      "url": "https://www.schlenkerla.de/rauchbier/sorten/sorten.html",
+      "publisher": "Brauerei Heller-Trum / Schlenkerla"
+    },
+    {
+      "id": "beer-whisky-zoigl",
+      "title": "Zoigl: Kommunbrautradition und Ausschankzeichen",
+      "url": "https://zoiglbier.de/der-zoigl/",
+      "publisher": "Schutzgemeinschaft Echter Zoigl vom Kommunbrauer"
+    },
+    {
+      "id": "beer-whisky-erlangen",
+      "title": "Erlanger Bergkirchweih",
+      "url": "https://erlangen.de/en/themenseite/thema/bergkirchweih",
+      "publisher": "Stadt Erlangen"
+    },
+    {
+      "id": "beer-whisky-light-research",
+      "title": "Identification of a new light-struck off-flavour in light-stable beers",
+      "url": "https://www.sciencedirect.com/science/article/pii/S1373716312000091",
+      "publisher": "Cerevisia / Elsevier"
+    },
+    {
+      "id": "beer-whisky-health-dge",
+      "title": "FAQ Alkohol: DGE position and recommendations",
+      "url": "https://www.dge.de/gesunde-ernaehrung/faq/alkohol/",
+      "publisher": "Deutsche Gesellschaft für Ernährung"
+    },
+    {
+      "id": "beer-whisky-health-who",
+      "title": "Alcohol and cancer",
+      "url": "https://www.who.int/europe/news-room/fact-sheets/item/alcohol-and-cancer",
+      "publisher": "World Health Organization"
+    },
+    {
+      "id": "beer-whisky-alcohol-label",
+      "title": "Versteckter Alkohol in Lebensmitteln",
+      "url": "https://www.bzfe.de/presse/pressemeldungen-archiv/versteckter-alkohol-in-lebensmitteln",
+      "publisher": "Bundeszentrum für Ernährung / BLE"
+    },
+    {
+      "id": "beer-whisky-hop-climate",
+      "title": "Climate-induced decline in the quality and quantity of European hops calls for immediate adaptation measures",
+      "url": "https://www.nature.com/articles/s41467-023-41474-5",
+      "publisher": "Nature Communications"
+    },
+    {
+      "id": "beer-whisky-engineered-yeast",
+      "title": "Industrial brewing yeast engineered for the production of primary flavor determinants in hopped beer",
+      "url": "https://www.nature.com/articles/s41467-018-03293-x",
+      "publisher": "Nature Communications"
+    },
+    {
+      "id": "beer-whisky-scotch-law",
+      "title": "The Scotch Whisky Regulations 2009, regulation 3 and 12",
+      "url": "https://www.legislation.gov.uk/uksi/2009/2890/pdfs/uksi_20092890_en.pdf",
+      "publisher": "UK Government / legislation.gov.uk"
+    },
+    {
+      "id": "beer-whisky-scotch-file",
+      "title": "Scotch Whisky Technical File, June 2019",
+      "url": "https://assets.publishing.service.gov.uk/media/5fd36667e90e07662ed92c85/Scotch_Whisky_Technical_File_-_June_2019.pdf",
+      "publisher": "UK Government"
+    },
+    {
+      "id": "beer-whisky-swa-faq",
+      "title": "Scotch Whisky FAQs: categories, regions, maturation and spelling",
+      "url": "https://www.scotch-whisky.org.uk/discover-scotch/faqs/",
+      "publisher": "Scotch Whisky Association"
+    },
+    {
+      "id": "beer-whisky-swa-history",
+      "title": "Story of Scotch",
+      "url": "https://www.scotch-whisky.org.uk/discover-scotch/story-of-scotch/",
+      "publisher": "Scotch Whisky Association"
+    },
+    {
+      "id": "beer-whisky-us-whisky-law",
+      "title": "27 CFR § 5.143: Whisky standards",
+      "url": "https://www.ecfr.gov/current/title-27/chapter-I/subchapter-A/part-5/subpart-I/section-5.143",
+      "publisher": "US Office of the Federal Register / TTB"
+    },
+    {
+      "id": "beer-whisky-irish-file",
+      "title": "Irish Whiskey Technical File",
+      "url": "https://www.ibec.ie/drinksireland/-/media/documents/drinks-ireland-new-website/irish-whiskey-technical/irish-whiskey-technical-file.pdf",
+      "publisher": "Department of Agriculture, Food and the Marine, hosted by Drinks Ireland"
+    },
+    {
+      "id": "beer-whisky-tennessee",
+      "title": "Tennessee Attorney General Opinion 15-23: Tennessee Whiskey",
+      "url": "https://www.tn.gov/content/dam/tn/attorneygeneral/documents/ops/2015/op15-23.pdf",
+      "publisher": "Tennessee Office of the Attorney General"
+    },
+    {
+      "id": "beer-whisky-japanese-standard",
+      "title": "Standards for Labeling Japanese Whisky",
+      "url": "https://www.yoshu.or.jp/files/libs/552/202303291555304944.pdf",
+      "publisher": "Japan Spirits & Liqueurs Makers Association"
+    },
+    {
+      "id": "beer-whisky-japanese-voluntary",
+      "title": "Japanese Whisky: voluntary labeling standard and logo",
+      "url": "https://www.yoshu.or.jp/en/pages/150/",
+      "publisher": "Japan Spirits & Liqueurs Makers Association"
+    },
+    {
+      "id": "beer-whisky-canadian-standard",
+      "title": "Canadian Food Compositional Standards, volume 2, section 2.1.3",
+      "url": "https://inspection.canada.ca/en/about-cfia/acts-and-regulations/list-acts-and-regulations/documents-incorporated-reference/canadian-food-compositional-standards-0",
+      "publisher": "Canadian Food Inspection Agency"
+    },
+    {
+      "id": "beer-whisky-grain-methanol",
+      "title": "Analysis of Distillate Fractions Collected from a Small Commercial Pot Still Using NMR and GC-MS",
+      "url": "https://www.mdpi.com/2297-8739/13/1/27",
+      "publisher": "Separations / MDPI"
+    },
+    {
+      "id": "beer-whisky-taste",
+      "title": "Taste Disorders: taste receptors and tongue-map misconception",
+      "url": "https://www.nidcd.nih.gov/health/taste-disorders",
+      "publisher": "US National Institute on Deafness and Other Communication Disorders"
+    },
+    {
+      "id": "beer-whisky-aroma-wheel",
+      "title": "1979: creation of the Scotch Whisky Flavour Wheel",
+      "url": "https://www.swri.co.uk/timeline/1979-2/",
+      "publisher": "Scotch Whisky Research Institute"
+    },
+    {
+      "id": "beer-whisky-dilution",
+      "title": "Dilution of whisky — the molecular perspective",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5561096/",
+      "publisher": "Scientific Reports / National Library of Medicine"
+    },
+    {
+      "id": "beer-whisky-macallan",
+      "title": "The Macallan Double Cask: sherry-seasoned American and European oak",
+      "url": "https://www.themacallan.com/en/single-malt-scotch-whisky/double-cask",
+      "publisher": "The Macallan"
+    },
+    {
+      "id": "beer-whisky-springbank",
+      "title": "Springbank: Our Process",
+      "url": "https://www.springbank.scot/about/process/",
+      "publisher": "Springbank Distillers"
+    },
+    {
+      "id": "beer-whisky-peat",
+      "title": "Commitment to Responsible Peat Use",
+      "url": "https://www.scotch-whisky.org.uk/industry-insights/sustainability/commitment-to-responsible-peat-use/",
+      "publisher": "Scotch Whisky Association"
+    },
+    {
+      "id": "beer-whisky-penicillin",
+      "title": "Penicillin: official cocktail recipe",
+      "url": "https://iba-world.com/iba-cocktail/penicillin/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "beer-whisky-whiskey-sour",
+      "title": "Whiskey Sour: official cocktail recipe",
+      "url": "https://iba-world.com/iba-cocktail/whiskey-sour/",
+      "publisher": "International Bartenders Association"
+    },
+    {
+      "id": "beer-whisky-egg-safety",
+      "title": "What You Need to Know About Egg Safety",
+      "url": "https://www.fda.gov/food/buy-store-serve-safe-food/what-you-need-know-about-egg-safety",
+      "publisher": "US Food and Drug Administration"
+    },
+    {
+      "id": "beer-whisky-cask-investment",
+      "title": "Cask Investment Guidance, updated 2025",
+      "url": "https://www.scotch-whisky.org.uk/media/2411/cask-investment-guidance_2025.pdf",
+      "publisher": "Scotch Whisky Association"
+    },
+    {
+      "id": "beer-whisky-sustainability",
+      "title": "Climate Change: operational 2040 and net-zero 2045 targets",
+      "url": "https://www.scotch-whisky.org.uk/industry-insights/sustainability/climate-change/",
+      "publisher": "Scotch Whisky Association"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "academy:wein:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-eu",
+        "wine-dwi-sugar",
+        "wine-dwi-must",
+        "wine-label-eu"
+      ],
+      "scope": "EU-Definition, Mindestalkohol, Oechsle und Süßegrade einschließlich Quiz abgeglichen."
+    },
+    {
+      "id": "academy:wein:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual"
+      ],
+      "scope": "Rebsortenbeschreibungen und grundlegende Stil-/Ausbauunterschiede; keine weltweite Rangliste."
+    },
+    {
+      "id": "academy:wein:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual",
+        "wine-chianti"
+      ],
+      "scope": "Rebsorten und Sorten-/Herkunftsabgrenzung; pauschale Markt- und Wirkungszahlen bereinigt."
+    },
+    {
+      "id": "academy:wein:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual"
+      ],
+      "scope": "Boden-, Klima- und Lagenbedingungen; mineralische Beschreibungen nicht als direkter Gesteinsgeschmack."
+    },
+    {
+      "id": "academy:wein:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual"
+      ],
+      "scope": "Weinbergsarbeit, Reife und Lese; Handarbeit nicht als allgemeine Qualitätsweinpflicht."
+    },
+    {
+      "id": "academy:wein:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual"
+      ],
+      "scope": "Schritte der Weißweinbereitung und Ausbauverfahren, einschließlich Begriffsprüfung im Quiz."
+    },
+    {
+      "id": "academy:wein:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual"
+      ],
+      "scope": "Rotweinbereitung, Maischekontakt und Ausbau; sensorische Beschreibungen sind Stilbeispiele."
+    },
+    {
+      "id": "academy:wein:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-eu",
+        "wine-dwi-manual",
+        "wine-qvevri-unesco"
+      ],
+      "scope": "Rosé-Verfahren und Orange-Wine-Grundlagen; Qvevri-Tradition als immaterielles UNESCO-Kulturerbe, nicht Welterbestätte."
+    },
+    {
+      "id": "academy:wein:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual",
+        "wine-mouton-1973",
+        "wine-cantemerle-history",
+        "wine-burgundy-unesco"
+      ],
+      "scope": "Bordeaux-/Burgund-Grundlagen, 1855-Klassifikation und UNESCO-Climats; Mouton 1973 nicht als einzige Listenänderung behauptet."
+    },
+    {
+      "id": "academy:wein:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-champagne-white",
+        "wine-champagne-maturation"
+      ],
+      "scope": "Champagne: weiße Rebsorten, Tirage/Dosage und Mindestlagerung samt Quiz korrigiert."
+    },
+    {
+      "id": "academy:wein:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-brunello",
+        "wine-chianti",
+        "wine-chianti-types",
+        "wine-barolo-regulations",
+        "wine-barbaresco-regulations"
+      ],
+      "scope": "Italienische Herkunftskategorien, Chianti-Classico-, Brunello-, Barolo- und Barbaresco-Regeln; keine universelle Super-Tuscan-Preisrangliste."
+    },
+    {
+      "id": "academy:wein:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-label-eu",
+        "wine-rioja-classification",
+        "wine-sherry-grapes"
+      ],
+      "scope": "Rioja-Reifebegriffe nach Weinfarbe und Herkunft sowie Sherry-Rebsorten eingegrenzt; kein pauschaler spanischer Reifeplan."
+    },
+    {
+      "id": "academy:wein:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-pradikat",
+        "wine-dwi-quality"
+      ],
+      "scope": "Prädikatswein, natürliche Mostgewichte und Herkunftsregeln; private VDP-Klassifikation abgegrenzt."
+    },
+    {
+      "id": "academy:wein:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual",
+        "wine-carmenere",
+        "wine-barossa",
+        "wine-australia-regions",
+        "wine-pinotage",
+        "wine-montelena",
+        "wine-argentina-torrontes"
+      ],
+      "scope": "Neue-Welt-Beispiele, Carménère-Wiedererkennung, Pinotage und konkrete regionale Quellen; keine Weltrekord-, Qualitäts- oder Reblaus-Sicherheitsgarantien."
+    },
+    {
+      "id": "academy:wein:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "sensory-nidcd"
+      ],
+      "scope": "Grundgeschmäcker und Geruchswahrnehmung; falsche feste Zungenzonen entfernt."
+    },
+    {
+      "id": "academy:wein:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-awri-faults"
+      ],
+      "scope": "Aromabeschreibung von Fehlton-Diagnosen unterschieden; Aroma-Rad als Beschreibungswerkzeug."
+    },
+    {
+      "id": "academy:wein:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-awri-faults",
+        "wine-awri-copper"
+      ],
+      "scope": "Weinfehler, Mäuseln und Reduktion; keine Haushalts-Kupfermünze als Behandlung."
+    },
+    {
+      "id": "academy:wein:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-storage"
+      ],
+      "scope": "Lagerbedingungen und Verschlüsse; illustrative Reifebeispiele ohne Haltbarkeitsgarantie."
+    },
+    {
+      "id": "academy:wein:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual"
+      ],
+      "scope": "Service und Trinktemperaturen als stilabhängige Orientierung, keine universellen Trinkfenster."
+    },
+    {
+      "id": "academy:wein:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-fish-iron"
+      ],
+      "scope": "Fisch/Wein-Behauptung mit Primärstudie abgeglichen; Pairing-Ideen sind Geschmacksvorschläge."
+    },
+    {
+      "id": "academy:wein:21",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-demeter",
+        "wine-eu"
+      ],
+      "scope": "Bio, biodynamische Praxis und Naturwein getrennt; Wirkungs-/Zertifizierungsbehauptungen begrenzt."
+    },
+    {
+      "id": "academy:wein:22",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-label-eu",
+        "wine-label-transition",
+        "wine-bottling"
+      ],
+      "scope": "Etikettpflichten, Übergangsregel seit Dezember 2023 und Erzeugerabfüllung geprüft."
+    },
+    {
+      "id": "academy:wein:23",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-quality",
+        "wine-dwi-pradikat"
+      ],
+      "scope": "Herkunftsklassifikation versus Prädikate; private Systeme ersetzen das staatliche Recht nicht."
+    },
+    {
+      "id": "academy:wein:24",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "health-dge",
+        "health-who-cancer"
+      ],
+      "scope": "Gesundheits- und Unverträglichkeitsaussagen samt Quiz: keine risikofreie Alkoholmenge oder Ferndiagnose."
+    },
+    {
+      "id": "academy:wein:25",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-climate",
+        "wine-dwi-piwi",
+        "wine-eu"
+      ],
+      "scope": "Klima-/PIWI-Aussagen qualifiziert; keine universelle Einsparung oder Europa-Ernteformel; Entalkoholisierungsgrenze."
+    },
+    {
+      "id": "academy:rum:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "rum-wray",
+        "rum-mountgay-navy"
+      ],
+      "scope": "EU-Definition, Süßungsgrenze, Alter/Farbe und Alkoholstärken geprüft; keine Feuerprobe."
+    },
+    {
+      "id": "academy:rum:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-bacardi-history",
+        "rum-navy-history",
+        "rum-spence",
+        "rum-kew-cane"
+      ],
+      "scope": "Zuckerrohrherkunft und Rumgeschichte mit kolonialem Kontext; Bacardí-Rang als historischer Herstellerbericht, keine heutige Marktführerschaft."
+    },
+    {
+      "id": "academy:rum:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-bacardi-making",
+        "rum-mountgay-making"
+      ],
+      "scope": "Zuckerrohr-Rohstoffe und Herstellungsbeispiele; unbelegte weltweite Prozent-/Sortenzahlen entfernt."
+    },
+    {
+      "id": "academy:rum:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-inao",
+        "rum-eu",
+        "rum-clement-vsop"
+      ],
+      "scope": "Agricole und Melasse-Rum, Martinique-Kategorien und Süßungsrecht getrennt geprüft."
+    },
+    {
+      "id": "academy:rum:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-hampden-pillars",
+        "rum-hampden-marks",
+        "rum-bacardi-making"
+      ],
+      "scope": "Fermentation, Pot-Still-Verfahren und konkrete Hampden-Marks; keine universelle Qualitätsrangliste."
+    },
+    {
+      "id": "academy:rum:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-hampden-pillars",
+        "rum-el-dorado-enmore",
+        "rum-eu"
+      ],
+      "scope": "Stills/Retorten und Destillatgrenze; vereinfachte Methanol-Sicherheitsregel entfernt."
+    },
+    {
+      "id": "academy:rum:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-hampden-pillars",
+        "rum-velier",
+        "rum-eu"
+      ],
+      "scope": "Tropische Reifung und EU-Altersangabe; keine feste Umrechnung auf kontinentale Jahre."
+    },
+    {
+      "id": "academy:rum:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-hampden-pillars",
+        "rum-hampden-marks",
+        "rum-spence",
+        "rum-wray"
+      ],
+      "scope": "Jamaikanische Herstellungsbeispiele und Produktstärke; Rum nicht als Desinfektionsmittel empfohlen."
+    },
+    {
+      "id": "academy:rum:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-mountgay-history",
+        "rum-mountgay-making"
+      ],
+      "scope": "Barbados-Herstellerbeispiele; unbelegte seit 2021 geltende GI-Regel nicht als Recht dargestellt."
+    },
+    {
+      "id": "academy:rum:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-bacardi-making",
+        "rum-bacardi-history"
+      ],
+      "scope": "Kubanisch/puertoricanische Herstellungsbeispiele; Herstellerhistorie von Produktdefinition getrennt."
+    },
+    {
+      "id": "academy:rum:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-el-dorado-enmore"
+      ],
+      "scope": "Demerara-/Enmore-Heritage-Verfahren; keine unbelegte aktuelle chargenbezogene Zuckerangabe."
+    },
+    {
+      "id": "academy:rum:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-inao",
+        "rum-clement-vsop"
+      ],
+      "scope": "Martinique-Agricole und konkrete Reifungs-/Herstellerbeispiele geprüft."
+    },
+    {
+      "id": "academy:rum:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-alcatraz",
+        "rum-eu"
+      ],
+      "scope": "Hersteller-/Solera-Beispiele und Alcatraz-Programm; keine pauschalen analytischen Zuckerwerte."
+    },
+    {
+      "id": "academy:rum:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-savanna"
+      ],
+      "scope": "Außerkaribische Stile und HERR-Herstellung; unbelegte globale Produktionsranglisten entfernt."
+    },
+    {
+      "id": "academy:rum:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-wray",
+        "rum-mountgay-navy",
+        "rum-navy-history"
+      ],
+      "scope": "Navy-/Overproof-Stärken und sichere Handhabung; keine Anzünd- oder feste Flashpoint-Anleitung."
+    },
+    {
+      "id": "academy:rum:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu"
+      ],
+      "scope": "Aromatisierung versus zulässige Süßung bis 20 g/l; Rechtsbezeichnung samt Quiz korrigiert."
+    },
+    {
+      "id": "academy:rum:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "sensory-nidcd"
+      ],
+      "scope": "Sensorische Begriffe und vorsichtiges Riechen; keine garantierte Rezeptorwirkung durch Atemtrick."
+    },
+    {
+      "id": "academy:rum:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-hampden-marks",
+        "rum-inao"
+      ],
+      "scope": "Aromafamilien mit Produktionsprofilen verglichen; sensorische Beispiele sind keine Zutatendiagnose."
+    },
+    {
+      "id": "academy:rum:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-maitai-history",
+        "iba-mai-tai",
+        "iba-mojito",
+        "iba-pina-colada"
+      ],
+      "scope": "1944-Mai-Tai von späteren Varianten getrennt; Cocktailbasis und Zubereitung verglichen."
+    },
+    {
+      "id": "academy:rum:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-zombie",
+        "iba-mai-tai"
+      ],
+      "scope": "Tiki-Rezeptmerkmale; historische Zwei-Drink-Regel nicht als sichere Trinkmenge."
+    },
+    {
+      "id": "academy:rum:21",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-clement-vsop",
+        "health-dge"
+      ],
+      "scope": "Pairing als subjektive Geschmacksidee; hohe Alkoholstärke ist kein gesundheitlicher Vorteil."
+    },
+    {
+      "id": "academy:rum:22",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "health-who-tobacco",
+        "health-who-cancer"
+      ],
+      "scope": "Tabak-/Alkoholrisiko statt Zigarren-Kauf- und Konsumempfehlungen."
+    },
+    {
+      "id": "academy:rum:23",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "risk-investment"
+      ],
+      "scope": "Sammlerhinweise ohne Renditegarantie, erfundene Auktionspreise oder Anlageempfehlung."
+    },
+    {
+      "id": "academy:rum:24",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu"
+      ],
+      "scope": "Alters-/Zusatztransparenz; Geschmack und einfache Dichteprüfung sind kein genauer Zucker-Nachweis."
+    },
+    {
+      "id": "academy:rum:25",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-velier",
+        "rum-inao"
+      ],
+      "scope": "Pure Single = Pot Still aus einer Destillerie; Herkunft und Nachhaltigkeit ohne unbelegte Garantien."
+    },
+    {
+      "id": "recipe:mojito",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-mojito"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:cuba-libre",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-cuba-libre"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:daiquiri",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-daiquiri"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:pi-a-colada",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-pina-colada"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers verwendet mehr Ananassaft und eine eigene Kokoscreme-Zubereitung."
+    },
+    {
+      "id": "recipe:mai-tai",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-mai-tai",
+        "rum-maitai-history"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Rumkombination und Mengen sind eine Variante, nicht Trader Vic's Original von 1944."
+    },
+    {
+      "id": "recipe:dark-n-stormy",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-dark-n-stormy",
+        "recipe-goslings-dark"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers nennt generischen dunklen Rum und Limettensaft; die Herstellerfassung verwendet Goslings Black Seal."
+    },
+    {
+      "id": "recipe:zombie",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-zombie"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Fruchtvariante mit Aprikosenlikör und Ananas, nicht das aktuelle IBA-Rezept."
+    },
+    {
+      "id": "recipe:rum-punch",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-rum-punch"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Eigene Einzelportion; Hersteller-Batch dient nur als Vergleich für den fruchtigen Rum-Punch-Stil."
+    },
+    {
+      "id": "recipe:planter-s-punch",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-planters-punch"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Variante mit Orange, Zitrone und Grenadine statt der aktuellen IBA-Basis."
+    },
+    {
+      "id": "recipe:caipirinha",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-caipirinha"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:hurricane",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-hurricane"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Passionsfruchtsirup-Variante, nicht Pat O'Brien's Hurricane-Mix-Rezept."
+    },
+    {
+      "id": "recipe:bahama-mama",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-bahama-mama"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Variante mit Kaffeelikör und weißem Rum; Malibu-Vergleich hat eine andere Zusammensetzung."
+    },
+    {
+      "id": "recipe:moscow-mule",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-moscow-mule",
+        "recipe-copper-safety"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:cosmopolitan",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-cosmopolitan"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:vodka-martini",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-dry-martini"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Spirituosenaustausch gegenüber dem IBA Dry Martini mit Gin."
+    },
+    {
+      "id": "recipe:bloody-mary",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-bloody-mary"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:espresso-martini",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-espresso-martini"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:sex-on-the-beach",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-sex-on-the-beach"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:white-russian",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-black-russian"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Sahnevariante aus der IBA-Anmerkung zum Black Russian; Schichtung ist Jammers-Servierweise."
+    },
+    {
+      "id": "recipe:black-russian",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-black-russian"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:screwdriver",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-screwdriver"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:vodka-sour",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-whiskey-sour",
+        "recipe-egg-safety"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Vodka-Abwandlung des Sour-Prinzips; kein IBA-Original behauptet. Optionales Eiweiß pasteurisiert."
+    },
+    {
+      "id": "recipe:lemon-drop",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-lemon-drop-martini"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:jack-coke",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-jack-coke"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Hersteller belegt Whiskey/Cola-Identität, nicht Jammers-Mischungsverhältnis."
+    },
+    {
+      "id": "recipe:old-fashioned",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-old-fashioned"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:whiskey-sour",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-whiskey-sour",
+        "recipe-egg-safety"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Mengen und optionales pasteurisiertes Eiweiß; hygienische Variante zur IBA-Fassung."
+    },
+    {
+      "id": "recipe:manhattan",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-manhattan"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:mint-julep",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-mint-julep"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:irish-coffee",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-irish-coffee"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:lynchburg-lemonade",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-lynchburg-lemonade"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:penicillin",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-penicillin"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Honig-Ingwer-Sirup statt IBA-Zutaten getrennt; eigener Islay-Float."
+    },
+    {
+      "id": "recipe:boulevardier",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-boulevardier"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:highball",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-highball"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:sazerac",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-sazerac"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Rye-Variante; IBA-Hauptrezept mit Cognac, Rye als historische Abwandlung vermerkt."
+    },
+    {
+      "id": "recipe:gin-tonic",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-gin-tonic"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:negroni",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-negroni"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:gin-fizz",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-gin-fizz"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:tom-collins",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-john-collins"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Old Tom entspricht der IBA-Anmerkung; London Dry ist eine Jammers-Alternative."
+    },
+    {
+      "id": "recipe:gimlet",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-gimlet"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:bramble",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-bramble"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:aviation",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-aviation"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:singapore-sling",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-singapore-sling"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:last-word",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-last-word"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:french-75",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-french-75"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:bee-s-knees",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-bees-knees"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers ohne Orangensaft, der im aktuellen IBA-Rezept enthalten ist."
+    },
+    {
+      "id": "recipe:aperol-spritz",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-spritz"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:hugo",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-hugo"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Holunderblütensirup-Variante; Hersteller-Vergleich verwendet Holunderblütenlikör."
+    },
+    {
+      "id": "recipe:campari-spritz",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-spritz"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:bellini",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-bellini"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:kir-royal",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-kir"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Champagne entspricht der IBA-Kir-Royal-Anmerkung; Sekt und Mengen sind Jammers-Varianten."
+    },
+    {
+      "id": "recipe:mimosa",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-mimosa"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers nutzt Champagne/Sekt statt IBA-Prosecco; gleiche Teile mit eigener Portionsgröße."
+    },
+    {
+      "id": "recipe:rossini",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-bellini"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Erdbeervariante nach IBA-Bellini-Anmerkung mit Jammers-Mischtechnik."
+    },
+    {
+      "id": "recipe:lillet-vive",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-lillet-vive"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:americano",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-americano"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:limoncello-spritz",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-limoncello-spritz"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Jammers-Prosecco/Rosmarin-Variante; Hersteller-Rezept mit Weißwein und Zitronensaft."
+    },
+    {
+      "id": "recipe:margarita",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-margarita"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:paloma",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-paloma"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:tequila-sunrise",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-tequila-sunrise"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:tommy-s-margarita",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-tommys-margarita"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:mezcal-mule",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-mezcal-mule"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:mezcal-negroni",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-negroni"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mezcal-Abwandlung des IBA-Negroni mit Gin, nicht als IBA-Original ausgegeben."
+    },
+    {
+      "id": "recipe:el-diablo",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-el-diablo"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:mexican-mule",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-mexican-mule"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "recipe:batanga",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-batanga"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen angepasst; sichere Jammers-Zubereitung mit Barlöffel statt historischer Messer-Präsentation."
+    },
+    {
+      "id": "recipe:ranch-water",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "recipe-ranch-water"
+      ],
+      "scope": "Zutaten und Zubereitung gelesen und mit einer Primär-Rezeptquelle abgeglichen. Mengen, Garnitur oder Servierweise können vom Vergleichsrezept abweichen; Jammers-Zubereitung, kein Anspruch auf das Original."
+    },
+    {
+      "id": "academy:likoere:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "liqueur-lgl-definition"
+      ],
+      "scope": "Likördefinition, Zucker-Ausnahmen, Alkoholgrenze und Quizantworten."
+    },
+    {
+      "id": "academy:likoere:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "liqueur-chartreuse-history",
+        "liqueur-bols"
+      ],
+      "scope": "Historische Markenbeispiele und Herstellungsorte; unbelegte Ursprungssuperlative eingegrenzt."
+    },
+    {
+      "id": "academy:likoere:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "liqueur-jaegermeister",
+        "liqueur-maraschino",
+        "liqueur-benedictine"
+      ],
+      "scope": "Mazeration, Perkolation, Destillation und markenspezifische Verfahren; keine universellen Schnitt- oder Temperaturregeln."
+    },
+    {
+      "id": "academy:likoere:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "liqueur-lgl-definition"
+      ],
+      "scope": "Likörkategorien, Bitter und Crème; rechtliche Kategorie von Marken- und Stilnamen getrennt."
+    },
+    {
+      "id": "academy:likoere:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "liqueur-cointreau",
+        "liqueur-grand-marnier"
+      ],
+      "scope": "Fruchtliköre, Crème-de-Cassis-Grenze, Triple-Sec-Begriff und Cognac-Anteil als Produktangaben."
+    },
+    {
+      "id": "academy:likoere:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-lazzaroni",
+        "liqueur-frangelico",
+        "liqueur-bfr-plants"
+      ],
+      "scope": "Unterschiedliche Nuss-/Amaretto-Rezepturen, Allergene und Risiken bitterer Kerne; keine universelle Mandelbasis."
+    },
+    {
+      "id": "academy:likoere:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-baileys",
+        "liqueur-lgl-egg",
+        "rum-eu"
+      ],
+      "scope": "Sahne- und Eierlikördefinitionen, Emulsion und produktabhängige Lagerung; keine allgemeine Sechsmonatsfrist."
+    },
+    {
+      "id": "academy:likoere:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-tia-maria",
+        "liqueur-kahlua"
+      ],
+      "scope": "Kaffeeherkunft und Herstellungsangaben der genannten Produkte; Koffein und Alkohol nicht als Gesundheitsvorteil dargestellt."
+    },
+    {
+      "id": "academy:likoere:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-mozart",
+        "rum-eu"
+      ],
+      "scope": "Schokoladenlikör-Produktgruppen und belgische Schokolade bei Mozart; unbelegte Rohstoffmarktanteile entfernt."
+    },
+    {
+      "id": "academy:likoere:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-chartreuse-yellow",
+        "liqueur-cointreau",
+        "rum-eu",
+        "liqueur-bfr-thujone"
+      ],
+      "scope": "Blüten-/Kräuterlikörbeispiele und aktueller Alkoholgehalt von gelber Chartreuse; geheime Rezepturen nicht erfunden."
+    },
+    {
+      "id": "academy:likoere:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-jaegermeister",
+        "liqueur-killepitsch",
+        "liqueur-hardenberg"
+      ],
+      "scope": "Deutsche Kräutermarken, Herstellungsprozess, aktuelle Zutatenzahl und Goldwasser-Unternehmenszuordnung."
+    },
+    {
+      "id": "academy:likoere:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-nonino",
+        "liqueur-cointreau",
+        "liqueur-grand-marnier",
+        "liqueur-bols",
+        "liqueur-benedictine",
+        "liqueur-limoncello-region"
+      ],
+      "scope": "Internationale Herstellerbeispiele und Nonino-Traubenbrandbasis; historische Angaben von Qualitätsurteilen getrennt."
+    },
+    {
+      "id": "academy:likoere:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-chartreuse-history",
+        "liqueur-chartreuse-yellow",
+        "liqueur-cointreau",
+        "liqueur-grand-marnier",
+        "liqueur-benedictine"
+      ],
+      "scope": "Chartreuse-Destillerien und aktuelle Produktstärken; Cointreau und Cordon Rouge ohne falsche Destillations- oder Altersdefinition."
+    },
+    {
+      "id": "academy:likoere:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-angostura",
+        "rum-eu"
+      ],
+      "scope": "Konzentrierte Cocktailbitter gegenüber Trinklikören; Mengenbeispiele als Anwendung, nicht medizinische Wirkung."
+    },
+    {
+      "id": "academy:likoere:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-dry-martini",
+        "iba-black-russian",
+        "iba-margarita",
+        "rum-eu"
+      ],
+      "scope": "Likörfunktionen und Cocktailbeispiele mit IBA-Grundlagen verglichen; Rezeptvarianten nicht als alleinige Norm."
+    },
+    {
+      "id": "academy:likoere:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "sensory-nidcd",
+        "liqueur-baileys",
+        "liqueur-kahlua"
+      ],
+      "scope": "Sensorische Begriffe und Produktunterschiede; Wahrnehmungsbeschreibungen sind keine Qualitäts- oder Sicherheitsgarantie."
+    },
+    {
+      "id": "academy:likoere:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-baileys",
+        "liqueur-kahlua",
+        "liqueur-verpoorten"
+      ],
+      "scope": "Lagerung anhand konkreter Herstellerhinweise; Geruch und Geschmack nicht als Beweis für Lebensmittelsicherheit."
+    },
+    {
+      "id": "academy:likoere:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-bfr-plants",
+        "liqueur-lgl-egg",
+        "liqueur-zoll"
+      ],
+      "scope": "Hausansätze auf sichere Zutaten und Hygiene eingegrenzt; keine Freigabe zum privaten Destillieren oder unbekannten Pflanzenansätzen."
+    },
+    {
+      "id": "academy:likoere:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "liqueur-bmj-digestif",
+        "health-dge"
+      ],
+      "scope": "Aperitif/Digestif als Tradition statt Verdauungs- oder Gesundheitsversprechen; begrenzte Fondue-Studie korrekt eingeordnet."
+    },
+    {
+      "id": "academy:likoere:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "rum-eu",
+        "health-dge",
+        "liqueur-bols"
+      ],
+      "scope": "Trendbeispiele ohne erfundene Marktgrößen, Wachstumsraten oder Nachhaltigkeitsgarantien; gesundheitsbezogene Schlussfolgerungen entfernt."
+    },
+    {
+      "id": "academy:schaumwein:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-history",
+        "spark-clicquot-history",
+        "spark-limoux-history",
+        "spark-inao-limoux"
+      ],
+      "scope": "Historische Entwicklung ohne einzelnen Erfinder oder unbelegten Weltrekord; Blanquette und Ancestrale unterschieden."
+    },
+    {
+      "id": "academy:schaumwein:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-brochure",
+        "wine-label-eu"
+      ],
+      "scope": "Traditionelle Herstellung, Tirage, Hefelager und Degorgieren; 15 Monate Gesamtreifung und zwölf Monate Hefe getrennt."
+    },
+    {
+      "id": "academy:schaumwein:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual",
+        "spark-prosecco-rules",
+        "wine-label-eu"
+      ],
+      "scope": "Tankgärung von traditioneller Flaschengärung getrennt; keine allgemeine Charmat-Lungo-Dauer oder Patentdatumsbehauptung."
+    },
+    {
+      "id": "academy:schaumwein:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual",
+        "wine-label-eu",
+        "spark-dwi-winzersekt"
+      ],
+      "scope": "Transvasieren, zulässige Verfahrensbezeichnung und Unterschied zu Winzersekt; keine pauschale Großflaschenregel."
+    },
+    {
+      "id": "academy:schaumwein:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-grapes",
+        "spark-chardonnay-rose",
+        "spark-champagne-faq",
+        "spark-champagne-brochure"
+      ],
+      "scope": "Champagne-Herkunft, Stile, Erzeugercodes und Reifung; Rebsortenliste mit Chardonnay rose seit 2025 aktualisiert."
+    },
+    {
+      "id": "academy:schaumwein:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-label-eu",
+        "spark-inao-cremant-die",
+        "spark-inao-cremant-loire",
+        "spark-inao-clairette-die"
+      ],
+      "scope": "Crémant-Anforderungen und Herkunftsbeispiele; Crémant de Die von Clairette de Die unterschieden."
+    },
+    {
+      "id": "academy:schaumwein:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-cava-production",
+        "spark-cava-reserva",
+        "spark-cava-bio",
+        "spark-corpinnat-rules",
+        "spark-corpinnat-history",
+        "spark-codorniu"
+      ],
+      "scope": "Cava-Kategorien, Reserva-Zeit und Bio-Regeln aktualisiert; Corpinnat als eigene kollektive Marke eingeordnet."
+    },
+    {
+      "id": "academy:schaumwein:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-prosecco-rules",
+        "spark-prosecco-rive",
+        "wine-label-eu"
+      ],
+      "scope": "Prosecco-Herkünfte, Rive, Cartizze und Rosé-Zusammensetzung mit aktueller Produktspezifikation abgeglichen."
+    },
+    {
+      "id": "academy:schaumwein:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-dwi-manual",
+        "spark-dwi-winzersekt",
+        "spark-vdp-statute",
+        "spark-tax",
+        "spark-kessler"
+      ],
+      "scope": "Deutscher Sekt, Sekt b.A. und Winzersekt unterschieden; VDP-Privatregeln und geltende Steuersätze geprüft."
+    },
+    {
+      "id": "academy:schaumwein:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-franciacorta",
+        "spark-roederer-estate",
+        "spark-evremond"
+      ],
+      "scope": "Franciacorta-Sorten, Satèn und Reifezeiten; konkrete internationale Herstellerbeispiele ohne Qualitäts-Weltrangliste."
+    },
+    {
+      "id": "academy:schaumwein:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-grapes",
+        "spark-champagne-brochure",
+        "spark-chardonnay-rose",
+        "spark-franciacorta",
+        "spark-cava-production"
+      ],
+      "scope": "Rebsorten und Pressfraktionen; alte Flächenquoten und automatische Qualitätsurteile entfernt."
+    },
+    {
+      "id": "academy:schaumwein:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "wine-label-eu",
+        "spark-champagne-brochure"
+      ],
+      "scope": "EU-Süßestufen und Brut-Nature-Bedingung; Dosage vom Endzucker und subjektiver Süßewahrnehmung getrennt."
+    },
+    {
+      "id": "academy:schaumwein:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-service",
+        "spark-bubble-research",
+        "sensory-nidcd"
+      ],
+      "scope": "Verkostungsbegriffe und Perlage als Beobachtungen; kleine Blasen nicht als alleiniger Qualitätsbeweis."
+    },
+    {
+      "id": "academy:schaumwein:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-brochure",
+        "spark-champagne-faq",
+        "spark-prosecco-rive",
+        "wine-label-transition"
+      ],
+      "scope": "Flaschenformate, Verschluss und Etikettinformationen; keine automatische Lagerfähigkeits- oder Transfergarantie."
+    },
+    {
+      "id": "academy:schaumwein:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-service",
+        "spark-champagne-glasses",
+        "wine-dwi-storage"
+      ],
+      "scope": "Sicheres Öffnen und saubere Gläser; Gefrierfachrisiko und produktabhängige Lagerfähigkeit eingeordnet."
+    },
+    {
+      "id": "academy:schaumwein:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-bubble-research",
+        "health-dge"
+      ],
+      "scope": "Pairings als sensorische Vorschläge; unbelegte Fett-/Proteinauflösung und gesundheitliche Vorteile entfernt."
+    },
+    {
+      "id": "academy:schaumwein:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "iba-spritz",
+        "iba-bellini",
+        "iba-mimosa",
+        "iba-kir",
+        "iba-french-75",
+        "rum-eu"
+      ],
+      "scope": "Cocktailgrundlagen mit IBA-Rezepten abgeglichen; Mengenvarianten und Grenzen regionaler Zutatenangaben."
+    },
+    {
+      "id": "academy:schaumwein:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-champagne-grapes",
+        "spark-prosecco-rules",
+        "spark-franciacorta",
+        "spark-cava-production"
+      ],
+      "scope": "Rosé-Verfahren und konkrete Herkunftsregeln; pauschales französisches Verschnittverbot entfernt."
+    },
+    {
+      "id": "academy:schaumwein:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-inao-limoux",
+        "spark-inao-clairette-die",
+        "spark-champagne-service"
+      ],
+      "scope": "Ancestrale gegenüber zweiter Gärung abgegrenzt; weder einziges Ursprungsprodukt noch natürliche Sicherheitsgarantie behauptet."
+    },
+    {
+      "id": "academy:schaumwein:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "spark-corpinnat-rules",
+        "spark-cava-bio",
+        "spark-evremond",
+        "spark-franciacorta",
+        "health-dge",
+        "wine-eu"
+      ],
+      "scope": "Konkrete Entwicklungen und Regeländerungen statt unbelegter Wachstumsraten, Klimaprognosen oder Gesundheitsversprechen."
+    },
+    {
+      "id": "academy:mineralwasser:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law"
+      ],
+      "scope": "Definition, Anerkennung, Behandlung und Pflichtangaben gegen §§ 2–9 geprüft; Quiz korrigiert."
+    },
+    {
+      "id": "academy:mineralwasser:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-lfu-sources",
+        "water-juice-lfu-geology",
+        "water-juice-lgrb-mineralwaters"
+      ],
+      "scope": "Quelltypen und geologische Einflussfaktoren geprüft; ungesicherte feste Mineralisierungs- und Alterswerte entfernt."
+    },
+    {
+      "id": "academy:mineralwasser:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law",
+        "water-juice-dge-calcium",
+        "water-juice-dge-magnesium"
+      ],
+      "scope": "Mineralstoffreferenzen, Natrium- und Fluoridgrenzen geprüft; Gesundheitsversprechen und fixe Geschmacksschwellen entfernt."
+    },
+    {
+      "id": "academy:mineralwasser:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law",
+        "water-juice-carbonation-study"
+      ],
+      "scope": "CO₂-Kennzeichnung und experimentelle Sensorikgrundlage geprüft; Studie als Mäuseversuch begrenzt, Medium nicht als gesetzlicher Zahlenkorridor."
+    },
+    {
+      "id": "academy:mineralwasser:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law",
+        "water-juice-bfr-water-hygiene"
+      ],
+      "scope": "Rechtliche Wasserkategorien und Mineralisierungsauslobungen geprüft; keine pauschale Qualitätshierarchie."
+    },
+    {
+      "id": "academy:mineralwasser:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-lfu-geology",
+        "water-juice-gerolsteiner-naturell"
+      ],
+      "scope": "Regionale Verallgemeinerungen begrenzt; konkrete Naturell-Quellvariante und heutiger Herstelleranalysenauszug geprüft."
+    },
+    {
+      "id": "academy:mineralwasser:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-evian-analysis",
+        "water-juice-mineral-law"
+      ],
+      "scope": "Konkrete evian-Analyse geprüft; Premium und Herkunftsmarketing nicht als Gesundheits- oder Reinheitsbeweis."
+    },
+    {
+      "id": "academy:mineralwasser:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-doemens-water"
+      ],
+      "scope": "Externer Doemens-Lehrgang, Beginn 2011 und Format geprüft; Websitekurs nicht gleichgestellt, Servicewerte als Haus-Praxistipps."
+    },
+    {
+      "id": "academy:mineralwasser:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-carbonation-study",
+        "water-juice-bfr-water-hygiene"
+      ],
+      "scope": "Grenzen sensorischer Qualitätsurteile geprüft; Ablauf und Geschmacksbegriffe als praktische Beobachtung, keine Laborersatzprüfung."
+    },
+    {
+      "id": "academy:mineralwasser:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-bfr-pet",
+        "water-juice-bfr-water-hygiene"
+      ],
+      "scope": "Material- und Hygieneaussagen geprüft; Mengen, Probenzahl und Dramaturgie als anpassbare Organisationsbeispiele."
+    },
+    {
+      "id": "academy:mineralwasser:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-doemens-water",
+        "water-juice-carbonation-study"
+      ],
+      "scope": "Food-Pairing als Praxisgebiet eingeordnet; einzelne Speiseempfehlungen subjektive Haus-Verkostungstipps, keine empirischen Optimalitätsbehauptungen."
+    },
+    {
+      "id": "academy:mineralwasser:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-dge-water",
+        "water-juice-doemens-water"
+      ],
+      "scope": "Alkoholgrenzen eingeordnet; Natrium-/Tannin- und Puffer-Garantien entfernt, Wasser-Wein-Pairings subjektive Vergleichstipps."
+    },
+    {
+      "id": "academy:mineralwasser:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-dge-water",
+        "water-juice-dge-calcium",
+        "water-juice-mineral-law",
+        "water-juice-bfr-water-hygiene"
+      ],
+      "scope": "Trinkempfehlung und sämtliche Säuglingskennzeichnungsgrenzen geprüft; keine Sterilitäts-, Krampf- oder Sporttherapieversprechen."
+    },
+    {
+      "id": "academy:mineralwasser:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law",
+        "water-juice-bfr-water-hygiene",
+        "water-juice-lgrb-mineralwaters",
+        "water-juice-amg-approval"
+      ],
+      "scope": "Heilwasser-Arzneimittelstatus und produktbezogene Zulassung geprüft; ungesicherte Indikationen, Markenlisten und Dosierungen entfernt."
+    },
+    {
+      "id": "academy:mineralwasser:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-water-hardness-law",
+        "water-juice-dvgw-hardness",
+        "water-juice-sca-tds"
+      ],
+      "scope": "Härte, TDS und Alkalinität getrennt geprüft; falsche direkte TDS-°dH-Umrechnung und universelle Extraktionsregeln korrigiert."
+    },
+    {
+      "id": "academy:mineralwasser:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-uba-packaging",
+        "water-juice-bfr-pet",
+        "water-juice-bfr-water-hygiene"
+      ],
+      "scope": "Mehrweg-/PET- und Hygienegrundlagen geprüft; bis-zu-Zahlen von Durchschnitt getrennt, universelle 200-km-Rangliste entfernt."
+    },
+    {
+      "id": "academy:mineralwasser:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-vdm-market"
+      ],
+      "scope": "Genannte Marktwerte ausschließlich als VDM-Branchenstatistik für 2024 geprüft; ungedeckte Marktanteile/Preis- und Leitungswasserwerte entfernt."
+    },
+    {
+      "id": "academy:mineralwasser:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law",
+        "water-juice-food-hygiene"
+      ],
+      "scope": "Produktabgrenzung und Hygienegrundlagen geprüft; Service als Hauspraxis, Aufschlag als selbst nachgerechnetes Beispiel."
+    },
+    {
+      "id": "academy:mineralwasser:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-bfr-water-hygiene",
+        "water-juice-bfr-pet"
+      ],
+      "scope": "MHD, geöffnete Ware und PET-Gasverlust geprüft; keine unbegrenzte Haltbarkeit oder allgemeine Produkttagesfrist."
+    },
+    {
+      "id": "academy:mineralwasser:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-mineral-law",
+        "water-juice-bfr-hemp",
+        "water-juice-health-claims"
+      ],
+      "scope": "Aromatisierte/angereicherte Getränke von Mineralwasser getrennt; CBD-/Claim-Grenzen geprüft, Trendkonzepte ohne Wirkungs- oder Zukunftsgarantie."
+    },
+    {
+      "id": "academy:saft:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-juice-nectar",
+        "water-juice-juice-brix"
+      ],
+      "scope": "Aktuelle Saftkategorien einschließlich Regeln ab 14.06.2026, Nektar-Mindestwerte und Brix geprüft; Quiz korrigiert."
+    },
+    {
+      "id": "academy:saft:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-eckes-history",
+        "water-juice-vdf-market",
+        "water-juice-food-hygiene"
+      ],
+      "scope": "Belegte Herstellerhistorie und datierte 2025-Branchenzahl geprüft; ungesicherte historische/Verpackungs-/Konsumaussagen ersetzt."
+    },
+    {
+      "id": "academy:saft:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-juice-nectar",
+        "water-juice-vdf-production"
+      ],
+      "scope": "Rohstoffdefinition, Fruchtmark und Kategorien geprüft; feste Ausbeuten, Sortenabwertung und Vitamin-C-Superlative entfernt."
+    },
+    {
+      "id": "academy:saft:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-vdf-production",
+        "water-juice-mri-patulin",
+        "water-juice-bfr-mould",
+        "water-juice-food-hygiene"
+      ],
+      "scope": "Rohware, Patulin, Verarbeitung und Hygiene geprüft; erfundene Faulquote, universelle Wärmeparameter und Kühlpflicht entfernt."
+    },
+    {
+      "id": "academy:saft:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-juice-brix",
+        "water-juice-vdf-production",
+        "water-juice-usda-fcoj"
+      ],
+      "scope": "Konzentrat/Wiederherstellung und Mindestbrix geprüft; FCOJ-Abkürzung belegt, feste Volumen-/Energie-/Haltbarkeitsgarantien entfernt."
+    },
+    {
+      "id": "academy:saft:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-vdf-market",
+        "water-juice-juice-law",
+        "water-juice-dge-water"
+      ],
+      "scope": "Datierte Apfelzahl, Trübung/Kategorie und Schorle geprüft; Polyphenol- und Isotoniegarantien entfernt."
+    },
+    {
+      "id": "academy:saft:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-usda-fcoj",
+        "water-juice-usda-hlb"
+      ],
+      "scope": "Saftverarbeitung und HLB nach USDA geprüft; ungesicherte Weltmarkt-/Börsen-/Ernte- und Navel-Ausschlussbehauptungen entfernt."
+    },
+    {
+      "id": "academy:saft:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-nectar",
+        "water-juice-juice-law",
+        "water-juice-health-claims"
+      ],
+      "scope": "Mango-/Passionsfrucht-Mindestanteile und Marknutzung geprüft; ORAC nicht als klinischer Gesundheitsbeweis dargestellt."
+    },
+    {
+      "id": "academy:saft:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-health-claims"
+      ],
+      "scope": "Tomaten ausdrücklich in FruchtsaftVO und zugelassene Würzzutaten geprüft; Leistungs-/Bedarfs-/Probiotikgarantien entfernt."
+    },
+    {
+      "id": "academy:saft:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-hpp",
+        "water-juice-health-claims"
+      ],
+      "scope": "Saft/Fruchtmark abgegrenzt und HPP-Grenzen geprüft; Smoothie-Rezeptur statt universellem Faser-/GI-/Haltbarkeitswert."
+    },
+    {
+      "id": "academy:saft:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-dge-vitamin-c",
+        "water-juice-dge-iron",
+        "water-juice-health-claims"
+      ],
+      "scope": "DGE-Vitamin-C-Zufuhren und Nicht-Häm-Eisenbezug geprüft; feste Verlust-/Aufnahmefaktoren und Krankheitsversprechen entfernt."
+    },
+    {
+      "id": "academy:saft:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-dge-water",
+        "water-juice-health-claims",
+        "water-juice-who-sugars"
+      ],
+      "scope": "Zuckerportion selbst nachgerechnet, DGE-Schorle geprüft; WHO-Zuckerdefinition zusätzlich gegen WHO-Original geprüft, falsche DGE-150-ml-Maximalregel entfernt."
+    },
+    {
+      "id": "academy:saft:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-bio-logo",
+        "water-juice-bio-production"
+      ],
+      "scope": "EU-Bio-Logo, Kontrollstelle, Herkunft und zugelassene Betriebsmittel geprüft; Bio nicht als Regionalitäts-/Rückstands-/Gesundheitsgarantie, ungesicherte Zahlen entfernt."
+    },
+    {
+      "id": "academy:saft:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-unesco-orchards"
+      ],
+      "scope": "Nationale Verzeichnisaufnahme 2021 und Kultur-/Pflegebezug geprüft; keine internationale UNESCO-Eintragung oder garantierte Sensorik/Rentabilität behauptet."
+    },
+    {
+      "id": "academy:saft:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-sgf",
+        "water-juice-juice-law",
+        "water-juice-bfr-mould"
+      ],
+      "scope": "SGF-Name und freiwilliges Profiling geprüft; NMR-Verfahren getrennt, Prolin-Alleingrenze und Geruch-Mykotoxinbeweis entfernt."
+    },
+    {
+      "id": "academy:saft:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-uba-packaging",
+        "water-juice-bfr-pet",
+        "water-juice-vdf-production",
+        "water-juice-food-hygiene"
+      ],
+      "scope": "Verpackungs-/Mehrweggrundlagen und Hygiene eingeordnet; feste Lagen-/Partikel-/Umlauf-/Bag-in-Box-Fristen entfernt."
+    },
+    {
+      "id": "academy:saft:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-juice-law",
+        "water-juice-juice-nectar",
+        "water-juice-dge-water",
+        "water-juice-health-claims"
+      ],
+      "scope": "Mischgetränkekategorien und Mindestwerte geprüft; ACE als Konzept, CO₂-/Isotonie-/Vitaminwirkung nicht garantiert."
+    },
+    {
+      "id": "academy:saft:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-food-hygiene",
+        "water-juice-juice-law",
+        "water-juice-wilhelmshof-verjus"
+      ],
+      "scope": "HACCP als betriebsbezogen geprüft; erfundene 24h-Frist entfernt, Kalkulation selbst nachgerechnet, Verjus korrigiert; Pairings Hauspraxis."
+    },
+    {
+      "id": "academy:saft:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-eckes-history",
+        "water-juice-beckers-history",
+        "water-juice-vdf-market"
+      ],
+      "scope": "Eckes-Übernahme 1994, beckers bester 1932/Lütgenrode und datierte Branchendaten gegen Primärquellen geprüft."
+    },
+    {
+      "id": "academy:saft:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "water-juice-hpp",
+        "water-juice-juice-law",
+        "water-juice-health-claims",
+        "water-juice-food-hygiene"
+      ],
+      "scope": "HPP-Druck/Sporen/Kühlung und aktuelle Zuckerreduktionskategorie geprüft; Kaltpress-/Immunity-/Haltbarkeitsgarantien entfernt."
+    },
+    {
+      "id": "academy:bier:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-lager-yeast",
+        "beer-whisky-dry-hop-study"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Rohstofffunktionen, Malzfarbe, Beta-/Alpha-Amylase, IBU und stammabhängige Lagertemperatur; W-34/70-Beispiel 12–18 °C statt allgemeiner 4–9-°C-Regel. Aromahopfen ist keine Null-Bittere-Garantie."
+    },
+    {
+      "id": "academy:bier:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-lager-yeast"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Brauschritte, enzymatischer Stärkeabbau und Infusion/Dekoktion geprüft. Eiweißrast, Kühlung und Pasteurisierung als verfahrensabhängig korrigiert; Rastzeiten sind keine universellen Rezepte."
+    },
+    {
+      "id": "academy:bier:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-lager-yeast",
+        "beer-whisky-wheat-yeast",
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Ale-/Lagerhefe und kalte Nachreifung geprüft; Phenole sind stammabhängig, nicht automatische Folge warmer Gärung. Pauschale historische Hybrid-Entstehungsdatierung entfernt."
+    },
+    {
+      "id": "academy:bier:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-pilsner",
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Pilsner-Urquell-Ursprung 1842/Josef Groll und Pils/Export/Märzen als Stilbilder geprüft. Unbelegte heutige Marktanteile und Dortmunder Weltrangfolge entfernt; Stilbereiche nicht Rechtsnormen."
+    },
+    {
+      "id": "academy:bier:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-wheat-yeast"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Weissbier-Schüttung als BJCP-Stilorientierung, Banane/Nelke und Kölsch-Konvention/Herkunft geprüft. Keine globale 50-%-Weizen-Rechtsgarantie oder umgekehrte feste Temperaturrichtung; Düsseldorfer Hausbrauereien nicht alle als Altstadtstandorte bezeichnet."
+    },
+    {
+      "id": "academy:bier:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-unesco-beer",
+        "beer-whisky-unesco-inventory",
+        "beer-whisky-trappist",
+        "beer-whisky-westmalle"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Belgische Stile, Lambic/Gueuze, immaterielles UNESCO-Erbe und ATP-Kriterien geprüft. Westmalle-Dubbel 1856/1926 berichtigt; heutige feste Trappistenzahl und Achel-ATP-Behauptung entfernt. Keine biologische Exklusivität von Spontangärung."
+    },
+    {
+      "id": "academy:bier:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-cask-ale"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Bitter/Porter/Stout und Real-Ale-Fasskonditionierung geprüft. Handpumpe oder Schwerkraft statt ausschließlicher Handpumpe; Stickstoff-CO₂-Gemisch statt vollständigem CO₂-Ersatz."
+    },
+    {
+      "id": "academy:bier:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-craft-definition",
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. US-Craft-Verbandsdefinition Small/Independent/Brewer geprüft: höchstens 6 Millionen Barrel, weniger als 25 % einschlägige Fremdkontrolle. Traditionelle Zutaten nicht drittes Pflichtkriterium; unbefristete Marktzahlen entfernt."
+    },
+    {
+      "id": "academy:bier:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-galaxy",
+        "beer-whisky-dry-hop-study"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. IPA-Unterstile und Hopfenherkunft geprüft; Galaxy als australisch korrigiert. Trübung puffert Bitterstoffe nicht nach einer universellen Regel; Cold IPA nicht schlicht besonders kalte Lagergärung."
+    },
+    {
+      "id": "academy:bier:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Porter-/Stout-Stilfamilien und Baltic-Porter-Hefe geprüft: meist Lagerhefe, auch kalt vergorene Ale-Versionen. Samuel-Smith-Schreibweise berichtigt; Stärke- und Pairingbilder sind Orientierung, keine Produktgarantie."
+    },
+    {
+      "id": "academy:bier:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-bjcp-process"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Sauerbierkulturen und Berliner Weiße/Gose/Flanders geprüft. Nicht alle historischen Biere sauer, Brett nicht automatisch sauer; Napoleon-Zuschreibung und falsche Brauereibeispiele entfernt."
+    },
+    {
+      "id": "academy:bier:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bock-law",
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Bock, Doppelbock, Eisbock und Weizenbock geprüft. Deutsche Starkbier-/Bock-Bezeichnung ab 16 % Stammwürze von BJCP-Stilbereichen getrennt; feste 18-°P-Rechtsgrenze und Veranstaltungstag entfernt."
+    },
+    {
+      "id": "academy:bier:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-pilsner",
+        "beer-whisky-bjcp-process"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Helles, böhmisches Pils, Vienna Lager, Adjuncts und Kellerbier geprüft. Tankovna als Edelstahltank-Ausschank berichtigt; pauschale 90-%-Lagerquote und falsche Modelo-Vienna-Zuordnung entfernt."
+    },
+    {
+      "id": "academy:bier:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-galaxy",
+        "beer-whisky-dry-hop-study",
+        "beer-whisky-hop-creep"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Hopfensorten, Heiß-/Kaltgabe und Dry Hopping geprüft. Bittere kann sich ändern; Hopfenenzyme können bei lebender Hefe Nachgärung auslösen. Keine heutige weltweite Produktionsrangfolge; Aromaprofile bleiben typische Beschreibungen."
+    },
+    {
+      "id": "academy:bier:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Malz-/Adjunctfunktionen, Karamellmalz-Verzuckerung und Rauchmalz geprüft. Nicht ausschließlich unvergärbare Zucker, nicht alles historisches Malz rauchig, Weissbier-Vorgaben als Stilrahmen; feste Darrwerte entschärft."
+    },
+    {
+      "id": "academy:bier:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Brauwasser, Calcium, Sulfat, Chlorid, Alkalität und Aufbereitung geprüft. Hydrogencarbonat-Anion nicht Natriumhydrogencarbonat gleichgesetzt; Verhältnis allein und starre Orts-/Mindestwerte nicht als universelle Regel."
+    },
+    {
+      "id": "academy:bier:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-lager-yeast",
+        "beer-whisky-wheat-yeast",
+        "beer-whisky-yeast-catalog",
+        "beer-whisky-bjcp-process"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Herstellerstämme W-34/70/WLP300/WLP550, Ester/Phenole und Viabilität/Vitalität geprüft. WLP550 heißt Belgian Ale; Brett hat kein exklusives Dextrin-Monopol. Keine Gleichsetzung unterschiedlicher Herstellerstämme."
+    },
+    {
+      "id": "academy:bier:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-taste"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Sensorische Schritte, orthonasal/retronasal und Stilbeurteilung geprüft. Aroma-Rad als Beschreibungshilfe, keine Molekülzählung; unbelegter DIN-200-ml-Glaszwang entfernt. Servierbedingungen sind praktische Tipps."
+    },
+    {
+      "id": "academy:bier:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-light-research"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Diacetyl, DMS, Oxidation und Lichtgeschmack geprüft. Keine feste Diacetyl-Wahrnehmungsschwelle; auch sichtbares blaues Licht relevant. Fehlaroma ist keine alleinige Sicherheitsdiagnose."
+    },
+    {
+      "id": "academy:bier:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-styles",
+        "beer-whisky-health-dge",
+        "beer-whisky-health-who"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Alle Pairingtexte und drei Fragen gelesen. Paarungen ausdrücklich subjektive praktische Vorschläge, keine Gesundheitswirkung oder generelle Neutralisierung von Fett/Schärfe. Alkoholfreie Begleitung und Verzicht bleiben möglich."
+    },
+    {
+      "id": "academy:bier:21",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-bjcp-process",
+        "beer-whisky-health-dge"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Käse-Pairing einschließlich Quiz gelesen. Bier enthält Polyphenole/Tannine, ist nicht grundsätzlich tanninfrei oder objektiv besser als Wein. Kombinationen als Geschmackstipps statt Wirkungsversprechen eingeordnet."
+    },
+    {
+      "id": "academy:bier:22",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-beer-law",
+        "beer-whisky-wesseloh",
+        "beer-whisky-craft-definition"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. 1516 als historischer Bezug von heutigem Bierrecht und Importfall getrennt. Wesseloh/Kehrwieder und WM 2013 berichtigt. Falsche Eigentümer-/Weltranglisten und amtlich klingende Craft-Hauptstadt-Behauptung entfernt."
+    },
+    {
+      "id": "academy:bier:23",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-schlenkerla",
+        "beer-whisky-zoigl",
+        "beer-whisky-erlangen",
+        "beer-whisky-bjcp-styles"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Schlenkerla-Helles ohne direkte Rauchmalzverwendung und ganzjähriger Verkauf, Kommunbrauen, Zoigl-Ausschankzeichen und Erlanger Bergkirchweih geprüft. Keine allgemeine fränkische UNESCO-/Weltrekordbehauptung; symbolische Sterne sind keine wissenschaftliche Zutatenregel."
+    },
+    {
+      "id": "academy:bier:24",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-health-dge",
+        "beer-whisky-health-who",
+        "beer-whisky-alcohol-label"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Gesamte Gesundheitslektion mit allen drei Quizfragen geprüft und überarbeitet: keine risikofreie Alkoholmenge, DGE-Verzicht, Krebsrisiken, Restalkohol bis 0,5 % bei alkoholfrei. Nährstoffe/Einzelstoffforschung rechtfertigen keine Heil-, Schlaf- oder Sportgarantie; keine gesunde Tagesdosis."
+    },
+    {
+      "id": "academy:bier:25",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-hop-climate",
+        "beer-whisky-engineered-yeast",
+        "beer-whisky-alcohol-label",
+        "beer-whisky-bjcp-process",
+        "beer-whisky-dry-hop-study",
+        "beer-whisky-light-research",
+        "beer-whisky-health-dge"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Trendlektion und alle zehn Bier-Abschlussfragen gelesen und abgeglichen. Hopfen-Klimamodell regional/bedingt, gentechnische Aromahefe als begrenzter Studienbefund. Keine unbefristeten Markt-/Wasserzahlen oder Marken-Klimagarantien; Abschlussfragen zu Malz, Lagerhefe, Dry Hopping, Licht und Tanninen korrigiert."
+    },
+    {
+      "id": "academy:whiskey:1",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-law",
+        "beer-whisky-swa-faq",
+        "beer-whisky-us-whisky-law"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Grunddefinition, Schreibweise und Scotch-/Bourbon-Regeln geprüft. Scotch strikt unter 94,8 %; 3 Jahre Eiche bis 700 Liter in Schottland; US-Bourbon 51 % Mais und neue ausgebrannte Eiche. US-Corn-Whiskey-Ausnahme statt weltweiter Holzpflicht; keine Schreibweisen-Qualitätslegende."
+    },
+    {
+      "id": "academy:whiskey:2",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-swa-history",
+        "beer-whisky-irish-file"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Früher schottischer 1494-Beleg, Excise 1823, Blending und Branchenentwicklung geprüft. Nicht weltweite Ersterfindung, keine gesicherte Mönchs-Einführung im 6. Jahrhundert oder dauerhafte Preis-Renaissance; historische Zahlen nicht heutiger Marktzensus."
+    },
+    {
+      "id": "academy:whiskey:3",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-law",
+        "beer-whisky-swa-faq"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Fünf geschützte Herkunftsnamen und Single-Malt-Definition geprüft. Islands keine sechste geschützte Region; keine unveränderliche Islay-/Campbeltown-Betriebszahl oder Verkaufsrangliste. Regionale Aromen nur Orientierung."
+    },
+    {
+      "id": "academy:whiskey:4",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-law",
+        "beer-whisky-swa-faq"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Blended Scotch/Malt/Grain und Blenderaufgabe geprüft. Unbelegte Über-90-%-Verkaufsquote ersetzt; Maltquote, Preis und Premium-Bezeichnung keine gesetzliche Qualitätsstufe."
+    },
+    {
+      "id": "academy:whiskey:5",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-irish-file"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Irish-Whiskey-Spezifikation, Single-Herkunft, gemälzte/ungemälzte Gerste und doppelte/dreifache Destillation geprüft. 1608-Lizenz nicht heutige durchgehend bestehende Brennerei; keine feste 1980er-Betriebszahl oder universelle Ablehnung von Column Stills."
+    },
+    {
+      "id": "academy:whiskey:6",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-us-whisky-law"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. US-Bourbon/straight: Maisanteil, Destillations-/Einfüllstärke, neue ausgebrannte Eiche und Straight-Reifung geprüft. Kentucky und Quercus alba nicht gesetzlich zwingend; heutige Bestands-/Verkaufs-/Tourmitgliedschaftszahlen entfernt."
+    },
+    {
+      "id": "academy:whiskey:7",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-us-whisky-law",
+        "beer-whisky-tennessee"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. US-Rye und Corn-Whiskey-Regeln geprüft; Lincoln County Process als typische Herstellerpraxis statt ausnahmslose Formel. Historische Tennessee-Quelle belegt Sonderfall, kein aktuelles Verkaufsrechtsgutachten; genaue Dickel-Temperatur und Wachstumsquote entfernt."
+    },
+    {
+      "id": "academy:whiskey:8",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-japanese-standard",
+        "beer-whisky-japanese-voluntary",
+        "beer-whisky-swa-faq"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. JSLMA freiwilliger Verbandsstandard von staatlichem Universalkriterium getrennt: gemälztes Getreide, Japan-Wasser/Produktion/Reifung/Abfüllung und Stärkevorgaben. Mizunara-Aromen produktabhängig; kein ewiges Fasshandelsverbot oder jahrzehntelanger Aroma-Zwang."
+    },
+    {
+      "id": "academy:whiskey:9",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-canadian-standard",
+        "beer-whisky-us-whisky-law",
+        "beer-whisky-scotch-file"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Aktuelle kanadische Compositional Standards für Canadian/Rye geprüft, nicht alte teilweise aufgehobene B.02.020-Fassung. Kein US-51-%-Roggenzwang oder allgemeines 9,09-%-Zugabenlimit. Klima kein fixer 5:15-Altersfaktor, Angel’s Share keine feste Taiwanquote."
+    },
+    {
+      "id": "academy:whiskey:10",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-file",
+        "beer-whisky-grain-methanol"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Mälzen, Grist, Maischen, Gärung, Mittellauf und Rückdestillation von Foreshots/Feints geprüft. Primäranalyse von Getreidedestillat widerlegt exklusives Methanol-im-Vorlauf-Modell. Keine private Destillieranleitung oder Sicherheitsgarantie durch Wegschütten eines Anteils."
+    },
+    {
+      "id": "academy:whiskey:11",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-file",
+        "beer-whisky-scotch-law",
+        "beer-whisky-swa-history"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Pot-/Column-Still, Batch/continuous und Reflux geprüft. Höhe allein garantiert kein Aromaprofil, Grain nicht rein durch Apparat definiert, Scotch-Destillationsgrenze strikt. Coffey als historische Entwicklung ohne streitige feste Patentjahres-Prüffrage."
+    },
+    {
+      "id": "academy:whiskey:12",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-file",
+        "beer-whisky-macallan"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Additive/subtraktive/interaktive Reifung und Charring/Toasting gelesen und eingeordnet. Universeller 60–80-%-Geschmacksanteil, feste Char-Sekunden und allgemeiner Reife-Sweet-Spot entfernt. Angel’s Share bedingt; Holzarten-/Aromabilder keine Garantien."
+    },
+    {
+      "id": "academy:whiskey:13",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-file",
+        "beer-whisky-us-whisky-law",
+        "beer-whisky-macallan"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Ex-Bourbon, Sherry-seasoning, zulässige Vorbelegung und Finishing geprüft. Macallan Double Cask ist Kombination sherry-seasoned amerikanischer/europäischer Eiche, nicht Sherry+Bourbon. STR als Verfahren ohne ungesicherte alleinige Erfinderzuschreibung."
+    },
+    {
+      "id": "academy:whiskey:14",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-taste",
+        "beer-whisky-swa-faq",
+        "beer-whisky-scotch-law"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Sensorik und Quiz vollständig gelesen. Zungenkarte widerlegt, Farbe/Legs/Nachklang kein Alters-/Zucker-/Premiumbeweis, Blinding reduziert statt beseitigt Erwartungseffekte. Glas- und Reihenfolgetipps als praktische Orientierung."
+    },
+    {
+      "id": "academy:whiskey:15",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-aroma-wheel",
+        "beer-whisky-scotch-file"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. SWRI-Aroma-Rad 1979 und Funktion als Kommunikationshilfe geprüft. Keine feste Molekül-/150-Aromen-Leistungszahl oder allgemeine Richtung auf jedem Rad. Aromadeskriptoren bleiben subjektive Wahrnehmung, nicht Analysen jeder Flasche."
+    },
+    {
+      "id": "academy:whiskey:16",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-dilution",
+        "beer-whisky-scotch-file",
+        "beer-whisky-health-dge"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Karlsson/Friedman als Molekulardynamik an Guaiacol-Wasser-Ethanol-Modellen geprüft. Keine universelle Geschmacksverbesserung, feste Tropfenregel oder gesundheitliche Wirkung. Verdünnung senkt Konzentration, nicht eingeschenkte Alkoholmenge; 46 % keine Klarheitsgarantie."
+    },
+    {
+      "id": "academy:whiskey:17",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-peat",
+        "beer-whisky-scotch-file",
+        "beer-whisky-dilution"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Torf als langsam gebildeter Kohlenstoffspeicher, Darren und Bezugsprobe von ppm-Angaben geprüft. Keine universelle Seetang-Kausalität, 30-%-Feuchtigkeitsregel, Rekordliste oder erfundene alternative Rauchmarken. Malzwert nicht sensorischer Flaschenrang."
+    },
+    {
+      "id": "academy:whiskey:18",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-law",
+        "beer-whisky-swa-faq"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Scotch-Alter jüngste Komponente, NAS trotz Mindestreifung, keine fortlaufende Fassreifung in Flasche und Vintage-Kennzeichnung geprüft. Kalenderjahre nicht automatisch exakt vollendetes Alter; kein allgemeiner optimaler Alterspunkt."
+    },
+    {
+      "id": "academy:whiskey:19",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-file",
+        "beer-whisky-swa-faq",
+        "beer-whisky-cask-investment"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Single Cask, Scotch-Fassstärke, Small Batch und unabhängige Abfüllung geprüft. Flaschenzahl hängt von Inhalt/Verlust/Stärke/Flaschengröße ab; keine universelle 200–250-Regel oder Qualität aus Small Batch/Fassstärke."
+    },
+    {
+      "id": "academy:whiskey:20",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-penicillin",
+        "beer-whisky-whiskey-sour",
+        "beer-whisky-egg-safety",
+        "beer-whisky-health-dge"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Cocktaillektion und Quiz gelesen. IBA-Zusammensetzungen, Whiskey-Sour-Beispiel und pasteurisiertes Eiweiß/Hygiene geprüft. Ältester-Cocktail- und Toki-Markttransformationsbehauptung entfernt; Penicillin ohne Heilwirkung. Rezeptmengen keine sichere Trinkdosis."
+    },
+    {
+      "id": "academy:whiskey:21",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-health-dge",
+        "beer-whisky-health-who",
+        "beer-whisky-alcohol-label"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Alle Food-Pairingabschnitte und drei Fragen gelesen. Subjektive Kombinationen erhalten, Pflichtportion 30–40 ml je Gang entfernt. Freiwilligkeit/alkoholfreie Optionen; Essen, Kochen oder Wasser garantieren keine Entfernung von Alkohol."
+    },
+    {
+      "id": "academy:whiskey:22",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-cask-investment",
+        "beer-whisky-swa-faq"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Investmentlektion mit drei Fragen vollständig geprüft. Unbelegte 500-%-Rendite, 20–40-%-Fälschungsquote und automatische Fasswertsteigerung entfernt. Vertrag/Eigentum vom Lagerhalter bestätigen lassen, Delivery Order ggf. andere Dokumente; Kosten, Liquidität und 40-%-Risiko erläutert, keine Anlageempfehlung."
+    },
+    {
+      "id": "academy:whiskey:23",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-springbank",
+        "beer-whisky-macallan",
+        "beer-whisky-swa-faq"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Brennereibeispiele mit Hersteller-/Herkunftsangaben geprüft. Springbank 2,5/Longrow 2/Hazelburn 3; Macallan sherry-seasoned Eichenherkünfte. Keine gegenwärtigen Weltverkaufs-/Royal-Warrant-Exklusivbehauptungen, Fangemeindezahlen oder objektive Preis-Leistungs-Ränge."
+    },
+    {
+      "id": "academy:whiskey:24",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-scotch-file",
+        "beer-whisky-scotch-law",
+        "beer-whisky-us-whisky-law"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Kühlfiltration/Haze, E150a für Scotch und Bourbon-Farbstoffverbot geprüft. 46 % weder universelle Klarheitsgarantie noch Gesetzesschwelle; Natural Colour/NCF keine Qualitätszertifizierung. Gerüche keine alleinige Fehler- oder Sicherheitsdiagnose."
+    },
+    {
+      "id": "academy:whiskey:25",
+      "reviewedAt": "2026-10-12",
+      "sourceIds": [
+        "beer-whisky-sustainability",
+        "beer-whisky-scotch-law",
+        "beer-whisky-scotch-file",
+        "beer-whisky-springbank",
+        "beer-whisky-dilution",
+        "beer-whisky-us-whisky-law"
+      ],
+      "scope": "Volltext einschließlich drei Lektionen-Quizfragen gelesen. Zukunftslektion und alle zehn Whiskey-Abschlussfragen gelesen/abgeglichen. SWA Betriebsdekarbonisierung 2040 von Netto-Null aller Scopes 2045 getrennt. Keine US-Craft-Festzahl oder fälschungssichere Blockchain-Garantie; Innovation bleibt an Definition gebunden. Prüfungsfragen zu strikter Grenze, Verdünnungsmodell, Angel’s Share, Mizunara und Haze korrigiert."
+    }
+  ]
+}

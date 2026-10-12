@@ -16,17 +16,17 @@ export const likoereKurs: Course = {
       title: "Definition und Geschichte der Liköre",
       content: `## Was ist ein Likör?
 
-**Likör** ist per EU-Verordnung 2019/787 ein Spirituose mit einem Mindestzuckergehalt von **100 g/l** (Ausnahme: Kirschlikör mit 70 g/l) und einem Mindestalkoholgehalt von **15 % Vol.** Diese Definition grenzt Liköre klar von anderen Spirituosen ab: Während ein Gin oder Wodka keinen Mindestzuckergehalt aufweist, ist der Zucker beim Likör konstitutives Element. Der Zucker kann als Saccharose, Invertzucker, Traubenzucker, Fructose oder Honig zugeführt werden. Die Basis bildet ein Agraralkohol oder ein Destillat, das mit Aromastoffen — natürlichen Extrakten, Essenzen, Destillaten, Mazerate — und Süßungsmitteln kombiniert wird.
+**Likör** ist per EU-Verordnung 2019/787 eine Spirituose mit einem Mindestzuckergehalt von **100 g/l**, ausgedrückt als Invertzucker (Ausnahmen: 70 g/l für Kirschlikör, dessen Alkohol ausschließlich aus Kirschbrand stammt; 80 g/l für Enzianlikör und Liköre aus ähnlichen Pflanzen oder Wermut) und einem Mindestalkoholgehalt von **15 % Vol.** Diese Definition grenzt Liköre klar von anderen Spirituosen ab: Während ein Gin oder Wodka keinen Mindestzuckergehalt aufweist, ist der Zucker beim Likör konstitutives Element. Der Zucker kann als Saccharose, Invertzucker, Traubenzucker, Fructose oder Honig zugeführt werden. Die Basis bildet ein Agraralkohol oder ein Destillat, das mit Aromastoffen — natürlichen Extrakten, Essenzen, Destillaten, Mazerate — und Süßungsmitteln kombiniert wird.
 
 ## Historische Wurzeln
 
 **Die Geschichte der Liköre beginnt im Mittelalter**, als Mönche und Apotheker alkoholische Kräuterauszüge als Heilmittel herstellten. Der Begriff **Liquor** (lateinisch: Flüssigkeit) wandelte sich über das italienische **Liquore** zum heutigen Likör. Im 13. Jahrhundert entwickelten **Benediktiner- und Kartäusermönche** komplexe Rezepturen aus Dutzenden von Kräutern, Wurzeln und Gewürzen — die berühmte **Chartreuse** mit ihren 130 Kräutern geht auf eine Rezeptur von 1605 zurück, die den Kartäusern vom Marschall d'Estrées übergeben wurde.
 
-**Im 16. und 17. Jahrhundert** verlagerte sich die Likörproduktion von Klöstern an die europäischen Königshöfe. **Katharina de' Medici** brachte italienische Likörkultur nach Frankreich, als sie 1533 Heinrich II. heiratete. Die Destillierkunst verfeinerte sich: **Arnaldus de Villanova** und **Ramon Llull** hatten bereits im 13. Jahrhundert die Alkoholdestillation perfektioniert, die nun für filigranere Liköre genutzt wurde. Im **17. Jahrhundert** entstanden legendäre Häuser wie **Bols** (1575, Amsterdam), **Der Lachs** (1598, Danzig — berühmt für Danziger Goldwasser) und **Lucas Bols** professionalisierte die Likörherstellung als industrielle Disziplin.
+**Historische Beispiele**: Die Herstellerchronik von Bols führt die Amsterdamer Likörherstellung auf 1575 zurück; das Unternehmen Der Lachs entstand laut Hardenberg-Wilthen um 1598. Solche Herstellerhistorien erklären Markenherkunft, nicht eine heutige medizinische Wirkung.
 
 ## Vom Medikament zum Genussmittel
 
-**Im 18. und 19. Jahrhundert** vollzog sich der entscheidende Wandel: Liköre wurden von Heilmitteln zu Genussmitteln. Die **Kolonialisierung** brachte exotische Zutaten wie Kakao, Kaffee, tropische Früchte und Gewürze nach Europa und erweiterte die Palette dramatisch. **Marie Brizard** gründete 1755 ihr Haus in Bordeaux, **Cointreau** begann 1849 in Angers, **Grand Marnier** startete 1880. Die Industrialisierung ermöglichte eine standardisierte Massenproduktion, während gleichzeitig handwerkliche Häuser ihre Geheimrezepturen pflegten. Heute umfasst die Kategorie Likör Tausende Varianten in einem Spektrum von 15 bis 55 % Vol. Alkohol und von herb-bitter bis üppig-süß.`,
+**Im 18. und 19. Jahrhundert** vollzog sich der entscheidende Wandel: Liköre wurden von Heilmitteln zu Genussmitteln. Die **Kolonialisierung** brachte exotische Zutaten wie Kakao, Kaffee, tropische Früchte und Gewürze nach Europa und erweiterte die Palette dramatisch. **Marie Brizard** gründete 1755 ihr Haus in Bordeaux, **Cointreau** begann 1849 in Angers, **Grand Marnier** startete 1880. Die Industrialisierung ermöglichte eine standardisierte Massenproduktion, während gleichzeitig handwerkliche Häuser ihre Geheimrezepturen pflegten. Heute umfasst die Kategorie zahlreiche Varianten von herb-bitter bis üppig-süß; spezielle Unterkategorien besitzen eigene Anforderungen.`,
       quiz: [
         {
           question:
@@ -34,7 +34,7 @@ export const likoereKurs: Course = {
           options: ["50 g/l", "70 g/l", "100 g/l", "150 g/l"],
           correct: 2,
           explanation:
-            "Die EU-Verordnung 2019/787 schreibt mindestens 100 g/l Zucker vor. Ausnahme: Kirschlikör darf bereits ab 70 g/l als Likör gelten.",
+            "Die EU-Verordnung 2019/787 schreibt mindestens 100 g/l Zucker vor. Ausnahmen gelten für Kirschlikör mit ausschließlich Kirschbrand als Alkoholbasis (70 g/l) sowie Enzian-/vergleichbare Pflanzen- und Wermutliköre (80 g/l), jeweils als Invertzucker.",
         },
         {
           question:
@@ -47,7 +47,7 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Die Chartreuse wird von den Kartäusermönchen im Kloster Grande Chartreuse nahe Grenoble hergestellt. Die Rezeptur geht auf ein Manuskript von 1605 zurück.",
+            "Die Chartreuse steht in der Tradition der Kartäuser. Die heutige Destillerie Aiguenoire nahm laut Hersteller 2018 den Betrieb auf. Die Rezeptur geht auf ein Manuskript von 1605 zurück.",
         },
         {
           question:
@@ -73,7 +73,7 @@ export const likoereKurs: Course = {
 
 ## Perkolation — Das Durchströmungsprinzip
 
-**Die Perkolation** ähnelt dem Prinzip einer Kaffeemaschine: Der Alkohol wird wiederholt durch ein Bett aus pflanzlichen Materialien geleitet. Der Vorteil gegenüber der Mazeration liegt in der effizienteren Extraktion: Der Alkohol kommt ständig mit frischem Material in Kontakt, anstatt in einem zunehmend gesättigten Bad zu verweilen. Diese Methode wird häufig bei der Herstellung von **Kräuterlikören** mit vielen Komponenten eingesetzt, da jede Zutat separat perkoliert und später assembliert werden kann. Die Perkolation ermöglicht eine präzisere Kontrolle über die Extraktionsintensität einzelner Botanicals.
+**Die Perkolation**: Alkohol beziehungsweise eine Alkohol-Wasser-Mischung durchströmt ein Pflanzenbett. Durchfluss, Lösungsmittelmenge und Material beeinflussen die Extraktion. Eine Flüssigkeit kann auch hierbei sättigen; wiederholtes Durchströmen garantiert weder unbegrenzte Extraktion noch stets bessere Effizienz.
 
 ## Destillation — Reinheit und Finesse
 
@@ -88,13 +88,13 @@ export const likoereKurs: Course = {
             "Welchen Vorteil hat die Perkolation gegenüber der Mazeration?",
           options: [
             "Sie ist günstiger in der Anschaffung",
-            "Der Alkohol kommt ständig mit frischem Material in Kontakt, was die Extraktion effizienter macht",
+            "Der Alkohol durchströmt ein Pflanzenbett; der Prozess kann kontrolliert geführt werden",
             "Sie erzeugt automatisch eine höhere Alkoholstärke",
             "Sie benötigt keinen Alkohol als Lösungsmittel",
           ],
           correct: 1,
           explanation:
-            "Bei der Perkolation wird der Alkohol wiederholt durch das pflanzliche Material geleitet, sodass er nie gesättigt ist und effizienter extrahiert als bei der statischen Mazeration.",
+            "Bei der Perkolation durchströmt die Flüssigkeit ein Pflanzenbett. Sättigung ist möglich; eine höhere Effizienz ist keine automatische Eigenschaft jedes Verfahrens.",
         },
         {
           question:
@@ -134,11 +134,11 @@ export const likoereKurs: Course = {
 
 ## Chemie der Mazeration
 
-**Bei der Mazeration** wirkt Ethanol als selektives Lösungsmittel. Die Extraktion folgt dem **Fick'schen Diffusionsgesetz**: Aromastoffe wandern von Bereichen hoher Konzentration (im pflanzlichen Material) zu Bereichen niedriger Konzentration (im Alkohol). Die Extraktionseffizienz hängt ab von der **Alkoholstärke** (40–60 % Vol. sind optimal für die meisten Aromaverbindungen), der **Temperatur** (höhere Temperatur beschleunigt Diffusion, kann aber labile Verbindungen zerstören), der **Zerkleinerung** (mehr Oberfläche = schnellere Extraktion) und der **Einwirkdauer**. Bei der Mazeration gehen sowohl **flüchtige Verbindungen** (ätherische Öle, Ester) als auch **nicht-flüchtige Verbindungen** (Farbstoffe wie Anthocyane, Bitterstoffe, Tannine, Polyphenole) in Lösung.
+**Bei der Mazeration** wirkt Ethanol als selektives Lösungsmittel. Die Extraktion folgt dem **Fick'schen Diffusionsgesetz**: Aromastoffe wandern von Bereichen hoher Konzentration (im pflanzlichen Material) zu Bereichen niedriger Konzentration (im Alkohol). Die Extraktionseffizienz hängt ab von der **Alkoholstärke** (die geeignete Stärke hängt von den Zielstoffen und dem Ausgangsmaterial ab), der **Temperatur** (höhere Temperatur beschleunigt Diffusion, kann aber labile Verbindungen zerstören), der **Zerkleinerung** (mehr Oberfläche = schnellere Extraktion) und der **Einwirkdauer**. Bei der Mazeration gehen sowohl **flüchtige Verbindungen** (ätherische Öle, Ester) als auch **nicht-flüchtige Verbindungen** (Farbstoffe wie Anthocyane, Bitterstoffe, Tannine, Polyphenole) in Lösung.
 
 ## Chemie der Destillation
 
-**Bei der Destillation** werden die Mazeratbestandteile nach ihrem **Siedepunkt** getrennt. Nur flüchtige Verbindungen mit einem Siedepunkt unterhalb der Dampftemperatur gelangen ins Destillat. **Ätherische Öle** (Limonen, Linalool, Citral, Geraniol) destillieren hervorragend und ergeben ein brillantes, klares Destillat. **Farbstoffe** (Anthocyane, Chlorophyll, Carotinoide) sind nicht flüchtig und bleiben im Rückstand — deshalb sind reine Likördestillate immer farblos. **Bitterstoffe und Tannine** verbleiben ebenfalls im Sumpf. Der Brennmeister muss präzise den **Vorlauf** (Methanol, Acetaldehyd — toxisch und unangenehm), den **Mittellauf** (das Herzstück mit den gewünschten Aromen) und den **Nachlauf** (schwere Fuselöle, unangenehme Aromen) trennen.
+**Bei der Destillation** werden flüchtige Komponenten mit dem Dampf übergetragen und anschließend kondensiert. Bei Gemischen lässt sich das nicht als starre Grenze nach den Siedepunkten der Reinstoffe erklären. **Ätherische Öle** (Limonen, Linalool, Citral, Geraniol) destillieren hervorragend und ergeben ein brillantes, klares Destillat. **Farbstoffe** (Anthocyane, Chlorophyll, Carotinoide) sind nicht flüchtig und bleiben im Rückstand — deshalb sind reine Likördestillate immer farblos. **Bitterstoffe und Tannine** verbleiben ebenfalls im Sumpf. Die Auswahl von **Vorlauf**, **Mittellauf** und **Nachlauf** beeinflusst das Destillat. Methanol lässt sich nicht pauschal nur dem Vorlauf zuordnen. Dieses Kapitel ist keine Anleitung zur sicheren Destillation.
 
 ## Sensorischer Vergleich
 
@@ -163,16 +163,16 @@ export const likoereKurs: Course = {
         },
         {
           question:
-            "Welche Alkoholstärke ist optimal für die Mazeration der meisten Aromaverbindungen?",
+            "Welche Aussage zur geeigneten Alkoholstärke bei der Mazeration stimmt?",
           options: [
             "10–20 % Vol.",
             "20–30 % Vol.",
-            "40–60 % Vol.",
+            "Sie hängt von Ausgangsmaterial und Zielstoffen ab.",
             "80–96 % Vol.",
           ],
           correct: 2,
           explanation:
-            "Bei 40–60 % Vol. löst Ethanol die meisten Aromaverbindungen effizient. Zu niedriger Alkohol extrahiert unzureichend, zu hoher Alkohol kann Zellwände zu schnell zerstören und unerwünschte Stoffe lösen.",
+            "Es gibt keine universelle optimale Alkoholstärke für alle Aromastoffe und Pflanzen. Rezeptur und Prozess müssen passend gewählt werden.",
         },
         {
           question:
@@ -185,7 +185,7 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Der Mittellauf (Herzstück) enthält die gewünschten Aromastoffe. Vorlauf (Methanol) und Nachlauf (Fuselöle) werden abgetrennt.",
+            "Der Mittellauf (Herzstück) enthält die gewünschten Aromastoffe. Die Fraktionen enthalten unterschiedliche Stoffgemische. Die vereinfachte Behauptung, sämtliches Methanol sei nur im Vorlauf, wäre falsch.",
         },
       ],
     },
@@ -193,9 +193,9 @@ export const likoereKurs: Course = {
     // ─── Lektion 4 ───────────────────────────────────────────
     {
       title: "Fruchtliköre — Vielfalt aus Obst und Beeren",
-      content: `## Das größte Segment der Likörwelt
+      content: `## Fruchtliköre unterscheiden
 
-**Fruchtliköre** bilden die umfangreichste und vielfältigste Kategorie innerhalb der Likörwelt. Von Cassis bis Maracuja, von Kirsch bis Mango — nahezu jede Frucht kann zur Basis eines Likörs werden. Die EU-Verordnung definiert spezielle Unterkategorien: **Crème de** (z. B. Crème de Cassis) muss mindestens 250 g/l Zucker enthalten, **Crème de Cassis de Dijon** verlangt sogar 400 g/l. Diese Crème-Liköre sind nicht zu verwechseln mit Cremelikören auf Sahnebasis — das „Crème" bezieht sich hier auf die sirupartige, cremige Textur durch den hohen Zuckergehalt.
+**Fruchtliköre** bilden die umfangreichste und vielfältigste Kategorie innerhalb der Likörwelt. Von Cassis bis Maracuja, von Kirsch bis Mango — nahezu jede Frucht kann zur Basis eines Likörs werden. Die EU-Verordnung definiert spezielle Unterkategorien: **Crème de** (z. B. Crème de Cassis) muss mindestens 250 g/l Zucker enthalten, **Crème de Cassis** verlangt allgemein mehr als 400 g/l als Invertzucker, nicht nur die Herkunft Dijon. Diese Crème-Liköre sind nicht zu verwechseln mit Cremelikören auf Sahnebasis — das „Crème" bezieht sich hier auf die sirupartige, cremige Textur durch den hohen Zuckergehalt.
 
 ## Kernobstliköre
 
@@ -203,11 +203,11 @@ export const likoereKurs: Course = {
 
 ## Beerenliköre
 
-**Crème de Cassis** (schwarze Johannisbeere) ist der meistverkaufte Beerenlikör weltweit und die Basis des legendären **Kir** (Cassis + Weißwein) und **Kir Royal** (Cassis + Champagner). Die besten Qualitäten stammen aus Dijon (Burgund) und verwenden die Sorte **Noir de Bourgogne**. Die Extraktion erfolgt durch Mazeration in Neutralalkohol über mehrere Wochen. **Himbeerlikör** (Chambord ist die bekannteste Marke, aus dem Loire-Tal) kombiniert Himbeeren mit Honig, Vanille und Cognac. **Brombeerlikör**, **Heidelbeerlikör** und **Erdbeerlikör** sind traditionell in Deutschland als Aufgesetzte (Hausansätze) verbreitet und werden industriell vor allem für den Bargebrauch produziert.
+**Crème de Cassis** (schwarze Johannisbeere) ist ein bekannter Johannisbeerlikör und die Basis des legendären **Kir** (Cassis + Weißwein) und **Kir Royal** (Cassis + Champagner). Die besten Qualitäten stammen aus Dijon (Burgund) und verwenden die Sorte **Noir de Bourgogne**. Die Extraktion erfolgt durch Mazeration in Neutralalkohol über mehrere Wochen. **Himbeerlikör** (Chambord ist die bekannteste Marke, aus dem Loire-Tal) kombiniert Himbeeren mit Honig, Vanille und Cognac. **Brombeerlikör**, **Heidelbeerlikör** und **Erdbeerlikör** sind traditionell in Deutschland als Aufgesetzte (Hausansätze) verbreitet und werden industriell vor allem für den Bargebrauch produziert.
 
 ## Tropische und Zitrusliköre
 
-**Zitrusliköre** sind eine eigenständige Großkategorie: **Curaçao** (aus Laraha-Orangen der Insel Curaçao, oft blau gefärbt), **Triple Sec** (dreifach destillierter Orangenlikör, z. B. Cointreau), **Grand Marnier** (Bitterorangen-Destillat auf Cognac-Basis). **Limoncello** aus Kampanien mazeriert die Schale der **Sfusato Amalfitano**-Zitrone in hochprozentigem Alkohol und wird eisgekühlt als Digestif getrunken. **Tropische Fruchtliköre** wie Passionsfrucht (Passoã), Mango, Litschi (Soho) und Kokosnuss (Malibu — technisch ein Rumlikör) bedienen die Cocktailkultur und zeichnen sich durch süße, exotische Aromatik aus.`,
+**Zitrusliköre** sind eine eigenständige Großkategorie: **Curaçao** (aus Laraha-Orangen der Insel Curaçao, oft blau gefärbt), **Triple Sec** (generische Bezeichnung für einen Orangenlikör, z. B. Cointreau; kein garantierter Dreifach-Destillationsprozess), **Grand Marnier** (Bitterorangen-Destillat auf Cognac-Basis). **Limoncello** aus Kampanien mazeriert die Schale der **Sfusato Amalfitano**-Zitrone in hochprozentigem Alkohol und wird eisgekühlt als Digestif getrunken. **Tropische Fruchtliköre** wie Passionsfrucht (Passoã), Mango, Litschi (Soho) und Kokosnuss (Malibu — technisch ein Rumlikör) bedienen die Cocktailkultur und zeichnen sich durch süße, exotische Aromatik aus.`,
       quiz: [
         {
           question:
@@ -255,19 +255,19 @@ export const likoereKurs: Course = {
       title: "Kräuterliköre und Bitters",
       content: `## Die komplexeste Likör-Kategorie
 
-**Kräuterliköre** (auch Bitter-Liköre oder Amari) sind die wohl vielschichtigste Untergattung der Liköre. Sie basieren auf der Mazeration und/oder Destillation Dutzender bis über hundert pflanzlicher Zutaten — Kräuter, Wurzeln, Rinden, Blüten, Samen und Gewürze. Die Rezepturen sind oft Jahrhunderte alt und streng geheim. Der Geschmack bewegt sich zwischen süß-herb und intensiv-bitter, wobei die **Bitterstoffe** (Absinthin, Amarogentin, Chinin) maßgeblich zum Charakter beitragen und den Verdauungsprozess anregen.
+**Kräuterliköre** (auch Bitter-Liköre oder Amari) sind die wohl vielschichtigste Untergattung der Liköre. Sie basieren auf der Mazeration und/oder Destillation Dutzender bis über hundert pflanzlicher Zutaten — Kräuter, Wurzeln, Rinden, Blüten, Samen und Gewürze. Die Rezepturen sind oft Jahrhunderte alt und streng geheim. Der Geschmack bewegt sich zwischen süß-herb und intensiv-bitter, wobei **Bitterstoffe** maßgeblich zum Geschmack beitragen; eine gesundheitliche Wirkung des Getränks folgt daraus nicht.
 
 ## Amarogentin und die Bitterkeit
 
-**Die Bitterstoffe** in Kräuterlikören stammen aus spezifischen Pflanzen: **Enzianwurzel** enthält Amarogentin — eine der bittersten natürlichen Substanzen, nachweisbar in einer Verdünnung von 1:58.000.000. **Wermutkraut** (Artemisia absinthium) liefert Absinthin. **Chinarinde** (Cinchona) enthält Chinin. **Artischockenblätter** bringen Cynarin ein. **Löwenzahnwurzel**, **Angelikawurzel** und **Enzian** sind die drei häufigsten Bitterpflanzen in europäischen Kräuterlikören. Die Bitterstoffe interagieren mit den **T2R-Bitterrezeptoren** auf der Zunge und stimulieren reflexartig die Produktion von Speichel, Magensäure und Gallenflüssigkeit — daher die traditionelle Verwendung als Digestif.
+**Bittere Pflanzenstoffe** prägen manche Kräuterliköre. Enzian, Wermut und andere Botanicals liefern unterschiedliche bittere Aromaprofile. Bittergeschmack und kulturelle Digestif-Verwendung beweisen keine Verdauungswirkung des alkoholischen Getränks. Konkrete Zutaten sind herstellerabhängig und bei Geheimrezepturen nicht vollständig bekannt.
 
 ## Die großen Kräuterlikör-Familien
 
-**Italienische Amari** sind die vielfältigste Gruppe: **Fernet-Branca** (1845, Mailand) ist extrem bitter und intensiv, mit Myrrhe, Safran, Kamille und Aloe. **Amaro Montenegro** (1885, Bologna) zeigt eine elegantere, süßer-herbe Balance mit 40 Botanicals. **Averna** (1868, Sizilien) ist runder und süßer mit Orangenschale und Myrte. **Amaro Nonino** (Friaul) verwendet Grappa als Basis und zeigt kräuterfrische Eleganz. **Deutsche Kräuterliköre** wie **Jägermeister** (56 Kräuter), **Underberg** (aus Rheinberger Tradition), **Ramazzotti** (tatsächlich italienisch, aber in Deutschland sehr populär) und **Killepitsch** (90 Kräuter, aus Düsseldorf) haben eigene Stilistiken.
+**Italienische Amari** sind die vielfältigste Gruppe: **Fernet-Branca** (1845, Mailand) ist extrem bitter und intensiv, mit Myrrhe, Safran, Kamille und Aloe. **Amaro Montenegro** (1885, Bologna) zeigt eine elegantere, süßer-herbe Balance mit 40 Botanicals. **Averna** (1868, Sizilien) ist runder und süßer mit Orangenschale und Myrte. **Amaro Nonino Quintessentia** (Friaul) wird mit gereiftem ÙE-Traubenbrand (Acquavite d'Uva) veredelt und zeigt kräuterfrische Eleganz. **Deutsche Kräuterliköre** wie **Jägermeister** (56 Kräuter), **Underberg** (aus Rheinberger Tradition), **Ramazzotti** (tatsächlich italienisch, aber in Deutschland sehr populär) und **Killepitsch** (98 Kräuter, Beeren und Früchte, aus Düsseldorf) haben eigene Stilistiken.
 
 ## Bitters vs. Kräuterliköre
 
-**Bitters** im engeren Sinne — wie **Angostura** (Trinidad, 1824), **Peychaud's** (New Orleans, 1830) oder **Orange Bitters** — sind hochkonzentrierte Aromaextrakte mit 40–50 % Vol. Alkohol, die tropfenweise eingesetzt werden und nicht zum direkten Trinken bestimmt sind. Sie fallen rechtlich nicht unter die Likör-Kategorie, da sie den Mindestzuckergehalt nicht erfüllen. **Potable Bitters** wie die Amari sind hingegen Liköre, die trotz ihrer Bitterkeit genug Zucker für die EU-Klassifikation enthalten und als eigenständige Drinks genossen werden. Die Grenze zwischen beiden ist fließend: Ein **Aperol** (11 % Vol., süß-bitter) steht geschmacklich näher am Likör, ein **Campari** (25 % Vol., intensiv bitter) balanciert zwischen beiden Welten.`,
+**Cocktail-Bitters** wie Angostura sind konzentrierte Würzzutaten, die in kleinen Dashes eingesetzt werden. Davon sind trinkfertig angebotene Bitterspirituosen und Amari zu unterscheiden. Der Geschmack allein bestimmt nicht die EU-Kategorie; die konkrete Zusammensetzung und rechtliche Bezeichnung sind maßgeblich. Nicht jeder bittere Aperitif ist ein Likör, insbesondere nicht automatisch ein 11-%-Produkt.`,
       quiz: [
         {
           question:
@@ -280,24 +280,24 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Amarogentin aus der Enzianwurzel ist eine der bittersten bekannten natürlichen Substanzen — nachweisbar in einer Verdünnung von 1:58.000.000.",
+            "Amarogentin aus der Enzianwurzel ist ein intensiv bitterer Pflanzenstoff.",
         },
         {
           question:
-            "Warum gelten Angostura Bitters nicht als Likör?",
+            "Warum werden Angostura Cocktail-Bitters in kleinen Dashes eingesetzt?",
           options: [
             "Weil sie keinen Alkohol enthalten",
-            "Weil sie den Mindestzuckergehalt von 100 g/l nicht erfüllen",
+            "Weil sie konzentrierte Würz- und Aromazutaten sind",
             "Weil sie aus Trinidad stammen",
             "Weil sie nur aus einer einzigen Zutat bestehen",
           ],
           correct: 1,
           explanation:
-            "Cocktail-Bitters wie Angostura sind hochkonzentrierte Extrakte mit hohem Alkohol, aber wenig Zucker. Sie erfüllen nicht den EU-Mindestzuckergehalt von 100 g/l.",
+            "Der Hersteller beschreibt Angostura Bitters als Aromazutat für kleine Dashes. Eine pauschale Aussage über alle Bitterspirituosen folgt daraus nicht.",
         },
         {
           question:
-            "Welcher deutsche Kräuterlikör stammt aus Düsseldorf und enthält 90 Kräuter?",
+            "Welcher Kräuterlikör stammt aus Düsseldorf?",
           options: [
             "Jägermeister",
             "Underberg",
@@ -306,7 +306,7 @@ export const likoereKurs: Course = {
           ],
           correct: 2,
           explanation:
-            "Killepitsch ist ein Düsseldorfer Kräuterlikör mit 90 Kräutern, Beeren und Gewürzen. Der Name ist Düsseldorfer Mundart für 'Schnäpschen'.",
+            "Killepitsch ist ein Düsseldorfer Kräuterlikör. Die aktuelle Herstellerseite nennt 98 Kräuter, Beeren und Früchte und 42 % Vol.",
         },
       ],
     },
@@ -314,117 +314,50 @@ export const likoereKurs: Course = {
     // ─── Lektion 6 ───────────────────────────────────────────
     {
       title: "Nussliköre — Walnuss, Haselnuss und Mandel",
-      content: `## Eine uralte Tradition
+      content: `## Nussaromen und unterschiedliche Rohstoffe
 
-**Nussliköre** gehören zu den ältesten Likörformen und sind in der europäischen Hausbrennerei tief verwurzelt. Ihre Herstellung beruht auf der Mazeration von Nüssen — ganz, zerkleinert, geröstet oder als Schale — in Alkohol. Die Aromenstoffe in Nüssen sind besonders komplex: **Diacetyl** (butterig), **Furfural** (karamellig, geröstet), **Benzaldehyd** (Bittermandel), **Vanillin** und zahlreiche Fettsäureester bilden ein vielschichtiges Geschmacksprofil. Die natürlichen Öle der Nüsse tragen zu einem samtigen, vollmundigen Mundgefühl bei.
+**Nussliköre** sind keine einheitliche Rezeptur. Nüsse, geröstete Nüsse, pflanzliche Extrakte und weitere Zutaten können ein nussiges Aroma ergeben. Die konkrete Zutaten- und Allergeninformation ist wichtiger als der Name oder eine Verkostungsbeschreibung.
 
-## Walnusslikör — Nocino und Verwandte
+## Walnuss- und Haselnussbeispiele
 
-**Nocino** ist der bekannteste Walnusslikör der Welt und stammt aus der Emilia-Romagna (Italien). Traditionell werden am **Johannistag** (24. Juni) unreife, grüne Walnüsse geerntet, wenn die Schale noch weich genug ist, um mit einem Messer durchschnitten zu werden. Die geviertelten Nüsse werden in Alkohol (typisch: 95 % Vol. Agraralkohol) mazeriert, zusammen mit Gewürzen wie **Zimt**, **Gewürznelken**, **Sternanis** und Zitronenschale. Die Mazeration dauert mindestens **40–60 Tage** an einem sonnigen Ort — die UV-Strahlung fördert die Oxidation der Juglone (Naphthochinone), die dem Nocino seine charakteristische tiefbraune Farbe verleihen. Nach der Filtration wird mit Zuckersirup gesüßt. Hochwertiger Nocino reift danach mindestens ein Jahr.
+**Nocino** steht für einen dunkel beschriebenen Walnusslikör aus grünen, unreifen Walnüssen. Erntezustand, Gewürze und Verarbeitung sind rezeptabhängig; ein fixes Kalenderdatum, eine Sonneneinstrahlung oder eine bestimmte Ansatzdauer sind keine universelle Qualitätsregel.
 
-## Haselnusslikör — Frangelico und Tradition
+**Frangelico** beschreibt seinen charakteristischen Geschmack als von italienischen Haselnüssen geprägt. Die Marke ist ein Beispiel für den Haselnussstil, nicht ein Beleg, dass jede Nusslikörrezeptur dasselbe Verfahren oder dieselbe Zusammensetzung besitzt.
 
-**Frangelico** ist der weltweit meistverkaufte Haselnusslikör und wird in Canale d'Alba im Piemont hergestellt. Er kombiniert geröstete piemontesische **Tonda Gentile**-Haselnüsse (eine der edelsten Haselnusssorten weltweit) mit einem Destillat, Kakao- und Vanille-Extrakten. Die gerösteten Nüsse werden mazeriert und anschließend destilliert, bevor die Assemblage mit Aromaextrakten und Zucker erfolgt. Die ikonische Flaschenform — ein Franziskaner-Mönch mit Gürtelschnur — verweist auf die Legende, dass piemontesische Einsiedler im 17. Jahrhundert die ersten Haselnussliköre herstellten.
+## Amaretto nicht auf eine Zutat reduzieren
 
-## Amaretto — Mandellikör oder Aprikosenkern?
+**Amaretto** bezeichnet einen mandelartig wahrgenommenen Stil. Daraus folgt nicht automatisch, dass Mandeln oder Aprikosenkerne in jedem Produkt enthalten sind. **Lazzaroni Amaretto 1851** wird nach Herstellerangabe durch Infusion von Amaretti-Keksen hergestellt; die veröffentlichten Zutaten nennen diese Infusion ausdrücklich. Andere Rezepturen sind damit nicht bewiesen.
 
-**Amaretto** ist eine der faszinierendsten Likör-Kategorien, denn trotz seines Namens (von „amaro" = bitter) und seines charakteristischen Mandelgeschmacks enthalten die meisten Amaretti **keine Mandeln**, sondern **Aprikosenkerne** (Prunus armeniaca). Diese enthalten wie Bittermandeln das Glykosid **Amygdalin**, das beim enzymatischen Abbau Benzaldehyd freisetzt — die Verbindung, die wir als „Mandelgeschmack" wahrnehmen. **Disaronno Originale** (der meistverkaufte Amaretto) verwendet Aprikosenkerne, die in Alkohol mazeriert und anschließend destilliert werden, kombiniert mit Karamell und Vanille. **Lazzaroni Amaretto** hingegen verwendet tatsächlich Bittermandeln und Aprikosenkerne. Amaretto wird pur auf Eis getrunken, in Cocktails wie dem **Amaretto Sour** verwendet oder in der Konditorei zum Aromatisieren von Tiramisù und Panna Cotta eingesetzt.`,
+**Sicherheit**: Bittere Aprikosenkerne und Bittermandeln können aus cyanogenen Glykosiden giftige Blausäure freisetzen. Keine Hausansätze mit zerkleinerten Kernen oder unbekannten Pflanzen aus einer Markenbeschreibung ableiten. Bei Allergien die konkreten Zutaten und Herstellerinformationen prüfen, nicht aus dem Aromabegriff 'Mandel' auf Sicherheit schließen.`,
       quiz: [
-        {
-          question:
-            "Wann werden traditionell die Walnüsse für Nocino geerntet?",
-          options: [
-            "Am 1. Januar, wenn sie vollreif sind",
-            "Am 24. Juni (Johannistag), wenn sie noch grün und unreif sind",
-            "Im Oktober, wenn sie vom Baum fallen",
-            "Im März, bevor die Blätter austreiben",
-          ],
-          correct: 1,
-          explanation:
-            "Traditionell werden die grünen, unreifen Walnüsse am Johannistag (24. Juni) geerntet, wenn die Schale noch weich genug ist, um mit einem Messer durchgeschnitten zu werden.",
-        },
-        {
-          question:
-            "Welche Zutat liefert den typischen 'Mandelgeschmack' in den meisten Amaretti?",
-          options: [
-            "Süße Mandeln",
-            "Aprikosenkerne",
-            "Kokosnuss",
-            "Pistazien",
-          ],
-          correct: 1,
-          explanation:
-            "Die meisten Amaretti verwenden Aprikosenkerne statt Mandeln. Beide enthalten Amygdalin, das zu Benzaldehyd abgebaut wird — der Verbindung, die wir als Mandelgeschmack empfinden.",
-        },
-        {
-          question:
-            "Welche chemische Verbindung gibt dem Nocino seine tiefbraune Farbe?",
-          options: ["Karamell", "Juglone (Naphthochinone)", "Melanin", "Tannin"],
-          correct: 1,
-          explanation:
-            "Juglone sind Naphthochinone aus der Walnussschale, die durch Oxidation (gefördert durch UV-Strahlung während der Mazeration) die tiefbraune Farbe des Nocino erzeugen.",
-        },
+        {"question":"Was lässt sich aus einem Mandelaroma allein ableiten?","options":["Dass immer Mandeln enthalten sind","Keine sichere Aussage über die konkrete Zutat oder Allergensicherheit","Dass keine Allergene vorkommen","Dass jede Rezeptur gleich ist"],"correct":1,"explanation":"Aroma und Zutaten sind nicht identisch. Etikett und Herstellerangaben des Produkts prüfen."},
+        {"question":"Wie beschreibt Lazzaroni die Basis seines Amaretto 1851?","options":["Als reinen Mandelbrand","Als Infusion von Amaretti-Keksen","Als Walnusswein","Als Kaffeeextrakt"],"correct":1,"explanation":"Die veröffentlichte Herstellungsbeschreibung nennt die Kekse und eine Infusion; daraus folgt keine allgemeine Rezeptur aller Amaretti."},
+        {"question":"Warum sind bittere Aprikosenkerne kein bedenkenloser Hausansatz-Rohstoff?","options":["Sie enthalten keinen Geschmack","Sie können giftige Blausäure freisetzen","Sie machen Alkohol alkoholfrei","Sie sterilisieren die Mischung"],"correct":1,"explanation":"Das BfR warnt vor Vergiftungsrisiken. Eine kommerzielle Rezepturbeschreibung ist keine sichere Heimherstellungsanleitung."},
       ],
     },
 
     // ─── Lektion 7 ───────────────────────────────────────────
     {
       title: "Sahne- und Cremeliköre",
-      content: `## Emulsion als Kunstform
+      content: `## Emulsion und Rezeptur
 
-**Sahne- und Cremeliköre** sind technologisch die anspruchsvollsten Liköre, denn sie vereinen zwei Komponenten, die sich von Natur aus abstoßen: Fett (aus Sahne oder Milch) und Alkohol. Die Herstellung erfordert eine stabile **Öl-in-Wasser-Emulsion**, die über Monate bis Jahre stabil bleiben muss, ohne sich zu trennen, auszuflocken oder mikrobiologisch zu verderben. Der Schlüssel liegt in **Emulgatoren** (meist Natriumkaseinat aus Milcheiweiß), **Homogenisierung** unter hohem Druck (150–250 bar) und einer präzisen Rezeptur, die pH-Wert, Fettgehalt und Alkoholstärke in einem stabilen Gleichgewicht hält.
+**Sahne- und Cremeliköre** kombinieren eine Alkoholbasis mit Milch-/Sahnebestandteilen und weiteren Zutaten. Eine stabile Emulsion erfordert eine abgestimmte Rezeptur und Prozessführung. Emulgierung und Homogenisierung sind mögliche technische Schritte; genaue Drücke, Fettanteile und Zusatzstoffe sind herstellerabhängig, keine allgemeine Pflichtrezeptur.
 
-## Baileys — Der Pionier
+## Baileys als konkretes Beispiel
 
-**Baileys Irish Cream** (1974) war der erste moderne Sahnelikör und ist bis heute mit Abstand Weltmarktführer. Die Entwicklung war eine technologische Innovation: Es gelang erstmals, frische irische Sahne mit irischem Whiskey zu einer haltbaren, homogenen Emulsion zu verbinden, die ohne Kühlung 24 Monate stabil bleibt. Die Rezeptur: **Irische Sahne** (ca. 50 % Fettanteil), **irischer Whiskey**, **Zucker**, **Kakao-Extrakt**, **Vanille** und **Natriumkaseinat** als Emulgator. Der Herstellungsprozess beginnt mit der **Pasteurisierung** der Sahne, gefolgt von der **Homogenisierung** (die Fettkügelchen werden auf unter 1 Mikrometer zerkleinert, sodass sie nicht mehr aufrahmen können), dann wird der Whiskey bei präziser Temperatur eingerührt.
+Die aktuelle Hersteller-FAQ nennt für **Baileys Original Irish Cream** 17 % Vol., Sahne und Milchproteine sowie Neutralalkohol und Irish Whiskey. Der Hersteller gibt **24 Monate ab Abfüllung**, geöffnet oder ungeöffnet, bei 0–25 °C und Schutz vor direkter Sonne an. Das gilt nicht automatisch für alle Varianten, Flaschengrößen oder andere Sahneliköre.
 
-## Internationale Cremelikör-Vielfalt
+## Haltbarkeit richtig beraten
 
-**Vana Tallinn Cream** (Estland) verwendet den traditionellen estnischen Rumlikör als Basis. **Dooley's** (deutsch-niederländische Marke) kombiniert Sahne mit Toffee und Wodka. **Sheridans** (irisch) wird in einer ikonischen Doppelflaschen abgefüllt — eine Hälfte enthält Kaffee-Schokoladen-Likör, die andere Vanille-Sahnelikör. **RumChata** (USA) basiert auf Horchata (Reismilch mit Zimt) und karibischem Rum. **Amarula** (Südafrika) wird aus der Marula-Frucht hergestellt — die Frucht wird fermentiert, destilliert und dann mit Sahne emulgiert. In Deutschland sind **Verpoorten Eierlikör** (technisch ein Ei-, kein Sahnelikör) und regionale Eierpunsch-Varianten besonders beliebt.
+Es gibt keine allgemeingültige Regel 'geöffnet sechs Monate' für die ganze Kategorie. Produkt, Verpackung, Lagertemperatur und Herstellerhinweise entscheiden. Mindesthaltbarkeitsdatum und Hinweise nach dem Öffnen beachten; bei Unsicherheit den Hersteller fragen. Alkohol allein ist keine Sterilitätsgarantie.
 
-## Haltbarkeit und Lagerung
+## Veränderungen beurteilen
 
-**Die Haltbarkeit** von Sahnelikören ist begrenzt im Vergleich zu anderen Spirituosen. Ungeöffnet halten die meisten Markenprodukte **24 Monate** bei Raumtemperatur (15–25 °C). Geöffnet sollte der Likör innerhalb von **6 Monaten** aufgebraucht werden. **Kühlung verlängert die Haltbarkeit**, ist aber bei modernen Produkten nicht zwingend nötig. Anzeichen für Verderb: **Ausflocken** (die Emulsion bricht), **Phasentrennung** (Fett schwimmt oben), **säuerlicher Geruch** (mikrobielle Aktivität) oder **Konsistenzänderung** (wird dickflüssig oder klumpig). Der Alkoholgehalt (typisch 15–17 % Vol.) wirkt konservierend, ist aber allein nicht ausreichend — daher enthalten industrielle Sahneliköre zusätzlich **Konservierungsstoffe** oder setzen auf UHT-Behandlung der Sahnekomponente.`,
+Ausflockung oder Phasentrennung können eine gebrochene Emulsion anzeigen, etwa nach Kontakt mit sauren Zutaten. Das ist nicht automatisch ein Nachweis mikrobiellen Verderbs. Umgekehrt beweisen unauffälliger Geruch und Geschmack keine Sicherheit. Auffällige oder falsch gelagerte Produkte nicht probieren, um ihre Sicherheit zu testen.`,
       quiz: [
-        {
-          question:
-            "Welche Substanz dient in Sahnelikören typischerweise als Emulgator?",
-          options: [
-            "Lecithin aus Soja",
-            "Natriumkaseinat aus Milcheiweiß",
-            "Xanthan Gum",
-            "Gelatine",
-          ],
-          correct: 1,
-          explanation:
-            "Natriumkaseinat (ein Milcheiweiß-Derivat) ist der Standardemulgator in Sahnelikören. Es stabilisiert die Öl-in-Wasser-Emulsion und verhindert die Trennung von Fett und Alkohol.",
-        },
-        {
-          question:
-            "Bei welchem Druck werden Sahneliköre typischerweise homogenisiert?",
-          options: [
-            "10–20 bar",
-            "50–80 bar",
-            "150–250 bar",
-            "500–800 bar",
-          ],
-          correct: 2,
-          explanation:
-            "Sahneliköre werden bei 150–250 bar homogenisiert. Dabei werden die Fettkügelchen auf unter 1 Mikrometer zerkleinert, sodass sie nicht mehr aufrahmen.",
-        },
-        {
-          question:
-            "Wie lange hält ein geöffneter Sahnelikör typischerweise?",
-          options: [
-            "Unbegrenzt wie andere Spirituosen",
-            "Maximal 1 Woche",
-            "Etwa 6 Monate",
-            "Exakt 24 Monate",
-          ],
-          correct: 2,
-          explanation:
-            "Geöffnete Sahneliköre sollten innerhalb von 6 Monaten aufgebraucht werden. Der Kontakt mit Luft beschleunigt die Oxidation und den mikrobiellen Verderb.",
-        },
+        {"question":"Was muss für eine stabile Sahnelikör-Emulsion abgestimmt werden?","options":["Nur die Flaschenfarbe","Rezeptur und Prozessführung","Nur der Markenname","Immer exakt dieselbe Fettmenge"],"correct":1,"explanation":"Die genaue Art und Menge von Emulgatoren sowie technische Parameter sind produktabhängig."},
+        {"question":"Welche Alkoholbasis nennt die Baileys-FAQ?","options":["Nur Scotch Whisky","Neutralalkohol und Irish Whiskey","Nur Bier","Keinen Alkohol"],"correct":1,"explanation":"Die FAQ nennt beide Bestandteile. Das Produkt enthält außerdem Sahne und Milchproteine."},
+        {"question":"Wie wird die Haltbarkeit eines geöffneten Sahnelikörs bestimmt?","options":["Immer sechs Monate","Anhand der konkreten Hersteller- und Produkthinweise","Unbegrenzt","Nur durch Probieren"],"correct":1,"explanation":"Baileys Original nennt zum Beispiel 24 Monate ab Abfüllung bei seinen Lagerbedingungen, geöffnet oder ungeöffnet. Das ist keine pauschale Kategorieregel."},
       ],
     },
 
@@ -433,11 +366,11 @@ export const likoereKurs: Course = {
       title: "Kaffeeliköre — Von Kahlúa bis Cold Brew",
       content: `## Kaffee trifft Alkohol
 
-**Kaffeeliköre** vereinen zwei der beliebtesten Genussmittel der Welt und bilden eine der kommerziell erfolgreichsten Likör-Kategorien. Die Herstellung erfordert Expertise in zwei Domänen: Kaffeeverarbeitung und Likörproduktion. Die Aromenkomplexität von Kaffee — über **1.000 identifizierte flüchtige Verbindungen** — bietet ein enormes Gestaltungsspektrum, das durch die Wahl der Kaffesorte, des Röstgrads, der Extraktionsmethode und der Alkoholbasis vielfältig moduliert werden kann.
+**Kaffeeliköre** vereinen zwei der beliebtesten Genussmittel der Welt und bilden eine der kommerziell erfolgreichsten Likör-Kategorien. Die Herstellung erfordert Expertise in zwei Domänen: Kaffeeverarbeitung und Likörproduktion. Die Aromenkomplexität von Kaffee — viele flüchtige Verbindungen — bietet ein enormes Gestaltungsspektrum, das durch die Wahl der Kaffesorte, des Röstgrads, der Extraktionsmethode und der Alkoholbasis vielfältig moduliert werden kann.
 
 ## Die Großen Marken
 
-**Kahlúa** (1936, Mexiko) ist der meistverkaufte Kaffeelikör weltweit. Er basiert auf **Arabica-Kaffee** aus Veracruz (Mexiko), **Zuckerrohr-Rum** und Vanille. Die Kaffeebohnen werden geröstet, gemahlen und als Kaltextrakt gewonnen, der dann mit dem Rum, Zucker und Vanille assembliert wird. **Tia Maria** (1946, Jamaika) verwendet **Blue-Mountain-Kaffee** (eine der edelsten und teuersten Kaffeesorten der Welt) mit jamaikanischem Rum und Vanille — das Ergebnis ist eleganter und weniger süß als Kahlúa. **Mr. Black** (Australien) repräsentiert die neue Generation: Ein **Cold-Brew-Kaffeelikör** mit höherem Alkoholgehalt (25 % Vol.) und weniger Zucker, der die Kaffeearomen unverfälscht in den Vordergrund stellt.
+**Kahlúa** (1936, Mexiko) ist ein bekannter Kaffeelikör. Er basiert auf **Arabica-Kaffee** aus Veracruz (Mexiko), **Zuckerrohr-Rum** und Vanille. Die Kaffeebohnen werden geröstet, gemahlen und als Kaltextrakt gewonnen, der dann mit dem Rum, Zucker und Vanille assembliert wird. **Tia Maria** (1946, Jamaika) verwendet **Arabica-Kaffee aus Brasilien** im Cold-Brew-Verfahren; die aktuelle Herstellerbeschreibung nennt keine Blue-Mountain-Herkunft. **Mr. Black** (Australien) repräsentiert die neue Generation: Ein **Cold-Brew-Kaffeelikör** mit höherem Alkoholgehalt (25 % Vol.) und weniger Zucker, der die Kaffeearomen unverfälscht in den Vordergrund stellt.
 
 ## Herstellungsmethoden
 
@@ -452,13 +385,13 @@ export const likoereKurs: Course = {
             "Welche Kaffeebohnensorte verwendet Tia Maria?",
           options: [
             "Robusta aus Vietnam",
-            "Blue-Mountain-Kaffee aus Jamaika",
+            "Arabica-Kaffee aus Brasilien",
             "Arabica aus Veracruz, Mexiko",
             "Liberica aus den Philippinen",
           ],
           correct: 1,
           explanation:
-            "Tia Maria verwendet den renommierten Blue-Mountain-Kaffee aus Jamaika, eine der teuersten und edelsten Kaffeesorten weltweit.",
+            "Die aktuelle Herstellerseite nennt 100 % Arabica-Kaffee aus Brasilien und Cold-Brew-Extraktion.",
         },
         {
           question:
@@ -494,40 +427,40 @@ export const likoereKurs: Course = {
       title: "Schokoladenliköre — Vom Kakao zum Genuss",
       content: `## Kakao als Likör-Zutat
 
-**Schokoladenliköre** verbinden die sensorische Welt des Kakaos mit Spirituosen zu einem der genussreichsten Segmente der Likörwelt. Die Basis bildet **Kakao** in verschiedenen Formen: **Kakaopulver** (entölt oder vollfett), **Kakaonibs** (geröstete, gebrochene Kakaobohnen), **Kakaobutter**, **Schokoladenmasse** oder **Kakaoextrakte**. Kakao enthält über **600 Aromaverbindungen** — darunter Pyrazine (nussig, röstig), Aldehyde (fruchtig), Ester (blumig) und Phenole (rauchig). Das Zusammenspiel dieser Verbindungen mit Alkohol, Zucker und eventuell Sahne erzeugt ein außerordentlich komplexes Geschmackserlebnis.
+**Schokoladenliköre** verbinden die sensorische Welt des Kakaos mit Spirituosen zu einem der genussreichsten Segmente der Likörwelt. Die Basis bildet **Kakao** in verschiedenen Formen: **Kakaopulver** (entölt oder vollfett), **Kakaonibs** (geröstete, gebrochene Kakaobohnen), **Kakaobutter**, **Schokoladenmasse** oder **Kakaoextrakte**. Kakao enthält viele Aromaverbindungen — darunter Pyrazine (nussig, röstig), Aldehyde (fruchtig), Ester (blumig) und Phenole (rauchig). Das Zusammenspiel dieser Verbindungen mit Alkohol, Zucker und eventuell Sahne erzeugt ein außerordentlich komplexes Geschmackserlebnis.
 
 ## Qualitätsmerkmale von Kakaobohnen
 
-**Nicht jede Kakaobohne eignet sich für Premium-Schokoladenliköre.** Man unterscheidet drei Hauptsorten: **Criollo** (weniger als 5 % der Weltproduktion, filigrane Aromen von roten Früchten, Nüssen und Blumen — der „Arabica" unter den Kakaos), **Trinitario** (Hybride aus Criollo und Forastero, komplex und ausgewogen) und **Forastero** (80 % der Weltproduktion, kräftig, erdig, oft eindimensional bitter). Die **Fermentation** der Bohnen nach der Ernte (3–7 Tage) ist entscheidend für die Aromaentwicklung: Ohne Fermentation schmeckt Kakao flach, adstringent und astringent. Die anschließende **Röstung** (120–150 °C, 15–45 Min.) entwickelt die Maillard-Aromen (Karamell, Nuss, Röstbrot).
+**Kakaorohstoff und Verarbeitung**: Herkunft, Fermentation und Röstung beeinflussen das Profil. Klassische Sorten-/Gruppennamen wie Criollo, Trinitario und Forastero sind eine vereinfachte Beschreibung, keine universelle Qualitätsrangfolge. Ohne datierte Daten werden hier keine weltweiten Prozentanteile oder festen Röstprogramme als Pflicht behauptet.
 
 ## Herstellungsansätze
 
-**Drei Hauptverfahren** werden für Schokoladenliköre eingesetzt. **Mazeration von Kakaonibs** in Alkohol (typisch 2–4 Wochen) extrahiert Aromen und Farbstoffe direkt. Der Vorteil: Authentisches, vielschichtiges Kakaoprofil. Der Nachteil: Kakaobutter kann ausflocken und die Emulsion destabilisieren, weshalb eine Kältefiltration nötig ist. **Verwendung von Kakaopulver oder Kakaoextrakt**: Industriell die gängigste Methode, da entöltes Kakaopulver keine Emulsionsprobleme verursacht. **Schmelzen von Schokolade** in warmem Alkohol/Sahne: Ergibt den intensivsten Schokoladengeschmack, stellt aber die höchsten Anforderungen an Emulgierung und Haltbarkeit.
+**Herstellungsansätze**: Kakaomaterial kann extrahiert oder mit weiteren Zutaten kombiniert werden. Fett, Feststoffe und gegebenenfalls Sahne verlangen eine abgestimmte Rezeptur. Kältefiltration ist eine mögliche Prozessmaßnahme, nicht zwingend Bestandteil jedes Schokoladenlikörs und kein Sterilisationsverfahren. Hochprozentigen Alkohol zu Hause nicht zum Schmelzen von Schokolade erhitzen.
 
 ## Die großen Marken
 
-**Godiva Chocolate Liqueur** (Belgien) ist der Premiumstandard — hergestellt mit belgischer Schokolade und in Varianten wie Dark, White und Salted Caramel erhältlich. **Mozart Chocolate** (Salzburg) verwendet österreichische Schokolade und bietet eine breite Palette von Milch- über Weiß- bis Bitterschokolade. **Tempus Fugit Crème de Cacao** stellt einen historisch korrekten Crème de Cacao her: ausschließlich aus venezolanischen Criollo-Nibs mazeriert und destilliert, ohne künstliche Aromen oder Farbstoffe. **Bottega Nero** (Italien) kombiniert dunkle Schokolade mit Grappa-Noten. **Dutch Chocolate Vodka** und ähnliche Produkte repräsentieren den Trend zu Schokoladen-Spirituosen-Hybriden, die nicht als Likör klassifiziert werden, da sie den Mindestzuckergehalt nicht erreichen.`,
+**Mozart Chocolate Liqueur** bietet nach aktueller Herstellerbeschreibung mehrere Stile, darunter Cream Chocolate mit belgischer Schokolade, White Chocolate mit Kakaobutter und Sahne sowie Dark Chocolate ohne Sahne. Die Rezeptur unterscheidet sich je Produkt; aus dem Wort 'Chocolate' folgen weder bestimmte Milchallergene noch ein bestimmter Zuckerwert. Etikett und konkrete Herstellerangaben prüfen.`,
       quiz: [
         {
           question:
-            "Welche Kakaosorte macht weniger als 5 % der Weltproduktion aus und gilt als die edelste?",
-          options: ["Forastero", "Trinitario", "Criollo", "Nacional"],
+            "Welcher Name bezeichnet eine klassische Kakaogruppe?",
+          options: ["Arabica", "Robusta", "Criollo", "Pinot Noir"],
           correct: 2,
           explanation:
-            "Criollo ist die seltenste und edelste Kakaosorte (< 5 % der Weltproduktion) mit filigranen Aromen von roten Früchten, Nüssen und Blumen.",
+            "Criollo ist ein klassischer Kakaogruppenname. Eine Gruppe allein garantiert keine bestimmte Qualität.",
         },
         {
           question:
-            "Warum erfordert die Mazeration von Kakaonibs eine Kältefiltration?",
+            "Wozu kann Kältefiltration bei einem kakaohaltigen Likör dienen?",
           options: [
             "Um den Alkoholgehalt zu senken",
-            "Um die Kakaobutter zu entfernen, die sonst ausflockt und die Emulsion destabilisiert",
+            "Um ausgefallene Bestandteile zu entfernen; sie ist nicht bei jeder Rezeptur Pflicht",
             "Um den Zuckergehalt zu erhöhen",
             "Um Bakterien abzutöten",
           ],
           correct: 1,
           explanation:
-            "Bei der Mazeration von Kakaonibs löst sich Kakaobutter im Alkohol. Bei Abkühlung flockt sie aus und trübt den Likör. Kältefiltration entfernt diese Fettpartikel.",
+            "Kältefiltration kann ausfallende Bestandteile entfernen. Sie beweist keine Sterilität und ist keine universelle Pflicht bei allen Schokoladenlikören.",
         },
         {
           question:
@@ -554,15 +487,15 @@ export const likoereKurs: Course = {
 
 ## Ouzo — Griechenlands Nationalgetränk
 
-**Ouzo** ist seit 2006 durch eine EU-Ursprungsbezeichnung geschützt und darf ausschließlich in Griechenland und Zypern hergestellt werden. Die Herstellung folgt einem präzisen Protokoll: Anissamen, Sternanis, Fenchel, Mastix (Harz der Mastix-Pistazie von Chios), Koriander, Kardamom und weitere Botanicals werden in Alkohol mazeriert und anschließend in kupfernen Brennblasen destilliert. Das Destillat muss mindestens **20 % des Gesamtalkohols** ausmachen — billiger Ouzo wird nur durch Mischung von Anethol mit Alkohol hergestellt, hochwertiger Ouzo ist zu 100 % destilliert. Der Alkoholgehalt liegt typisch bei **37,5–50 % Vol.** Ouzo wird traditionsgemäß mit Wasser verdünnt zu Meze (kleine Vorspeisen) getrunken. Die bekanntesten Marken: **Plomari** (Lesbos), **Mini** (Mytilene), **12** (Thessaloniki).
+**Ouzo** ist seit 2006 durch eine EU-Ursprungsbezeichnung geschützt und darf ausschließlich in Griechenland und Zypern hergestellt werden. Die Herstellung folgt einem präzisen Protokoll: Anissamen, Sternanis, Fenchel, Mastix (Harz der Mastix-Pistazie von Chios), Koriander, Kardamom und weitere Botanicals werden in Alkohol mazeriert und anschließend in kupfernen Brennblasen destilliert. Das Destillat muss mindestens **20 % des Gesamtalkohols** ausmachen ; die Zusammensetzung ist produktbezogen zu prüfen, statt eine pauschale Qualitätsrangfolge daraus abzuleiten. Der Alkoholgehalt liegt typisch bei **37,5–50 % Vol.** Ouzo wird traditionsgemäß mit Wasser verdünnt zu Meze (kleine Vorspeisen) getrunken. Die bekanntesten Marken: **Plomari** (Lesbos), **Mini** (Mytilene), **12** (Thessaloniki).
 
 ## Pastis, Sambuca und Raki
 
-**Pastis** (Frankreich, min. 40 % Vol.) entstand als legaler Nachfolger des verbotenen Absinths. **Ricard** und **Pernod** sind die dominierenden Marken. Pastis enthält neben Anis auch **Süßholz** (Glycyrrhizin), das eine runde, lakritzartige Süße beisteuert. Er wird traditionsgemäß **1:5 mit eiskaltem Wasser** verdünnt. **Sambuca** (Italien, min. 38 % Vol.) wird aus Sternanis und Holunderblüten destilliert. **Sambuca con la mosca** („mit der Fliege") serviert man mit drei Kaffeebohnen, die Gesundheit, Reichtum und Glück symbolisieren, und flambiert den Likör kurz. **Raki** (Türkei) und **Arak** (Libanon, Syrien, Israel) werden aus Traubendestillat mit Aniszusatz hergestellt. Raki wird als **„Löwenmilch"** (aslan sütü) bezeichnet und zu Meze mit kaltem Wasser getrunken.
+**Pastis** (Frankreich, min. 40 % Vol.) entstand als legaler Nachfolger des verbotenen Absinths. **Ricard** und **Pernod** sind die dominierenden Marken. Pastis enthält neben Anis auch **Süßholz** (Glycyrrhizin), das eine runde, lakritzartige Süße beisteuert. Er wird traditionsgemäß **1:5 mit eiskaltem Wasser** verdünnt. **Sambuca** (Italien, min. 38 % Vol.) ist ein rechtlich geregelter, farbloser Anislikör mit mindestens 350 g/l Zucker als Invertzucker; Holunderblüten sind keine zwingende Definitionszutat. **Sambuca con la mosca** („mit der Fliege") serviert man mit drei Kaffeebohnen, die traditionell Gesundheit, Reichtum und Glück symbolisieren; eine Flamme ist für das Servieren nicht erforderlich und wird hier nicht empfohlen. **Raki** (Türkei) und **Arak** (Libanon, Syrien, Israel) werden aus Traubendestillat mit Aniszusatz hergestellt. Raki wird als **„Löwenmilch"** (aslan sütü) bezeichnet und zu Meze mit kaltem Wasser getrunken.
 
 ## Absinth — Der große Bruder
 
-**Absinth** (45–74 % Vol.) ist streng genommen kein Likör, da er den Mindestzuckergehalt nicht erfüllt. Er basiert auf **Wermut** (Artemisia absinthium), Anis und Fenchel. Das **Thujon** im Wermut wurde lange für psychoaktive Wirkungen verantwortlich gemacht — modern hat sich dies als Mythos erwiesen. Die EU erlaubt seit 1988 wieder Absinth mit max. 35 mg/l Thujon. Die rituelle Zubereitung mit Absinthlöffel, Zuckerwürfel und eiskaltem Wasser ist fester Bestandteil der Bar-Kultur. Absinth war im 19. Jahrhundert das Getränk der Bohème: Toulouse-Lautrec, Van Gogh, Rimbaud und Wilde waren berühmte Konsumenten.`,
+**Absinth** (45–74 % Vol.) ist streng genommen kein Likör, da er den Mindestzuckergehalt nicht erfüllt. Er basiert auf **Wermut** (Artemisia absinthium), Anis und Fenchel. **Thujon** kann neurotoxisch wirken; hohe Dosen sind nicht harmlos. Angebliche besondere Rauscheffekte sind kein Qualitäts- oder Gesundheitsargument. Daneben ist der hohe Alkoholgehalt ein eigenständiges Risiko. Für Thujon gelten in der EU lebensmittelrechtliche Grenzen, die von der Produktgruppe abhängen; eine pauschale historische Freigabe aller Absinth-Produkte wird hier nicht behauptet. Die rituelle Zubereitung mit Absinthlöffel, Zuckerwürfel und eiskaltem Wasser ist fester Bestandteil der Bar-Kultur. Absinth war im 19. Jahrhundert das Getränk der Bohème: Toulouse-Lautrec, Van Gogh, Rimbaud und Wilde waren berühmte Konsumenten.`,
       quiz: [
         {
           question:
@@ -601,7 +534,7 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Absinth erfüllt nicht den EU-Mindestzuckergehalt von 100 g/l für Liköre. Er wird als eigenständige Spirituosen-Kategorie klassifiziert.",
+            "Absinth erfüllt nicht den EU-Mindestzuckergehalt von 100 g/l für Liköre. Der Name allein ist keine eigenständige EU-Spirituosenkategorie; die rechtliche Bezeichnung richtet sich nach der tatsächlichen Zusammensetzung.",
         },
       ],
     },
@@ -615,11 +548,11 @@ export const likoereKurs: Course = {
 
 ## Die Niederländische Tradition — Bols und De Kuyper
 
-**Lucas Bols** (1575, Amsterdam) ist das älteste Destillerie-Unternehmen der Welt. Im Goldenen Zeitalter der Niederlande (17. Jahrhundert) profitierte Bols von Amsterdams Stellung als globaler Handelshafen: Exotische Gewürze, Früchte und Botanicals aus den Kolonien flossen direkt in die Likörproduktion. Bols produziert über **40 Likörvarietäten**, darunter den ikonischen **Bols Blue Curaçao** und den historischen **Bols Genever**. **De Kuyper** (1695, Schiedam) ist der weltgrößte Likörhersteller nach Volumen und beliefert professionelle Bars weltweit. Das Portfolio umfasst über **70 Liköre** in allen Kategorien.
+**Lucas Bols** (1575, Amsterdam) führt seine Herstellerchronik auf 1575 zurück. Im Goldenen Zeitalter der Niederlande (17. Jahrhundert) profitierte Bols von Amsterdams Stellung als globaler Handelshafen: Exotische Gewürze, Früchte und Botanicals aus den Kolonien flossen direkt in die Likörproduktion. Bols produziert verschiedene Liköre, darunter den ikonischen **Bols Blue Curaçao** und den historischen **Bols Genever**. **De Kuyper** (1695, Schiedam) ist ein bekannter Likörhersteller und beliefert professionelle Bars weltweit. Die aktuellen Produktangebote sind beim Hersteller zu prüfen.
 
 ## Französische Eleganz
 
-**Cointreau** (1849, Angers) definierte den Triple Sec: Ein dreifach destillierter Orangenlikör aus süßen und bitteren Orangenschalen, kristallklar und mit perfekter Balance zwischen Süße und Bitterkeit bei **40 % Vol.** — deutlich stärker als die meisten Liköre. **Grand Marnier** (1880) ging einen anderen Weg: Bitterorangen-Destillat auf der Basis von **Cognac**, gereift in Eichenholzfässern, tiefgolden und komplex. Die Cordon Rouge-Variante (80 % Cognac, 20 % Bitterorange) ist der Klassiker. **Bénédictine** (1510/1863, Fécamp) beansprucht, das älteste Likörrezept der Welt zu verwenden — 27 Pflanzen und Gewürze, darunter Safran, Myrrhe, Angelika und Enzian. Die Flasche trägt das Motto **D.O.M.** (Deo Optimo Maximo — „Dem besten, größten Gott").
+**Cointreau** (1849, Angers) definierte den Triple Sec: Ein destillierter Orangenlikör aus süßen und bitteren Orangenschalen, kristallklar und mit perfekter Balance zwischen Süße und Bitterkeit bei **40 % Vol.** — deutlich stärker als die meisten Liköre. **Grand Marnier** (1880) ging einen anderen Weg: Bitterorangen-Destillat auf der Basis von **Cognac**, gereift in Eichenholzfässern, tiefgolden und komplex. Die Cordon Rouge-Variante (laut Hersteller 51 % Cognac) ist der Klassiker. **Bénédictine** (1510/1863, Fécamp) beschreibt eine Rezeptur mit 27 Pflanzen und Gewürzen. Ein weltweit ältestes Rezept oder eine vollständige geheime Zutatenliste wird hier nicht behauptet. Die Flasche trägt das Motto **D.O.M.** (Deo Optimo Maximo — „Dem besten, größten Gott").
 
 ## Globale Ikonen
 
@@ -627,7 +560,7 @@ export const likoereKurs: Course = {
       quiz: [
         {
           question:
-            "Welches Unternehmen gilt als die älteste Destillerie der Welt?",
+            "Welches Haus führt seine Likörherstellung laut eigener Chronik auf 1575 zurück?",
           options: [
             "Cointreau (1849)",
             "Lucas Bols (1575)",
@@ -636,7 +569,7 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Lucas Bols wurde 1575 in Amsterdam gegründet und ist das älteste noch existierende Destillerie-Unternehmen der Welt.",
+            "Bols beschreibt die Gründung der Destillerie 't Lootsje in Amsterdam im Jahr 1575. Ein weltweiter Altersrekord ist dafür nicht notwendig.",
         },
         {
           question:
@@ -662,7 +595,7 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Cointreau ist ein dreifach destillierter, kristallklarer Orangenlikör. Grand Marnier vereint Bitterorangen-Destillat mit Cognac und Fassreifung — tiefgolden und weicher.",
+            "Cointreau ist ein kristallklarer Orangenlikör aus süßen und bitteren Orangenschalen. Grand Marnier vereint Bitterorangen-Destillat mit Cognac und Fassreifung — tiefgolden und weicher.",
         },
       ],
     },
@@ -672,19 +605,19 @@ export const likoereKurs: Course = {
       title: "Italienische Liköre — Amaretto, Limoncello und Amari",
       content: `## Italien — Das Herzland der Likörkultur
 
-**Italien** ist ohne Übertreibung die vielfältigste und einflussreichste Likör-Nation der Welt. Von den Alpen bis Sizilien hat jede Region eigene Spezialitäten entwickelt, die lokale Zutaten, klimatische Bedingungen und jahrhundertealte Traditionen reflektieren. Der **Amaro** (Plural: Amari) — der bittere Kräuterlikör — ist das Herzstück der italienischen Trinkkultur und wird traditionell als **Digestivo** nach dem Essen getrunken. Die Gesamtzahl italienischer Likörmarken wird auf über **700** geschätzt.
+**Italien** ist ohne Übertreibung die vielfältigste und einflussreichste Likör-Nation der Welt. Von den Alpen bis Sizilien hat jede Region eigene Spezialitäten entwickelt, die lokale Zutaten, klimatische Bedingungen und jahrhundertealte Traditionen reflektieren. Der **Amaro** (Plural: Amari) — der bittere Kräuterlikör — ist das Herzstück der italienischen Trinkkultur und wird traditionell als **Digestivo** nach dem Essen getrunken. Eine feste Zahl der italienischen Likörmarken wird hier ohne datierte Erhebung nicht behauptet.
 
 ## Limoncello — Süditaliens flüssiger Sonnenschein
 
-**Limoncello** wird traditionell an der **Amalfiküste**, auf **Capri** und in **Sorrent** hergestellt. Die Basis: Schalen der **Sfusato Amalfitano**-Zitrone (auch: Femminello), die größer, aromatischer und dickschaliger ist als gewöhnliche Zitronen. Die Herstellung ist elegant einfach: Die Schalen werden **ohne weiße Albedo** (die bitter wäre) dünn abgeschält und in **hochprozentigem Alkohol** (95 % Vol. Agraralkohol) für mindestens 15 Tage mazeriert. Nur das gelbe Flavedo enthält die ätherischen Öle (Limonen, Citral, Linalool), die den Limoncello aromatisieren. Das Mazerat wird dann mit **Zuckersirup** verdünnt auf typisch 25–32 % Vol. Alkohol und 200–350 g/l Zucker.
+**Limoncello** wird traditionell an der **Amalfiküste**, auf **Capri** und in **Sorrent** hergestellt. Die Basis: Schalen der **Sfusato Amalfitano**-Zitrone an der Amalfiküste; in Sorrent werden andere lokale Sorten verwendet, mit jeweils eigenen Eigenschaften. Die Herstellung ist elegant einfach: Die Schalen werden **ohne weiße Albedo** (die bitter wäre) dünn abgeschält und in **hochprozentigem Alkohol** (95 % Vol. Agraralkohol) über einen produktabhängigen Zeitraum mazeriert. Nur das gelbe Flavedo enthält die ätherischen Öle (Limonen, Citral, Linalool), die den Limoncello aromatisieren. Das Mazerat wird dann mit **Zuckersirup** verdünnt auf typisch 25–32 % Vol. Alkohol und 200–350 g/l Zucker.
 
 ## Amaretto — Das Geheimnis der Mandelnote
 
-**Amaretto** wurde in Lektion 6 bereits behandelt, verdient aber im italienischen Kontext eine Vertiefung. Die Stadt **Saronno** (Lombardei) beansprucht die Herkunft: Die Legende besagt, dass 1525 ein Gasthaus-Wirtin einem Maler (angeblich Bernardino Luini, Schüler Leonardos) einen Likör aus Aprikosenkernen zubereitete. **Disaronno Originale** ist mit Abstand der Weltmarktführer und wurde 2011 von „Amaretto di Saronno" zu „Disaronno" umbenannt, um die Marke international besser positionieren zu können. Die Produktion verwendet ein **Infusions-Verfahren**: Aprikosenkerne werden in Alkohol eingelegt, das Extrakt wird mit gebranntem Zucker (Karamell), Vanille und Kräuteressenzen gemischt.
+**Amaretto** wurde in Lektion 6 als mandelartig wahrgenommener Stil eingeordnet. Markengeschichten aus Saronno werden teils ausdrücklich als Legenden erzählt. Ohne veröffentlichte Rezeptur wird hier kein konkreter Herstellungsablauf für Disaronno behauptet. Lazzaroni veröffentlicht dagegen die Amaretti-Keksinfusion als Produktmerkmal.
 
 ## Die Amaro-Landkarte Italiens
 
-**Norditalien**: **Amaro Nonino** (Friaul, Grappa-basiert, elegant-kräutrig), **Fernet-Branca** (Mailand, extrem bitter, 27 Kräuter inkl. Myrrhe, Safran, Aloe). **Mittelitalien**: **Amaro Lucano** (Basilikata, 1894, ausgewogene Bitterkeit mit Honig), **Centerba** (Abruzzen, 72 % Vol., kristallklar, 100 Kräuter). **Süditalien**: **Averna** (Sizilien, rund und süßlich mit Orangenschale), **Strega** (Benevento, Kampanien, gelb gefärbt durch Safran, 70 Kräuter). **Inseln**: **Mirto** (Sardinien, aus Myrtenbeeren, rot oder weiß). Diese regionale Vielfalt spiegelt Italiens kulinarische Philosophie wider: Jeder Ort hat seine eigene Identität, seine eigenen Zutaten und seine eigene Tradition.`,
+**Norditalien**: **Amaro Nonino Quintessentia** (Friaul, mit ÙE-Traubenbrand/Acquavite d'Uva veredelt, elegant-kräutrig), **Fernet-Branca** (Mailand, extrem bitter, 27 Kräuter inkl. Myrrhe, Safran, Aloe). **Weitere Regionen**: **Amaro Lucano** (Basilikata, 1894, ausgewogene Bitterkeit mit Honig), **Centerba** (Abruzzen, Kräuterspirituosenstil; Stärke produktabhängig). **Süditalien**: **Averna** (Sizilien, rund und süßlich mit Orangenschale), **Strega** (Benevento, Kampanien, gelb gefärbt durch Safran, 70 Kräuter). **Inseln**: **Mirto** (Sardinien, aus Myrtenbeeren, rot oder weiß). Diese regionale Vielfalt spiegelt Italiens kulinarische Philosophie wider: Jeder Ort hat seine eigene Identität, seine eigenen Zutaten und seine eigene Tradition.`,
       quiz: [
         {
           question:
@@ -701,7 +634,7 @@ export const likoereKurs: Course = {
         },
         {
           question:
-            "Welcher italienische Amaro wird aus Grappa hergestellt?",
+            "Welcher italienische Amaro wird heute mit ÙE-Traubenbrand veredelt?",
           options: [
             "Fernet-Branca",
             "Averna",
@@ -710,11 +643,11 @@ export const likoereKurs: Course = {
           ],
           correct: 2,
           explanation:
-            "Amaro Nonino aus dem Friaul verwendet als Besonderheit Grappa (Tresterbrand) als Basis, was ihm eine elegante, weinige Note verleiht.",
+            "Amaro Nonino Quintessentia verwendet seit 1992 ÙE-Traubenbrand statt des früheren Grappa. Traubenbrand und Tresterbrand sind nicht dasselbe.",
         },
         {
           question:
-            "Welcher Amaro hat einen extremen Alkoholgehalt von 72 % Vol.?",
+            "Welcher Kräuterspirituosenstil wird mit den Abruzzen verbunden?",
           options: [
             "Fernet-Branca",
             "Centerba aus den Abruzzen",
@@ -723,7 +656,7 @@ export const likoereKurs: Course = {
           ],
           correct: 1,
           explanation:
-            "Centerba aus den Abruzzen hat 72 % Vol. und ist kristallklar — hergestellt aus 100 Kräutern. Er ist einer der stärksten Liköre der Welt.",
+            "Centerba steht für einen Kräuterspirituosenstil aus den Abruzzen. Alkoholstärke und Zusammensetzung sind produktabhängig.",
         },
       ],
     },
@@ -737,54 +670,54 @@ export const likoereKurs: Course = {
 
 ## Chartreuse — Das ultimative Geheimrezept
 
-**Chartreuse** ist zweifellos der komplexeste und geheimnisvollste Likör der Welt. Nur **zwei Mönche** der Grande Chartreuse bei Grenoble kennen die vollständige Rezeptur mit **130 Pflanzen, Kräutern, Wurzeln und Gewürzen**. Die Herstellung umfasst mehrere Mazerations- und Destillationsphasen, gefolgt von einer **Reifung in Eichenholzfässern** über mehrere Jahre. Es existieren zwei Hauptvarianten: **Grüne Chartreuse** (55 % Vol., intensiv, komplex, pfeffrig-kräuterig mit Noten von Anis, Zimt, Nelke und frischen Kräutern) und **Gelbe Chartreuse** (40 % Vol., milder, honigartiger, mit mehr Safran und Honignoten). Die limitierten **V.E.P.**-Abfüllungen (Vieillissement Exceptionnellement Prolongé) reifen besonders lange und erzielen Sammlerpreise von mehreren hundert Euro.
+**Chartreuse** veröffentlicht 130 Pflanzenbestandteile als Rezepturmerkmal. Die Herstellerseiten beschreiben Mazeration, Destillation und Reifung in Eichenbehältern. Grüne Chartreuse hat 55 % Vol., die aktuelle gelbe Chartreuse 43 % Vol. V.E.P. bedeutet Vieillissement Exceptionnellement Prolongé und beschreibt besonders verlängerte Reifung, keine zugesicherte Wertsteigerung.
 
 ## Cointreau — Die Perfektion des Triple Sec
 
-**Cointreau** (1849, Angers, Loire-Tal) ist das Referenzprodukt für kristallklare Orangenliköre. Die Brüder Adolphe und Edouard-Jean Cointreau perfektionierten die **dreifache Destillation** von süßen und bitteren Orangenschalen. Der Prozess: Orangenschalen aus aller Welt (Haiti, Spanien, Brasilien) werden separat in Neutralalkohol mazeriert, dann dreifach destilliert. Die verschiedenen Destillate werden assembliert und mit Zucker versetzt. Das Ergebnis: **40 % Vol.**, kristallklar, mit einem perfekten Gleichgewicht zwischen Zitrus-Süße und Bitterorange. Cointreau ist die unverzichtbare Zutat in über **350 Cocktailrezepten**, darunter Margarita, Cosmopolitan, Sidecar und Mai Tai.
+**Cointreau** (1849, Angers, Loire-Tal) ist das Referenzprodukt für kristallklare Orangenliköre. Das Haus Cointreau verwendet süße und bittere Orangenschalen sowie Destillation. 'Triple Sec' garantiert keine dreifache Destillation. Der Prozess: Orangenschalen aus aller Welt (Haiti, Spanien, Brasilien) werden separat in Neutralalkohol mazeriert, danach destilliert. Die verschiedenen Destillate werden assembliert und mit Zucker versetzt. Das Ergebnis: **40 % Vol.**, kristallklar, mit einem perfekten Gleichgewicht zwischen Zitrus-Süße und Bitterorange. Cointreau ist ein möglicher Orangenlikör für Margarita, Cosmopolitan, Sidecar und Mai Tai; eine feste Cocktailzahl ist kein Rezepturmerkmal.
 
 ## Grand Marnier und Bénédictine
 
-**Grand Marnier Cordon Rouge** (1880) vereint zwei französische Exzellenzen: **Cognac** und **Bitterorangen**. Die Bitterorangenschalen werden in Alkohol mazeriert und destilliert. Dieses Destillat wird dann mit gereiftem Cognac Fine Champagne (aus der Grande und Petite Champagne) vermählt und in Eichenholzfässern finalisiert. Das Ergebnis ist ein bernsteinfarbener, opulenter Likör mit Noten von Bitterorange, Vanille, Toffee und Eichenholz bei **40 % Vol.** Die limitierte **Cuvée du Centenaire** (100 Jahre) verwendet 25 Jahre alten Cognac. **Bénédictine D.O.M.** (27 Pflanzen, darunter Engelwurz, Ysop, Wacholder, Myrrhe, Safran, Vanille, Tee, Honig) wird seit 1863 in Fécamp (Normandie) nach einem Benediktinerrezept von 1510 hergestellt. Der **B&B** (Bénédictine and Brandy) ist eine populäre Variation mit weniger Süße.`,
+**Grand Marnier Cordon Rouge** verbindet Cognac und Bitterorangenlikör; der Hersteller nennt 51 % Cognac. Eine bestimmte Fine-Champagne-Herkunft oder ein fixes Cognacalter wird für diese Abfüllung hier nicht behauptet. Andere Cuvées haben eigene Zusammensetzungen. Bénédictine ist ein weiteres Kräuterlikör-Beispiel; historische Heilmittelgeschichten sind keine heutige Gesundheitszusage.`,
       quiz: [
         {
           question:
-            "Wie viele Mönche kennen die vollständige Chartreuse-Rezeptur?",
+            "Welche Zahl veröffentlicht Chartreuse als Pflanzenbestandteil-Merkmal?",
           options: [
             "Einer — der Abt",
-            "Zwei Mönche",
+            "130 Pflanzenbestandteile",
             "Fünf Mönche und der Abt",
             "Alle Mönche des Klosters",
           ],
           correct: 1,
           explanation:
-            "Nur zwei Kartäuser-Mönche kennen zu jeder Zeit die vollständige Rezeptur der Chartreuse mit 130 Pflanzen. Dieses Wissen wird persönlich weitergegeben.",
+            "Die Produktseite nennt 130 Pflanzenbestandteile; daraus wird hier keine vollständige Zutatenliste erfunden.",
         },
         {
           question:
-            "Welcher Cognac wird für Grand Marnier Cordon Rouge verwendet?",
+            "Welche Basis ist für Grand Marnier Cordon Rouge charakteristisch?",
           options: [
             "VS (Very Special)",
             "VSOP aus Borderies",
-            "Fine Champagne (Grande und Petite Champagne)",
+            "Cognac, vermählt mit Bitterorangenlikör",
             "XO aus Bois Ordinaires",
           ],
           correct: 2,
           explanation:
-            "Grand Marnier Cordon Rouge verwendet Cognac Fine Champagne — eine Assemblage aus Grande Champagne und Petite Champagne, den beiden prestigeträchtigsten Crus.",
+            "Grand Marnier Cordon Rouge kombiniert Cognac mit Bitterorangenlikör; der Hersteller nennt 51 % Cognac. Ein bestimmter Fine-Champagne-Cru wird hier nicht vorausgesetzt.",
         },
         {
           question:
-            "In wie vielen Cocktailrezepten ist Cointreau eine Zutat?",
+            "Welchen Alkoholgehalt nennt Cointreau für sein klassisches Produkt?",
           options: [
-            "Etwa 50",
-            "Über 100",
-            "Über 350",
-            "Weniger als 20",
+            "10 % Vol.",
+            "20 % Vol.",
+            "40 % Vol.",
+            "60 % Vol.",
           ],
           correct: 2,
           explanation:
-            "Cointreau ist in über 350 Cocktailrezepten vertreten — darunter Margarita, Cosmopolitan, Sidecar und Mai Tai. Es ist einer der vielseitigsten Cocktail-Liköre.",
+            "Die aktuelle Produktseite nennt 40 % Vol. Cocktailzahlen sind keine feste Definition eines Likörs.",
         },
       ],
     },
@@ -798,13 +731,13 @@ export const likoereKurs: Course = {
 
 ## Kräuterliköre — Deutschlands stärkste Kategorie
 
-**Jägermeister** (1935, Wolfenbüttel) ist Deutschlands erfolgreichster Likörexport und weltweit unter den Top-10 der meistverkauften Spirituosen. Die Rezeptur umfasst **56 Kräuter, Blüten, Wurzeln und Früchte**, darunter Zimt, Sternanis, Ingwer, Orangenschalen und Süßholz. Die Zutaten werden in separaten Chargen mazeriert und destilliert, dann assembliert und **12 Monate in Eichenholzfässern** gereift. Der Erfolg in den USA ab den 1980ern — befeuert durch die Barkultur und den „Jäger-Bomb" (Jägermeister + Energy Drink) — machte die Marke zum globalen Phänomen.
+**Jägermeister** (1935, Wolfenbüttel) ist ein bekannter deutscher Kräuterlikör. Die Rezeptur umfasst **56 Kräuter, Blüten, Wurzeln und Früchte**, darunter Zimt, Sternanis, Ingwer, Orangenschalen und Süßholz. Die Zutaten werden mazeriert und filtriert; der vereinte Grundstoff reift laut Hersteller rund ein Jahr in Eichenfässern. Vor der Abfüllung werden Wasser, Alkohol, Karamell und Zucker ergänzt. Der Erfolg in den USA ab den 1980ern — befeuert durch die Barkultur und den „Jäger-Bomb" (Jägermeister + Energy Drink) — machte die Marke zum globalen Phänomen.
 
-**Underberg** (1846, Rheinberg am Niederrhein) ist ein **bitterer Digestif** im ikonischen 20-ml-Portionsfläschchen, umwickelt mit Papier. Er wird aus Kräutern aus 43 Ländern hergestellt und als „natürlicher Verdauungshelfer nach dem Essen" positioniert. **Killepitsch** (Düsseldorf, 42 % Vol.) enthält 90 Kräuter, Beeren und Früchte und ist eine lokale Institution. **Schierker Feuerstein** (Harz) ist ein Halbitter mit Anis und Kümmel. **Kuemmerling** (Bodenheim, 35 % Vol.) wird seit 1938 als Magenbitter vermarktet.
+**Underberg** (1846, Rheinberg am Niederrhein) ist ein **bitterer Digestif** im ikonischen 20-ml-Portionsfläschchen, umwickelt mit Papier. Er wird aus Kräutern aus 43 Ländern hergestellt und als traditionell nach dem Essen angeboten; eine Verdauungswirkung wird hier nicht zugesichert. **Killepitsch** (Düsseldorf, 42 % Vol.) enthält laut aktueller Herstellerseite 98 Kräuter, Beeren und Früchte und ist eine lokale Institution. **Schierker Feuerstein** (Harz) ist ein Halbitter mit Anis und Kümmel. **Kuemmerling** (Bodenheim, 35 % Vol.) wird seit 1938 als Magenbitter vermarktet.
 
 ## Eierlikör und regionale Spezialitäten
 
-**Verpoorten** (gegründet 1876 in Heinsberg, heute Bonn) ist der unangefochtene Marktführer bei **Eierlikör** in Deutschland. Eierlikör hat eine eigene EU-Kategorie: mindestens **140 g Eigelb und 150 g Zucker pro Liter**, Mindestalkohol 14 % Vol. Verpoorten verwendet über **100 Millionen Eier jährlich**. Regionale Spezialitäten: **Danziger Goldwasser** (Likör mit echten Blattgoldflocken, historisch aus Danzig, heute in Berlin produziert), **Bärenfang** (Ostpreußischer Honiglikör auf Wodkabasis), **Ettaler Klosterlikör** (Bayern, von Benediktinern hergestellt), **Blutwurz** (Bayern, aus der Tormentill-Wurzel, tiefrot), **Friesengeist** (Ostfriesland, 56 % Vol., wird flambiert serviert). Die **Norddeutsche Kümmel-Tradition** (Helbing Kümmel, Hamburg) und der **Goldene Hai** (Nordsee-Region, mit Blattgold) zeigen die norddeutsche Seite der Likörkultur.`,
+**Verpoorten** (gegründet 1876 in Heinsberg, heute Bonn) ist eine bekannte deutsche **Eierlikör**-Marke. Eierlikör hat eine eigene EU-Kategorie: mindestens **140 g Eigelb und 150 g Zucker pro Liter**, Mindestalkohol 14 % Vol. Verpoorten verwendet Eier als wesentliche Zutat. Regionale Spezialitäten: **Danziger Goldwasser** (Likör mit echten Blattgoldflocken, historisch aus Danzig, heute eine Marke von Hardenberg-Wilthen), **Bärenfang** (Ostpreußischer Honiglikör auf Wodkabasis), **Ettaler Klosterlikör** (Bayern, von Benediktinern hergestellt), **Blutwurz** (Bayern, aus der Tormentill-Wurzel, tiefrot), **Friesengeist** (Ostfriesland, 56 % Vol., nicht anzünden; hochprozentig). Die **Norddeutsche Kümmel-Tradition** (Helbing Kümmel, Hamburg) und der **Goldene Hai** (Nordsee-Region, mit Blattgold) zeigen die norddeutsche Seite der Likörkultur.`,
       quiz: [
         {
           question:
@@ -812,7 +745,7 @@ export const likoereKurs: Course = {
           options: ["28", "42", "56", "72"],
           correct: 2,
           explanation:
-            "Jägermeister enthält 56 Kräuter, Blüten, Wurzeln und Früchte. Diese werden separat mazeriert und destilliert, assembliert und 12 Monate in Eichenholzfässern gereift.",
+            "Jägermeister enthält 56 Kräuter, Blüten, Wurzeln und Früchte. Diese werden laut Hersteller mazeriert, filtriert und als Grundstoff rund ein Jahr in Eichenfässern gereift.",
         },
         {
           question:
@@ -848,15 +781,15 @@ export const likoereKurs: Course = {
       title: "Cocktails mit Likör — Von Klassikern bis Modern Mixology",
       content: `## Liköre als Cocktail-Bausteine
 
-**Liköre** sind unverzichtbare Bestandteile der professionellen Barkultur. Sie erfüllen im Cocktail drei Funktionen: Sie bringen **Süße** (als Alternative zu einfachem Zuckersirup), **Aroma** (als komplexe Geschmacksverstärker) und **Textur** (durch ihren Zuckergehalt erzeugen sie ein volleres Mundgefühl). Die International Bartenders Association (IBA) listet über **90 offizielle Cocktailrezepte**, und in mehr als der Hälfte ist mindestens ein Likör enthalten. Ein professioneller Bartender muss die Likör-Kategorien und ihre Einsatzmöglichkeiten exakt kennen.
+**Liköre** sind unverzichtbare Bestandteile der professionellen Barkultur. Sie erfüllen im Cocktail drei Funktionen: Sie bringen **Süße** (als Alternative zu einfachem Zuckersirup), **Aroma** (als komplexe Geschmacksverstärker) und **Textur** (durch ihren Zuckergehalt erzeugen sie ein volleres Mundgefühl). Die International Bartenders Association (IBA) veröffentlicht Referenzrezepte, darunter zahlreiche Cocktails mit Likören. Ein professioneller Bartender muss die Likör-Kategorien und ihre Einsatzmöglichkeiten exakt kennen.
 
 ## Die unverzichtbaren Likör-Klassiker
 
-**Margarita** (Tequila, Cointreau/Triple Sec, Limettensaft) — der meistbestellte Cocktail weltweit. Cointreau bringt Orangensüße und Balance zur Limettensäure. Das Verhältnis 2:1:1 ist der Standard. **Cosmopolitan** (Wodka Citron, Cointreau, Cranberrysaft, Limette) — Carrie Bradshaws Lieblingsdrink, popularisiert durch „Sex and the City". **Sidecar** (Cognac, Cointreau, Zitronensaft) — ein Klassiker aus den 1920ern, angeblich im Ritz Paris entstanden. **Mai Tai** (Rum, Curaçao/Triple Sec, Orgeat-Mandelsirup, Limette) — Trader Vic's Kreation von 1944. **B-52** (Kahlúa, Baileys, Grand Marnier, geschichtet) — ein Layer-Shot, bei dem die unterschiedlichen Dichten der Liköre die Schichten erzeugen.
+**Margarita** (Tequila, Cointreau/Triple Sec, Limettensaft) — ein bekannter Sour-Cocktail. Cointreau bringt Orangensüße und Balance zur Limettensäure. Verhältnisse variieren; die aktuelle IBA-Fassung verwendet 50 ml Tequila, 20 ml Triple Sec und 15 ml Limettensaft. **Cosmopolitan** (Wodka Citron, Cointreau, Cranberrysaft, Limette) — Carrie Bradshaws Lieblingsdrink, popularisiert durch „Sex and the City". **Sidecar** (Cognac, Cointreau, Zitronensaft) — ein Klassiker aus den 1920ern, angeblich im Ritz Paris entstanden. **Mai Tai** (Rum, Curaçao/Triple Sec, Orgeat-Mandelsirup, Limette) — Trader Vic's Kreation von 1944. **B-52** (Kahlúa, Baileys, Grand Marnier, geschichtet) — ein Layer-Shot, bei dem die unterschiedlichen Dichten der Liköre die Schichten erzeugen.
 
 ## Moderne Mixology mit Likören
 
-**Die moderne Cocktailkultur** hat Liköre wiederentdeckt und in einen neuen Kontext gesetzt. **Amaro-Cocktails** sind der größte Trend: Der **Paper Plane** (Bourbon, Amaro Nonino, Aperol, Zitrone, zu gleichen Teilen) wurde 2008 von Sam Ross kreiert und ist der Amaro-Cocktail der Moderne. Der **Black Manhattan** ersetzt den Sweet Vermouth durch Averna. Der **Naked and Famous** (Mezcal, Chartreuse, Aperol, Limette) verbindet rauchigen Mezcal mit der Komplexität der Chartreuse.
+**Die moderne Cocktailkultur** hat Liköre wiederentdeckt und in einen neuen Kontext gesetzt. **Amaro-Cocktails** sind ein Beispiel für verschiedene moderne Anwendungen: Der **Paper Plane** (Bourbon, Amaro Nonino, Aperol, Zitrone, zu gleichen Teilen) wurde 2008 von Sam Ross kreiert und ist der Amaro-Cocktail der Moderne. Der **Black Manhattan** ersetzt den Sweet Vermouth durch Averna. Der **Naked and Famous** (Mezcal, Chartreuse, Aperol, Limette) verbindet rauchigen Mezcal mit der Komplexität der Chartreuse.
 
 **Chartreuse-Cocktails**: Der **Last Word** (Gin, Grüne Chartreuse, Maraschino, Limette, zu gleichen Teilen) ist ein Prohibition-Klassiker, der um 2004 wiederentdeckt wurde und die Cocktail-Renaissance einleitete. Der **Chartreuse Swizzle** (Grüne Chartreuse, Ananassaft, Limette, Falernum) ist ein tropischer Chartreuse-Drink. **Likör-Techniken**: **Fat-Washing** (Fett-Infusion mit Likör), **Clarification** (Milchklärung von trüben Likör-Cocktails), **Sous-Vide-Mazeration** (beschleunigte Likörherstellung bei niedriger Temperatur unter Vakuum) und **Saline Solution** (Salzlösung, die die Süße von Likören moduliert) sind Werkzeuge des modernen Bartenders.`,
       quiz: [
@@ -875,7 +808,7 @@ export const likoereKurs: Course = {
         },
         {
           question:
-            "Welcher Prohibition-Cocktail mit Chartreuse wurde um 2004 wiederentdeckt?",
+            "Welcher Cocktail kombiniert Gin, grüne Chartreuse, Maraschino und Limette zu gleichen Teilen?",
           options: [
             "Corpse Reviver",
             "Aviation",
@@ -884,7 +817,7 @@ export const likoereKurs: Course = {
           ],
           correct: 2,
           explanation:
-            "Der Last Word (Gin, Grüne Chartreuse, Maraschino, Limette — gleiche Teile) wurde während der Prohibition erfunden und um 2004 von Murray Stenson im Zig Zag Café in Seattle wiederentdeckt.",
+            "Die IBA-Fassung des Last Word kombiniert gleiche Teile Gin, grüne Chartreuse, Maraschino und Limettensaft.",
         },
         {
           question:
@@ -911,7 +844,7 @@ export const likoereKurs: Course = {
 
 ## Optische Bewertung
 
-**Farbe** ist bei Likören ein wichtiger Qualitätsindikator. Man gießt 20–30 ml in ein klares **Nosingglas** oder ein Cognacglas und betrachtet gegen weißen Hintergrund. **Klarheit**: Ist der Likör brillant klar, leicht trüb oder opak (Sahneliköre)? Trübung bei einem eigentlich klaren Likör deutet auf Qualitätsmängel hin (Ausfällung, Oxidation). **Farbintensität und -ton**: Fruchtliköre zeigen je nach Frucht und Herstellungsverfahren ein Spektrum von wasserklar (destilliert) über goldgelb (Zitrus-Mazerate) bis tiefrot (Beerenmazerate). **Viskosität**: Man schwenkt das Glas und beobachtet die **Schlieren** (Kirchenfenster/Tränen): Langsam fließende, breite Schlieren deuten auf hohen Zuckergehalt und/oder hohen Alkohol hin.
+**Farbe** ist bei Likören ein wichtiger Qualitätsindikator. Man gießt 20–30 ml in ein klares **Nosingglas** oder ein Cognacglas und betrachtet gegen weißen Hintergrund. **Klarheit**: Ist der Likör brillant klar, leicht trüb oder opak (Sahneliköre)? Trübung bei einem eigentlich klaren Likör deutet auf Qualitätsmängel hin (Ausfällung, Oxidation). **Farbintensität und -ton**: Fruchtliköre zeigen je nach Frucht und Herstellungsverfahren ein Spektrum von wasserklar (destilliert) über goldgelb (Zitrus-Mazerate) bis tiefrot (Beerenmazerate). **Viskosität**: Man schwenkt das Glas und beobachtet die **Schlieren** (Kirchenfenster/Tränen): Schlieren hängen unter anderem von Oberflächenspannung, Verdunstung und Zusammensetzung ab; sie erlauben keine genaue Alkohol-/Zuckermessung.
 
 ## Olfaktorische Analyse
 
@@ -926,13 +859,13 @@ export const likoereKurs: Course = {
             "Was zeigen langsam fließende, breite Schlieren im Glas an?",
           options: [
             "Einen niedrigen Alkoholgehalt",
-            "Hohen Zuckergehalt und/oder hohen Alkohol",
+            "Keine genaue Alkohol-/Zuckermenge; Schlieren sind kein Qualitätsbeweis",
             "Mindere Qualität",
             "Eine Kältetrübung",
           ],
           correct: 1,
           explanation:
-            "Langsame, breite Schlieren (Kirchenfenster) entstehen durch hohe Viskosität — bedingt durch hohen Zucker- und/oder Alkoholgehalt. Sie sind kein Qualitätsurteil, sondern ein Strukturmerkmal.",
+            "Schlieren erlauben keine zuverlässige Zutatendiagnose oder Qualitätswertung. Oberflächenspannung und Verdunstung spielen ebenfalls eine Rolle.",
         },
         {
           question:
@@ -949,16 +882,16 @@ export const likoereKurs: Course = {
         },
         {
           question:
-            "Ab wann gilt der Nachhall eines Likörs als 'lang'?",
+            "Wozu dienen Zeitangaben bei einer Verkostung?",
           options: [
             "Ab 2 Sekunden",
             "Ab 5 Sekunden",
-            "Ab 10 Sekunden",
+            "Als beschreibende Konvention, nicht als gesetzliche Qualitätsgrenze",
             "Ab 30 Sekunden",
           ],
           correct: 2,
           explanation:
-            "Ein 'langer' Nachhall dauert 10–20 Sekunden. 'Kurz' ist unter 5 Sek., 'mittel' 5–10 Sek. und 'sehr lang' über 20 Sek.",
+            "Die Lektion verwendet ein illustratives Beschreibungsschema. Die Dauer allein belegt weder Qualität noch eine amtliche Klasse.",
         },
       ],
     },
@@ -966,250 +899,100 @@ export const likoereKurs: Course = {
     // ─── Lektion 17 ──────────────────────────────────────────
     {
       title: "Lagerung und Haltbarkeit von Likören",
-      content: `## Das unterschätzte Thema
+      content: `## Produktspezifisch statt pauschal
 
-**Lagerung und Haltbarkeit** sind bei Likören komplexer als bei reinen Spirituosen, da Liköre neben Alkohol auch Zucker, Fruchtsäuren, ätherische Öle, Farbstoffe und bei Sahnelikören Milchfett enthalten. Jede dieser Komponenten hat eigene Anforderungen an Lagertemperatur, Lichtschutz und Oxidationsschutz. Eine falsche Lagerung kann nicht nur den Geschmack beeinträchtigen, sondern bei einigen Kategorien auch zu echtem Verderb führen.
+**Liköre** unterscheiden sich durch Alkohol, Zucker, Säure, pflanzliche Inhaltsstoffe und gegebenenfalls Milch oder Ei. Deshalb gibt es weder eine einzige ideale Lagertemperatur noch ein festes Haltbarkeitsfenster für die gesamte Kategorie. Etikett, Verpackung und aktuelle Herstellerhinweise haben Vorrang.
 
-## Allgemeine Lagerungsregeln
+## Nachvollziehbare Beispiele
 
-**Temperatur**: Liköre sollten bei **15–20 °C** gelagert werden. Extreme Hitze (über 30 °C) beschleunigt oxidative Prozesse, kann ätherische Öle verflüchtigen und bei Sahnelikören die Emulsion brechen. Extreme Kälte (unter 0 °C) kann bei niedrigprozentigen Likören (15–20 % Vol.) zu Gefrierung und Kristallisation des Zuckers führen. Anisliköre zeigen bei Kälte die bereits bekannte Trübung (Louche), die sich beim Erwärmen wieder auflöst — kein Qualitätsmangel. **Lichtschutz**: UV-Strahlung ist der Hauptfeind von Likörfarben. Sonnenlicht baut **Anthocyane** (Rotpigmente in Beerenlikören), **Chlorophyll** (Grünpigmente in Kräuterlikören) und **Carotinoide** (Gelbpigmente) ab. Fruchtliköre verblassen bei Lichteinstrahlung innerhalb weniger Wochen. Dunkle oder farblose Glasflaschen bieten besseren Schutz als klare.
+**Baileys Original**: Der Hersteller nennt 24 Monate ab Abfüllung, geöffnet oder ungeöffnet, bei 0–25 °C und Schutz vor direkter Sonne; andere Varianten und kleine Verpackungen können abweichen. **Kahlúa Original**: Der Hersteller empfiehlt einen kühlen, trockenen, lichtgeschützten Ort und nennt vier Jahre als Qualitätszeitraum; Kaffeeintensität kann abnehmen. **Eierlikör**: Keine allgemeine Drei-Monats-Regel. Verpoorten empfiehlt für den geöffneten Original-Eierlikör aufrechte Kühlschranklagerung und Verbrauch innerhalb von sechs Monaten; andere Produkte können andere Vorgaben haben.
 
-## Haltbarkeit nach Kategorien
+## Licht, Temperatur und Verschluss
 
-**Hochprozentige Kräuter- und Fruchtliköre** (30+ % Vol., z. B. Chartreuse, Cointreau): Nahezu unbegrenzt haltbar, wenn ungeöffnet und lichtgeschützt. Geöffnet über Jahre stabil, da der hohe Alkohol konserviert. **Niedrigprozentige Fruchtliköre** (15–20 % Vol.): Ungeöffnet 2–5 Jahre. Geöffnet innerhalb von 6–12 Monaten aufbrauchen — der niedrige Alkohol schützt weniger vor Oxidation und mikrobieller Aktivität. **Sahne- und Cremeliköre** (15–17 % Vol.): Ungeöffnet 24 Monate (MHD beachten). Geöffnet innerhalb von 6 Monaten aufbrauchen. Kühlung empfohlen, aber nicht zwingend. **Eierliköre**: Ungeöffnet 12–18 Monate. Geöffnet gekühlt und innerhalb von 3 Monaten aufbrauchen.
+Direkte Sonne, starke Wärme und große Temperaturschwankungen vermeiden, soweit die Produkthinweise nichts Spezifischeres sagen. Klare beziehungsweise farblose Glasflaschen sind nicht automatisch lichtschützend. Den Verschluss sauber halten und nach Gebrauch schließen. Eine frostige Servierempfehlung darf nicht ungeprüft als dauerhafte Lagerfreigabe für jeden Likör übernommen werden.
 
-## Qualitätsverlust erkennen
+## Kein Sicherheitsnachweis durch Geschmack
 
-**Visuelle Veränderungen**: Farbverlust (Ausbleichen), Trübung bei klaren Likören, Phasentrennung bei Cremelikören, Kristalle am Flaschenboden (Zuckerkristallisation — kein Verderb, aber Qualitätsverlust). **Olfaktorische Veränderungen**: Verlust der Primäraromen (Fruchtliköre riechen flach und dumpf), oxidative Noten (Sherry-artig, muffig), Essigstichnote (mikrobielle Aktivität, selten). **Gustatorische Veränderungen**: Verlust der Fruchtigkeit und Komplexität, Bitterkeit nimmt zu (Abbau von Zucker, Oxidation von Polyphenolen), metallischer Nachgeschmack (Reaktion mit dem Verschluss). **Faustregel**: Wenn ein Likör noch gut riecht und schmeckt, ist er in Ordnung. Liköre „verderben" selten im Sinne einer Gesundheitsgefahr (der Alkohol wirkt konservierend), aber sie verlieren an Qualität.`,
+Farbveränderung, Ausflockung oder Phasentrennung sind Anlass zur Prüfung. Ein angenehmer Geruch oder Geschmack beweist aber keine mikrobiologische Sicherheit. Verdächtige Produkte nicht zur Sicherheitskontrolle verkosten.`,
       quiz: [
-        {
-          question:
-            "Bei welcher Temperatur sollten Liköre idealerweise gelagert werden?",
-          options: [
-            "0–5 °C im Kühlschrank",
-            "15–20 °C",
-            "25–30 °C",
-            "Die Temperatur ist irrelevant",
-          ],
-          correct: 1,
-          explanation:
-            "15–20 °C ist ideal. Hitze über 30 °C beschleunigt Oxidation, Kälte unter 0 °C kann niedrigprozentige Liköre einfrieren und Zucker kristallisieren lassen.",
-        },
-        {
-          question:
-            "Welcher Farbstoff in Beerenlikören wird durch UV-Licht abgebaut?",
-          options: [
-            "Melanin",
-            "Anthocyane",
-            "Hämoglobin",
-            "Karamell",
-          ],
-          correct: 1,
-          explanation:
-            "Anthocyane sind die roten/violetten Farbstoffe in Beerenlikören. UV-Strahlung baut sie ab, weshalb Fruchtliköre bei Lichteinstrahlung schnell verblassen.",
-        },
-        {
-          question:
-            "Wie lange hält ein geöffneter Eierlikör im Kühlschrank?",
-          options: [
-            "Unbegrenzt",
-            "1 Woche",
-            "Etwa 3 Monate",
-            "12 Monate",
-          ],
-          correct: 2,
-          explanation:
-            "Geöffneter Eierlikör sollte gekühlt aufbewahrt und innerhalb von etwa 3 Monaten verbraucht werden. Das Eigelb ist empfindlich gegenüber Oxidation und mikrobiellem Verderb.",
-        },
+        {"question":"Welche Lagerregel hat Vorrang?","options":["Immer 15–20 °C","Die aktuelle Angabe für das konkrete Produkt","Immer Gefrierfach","Temperatur ist irrelevant"],"correct":1,"explanation":"Kategorienamen ersetzen weder Etikett noch Herstellerhinweise."},
+        {"question":"Was beweist ein unauffälliger Geruch?","options":["Garantierte Sicherheit","Keine vollständige mikrobiologische Sicherheit","Unbegrenzte Haltbarkeit","Dass Alkohol alle Keime beseitigt"],"correct":1,"explanation":"Geruch und Aussehen können Hinweise geben, ersetzen aber keine sichere Lagerung oder Produkthinweise."},
+        {"question":"Welche Aussage zur Haltbarkeit von Eierlikör stimmt?","options":["Immer exakt drei Monate","Sie ist produktabhängig; beispielsweise gibt Verpoorten eigene Hinweise nach Öffnung","Immer unbegrenzt","Bei jedem Produkt gleich"],"correct":1,"explanation":"Für Verpoorten Original werden gekühlte aufrechte Lagerung und sechs Monate genannt. Das ist keine Regel für jede Eierlikörrezeptur."},
       ],
     },
 
     // ─── Lektion 18 ──────────────────────────────────────────
     {
       title: "Likör selbst herstellen — Vom Ansatz zum Produkt",
-      content: `## Die Kunst des Aufgesetzten
+      content: `## Hausansatz und Destillation unterscheiden
 
-**Liköre selbst herzustellen** ist eine der zugänglichsten Formen der Spirituosenproduktion. In Deutschland ist die Herstellung von Likören für den Eigengebrauch legal, solange man fertig gekauften Alkohol als Basis verwendet und nicht selbst destilliert (Destillation erfordert eine Brenngenehmigung). Die traditionelle Methode heißt **Aufgesetzter**: Früchte, Kräuter oder Gewürze werden in Alkohol eingelegt, der Zucker extrahiert die Aromen zusätzlich durch osmotischen Druck.
+**Aufgesetzter** bezeichnet Zutaten, die in einer fertigen Alkoholbasis ziehen. Das ist nicht dasselbe wie das Erzeugen von Alkohol durch Gärung und Destillation. Destillation und gewerbliche Herstellung unterliegen eigenständigen alkoholsteuer-, lebensmittel- und gegebenenfalls gewerberechtlichen Regeln. Für eine konkrete rechtliche Frage sind die zuständigen Behörden maßgeblich; das frühere Branntweinmonopol ist keine aktuelle pauschale Rechtsgrundlage.
 
-## Basis-Alkohol wählen
+## Sichere Auswahl
 
-**Die Alkoholbasis** bestimmt den Grundcharakter des Likörs. **Neutralalkohol/Primasprit** (96 % Vol., in der Apotheke oder online erhältlich) ist die reinste Option — er bringt keine Eigenaromen mit und lässt die Zutaten unverfälscht zur Geltung kommen. Er muss vor der Mazeration mit destilliertem Wasser auf die gewünschte Stärke verdünnt werden (typisch 40–50 % Vol.). **Wodka** (37,5–40 % Vol.) ist die bequemste Option für Einsteiger — trinkfertig und geschmacksneutral. **Korn** und **Doppelkorn** (32–38 % Vol.) bringen eine dezente Getreidenote ein, die zu Frucht- und Kräuterlikören passt. **Rum**, **Cognac** und **Whisky** als Basis ergeben komplexe, charakterstarke Liköre mit deutlichem Eigencharakter — ideal für ambitionierte Projekte.
+Nur einwandfreie, für Lebensmittel geeignete Zutaten und ausdrücklich zum Verzehr geeigneten, legal erworbenen Alkohol verwenden. Kein Brennspiritus, technischer oder vergällter Alkohol. Keine unbekannten Wildpflanzen, Bittermandeln oder zerkleinerten Steinobstkerne einsetzen; natürliche Herkunft bedeutet nicht automatisch Sicherheit. Die BfR-Hinweise zu cyanogenen Glykosiden und Lebensmittelvergiftungen sind zu beachten.
 
-## Rezepturen und Proportionen
+## Sauber arbeiten
 
-**Die Grundformel** für einen Fruchtlikör: **500 g Früchte**, **250–350 g Zucker** und **700 ml Alkohol** (40 % Vol.). Die Früchte werden gewaschen, je nach Sorte entsteint, zerkleinert oder angestochen (bei Beeren). Der Zucker wird schichtweise mit den Früchten in ein steriles Glasgefäß gegeben, dann wird der Alkohol aufgegossen. **Mazerationszeiten**: Beeren (Himbeere, Erdbeere): 4–6 Wochen. Steinobst (Kirsche, Pflaume): 6–8 Wochen. Kernobst (Apfel, Birne): 8–12 Wochen. Zitrusschalen: 2–4 Wochen. Kräuter/Gewürze: 1–4 Wochen (Vorsicht — schnell zu intensiv!). Während der Mazeration wird das Gefäß **an einem dunklen, kühlen Ort** aufbewahrt und **täglich geschwenkt**, um eine gleichmäßige Extraktion zu gewährleisten.
+Lebensmitteltaugliche, sauber gereinigte Gefäße verwenden und Zutaten hygienisch verarbeiten. Ein sauber wirkendes Glas ist nicht automatisch steril. Fertiger Alkohol verhindert nicht unter allen Bedingungen mikrobiellen Verderb, besonders nach Verdünnung oder bei Ei-/Milchzusätzen. Keine allgemeine Haltbarkeit oder sichere Endalkoholstärke aus einer groben Mengenformel ableiten.
 
-## Filtration und Verfeinerung
+## Zeit und Filtration
 
-**Nach der Mazeration** wird der Likör gefiltert. **Grobe Filtration**: Durch ein feines Sieb oder Mulltuch, um Fruchtfleisch und Feststoffe zu entfernen. **Feine Filtration**: Durch Kaffeefilter oder Laborfilterpapier für brillante Klarheit. Dieser Schritt kann bei hochviskosen Ansätzen Stunden dauern. **Ruhezeit**: Nach dem Filtrieren mindestens **4–8 Wochen ruhen** lassen — in dieser Zeit verbinden sich die Aromen und der Likör wird harmonisch (man spricht von „Heirat" der Aromen). **Korrekturen**: Nach der Ruhezeit wird abgeschmeckt. Zu süß? Mit Alkohol und Wasser verdünnen. Zu stark? Mit Zuckersirup (2:1, Zucker:Wasser) süßen. Zu herb? Honig oder Vanillezucker einrühren. Zu mild? Frische Schalen, Gewürze oder Kräuter für 1–2 Wochen nachlegen.`,
+Extraktions- und Ruhezeiten hängen von Rezeptur und Material ab; vier bis acht Wochen sind keine universelle Mindestpflicht. Filtration entfernt Feststoffe, garantiert aber keine Sterilität. Hochprozentigen Alkohol von Hitze und offenen Flammen fernhalten, nicht auf dem Herd erwärmen oder selbst destillieren.`,
       quiz: [
-        {
-          question:
-            "Warum ist die Herstellung von Likören zu Hause in Deutschland legal, die Destillation aber nicht?",
-          options: [
-            "Weil Liköre weniger Alkohol enthalten",
-            "Weil bei der Likörherstellung fertiger Alkohol verwendet wird, während Destillation neuen Alkohol erzeugt und genehmigungspflichtig ist",
-            "Weil Destillation gesundheitsgefährdend ist",
-            "Weil es keine Unterschiede gibt — beides ist erlaubt",
-          ],
-          correct: 1,
-          explanation:
-            "Likörherstellung mazeriert Zutaten in bereits versteuertem, fertigem Alkohol. Destillation erzeugt neuen Alkohol und unterliegt dem Branntweinmonopol — sie ist ohne Brenngenehmigung strafbar.",
-        },
-        {
-          question:
-            "Wie lange sollte ein selbst hergestellter Fruchtlikör nach der Filtration mindestens ruhen?",
-          options: [
-            "1–2 Tage",
-            "1 Woche",
-            "4–8 Wochen",
-            "6–12 Monate",
-          ],
-          correct: 2,
-          explanation:
-            "Nach der Filtration braucht der Likör 4–8 Wochen Ruhezeit, damit sich die Aromen verbinden und harmonisieren — die sogenannte 'Heirat' der Aromen.",
-        },
-        {
-          question:
-            "Welche Mazerationszeit ist für Kräuter und Gewürze typisch?",
-          options: [
-            "1–4 Wochen",
-            "6–8 Wochen",
-            "3–6 Monate",
-            "Mindestens 1 Jahr",
-          ],
-          correct: 0,
-          explanation:
-            "Kräuter und Gewürze brauchen nur 1–4 Wochen Mazeration. Sie geben ihre Aromen schnell ab und können bei zu langer Mazeration unangenehm bitter oder medizinal werden.",
-        },
+        {"question":"Was unterscheidet einen Aufgesetzten von Destillation?","options":["Beide erzeugen immer neuen Alkohol","Zutaten ziehen in einer fertigen Alkoholbasis; es wird nicht destilliert","Destillation ist ohne Regeln erlaubt","Aufgesetzter ist automatisch steril"],"correct":1,"explanation":"Die steuer- und lebensmittelrechtlichen Regeln unterscheiden sich. Diese Lektion ersetzt keine behördliche Auskunft."},
+        {"question":"Welche Alkoholbasis ist ungeeignet?","options":["Legal gekaufter Trinkalkohol","Technischer oder vergällter Alkohol","Ein klar bezeichnetes Lebensmittel","Ein geprüftes Handelsprodukt"],"correct":1,"explanation":"Nur ausdrücklich für den menschlichen Verzehr geeigneten Alkohol verwenden."},
+        {"question":"Was leistet eine einfache Filtration?","options":["Sie beseitigt garantiert alle Keime","Sie entfernt Feststoffe, garantiert aber keine Sterilität","Sie entfernt sämtliches Methanol","Sie macht jede Pflanze essbar"],"correct":1,"explanation":"Haltbarkeit und Sicherheit hängen von Rezeptur, Verarbeitung und Lagerung ab."},
       ],
     },
 
     // ─── Lektion 19 ──────────────────────────────────────────
     {
       title: "Likör als Digestif und Aperitif",
-      content: `## Zwei Seiten einer Medaille
+      content: `## Begriffe der Esskultur
 
-**Liköre** spielen sowohl als **Digestif** (nach dem Essen) als auch als **Aperitif** (vor dem Essen) eine zentrale Rolle in der europäischen Esskultur. Beide Einsatzbereiche haben physiologische Grundlagen, kulturelle Traditionen und spezifische Likör-Kategorien, die sich fundamental unterscheiden. Die richtige Wahl des Likörs zum richtigen Zeitpunkt im Menü ist Teil des gehobenen Gastgeberhandwerks und ein Zeichen gastronomischer Kompetenz.
+**Aperitif** heißt im gastronomischen Sprachgebrauch ein Getränk vor dem Essen, **Digestif** eines nach dem Essen. Diese Namen beschreiben Zeitpunkt und Tradition, keine nachgewiesene Gesundheitswirkung.
 
-## Der Digestif — Verdauung und Genuss
+## Keine Verdauungszusage
 
-**Ein Digestif** wird nach dem Essen serviert, typischerweise nach dem Dessert oder zum Kaffee. Die traditionelle Begründung: **Bitterstoffe** regen die Produktion von Magensäure, Gallenflüssigkeit und Verdauungsenzymen an und fördern so die Verdauung. Moderne Medizin bestätigt teilweise: Bittere Verbindungen aktivieren tatsächlich die **T2R-Bitterrezeptoren**, die über den Vagusnerv die Sekretion von Verdauungssäften stimulieren. Der Alkohol selbst hat allerdings eine ambivalente Wirkung — in kleinen Mengen (20–30 ml) kann er die Magenentleerung fördern, in größeren Mengen hemmt er sie.
+Ein alkoholischer Kräuterlikör ist **kein Verdauungsmedikament**. Aus einem bitteren Geschmack oder der Aktivierung von Bitterrezeptoren folgt keine gesundheitliche Wirksamkeit des fertigen Getränks. Ein kontrollierter Versuch mit Käsefondue zeigte sogar langsamere Magenentleerung bei Wein beziehungsweise Schnaps; er belegt allerdings nicht dieselbe Wirkung für jede Mahlzeit und jeden Likör. Beschwerden gehören bei Bedarf medizinisch abgeklärt.
 
-**Klassische Digestif-Liköre**: **Fernet-Branca** (extrem bitter, der „Espresso unter den Amari"), **Ramazzotti** (ausgewogen bitter-süß), **Averna** (rund, karamellig), **Underberg** (Portionsfläschchen, 44 % Vol.), **Chartreuse** (komplex, kräuterintensiv), **Bénédictine** (süß-kräuterig, warm), **Nocino** (Walnusslikör, herb-würzig), **Sambuca** (Anis, oft flambiert). Die Servier-Temperatur variiert: Amari werden typisch bei **Raumtemperatur oder leicht gekühlt** serviert, Limoncello **eiskalt** (aus dem Gefrierfach, -18 °C).
+## Geschmack und Servierweise
 
-## Der Aperitif — Appetitanregung
+Bittere Kräuterstile, fruchtige Liköre und Cremeliköre werden je nach Produkt zu verschiedenen Anlässen angeboten. Ob gekühlt, auf Eis oder bei Raumtemperatur, richtet sich nach Herstellerhinweisen und persönlicher Vorliebe. Eine Gefrierfachtemperatur von -18 °C ist keine pauschale Empfehlung für alle Limoncelli und garantiert nicht, dass jedes Produkt flüssig bleibt. Getränke nicht flambieren.
 
-**Ein Aperitif** wird vor dem Essen serviert und soll den Appetit anregen, die Geschmacksnerven sensibilisieren und den sozialen Rahmen des Essens eröffnen. Die Aperitif-Kultur ist besonders in **Italien** (Aperitivo) und **Frankreich** (Apéritif) verwurzelt. Aperitif-Liköre sind typischerweise **leichter** (11–25 % Vol.), **weniger süß** und **bitter-erfrischend**. **Aperol** (11 % Vol., Padua, 1919) mit Rhabarber, Enzian, Chinin und Orangen ist als **Aperol Spritz** (Aperol, Prosecco, Soda) zum globalen Phänomen geworden. **Campari** (25 % Vol., Mailand, 1860) ist intensiver bitter und die Basis des **Negroni** (Campari, Gin, Roter Wermut). **Lillet** (Frankreich) ist ein Aperitif-Wein mit Likör-Charakter. **Suze** (Enzian-Likör, 15 % Vol.) ist in Frankreich der Aperitif-Klassiker schlechthin.
+## Kategorien auseinanderhalten
 
-## Die Grauzone — Allrounder
-
-**Einige Liköre** funktionieren sowohl als Aperitif als auch als Digestif. **Amaro Montenegro** ist mild genug als Aperitif (auf Eis mit Orangenscheibe) und komplex genug als Digestif (pur bei Raumtemperatur). **Cynar** (Artischockenlikör, 16,5 % Vol.) wird in Italien vor und nach dem Essen getrunken. Diese Flexibilität macht viele Amari zu idealen Bar-Allroundern.`,
+**Aperol** ist eine süß-bittere Aperitif-Zutat; die verbreitete Abfüllung mit 11 % Vol. erfüllt nicht allein die allgemeine EU-Likörgrenze von 15 % Vol. **Lillet** ist ein weinbasierter Aperitif, kein Spirituosenlikör. **Negroni** und **Spritz** sind Cocktailbeispiele mit eigenen Rezepturen. Weniger Alkohol oder Zucker macht ein alkoholisches Getränk nicht gesund; die DGE empfiehlt den Verzicht.`,
       quiz: [
-        {
-          question:
-            "Welche Rezeptoren werden durch Bitterstoffe in Digestif-Likören aktiviert?",
-          options: [
-            "T1R-Süßrezeptoren",
-            "T2R-Bitterrezeptoren",
-            "TRPV1-Schmerzrezeptoren",
-            "Olfaktorische Rezeptoren",
-          ],
-          correct: 1,
-          explanation:
-            "T2R-Bitterrezeptoren auf der Zunge werden durch Bitterstoffe aktiviert und stimulieren über den Vagusnerv die Sekretion von Magensäure, Gallenflüssigkeit und Verdauungsenzymen.",
-        },
-        {
-          question:
-            "Bei welcher Temperatur wird Limoncello idealerweise als Digestif serviert?",
-          options: [
-            "Raumtemperatur",
-            "Leicht gekühlt (10–12 °C)",
-            "Eiskalt aus dem Gefrierfach (-18 °C)",
-            "Warm (40 °C)",
-          ],
-          correct: 2,
-          explanation:
-            "Limoncello wird traditionell eiskalt aus dem Gefrierfach (-18 °C) serviert. Der hohe Zuckergehalt verhindert das Einfrieren, und die Kälte intensiviert die erfrischende Zitrusnote.",
-        },
-        {
-          question:
-            "Welcher Likör ist die Basis des Aperol Spritz?",
-          options: [
-            "Campari (25 % Vol.)",
-            "Aperol (11 % Vol.)",
-            "Cynar (16,5 % Vol.)",
-            "Lillet (17 % Vol.)",
-          ],
-          correct: 1,
-          explanation:
-            "Aperol Spritz besteht aus Aperol (11 % Vol.), Prosecco und einem Schuss Soda. Aperol ist ein leichter, süß-bitterer Likör mit Rhabarber, Enzian und Orangen.",
-        },
+        {"question":"Was bedeuten Aperitif und Digestif hier?","options":["Eine Arzneimittelzulassung","Getränk vor beziehungsweise nach dem Essen, nicht eine medizinische Wirkung","Eine sichere Trinkmenge","Eine garantierte Magenentleerung"],"correct":1,"explanation":"Die Begriffe bezeichnen eine kulturelle Verwendung. Sie belegen keine Verdauungsverbesserung."},
+        {"question":"Welche Serviertemperatur gilt für Limoncello?","options":["Immer exakt -18 °C","Die passende Produktangabe und persönliche Servierpräferenz, keine pauschale -18-°C-Pflicht","Immer 40 °C","Temperatur ist gesetzlich identisch"],"correct":1,"explanation":"Rezeptur und Alkohol-/Zuckergehalt variieren; nicht jedes Produkt bleibt im Gefrierfach flüssig."},
+        {"question":"Welche Zutat gehört zum Aperol Spritz?","options":["Nur Lillet und Wasser","Aperol zusammen mit Prosecco und Soda","Cassis und Rotwein","Whiskey und Sahne"],"correct":1,"explanation":"Das IBA-Rezept beschreibt diese Zutaten. Cocktailname und EU-Spirituosenkategorie sind unterschiedliche Dinge."},
       ],
     },
 
     // ─── Lektion 20 ──────────────────────────────────────────
     {
       title: "Trends und Zukunft der Likörwelt",
-      content: `## Die Renaissance der Liköre
+      content: `## Entwicklungen ohne erfundene Marktprognose
 
-**Die Likörbranche** erlebt seit Mitte der 2010er Jahre eine bemerkenswerte Renaissance. Nachdem Liköre jahrzehntelang als altmodisch und zu süß galten, haben die Craft-Cocktail-Bewegung, das wachsende Interesse an handwerklichen Produkten und veränderte Konsumgewohnheiten die Kategorie revitalisiert. Der globale Likörmarkt wird auf über **110 Milliarden USD** geschätzt (2025) und wächst jährlich um **4–6 %**, getrieben von Premiumisierung, Innovation und der Expansion in neue Märkte.
+Neue Cocktailanwendungen, botanische Zutaten und alkoholfreie Alternativen erweitern das Angebot. Ohne datierte und nachvollziehbare Erhebung werden hier keine globalen Marktgrößen, Wachstumsraten oder Ranglisten angegeben.
 
-## Trend 1: Reduktion von Zucker und Alkohol
+## Weniger Zucker ist rechtlich begrenzt
 
-**Der wichtigste Megatrend** ist die Reduktion: Weniger Zucker, weniger Alkohol, mehr Authentizität. **Low-Sugar-Liköre** mit 80–100 g/l Zucker (am unteren EU-Limit) sprechen gesundheitsbewusste Konsumenten an, die komplexe Aromen ohne klebrige Süße wollen. **Low-ABV-Liköre** (unter 20 % Vol.) und **alkoholfreie Likör-Alternativen** (0,0 % Vol., wie Seedlip, Lyre's oder Undone) sind die am schnellsten wachsenden Segmente. Diese Produkte verwenden Destillation, CO₂-Extraktion und andere Technologien, um Aromenprofile zu reproduzieren, die an klassische Liköre erinnern — ohne Alkohol.
+**Likör** ist eine definierte EU-Kategorie: grundsätzlich mindestens 100 g/l Zucker als Invertzucker und mindestens 15 % Vol., mit spezifischen Ausnahmen und eigenen Unterkategorien. Ein Produkt mit 80 g/l kann nicht allein wegen des Trends 'Low Sugar' als gewöhnlicher Likör bezeichnet werden. Die 80-g-Ausnahme betrifft bestimmte Enzian-, vergleichbare Pflanzen- oder Wermutliköre. Alkoholfreie Alternativen sind nicht selbst Spirituosenliköre.
 
-## Trend 2: Craft und Terroir
+## Herkunft und Transparenz
 
-**Craft-Liköre** von kleinen, unabhängigen Produzenten erobern Marktanteile von den Großkonzernen. Die Craft-Bewegung betont **Terroir** (Herkunft der Zutaten), **Transparenz** (vollständige Zutatenlisten, offene Herstellungsverfahren), **Single-Origin** (eine Zutat aus einer Region, z. B. ein Himbeerlikör aus sächsischen Waldfrüchten) und **Botanical Innovation** (ungewöhnliche Zutaten wie Yuzu, Szechuan-Pfeffer, Lavendel, Tonkabohne, Meersalz oder Rauch). In Deutschland entstehen hunderte Mikro-Destillerien, die lokale Früchte, Kräuter und Botanicals zu handwerklichen Likören verarbeiten. **Farm-to-Bottle** — vom Anbau bis zur Abfüllung alles in eigener Hand — wird zum Qualitätsversprechen.
+Lokale Zutaten, offene Herstellungsangaben und nachvollziehbare Allergeninformationen können bei der Auswahl helfen. 'Craft', 'Single Origin' oder 'Farm to Bottle' sind keine automatische Qualitäts- oder Gesundheitsgarantie. Bei proprietären Rezepturen dürfen Einzelheiten nicht erfunden werden.
 
-## Trend 3: Technologie und Nachhaltigkeit
+## Technik und Umwelt
 
-**Moderne Technologien** revolutionieren die Likörherstellung. **Ultraschall-Mazeration** beschleunigt die Extraktion von Wochen auf Stunden, indem Schallwellen Mikrokavitationen erzeugen, die Zellwände aufbrechen. **Sous-Vide-Infusion** (Vakuumgaren bei niedrigen Temperaturen) ermöglicht präzise, reproduzierbare Extraktionen. **Rotationsverdampfer** destillieren bei Raumtemperatur unter Vakuum — ideal für hitzeempfindliche Aromen. **Nachhaltigkeit** wird zum Differenzierungsmerkmal: Upcycling von Lebensmittelresten (Kaffeesatz, Obsttrester, Brotabschnitte), klimaneutraler Anbau, Recycling-Verpackungen und reduzierter Wasserverbrauch. Der **Zero-Waste-Likör** — hergestellt aus Nebenprodukten der Lebensmittelindustrie — ist keine Utopie mehr, sondern ein wachsendes Marktsegment.
-
-## Trend 4: Erlebnis und Premiumisierung
-
-**Premiumisierung** treibt das Wachstum im hochpreisigen Segment. Limited Editions, jahrgangsbezeichnete Liköre, Vintage-Abfüllungen von Chartreuse oder Strega erzielen Sammlerpreise. **Tasting-Events**, **Likör-Workshops** und **Destillerie-Tourismus** schaffen Erlebnisse rund um das Produkt. Die Gastronomie setzt verstärkt auf **Likörpaarungen** (Likör und Schokolade, Likör und Käse) als Pendant zur Weinbegleitung.`,
+Alternative Extraktionsverfahren können eine andere Prozessführung erlauben. Sie liefern nicht automatisch Sterilität, dieselbe Qualität oder eine feste Zeiteinsparung. Die Verwendung eines Nebenprodukts als Rohstoff beweist keine vollständig abfallfreie oder CO₂-neutrale Produktion; belastbare Umweltbehauptungen benötigen eine Bilanz und klaren Geltungsbereich.`,
       quiz: [
-        {
-          question:
-            "Wie groß ist der geschätzte globale Likörmarkt (2025)?",
-          options: [
-            "Etwa 10 Milliarden USD",
-            "Etwa 50 Milliarden USD",
-            "Über 110 Milliarden USD",
-            "Über 500 Milliarden USD",
-          ],
-          correct: 2,
-          explanation:
-            "Der globale Likörmarkt wird auf über 110 Milliarden USD geschätzt, mit einem jährlichen Wachstum von 4–6 %, getrieben durch Premiumisierung und Innovation.",
-        },
-        {
-          question:
-            "Was bewirkt Ultraschall-Mazeration?",
-          options: [
-            "Sie erzeugt Alkohol aus Zucker",
-            "Sie beschleunigt die Aromenextraktion durch Mikrokavitationen, die Zellwände aufbrechen",
-            "Sie sterilisiert den Likör",
-            "Sie entfernt den Alkohol",
-          ],
-          correct: 1,
-          explanation:
-            "Ultraschall-Mazeration erzeugt Mikrokavitationen (winzige, kollabierende Blasen), die Zellwände aufbrechen und die Extraktion von Wochen auf Stunden beschleunigen.",
-        },
-        {
-          question:
-            "Was ist ein Zero-Waste-Likör?",
-          options: [
-            "Ein Likör ohne Zucker",
-            "Ein Likör ohne Alkohol",
-            "Ein Likör, der aus Nebenprodukten der Lebensmittelindustrie hergestellt wird",
-            "Ein Likör, der in recycelten Flaschen verkauft wird",
-          ],
-          correct: 2,
-          explanation:
-            "Zero-Waste-Liköre werden aus Nebenprodukten hergestellt — z. B. Kaffeesatz, Obsttrester oder Brotabschnitte. Sie sind ein wachsendes Segment im Bereich Nachhaltigkeit.",
-        },
+        {"question":"Wann darf ein Produkt mit 80 g/l Zucker als Likör eingeordnet werden?","options":["Immer bei der Aufschrift Craft","Wenn es eine konkrete gesetzliche Ausnahme wie Enzian-/vergleichbaren Pflanzen- oder Wermutlikör erfüllt","Wenn es teuer ist","Bei jedem Fruchtlikör"],"correct":1,"explanation":"Eine beliebige Low-Sugar-Rezeptur erfüllt nicht automatisch die allgemeine 100-g/l-Likördefinition."},
+        {"question":"Was beweist eine neue Extraktionstechnik allein?","options":["Immer dieselbe Zeiteinsparung","Weder Sterilität noch automatisch höhere Qualität","Kein Alkoholrisiko","Ein gesundes Getränk"],"correct":1,"explanation":"Prozess und Ergebnis müssen für die konkrete Rezeptur geprüft werden."},
+        {"question":"Was bedeutet die Verwendung von Lebensmittel-Nebenprodukten?","options":["Automatische CO₂-Neutralität","Sie kann Rohstoffe weiter nutzen, beweist aber keine völlig abfallfreie Gesamtproduktion","Eine gesetzliche Qualitätsstufe","Garantierte Null-Abfälle"],"correct":1,"explanation":"Umweltaussagen benötigen einen klaren Geltungsbereich und geeignete Daten."},
       ],
     },
   ],
@@ -1224,7 +1007,7 @@ export const likoereKurs: Course = {
       options: ["50 g/l", "70 g/l", "100 g/l", "150 g/l"],
       correct: 2,
       explanation:
-        "Die EU-Verordnung schreibt 100 g/l als Mindestzuckergehalt vor. Einzige Ausnahme: Kirschlikör mit 70 g/l.",
+        "Die EU-Verordnung schreibt 100 g/l als Mindestzuckergehalt vor. Ausnahmen: Kirschlikör mit ausschließlich Kirschbrand als Alkoholbasis (70 g/l) sowie Enzian-/vergleichbare Pflanzen- und Wermutliköre (80 g/l), jeweils als Invertzucker.",
     },
     {
       question:
@@ -1237,7 +1020,7 @@ export const likoereKurs: Course = {
       ],
       correct: 1,
       explanation:
-        "Mazeration löst alle Verbindungen (inkl. Farbstoffe, Tannine), Destillation trennt nach Siedepunkt und erfasst nur flüchtige Aromen. Daher sind reine Destillate farblos.",
+        "Mazeration kann flüchtige und nicht-flüchtige Komponenten extrahieren. Destillation überträgt flüchtige Komponenten mit dem Dampf; sie trennt Gemische nicht nach einer einfachen Reinstoff-Siedepunktgrenze. Daher sind reine Destillate farblos.",
     },
     {
       question:
@@ -1254,29 +1037,29 @@ export const likoereKurs: Course = {
     },
     {
       question:
-        "Warum verwenden die meisten Amaretti Aprikosenkerne statt Mandeln?",
+        "Welche Aussage zu Mandelaromen und Amaretto ist wichtig?",
       options: [
         "Aprikosenkerne sind günstiger und haben keinen Geschmack",
-        "Beide enthalten Amygdalin, das zu Benzaldehyd abgebaut wird — dem Stoff, den wir als Mandelgeschmack wahrnehmen",
+        "Mandelaroma allein beweist keine konkrete Zutat; Hersteller- und Allergeninformationen prüfen",
         "Mandeln sind in Italien verboten",
         "Aprikosenkerne haben mehr Alkohol",
       ],
       correct: 1,
       explanation:
-        "Sowohl Aprikosenkerne als auch Bittermandeln enthalten Amygdalin, das enzymatisch zu Benzaldehyd abgebaut wird — der Verbindung, die unser Gehirn als 'Mandel' identifiziert.",
+        "Die konkrete Rezeptur variiert. Bittere Aprikosenkerne und Bittermandeln können giftige Blausäure freisetzen und sind keine bedenkenlose Heimansatz-Zutat.",
     },
     {
       question:
-        "Bei welchem Druck werden Sahneliköre typischerweise homogenisiert?",
+        "Welche Aussage zur Emulsion eines Sahnelikörs stimmt?",
       options: [
         "10–20 bar",
         "50–80 bar",
-        "150–250 bar",
+        "Rezeptur und Prozessführung müssen für das Produkt abgestimmt sein.",
         "500–1000 bar",
       ],
       correct: 2,
       explanation:
-        "150–250 bar Homogenisierungsdruck zerkleinert die Fettkügelchen auf unter 1 Mikrometer, sodass die Emulsion stabil bleibt und die Sahne nicht aufrahmt.",
+        "Homogenisierung kann die Emulsion unterstützen. Ein universeller Druckbereich oder eine garantierte Stabilität für alle Rezepturen folgt daraus nicht.",
     },
     {
       question:
@@ -1289,7 +1072,7 @@ export const likoereKurs: Course = {
       ],
       correct: 1,
       explanation:
-        "Der Last Word ist ein Equal-Parts-Cocktail aus der Prohibition-Ära, der um 2004 wiederentdeckt wurde und die Cocktail-Renaissance mitauslöste.",
+        "Der Last Word ist ein Equal-Parts-Cocktail mit gleichen Teilen Gin, grüner Chartreuse, Maraschino und Limettensaft.",
     },
     {
       question:
@@ -1306,29 +1089,29 @@ export const likoereKurs: Course = {
     },
     {
       question:
-        "Welche Rolle spielen T2R-Bitterrezeptoren bei Digestif-Likören?",
+        "Was bedeutet die traditionelle Bezeichnung Digestif?",
       options: [
         "Sie erzeugen ein Sättigungsgefühl",
-        "Sie stimulieren über den Vagusnerv die Sekretion von Magensäure und Gallenflüssigkeit",
+        "Ein Getränk nach dem Essen, ohne zugesicherte Verdauungswirkung",
         "Sie blockieren die Alkoholaufnahme",
         "Sie neutralisieren den Zuckergehalt",
       ],
       correct: 1,
       explanation:
-        "T2R-Bitterrezeptoren werden durch Bitterstoffe in Amari/Digestifs aktiviert und stimulieren über den Vagusnerv die Produktion von Verdauungssäften.",
+        "Die kulturelle Bezeichnung Digestif ist kein Nachweis einer Verdauungswirkung. Alkohol kann die Magenentleerung verlangsamen; daraus folgt keine Behandlungsempfehlung.",
     },
     {
       question:
-        "Was bewirkt Ultraschall-Mazeration in der modernen Likörherstellung?",
+        "Welche Aussage zu neuen Extraktionsverfahren stimmt?",
       options: [
         "Sie erzeugt Ultraschall-Aromen",
-        "Sie beschleunigt die Aromenextraktion durch Mikrokavitationen von Wochen auf Stunden",
+        "Die Prozesswirkung ist rezeptabhängig und beweist nicht automatisch Sterilität oder höhere Qualität",
         "Sie entfernt unerwünschte Bitterstoffe",
         "Sie erhöht den Alkoholgehalt",
       ],
       correct: 1,
       explanation:
-        "Ultraschall erzeugt Mikrokavitationen — winzige Blasen, die kollabieren und dabei Zellwände aufbrechen, was die Extraktion dramatisch beschleunigt.",
+        "Technik muss für Rezeptur und Zielstoffe geprüft werden; eine allgemeine Zeiteinsparung oder Sicherheitsgarantie wird nicht behauptet.",
     },
     {
       question:

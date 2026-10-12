@@ -54,6 +54,38 @@
   },
   "files": [
     {
+      "path": "public/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4",
+      "sha256": "4d55447b17c1b23d1bf1a8c863c696fa3c018fa3681fdcfcc3dd83324694b76c",
+      "bytes": 980962,
+      "width": 960,
+      "height": 540,
+      "maxBytes": 1000000,
+      "durationSeconds": 15,
+      "fps": 24,
+      "hasAudio": false,
+      "optimization": "FFmpeg 6.0 libx264, veryslow preset, CRF 28.25, full-frame Lanczos downscale directly from unchanged accepted v4 source, H.264 High yuv420p, fast-start, map_metadata -1; no content, crop, fps or duration edit. Technical codec/container encoder tags remain."
+    },
+    {
+      "path": "public/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4",
+      "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
+      "bytes": 4785365,
+      "width": 1280,
+      "height": 720,
+      "maxBytes": 6000000,
+      "durationSeconds": 15,
+      "fps": 24,
+      "hasAudio": false,
+      "optimization": "Byte-identical retained v4 desktop file at a SHA-256-bound path."
+    },
+    {
+      "path": "public/images/home/jammers-film-poster-62abe3860959351d.webp",
+      "sha256": "62abe3860959351d0d6c4bb03d075e10d4a82549fdfb56ac643ae37b872aa638",
+      "bytes": 130626,
+      "width": 1280,
+      "height": 720,
+      "optimization": "Byte-identical full-frame poster at a SHA-256-bound path."
+    },
+    {
       "path": "public/videos/jammers-hero-v4-desktop.mp4",
       "sha256": "90db5ba2525d1a391e0ca6c1db5ae32472da7eefd6e455d309c9b2f5208b4291",
       "bytes": 4785365,
@@ -149,5 +181,16 @@
       "scene": "Unchanged accepted static finale with minimal zoom"
     }
   ],
-  "internalClassification": "AI advertising film; not documentary market footage or a pixel-identical product photograph. Internal provenance only; no technical public badge."
+  "internalClassification": "AI advertising film; not documentary market footage or a pixel-identical product photograph. Internal provenance only; no technical public badge.",
+  "performanceReview": {
+    "date": "2026-10-12",
+    "approvalBasis": "Approved search-completion spec, mechanical mobile optimization and exact versioned media caching; no new generation or content change.",
+    "mobilePreviousBytes": 2316048,
+    "mobileCurrentBytes": 980962,
+    "all360FramesRetained": true,
+    "sameFrameVisualComparisonSeconds": [2, 5, 9, 12.5, 14],
+    "vmafAgainstPrevious960x540Mobile": 90.599042,
+    "qualityScope": "Five actual decoded same-time frame pairs and mobile-view playback reviewed, preserving people, single tap, Jammers logo, bottle names and full finale. Lossy encoding, not pixel-identical. No crop, retouch or AI edit. Originals and previous derivatives retained.",
+    "cacheScope": "Exact reviewed SHA-256-bound paths only. Old mutable paths, flyers and manifests do not acquire immutable caching."
+  }
 }

@@ -6,6 +6,8 @@ import { cocktails } from "../data/cocktails";
 import { courses, type Lesson } from "../data/akademie";
 import photos from "../data/cocktail-photo-candidates.json";
 import products from "../data/products.json";
+import { getContentReview } from "../lib/content-reviews";
+import { PUBLIC_JOBS } from "../data/jobs";
 
 const origin = "https://trinkgut-jammers.de";
 type Node = { tag: string; attrs: Record<string, string>; children: Node[]; value?: string };
@@ -49,6 +51,20 @@ export function checkRecipe(html: string, recipe: { name: string; category: stri
   if (approvedImage && !all.some(node => node.tag === "img" && [node.attrs.src, node.attrs.srcset].some(src => src && decodeURIComponent(src).includes(approvedImage)))) errors.push("approved recipe image not rendered");
   return errors;
 }
+export function checkContentReview(html: string, id: string): string[] {
+  const expected = getContentReview(id);
+  if (!expected) return ["review evidence missing from source register"];
+  const selected = nodes(html).filter(node => node.attrs["data-content-review"] === id);
+  if (selected.length !== 1) return ["review view missing or duplicated in rendered HTML"];
+  const inner: Node[] = [];
+  walk(selected[0], (node: Node) => inner.push(node));
+  const errors: string[] = [];
+  if (!inner.some(node => node.tag === "time" && node.attrs.datetime === expected.reviewedAt)) errors.push("review date differs");
+  if (!normalize(textOf(selected[0])).includes(normalize(expected.scope))) errors.push("review scope missing");
+  const links = inner.filter(node => node.tag === "a").map(node => node.attrs.href);
+  if (!isDeepStrictEqual(links, expected.sources.map(source => source.url))) errors.push("review sources differ");
+  return errors;
+}
 const slug = (value: string) => value.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 async function run() {
@@ -68,7 +84,7 @@ async function run() {
   if (new Set(urls).size !== urls.length) throw new Error("Duplicate sitemap destinations");
   const recipes = new Map(cocktails.map(recipe => ["/cocktails/" + slug(recipe.name), recipe]));
   const lessons = new Map<string, Lesson>(courses.flatMap(course => course.lessons.map((lesson, index) => [`/akademie/${course.slug}${index ? `/lektion/${index + 1}` : ""}`, lesson] as const)));
-  const checked = { sitemap: 0, recipes: 0, lessons: 0, roots: 0, aliases: 0, invalid: 0, utilities: 0, protected: 0 };
+  const checked = { sitemap: 0, recipes: 0, lessons: 0, roots: 0, reviews: 0, jobs: 0, aliases: 0, invalid: 0, utilities: 0, protected: 0 };
   for (const url of urls) {
     if (!url.startsWith(origin + "/")) throw new Error("Unexpected sitemap origin");
     const path = new URL(url).pathname;
@@ -76,11 +92,24 @@ async function run() {
     record(path, response.status === 200 ? checkPage(html, path, response.headers.get("x-robots-tag")) : ["HTTP " + response.status]);
     checked.sitemap++;
     const recipe = recipes.get(path);
-    if (recipe) { record(path, checkRecipe(html, recipe, photos.photos.find(photo => photo.status === "approved" && photo.name === recipe.name)?.src)); checked.recipes++; }
+    if (recipe) { record(path, checkRecipe(html, recipe, photos.photos.find(photo => photo.status === "approved" && photo.name === recipe.name)?.src)); record(path, checkContentReview(html, `recipe:${slug(recipe.name)}`)); checked.recipes++; checked.reviews++; }
     const lesson = lessons.get(path);
-    if (lesson) { record(path, checkLesson(html, lesson)); checked.lessons++; if (!path.includes("/lektion/")) checked.roots++; }
+    if (lesson) {
+      record(path, checkLesson(html, lesson));
+      const route = path.split("/");
+      record(path, checkContentReview(html, `academy:${route[2]}:${route[4] ?? "1"}`));
+      checked.lessons++; checked.reviews++; if (!path.includes("/lektion/")) checked.roots++;
+    }
+    const job = PUBLIC_JOBS.find(job => path === `/karriere/${job.slug}`);
+    if (job) {
+      const schemas = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)].map(match => JSON.parse(match[1])).filter(value => value["@type"] === "JobPosting");
+      if (schemas.length) record(path, ["job schema must remain withheld until original posting date and complete requirements are established"]);
+      if (!nodes(html).some(node => node.tag === "a" && node.attrs.href.startsWith("mailto:info@trinkgut-jammers.de?subject="))) record(path, ["job application email missing"]);
+      checked.jobs++;
+    }
   }
   if (checked.recipes !== 65 || checked.lessons !== 180 || checked.roots !== 8) record("/sitemap.xml", ["recipe/lesson census differs from 65/180/8"]);
+  if (checked.jobs !== 3 || checked.reviews !== 245) record("/sitemap.xml", ["job/review census differs from 3/245"]);
   for (const course of courses) {
     const path = `/akademie/${course.slug}/lektion/1`;
     const { response } = await request(path);

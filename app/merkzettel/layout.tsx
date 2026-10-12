@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/search-metadata";
+import ShoppingLayout from "@/components/ShoppingLayout";
 
 export const metadata: Metadata = {
   ...buildPageMetadata({
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <ShoppingLayout>{children}</ShoppingLayout>;
 }

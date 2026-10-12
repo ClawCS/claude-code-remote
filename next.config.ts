@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { HERO_MEDIA, LOCAL_JAKARTA_FILES } from "./lib/cinematic/hero-media";
 
 const nextConfig: NextConfig = {
   // Keep the live production preview intact while iterating locally.
@@ -84,6 +85,12 @@ const nextConfig: NextConfig = {
         source:"/handzettel/manifest.json",
         headers:[{key:"X-Robots-Tag",value:"noindex, noarchive"}],
       },
+      // Exact reviewed hash-bound assets only; never broaden to dated flyers,
+      // mutable manifests, operational routes or the retained unversioned files.
+      ...[...Object.values(HERO_MEDIA), ...LOCAL_JAKARTA_FILES].map(source => ({
+        source,
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      })),
     ];
   },
 };

@@ -83,7 +83,10 @@ describe("licensed cocktail photography", () => {
     expect(html).toContain('data-cocktail-photo="Daiquiri"');
     expect(html).toContain("Will Shenton");
     expect(html).toContain("Auch die Webfassung steht unter dieser Lizenz.");
-    expect(html).not.toContain("<details");
+    const figure = html.match(/<figure\b[\s\S]*?<\/figure>/)?.[0];
+    expect(figure).toBeDefined();
+    expect(figure).toContain("Will Shenton");
+    expect(figure).not.toContain("<details"); // Photo attribution stays open; editorial sources may use a disclosure.
     expect(html).toContain("Zutaten");
     expect(html).toContain("Zubereitung");
   });

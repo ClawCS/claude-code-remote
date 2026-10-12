@@ -59,7 +59,7 @@ export const CINEMATIC_NAV: readonly NavItem[] = Object.freeze([
     ] },
     { label: "Team & Karriere", children: [
       { label: "Unser Team", href: "/galerie" },
-      { label: "Offene Stellen & Bewerbung", href: "/bewerbung" },
+      { label: "Offene Stellen & Bewerbung", href: "/karriere" },
     ] },
   ] },
   { label: "Dein Besuch", href: "/kontakt" },

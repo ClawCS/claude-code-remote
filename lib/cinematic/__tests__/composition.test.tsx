@@ -242,7 +242,7 @@ describe("cinematic homepage composition", () => {
     const html = render(populatedContent);
     const hero = extractElement(html, "section", 'data-hero="cinematic"');
     expect(count(hero, /<video\b/)).toBe(1);
-    expect(hero).toContain('poster="/images/home/jammers-film-poster.webp"');
+    expect(hero).toContain('poster="/images/home/jammers-film-poster-62abe3860959351d.webp"');
     expect(hero).toContain('preload="none"');
     expect(hero).not.toMatch(/(?:src|href)="[^"]*\.mp4/);
     expect(hero).not.toContain("Werbefilm · beispielhafte Partyszene");

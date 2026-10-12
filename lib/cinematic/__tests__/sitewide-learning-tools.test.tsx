@@ -90,9 +90,9 @@ describe("learning and customer workspaces", () => {
     routeParams.slug = "mineralwasser";
     try {
       const html = await renderCourse();
-      expect(html).toContain("<h3>Was ist natürliches Mineralwasser?</h3>");
-      expect(html).toContain("<h4>Die amtliche Anerkennung</h4>");
-      expect(html).not.toContain("### Die amtliche");
+      expect(html).toContain("<h3>Natürliches Mineralwasser: eine gesetzlich definierte Kategorie</h3>");
+      expect(html).toContain("<h4>Amtliche Anerkennung und Abfüllung</h4>");
+      expect(html).not.toContain("### Amtliche Anerkennung");
     } finally {
       routeParams.slug = "whiskey";
     }

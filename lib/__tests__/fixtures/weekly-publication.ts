@@ -28,6 +28,7 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
   const year = identityDate.getUTCFullYear();
   const kw = Math.ceil(((identityDate.valueOf() - Date.UTC(year, 0, 1, 12)) / 86400000 + 1) / 7);
   const agency = week >= "2026-10-12";
+  const summary = { price: "1,00 €", package: "1 l PET-Flasche", deposit: "Im synthetischen Original nicht separat angegeben", unitPrice: "Im synthetischen Original nicht separat angegeben" };
   const medium = kw % 2 === 0 ? "de-maas-driehoek" as const : "udens-weekblad" as const;
   const officialUrl = `https://werbung.trinkgut.de/frontend/catalogs/${catalogId}/${catalogVersion}/pdf/complete.pdf`;
   const catalog = {
@@ -56,7 +57,7 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
       pages: Array.from({ length: index === 0 ? 2 : 1 }, (_, pageIndex) => ({
         page: pageIndex + 1, sourceImage: `public/images/content/${week}/${language}.webp`, expectedOffers: 1,
         offers: [{ id: `${flyerId}-p${pageIndex + 1}`, imagePath: `/images/offers/${flyerId}-p${pageIndex + 1}.webp`, name: "Synthetic original offer", categorySlug: "alkoholfrei",
-          rect: [1, 1, 4, 3], sourceDimensions: [8, 6], conditions: "Printed condition unchanged" }],
+          rect: [1, 1, 4, 3], sourceDimensions: [8, 6], conditions: "Printed condition unchanged", ...(agency ? { summary: { ...summary } } : {}) }],
       })),
     };
   });
@@ -66,7 +67,8 @@ export async function weeklyPublicationFixture(week = "2026-10-05", validTo = "2
     image: `/images/offers/${offer.id}.webp`, sourcePage: page.page,
     rect: offer.rect, sourceDimensions: offer.sourceDimensions,
     pdfSha256: source.pdfSha256, sourceUrl: source.publishedPdfPath,
-    rightsStatus: "approved", reviewedAt: source.reviewedAt, conditions: offer.conditions, imageSha256: sha256(crop),
+    rightsStatus: "approved", reviewedAt: source.reviewedAt, conditions: offer.conditions,
+    ...(offer.summary ? { summary: offer.summary } : {}), imageSha256: sha256(crop),
   }))));
   const editions = sources.map((source, index) => ({
     id: source.flyerId, language: source.language as "de" | "nl", title: "Synthetic weekly original",

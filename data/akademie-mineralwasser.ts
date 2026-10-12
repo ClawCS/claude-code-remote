@@ -1,1748 +1,906 @@
 import type { Course } from "./akademie";
 
 export const mineralwasserKurs: Course = {
-  slug: "mineralwasser",
-  title: "Wassersommelier",
-  icon: "💧",
-  image: "/images/akademie/mineralwasser.png",
-  description:
-    "Geologie, Mineralstoffe, Sensorik, Food Pairing und Markttrends — Mineralwasser auf Experten-Niveau verstehen und vermitteln.",
-  color: "from-cyan-400 to-blue-600",
-  difficulty: "Fortgeschritten",
-  duration: "ca. 80 Min.",
-  lessons: [
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 1 — Definition & gesetzliche Grundlagen
-    // ═══════════════════════════════════════════════════════════════
+  "slug": "mineralwasser",
+  "title": "Wassersommelier",
+  "icon": "💧",
+  "image": "/images/akademie/mineralwasser.png",
+  "description": "Geologie, Mineralstoffe, Etikettenkunde, Sensorik und praktische Wasserberatung verständlich kennenlernen.",
+  "color": "from-cyan-400 to-blue-600",
+  "difficulty": "Fortgeschritten",
+  "duration": "ca. 80 Min.",
+  "lessons": [
     {
-      title: "Definition und gesetzliche Grundlagen von Mineralwasser",
-      content: `## Was ist natürliches Mineralwasser?
-
-Natürliches Mineralwasser ist ein Grundnahrungsmittel, das in Deutschland und der EU strengeren Vorschriften unterliegt als jedes andere Lebensmittel. Die zentrale Rechtsgrundlage bildet die **Mineral- und Tafelwasserverordnung (MTVO)** vom 1. August 1984, zuletzt geändert 2023, die wiederum auf der **EU-Richtlinie 2009/54/EG** basiert. Anders als Leitungswasser wird natürliches Mineralwasser nicht nach der Trinkwasserverordnung (TrinkwV) reguliert, sondern hat ein eigenes, spezifisches Rechtsregime.
-
-### Die amtliche Anerkennung
-
-Der entscheidende Unterschied zu allen anderen Wasserarten: Natürliches Mineralwasser muss von einer zuständigen Behörde **amtlich anerkannt** werden. In Deutschland sind dies die Landesbehörden — je nach Bundesland die Bezirksregierung oder das Landesamt für Verbraucherschutz. Über 200 wissenschaftliche Einzeluntersuchungen muss ein Wasser bestehen, bevor es das Prädikat "Natürliches Mineralwasser" tragen darf. Diese Prüfungen erstrecken sich über **mindestens zwei Jahre** und umfassen geologische, hydrologische, physikalisch-chemische, mikrobiologische und pharmakologische Analysen.
-
-### Wesentliche Anforderungen der MTVO
-
-1. **Ursprungsreinheit**: Das Wasser muss aus einer unterirdischen, vor Verunreinigung geschützten Quelle stammen und von "ursprünglicher Reinheit" sein. Es darf keinerlei Anzeichen von anthropogener Kontamination aufweisen — weder Pestizide noch Nitrate über den Grenzwerten noch pathogene Keime.
-
-2. **Konstante Zusammensetzung**: Die Mineralstoffzusammensetzung muss über den gesamten Untersuchungszeitraum hinweg weitgehend stabil bleiben. Schwankungen werden akzeptiert, aber ein charakteristisches Profil muss erkennbar sein.
-
-3. **Quellfassung am Quellort**: Die Abfüllung muss zwingend am Quellort erfolgen ("quellnah"). Ein Transport in Tankwagen zu einem entfernten Abfüllbetrieb ist verboten. Diese Vorschrift sichert die Qualität und verhindert Kontamination.
-
-4. **Begrenzte Aufbereitung**: Erlaubt sind ausschließlich: Entzug oder Zusatz von Kohlensäure, Entzug von Eisen- und Schwefelverbindungen durch Belüften, Filtration. Chlorierung, UV-Behandlung oder andere Desinfektionsmaßnahmen sind **strikt untersagt**.
-
-### Kennzeichnungspflichten
-
-Auf dem Etikett müssen zwingend angegeben werden: die amtliche Anerkennung, der Quellname, der Quellort, die charakteristische Zusammensetzung (Analysenauszug), das Datum der Analyse sowie Hinweise zur Kohlensäure. Optional dürfen gesundheitsbezogene Angaben gemacht werden, sofern sie den Kriterien entsprechen — etwa "geeignet für die Zubereitung von Säuglingsnahrung" (Natrium <20 mg/l, Nitrat <10 mg/l, Fluorid <0,7 mg/l). Seit 2023 gelten zudem verschärfte Regeln für PFAS-Grenzwerte (Per- und Polyfluoralkylsubstanzen), die die Reinheit des Ursprungsgebiets sicherstellen sollen.`,
-      quiz: [
+      "title": "Definition und gesetzliche Grundlagen von Mineralwasser",
+      "content": "## Natürliches Mineralwasser: eine gesetzlich definierte Kategorie\n\nNatürliches Mineralwasser stammt aus unterirdischen, vor Verunreinigungen geschützten Wasservorkommen. Es besitzt ursprüngliche Reinheit und ein charakteristisches Profil, das im Rahmen natürlicher Schwankungen konstant bleibt. In Deutschland gilt die **Mineral- und Tafelwasser-Verordnung (Min/TafelWV)**; auf EU-Ebene ist die Richtlinie 2009/54/EG maßgeblich. Daraus folgt keine Rangliste, wonach jedes Mineralwasser sicherer oder gesünder wäre als Trinkwasser.\n\n### Amtliche Anerkennung und Abfüllung\n\nVor dem gewerblichen Verkauf ist eine amtliche Anerkennung erforderlich. Geologische, hydrologische, chemische und mikrobiologische Nachweise dienen der Beurteilung. Die Verordnung legt keine allgemeine Mindestdauer von zwei Jahren und keine pauschale Zahl von 200 Einzeluntersuchungen fest. Mineralwasser für den Verkauf in Fertigpackungen wird am Quellort abgefüllt.\n\n### Behandlung: erlaubt ist nicht dasselbe wie Desinfektion\n\nZulässig sind unter anderem die Abtrennung bestimmter unbeständiger Inhaltsstoffe sowie der Entzug oder Zusatz von CO₂. Die Behandlung mit **ozonangereicherter Luft** darf unter festgelegten Bedingungen Eisen-, Mangan- und Schwefelverbindungen sowie Arsen abtrennen. Sie ist nicht mit einer frei zulässigen Desinfektion gleichzusetzen. Verfahren mit dem Zweck, den Keimgehalt zu verändern, sind untersagt. Auch die zugelassene Fluoridentfernung unterliegt besonderen Bedingungen.\n\n### Etiketten lesen\n\nPflichtangaben umfassen Quellname, Ort der Quellnutzung und den Analysenauszug; je nach Behandlung kommen weitere Hinweise hinzu. Ein Analysedatum oder der Aufdruck „amtlich anerkannt“ sind nicht pauschal als Pflichtangaben vorgeschrieben. Säuglingseignung und Fluoridhinweise sind gesondert geregelt. Grenzwerte aus der Trinkwasserverordnung dürfen nicht ungeprüft auf Mineralwasser übertragen werden.",
+      "quiz": [
         {
-          question:
-            "Welche Rechtsgrundlage regelt natürliches Mineralwasser in Deutschland primär?",
-          options: [
-            "Die Trinkwasserverordnung (TrinkwV)",
-            "Die Mineral- und Tafelwasserverordnung (MTVO)",
-            "Das Lebensmittel- und Futtermittelgesetzbuch (LFGB)",
-            "Die EU-Grundwasserrichtlinie 2006/118/EG",
+          "question": "Welche Rechtsgrundlage regelt natürliches Mineralwasser in Deutschland spezifisch?",
+          "options": [
+            "Nur die Trinkwasserverordnung",
+            "Die Mineral- und Tafelwasser-Verordnung",
+            "Nur das Arzneimittelgesetz",
+            "Nur eine freiwillige Branchenvereinbarung"
           ],
-          correct: 1,
-          explanation:
-            "Die MTVO ist das zentrale Regelwerk für Mineralwasser in Deutschland. Die TrinkwV gilt nur für Leitungswasser. Die EU-Richtlinie 2009/54/EG bildet die europäische Basis, wird aber durch die MTVO national umgesetzt.",
+          "correct": 1,
+          "explanation": "Die Min/TafelWV regelt natürliches Mineralwasser sowie Quell- und Tafelwasser. Weitere Lebensmittelvorschriften gelten ergänzend."
         },
         {
-          question:
-            "Über welchen Mindestzeitraum erstrecken sich die Analysen zur amtlichen Anerkennung?",
-          options: [
-            "6 Monate",
-            "1 Jahr",
-            "Mindestens 2 Jahre",
-            "5 Jahre",
+          "question": "Welche Behandlung kann bei natürlichem Mineralwasser zulässig sein?",
+          "options": [
+            "Beliebige Chlorierung",
+            "UV-Desinfektion zur Keimreduktion",
+            "Behandlung mit ozonangereicherter Luft unter gesetzlich festgelegten Bedingungen",
+            "Zusatz von Vitaminen"
           ],
-          correct: 2,
-          explanation:
-            "Die amtliche Anerkennung erfordert Untersuchungen über mindestens zwei Jahre, um saisonale Schwankungen der Mineralisierung zu erfassen und die Konstanz der Zusammensetzung nachzuweisen.",
+          "correct": 2,
+          "explanation": "Ozonangereicherte Luft darf bestimmte Inhaltsstoffe unter den Bedingungen von § 6 abtrennen. Eine Desinfektion oder freie Veränderung des Keimgehalts ist damit nicht erlaubt."
         },
         {
-          question:
-            "Welche Aufbereitungsmaßnahme ist bei natürlichem Mineralwasser VERBOTEN?",
-          options: [
-            "Entzug von Eisenverbindungen durch Belüften",
-            "Zusatz von Kohlensäure",
-            "UV-Bestrahlung zur Desinfektion",
-            "Filtration zur Entfernung von Schwefelverbindungen",
+          "question": "Was unterscheidet amtliche Anerkennung von einem Werbeversprechen?",
+          "options": [
+            "Sie beweist medizinische Heilwirkung",
+            "Sie prüft die gesetzlichen Anforderungen an natürliches Mineralwasser",
+            "Sie garantiert den besten Geschmack",
+            "Sie setzt mindestens 1.500 mg/l Mineralstoffe voraus"
           ],
-          correct: 2,
-          explanation:
-            "Jede Form der Desinfektion — UV-Bestrahlung, Chlorierung, Ozonierung — ist bei natürlichem Mineralwasser strikt verboten. Nur physikalische Verfahren wie Belüften und Filtration sowie Kohlensäurebehandlung sind erlaubt.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Die Anerkennung betrifft die gesetzliche Kategorie und ihre Anforderungen, nicht eine allgemeine Gesundheits- oder Geschmacksüberlegenheit."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 2 — Geologie & Quellenkunde
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Geologie und Quellenkunde",
-      content: `## Der Weg des Wassers durch die Erde
-
-Um Mineralwasser wirklich zu verstehen, muss man seinen Weg durch die Gesteinsschichten nachvollziehen. Jeder Tropfen, der als Regen auf die Erdoberfläche fällt, beginnt eine Reise, die **Jahrzehnte bis Jahrtausende** dauern kann. Diese Verweilzeit im Untergrund — die sogenannte **Aquifer-Residenzzeit** — bestimmt maßgeblich den Mineralgehalt und den Charakter des Wassers.
-
-### Der hydrogeologische Kreislauf
-
-Niederschlagswasser versickert durch den Boden und passiert dabei zunächst die **ungesättigte Zone (Vadosezone)**, in der sich Boden-CO₂ löst und Kohlensäure entsteht. Dieses leicht saure Wasser — mit einem pH-Wert von etwa 5,5–6,5 — ist ein effektives Lösungsmittel. Es dringt in die **gesättigte Zone (Aquifer)** vor, wo alle Poren und Klüfte wasserführend sind. Hier beginnt die eigentliche Mineralisation: Das Wasser löst Ionen aus dem umgebenden Gestein heraus — ein Prozess, der von Temperatur, Druck, pH-Wert und Kontaktzeit abhängt.
-
-### Gesteinstypen und ihre Signaturen
-
-**Kalkstein/Dolomit (Sedimentgestein)**: Karbonatgesteine lösen sich relativ leicht in kohlensäurehaltigem Wasser. Ergebnis: hohe Calcium- und Magnesiumwerte (Hydrogencarbonat-Typ), Gesamtmineralisierung 300–800 mg/l. Typisch für die Schwäbische Alb, Fränkische Alb, viele Alpenquellen. Das Wasser hat häufig einen pH-Wert >7 und schmeckt weich und rund.
-
-**Vulkanisches Gestein (Basalt, Tuff)**: Vulkangebiete liefern Wässer mit komplexen Mineralstoffprofilen — neben Calcium und Magnesium auch erhöhte Gehalte an Natrium, Kalium und oft natürliche Kohlensäure aus vulkanischem CO₂. Typisch für die Eifel (Vulkaneifelquellen mit bis zu 3.500 mg/l CO₂), die Rhön und den Vogelsberg. Die Gesamtmineralisierung kann 1.000–3.000+ mg/l erreichen.
-
-**Granit/Gneis (Kristallines Grundgebirge)**: Diese harten Gesteine lösen sich nur schwer. Ergebnis: sehr niedrig mineralisiertes Wasser (<100 mg/l), mit wenig Natrium und Calcium, aber relativer Betonung von Silizium. Typisch für Schwarzwald, Harz, Bayerischer Wald, skandinavische Quellen. Geschmacklich extrem leicht und neutral.
-
-**Sandstein (klastisches Sediment)**: Je nach Zementierung und Beimengungen variabel. Buntsandstein-Aquifere liefern moderate Mineralisierung (200–600 mg/l) mit ausgeglichenem Profil. Typisch für viele Quellen in Hessen, Thüringen und im Spessart.
-
-### Quellentypen
-
-- **Artesische Quelle**: Das Wasser steht unter hydrostatischem Druck und tritt ohne Pumpen an die Oberfläche. Geologisch bedingt durch eine geneigte wasserführende Schicht zwischen undurchlässigen Schichten. Beispiel: Viele Quellen in der Auvergne (Volvic).
-- **Schichtquelle**: Wasser tritt an der Grenze zwischen durchlässiger und undurchlässiger Schicht zutage. Häufigster Quellentyp in Mittelgebirgsregionen.
-- **Kluftquelle**: Wasser fließt durch Klüfte und Spalten im Festgestein. Typisch für Granit- und Gneisgebiete.
-- **Karstquelle**: Wasser tritt aus Höhlen und Karstsystemen in Kalkgestein aus — oft mit hoher Schüttung, aber variabler Qualität.
-
-### Verweilzeit und Datierung
-
-Die Verweilzeit wird mit Isotopen-Methoden bestimmt: **Tritium (³H)** für junge Wässer (<60 Jahre), **¹⁴C-Datierung** für ältere Wässer (Hunderte bis Tausende Jahre), **³⁶Cl und ⁸¹Kr** für sehr alte Wässer (>50.000 Jahre). Die Verweilzeit korreliert in der Regel mit dem Mineralgehalt und der Schutzwirkung vor Oberflächenkontamination.`,
-      quiz: [
+      "title": "Geologie und Quellenkunde",
+      "content": "## Wie der Untergrund den Wassercharakter prägt\n\nEin **Grundwasserleiter (Aquifer)** ist ein Gesteinskörper, in dessen Hohlräumen sich Grundwasser bewegen kann. Poren in Sand und Kies, Klüfte im Festgestein und erweiterte Lösungshohlräume im Karst bilden unterschiedliche Fließwege. Aufenthaltsdauer, Gesteine, Temperatur und gelöstes CO₂ beeinflussen das Wasserprofil; eine lange Verweilzeit allein beweist weder hohe Mineralisierung noch Freiheit von Verunreinigungen.\n\n### Gesteine und gelöste Bestandteile\n\nKarbonatgesteine wie Kalkstein und Dolomit können Calcium, Magnesium und Hydrogencarbonat zum Wasser beitragen. Gips- und Anhydritlagen können Sulfat liefern. Im kristallinen Grundgebirge sind Grundwässer wegen der geringeren Gesteinslöslichkeit häufig niedriger mineralisiert. Ausnahmen und Mischungen zwischen Grundwasserstockwerken sind möglich. Ein Gesteinsname ist daher keine Garantie für einen bestimmten mg/l-Wert.\n\n### Quellentypen\n\nEine **Schichtquelle** tritt dort aus, wo eine wasserführende Schicht auf eine weniger durchlässige Schicht trifft. Bei einer **artesischen Quelle** liegt die Druckfläche des gespannten Grundwassers über der Geländeoberfläche: Das Wasser kann ohne Pumpen aufsteigen. Klüfte und Karsthohlräume beschreiben die Wasserwege, nicht automatisch die Qualität des späteren Flaschenprodukts.\n\n### In der Beratung\n\nGeologische Geschichten erklären Herkunft, ersetzen aber nicht den Analysenauszug. Für den Vergleich zweier Wässer sind Quelle und konkrete Produktvariante entscheidend. Eine Marke kann unterschiedliche Quellen nutzen. Den Geschmack anschließend unter vergleichbaren Bedingungen selbst verkosten, statt ihn ausschließlich aus der Geologie abzuleiten.",
+      "quiz": [
         {
-          question:
-            "Welcher Gesteinstyp liefert typischerweise das am niedrigsten mineralisierte Wasser?",
-          options: [
-            "Kalkstein/Dolomit",
-            "Vulkanisches Gestein (Basalt/Tuff)",
-            "Granit/Gneis (kristallines Grundgebirge)",
-            "Sandstein",
+          "question": "Wo bewegt sich Wasser in einem Kluftgrundwasserleiter?",
+          "options": [
+            "Nur in Plastikrohren",
+            "In Rissen und Spalten des Festgesteins",
+            "Nur auf der Bodenoberfläche",
+            "In vollständig dichtem Gestein"
           ],
-          correct: 2,
-          explanation:
-            "Granit und Gneis sind extrem schwer löslich, sodass das Wasser selbst nach langer Kontaktzeit nur wenige Mineralstoffe aufnimmt. Das Ergebnis sind Wässer mit <100 mg/l Gesamtmineralisierung.",
+          "correct": 1,
+          "explanation": "Wasserwegsame Klüfte bilden die Fließwege in einem Kluftgrundwasserleiter."
         },
         {
-          question: "Was ist eine artesische Quelle?",
-          options: [
-            "Eine Quelle, die nur im Sommer Wasser führt",
-            "Eine Quelle, bei der das Wasser durch hydrostatischen Druck ohne Pumpen austritt",
-            "Eine Quelle in vulkanischem Gestein mit natürlicher Kohlensäure",
-            "Eine künstlich angelegte Fassung eines Grundwasserleiters",
+          "question": "Was kennzeichnet eine artesische Quelle?",
+          "options": [
+            "Sie führt ausschließlich im Sommer Wasser",
+            "Gespanntes Grundwasser kann aufgrund seines Drucks ohne Pumpen an die Oberfläche steigen",
+            "Sie muss aus einem Vulkan stammen",
+            "Sie ist immer mineralstofffrei"
           ],
-          correct: 1,
-          explanation:
-            "Bei artesischen Quellen steht das Grundwasser unter Druck (gespannter Aquifer), weil es zwischen zwei undurchlässigen Schichten eingeschlossen ist. Wird die Deckschicht durchbrochen, steigt das Wasser von allein auf.",
+          "correct": 1,
+          "explanation": "Bei artesischen Verhältnissen liegt die Grundwasserdruckfläche über dem Geländeniveau."
         },
         {
-          question:
-            "Warum ist vulkanisches CO₂ für die Eifel-Mineralwässer so bedeutend?",
-          options: [
-            "Es verleiht dem Wasser einen süßlichen Geschmack",
-            "Es sterilisiert das Wasser auf natürliche Weise",
-            "Es wirkt als natürliches Lösungsmittel und erhöht die Mineralstoffaufnahme erheblich",
-            "Es verhindert die Kalkablagerung in den Leitungen",
+          "question": "Was belegt das konkrete Mineralstoffprofil eines Flaschenwassers?",
+          "options": [
+            "Allein das Alter des Wassers",
+            "Die Farbe der Flasche",
+            "Der Analysenauszug der konkreten Quelle und Variante",
+            "Der Verkaufspreis"
           ],
-          correct: 2,
-          explanation:
-            "Vulkanisches CO₂ senkt den pH-Wert des Wassers und macht es aggressiver gegenüber dem umgebenden Gestein. Dadurch werden deutlich mehr Mineralstoffe herausgelöst, was die hohe Mineralisierung vieler Eifel-Wässer erklärt.",
-        },
-      ],
+          "correct": 2,
+          "explanation": "Geologie erklärt Einflussfaktoren; das tatsächliche Profil wird analytisch bestimmt."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 3 — Mineralstoffe: Calcium, Magnesium, Natrium & Co.
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Mineralstoffe im Detail: Calcium, Magnesium, Natrium und mehr",
-      content: `## Die chemische Signatur des Wassers
-
-Mineralwasser ist weit mehr als H₂O — es ist eine komplexe Elektrolytlösung, deren Zusammensetzung den geologischen Fingerabdruck der Quelle trägt. Die **Gesamtmineralisierung** (auch "Trockenrückstand bei 180 °C" genannt) variiert von unter 50 mg/l bei leichten skandinavischen Wässern bis über 6.000 mg/l bei hochmineralisierten Heilwässern. Die einzelnen Ionen bestimmen nicht nur den Geschmack, sondern auch den ernährungsphysiologischen Wert.
-
-### Calcium (Ca²⁺)
-
-**Funktion**: Essenziell für Knochen, Zähne, Blutgerinnung, Muskelkontraktion und Nervenleitung. Tagesbedarf Erwachsene: 1.000 mg (DGE). **Geschmack**: Ab ca. 200 mg/l leicht mineralisch-kreidige Note, bei >500 mg/l deutlich wahrnehmbar. **Calciumreiche Mineralwässer** (>150 mg/l): Gerolsteiner (348 mg/l), Contrex (468 mg/l), Hépar (549 mg/l), Ensinger Sport (528 mg/l). Ein Liter Gerolsteiner deckt bereits rund 35 % des Tagesbedarfs — eine relevante Quelle für laktosefreie Ernährung.
-
-### Magnesium (Mg²⁺)
-
-**Funktion**: Co-Faktor für über 300 Enzyme, Energiestoffwechsel, Muskelrelaxation, Nervenfunktion. Tagesbedarf: 300–400 mg (DGE). **Geschmack**: Leicht bitter, adstringierend. Ab 50 mg/l spürbar, ab 100 mg/l deutlich. **Magnesiumreiche Wässer** (>50 mg/l): Gerolsteiner (108 mg/l), Hépar (119 mg/l), Apollinaris (90 mg/l), Rosbacher (93 mg/l). Für Sportler besonders relevant, da Magnesium über Schweiß verloren geht.
-
-### Natrium (Na⁺)
-
-**Funktion**: Reguliert den Wasserhaushalt, den osmotischen Druck und die Nervenimpulsübertragung. Tagesbedarf-Schätzwert: 1.500 mg (DGE), die meisten Deutschen nehmen deutlich mehr auf. **Geschmack**: Ab 200 mg/l leicht salzig. **Natriumarme Wässer** (<20 mg/l): Volvic (12 mg/l), Evian (6,5 mg/l), Black Forest (5 mg/l). Natriumarm ist relevant für Bluthochdruckpatienten und die Säuglingsernährung. **Natriumreiche Wässer** (>200 mg/l): Staatl. Fachingen (564 mg/l), Apollinaris (410 mg/l) — diese eignen sich hervorragend als Sportlergetränk zum Elektrolytausgleich.
-
-### Hydrogencarbonat (HCO₃⁻)
-
-Häufigstes Anion in Mineralwasser. **Funktion**: Natürlicher Säurepuffer im Körper, fördert die Verdauung, bindet Magensäure. **Geschmack**: Weich, leicht süßlich-mild. **Hydrogencarbonatreiche Wässer** (>600 mg/l): Gerolsteiner (1.816 mg/l), Staatl. Fachingen (1.846 mg/l). Der hohe HCO₃⁻-Gehalt erklärt den weichen, runden Geschmack vieler Vulkaneifel-Wässer.
-
-### Sulfat (SO₄²⁻)
-
-**Funktion**: Fördert die Verdauung, wirkt leicht abführend (ab ca. 1.200 mg/l). **Geschmack**: Leicht trocken, mineralisch-herb. Typisch für Gipskeuper-Quellen (Süddeutschland). **Sulfatreiche Wässer** (>200 mg/l): Contrex (1.187 mg/l), Ensinger Sport (1.535 mg/l).
-
-### Kalium (K⁺), Fluorid (F⁻), Silizium (Si)
-
-**Kalium**: Intrazelluläres Gegenion zu Natrium, selten in relevanten Mengen im Mineralwasser (meist <10 mg/l). **Fluorid**: Kariesprophylaxe, aber Obergrenze beachten — Mineralwasser >5 mg/l muss als "fluoridhaltig" gekennzeichnet werden; >1,5 mg/l ist nicht für Säuglingsnahrung geeignet. **Silizium**: Zunehmend im Fokus der Forschung — möglicherweise relevant für Knochen- und Bindegewebsgesundheit. Typisch in Granit-Quellwässern.
-
-### Die Analysenkennzeichnung
-
-Der Analysenauszug auf dem Etikett listet die Hauptionen in mg/l auf. Profis berechnen daraus den **Ionenhaushalt**: Die Summe der Kationen (Ca²⁺, Mg²⁺, Na⁺, K⁺) in mval/l muss annähernd der Summe der Anionen (HCO₃⁻, SO₄²⁻, Cl⁻) entsprechen — eine Plausibilitätsprüfung für die Analyse.`,
-      quiz: [
+      "title": "Mineralstoffe im Detail: Calcium, Magnesium, Natrium und mehr",
+      "content": "## Mineralstoffe lesen und richtig einordnen\n\nDer Analysenauszug nennt charakteristische Bestandteile meist in **mg/l**. Calcium, Magnesium, Natrium und Kalium sind Kationen; Hydrogencarbonat, Sulfat und Chlorid gehören zu den Anionen. Der Trockenrückstand ist eine analytische Kenngröße für gelöste Stoffe, aber nicht schlicht die Summe aller Etikettenwerte.\n\n### Calcium und Magnesium\n\nCalcium erfüllt unter anderem Aufgaben in Knochen und Muskulatur. Die DGE empfiehlt Erwachsenen 1.000 mg Calcium täglich. Calciumreiches Wasser kann zur Zufuhr beitragen; eine Behandlung oder Vorbeugung von Krankheiten darf daraus nicht pauschal abgeleitet werden. Die DGE-Schätzwerte für Magnesium betragen für erwachsene Männer 350 mg, für erwachsene Frauen 300 mg täglich. Mineralstoffgehalt und Trinkmenge bestimmen den tatsächlichen Beitrag.\n\n### Natrium, Hydrogencarbonat und Sulfat\n\nDie freiwillige Angabe **„geeignet für natriumarme Ernährung“** verlangt weniger als 20 mg/l Natrium. Hydrogencarbonat ist chemisch ein Säurepuffer; daraus folgt kein allgemeines Versprechen gegen Sodbrennen oder „Übersäuerung“. Auch Sulfatwerte allein sind kein Anlass, ein gewöhnliches Mineralwasser als Abführmittel zu empfehlen.\n\n### Fluorid: drei Werte nicht verwechseln\n\nFür Mineralwasser gilt ein Fluorid-Höchstgehalt von 5,0 mg/l. Bereits **mehr als 1,5 mg/l** erfordern die Angabe des Gehalts und den Hinweis, dass das Wasser für Säuglinge und Kinder unter sieben Jahren nicht zum regelmäßigen Verzehr geeignet ist. Für die besondere Säuglingsnahrungskennzeichnung gilt dagegen höchstens 0,7 mg/l, neben weiteren Anforderungen.\n\n### Sensorik\n\n„Salzig“, „bitter“, „kreidig“ oder „weich“ sind Verkostungsbeschreibungen. Ihre Wahrnehmung hängt vom gesamten Ionenprofil, CO₂, Temperatur und der Person ab; feste universelle Geschmacksschwellen sind hier nicht angegeben.",
+      "quiz": [
         {
-          question:
-            "Ab welchem Grenzwert darf ein Mineralwasser als 'natriumarm' gekennzeichnet werden?",
-          options: [
-            "<10 mg/l Natrium",
-            "<20 mg/l Natrium",
-            "<50 mg/l Natrium",
-            "<100 mg/l Natrium",
+          "question": "Welcher Natriumwert gilt für die Angabe „geeignet für natriumarme Ernährung“?",
+          "options": [
+            "Weniger als 10 mg/l",
+            "Weniger als 20 mg/l",
+            "Höchstens 200 mg/l",
+            "Jeder Natriumwert"
           ],
-          correct: 1,
-          explanation:
-            "Die MTVO definiert 'natriumarm' als Natriumgehalt unter 20 mg/l. Diese Kennzeichnung ist besonders relevant für Bluthochdruckpatienten und die Zubereitung von Säuglingsnahrung.",
+          "correct": 1,
+          "explanation": "Anlage 6 der Min/TafelWV verlangt weniger als 20 mg/l. Das ist von der inklusiven Säuglingsgrenze zu unterscheiden."
         },
         {
-          question:
-            "Welches Ion wirkt als natürlicher Säurepuffer im Körper und verleiht dem Wasser einen weichen Geschmack?",
-          options: [
-            "Sulfat (SO₄²⁻)",
-            "Chlorid (Cl⁻)",
-            "Hydrogencarbonat (HCO₃⁻)",
-            "Fluorid (F⁻)",
+          "question": "Wie wird der Calciumbeitrag eines Wassers berechnet?",
+          "options": [
+            "Nur anhand der Marke",
+            "Calciumgehalt in mg/l multipliziert mit der getrunkenen Literzahl",
+            "Aus der Flaschenfarbe",
+            "Aus dem Kohlensäuregrad"
           ],
-          correct: 2,
-          explanation:
-            "Hydrogencarbonat ist ein physiologischer Puffer, der überschüssige Säure im Magen und im Blut neutralisieren kann. Sensorisch sorgt es für eine weiche, milde Mundwahrnehmung.",
+          "correct": 1,
+          "explanation": "300 mg/l Calcium in 0,5 l Wasser ergeben beispielsweise 150 mg Calcium; dies ist keine medizinische Dosierung."
         },
         {
-          question:
-            "Warum enthalten Vulkaneifel-Wässer typischerweise besonders hohe Mineralstoffgehalte?",
-          options: [
-            "Weil sie industriell mit Mineralien angereichert werden",
-            "Weil vulkanisches CO₂ den pH senkt und die Lösungsfähigkeit des Wassers erhöht",
-            "Weil Vulkangestein besonders weich ist",
-            "Weil die Quellen besonders flach liegen",
+          "question": "Wann ist der besondere Fluoridwarnhinweis erforderlich?",
+          "options": [
+            "Erst ab 10 mg/l",
+            "Bei jedem nachweisbaren Fluoridwert",
+            "Bei mehr als 1,5 mg/l: nicht zum regelmäßigen Verzehr für Säuglinge und Kinder unter 7 Jahren geeignet",
+            "Nur bei zugesetztem Fluorid"
           ],
-          correct: 1,
-          explanation:
-            "Vulkanisches CO₂ erzeugt Kohlensäure, die den pH-Wert des Grundwassers senkt. Das saure Milieu löst deutlich mehr Mineralien aus dem umgebenden Vulkangestein — daher die Gesamtmineralisierung von teils über 2.500 mg/l.",
-        },
-      ],
+          "correct": 2,
+          "explanation": "Der Warnschwellenwert von mehr als 1,5 mg/l ist nicht der Höchstgehalt von 5,0 mg/l und nicht die Säuglingsgrenze von 0,7 mg/l."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 4 — Kohlensäure
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Kohlensäure: Herkunft, Wirkung und Sensorik",
-      content: `## Das Prickeln — Chemie und Sinneserlebnis
-
-Kohlensäure (H₂CO₃) ist das Produkt der Reaktion von Kohlendioxid (CO₂) mit Wasser. Sie prägt die Sensorik von Mineralwasser wie kaum ein anderer Faktor und hat gleichzeitig physiologische Wirkungen, die seit Jahrhunderten geschätzt werden. Das Verständnis von Kohlensäure ist für den Wassersommelier grundlegend.
-
-### Chemische Grundlagen
-
-Die Gleichgewichtsreaktion CO₂ + H₂O ⇌ H₂CO₃ ⇌ HCO₃⁻ + H⁺ ist temperatur- und druckabhängig. Bei Normaldruck und 20 °C lösen sich etwa 1,7 g CO₂ pro Liter Wasser. Dabei liegt nur ein winziger Bruchteil (ca. 0,3 %) tatsächlich als H₂CO₃ vor — der Rest bleibt als gelöstes CO₂. Die Löslichkeit steigt mit fallendem Temperatur und steigendem Druck (Henry-Gesetz). Daher perlt ein Mineralwasser bei Erwärmung stärker, und der Druck in der geschlossenen Flasche ist bei Sommertemperaturen deutlich höher als im Kühlschrank.
-
-### Herkunft der Kohlensäure
-
-**Quellkohlensäure (natürliches CO₂)**: Vulkanischen Ursprungs — Magma gibt CO₂ ab, das durch Gesteinsschichten zum Aquifer aufsteigt. Typisch für die Vulkaneifel, die Auvergne, die Phlegräischen Felder. Wässer mit natürlicher Kohlensäure dürfen als "Mit eigener Quellkohlensäure" deklariert werden, wenn der CO₂-Gehalt nach dem Abfüllen dem Quellgehalt entspricht. Dies ist ein Qualitätsmerkmal.
-
-**Zugesetzte Kohlensäure**: Industriell gewonnenes CO₂ (als Nebenprodukt der Ammoniak- oder Ethanolproduktion) wird nachträglich in das Wasser gepresst. Die meisten "Classic"- und "Sprudel"-Varianten verwenden zugesetztes CO₂. Dies ist legal und geschmacklich kaum unterscheidbar, aber der Sommelier sollte den Unterschied kennen und kommunizieren können.
-
-### Sensorische Wahrnehmung
-
-Das Prickeln der Kohlensäure wird nicht primär als Berührung wahrgenommen, sondern über **Schmerzrezeptoren (Nozizeptoren)** und das Enzym **Carboanhydrase IV** auf der Zunge, das CO₂ in Protonen umwandelt — es ist also eine chemische, nicht mechanische Wahrnehmung. Deshalb empfinden Personen mit weniger aktiver Carboanhydrase das Prickeln als schwächer.
-
-### Kohlensäuregrade im Vergleich
-
-- **Stilles Wasser (naturell)**: <1.500 mg/l CO₂. Keinerlei Prickeln. Ideal für Weinbegleitung und feine Sensorik.
-- **Medium**: 4.000–5.500 mg/l CO₂. Leichtes, dezentes Prickeln. Der beliebteste Kohlensäuregrad in Deutschland (ca. 42 % Marktanteil).
-- **Classic/Sprudel**: 5.500–7.000+ mg/l CO₂. Kräftiges Prickeln, erfrischend, durstlöschend. In Deutschland traditionell dominierend (ca. 35 % Marktanteil), international eher unüblich.
-
-### Physiologische Wirkung
-
-Kohlensäure stimuliert die Speichelproduktion und die Magensaftsekretion, was die Verdauung fördern kann. Bei empfindlichen Personen kann sie jedoch Sodbrennen oder Blähungen auslösen. Entgegen dem verbreiteten Mythos macht kohlensäurehaltiges Wasser Knochen **nicht** porös — Studien zeigen keinen Zusammenhang zwischen CO₂-haltigem Wasser und Osteoporose. Der Mythos beruht auf Verwechslung mit phosphorsäurehaltigen Cola-Getränken.
-
-### Perlung und Bläschengröße
-
-Die Qualität der Perlung — von grob und schnell aufsteigend (Tafelbier-Charakter) bis fein und persistent (Champagner-Charakter) — hängt vom CO₂-Druck, der Temperatur, dem Mineralgehalt und der Glasform ab. Feinkristalline Gläser mit Moussierpunkt erzeugen eine elegantere Perlung. Ein Wassersommelier achtet stets auf die Perlage als Qualitätsmerkmal.`,
-      quiz: [
+      "title": "Kohlensäure: Herkunft, Wirkung und Sensorik",
+      "content": "## Kohlensäure: Chemie, Kennzeichnung und Empfinden\n\nGelöstes Kohlendioxid steht mit Kohlensäure, Hydrogencarbonat und Protonen im Gleichgewicht. Temperatur und Druck beeinflussen, wie viel CO₂ im Wasser gelöst bleibt. Beim Öffnen sinkt der Druck; Erwärmung begünstigt den Gasverlust. Die oft genannte Löslichkeit unter CO₂-Atmosphäre darf nicht mit der Löslichkeit unter gewöhnlicher Luft verwechselt werden.\n\n### Drei rechtliche CO₂-Bezeichnungen\n\n**Natürliches kohlensäurehaltiges Mineralwasser** besitzt nach Behandlung und Abfüllung denselben Gehalt an eigenem CO₂ wie am Quellaustritt; zulässige technische Ausgleiche sind möglich. **Mit eigener Quellkohlensäure versetzt** bedeutet, dass CO₂ aus demselben Quellvorkommen den ursprünglichen Gehalt erhöht. **Mit Kohlensäure versetzt** bezeichnet den Zusatz von CO₂ anderer Herkunft. Eigene Quellkohlensäure muss nicht pauschal vulkanisch sein.\n\n### Still, Medium und Classic\n\nDiese handelsüblichen Varianten beschreiben eine Abstufung der Perlung. Es gibt keinen allgemeinen gesetzlichen CO₂-Korridor, der für jede als „Medium“ bezeichnete Flasche gilt. Herstellerangaben und Verkostung sind für den konkreten Vergleich geeigneter als starre Zahlen.\n\n### Was spüren wir?\n\nKohlensäure erzeugt Geschmack und Mundgefühl. Eine experimentelle Studie an Mäusen zeigte eine Rolle säureempfindlicher Geschmackszellen und des Enzyms Carboanhydrase IV. Das ist nicht dasselbe wie der Beweis, das menschliche Prickeln werde ausschließlich über Schmerzrezeptoren wahrgenommen. Bläschengröße und Perlung hängen auch vom Glas, seinen Oberflächen und der Temperatur ab; feinere Bläschen beweisen keine höhere Reinheit oder Sicherheit.\n\nFür empfindliche Personen kann stilles Wasser angenehmer sein. Allgemeine Verdauungs-, Knochen- oder Leistungsversprechen werden aus dem CO₂-Gehalt nicht abgeleitet.",
+      "quiz": [
         {
-          question:
-            "Wie wird das Prickeln der Kohlensäure auf der Zunge primär wahrgenommen?",
-          options: [
-            "Durch mechanische Berührungsrezeptoren (Druck der Bläschen)",
-            "Über Geschmacksknospen als sauren Geschmack",
-            "Über Nozizeptoren und das Enzym Carboanhydrase IV (chemische Wahrnehmung)",
-            "Durch Temperaturrezeptoren (Kältegefühl)",
+          "question": "Was beeinflusst den CO₂-Verlust nach dem Öffnen?",
+          "options": [
+            "Nur die Etikettenfarbe",
+            "Druckabfall und Temperatur",
+            "Nur das Herkunftsland",
+            "Nur der Natriumwert"
           ],
-          correct: 2,
-          explanation:
-            "Die Wahrnehmung ist primär chemisch: Carboanhydrase IV auf der Zungenoberfläche wandelt CO₂ in Protonen um, die Nozizeptoren stimulieren. Das erklärt, warum Kohlensäure auch in flacher Lösung (ohne sichtbare Bläschen) wahrnehmbar ist.",
+          "correct": 1,
+          "explanation": "Beim Öffnen fällt der Druck. Erwärmung begünstigt, dass gelöstes CO₂ entweicht."
         },
         {
-          question:
-            "Was bedeutet die Kennzeichnung 'Mit eigener Quellkohlensäure'?",
-          options: [
-            "Die Kohlensäure wurde aus einer separaten CO₂-Quelle gewonnen",
-            "Das CO₂ stammt aus vulkanischer Aktivität im Quellgebiet und war natürlich im Wasser gelöst",
-            "Die Kohlensäure wurde nachträglich hinzugefügt, aber in der Region hergestellt",
-            "Das Wasser enthält besonders feine Kohlensäure",
+          "question": "Was bedeutet „mit eigener Quellkohlensäure versetzt“?",
+          "options": [
+            "CO₂ aus demselben Quellvorkommen erhöht den ursprünglichen Gehalt",
+            "Der Quellgehalt bleibt zwingend unverändert",
+            "Es wurde beliebiges Industrie-CO₂ zugesetzt",
+            "Es ist ein Heilwasser"
           ],
-          correct: 1,
-          explanation:
-            "Quellkohlensäure ist natürliches CO₂ vulkanischen Ursprungs, das im Grundwasserleiter gelöst war. Der CO₂-Gehalt nach Abfüllung muss dem natürlichen Quellgehalt entsprechen.",
+          "correct": 0,
+          "explanation": "§ 8 Absatz 3 beschreibt einen höheren CO₂-Gehalt nach Zusatz aus dem gleichen Quellvorkommen."
         },
         {
-          question:
-            "Welcher CO₂-Gehalt charakterisiert ein 'Medium'-Mineralwasser?",
-          options: [
-            "<1.500 mg/l CO₂",
-            "1.500–4.000 mg/l CO₂",
-            "4.000–5.500 mg/l CO₂",
-            ">7.000 mg/l CO₂",
+          "question": "Wie ist „Medium“ beim Mineralwasser einzuordnen?",
+          "options": [
+            "Als ein für alle Marken gesetzlich festgelegter mg/l-Korridor",
+            "Als Handelsbezeichnung; der konkrete CO₂-Gehalt ist produktabhängig",
+            "Als Wasser ohne CO₂",
+            "Als Arzneimittelkategorie"
           ],
-          correct: 2,
-          explanation:
-            "Medium-Wasser enthält typischerweise 4.000–5.500 mg/l CO₂ und ist mit ca. 42 % Marktanteil die beliebteste Variante in Deutschland. Es bietet dezentes Prickeln ohne die Intensität von Classic/Sprudel.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Die rechtlichen Herkunftsbezeichnungen für CO₂ sind von handelsüblichen Varianten wie Medium zu unterscheiden."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 5 — Mineralwasser vs Quellwasser vs Tafelwasser
-    // ═══════════════════════════════════════════════════════════════
     {
-      title:
-        "Natürliches Mineralwasser, Quellwasser und Tafelwasser im Vergleich",
-      content: `## Die drei Wasserkategorien — Unterschiede mit Konsequenz
-
-Konsumenten verwenden die Begriffe oft synonym, doch rechtlich und qualitativ bestehen erhebliche Unterschiede zwischen den drei Kategorien abgepackten Wassers. Ein Wassersommelier muss diese Unterschiede im Detail kennen und erklären können, denn sie bestimmen Qualitätsniveau, Preis und Einsatzmöglichkeit.
-
-### Natürliches Mineralwasser — die Premiumkategorie
-
-Wie in Lektion 1 dargestellt, unterliegt natürliches Mineralwasser den strengsten Anforderungen. Die Kernpunkte zusammengefasst: amtliche Anerkennung, Ursprungsreinheit, konstante Zusammensetzung, Abfüllung am Quellort, keine Desinfektion. In Deutschland sind aktuell rund **820 Mineralwässer** aus über 500 Quellen amtlich anerkannt (Stand 2024). Die Quellenvielfalt ist eine deutsche Besonderheit — kein anderes Land hat pro Kopf so viele anerkannte Mineralwasserquellen.
-
-### Quellwasser — der kleine Bruder
-
-Quellwasser muss ebenfalls aus einer unterirdischen Quelle stammen und am Quellort abgefüllt werden, benötigt aber **keine amtliche Anerkennung**. Es muss lediglich den Anforderungen der Trinkwasserverordnung genügen. Eine konstante Zusammensetzung wird nicht gefordert, ebenso wenig die umfangreichen geologischen und hydrologischen Gutachten. Quellwasser darf nicht mit natürlichem Mineralwasser verwechselbar sein — so darf kein Analysenauszug auf dem Etikett stehen. Es ist häufig im Discount-Segment zu finden und preislich unterhalb von Mineralwasser positioniert. Geschmacklich kann Quellwasser durchaus hochwertig sein, bietet aber keine Garantie für Konstanz.
-
-### Tafelwasser — industrielles Produkt
-
-Tafelwasser ist ein **Mischprodukt**, das im Werk hergestellt wird und keinen Quellbezug haben muss. Es kann aus Leitungswasser, Mineralwasser, entsalztem Wasser, natürlichem Salzwasser oder einer beliebigen Kombination bestehen. Erlaubt sind zudem Zusätze von Mineralsalzen und Kohlensäure. Tafelwasser muss lediglich der Trinkwasserverordnung entsprechen. Es darf **nicht** mit einem Quellnamen oder Quellort beworben werden. Tafelwasser ist die Basis vieler Gastronomie-Wasseranlagen und SodaStream-Geräte — funktional einwandfrei, aber ohne die Herkunftsgarantie von Mineralwasser.
-
-### Leitungswasser als Vergleich
-
-Leitungswasser (Trinkwasser) wird nach der Trinkwasserverordnung überwacht, die in manchen Parametern sogar strengere Grenzwerte als die MTVO vorsieht (z. B. Pestizide). Es kann aber chemisch aufbereitet werden (Chlorung, Ozonierung, UV-Bestrahlung, Aktivkohlefilterung), was bei Mineralwasser verboten ist. Die Debatte "Leitungswasser vs. Mineralwasser" ist in Deutschland emotional aufgeladen. Objektiv gilt: Deutsches Leitungswasser ist hygienisch einwandfrei, hat aber — je nach Region — variable Qualität, einen anderen regulatorischen Ansatz (Sicherheit statt Natürlichkeit) und keine geschützte Herkunft.
-
-### Klassifizierung nach Mineralgehalt
-
-Die MTVO kennt spezielle Kennzeichnungen:
-- **Sehr gering mineralisiert**: Trockenrückstand ≤50 mg/l
-- **Gering mineralisiert (oligomineral)**: ≤500 mg/l
-- **Reich an Mineralien**: >1.500 mg/l
-- Dazwischen ("mittel mineralisiert"): >500 bis ≤1.500 mg/l
-
-Diese Einteilung hat sensorische, ernährungsphysiologische und gastronomische Relevanz. Ein hochmineralisiertes Wasser dominiert einen feinen Weißwein; ein extrem leichtes Wasser verschwindet neben einem kräftigen Steak.
-
-### Marktanteile und Konsumentenverhalten
-
-In Deutschland trinkt jeder Bürger im Schnitt rund 130 Liter abgepacktes Wasser pro Jahr (2023). Davon entfallen ca. 80 % auf natürliches Mineralwasser, ca. 15 % auf Quellwasser und ca. 5 % auf Tafelwasser. Der Trend geht zu stiller oder medium-kohlensäurehaltiger Ware. Im europäischen Vergleich liegt Italien mit rund 200 Litern pro Kopf vorn, gefolgt von Deutschland, Belgien und Spanien.`,
-      quiz: [
+      "title": "Natürliches Mineralwasser, Quellwasser und Tafelwasser im Vergleich",
+      "content": "## Mineralwasser, Quellwasser, Tafelwasser und Trinkwasser\n\nDie Kategorien unterscheiden sich in Herkunft, Herstellung und gesetzlichen Anforderungen. Sie bilden keine pauschale Qualitäts- oder Gesundheitshierarchie.\n\n### Natürliches Mineralwasser\n\nAmtliche Anerkennung, ursprüngliche Reinheit, ein charakteristisches weitgehend konstantes Profil und Abfüllung am Quellort kennzeichnen diese Kategorie. Ein besonders hoher Mineralgehalt ist keine allgemeine Voraussetzung.\n\n### Quellwasser\n\nAuch Quellwasser stammt aus unterirdischen Wasservorkommen und wird für Fertigpackungen am Quellort abgefüllt. Es benötigt keine amtliche Mineralwasseranerkennung. Die Min/TafelWV enthält Vorgaben zur Gewinnung, Behandlung und mikrobiologischen Qualität; ergänzend gelten Anforderungen der Trinkwasserverordnung. „Nur TrinkwV“ wäre deshalb unvollständig.\n\n### Tafelwasser\n\nTafelwasser kann aus Trinkwasser, Mineralwasser und weiteren ausdrücklich zulässigen Zutaten hergestellt werden. Zulässige Salze und Zutaten sind geregelt; es handelt sich nicht um eine beliebige Mischung. Ein Quellbezug ist nicht erforderlich. Mineralwasserähnliche oder täuschende Herkunftsangaben sind unzulässig. Selbst gesprudeltes Leitungswasser wird im Alltag nicht allein durch den Sprudler automatisch zu einem gewerblich definierten Tafelwasserprodukt.\n\n### Mineralisierung\n\nFreiwillige Angaben nach Anlage 6 sind unter anderem: „mit sehr geringem Gehalt an Mineralien“ bei höchstens 50 mg/l Trockenrückstand, „mit geringem Gehalt“ bei höchstens 500 mg/l sowie „mit hohem Gehalt“ bei mehr als 1.500 mg/l. „Mittel mineralisiert“ ist eine praktische Vergleichsbeschreibung, keine entsprechende gesetzliche Auslobung. Eine hohe Mineralisierung sagt allein nichts über Reinheit aus.\n\nFür Leitungswasser sind auch Hausinstallation und örtliche Hinweise wichtig. Im Handel die jeweilige Produktbezeichnung erklären, ohne Trinkwasser pauschal abzuwerten.",
+      "quiz": [
         {
-          question:
-            "Welches ist der entscheidende Unterschied zwischen Quellwasser und natürlichem Mineralwasser?",
-          options: [
-            "Quellwasser enthält keine Mineralstoffe",
-            "Quellwasser muss nicht am Quellort abgefüllt werden",
-            "Quellwasser benötigt keine amtliche Anerkennung und keine nachgewiesene konstante Zusammensetzung",
-            "Quellwasser darf nur in Glasflaschen verkauft werden",
+          "question": "Welches Merkmal benötigt natürliches Mineralwasser, Quellwasser aber nicht?",
+          "options": [
+            "Ein Glasgebinde",
+            "Amtliche Anerkennung als natürliches Mineralwasser",
+            "Kohlensäure",
+            "Einen Mindestgehalt von 500 mg/l"
           ],
-          correct: 2,
-          explanation:
-            "Quellwasser stammt zwar aus unterirdischen Quellen und wird dort abgefüllt, benötigt aber weder die aufwändige amtliche Anerkennung noch den Nachweis einer konstanten Mineralstoffzusammensetzung.",
+          "correct": 1,
+          "explanation": "Die amtliche Anerkennung ist ein wesentlicher Unterschied. Auch Quellwasser unterliegt konkreten Anforderungen."
         },
         {
-          question: "Was darf Tafelwasser enthalten?",
-          options: [
-            "Ausschließlich natürliches Quellwasser",
-            "Beliebige Mischungen aus Trinkwasser, Mineralwasser, Salzen und Kohlensäure",
-            "Nur gefiltertes Leitungswasser",
-            "Natürliches Mineralwasser mit zugesetzten Vitaminen",
+          "question": "Wie sind Zutaten für Tafelwasser geregelt?",
+          "options": [
+            "Alle Salze dürfen beliebig zugesetzt werden",
+            "Es sind nur die gesetzlich zulässigen Zutaten und Verfahren erlaubt",
+            "Tafelwasser ist immer unverändertes Quellwasser",
+            "Tafelwasser muss an einer Mineralquelle abgefüllt werden"
           ],
-          correct: 1,
-          explanation:
-            "Tafelwasser ist ein industrielles Mischprodukt und darf aus Leitungswasser, Mineralwasser, entsalztem Wasser und Zusätzen von Mineralsalzen und Kohlensäure bestehen. Es benötigt keinen Quellbezug.",
+          "correct": 1,
+          "explanation": "§ 11 der Min/TafelWV begrenzt die verwendbaren Zutaten und enthält weitere Anforderungen."
         },
         {
-          question:
-            "Ab welchem Trockenrückstand gilt Mineralwasser als 'reich an Mineralien'?",
-          options: [
-            ">500 mg/l",
-            ">1.000 mg/l",
-            ">1.500 mg/l",
-            ">2.000 mg/l",
+          "question": "Wann ist die Angabe „mit hohem Gehalt an Mineralien“ möglich?",
+          "options": [
+            "Ab 50 mg/l Trockenrückstand",
+            "Ab 500 mg/l",
+            "Bei mehr als 1.500 mg/l",
+            "Nur bei Heilwasser"
           ],
-          correct: 2,
-          explanation:
-            "Die MTVO definiert 'reich an Mineralien' ab einem Trockenrückstand von über 1.500 mg/l. Diese Kennzeichnung ist freiwillig, aber ein relevantes Qualitäts- und Marketingmerkmal.",
-        },
-      ],
+          "correct": 2,
+          "explanation": "Anlage 6 nennt für diese freiwillige Angabe einen Trockenrückstand von mehr als 1.500 mg/l."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 6 — Deutsche Mineralwasserregionen
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Deutsche Mineralwasserregionen und ihre Charakteristik",
-      content: `## Deutschlands Wasserland — Vielfalt aus geologischer Fülle
-
-Deutschland besitzt eine weltweit einzigartige Dichte an Mineralwasserquellen. Über **820 anerkannte Mineralwässer** stammen aus mehr als 500 Quellen — das ist mehr als in jedem anderen EU-Land. Die geologische Vielfalt von Alpen bis Norddeutsche Tiefebene, von Vulkaneifel bis Schwarzwald erzeugt eine Bandbreite an Wassercharakteren, die mit der Rebsortenvielfalt einer Weinregion vergleichbar ist.
-
-### Vulkaneifel — Das Epizentrum des deutschen Mineralwassers
-
-Die Vulkaneifel ist Deutschlands bedeutendste Mineralwasserregion. Die junge vulkanische Aktivität (letzter Ausbruch vor ca. 11.000 Jahren — die Maare zeugen davon) liefert bis heute aufsteigendes CO₂, das das Grundwasser hochmineralisiert und mit natürlicher Kohlensäure anreichert. **Gerolsteiner** (TDS: 2.527 mg/l, 348 mg/l Calcium, 108 mg/l Magnesium) ist die bekannteste Marke — weltweit größter Einzelbrunnen. **Apollinaris** aus Bad Neuenahr-Ahrweiler (TDS: ca. 2.700 mg/l) war im 19. Jahrhundert als "The Queen of Table Waters" weltberühmt. Weitere Eifel-Wässer: Dauner Sprudel, Nürburg Quelle, Gerolsteiner Naturell.
-
-### Hessen — Brunnenland im Herzen Deutschlands
-
-Hessen hat die zweithöchste Brunnendichte. Die geologische Vielfalt — Taunus-Quarzit, Vogelsberg-Basalt, Rheingraben-Sedimente — erzeugt unterschiedlichste Wasserprofile. **Selters** aus dem Taunus (seit 1500 urkundlich belegt, Name wurde zum Synonym für Sprudel), **Rosbacher** (93 mg/l Magnesium — offizieller Partner vieler Sommeliervereinigungen), **Bad Vilbeler Quellen**, **Hassia** aus dem Vogelsberg. Das Wort "Selters" oder "Seltzer" ging in viele Sprachen ein als Gattungsbegriff für kohlensäurehaltiges Wasser.
-
-### Rheinland-Pfalz & Saarland
-
-Neben der Eifel liefert auch der Pfälzerwald und die Nahe-Region hervorragende Quellen. **Staatlich Fachingen** (seit 1742, eines der ältesten Marken-Mineralwässer Europas, extrem hydrogencarbonatreich: 1.846 mg/l HCO₃⁻) liegt am Rande des Taunus. **Nürburg Quelle** und zahlreiche kleinere Brunnen ergänzen das Portfolio.
-
-### Baden-Württemberg — Schwarzwald und Schwäbische Alb
-
-Der **Schwarzwald** mit seinem Granitgestein liefert extrem leichte, niedrigmineralisierte Wässer: **Black Forest** (TDS: ca. 30 mg/l) ist eines der reinsten Wässer Europas. Kontrastprogramm: Die **Schwäbische Alb** mit ihren Kalksteinaquiferen bringt calciumreiche Wässer hervor. **Ensinger Sport** (528 mg/l Calcium, 1.535 mg/l Sulfat) ist eines der mineralstoffreichsten deutschen Wässer.
-
-### Bayern — Alpines und Vulkanisches
-
-Bayerische Quellen reichen von den Alpenquellen (Adelholzener aus den Chiemgauer Alpen, mittlere Mineralisierung, seit 1907) über die Rhön (Bionade Quelle, vulkanisch beeinflusst) bis zum Fichtelgebirge. **Adelholzener** ist der größte deutsche Brunnenbetrieb im kirchlichen Besitz (gehört dem Orden der Barmherzigen Schwestern).
-
-### Nordrhein-Westfalen und Norddeutschland
-
-NRW hat mit **Vio** (Apollinaris-Tochter, medium-carbonisiert) und diversen Teutoburger-Wald-Quellen einen relevanten Anteil. Im norddeutschen Flachland finden sich weniger Quellen, da die Geologie weniger komplex ist. Dennoch gibt es Ausnahmen: Brunnenbetriebe in Niedersachsen und Schleswig-Holstein nutzen eiszeitliche Aquifere.
-
-### Sachsen, Thüringen und Ostdeutschland
-
-Historisch bedeutsame Brunnenstandorte mit Tradition: **Bad Elster**, **Thüringer Waldquell**, **Spreequell**. Nach der Wiedervereinigung wurden viele Brunnen modernisiert. Der Thüringer Buntsandstein liefert ausgewogene, mittelmineralisierte Wässer.`,
-      quiz: [
+      "title": "Deutsche Mineralwasserregionen und ihre Charakteristik",
+      "content": "## Deutsche Regionen: Herkunft erklären, Etiketten vergleichen\n\nDeutschlands unterschiedliche Gesteinsformationen ermöglichen vielfältige Grundwasserprofile. Ein Bundesland oder eine Landschaft ist jedoch keine einheitliche „Wassersorte“. Grundwasserstockwerke, Fließwege und Quellnutzungen können sich auf engem Raum unterscheiden.\n\n### Eifel und andere vulkanisch geprägte Gebiete\n\nVulkanisch geprägte Landschaften sind bekannte Mineralwasserregionen. Als konkretes Beispiel stammt **Gerolsteiner Naturell** laut Hersteller aus einer eigenen Quellnutzung in der Vulkaneifel. Sein Profil ist nicht identisch mit Sprudel und Medium derselben Marke. Die heute veröffentlichte Naturell-Analyse nennt 125 mg/l Calcium, 44 mg/l Magnesium und 17 mg/l Natrium. Markenwerte aus verschiedenen Varianten dürfen nicht vermischt werden.\n\n### Kalk, Sandstein und kristallines Grundgebirge\n\nKarbonatgesteine der Alb können Calcium und Hydrogencarbonat zum Grundwasser beitragen. Sulfat ist dagegen nicht automatisch eine Folge von Kalkstein, sondern hängt etwa von sulfathaltigen Gesteinslagen ab. In Sandsteinregionen und im kristallinen Grundgebirge sind ebenfalls sehr unterschiedliche Wasserprofile möglich. Das Bayerische Landesamt für Umwelt beschreibt für das Grundgebirge überwiegend gering mineralisierte Wässer, aber ausdrücklich auch höher mineralisierte Ausnahmen.\n\n### Eine regionale Verkostung vorbereiten\n\nQuellort, konkrete Variante und Analysenauszug für jede Flasche notieren. Möglichst nicht nur Marken mit unterschiedlicher Herkunft, sondern auch unterschiedliche Profile auswählen. Regionale Nähe kann die Transportwege verkürzen; sie beweist nicht automatisch die günstigste gesamte Ökobilanz.\n\nSuperlative wie „reinste Quelle Europas“, feste Quellenzahlen und ungesicherte Brunnendichte-Ranglisten sind für eine sachliche Herkunftsberatung nicht nötig.",
+      "quiz": [
         {
-          question:
-            "Warum ist die Vulkaneifel Deutschlands bedeutendste Mineralwasserregion?",
-          options: [
-            "Weil dort die meisten Abfüllanlagen stehen",
-            "Weil aufsteigendes vulkanisches CO₂ das Grundwasser hochmineralisiert und mit natürlicher Kohlensäure anreichert",
-            "Weil das Wasser dort künstlich mit Mineralstoffen angereichert wird",
-            "Weil die EU die Region als Schutzgebiet ausgewiesen hat",
+          "question": "Warum können zwei Varianten derselben Marke verschiedene Profile haben?",
+          "options": [
+            "Mineralstoffe werden stets beliebig zugesetzt",
+            "Sie können aus unterschiedlichen Quellnutzungen stammen",
+            "Stilles Wasser enthält grundsätzlich keine Mineralstoffe",
+            "Das Etikett ist immer identisch"
           ],
-          correct: 1,
-          explanation:
-            "Die geologisch junge Vulkanaktivität der Eifel (letzter Ausbruch vor ca. 11.000 Jahren) liefert bis heute CO₂, das die Mineralstoffaufnahme des Grundwassers massiv verstärkt und natürliche Kohlensäure einbringt.",
+          "correct": 1,
+          "explanation": "Gerolsteiner beschreibt Naturell ausdrücklich als andere Quellnutzung als Sprudel und Medium."
         },
         {
-          question:
-            "Welcher deutsche Mineralwassername wurde zum internationalen Gattungsbegriff für Sprudelwasser?",
-          options: [
-            "Gerolsteiner",
-            "Apollinaris",
-            "Selters (→ Seltzer)",
-            "Fachingen",
+          "question": "Welche Zuordnung ist ohne konkreten Nachweis unzulässig?",
+          "options": [
+            "Quellort vom Etikett übernehmen",
+            "Analysenauszug der Variante lesen",
+            "Kalkstein grundsätzlich mit hohem Sulfatgehalt gleichsetzen",
+            "Regionale Profile vergleichen"
           ],
-          correct: 2,
-          explanation:
-            "Der Name 'Selters' aus dem Taunus ging als 'Seltzer' (englisch) bzw. 'Seltz' (französisch) in viele Sprachen ein und wurde zum Synonym für kohlensäurehaltiges Wasser — vergleichbar mit 'Tempo' für Taschentücher.",
+          "correct": 2,
+          "explanation": "Sulfat hängt vom konkreten Gesteins- und Fließsystem ab; Kalkstein allein begründet diese Aussage nicht."
         },
         {
-          question:
-            "Was unterscheidet Schwarzwald-Wässer typischerweise von Schwäbische-Alb-Wässern?",
-          options: [
-            "Schwarzwald-Wässer sind stärker kohlensäurehaltig",
-            "Schwarzwald-Wässer (Granit) sind extrem niedrig mineralisiert, Alb-Wässer (Kalkstein) calcium- und sulfatreich",
-            "Es gibt keinen wesentlichen Unterschied",
-            "Schwäbische-Alb-Wässer enthalten keine Kohlensäure",
+          "question": "Welche Natriumangabe veröffentlicht der Hersteller für Gerolsteiner Naturell bei dieser Quellenprüfung?",
+          "options": [
+            "17 mg/l",
+            "410 mg/l",
+            "564 mg/l",
+            "0 mg/l"
           ],
-          correct: 1,
-          explanation:
-            "Granit (Schwarzwald) löst sich kaum → TDS teils <50 mg/l. Kalkstein (Schwäbische Alb) löst sich gut → hohe Calcium- und Sulfatwerte, TDS bis >2.000 mg/l. Geologie bestimmt den Wassercharakter.",
-        },
-      ],
+          "correct": 0,
+          "explanation": "Die am 12.10.2026 gelesene Produktseite nennt 17 mg/l. Für spätere Käufe sind aktuelle Etiketten maßgeblich."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 7 — Europäische Premiumwässer
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Europäische und internationale Premiumwässer",
-      content: `## Wasser als Luxusprodukt — Die Welt der Premiummarken
-
-Der globale Premiumwassermarkt hat sich in den letzten zwei Jahrzehnten von einer Nische zu einem Milliardensegment entwickelt. Ein Wassersommelier muss die bedeutendsten internationalen Marken kennen — ihre Herkunft, ihre sensorischen Profile und ihre Positionierung. Wasser ist längst ein Terroir-Produkt wie Wein.
-
-### Frankreich — Klassisches Wasserland
-
-**Evian**: Aus den französischen Alpen (Haute-Savoie), 15 Jahre Filterung durch Gletschermoräne. TDS: 309 mg/l, pH 7,2. Ausgewogen, weich, dezent mineralisch. Weltweit bekannteste Premiummarke. **Volvic**: Vulkanquelle in der Auvergne, durch 6 Vulkangesteinsschichten gefiltert. TDS: 130 mg/l, niedrig mineralisiert, sehr neutral. **Badoit**: Natürliche Kohlensäure aus den Forez-Bergen (Loire). TDS: 1.200 mg/l, Hydrogencarbonat-Typ. Exzellent zur Weinbegleitung. **Perrier**: Aus Vergèze (Südfrankreich), natürlich kohlensäurehaltig. TDS: 475 mg/l. Ikonische grüne Flasche. CO₂ und Wasser werden getrennt gefördert und beim Abfüllen rekombiniert. **Contrex** und **Hépar**: Extrem calciumreiche Wässer aus den Vogesen — beliebt als Calciumquelle in der Ernährung.
-
-### Italien — Kulturland des Wassers
-
-Italiener trinken pro Kopf am meisten Mineralwasser weltweit (ca. 200 l/Jahr). **San Pellegrino**: Lombardei, seit 1899. TDS: 1.109 mg/l. Charakteristisches feines Prickeln (aufcarbonatisiert). Weltmarke der gehobenen Gastronomie. **Acqua Panna**: Toskana (Mugello-Tal), stilles Wasser. TDS: 156 mg/l. Weich, rund, eleganter Begleiter feiner Küche. San Pellegrino und Acqua Panna (beide Nestlé-Gruppe) setzen mit der "Fine Water Society" den Standard für Wasser in der Gastronomie. **Ferrarelle**: Kampanien, natürlich kohlensäurehaltig. TDS: 1.265 mg/l. Vulkanische Herkunft, Calcium-Hydrogencarbonat-Typ. **Lurisia**: Piemont, aus 1.460 m Höhe, extrem niedrig mineralisiert (TDS: 36 mg/l).
-
-### Skandinavien — Reinheit als Prinzip
-
-**Voss**: Norwegen, artesische Quelle in Iveland. TDS: 44 mg/l. Minimalistisches Design, ultra-leichtes Wasser. Premium-Positionierung über Designflasche und Reinheitsimage. **Iskilde**: Dänemark, aus 55 m Tiefe. TDS: 330 mg/l. Natürlicher Sauerstoffgehalt von 9–10 mg/l (doppelt so viel wie normal).
-
-### Weitere europäische Premiumwässer
-
-**Hildon**: England (Hampshire), natürlich kohlensäurehaltig. Lieferant des House of Parliament. **Bru**: Belgien, leicht mineralisiert, als Spa-Wasser bekannt. **Gerolsteiner**: Als deutsches Premiumwasser international etabliert. **Borjomi**: Georgien, hochmineralisiert (TDS: 5.000–7.500 mg/l), vulkanisch, legendäres Heilwasser mit salzig-alkalischem Geschmack.
-
-### Globale Exoten
-
-**Fiji Water**: Artesische Quelle auf den Fidschi-Inseln, durch vulkanisches Gestein gefiltert. TDS: 222 mg/l, hoher Siliziumgehalt (93 mg/l). **Waiakea**: Hawaii, vulkanisch gefiltert, pH 8,2. **Icelandic Glacial**: Island, aus der Ölfus-Quelle, durch Lava gefiltert. TDS: 62 mg/l, pH 8,4. **Tau**: Neuseeland, Regenwasser von unberührten Inseln. TDS: <5 mg/l — eines der reinsten kommerziellen Wässer der Welt.
-
-### Preissegmente und Positionierung
-
-Die Preisspanne reicht von 0,20 EUR/l (deutsche Diskontmarken) bis über 100 EUR/l (limitierte Editionen wie Fillico aus Japan oder Bling H₂O). Der Premiummarkt segmentiert sich in: **Accessible Premium** (Evian, Volvic, San Pellegrino: 1–3 EUR/l), **Premium** (Voss, Fiji, Lurisia: 3–8 EUR/l) und **Super Premium/Luxury** (Fillico, Bling H₂O, Swarovski-Edition: >20 EUR/l). Für Sommeliers relevant ist vor allem das Accessible-Premium- und Premium-Segment, wo Geschmacksunterschiede den Preis rechtfertigen.`,
-      quiz: [
+      "title": "Europäische und internationale Premiumwässer",
+      "content": "## Internationale Wässer sachlich vergleichen\n\n„Premium“ ist eine Marktpositionierung, keine einheitliche gesetzliche Reinheitsklasse. Herkunft, Gebinde, Vertrieb und Markenauftritt beeinflussen den Preis. Ein teures oder weit transportiertes Wasser ist dadurch weder gesünder noch sensorisch für jede Person besser.\n\n### Beispiel: evian\n\nDie Herstellerseite beschreibt die Herkunft aus den französischen Alpen. Sie nennt für das dort beschriebene Wasser einen **Trockenrückstand bei 180 °C von 345 mg/l**, 80 mg/l Calcium, 26 mg/l Magnesium und 6,5 mg/l Natrium. Diese Analyse ersetzt frühere oder anders ermittelte Zahlen nicht automatisch: Trockenrückstand, elektrische TDS-Schätzung und Summe der Ionen sind unterschiedliche Kenngrößen.\n\n### Internationale Auswahl\n\nFür eine Verkostung können Wässer aus Frankreich, Italien, Skandinavien oder weiteren Regionen gegenübergestellt werden. Maßgeblich sind jeweils die konkrete Quelle, Variante und rechtliche Produktkategorie. Regen-, Gletscher- oder aufbereitetes Wasser ist nicht allein aufgrund einer Herkunftsgeschichte natürliches Mineralwasser. Nationale Anerkennungen und tatsächliche Kennzeichnung müssen getrennt von Werbebegriffen betrachtet werden.\n\n### Sensorik und Nachhaltigkeit\n\n„Leicht“, „rund“, „salzig“ und „kräftig“ sind mögliche Verkostungseindrücke, keine weltweit verbindlichen Markenattribute. Blindverkostung kann helfen, Design- und Preiseffekte auszublenden. Bei der Auswahl auch Transport, Verpackung und Mehrwegsystem berücksichtigen.\n\nFür internationale Premiummarken werden hier keine ungesicherten Heilwirkungen, Sauerstoffvorteile oder „reinste Welt“-Ranglisten übernommen. Preise und Unternehmenszugehörigkeiten sind zeitabhängig und sollten für den konkreten Einkauf aktuell geprüft werden.",
+      "quiz": [
         {
-          question:
-            "Welches Mineral ist im Fiji Water in ungewöhnlich hoher Konzentration vorhanden?",
-          options: [
-            "Calcium (>400 mg/l)",
-            "Magnesium (>200 mg/l)",
-            "Silizium (ca. 93 mg/l)",
-            "Natrium (>500 mg/l)",
+          "question": "Was bedeutet „Premium“ bei Wasser automatisch?",
+          "options": [
+            "Medizinisch nachgewiesene Überlegenheit",
+            "Eine gesetzliche Garantie maximaler Reinheit",
+            "Keine solche Garantie; es ist eine Marktpositionierung",
+            "Mindestens 1.500 mg/l Mineralstoffe"
           ],
-          correct: 2,
-          explanation:
-            "Fiji Water hat mit ca. 93 mg/l einen außergewöhnlich hohen Siliziumgehalt, bedingt durch die vulkanische Geologie der Fidschi-Inseln. Silizium steht im Fokus der Forschung für mögliche Vorteile bei Knochen- und Hautgesundheit.",
+          "correct": 2,
+          "explanation": "Premium ist keine einheitliche Rechtskategorie wie natürliches Mineralwasser."
         },
         {
-          question:
-            "Was ist die Besonderheit bei der Abfüllung von Perrier?",
-          options: [
-            "Es wird nur bei Vollmond abgefüllt",
-            "CO₂ und Wasser werden getrennt gefördert und bei der Abfüllung rekombiniert",
-            "Es wird ausschließlich in Glasflaschen abgefüllt",
-            "Es wird vor der Abfüllung pasteurisiert",
+          "question": "Welchen Trockenrückstand bei 180 °C nennt die geprüfte evian-Herstellerseite?",
+          "options": [
+            "44 mg/l",
+            "345 mg/l",
+            "2.527 mg/l",
+            "Über 5.000 mg/l"
           ],
-          correct: 1,
-          explanation:
-            "Bei Perrier werden Wasser und natürliches CO₂ aus derselben Quelle getrennt entnommen und beim Abfüllen in der originalen Proportion rekombiniert. Dies ermöglicht eine konstantere Qualität als die direkte Abfüllung.",
+          "correct": 1,
+          "explanation": "Die gelesene Herstelleranalyse nennt 345 mg/l. Messverfahren und Produktvariante gehören zu jeder Zahlenangabe."
         },
         {
-          question:
-            "Welches Land hat den höchsten Pro-Kopf-Verbrauch an Mineralwasser in Europa?",
-          options: [
-            "Deutschland (ca. 130 l/Jahr)",
-            "Frankreich (ca. 140 l/Jahr)",
-            "Italien (ca. 200 l/Jahr)",
-            "Spanien (ca. 120 l/Jahr)",
+          "question": "Was hilft bei einem fairen internationalen Vergleich?",
+          "options": [
+            "Nur der Flaschenpreis",
+            "Gleiche Verkostungsbedingungen und Prüfung der konkreten Quelle und Variante",
+            "Nur die Flaschenform",
+            "Ein hoher pH-Wert als Gesundheitsbeweis"
           ],
-          correct: 2,
-          explanation:
-            "Italiener konsumieren mit ca. 200 Litern pro Kopf und Jahr das meiste Mineralwasser weltweit. Die ausgeprägte Mineralwasserkultur zeigt sich auch in der enormen Markenvielfalt (über 250 Marken in Italien).",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Analyse, Kategorie und eigene Sensorik sind aussagekräftiger als Design oder pauschale Gesundheitsversprechen."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 8 — Der Beruf des Wassersommeliers
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Der Beruf des Wassersommeliers",
-      content: `## Wasser-Expertise als Profession
-
-Der **Wassersommelier** (auch: Mineralwasser-Sommelier) ist ein vergleichsweise junges Berufsbild, das sich seit den 2000er-Jahren zunehmend professionalisiert hat. Im Gegensatz zum Weinsommelier, dessen Tradition Jahrhunderte zurückreicht, ist die Wasser-Sommelerie ein Produkt der Premiumisierung der Gastronomie und des wachsenden Bewusstseins für Wasserqualität und -vielfalt.
-
-### Ausbildung und Zertifizierung
-
-Die wichtigste Ausbildungsstätte im deutschsprachigen Raum ist die **Doemens Akademie** in Gräfelfing bei München, die seit 2009 den Zertifikatslehrgang "Wassersommelier" anbietet. Der Kurs umfasst ca. 80 Unterrichtseinheiten über mehrere Blöcke und schließt mit einer theoretischen und praktischen Prüfung (Blindverkostung) ab. International bietet die **Fine Water Academy** (gegründet von Michael Mascha, Autor des Referenzwerks "Fine Waters") Online- und Präsenzkurse an. Die **Water School** in Wien und die **Italian Water Sommelier Association (ADAM)** ergänzen das Angebot.
-
-### Kompetenzbereiche
-
-1. **Sensorik**: Fähigkeit, Wässer blind nach Mineralisierung, Kohlensäuregrad, Herkunftsgestein und Hauptionen zu identifizieren. Ein erfahrener Wassersommelier erkennt den Unterschied zwischen 50 und 500 mg/l TDS sofort und kann Calcium-dominierte von Natrium-dominierten Wässern unterscheiden.
-
-2. **Hydrogeologie**: Grundwissen über Quelltypen, Gesteinsformationen, Aquifer-Dynamik und deren Einfluss auf die Mineralisation. Der Sommelier muss erklären können, warum ein bestimmtes Wasser seinen Charakter hat.
-
-3. **Lebensmittelrecht**: Kenntnis der MTVO, der EU-Richtlinien, der Kennzeichnungsvorschriften und der Unterschiede zwischen den Wasserkategorien. Beratungskompetenz bei der Etikettengestaltung für Brunnen.
-
-4. **Food & Beverage Pairing**: Die Kunst, das richtige Wasser zu Speisen und Getränken zu empfehlen. Dies umfasst die Interaktion von Mineralstoffen und Kohlensäure mit Aromen und Texturen.
-
-5. **Gastronomieberatung**: Aufbau einer Wasserkarte, Personalschulung, Glaswahl, Servicestandards, Kalkulation.
-
-### Der Wassersommelier in der Gastronomie
-
-In der gehobenen Gastronomie (Michelin-Sterne, Gault-Millau-Hauben) hat sich die Position des Wassersommeliers oder einer fundierten Wasserberatung durch den Sommelier zunehmend etabliert. Spitzenrestaurants führen **Wasserkarten** mit 20–40+ Positionen, gegliedert nach Herkunft, Mineralisierung und Kohlensäuregrad. Das legendäre "Noma" in Kopenhagen, das "El Celler de Can Roca" in Girona und das "Aqua" in Wolfsburg bieten exemplarische Wasserkonzepte.
-
-### Service-Standards
-
-**Temperatur**: Stilles Wasser 12–14 °C, kohlensäurehaltiges Wasser 8–10 °C. Zu kaltes Wasser betäubt die Geschmacksknospen; zu warmes Wasser verliert Kohlensäure und wirkt flach. **Glaswahl**: Stilles Wasser in tulpenförmigen Gläsern (ähnlich Weißweinglas), kohlensäurehaltiges Wasser in schmalen, hohen Gläsern (Perlage sichtbar, CO₂-Retention). **Dekantieren**: Kontroverses Thema — einige Sommeliers empfehlen das Dekantieren hochmineralisierter Wässer zur Belüftung. **Reihenfolge**: Wie beim Wein gilt die Reihenfolge von leicht zu gehaltvoll: stilles, leichtes Wasser → stilles, mineralisiertes Wasser → prickelndes, leichtes Wasser → prickelndes, mineralisiertes Wasser.
-
-### Berufliche Perspektiven
-
-Neben der Gastronomie arbeiten Wassersommeliers in der Getränkeindustrie (Produktentwicklung, Marketing, Qualitätssicherung), im Handel (Sortimentsberatung), im Wellness- und Hotelbereich, in der Medien- und Kommunikationsbranche (Fachautoren, Blogger) sowie als Trainer und Berater. Das Einstiegsgehalt liegt bei ca. 35.000–45.000 EUR, erfahrene Sommeliers in der Spitzengastronomie oder Beratung können 60.000–80.000+ EUR erreichen.`,
-      quiz: [
+      "title": "Der Beruf des Wassersommeliers",
+      "content": "## Wassersommelier: Wissen vermitteln und Grenzen kennen\n\nWasserberatung verbindet Herkunftswissen, Etikettenkunde, Sensorik und Service. Daraus folgt weder eine medizinische Beratungskompetenz noch eine rechtliche Zertifizierung jeder Empfehlung.\n\n### Externe Qualifikation\n\nDoemens in Gräfelfing bietet eine Wassersommelier-Ausbildung an. Die heute gelesene Veranstaltungsseite datiert den Beginn der Ausbildung auf **2011** und beschreibt ab Herbst 2026 ein Hybridformat mit Online- und Präsenzanteilen. Kursformate, Prüfungen und Termine bitte direkt beim Anbieter prüfen. Diese Jammers-Lerneinheit ist keine Doemens-Ausbildung, keine gleichwertige externe Qualifikation und kein Nachweis einer persönlichen Fachprüfung durch Doemens.\n\n### Kompetenzbereiche\n\nSensorisches Training unterstützt die Beschreibung von Perlung, Geschmack und Mundgefühl. Hydrogeologisches Wissen erklärt mögliche Herkunftseinflüsse. Lebensmittelkunde hilft, Mineral-, Quell- und Tafelwasser korrekt zu unterscheiden. Für konkrete Analysewerte ist das Etikett entscheidend; selbst ein geschulter Gaumen kann nicht jedes Ion oder Herkunftsgestein zuverlässig blind bestimmen.\n\n### Service als Praxiskonzept\n\nFür Vergleichsverkostungen gleichartige, geruchsfreie Gläser und ähnliche Temperaturen verwenden. Als Startpunkte kann man stille Wässer weniger kalt als stark prickelnde Wässer servieren; **12–14 °C bzw. 8–10 °C sind hier Haus-Praxistipps**, keine verbindlichen Normen. Gastwünsche und das Verkostungsziel gehen vor.\n\nArbeitsfelder können Handel, Gastronomie, Schulung und Produktkommunikation sein. Pauschale Gehaltsversprechen oder nicht überprüfte Restaurantlisten sagen wenig über konkrete Beschäftigungsmöglichkeiten aus.",
+      "quiz": [
         {
-          question:
-            "Welche Institution bietet im deutschsprachigen Raum den bekanntesten Zertifikatslehrgang zum Wassersommelier an?",
-          options: [
-            "Die Deutsche Barkeeper-Union (DBU)",
-            "Die Doemens Akademie in Gräfelfing",
-            "Die IHK Koblenz",
-            "Die Universität Hohenheim",
+          "question": "Welche Institution bietet den in der Quelle beschriebenen externen Wassersommelier-Lehrgang an?",
+          "options": [
+            "Die Deutsche Barkeeper-Union",
+            "Doemens in Gräfelfing",
+            "Diese Website als gleichwertige Doemens-Ausbildung",
+            "Eine beliebige Mineralwassermarke"
           ],
-          correct: 1,
-          explanation:
-            "Die Doemens Akademie bei München bietet seit 2009 den etabliertesten Wassersommelier-Lehrgang im DACH-Raum an — mit ca. 80 Unterrichtseinheiten und einer Abschlussprüfung inklusive Blindverkostung.",
+          "correct": 1,
+          "explanation": "Doemens beschreibt den externen Lehrgang auf seiner eigenen Veranstaltungsseite."
         },
         {
-          question:
-            "In welcher Reihenfolge sollte Wasser bei einer Degustation serviert werden?",
-          options: [
-            "Immer mit kohlensäurehaltigem Wasser beginnen, um den Gaumen zu reinigen",
-            "Von leicht zu gehaltvoll: still/leicht → still/mineralisiert → prickelnd/leicht → prickelnd/mineralisiert",
-            "Alphabetisch nach Markennamen",
-            "Immer bei Zimmertemperatur, Reihenfolge spielt keine Rolle",
+          "question": "Welche Reihenfolge ist ein möglicher Haus-Praxistipp für ein Tasting?",
+          "options": [
+            "Zwingend alphabetisch",
+            "Von zurückhaltenden zu intensiveren Proben",
+            "Immer das teuerste Wasser zuerst",
+            "Ohne Rücksicht auf das Verkostungsziel"
           ],
-          correct: 1,
-          explanation:
-            "Wie beim Wein gilt das Prinzip der Steigerung: von leicht zu gehaltvoll, von still zu prickelnd. So werden die Geschmacksknospen nicht durch intensive Wässer zu Beginn überlastet.",
+          "correct": 1,
+          "explanation": "Die Steigerung kann den Vergleich erleichtern, ist aber keine gesetzliche oder universelle Verkostungsnorm."
         },
         {
-          question:
-            "Welche Temperatur gilt als ideal für kohlensäurehaltiges Mineralwasser beim Service?",
-          options: [
-            "3–5 °C (eiskalt)",
-            "8–10 °C",
-            "14–16 °C",
-            "Zimmertemperatur (20 °C)",
+          "question": "Wie sind die genannten Serviertemperaturen einzuordnen?",
+          "options": [
+            "Als verbindliche EU-Vorschrift",
+            "Als praktische Startpunkte, die an Gast und Verkostungsziel angepasst werden",
+            "Als medizinische Grenzwerte",
+            "Als amtliche Anerkennungskriterien"
           ],
-          correct: 1,
-          explanation:
-            "8–10 °C ist optimal: kalt genug, um die Kohlensäure zu halten und Frische zu bieten, aber warm genug, damit die Geschmacksknospen Mineralstoffe und Nuancen wahrnehmen können. Zu kalt betäubt den Gaumen.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Die Temperaturen sind Haus-Praxistipps. Sie werden nicht als allgemeingültige optimale Werte ausgegeben."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 9 — Sensorik und Verkostung
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Sensorik und professionelle Wasserverkostung",
-      content: `## Die Kunst der Wasserverkostung
-
-Wasser schmeckt nicht "nach nichts" — das ist ein verbreiteter Irrtum. Ein geschulter Gaumen kann Dutzende von Nuancen unterscheiden: mineralisch, salzig, süßlich, bitter, metallisch, erdig, kreidig, weich, hart, samtig, adstringierend. Die sensorische Schulung ist das Herzstück der Wassersommelier-Ausbildung und erfordert systematisches Training.
-
-### Die fünf Sinne bei der Wasserverkostung
-
-**Visuell**: Farbe (sollte klar und farblos sein), Klarheit (Trübung deutet auf Qualitätsprobleme), Perlage bei kohlensäurehaltigen Wässern (Größe, Frequenz, Persistenz der Bläschen). Ein feiner, gleichmäßiger Bläschenstrom ("Perlenschnur") deutet auf hochwertiges, gut gelöstes CO₂ hin.
-
-**Olfaktorisch**: Wasser hat ein Aroma — subtil, aber vorhanden. Hochmineralisierte Wässer können deutlich riechbar sein: Schwefel (Sulfat/Sulfid), metallisch (Eisen), erdig (Silikat). Stilles Wasser in einem Degustationsglas leicht schwenken und riechen. Fehlaromen: Chlor (Leitungswasser-Kontamination), Plastik (PET-Migration), muffig (Algenbefall).
-
-**Gustatorisch**: Die fünf Grundgeschmacksrichtungen sind alle im Mineralwasser präsent: **Süß** (wahrnehmbar bei extrem niedrigmineralisierten Wässern wie Tau oder Lurisia), **Salzig** (Natrium, ab 200 mg/l), **Sauer** (Kohlensäure, niedrige pH-Werte), **Bitter** (Magnesium, Sulfat), **Umami** (selten, aber einige hochmineralisierte Wässer mit komplexen Ionenprofilen). Die Forschung diskutiert zudem "Mineralisch" als eigenständige Geschmacksqualität bei Wasser.
-
-**Taktil/Mundgefühl**: Viskosität (hochmineralisierte Wässer wirken "dicker"), Adstringenz (Calcium, Sulfat), Cremigkeit (Hydrogencarbonat), Prickeln (CO₂), Temperaturempfinden. Das Mundgefühl ist bei Wasser besonders wichtig, da die Geschmacksintensitäten subtiler sind als bei Wein oder Bier.
-
-**Auditiv**: Das Geräusch beim Eingießen und das Zischen der Kohlensäure geben Hinweise auf den CO₂-Gehalt und die Perlungqualität.
-
-### Die professionelle Verkostungsmethode
-
-1. **Vorbereitung**: Raum mit neutraler Temperatur (18–22 °C), kein Parfüm oder Rauch. Wässer auf 12–14 °C temperieren (still) bzw. 8–10 °C (kohlensäurehaltig). Tulpenförmige Degustationsgläser (kein Plastik).
-
-2. **Visuelle Prüfung**: Glas gegen weißen Hintergrund halten. Klarheit, Farbe, Perlage beurteilen.
-
-3. **Nase**: Glas leicht schwenken (bei stillem Wasser), kurz riechen. Intensität und Charakter notieren.
-
-4. **Erster Schluck (Attack)**: Kleinen Schluck nehmen, über die Zunge rollen lassen. Erster Eindruck: leicht oder schwer? Süß oder salzig? Weich oder kantig?
-
-5. **Mittelteil (Mid-Palate)**: Wasser im Mund bewegen. Mineralstoffe entfalten sich: Calcium gibt Struktur, Magnesium Bitterkeit, Natrium Salzigkeit, Hydrogencarbonat Weichheit.
-
-6. **Abgang (Finish)**: Schlucken und Nachhall beobachten. Hochmineralisierte Wässer haben einen langen Abgang — vergleichbar mit einem großen Wein. Niedrigmineralisierte Wässer verschwinden schnell.
-
-7. **Nachbewertung**: Gesamteindruck, Balance, Komplexität, Harmonie notieren. Eine Bewertungsskala (z. B. 1–10 oder Schulnoten) anwenden.
-
-### Verkostungsnotizen — Beispielterminologie
-
-- **Leicht, klar, neutral, erfrischend, transparent**: Niedrigmineralisierte Wässer (Voss, Lurisia)
-- **Weich, rund, samtig, harmonisch, cremig**: Hydrogencarbonatreiche Wässer (Staatl. Fachingen)
-- **Mineralisch, kreisig, strukturiert, fest, komplex**: Calciumreiche Wässer (Gerolsteiner, Contrex)
-- **Salzig, kräftig, dominant, markant**: Natriumreiche Wässer (Vichy Catalan)
-- **Bitter, trocken, adstringierend, herb**: Sulfatreiche/Magnesiumreiche Wässer (Hépar, Ensinger Sport)`,
-      quiz: [
+      "title": "Sensorik und professionelle Wasserverkostung",
+      "content": "## Systematische Wasserverkostung\n\nWasserprofile können sich im Geschmack und Mundgefühl unterscheiden. Eine reproduzierbare Verkostung beschreibt Beobachtungen, ohne aus ihnen sofort Inhaltsstoffgehalte oder Sicherheit abzuleiten.\n\n### Optik und Geruch\n\nKlarheit, Farbe und bei prickelndem Wasser die Perlung notieren. Bläschen entstehen auch an Oberflächen und kleinen Unregelmäßigkeiten im Glas; ein feiner Bläschenstrom ist kein Reinheitsbeweis. Ein fremder Geruch oder eine unerwartete Trübung ist Anlass, die Flasche nicht weiter auszuschenken und zu reklamieren. Geruch allein bestimmt weder den Keim noch die chemische Ursache.\n\nSulfat ist nicht mit einem Schwefelwasserstoffgeruch gleichzusetzen. Ebenso beweist ein als „erdig“ beschriebener Eindruck keinen Silikatgehalt. Einzelne Ionen sind keine verlässlichen Duftmarker.\n\n### Geschmack und Mundgefühl\n\nMögliche Beschreibungen sind salzig, säuerlich, bitter, mineralisch, weich oder kreidig. „Mineralisch“ und „weich“ sind sensorische Begriffe, keine zusätzlichen amtlichen Grundgeschmäcker. Das Gesamtprofil und persönliche Empfindlichkeit entscheiden; fixe Wahrnehmungsschwellen werden hier nicht behauptet.\n\n### Haus-Verkostungsablauf\n\nGeruchsfreien Raum, saubere gleiche Gläser und vergleichbare Temperaturen wählen. Erst ansehen und riechen, dann einen kleinen Schluck nehmen. **Attack** bezeichnet hier den ersten Eindruck, **Finish** den Nachhall. Notizen zu Intensität, Perlung und Gefallen getrennt halten. Bei Blindproben nur Nummern vergeben und das Etikett erst anschließend aufdecken.\n\nDas Ergebnis beschreibt diese Verkostung. Es ersetzt keine Laboranalyse und keinen medizinischen oder mikrobiologischen Qualitätsnachweis.",
+      "quiz": [
         {
-          question:
-            "Welches Ion verursacht primär eine bittere Geschmacksnote im Mineralwasser?",
-          options: [
-            "Calcium (Ca²⁺)",
-            "Natrium (Na⁺)",
-            "Magnesium (Mg²⁺)",
-            "Kalium (K⁺)",
+          "question": "Was kann eine Verkostung nicht zuverlässig ersetzen?",
+          "options": [
+            "Eine persönliche Geschmacksbeschreibung",
+            "Den Vergleich der Perlung",
+            "Eine Laboranalyse der Inhaltsstoffe oder Sicherheit",
+            "Notizen zum Mundgefühl"
           ],
-          correct: 2,
-          explanation:
-            "Magnesium ist ab ca. 50 mg/l als leicht bittere, adstringierende Note wahrnehmbar. In Kombination mit Sulfat verstärkt sich der bittere Charakter. Hépar (119 mg/l Mg) zeigt dies deutlich.",
+          "correct": 2,
+          "explanation": "Sensorische Eindrücke sind keine Messung von mg/l-Werten oder Krankheitserregern."
         },
         {
-          question:
-            "Warum sollten Degustationsgläser für Wasser tulpenförmig sein?",
-          options: [
-            "Weil es eleganter aussieht",
-            "Um die Temperatur konstant zu halten",
-            "Die Verengung zum Rand konzentriert die subtilen Aromen und ermöglicht eine differenzierte olfaktorische Wahrnehmung",
-            "Um die Kohlensäure schneller entweichen zu lassen",
+          "question": "Was bedeuten „mineralisch“ und „weich“ in einer Verkostungsnotiz?",
+          "options": [
+            "Amtliche Reinheitsklassen",
+            "Beschreibungen des persönlichen Sinneseindrucks",
+            "Nachgewiesene Heilwirkungen",
+            "Eine genaue Bestimmung des Gesteins"
           ],
-          correct: 2,
-          explanation:
-            "Tulpenförmige Gläser verengen sich nach oben und konzentrieren so die flüchtigen Aromakomponenten — ein Prinzip, das von der Weinverkostung übernommen wurde. Bei stillem Wasser ist dies besonders wichtig, da die Aromen subtiler sind.",
+          "correct": 1,
+          "explanation": "Diese Begriffe helfen beim Beschreiben, sollten aber nicht als chemische Beweise ausgegeben werden."
         },
         {
-          question:
-            "Was beschreibt der Begriff 'Attack' bei der professionellen Wasserverkostung?",
-          options: [
-            "Den Geruch beim Öffnen der Flasche",
-            "Den ersten Geschmackseindruck beim ersten Schluck",
-            "Die Aggression der Kohlensäure auf der Zunge",
-            "Den pH-Wert des Wassers",
+          "question": "Was beschreibt „Attack“ im hier vorgeschlagenen Ablauf?",
+          "options": [
+            "Den Quellort",
+            "Den ersten sensorischen Eindruck eines Schlucks",
+            "Das Mindesthaltbarkeitsdatum",
+            "Eine Laborprüfung"
           ],
-          correct: 1,
-          explanation:
-            "Attack (Auftakt) bezeichnet den ersten sensorischen Eindruck beim initialen Kontakt des Wassers mit dem Gaumen — analog zur Weinverkostung. Hier werden Süße, Mineralität und Textur zuerst wahrgenommen.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Attack steht in dieser Verkostungssprache für den Auftakt; Finish für den Nachhall."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 10 — Water Tasting Events
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Water Tasting: Konzeption und Durchführung",
-      content: `## Wasserverkostungen professionell gestalten
-
-Water Tastings sind das Herzstück der Wasser-Sommelerie — sie machen die Vielfalt des Wassers erlebbar und brechen mit dem Vorurteil, Wasser sei geschmacklos. Ein gut konzipiertes Tasting kann ein ebenso eindrucksvolles Erlebnis sein wie eine Weinverkostung und eignet sich hervorragend für Gastronomie-Events, Unternehmensveranstaltungen, Messen und private Feiern.
-
-### Formate
-
-**Geführte Degustation (60–90 Min.)**: Der Klassiker. 5–8 Wässer, moderiert durch einen Sommelier, mit Hintergrundinformationen zu Herkunft, Geologie und Sensorik. Geeignet für Einsteiger und Fortgeschrittene. Dramaturgie: Steigerung von leicht zu komplex, von still zu prickelnd.
-
-**Blindverkostung (45–60 Min.)**: 4–6 Wässer ohne Etikett, Teilnehmer beschreiben und bewerten. Anschließend Auflösung. Erstaunlich: Selbst Skeptiker erkennen deutliche Unterschiede. Format für Teambuilding und Wettbewerbe.
-
-**Wasser-Dinner (3–4 Stunden)**: Mehrgängiges Menü mit dedizierter Wasserbegleitung — jeder Gang erhält sein eigenes, auf die Aromen abgestimmtes Wasser. Das anspruchsvollste und eindrucksvollste Format.
-
-**Vergleichsdegustation**: Ein spezifisches Thema, z. B. "Vulkanische Wässer Europas", "Still vs. Medium vs. Classic derselben Marke", "Low-TDS vs. High-TDS", "Regionale Wässer aus Deutschland". Ideal für Fachpublikum.
-
-### Materialbedarf und Setup
-
-**Gläser**: Professionelle Degustationsgläser (ISO-Norm oder Weißweingläser), ein Glas pro Wasser pro Teilnehmer. Alternativ: Drei Gläser pro Person und Rotation. Niemals Plastikbecher — sie verfälschen Geschmack und Optik. **Brot/Cracker**: Neutralisierer zwischen den Proben. Ungesalzene Wasserkräcker oder neutrales Baguette. **Wasser zum Spülen**: Ein leichtes, niedrigmineralisiertes stilles Wasser als "Resetwasser". **Notizblätter**: Strukturierte Verkostungsbögen mit Kriterien (Optik, Nase, Geschmack, Mundgefühl, Abgang) und Bewertungsskala.
-
-### Moderation — die dramaturgische Führung
-
-Ein guter Moderator beginnt mit einer **Provokation**: "Können Sie den Unterschied zwischen zwei Wässern erschmecken? Die meisten Menschen glauben nein — nach heute Abend werden Sie das anders sehen." Dann folgt die **Kalibrierung**: Ein extrem leichtes und ein extrem mineralisches Wasser nebeneinander verkosten lassen, um die Bandbreite aufzuzeigen. Danach die **Reise**: Chronologisch, geografisch oder nach Mineralisierung geordnete Verkostung mit Storytelling zu jeder Probe.
-
-### Praktische Tipps für die Organisation
-
-**Temperatur**: Alle Wässer konsistent temperieren. Thermoboxen oder Weinkühler verwenden. **Menge**: 50–80 ml pro Probe. Bei 6 Proben: 300–480 ml pro Person plus Resetwasser. **Reihenfolge festlegen**: Leicht→schwer, still→prickelnd, neutral→mineralisch. **Etiketten abdecken** bei Blindverkostungen mit Nummern oder Buchstaben. **Raum**: Gut belüftet, neutral riechend, gute Beleuchtung, weiße Tischdecken als optischer Hintergrund.
-
-### Beliebte Tasting-Zusammenstellungen
-
-**"Around the World"**: Voss (Norwegen), Evian (Frankreich), San Pellegrino (Italien), Gerolsteiner (Deutschland), Fiji (Fidschi), Icelandic Glacial (Island). **"Deutschland entdecken"**: Black Forest, Selters, Gerolsteiner, Adelholzener, Rosbacher, Staatl. Fachingen. **"Kohlensäure-Spektrum"**: Dieselbe Marke in Naturell, Medium und Classic (z. B. Gerolsteiner in allen drei Varianten). **"Extrem-Vergleich"**: Tau (TDS <5 mg/l) vs. Borjomi (TDS >5.000 mg/l) — maximal kontrastreich.
-
-### Fehler vermeiden
-
-Häufigste Fehler: zu viele Proben (>8 überfordern den Gaumen), keine Pausen zwischen den Proben, unzureichende Kühlung, Plastikgläser, fehlende Geschichten zu den Wässern. Wasser ist Storytelling-Produkt — ohne die Geschichte der Herkunft bleibt die Verkostung eindimensional.`,
-      quiz: [
+      "title": "Water Tasting: Konzeption und Durchführung",
+      "content": "## Water Tasting als gut vergleichbare Übung\n\nEin Tasting kann Herkunft, Mineralisierung und Kohlensäure anschaulich machen. Gruppengröße, verfügbare Zeit und Erfahrung bestimmen die Auswahl. Die folgenden Mengen und Abläufe sind **Organisationsbeispiele**, keine empirisch festgelegten Optimalwerte.\n\n### Formate und Dramaturgie\n\nEine geführte Probe kann etwa fünf bis acht Wässer umfassen; eine kurze Blindprobe entsprechend weniger. Auch eine Themenprobe — gleiche Marke in mehreren Varianten oder unterschiedliche regionale Quellen — ist möglich. Bei gleicher Marke prüfen, ob die Varianten tatsächlich dieselbe Quelle nutzen. Sonst werden Mineralisierung und CO₂ zugleich verändert.\n\n### Material und Hygiene\n\nGleiche, saubere und geruchsfreie Gläser erleichtern den Vergleich. Glas ist als Hausstandard gut geeignet; lebensmittelgeeigneter Kunststoff ist nicht grundsätzlich unsicher. Insbesondere PET wird ohne die früher hier behaupteten Weichmacher hergestellt. Materialneutralität und hygienisch einwandfreie Nutzung sind die entscheidenden Kriterien.\n\nFlaschen kurz vor der Probe öffnen, hygienisch ausschenken und Reste verschlossen kühlen. Für den Vergleich ein zurückhaltendes Wasser bereithalten. Brot oder Cracker sind eine optionale Begleitung, kein garantierter physiologischer „Reset“.\n\n### Moderation und Notizen\n\nMit einem Kontrastpaar starten, Beschreibungen sammeln und erst danach Herkunft und Analyse zeigen. Niemand muss einen Unterschied erkennen oder die gleiche Vorliebe haben. Die Reihenfolge kann von mild nach kräftig führen, sollte aber zum Ziel passen.\n\nKleine Probemengen, etwa 50–80 ml, sind ein praktischer Startpunkt. Pausen und die gewünschte Gesamtdauer sind wichtiger als die Behauptung, ab der neunten Probe sei jeder Gaumen zwangsläufig überfordert.",
+      "quiz": [
         {
-          question:
-            "Wie viele Wasserproben sind bei einer geführten Degustation optimal?",
-          options: [
-            "2–3 Proben (für Anfänger)",
-            "5–8 Proben (Steigerung von leicht zu komplex)",
-            "10–15 Proben (für ein umfassendes Erlebnis)",
-            "20+ Proben (um die gesamte Bandbreite zu zeigen)",
+          "question": "Wie ist eine Auswahl von fünf bis acht Wässern einzuordnen?",
+          "options": [
+            "Als zwingende wissenschaftliche Obergrenze",
+            "Als anpassbares Organisationsbeispiel",
+            "Als Mindestvorgabe der Min/TafelWV",
+            "Als Heilwasserdosierung"
           ],
-          correct: 1,
-          explanation:
-            "5–8 Proben sind optimal: genug für eine eindrucksvolle Bandbreite, aber nicht so viel, dass der Gaumen überfordert wird. Mehr als 8 Proben führen zur sensorischen Ermüdung und verringern die Unterscheidungsfähigkeit.",
+          "correct": 1,
+          "explanation": "Die Zahl ist ein Haus-Praxistipp und wird an Zeit, Publikum und Verkostungsziel angepasst."
         },
         {
-          question:
-            "Was ist der ideale 'Kalibrierungsschritt' zu Beginn eines Water Tastings?",
-          options: [
-            "Ein Glas Cola zum Vergleich",
-            "Alle Proben gleichzeitig einschenken",
-            "Ein extrem leichtes und ein extrem mineralisiertes Wasser nebeneinander verkosten",
-            "Mit dem teuersten Wasser beginnen",
+          "question": "Was kann ein Kontrastpaar zu Beginn leisten?",
+          "options": [
+            "Es beweist, dass alle Personen dieselben Unterschiede erkennen",
+            "Es bietet einen gemeinsamen Ausgangspunkt für Beschreibungen",
+            "Es ersetzt alle weiteren Proben",
+            "Es bestätigt die Reinheit"
           ],
-          correct: 2,
-          explanation:
-            "Der Kontrast zwischen minimalster und maximaler Mineralisierung zeigt den Teilnehmern sofort, wie unterschiedlich Wasser schmecken kann — das zerstört das Vorurteil 'Wasser schmeckt nach nichts' und kalibriert den Gaumen.",
+          "correct": 1,
+          "explanation": "Ein Kontrastpaar hilft beim Beschreiben; das Ergebnis bleibt eine individuelle Wahrnehmung."
         },
         {
-          question:
-            "Warum sollten bei einer Wasserverkostung niemals Plastikbecher verwendet werden?",
-          options: [
-            "Aus Umweltschutzgründen",
-            "Weil Plastik Geschmack und Optik verfälscht und die professionelle Wahrnehmung beeinträchtigt",
-            "Weil Plastik die Kohlensäure schneller entweichen lässt",
-            "Weil Plastikbecher die Wassertemperatur verändern",
+          "question": "Warum sind geruchsfreie, gleichartige Gläser sinnvoll?",
+          "options": [
+            "Sie garantieren eine Gesundheitswirkung",
+            "Sie verringern Einflüsse des Gefäßes auf den Vergleich",
+            "Sie messen den Natriumgehalt",
+            "Sie sind gesetzlich das einzig erlaubte Material"
           ],
-          correct: 1,
-          explanation:
-            "Plastik kann Weichmacher an das Wasser abgeben (Geschmacksverfälschung), die Perlage verzerren (Optik) und dem Erlebnis die professionelle Atmosphäre nehmen. Glas ist sensorisch neutral und essenziell für eine seriöse Degustation.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Einheitliche Gefäße machen einen Vergleich fairer. Lebensmittelgeeigneter Kunststoff wird nicht pauschal als gefährlich dargestellt."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 11 — Food Pairing mit Wasser
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Food Pairing: Wasser und Speisen perfekt kombinieren",
-      content: `## Die vernachlässigte Dimension des Food Pairing
-
-Während Wein-Food-Pairing eine etablierte Disziplin ist, wird die Wasserbegleitung in der Gastronomie noch immer sträflich unterschätzt. Dabei beeinflusst die Wahl des Wassers das Geschmackserlebnis messbar: Mineralstoffe interagieren mit Aromen, Kohlensäure reinigt den Gaumen, und die Textur des Wassers kann Speisen entweder ergänzen oder kontrastieren. Für den Wassersommelier ist Food Pairing eine Kernkompetenz.
-
-### Grundprinzipien des Wasser-Food-Pairings
-
-**Komplementär-Prinzip**: Das Wasser ergänzt und verstärkt Aromen der Speise. Beispiel: Ein calciumreiches, mineralisches Wasser zu einem kräftigen Käse — beide teilen die mineralisch-erdige Dimension.
-
-**Kontrast-Prinzip**: Das Wasser setzt einen bewussten Gegenakzent. Beispiel: Ein extrem leichtes, stilles Wasser (Voss, Lurisia) zu einem intensiv gewürzten Curry — das Wasser dient als neutraler Ruhepol.
-
-**Balance-Prinzip**: Mineralisierung und Intensität des Wassers korrespondieren mit der Intensität der Speise. Leichte Gerichte → leichtes Wasser. Kräftige Gerichte → kräftiges Wasser. Die "Gewichtsklasse" muss stimmen.
-
-### Kohlensäure als Pairing-Werkzeug
-
-**Still**: Ideal für alle Situationen, in denen der reine Geschmack der Speise im Vordergrund stehen soll. Sushi, Carpaccio, delikate Desserts, Sterne-Küche. Stilles Wasser "stört" am wenigsten und lässt die Aromen sprechen.
-
-**Medium**: Der vielseitige Allrounder. Sanftes Prickeln reinigt den Gaumen zwischen den Bissen, ohne zu dominieren. Zu Pasta, Risotto, gegrilltem Gemüse, mittelkräftigem Fisch.
-
-**Classic/Sprudel**: Die intensive Kohlensäure schneidet durch Fett und reinigt den Gaumen nach reichhaltigen Speisen. Ideal zu: fettem Fisch (Lachs, Makrele), Frittiertem, Käseplatten, BBQ. Kontraindikation: Zu Austern, Sashimi oder Soufflé — die aggressive Kohlensäure übertönt Zartheit.
-
-### Pairing-Matrix nach Speisekategorien
-
-**Fisch und Meeresfrüchte (roh/leicht)**: Stilles, niedrigmineralisiertes Wasser. Austern fordern ein extrem leichtes, stilles Wasser (TDS <200 mg/l, kein Prickeln). Empfehlung: Voss, Acqua Panna, Lurisia.
-
-**Fisch und Meeresfrüchte (gebraten/gegrillt)**: Medium-carbonisiertes Wasser mit mittlerer Mineralisierung. Empfehlung: Badoit, San Pellegrino (leicht), Rosbacher.
-
-**Rotes Fleisch und Wild**: Kräftig mineralisiertes Wasser, still oder medium. Calcium und Sulfat komplementieren die herzhaft-kräftigen Aromen. Empfehlung: Gerolsteiner Naturell, Contrex, Ensinger Sport.
-
-**Käse**: Kohlensäurehaltiges, mineralisiertes Wasser. Die Säure und das Prickeln schneiden durch das Fett und reinigen den Gaumen. Je kräftiger der Käse, desto höher die Mineralisierung. Empfehlung: Gerolsteiner Classic zu Hartkäse, Apollinaris zu Weichkäse.
-
-**Desserts und Süßspeisen**: Stilles, leichtes Wasser. Mineralstoffreiche Wässer können mit Süße kollidieren (bittere Magnesium-Note). Empfehlung: Evian, Volvic, Fiji.
-
-**Asiatische Küche**: Die Komplexität asiatischer Aromen (Umami, Schärfe, Säure) verlangt nach einem neutralen Begleiter. Stilles, leichtes Wasser mit wenig Natrium. Empfehlung: Volvic, Icelandic Glacial.
-
-**Vegetarisch/Vegan**: Je nach Gericht variabel. Erdige Gerichte (Pilze, Wurzelgemüse) → erdiges, mittel mineralisiertes Wasser. Leichte Salate → leichtes, frisches Wasser.
-
-### Die Wasserkarte im Restaurant
-
-Eine professionelle Wasserkarte gliedert sich idealerweise in:
-1. **Stille Wässer** (nach Mineralisierung aufsteigend)
-2. **Leicht prickelnde Wässer** (Medium)
-3. **Stark prickelnde Wässer** (Classic)
-4. Optional: **Besondere Wässer** (Heilwasser, regionale Raritäten)
-
-Jede Position mit Angabe von Herkunft, Kohlensäuregrad, Gesamtmineralisierung und ggf. Pairing-Empfehlung. Mindestens 3 regionale und 3 internationale Positionen. Preiskalkulation: 300–500 % Aufschlag auf den Einkaufspreis ist branchenüblich.`,
-      quiz: [
+      "title": "Food Pairing: Wasser und Speisen perfekt kombinieren",
+      "content": "## Wasser und Speisen gemeinsam verkosten\n\nFood Pairing ist eine praktische Genussentscheidung. Was gut passt, hängt von Rezeptur, Temperatur, persönlichem Geschmack und dem konkreten Wasser ab. Die folgenden Vorschläge sind **Haus-Verkostungsansätze**, keine medizinischen oder universellen Regeln.\n\n### Drei Ansatzpunkte\n\n**Zurückhaltung**: Ein stilles, mild wirkendes Wasser kann feine Speisen begleiten, ohne viel zusätzlichen Reiz zu setzen. **Ergänzung**: Ein kräftigeres Wasser kann neben einer intensiv gewürzten Speise interessant sein. **Kontrast**: Unterschiedliche Texturen und Perlung können bewusst gegenübergestellt werden.\n\n### Kohlensäure als Sinnesreiz\n\nStill, leicht prickelnd und stark prickelnd erzeugen unterschiedliche Mundgefühle. Einige Gäste empfinden prickelndes Wasser zu reichhaltigen Speisen als frisch; andere bevorzugen stilles Wasser. CO₂ spaltet das Speisefett nicht chemisch. Eine garantierte mechanische Entfernung eines „Fettfilms“ wird hier ebenfalls nicht behauptet.\n\n### Praktische Vergleichsprobe\n\nZu Fisch oder Austern zunächst ein mildes stilles Wasser probieren und mit einer prickelnden Alternative vergleichen. Zu Käse oder gegrillten Speisen kann ein intensiveres Wasser ein zweiter Ansatz sein. Für scharfe Speisen nach der Verträglichkeit und Vorliebe des Gastes fragen, statt aus einem starren TDS-Wert die einzig richtige Wahl abzuleiten.\n\n### Wasserkarte\n\nHerkunft, Variante, Kohlensäuregrad, Menge und Preis verständlich zeigen. Pairingtexte als Empfehlung formulieren: „Probierbar zu …“ statt „muss zu …“. Die Anzahl der Positionen und die Preiskalkulation richten sich nach dem Betrieb; ein fixer Aufschlag ist keine Branchenpflicht.",
+      "quiz": [
         {
-          question:
-            "Welches Wasser eignet sich am besten als Begleiter zu rohen Austern?",
-          options: [
-            "Hochmineralisiertes Sprudelwasser (>2.000 mg/l TDS, Classic)",
-            "Stilles, niedrigmineralisiertes Wasser (<200 mg/l TDS)",
-            "Natriumreiches Medium-Wasser",
-            "Sulfatreiches stilles Wasser",
+          "question": "Welche Aussage über ein Wasser zu Austern ist sachlich?",
+          "options": [
+            "Nur Wasser unter 200 mg/l darf serviert werden",
+            "Ein mildes stilles Wasser ist ein möglicher Verkostungsansatz, keine zwingende Regel",
+            "Classic-Wasser ist gesetzlich verboten",
+            "Austern erfordern Heilwasser"
           ],
-          correct: 1,
-          explanation:
-            "Rohe Austern erfordern maximale Zurückhaltung vom Wasser: stilles, leichtes Wasser mit <200 mg/l TDS. Kohlensäure und hohe Mineralisierung würden die delikaten Meeresaromen überlagern.",
+          "correct": 1,
+          "explanation": "Pairing ist eine geschmackliche Empfehlung. Die individuelle Kombination wird verkostet."
         },
         {
-          question:
-            "Warum eignet sich kräftig kohlensäurehaltiges Wasser besonders gut zu fettreichen Speisen?",
-          options: [
-            "Weil die Kohlensäure das Fett chemisch spaltet",
-            "Weil das Prickeln den Gaumen mechanisch reinigt und den Fettfilm löst, sodass die nächsten Bissen frisch wahrgenommen werden",
-            "Weil CO₂ die Fettverdauung beschleunigt",
-            "Weil Kohlensäure den Salzgehalt der Speise neutralisiert",
+          "question": "Was darf aus der Kohlensäure beim Food Pairing nicht abgeleitet werden?",
+          "options": [
+            "Ein prickelndes Mundgefühl",
+            "Eine chemische Spaltung von Speisefett",
+            "Eine persönliche Vorliebe",
+            "Ein Kontrast zur Speise"
           ],
-          correct: 1,
-          explanation:
-            "Kohlensäure wirkt als Gaumenreiniger: Die Bläschen und die leichte Säure lösen den Fettfilm auf der Zunge und 'resetten' den Gaumen. Deshalb passt Classic-Wasser hervorragend zu Käse, Frittiertem und fettem Fisch.",
+          "correct": 1,
+          "explanation": "Kohlensäure ist kein Fettspalter. Ein Frischeeindruck ist von einer physiologischen Wirkung zu unterscheiden."
         },
         {
-          question:
-            "Was ist das 'Balance-Prinzip' beim Wasser-Food-Pairing?",
-          options: [
-            "Das Wasser muss den gleichen pH-Wert wie die Speise haben",
-            "Mineralisierung und Intensität des Wassers sollen der Intensität der Speise entsprechen",
-            "Die Temperatur von Wasser und Speise müssen identisch sein",
-            "Das Wasser muss immer teurer sein als der Wein",
+          "question": "Was meint das hier verwendete Balance-Prinzip?",
+          "options": [
+            "Identische pH-Werte sind vorgeschrieben",
+            "Wahrgenommene Intensitäten von Wasser und Speise bewusst aufeinander abstimmen",
+            "Wasser und Speise müssen gleich teuer sein",
+            "Alle Gäste müssen dieselbe Wahl treffen"
           ],
-          correct: 1,
-          explanation:
-            "Das Balance-Prinzip besagt, dass die 'Gewichtsklasse' von Wasser und Speise übereinstimmen sollte: leichte Gerichte mit leichtem Wasser, kräftige Gerichte mit kräftig mineralisiertem Wasser — analog zum Wein-Pairing.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Balance ist ein gestalterischer Ansatz, keine analytische oder gesetzliche Vorschrift."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 12 — Wasser und Wein
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Wasser und Wein: Die perfekte Partnerschaft",
-      content: `## Warum das richtige Wasser zum Wein entscheidend ist
-
-Die Wechselwirkung zwischen Mineralwasser und Wein ist ein Thema, das in der klassischen Sommelier-Ausbildung oft zu kurz kommt, obwohl es den Weingenuss maßgeblich beeinflusst. Ein falsches Wasser kann einen großen Wein ruinieren — ein richtiges kann ihn zur Entfaltung bringen. Für den Wassersommelier ist dieses Wissen unverzichtbar.
-
-### Grundregeln der Wasser-Wein-Interaktion
-
-**Regel 1: Kohlensäure beeinflusst die Weinwahrnehmung**. CO₂ im Wasser stimuliert die Geschmacksknospen und verändert die Wahrnehmung des folgenden Weinschlucks. Starke Kohlensäure lässt Wein säuerlicher und tanninbetonter erscheinen. Bei empfindlichen Weißweinen (Riesling Spätlese, Viognier) kann ein Classic-Wasser die Frucht überlagern. Empfehlung: Stilles Wasser oder maximal Medium zu feinen Weinen.
-
-**Regel 2: Natrium interagiert mit Tannin**. Natriumreiches Wasser (>200 mg/l Na) verstärkt die Wahrnehmung von Bitterkeit und Adstringenz bei tanninreichen Rotweinen. Ein junger, tanninstarker Barolo oder Cabernet Sauvignon wirkt in Kombination mit natriumreichem Wasser noch verschlossener und herber. Gegenempfehlung: Natriumarmes Wasser (<20 mg/l) zu tanninbetonten Weinen.
-
-**Regel 3: Hohe Mineralisierung konkurriert mit Weinaromen**. Ein Wasser mit >1.500 mg/l TDS hat seinen eigenen "Geschmack" und kann dezente Weinaromen überlagern. Besonders bei Pinot Noir, Riesling oder Champagner sollte das Begleitwasser zurückhaltend mineralisiert sein.
-
-**Regel 4: Hydrogencarbonat harmoniert mit Säure**. Hydrogencarbonatreiches Wasser (>600 mg/l HCO₃⁻) puffert die Wahrnehmung von Weinsäure sanft ab. Bei säurebetonten Weinen (Riesling, Sancerre, Grüner Veltliner) kann ein hydrogencarbonatreiches stilles Wasser den Genuss steigern, indem es die Säurespitze mildert.
-
-### Praxis-Pairings: Wasser zum Wein
-
-**Champagner und Schaumwein**: Stilles, niedrigmineralisiertes Wasser (<300 mg/l TDS). Kohlensäurehaltiges Wasser würde mit der Perlage des Schaumweins konkurrieren und den Gaumen überladen. Empfehlung: Acqua Panna, Lurisia, Evian.
-
-**Eleganter Weißwein (Riesling, Chablis, Sancerre)**: Stilles oder leicht medium-kohlensäurehaltiges Wasser, niedrige bis mittlere Mineralisierung. Empfehlung: Volvic, Badoit (leicht prickelnd), Voss.
-
-**Kräftiger Weißwein (Barrique-Chardonnay, Weißburgunder)**: Stilles oder medium Wasser mit mittlerer Mineralisierung. Die Cremigkeit des Weins harmoniert mit einem etwas volleren Wasser. Empfehlung: Evian, San Pellegrino (leicht), Adelholzener.
-
-**Leichter Rotwein (Pinot Noir, Gamay)**: Stilles Wasser, niedrig mineralisiert, natriumarm. Die Eleganz des Weins darf nicht gestört werden. Empfehlung: Acqua Panna, Voss, Lurisia.
-
-**Kräftiger Rotwein (Barolo, Cabernet, Syrah)**: Stilles Wasser, mittlere Mineralisierung, natriumarm, ggf. leicht hydrogencarbonatbetont. Empfehlung: Evian, Gerolsteiner Naturell (trotz höherer Mineralisierung natriumarm mit 11 mg/l Na).
-
-**Dessertwein (Sauternes, TBA, Port)**: Stilles, sehr leichtes Wasser. Empfehlung: Fiji, Volvic, Icelandic Glacial.
-
-### Die Funktion des Wassers bei der Weinverkostung
-
-Beim professionellen Wine Tasting dient Wasser drei Zwecken: **Gaumenreinigung** zwischen den Proben (stilles, leichtes Wasser), **Hydratation** (Alkohol dehydriert), **Verdünnung** (Spucken und Nachspülen). Erfahrene Sommeliers verwenden ein neutrales stilles Wasser und vermeiden kohlensäurehaltige Varianten, da CO₂ den Gaumen sensibilisiert und die Wahrnehmung nachfolgender Weine verzerrt.
-
-### Häufige Fehler in der Gastronomie
-
-1. **Hochmineralisiertes Sprudelwasser zum Champagner-Empfang** — zerstört die feine Perlage-Wahrnehmung.
-2. **Natriumreiches Wasser zu jungem Barolo** — verstärkt Bitterkeit und Adstringenz.
-3. **Nur eine Wassersorte für das gesamte Menü** — so wie beim Wein sollte auch das Wasser wechseln können.
-4. **Wasser als Nebensache behandeln** — die Gäste merken den Unterschied, auch wenn sie ihn nicht benennen können.`,
-      quiz: [
+      "title": "Wasser und Wein: Die perfekte Partnerschaft",
+      "content": "## Wasser als Begleitung zur Weinverkostung\n\nWasser kann zwischen Weinproben getrunken werden und unterschiedliche Mundgefühle erzeugen. Ein bestimmtes Wasser „ruiniert“ jedoch nicht automatisch jeden feinen Wein. Die hier vorgeschlagenen Kombinationen sind **Verkostungstipps**, keine allgemeingültigen chemischen Gesetze.\n\n### Neutralen Ausgangspunkt schaffen\n\nEin stilles, im eigenen Vergleich zurückhaltend schmeckendes Wasser ist ein sinnvoller Ausgangspunkt. Gleiche Gläser und Temperaturen erleichtern den Vergleich. Anschließend kann derselbe Wein nach einem leicht oder stark prickelnden Wasser probiert werden. Veränderung und persönliches Gefallen getrennt notieren.\n\n### Natrium, Tannin und Säure\n\nDer Analysenauszug zeigt die Zusammensetzung des Wassers. Er beweist nicht, dass Natrium ab einem festen Schwellenwert stets Bitterkeit und Adstringenz verstärkt. Ebenso ist die chemische Pufferfähigkeit von Hydrogencarbonat keine Garantie, dass ein nachfolgender Riesling milder empfunden wird. Solche Effekte müssen für die konkrete Kombination beurteilt werden.\n\n### Pairingbeispiele\n\nZu Schaumwein kann stilles Wasser als ruhiger Gegenpol ausprobiert werden. Zu einem kräftigen Rotwein lässt sich ein intensiveres Wasser danebenstellen. Gastwunsch und individuelle Empfindlichkeit entscheiden. Diese Tipps begründen keine notwendige Markenwahl oder feste TDS-Obergrenze.\n\n### Alkohol und Wasser\n\nWasser neutralisiert keinen Alkohol und macht weder Fahrtüchtigkeit noch einen risikofreien Alkoholkonsum möglich. Die DGE bezeichnet keine Alkoholmenge als gesundheitlich unbedenklich. Bei einer fachlichen Verkostung sind kleine Proben und Ausspucken mögliche Organisationsmaßnahmen; eine alkoholfreie Teilnahme bleibt möglich.",
+      "quiz": [
         {
-          question:
-            "Warum sollte zu Champagner kein stark kohlensäurehaltiges Wasser serviert werden?",
-          options: [
-            "Weil die CO₂-Gesamtbelastung für den Magen zu hoch wäre",
-            "Weil die Kohlensäure des Wassers mit der feinen Perlage des Champagners konkurriert und den Gaumen überladen würde",
-            "Weil Champagner und Sprudelwasser chemisch reagieren",
-            "Weil Kohlensäure den Alkohol im Champagner schneller wirken lässt",
+          "question": "Warum kann stilles Wasser ein Ausgangspunkt zum Schaumwein sein?",
+          "options": [
+            "Weil es den Alkohol neutralisiert",
+            "Weil es einen weniger prickelnden Gegenpol bietet",
+            "Weil Sprudelwasser gesetzlich verboten ist",
+            "Weil beide chemisch reagieren müssen"
           ],
-          correct: 1,
-          explanation:
-            "Kohlensäurehaltiges Wasser sensibilisiert die Nozizeptoren im Mund und überlagert die feine Perlage des Champagners. Stilles, leichtes Wasser hingegen dient als neutraler Hintergrund, vor dem die elegante Mousse des Schaumweins umso besser zur Geltung kommt.",
+          "correct": 1,
+          "explanation": "Das ist ein geschmacklicher Vergleichsansatz, keine Pflicht oder Sicherheitsgarantie."
         },
         {
-          question:
-            "Was bewirkt natriumreiches Wasser in Kombination mit einem tanninreichen Rotwein?",
-          options: [
-            "Es mildert die Tannine und macht den Wein zugänglicher",
-            "Es verstärkt die Wahrnehmung von Bitterkeit und Adstringenz",
-            "Es neutralisiert die Weinsäure vollständig",
-            "Es hat keinen messbaren Einfluss",
+          "question": "Wie ist eine behauptete Natrium-Tannin-Wirkung zu behandeln?",
+          "options": [
+            "Natrium verstärkt immer Bitterkeit",
+            "Nicht als universelle Regel ausgeben; die konkrete Kombination verkosten",
+            "Natrium entfernt den Alkohol",
+            "Natrium neutralisiert alle Weinsäuren"
           ],
-          correct: 1,
-          explanation:
-            "Natrium interagiert mit Tanninen und verstärkt deren adstringierende und bittere Wahrnehmung. Deshalb sollte zu tanninstarken Weinen wie Barolo oder Cabernet Sauvignon stets natriumarmes Wasser (<20 mg/l) serviert werden.",
+          "correct": 1,
+          "explanation": "Das Ionenprofil allein beweist keine feste sensorische Wirkung auf jeden Wein."
         },
         {
-          question:
-            "Welches Wasser empfiehlt sich als Begleiter zu einem säurebetonten Riesling?",
-          options: [
-            "Hochmineralisiertes Classic-Wasser mit viel Natrium",
-            "Stilles oder leicht prickelndes, natriumarmes Wasser mit moderatem Hydrogencarbonat",
-            "Sulfatreiches Wasser für den Kontrast",
-            "Tafelwasser ohne Mineralstoffe",
+          "question": "Was leistet Wasser beim Alkoholkonsum nicht?",
+          "options": [
+            "Flüssigkeitszufuhr",
+            "Eine zusätzliche alkoholfreie Trinkoption",
+            "Wiederherstellung der Fahrtüchtigkeit oder Neutralisierung von Alkohol",
+            "Eine andere Textur zwischen Proben"
           ],
-          correct: 1,
-          explanation:
-            "Hydrogencarbonat puffert Säure sanft ab und mildert die Säurespitze des Rieslings, ohne ihn zu dominieren. Stilles oder maximal medium-kohlensäurehaltiges Wasser lässt die filigranen Fruchtaromen des Rieslings sprechen.",
-        },
-      ],
+          "correct": 2,
+          "explanation": "Wasser macht Alkohol nicht unschädlich und ersetzt keine sichere Entscheidung gegen das Fahren."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 13 — Wasser und Gesundheit
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Wasser und Gesundheit: Wissenschaftliche Fakten",
-      content: `## Mineralwasser als Gesundheitsfaktor
-
-Die gesundheitliche Bedeutung von Wasser reicht weit über die reine Flüssigkeitszufuhr hinaus. Mineralwasser kann — je nach Zusammensetzung — eine relevante Quelle für Mineralstoffe sein und spezifische gesundheitliche Effekte haben. Ein Wassersommelier muss diese Zusammenhänge kennen, ohne dabei medizinische Beratung zu leisten.
-
-### Flüssigkeitsbedarf und Hydratation
-
-Die **Deutsche Gesellschaft für Ernährung (DGE)** empfiehlt für Erwachsene eine Gesamtflüssigkeitszufuhr von ca. 2,5 Litern/Tag, wovon 1,5 Liter als Getränke aufgenommen werden sollten (Rest über Nahrung und Stoffwechselwasser). Bei Hitze, Sport oder Krankheit steigt der Bedarf erheblich — bis auf 3–4 Liter und mehr. Dehydration — bereits 2 % Flüssigkeitsverlust — verringert die kognitive Leistungsfähigkeit, die körperliche Ausdauer und kann Kopfschmerzen verursachen.
-
-### Mineralstoffe aus dem Wasser — Bioverfügbarkeit
-
-Studien zeigen, dass Mineralien aus Mineralwasser eine **hohe Bioverfügbarkeit** haben — teilweise sogar höher als aus Lebensmitteln. Calcium aus calciumreichem Mineralwasser wird zu 25–40 % absorbiert, vergleichbar mit Milchcalcium. Für laktoseintolerante Personen, Veganer und ältere Menschen kann calciumreiches Mineralwasser (>300 mg/l) einen bedeutenden Beitrag zur Calciumversorgung leisten. Ein Liter Gerolsteiner (348 mg/l Ca) deckt rund 35 % des Tagesbedarfs.
-
-### Magnesium und Muskelfunktion
-
-Magnesium aus Mineralwasser ist besonders gut bioverfügbar, da es bereits in gelöster (ionisierter) Form vorliegt. Studien an Sportlern zeigten, dass regelmäßiger Konsum magnesiumreichen Mineralwassers (>80 mg/l) Muskelkrämpfe reduzieren kann. Die DGE empfiehlt 300–400 mg Magnesium/Tag — ein Liter Rosbacher (93 mg/l Mg) liefert bereits ca. 25 %.
-
-### Hydrogencarbonat und Säure-Basen-Haushalt
-
-Hydrogencarbonatreiche Wässer (>600 mg/l HCO₃⁻) wirken als natürliche Puffer im Säure-Basen-Haushalt. Studien belegen positive Effekte bei Sodbrennen und säurebedingten Magenbeschwerden. Staatl. Fachingen (1.846 mg/l HCO₃⁻) ist in Deutschland als "Traditionsmarke bei Sodbrennen" bekannt. Auch Sportler profitieren: Hydrogencarbonat puffert die Milchsäure, die bei intensiver Belastung entsteht.
-
-### Natrium und Blutdruck
-
-Die Beziehung zwischen Natriumzufuhr und Blutdruck ist komplex. Natriumreiches Mineralwasser (>200 mg/l Na) trägt zur Gesamtnatriumaufnahme bei. Bei Hypertonie empfiehlt die DGE, die Natriumzufuhr zu begrenzen — natriumarmes Wasser (<20 mg/l) ist dann vorzuziehen. Für Sportler hingegen kann natriumreiches Wasser nach dem Training den Elektrolytverlust über den Schweiß ausgleichen.
-
-### Wasser für Säuglinge und Kleinkinder
-
-Mineralwasser für die Säuglingsnahrung muss besonders strenge Grenzwerte einhalten: Natrium <20 mg/l, Nitrat <10 mg/l, Fluorid <0,7 mg/l, Sulfat <240 mg/l, Mangan <0,05 mg/l, Arsen <0,005 mg/l. Die Kennzeichnung "Geeignet für die Zubereitung von Säuglingsnahrung" darf nur nach Prüfung durch eine zugelassene Stelle erfolgen. Kohlensäurehaltiges Wasser ist für Säuglinge nicht empfohlen.
-
-### Mythen und Fakten
-
-**Mythos**: "Kohlensäure macht Knochen porös." **Fakt**: Es gibt keinen wissenschaftlichen Beleg für diesen Zusammenhang. Die Verwechslung stammt von Studien zu Phosphorsäure in Cola-Getränken. **Mythos**: "Man muss 3 Liter Wasser pro Tag trinken." **Fakt**: 1,5 Liter Getränke + Nahrungswasser reichen für die meisten Erwachsenen bei normaler Aktivität. Übermäßige Flüssigkeitszufuhr kann sogar gefährlich sein (Hyponatriämie). **Mythos**: "Leitungswasser ist genauso gesund wie Mineralwasser." **Fakt**: Leitungswasser ist hygienisch sicher, bietet aber in der Regel geringere Mineralstoffgehalte als hochmineralisierte Mineralwässer und hat keine garantierte Zusammensetzung.
-
-### Wasser und Sport
-
-Sportler verlieren über den Schweiß nicht nur Wasser, sondern auch Elektrolyte (vor allem Natrium, Chlorid, Kalium, Magnesium). Mineralwasser mit hohem Natrium- und Magnesiumgehalt kann als natürliches Sportgetränk dienen. Die Empfehlung: **Vor dem Sport** hydrogencarbonatreiches Wasser (Säurepufferung), **während des Sports** natriumreiches Wasser (Elektrolytersatz), **nach dem Sport** magnesium- und calciumreiches Wasser (Regeneration).`,
-      quiz: [
+      "title": "Wasser und Gesundheit: Wissenschaftliche Fakten",
+      "content": "## Flüssigkeitszufuhr ohne Gesundheitsversprechen\n\nWasser ist ein wichtiger Durstlöscher. Mineralstoffe können zur Ernährung beitragen, doch eine Getränkeberatung ist keine Diagnose oder Therapie.\n\n### Allgemeine Trinkempfehlung\n\nDie DGE empfiehlt für Erwachsene im Alltag rund **1,5 Liter Getränke täglich**, vorzugsweise Wasser oder andere kalorienfreie Getränke. Bei Hitze oder erhöhtem Flüssigkeitsverlust kann mehr nötig sein. Das ist kein für jeden Menschen und jede Krankheit identischer Bedarf. Bei ärztlich vorgegebenen Flüssigkeitsmengen haben die individuellen Hinweise Vorrang; übermäßiges Trinken ist ebenfalls nicht sinnvoll.\n\n### Mineralstoffe richtig berechnen\n\nDie DGE nennt calciumreiches Mineralwasser als möglichen Beitrag zur Calciumversorgung. Der Beitrag ergibt sich aus mg/l und Trinkmenge. Eine feste Absorptionsquote von 25–40 % für jedes Wasser und jede Person wird hier nicht behauptet. Magnesiumwasser wird nicht pauschal als Mittel gegen Krämpfe empfohlen. Auch ein Sportprogramm „Hydrogencarbonat vorher, Natrium währenddessen, Magnesium danach“ lässt sich aus dem Etikett allein nicht begründen.\n\n### Säuglingsnahrung\n\nFür die entsprechende Auslobung dürfen diese Werte nicht überschritten werden: **Natrium 20 mg/l, Nitrat 10 mg/l, Nitrit 0,02 mg/l, Sulfat 240 mg/l, Fluorid 0,7 mg/l, Mangan 0,05 mg/l, Arsen 0,005 mg/l und Uran 0,002 mg/l**. Das sind inklusive Höchstwerte, keine strikten „kleiner als“-Grenzen.\n\nDie Kennzeichnung bedeutet nicht, dass das Wasser steril ist. Das BfR empfiehlt, auch entsprechend ausgelobtes Mineral-, Quell- oder Tafelwasser zur Zubereitung von Säuglingsnahrung abzukochen. Zubereitungs-, Hygiene- und medizinische Hinweise sind zusätzlich zu beachten.\n\nLeitungswasser ist nicht pauschal ungesünder als Mineralwasser. Konkrete Zusammensetzung, örtliche Hinweise und die gesamte Ernährung sind entscheidend.",
+      "quiz": [
         {
-          question:
-            "Wie hoch ist die Bioverfügbarkeit von Calcium aus Mineralwasser im Vergleich zu Milch?",
-          options: [
-            "Deutlich geringer (unter 10 %)",
-            "Vergleichbar: 25–40 % Absorption, ähnlich wie bei Milchcalcium",
-            "Wesentlich höher (über 80 %)",
-            "Calcium aus Wasser wird vom Körper gar nicht aufgenommen",
+          "question": "Wie lässt sich der ernährungsbezogene Beitrag von Calciumwasser sachlich beschreiben?",
+          "options": [
+            "Es verhindert garantiert Osteoporose",
+            "Es kann je nach Gehalt und Trinkmenge zur Calciumzufuhr beitragen",
+            "Jeder Liter deckt den gesamten Bedarf",
+            "Es ist immer besser als jede andere Calciumquelle"
           ],
-          correct: 1,
-          explanation:
-            "Studien zeigen, dass Calcium aus Mineralwasser mit 25–40 % Absorptionsrate ähnlich bioverfügbar ist wie Calcium aus Milch. Mineralwasser ist daher eine relevante Calciumquelle, besonders für laktoseintolerante Personen.",
+          "correct": 1,
+          "explanation": "Der Calciumbeitrag ist berechenbar, eine individuelle Krankheitswirkung daraus nicht."
         },
         {
-          question:
-            "Welchen maximalen Natriumgehalt darf Mineralwasser haben, das als 'geeignet für Säuglingsnahrung' deklariert wird?",
-          options: [
-            "<10 mg/l",
-            "<20 mg/l",
-            "<50 mg/l",
-            "<100 mg/l",
+          "question": "Welcher maximale Natriumwert gilt für die Säuglingsnahrungskennzeichnung?",
+          "options": [
+            "Höchstens 10 mg/l",
+            "Höchstens 20 mg/l",
+            "Höchstens 50 mg/l",
+            "Höchstens 200 mg/l"
           ],
-          correct: 1,
-          explanation:
-            "Für Säuglingsnahrung geeignetes Mineralwasser muss unter 20 mg/l Natrium enthalten. Weitere Grenzwerte: Nitrat <10 mg/l, Fluorid <0,7 mg/l, Sulfat <240 mg/l — zum Schutz der empfindlichen Nierenfunktion von Säuglingen.",
+          "correct": 1,
+          "explanation": "Anlage 6 verwendet „darf 20 mg/l nicht überschreiten“. Weitere chemische und mikrobiologische Anforderungen gelten zusätzlich."
         },
         {
-          question:
-            "Welches Mineralwasser ist vor intensivem Sport besonders empfehlenswert?",
-          options: [
-            "Natriumreiches Wasser zum Elektrolytersatz",
-            "Hydrogencarbonatreiches Wasser zur Säurepufferung",
-            "Sulfatreiches Wasser zur Magenstimulation",
-            "Extrem niedrigmineralisiertes stilles Wasser",
+          "question": "Was bedeutet „geeignet für die Zubereitung von Säuglingsnahrung“ nicht?",
+          "options": [
+            "Besondere chemische Grenzwerte werden eingehalten",
+            "Das Wasser ist steril und muss nach BfR-Empfehlung nie abgekocht werden",
+            "Natrium und Fluorid sind begrenzt",
+            "Weitere Zubereitungshinweise bleiben relevant"
           ],
-          correct: 1,
-          explanation:
-            "Vor dem Sport empfiehlt sich hydrogencarbonatreiches Wasser, da HCO₃⁻ als Puffer gegen die Milchsäure wirkt, die bei intensiver Belastung entsteht. Natrium ist eher während und nach dem Sport relevant (Schweißverlust-Kompensation).",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Das BfR betont, dass die Auslobung keine Sterilität bedeutet, und empfiehlt auch für diese Wässer das Abkochen."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 14 — Heilwasser
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Heilwasser: Zwischen Lebensmittel und Arzneimittel",
-      content: `## Heilwasser — eine deutsche Besonderheit
-
-Deutschland ist eines der wenigen Länder, die **Heilwasser** als eigenständige Kategorie kennen. Heilwasser ist rechtlich kein Lebensmittel, sondern ein **Arzneimittel** — es unterliegt dem Arzneimittelgesetz (AMG) und benötigt eine Zulassung durch das Bundesinstitut für Arzneimittel und Medizinprodukte (BfArM). Diese Sonderstellung ist international nahezu einzigartig und hat historische Wurzeln in der deutschen Kur- und Bäderkultur.
-
-### Rechtlicher Status
-
-Die Zulassung als Heilwasser erfordert den Nachweis **therapeutischer Wirksamkeit** durch wissenschaftliche Studien — klinische oder balneologische Untersuchungen. Der Zulassungsprozess ist langwieriger und kostspieliger als die Anerkennung als natürliches Mineralwasser. Derzeit sind in Deutschland rund **35 Heilwässer** zugelassen (gegenüber >820 Mineralwässern). Heilwasser darf mit konkreten gesundheitlichen Aussagen beworben werden — etwa "wirkt lindernd bei Sodbrennen" oder "unterstützt die Verdauung" — was bei Mineralwasser und Lebensmitteln nur sehr eingeschränkt zulässig ist.
-
-### Abgrenzung zum Mineralwasser
-
-Heilwasser muss, wie natürliches Mineralwasser, aus einer natürlichen, geschützten Quelle stammen und am Quellort abgefüllt werden. Der entscheidende Unterschied: Es muss **mindestens einen gelösten Mineralstoff in einer therapeutisch relevanten Konzentration** enthalten. Die traditionelle Schwelle liegt bei **1.000 mg/l Gesamtmineralisierung**, wobei es keine starre gesetzliche Untergrenze gibt — entscheidend ist der Wirksamkeitsnachweis. In der Praxis sind die meisten Heilwässer deutlich höher mineralisiert als normale Mineralwässer.
-
-### Bekannte deutsche Heilwässer
-
-**Staatl. Fachingen STILL**: Zugelassen bei Sodbrennen und säurebedingten Magenbeschwerden. 1.846 mg/l Hydrogencarbonat — einer der höchsten HCO₃⁻-Werte aller kommerziellen Wässer. Seit 1742 urkundlich als Heilquelle belegt. **Gerolsteiner Heilwasser**: Zugelassen bei Calcium- und Magnesiummangel. Mit 2.527 mg/l Gesamtmineralisierung eines der mineralstoffreichsten Wässer Deutschlands. **Hirschquelle Heilwasser**: Aus Bad Überkingen, zugelassen bei Verdauungsbeschwerden. Hoher Sulfatgehalt (1.500+ mg/l) mit verdauungsfördernder Wirkung. **Ensinger Schiller Quelle**: Calciumreich, zugelassen zur Unterstützung der Calciumversorgung.
-
-### Wirkungsweisen
-
-**Hydrogencarbonatreiche Heilwässer** (>1.300 mg/l HCO₃⁻): Neutralisieren Magensäure, lindern Sodbrennen, unterstützen den Säure-Basen-Haushalt. Wirkmechanismus: HCO₃⁻ + H⁺ → H₂O + CO₂ — direkte Säureneutralisation im Magen.
-
-**Sulfatreiche Heilwässer** (>1.200 mg/l SO₄²⁻): Fördern die Verdauung, wirken leicht abführend (osmotischer Effekt im Darm), stimulieren die Gallenproduktion. Traditionell als "Bittersalzwasser" bei Verdauungsbeschwerden eingesetzt.
-
-**Calciumreiche Heilwässer** (>250 mg/l Ca): Unterstützen die Knochengesundheit, relevant bei Osteoporose-Prävention. Die hohe Bioverfügbarkeit von Calcium aus Wasser ist wissenschaftlich belegt.
-
-**Magnesiumreiche Heilwässer** (>100 mg/l Mg): Unterstützen die Muskel- und Nervenfunktion, relevant bei chronischem Magnesiummangel und Muskelkrämpfen.
-
-### Dosierung und Anwendung
-
-Heilwässer werden in der Regel kurweise empfohlen — typischerweise 3–4 Wochen mit definierter Tagesdosis (meist 0,5–1,5 Liter). Die Anwendung kann morgens nüchtern (bei Verdauungsbeschwerden) oder über den Tag verteilt (bei Mineralstoffmangel) erfolgen. Ein Beipackzettel mit Dosierungsempfehlung liegt bei. Kontraindikationen beachten: Natriumreiche Heilwässer können bei Hypertonie problematisch sein; sulfatreiche Wässer sind bei chronischen Durchfallerkrankungen nicht indiziert.
-
-### Historische Bedeutung
-
-Deutschlands Bäder- und Kurkultur ("Bad" im Ortsnamen) basiert wesentlich auf Heilwässern. Bad Ems, Baden-Baden, Bad Kissingen, Bad Homburg, Bad Nauheim — all diese Kurorte verdanken ihren Ruf ihren Heilquellen. Die Trinkkur war im 19. und 20. Jahrhundert ein zentrales Element der Balneologie. Seit 2021 sind die "Bedeutenden Kurstädte Europas" UNESCO-Weltkulturerbe.`,
-      quiz: [
+      "title": "Heilwasser: Arzneimittel und Anwendungshinweise",
+      "content": "## Heilwasser ist von gewöhnlichem Mineralwasser zu unterscheiden\n\nIn Deutschland gilt Heilwasser als **Arzneimittel**, nicht als gewöhnliches Lebensmittel. Maßgeblich sind Arzneimittelrecht, der Status des konkreten Produkts und seine zugelassenen Angaben. Die Min/TafelWV schließt Heilwasser aus ihrem Anwendungsbereich aus.\n\n### Zulassung und Anwendungsgebiet\n\nEine Arzneimittelzulassung beurteilt Qualität, Wirksamkeit und Unbedenklichkeit für die zugelassenen Anwendungsgebiete. Ein hoher Mineralstoffgehalt allein macht ein Wasser nicht zum Heilwasser. Auch ein traditioneller Brunnenname oder ein einzelner Hydrogencarbonatwert beweist keine zugelassene Indikation.\n\n### Keine pauschale Übertragung\n\nEine zugelassene Aussage eines konkreten Heilwassers darf nicht auf sämtliche Mineralwässer mit ähnlichem Profil übertragen werden. Das gilt etwa für Aussagen zu Sodbrennen, Verdauung oder Mineralstoffmangel. Ebenso ist eine Marke nicht mit einer Arzneimittelkategorie gleichzusetzen: Unterschiedliche Produkte derselben Marke können unterschiedliche rechtliche Stellungen haben.\n\n### Anwendung und Beratung\n\nGebrauchsinformation, Dosierung, Gegenanzeigen und Wechselwirkungen des konkreten Heilwassers beachten. Hier werden keine allgemeine Trinkkur von drei bis vier Wochen und keine pauschale Tagesdosis empfohlen. Bei Beschwerden oder Unsicherheit sind ärztliche oder pharmazeutische Beratung geeigneter als eine eigenständige Therapieempfehlung im Getränkemarkt.\n\n### Quellkultur\n\nHeilquellen gehören zur Geschichte vieler Kurorte. Historische Nutzung erklärt eine kulturelle Bedeutung, ersetzt aber keine aktuelle Produktzulassung. Ungeprüfte Zahlen über heute zugelassene Heilwässer oder vermeintliche universelle Wirkschwellen werden deshalb nicht als Lernstoff verwendet.",
+      "quiz": [
         {
-          question: "Welchem Gesetz unterliegt Heilwasser in Deutschland?",
-          options: [
-            "Der Mineral- und Tafelwasserverordnung (MTVO)",
-            "Dem Arzneimittelgesetz (AMG)",
-            "Der Trinkwasserverordnung (TrinkwV)",
-            "Dem Lebensmittel- und Futtermittelgesetzbuch (LFGB)",
+          "question": "Welchem Rechtsbereich unterliegt Heilwasser in Deutschland?",
+          "options": [
+            "Nur der Min/TafelWV",
+            "Dem Arzneimittelrecht",
+            "Nur der Trinkwasserverordnung",
+            "Nur einer freiwilligen Sommeliernorm"
           ],
-          correct: 1,
-          explanation:
-            "Heilwasser ist rechtlich ein Arzneimittel und unterliegt dem Arzneimittelgesetz (AMG). Die Zulassung erfolgt durch das BfArM — mit Nachweis therapeutischer Wirksamkeit, anders als bei Mineralwasser (MTVO).",
+          "correct": 1,
+          "explanation": "Das BfR unterscheidet Heilwasser als Arzneimittel von Mineral-, Quell- und Tafelwasser als Lebensmitteln."
         },
         {
-          question:
-            "Über welchen Wirkmechanismus lindert hydrogencarbonatreiches Heilwasser Sodbrennen?",
-          options: [
-            "Es verdünnt die Magensäure physikalisch",
-            "Hydrogencarbonat reagiert mit der Magensäure (H⁺) zu Wasser und CO₂ (direkte Neutralisation)",
-            "Es bildet eine Schutzschicht auf der Magenschleimhaut",
-            "Es hemmt die Produktion von Magensäure in den Belegzellen",
+          "question": "Welche Aussage darf auf ein gewöhnliches Mineralwasser übertragen werden?",
+          "options": [
+            "Jede Indikation eines ähnlich mineralisierten Heilwassers",
+            "Keine pauschale Heilwirkung; der Status des konkreten Produkts ist entscheidend",
+            "Alle Heilwasserdosierungen",
+            "Jede historische Kuranwendung"
           ],
-          correct: 1,
-          explanation:
-            "Die Reaktion HCO₃⁻ + H⁺ → H₂O + CO₂ ist eine direkte Säure-Base-Neutralisation. Das Hydrogencarbonat bindet überschüssige Protonen (H⁺ = Magensäure) und wandelt sie in Wasser und CO₂ um.",
+          "correct": 1,
+          "explanation": "Ähnliche Inhaltsstoffe sind kein Nachweis einer Arzneimittelzulassung oder identischen Wirkung."
         },
         {
-          question:
-            "Wie viele Heilwässer sind in Deutschland aktuell zugelassen?",
-          options: [
-            "Rund 35",
-            "Rund 150",
-            "Rund 500",
-            "Über 820 (wie Mineralwässer)",
+          "question": "Was ist bei der Anwendung eines Heilwassers maßgeblich?",
+          "options": [
+            "Eine universelle Tagesdosis für alle Marken",
+            "Die konkrete Gebrauchsinformation und gegebenenfalls medizinische Beratung",
+            "Nur der Preis",
+            "Nur die Flaschenfarbe"
           ],
-          correct: 0,
-          explanation:
-            "In Deutschland sind derzeit rund 35 Heilwässer zugelassen — ein winziger Bruchteil der über 820 anerkannten Mineralwässer. Der aufwändige Zulassungsprozess mit Wirksamkeitsnachweis erklärt die geringe Zahl.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Dosierung und Gegenanzeigen sind produktspezifisch. Dieser Kurs gibt keine individuelle Therapie vor."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 15 — pH-Wert und Wasserhärte
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "pH-Wert, Wasserhärte und ihre Bedeutung",
-      content: `## Die chemischen Kenngrößen des Wassers
-
-pH-Wert und Wasserhärte sind zwei der wichtigsten chemischen Parameter, die den Charakter eines Wassers definieren. Für den Wassersommelier sind sie essenziell — nicht nur für das Verständnis der Wasserchemie, sondern auch für Sensorik, Food Pairing und die Beratung in Gastronomie und Handel.
-
-### Der pH-Wert — Sauer oder Basisch?
-
-Der pH-Wert misst die Konzentration der Wasserstoffionen (H⁺) in einer Lösung auf einer logarithmischen Skala von 0 (extrem sauer) bis 14 (extrem basisch). pH 7 ist neutral. Die meisten Mineralwässer liegen im Bereich von **5,5 bis 8,5**. Die Formel: pH = -log₁₀[H⁺].
-
-**Einflussfaktoren auf den pH-Wert**: Kohlensäure senkt den pH (CO₂ + H₂O → H₂CO₃ → H⁺ + HCO₃⁻). Ein kohlensäurehaltiges Mineralwasser hat typisch pH 5,0–6,5. Derselbe Brunnen in der Naturell-Variante liegt bei pH 6,5–8,0. Hydrogencarbonat und andere basische Ionen erhöhen den pH. Kalksteinaquifere liefern eher alkalische Wässer (pH 7,0–8,5), vulkanische CO₂-reiche Wässer eher saure.
-
-**Sensorische Bedeutung**: pH-Wert-Unterschiede sind geschmacklich wahrnehmbar. Saure Wässer (pH <6) wirken "frischer" und "spritziger". Alkalische Wässer (pH >7,5) schmecken "weicher" und "glatter". Extrem alkalische Wässer (pH >8,5) können einen seifigen Beigeschmack haben.
-
-### Alkalisches Wasser — Hype oder Heilmittel?
-
-Seit einigen Jahren boomt der Markt für "alkalisches Wasser" (pH 8–10). Befürworter behaupten, es neutralisiere Körperübersäuerung und fördere die Gesundheit. Die wissenschaftliche Evidenz ist jedoch dünn: Der Körper reguliert seinen Blut-pH-Wert (7,35–7,45) extrem präzise über Lunge und Nieren — orale pH-Zufuhr hat darauf keinen relevanten Einfluss. Natürlich alkalische Wässer (z. B. Icelandic Glacial, pH 8,4) unterscheiden sich fundamental von industriell alkalisierten Wässern. Der Wassersommelier sollte den Trend kennen, aber nüchtern einordnen.
-
-### Wasserhärte — Calcium und Magnesium bestimmen
-
-Die **Wasserhärte** beschreibt den Gehalt an gelösten Calcium- und Magnesiumionen. Sie wird in Deutschland in **°dH (Grad deutscher Härte)** gemessen, international oft in mg/l CaCO₃ (Calciumcarbonatäquivalent) oder mmol/l. Umrechnung: 1 °dH = 17,8 mg/l CaCO₃ = 0,178 mmol/l.
-
-**Härtebereiche** (nach deutschem Wasch- und Reinigungsmittelgesetz):
-- **Weich**: <8,4 °dH (<1,5 mmol/l) — Granit-/Gneisregionen, Schwarzwald
-- **Mittel**: 8,4–14 °dH (1,5–2,5 mmol/l) — Sandstein, Mischgebiete
-- **Hart**: >14 °dH (>2,5 mmol/l) — Kalkstein, Jura, Alpenvorland
-
-**Sensorische Bedeutung**: Weiches Wasser schmeckt "leer", neutral, fast süßlich. Mittelhartes Wasser hat eine dezente Mineralität und wird oft als "ausgeglichen" empfunden. Hartes Wasser schmeckt kalkig, kreisig, mineralisch — bei sehr hoher Härte (>25 °dH) mitunter unangenehm bitter.
-
-### Bedeutung für Getränkezubereitung
-
-**Tee**: Weiches Wasser (5–8 °dH) extrahiert die feinen Aromen optimal. Hartes Wasser bildet Kalkfilm auf der Oberfläche und verfälscht den Geschmack. Japanischer Grüntee verlangt besonders weiches Wasser.
-
-**Kaffee**: Die Specialty Coffee Association (SCA) empfiehlt 50–175 mg/l TDS (ca. 3–10 °dH). Zu weiches Wasser extrahiert zu aggressiv (übersäuert), zu hartes Wasser unterextrahiert (flach, kreisig). Wasserqualität ist der wichtigste Faktor für Kaffeequalität nach den Bohnen selbst.
-
-**Bierbrauen**: Die Wasserhärte bestimmt den Bierstil. Pilsner verlangt extrem weiches Wasser (Plzeň: 1,6 °dH). Pale Ale (Burton-upon-Trent) braucht hartes, sulfatreiches Wasser ("Burtonisierung"). Das Reinheitsgebot betont die Bedeutung des Brauwassers — es ist die Hauptzutat.
-
-### Temporäre vs. permanente Härte
-
-**Temporäre Härte (Karbonathärte)**: Durch Ca(HCO₃)₂ und Mg(HCO₃)₂ verursacht. Kann durch Kochen entfernt werden (Kalkausfällung — der weiße Belag im Wasserkocher). **Permanente Härte (Nichtkarbonat-Härte)**: Durch Sulfate und Chloride von Calcium und Magnesium. Bleibt auch nach dem Kochen bestehen. Die Gesamthärte ist die Summe beider.`,
-      quiz: [
+      "title": "pH-Wert, Wasserhärte und ihre Bedeutung",
+      "content": "## pH-Wert, Härte und Gesamtmineralisierung trennen\n\nDer pH-Wert beschreibt die Säure- beziehungsweise Baseneigenschaft einer wässrigen Lösung. Gelöstes CO₂ kann den pH-Wert senken. Messbedingungen und Zusammensetzung beeinflussen das Ergebnis; ein hoher pH-Wert ist kein allgemeiner Gesundheitsnachweis.\n\n### Gesamthärte\n\nVereinfacht beschreibt die Gesamthärte den Gehalt an Calcium- und Magnesiumionen. Für Trinkwasser nennt § 9 WRMG die Bereiche **weich: unter 1,5 mmol/l**, **mittel: 1,5 bis 2,5 mmol/l**, **hart: über 2,5 mmol/l**, jeweils als Calciumcarbonatäquivalent. Daneben sind Angaben in Grad deutscher Härte üblich.\n\n### TDS ist nicht Wasserhärte\n\nTDS bezeichnet gelöste Stoffe insgesamt; die Gesamthärte betrifft nur einen Teil davon. Ein Wasser kann viel Natrium enthalten und dennoch wenig Calcium und Magnesium. Deshalb lassen sich **50–175 mg/l TDS nicht pauschal in 3–10 °dH umrechnen**. Ein elektrisches TDS-Messgerät schätzt zudem anhand der Leitfähigkeit und eines Umrechnungsfaktors. Es bestimmt nicht die einzelnen Ionen.\n\n### Getränkezubereitung\n\nBei Kaffee sind Härte, Alkalinität, weitere Bestandteile und die Anforderungen des Geräts getrennt zu betrachten. Die SCA erläutert ausdrücklich die Grenzen von TDS-Messgeräten. Eine einzelne TDS-Zahl beweist weder ideale Extraktion noch den Kalkschutz einer Maschine. Für Tee kann ein Vergleich mit unterschiedlichen geeigneten Wässern interessant sein; fixe „optimale“ Härtewerte gelten nicht automatisch für alle Tees.\n\n### Karbonathärte\n\nBeim Erhitzen kann Calciumcarbonat ausfallen; ein Teil der härtebildenden Bestandteile lässt sich dadurch verändern. Nichtkarbonathärte wird nicht auf dieselbe Weise beseitigt. Auch dies ist kein allgemeines Verfahren, um ein unbekanntes Wasser hygienisch oder chemisch unbedenklich zu machen.",
+      "quiz": [
         {
-          question:
-            "Warum haben kohlensäurehaltige Mineralwässer typischerweise einen niedrigeren pH-Wert als stille?",
-          options: [
-            "Weil Kohlensäure Mineralstoffe auswäscht",
-            "Weil CO₂ mit Wasser zu Kohlensäure (H₂CO₃) reagiert, die Protonen (H⁺) freisetzt und so den pH senkt",
-            "Weil bei der CO₂-Zugabe Natrium entfernt wird",
-            "Weil Kohlensäure den Sauerstoff im Wasser verdrängt",
+          "question": "Warum kann CO₂ den pH-Wert des Wassers senken?",
+          "options": [
+            "Es entfernt alle Mineralstoffe",
+            "Es beteiligt sich am Kohlensäuregleichgewicht, bei dem Protonen entstehen",
+            "Es macht jedes Wasser alkalisch",
+            "Es wandelt Wasser in Alkohol um"
           ],
-          correct: 1,
-          explanation:
-            "Die Gleichgewichtsreaktion CO₂ + H₂O ⇌ H₂CO₃ ⇌ HCO₃⁻ + H⁺ setzt Protonen frei und senkt den pH. Ein Classic-Wasser (viel CO₂) liegt typisch bei pH 5,0–6,5, die Naturell-Variante desselben Brunnens bei pH 6,5–8,0.",
+          "correct": 1,
+          "explanation": "Das Kohlensäuregleichgewicht erklärt die Säurewirkung; es sagt nichts über eine pauschale Heilwirkung aus."
         },
         {
-          question:
-            "Welche Wasserhärte empfiehlt die SCA (Specialty Coffee Association) für optimale Kaffeeextraktion?",
-          options: [
-            "0–2 °dH (extrem weich)",
-            "Ca. 3–10 °dH (50–175 mg/l TDS)",
-            "15–20 °dH (hart)",
-            "Über 25 °dH (sehr hart)",
+          "question": "Welche Aussage zu TDS und Härte ist richtig?",
+          "options": [
+            "TDS und Härte sind immer identisch",
+            "TDS lässt sich nicht ohne Kenntnis der Zusammensetzung direkt in Wasserhärte umrechnen",
+            "Jeder TDS-Wert ist ein Calciumwert",
+            "Die Härte hängt ausschließlich vom Natrium ab"
           ],
-          correct: 1,
-          explanation:
-            "Die SCA empfiehlt 50–175 mg/l TDS (ca. 3–10 °dH). Zu weiches Wasser extrahiert zu aggressiv und erzeugt übersäuerten Kaffee; zu hartes Wasser unterextrahiert und erzeugt flachen, kalkigen Geschmack.",
+          "correct": 1,
+          "explanation": "Gesamtmineralisierung und Calcium-/Magnesiumhärte sind unterschiedliche Kenngrößen."
         },
         {
-          question:
-            "Was ist der Unterschied zwischen temporärer und permanenter Wasserhärte?",
-          options: [
-            "Temporäre Härte kommt und geht mit den Jahreszeiten",
-            "Temporäre Härte (Karbonathärte) kann durch Kochen entfernt werden (Kalkausfällung), permanente Härte (Sulfate/Chloride) nicht",
-            "Permanente Härte ist gesünder als temporäre",
-            "Es gibt keinen messbaren Unterschied",
+          "question": "Welcher Härtebereich ist nach WRMG „mittel“?",
+          "options": [
+            "Unter 0,5 mmol/l",
+            "1,5 bis 2,5 mmol/l Calciumcarbonatäquivalent",
+            "Über 5 mmol/l",
+            "Jeder Wert über 10 mg/l TDS"
           ],
-          correct: 1,
-          explanation:
-            "Temporäre Härte beruht auf gelösten Hydrogencarbonaten von Ca und Mg, die beim Kochen als Kalk (CaCO₃) ausfallen — daher 'temporär'. Permanente Härte durch Sulfate und Chloride bleibt auch nach dem Kochen bestehen.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "§ 9 WRMG legt diese Grenzen für die Mitteilung von Trinkwasserhärtebereichen fest."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 16 — Nachhaltigkeit und Verpackung
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Nachhaltigkeit: Glas, PET und die Ökobilanz von Mineralwasser",
-      content: `## Die Verpackungsfrage — Glas oder Plastik?
-
-Die Verpackung von Mineralwasser ist eines der kontroversesten Themen der Branche. Glas-Puristen, PET-Pragmatiker, Dosen-Innovatoren und Leitungswasser-Aktivisten liefern sich eine Dauerdebatte, die oft emotional statt faktenbasiert geführt wird. Ein Wassersommelier muss die Argumente kennen und differenziert einordnen können.
-
-### Glasflasche — das Premium-Gebinde
-
-**Mehrweg-Glas (GDB-Pool-Flasche)**: Das Standardgebinde des deutschen Mineralwassermarkts. Die 0,7-l- und 0,75-l-Perlflaschen der Genossenschaft Deutscher Brunnen (GDB) durchlaufen im Schnitt **50 Umläufe** vor dem Recycling. Ökobilanz: Hervorragend bei kurzen Transportwegen (<200 km Radius). Gewicht: ca. 600 g (Flasche allein) — der wesentliche Nachteil im Transport. **Individualflasche (Mehrweg)**: Markenspezifische Glasflaschen (z. B. Gerolsteiner, Apollinaris). Weniger Umläufe als Poolflaschen (ca. 25–40), höhere Kosten. **Einweg-Glas**: Selten im deutschen Markt, häufiger international (Evian Glasflasche, San Pellegrino). Ökobilanz: Schlechteste aller Glasoptionen, da nur einmal verwendet.
-
-**Sensorische Vorteile von Glas**: Geschmacksneutralität — Glas gibt keinerlei Substanzen an das Wasser ab. Kein Acetaldehyd, keine Weichmacher, keine Geschmacksmigration. Die CO₂-Barriere ist perfekt: Kohlensäure entweicht nicht durch die Wand. Lichtschutz (bei grünem oder braunem Glas). Für Premiumwässer und Gastronomie ist Glas der Standard.
-
-### PET-Flasche — leicht und praktisch
-
-**Mehrweg-PET**: In Deutschland verbreitet (0,5 l und 1,0 l). Ca. 15–25 Umläufe. Gewicht: nur ca. 40–60 g. Ökobilanz: Bei weiten Transportwegen aufgrund des geringen Gewichts besser als Glas. **Einweg-PET (mit Pfand)**: 0,25 l bis 1,5 l. Ein Umlauf, dann Recycling zu rPET (recyceltes PET). Seit dem Pfandsystem (0,25 EUR) Rücklaufquote >97 %. **rPET**: Zunehmend werden Flaschen aus 100 % Recycling-PET hergestellt (z. B. Volvic seit 2021). Geschlossener Kreislauf.
-
-**Sensorische Nachteile von PET**: Acetaldehyd-Migration — PET gibt geringe Mengen Acetaldehyd ab (süßlich-fruchtiger Fremdgeschmack, besonders bei langer Lagerung oder Wärme). CO₂-Permeabilität — Kohlensäure diffundiert langsam durch die PET-Wand; nach Monaten kann der CO₂-Gehalt merklich sinken. UV-Durchlässigkeit — PET ist lichtdurchlässig, was Algenbildung und Geschmacksveränderung bei Sonneneinstrahlung begünstigen kann.
-
-### Dose und innovative Verpackungen
-
-**Aluminium-Dose**: In den USA und Asien verbreitet, in Deutschland selten. Ökobilanz: Aluminium ist energieintensiv in der Herstellung, aber zu 100 % recyclebar. Marken wie Liquid Death haben die Dose als Anti-Plastik-Statement positioniert. **Tetra Pak/Karton**: Für Wasser wenig verbreitet, aber z. B. von "Just Water" (Will Smith) oder "Boxed Water" genutzt. Ökobilanz: Gut, aber Recycling ist komplex (Verbundmaterial). **Bag-in-Box**: Für Großverbraucher und Events. 10–20 Liter in Beuteln. Reduziert Verpackungsmüll massiv.
-
-### Ökobilanz im Vergleich (Studien des UBA)
-
-Das Umweltbundesamt (UBA) hat mehrfach Ökobilanzen veröffentlicht. Die Kernaussagen: **Mehrweg-Glas** (regional, <200 km) hat die beste Gesamtbilanz. **Mehrweg-PET** ist bei weiteren Transportwegen (>200 km) ökologisch vorteilhafter als Glas (Gewichtsvorteil). **Einweg-PET** mit Pfand und hoher Recyclingquote schneidet akzeptabel ab — besser als Einweg-Glas. **Der wichtigste Einzelfaktor ist die Transportentfernung** — ein regionales Mehrwegwasser schlägt jedes weit transportierte Importwasser, unabhängig vom Gebinde.
-
-### Leitungswasser vs. Flaschenwasser — die Nachhaltigkeitsdebatte
-
-Kritiker verweisen auf die Ökobilanz: Leitungswasser verursacht rund 600-mal weniger CO₂ als abgepacktes Wasser (ca. 0,3 g CO₂/l vs. 200+ g CO₂/l bei importiertem Wasser). Befürworter kontern: Mineralwasser bietet nachweisbar höhere Mineralstoffgehalte, eine geschützte Herkunft und die Quellortreinheit. Die Branche reagiert mit Nachhaltigkeitsinitiativen: CO₂-Reduktion, Elektro-Fuhrpark, Photovoltaik auf Brunnengeländen, 100 % rPET-Flaschen.`,
-      quiz: [
+      "title": "Nachhaltigkeit: Glas, PET und die Ökobilanz von Mineralwasser",
+      "content": "## Verpackung und Ökobilanz differenziert betrachten\n\nFlaschenmaterial, Wiederbefüllung, Transport und Recycling wirken zusammen. Es gibt keine universelle 200-km-Grenze, unterhalb derer Glas stets jeden anderen Behälter schlägt.\n\n### Mehrweg und Einweg\n\nDas Umweltbundesamt empfiehlt **Mehrweg aus der Region**. Glas-Mehrwegflaschen können laut UBA bis zu 50-mal, PET-Mehrwegflaschen bis zu 20-mal wiederbefüllt werden. „Bis zu“ ist kein garantierter Durchschnitt jedes Pools. Einwegpfand bedeutet Rücknahme und Recycling, nicht Wiederbefüllung. Recyclingfähigkeit ist ebenfalls nicht identisch mit einer tatsächlich vollständig geschlossenen Kreislaufführung.\n\n### Materialeigenschaften\n\nGlas bietet eine gute Gasbarriere, ist jedoch schwer und bruchempfindlich. PET ist leicht und kann CO₂ leichter entweichen lassen. Das BfR erklärt, dass für PET-Flaschen keine Orthophthalate oder andere Weichmacher eingesetzt werden. Acetaldehyd kann bei Herstellung oder Lagerung entstehen und in sehr kleinen Mengen einen Fremdgeschmack verursachen. Ein solcher Qualitätsmangel darf reklamiert werden; er beweist nicht automatisch eine gefährliche Konzentration.\n\n### Vergleichsfragen\n\nWird das Gebinde wiederbefüllt? Wie oft im betrachteten System? Wie weit fährt volle und leere Ware? Welche Materialmengen, Energiequellen und Recyclingannahmen enthält die Untersuchung? Nur bei vergleichbaren Systemgrenzen sind Ranglisten aussagekräftig.\n\n### Leitungswasser\n\nLeitungswasser vermeidet Flaschenlogistik und ist nach dem UBA das umweltfreundlichste Getränk. Für einzelne Produkte werden hier keine ungesicherten CO₂-Faktoren oder pauschalen „600-mal“-Vergleiche behauptet. Geschmackswunsch und konkrete Verpackung können weiterhin bewusste Kaufkriterien sein, ohne ökologische oder medizinische Superlative.",
+      "quiz": [
         {
-          question:
-            "Wie viele Umläufe schafft eine GDB-Pool-Mehrwegflasche aus Glas durchschnittlich?",
-          options: [
-            "Etwa 10 Umläufe",
-            "Etwa 25 Umläufe",
-            "Etwa 50 Umläufe",
-            "Über 100 Umläufe",
+          "question": "Welche Wiederbefüllungszahl nennt das UBA für Glas-Mehrwegflaschen?",
+          "options": [
+            "Immer genau 10",
+            "Bis zu 50, nicht ein garantierter Durchschnitt",
+            "Mindestens 100",
+            "Genau eine"
           ],
-          correct: 2,
-          explanation:
-            "GDB-Mehrweg-Glasflaschen durchlaufen im Schnitt rund 50 Befüllzyklen, bevor sie recycelt werden. Das macht sie — bei regionaler Distribution — zum ökologischsten Gebinde im Mineralwassermarkt.",
+          "correct": 1,
+          "explanation": "Die UBA-Angabe lautet bis zu 50 Wiederbefüllungen. Das tatsächliche System entscheidet."
         },
         {
-          question:
-            "Welcher sensorische Nachteil ist spezifisch für PET-Flaschen?",
-          options: [
-            "Blei-Migration aus der Flaschenwand",
-            "Acetaldehyd-Migration und CO₂-Permeabilität",
-            "Aluminiumgeschmack",
-            "Chlor-Kontamination durch den Verschluss",
+          "question": "Welche Aussage zu PET ist laut BfR richtig?",
+          "options": [
+            "PET wird mit Orthophthalat-Weichmachern hergestellt",
+            "PET benötigt diese Weichmacher nicht; Acetaldehyd kann sensorisch auffallen",
+            "Jeder Fremdgeschmack bedeutet eine gefährliche Dosis",
+            "PET ist vollständig gasundurchlässig"
           ],
-          correct: 1,
-          explanation:
-            "PET gibt geringe Mengen Acetaldehyd ab (süßlicher Fremdgeschmack) und ist für CO₂ durchlässig — die Kohlensäure diffundiert langsam durch die Wand. Beide Effekte verstärken sich bei Wärme und langer Lagerung.",
+          "correct": 1,
+          "explanation": "Das BfR trennt die nicht eingesetzten Weichmacher von möglichen Acetaldehyd-bedingten Qualitätsmängeln."
         },
         {
-          question:
-            "Was ist laut UBA der wichtigste Einzelfaktor für die Ökobilanz von Mineralwasser?",
-          options: [
-            "Die Flaschenfarbe (transparent vs. grün)",
-            "Der Mineralstoffgehalt des Wassers",
-            "Die Transportentfernung vom Brunnen zum Verbraucher",
-            "Ob das Wasser Kohlensäure enthält oder nicht",
+          "question": "Was bestimmt eine belastbare Verpackungsbilanz?",
+          "options": [
+            "Nur die Flaschenfarbe",
+            "Material, Umlaufzahl, Transport und weitere Systemannahmen",
+            "Nur der Kohlensäuregrad",
+            "Eine pauschale Grenze von 200 km"
           ],
-          correct: 2,
-          explanation:
-            "Die Transportentfernung ist der dominierende Faktor. Ein regionales Mehrwegwasser (<200 km) schlägt jedes importierte Wasser ökologisch — unabhängig vom Gebindetyp. Deshalb die Empfehlung: Regional kaufen.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Transport ist wichtig, aber nicht die einzige relevante Größe einer Ökobilanz."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 17 — Marktanalyse Deutschland
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Der deutsche Mineralwassermarkt: Strukturen und Zahlen",
-      content: `## Europas größter Mineralwassermarkt
-
-Deutschland ist der **größte Mineralwassermarkt Europas** nach Absatzmenge und einer der differenziertesten weltweit. Die Struktur des Marktes — mit über 200 Brunnenbetrieben, starken Regionalmarken und einem einzigartigen Mehrwegsystem — unterscheidet sich fundamental von allen anderen Märkten. Dieses Verständnis ist für den Wassersommelier im Handel und in der Gastronomie essenziell.
-
-### Marktdaten im Überblick
-
-**Pro-Kopf-Verbrauch**: Ca. 130 Liter abgepacktes Wasser pro Jahr (2023). Hinzu kommen ca. 120 Liter Leitungswasser zum Trinken. Gesamttrinkwasserverbrauch: ca. 250 Liter pro Kopf. **Gesamtmarktvolumen**: Ca. 10,8 Mrd. Liter pro Jahr (2023). Umsatz: ca. 4,2 Mrd. EUR. **Brunnenbetriebe**: Über 200 Unternehmen, von Konzerntöchtern bis Familienbetrieben. **Quellenanzahl**: >500 anerkannte Quellen mit >820 anerkannten Mineralwässern.
-
-### Marktstruktur und Konzentration
-
-Der Markt ist **oligopolistisch mit starkem Mittelstand**: Die Top 5 (Gerolsteiner, Nestlé Waters/Vittel-Contrex, Danone/Volvic-Evian, Schweppes/Apollinaris, Hassia-Gruppe) halten ca. 35–40 % des Absatzes. Der Rest verteilt sich auf zahlreiche mittelständische Regionalbrunnen — eine deutsche Besonderheit, die auf dem Mehrwegsystem basiert. Regionale Marken dominieren ihren Heimatmarkt: Adelholzener in Bayern, Christinen Brunnen in Ostwestfalen, Thüringer Waldquell in Thüringen.
-
-### Vertriebskanäle
-
-**Lebensmitteleinzelhandel (LEH)**: Ca. 65 % des Absatzes. Dominiert durch Discounter (Aldi, Lidl) mit Eigenmarken (Quellwasser, oft kein echtes Mineralwasser) und Vollsortimenter (Edeka, Rewe) mit breitem Markensortiment. **Getränkefachhandel/Getränkemärkte**: Ca. 25 % — hier kaufen bewusste Verbraucher, die Markenvielfalt schätzen. Höherer Mehrweganteil. **Gastronomie**: Ca. 5 %. Höchste Margen, aber komplexe Logistik. Premiummarken dominieren. **Online/Lieferdienste**: Wachsend, aber logistisch aufgrund des Gewichts herausfordernd (ca. 3 %). Flaschenpost.de als disruptiver Player.
-
-### Preissegmentierung
-
-**Discountpreise**: 0,13–0,25 EUR/l (Eigenmarken, oft Quellwasser). **Markenmineralwasser Standardpreis**: 0,30–0,60 EUR/l (Gerolsteiner, Volvic, Adelholzener). **Premiumpreise im Handel**: 0,80–3,00 EUR/l (Evian, San Pellegrino, Voss). **Gastronomiepreise**: 3,00–12,00 EUR/Flasche (0,25–0,75 l) — bei Premiumwässern bis 20 EUR+. Die Marge im Gastronomiebereich ist für Wasser oft höher als für Wein (prozentualer Aufschlag 400–800 %).
-
-### Trends und Herausforderungen
-
-**Sinkender Kohlensäure-Anteil**: "Classic/Sprudel" verliert kontinuierlich Marktanteile an "Medium" und "Naturell/Still". 2000: Classic >50 %, 2023: ca. 35 %. Still wächst am stärksten. **Convenience und Kleingebinde**: 0,5-l-PET und 0,33-l-Glas wachsen auf Kosten der 1,0-l- und 1,5-l-Formate. **Premiumisierung**: Wachsendes Segment für höherpreisige Wässer mit Herkunftsgeschichte. **Leitungswasser-Trend**: SodaStream und vergleichbare Geräte wachsen signifikant. Etwa 20 % der deutschen Haushalte nutzen Wassersprudler. **Bio-/Naturland-Mineralwasser**: Einzelne Brunnen (z. B. Bad Dürrheimer) lassen sich nach Bio-Kriterien zertifizieren — primär für den Schutz des Einzugsgebiets.
-
-### Wettbewerb und Regulierung
-
-Das deutsche Kartellrecht und die Fusionskontrolle begrenzen die Marktkonzentration. Der Verband Deutscher Mineralbrunnen (VDM) vertritt die Branche und setzt sich für Qualitätsstandards, Mehrwegförderung und die Abgrenzung zu Leitungswasser ein. Die Branche steht unter Druck durch die ESG-Debatte (Environmental, Social, Governance), steigende Energiekosten und den Wettbewerb mit Leitungswasser und Filterlösungen.`,
-      quiz: [
+      "title": "Der deutsche Mineralwassermarkt: Strukturen und Zahlen",
+      "content": "## Den deutschen Mineralwassermarkt mit sauberer Datenbasis lesen\n\nMarktdaten brauchen Jahr, Quelle und Kategorie. Mineralwasser, Heilwasser, aromatisierte Getränke und sämtliche abgepackten Wässer dürfen nicht stillschweigend als derselbe Markt behandelt werden.\n\n### Ein datiertes Branchenbeispiel\n\nDie am 12.10.2026 gelesene Marktdatenseite des **Verbands Deutscher Mineralbrunnen (VDM)** berichtet für **2024** einen Pro-Kopf-Verbrauch von **125,6 Litern Mineral- und Heilwasser** sowie rund **9,9 Milliarden Litern Absatz**. Das sind keine bereits gemessenen Werte für 2026 und keine Statistik über den gesamten Leitungswasserkonsum.\n\nDie Seite nennt für 2024 rund 39,5 % Marktanteil für Wasser mit wenig CO₂, 32,8 % für Wasser mit viel CO₂ und etwa 25 % für stilles Wasser. Stilles Wasser verzeichnet dort ein Plus von 7 %. Quelle, Zeitraum und Begriffsabgrenzung gehören zu jeder Verwendung dieser Zahlen.\n\n### Vertrieb und Positionierung\n\nMineralwasser wird im Lebensmittelhandel, Getränkefachhandel und in der Gastronomie angeboten. Regionale Brunnen, Herstellermarken und Handelsmarken sind zu unterscheiden. Aus einer günstigen Eigenmarke folgt nicht, dass der Inhalt bloß Quellwasser ist; die gesetzliche Produktbezeichnung entscheidet.\n\n### Preise und Konkurrenz\n\nGebindegröße, Mehrweg oder Einweg, Transport, Vertrieb und Markenposition beeinflussen Preise. Hier werden keine ungesicherten Top-5-Marktanteile, Margen oder aktuellen Regalpreise verwendet. Für konkrete Sortimentsentscheidungen braucht ein Betrieb seine tatsächlichen Einkaufs- und Verkaufsdaten.\n\nBranchenquellen liefern nützliche Marktdaten, vertreten aber zugleich Brancheninteressen. Gesundheits- und Umweltbehauptungen werden deshalb zusätzlich anhand unabhängiger fachlicher oder behördlicher Quellen eingeordnet.",
+      "quiz": [
         {
-          question:
-            "Wie hoch ist der Pro-Kopf-Verbrauch von abgepacktem Wasser in Deutschland (2023)?",
-          options: [
-            "Ca. 70 Liter pro Jahr",
-            "Ca. 130 Liter pro Jahr",
-            "Ca. 200 Liter pro Jahr",
-            "Ca. 300 Liter pro Jahr",
+          "question": "Auf welche Kategorie bezieht sich der VDM-Verbrauch von 125,6 Litern für 2024?",
+          "options": [
+            "Alles Wasser einschließlich Hausverbrauch",
+            "Mineral- und Heilwasser",
+            "Nur stilles Mineralwasser",
+            "Nur Leitungswasser"
           ],
-          correct: 1,
-          explanation:
-            "Deutschland liegt mit ca. 130 Litern pro Kopf auf Platz 2 in Europa hinter Italien (ca. 200 l). Der Gesamtmarkt umfasst rund 10,8 Milliarden Liter pro Jahr.",
+          "correct": 1,
+          "explanation": "Die Kategorie ist ausdrücklich Mineral- und Heilwasser. Jahr und Kategorie dürfen bei Vergleichen nicht entfallen."
         },
         {
-          question:
-            "Welcher Kohlensäuregrad gewinnt in Deutschland am stärksten an Marktanteilen?",
-          options: [
-            "Classic/Sprudel — das traditionelle Segment wächst",
-            "Still/Naturell — der Trend geht zu stillem Wasser",
-            "Medium — stagniert auf hohem Niveau",
-            "Extra-Kohlensäure (>8.000 mg/l CO₂) — ein neues Segment",
+          "question": "Welche Entwicklung berichtet die geprüfte VDM-Seite für stilles Wasser 2024?",
+          "options": [
+            "Ein Wachstum von rund 7 %",
+            "Einen vollständigen Marktaustritt",
+            "Keine Verkäufe",
+            "Ein gesetzliches Verbot"
           ],
-          correct: 1,
-          explanation:
-            "Stilles Wasser ist das am stärksten wachsende Segment. Classic/Sprudel hat von über 50 % (2000) auf ca. 35 % (2023) verloren. Der Trend zu leichterem, weniger kohlensäurehaltigem Wasser ist international und generationsübergreifend.",
+          "correct": 0,
+          "explanation": "Die Angabe ist eine datierte Branchenstatistik für 2024, keine Prognose für spätere Jahre."
         },
         {
-          question:
-            "Warum ist der deutsche Mineralwassermarkt im internationalen Vergleich besonders vielfältig?",
-          options: [
-            "Weil Deutschland die meisten Einwohner in Europa hat",
-            "Weil das Mehrwegsystem regionale Brunnen begünstigt und die geologische Vielfalt über 820 verschiedene Mineralwässer ermöglicht",
-            "Weil die EU Subventionen für Mineralwasserbrunnen zahlt",
-            "Weil deutsche Konsumenten grundsätzlich mehr Marken kaufen",
+          "question": "Wie erkennt man die Wasserkategorie einer Eigenmarke?",
+          "options": [
+            "Am niedrigen Preis",
+            "An der Produktbezeichnung und Kennzeichnung",
+            "An der Supermarktgröße",
+            "An der Farbe des Deckels"
           ],
-          correct: 1,
-          explanation:
-            "Zwei Faktoren wirken zusammen: (1) Das Mehrwegsystem bevorzugt kurze Transportwege und stärkt so regionale Brunnen. (2) Die geologische Vielfalt Deutschlands (Vulkan, Kalk, Granit, Sandstein) erzeugt eine einzigartige Bandbreite an Mineralwasserprofilen.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Preis und Vertriebsform legen nicht fest, ob der Inhalt Mineral-, Quell- oder Tafelwasser ist."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 18 — Wasser in der Gastronomie
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Mineralwasser in der Gastronomie: Konzepte und Kalkulation",
-      content: `## Wasser als Umsatzträger und Differenzierungsmerkmal
-
-In der gehobenen Gastronomie hat sich Mineralwasser vom selbstverständlichen Grundprodukt zum bewussten Premiumangebot gewandelt. Restaurants mit durchdachtem Wasserkonzept differenzieren sich vom Wettbewerb, steigern ihren Umsatz und bieten dem Gast ein ganzheitliches Genusserlebnis. Für den Wassersommelier ist die Gastronomie das wichtigste Betätigungsfeld.
-
-### Die Wasserkarte — Aufbau und Inhalt
-
-Eine professionelle Wasserkarte folgt einer klaren Struktur. **Gliederung nach Kohlensäure**: 1. Stille Wässer, 2. Medium/Leicht prickelnde Wässer, 3. Classic/Sprudel. **Innerhalb jeder Kategorie**: Sortierung nach Mineralisierung aufsteigend (leicht → kräftig) oder nach Herkunft (regional → national → international). **Mindestinformationen pro Position**: Markenname, Herkunftsregion/-land, Gesamtmineralisierung (TDS in mg/l), Kohlensäuregrad, Gebindegröße, Preis. **Optionale Angaben**: Hauptmineralstoffe, Pairing-Empfehlung ("Ideal zu Fisch und Meeresfrüchten"), Quellengeschichte (kurz).
-
-**Umfang der Karte**: Mindestens 4 Positionen (2 still, 2 prickelnd). Gehobene Gastronomie: 8–15 Positionen. Spitzenrestaurants: 20–40+ Positionen. Der "Wasserkellermeister" des Restaurants "Aqua" in Wolfsburg (3 Michelin-Sterne) führte zeitweise über 40 Wässer.
-
-### Preiskalkulation
-
-**Einkaufspreise** (netto, Gastro-Konditionen): Regionales Mehrwegwasser: 0,15–0,40 EUR/l. Premiumimport: 0,80–4,00 EUR/l. **Verkaufspreise** (brutto): Der Standardaufschlag liegt bei 300–500 % auf den Einkaufspreis. Eine 0,75-l-Flasche San Pellegrino (EK: ca. 1,00 EUR) wird typisch für 5,50–8,50 EUR verkauft. Eine 0,75-l-Flasche Voss (EK: ca. 2,50 EUR) für 9,00–14,00 EUR. **Deckungsbeitrag**: Wasser hat in der Gastronomie einen der höchsten Deckungsbeiträge aller Getränke — oft höher als Wein (prozentual). Die Lagerkosten sind minimal, die Handhabung einfach, der Verderb quasi null.
-
-### Service-Standards
-
-**Anbieten**: Wasser wird aktiv angeboten, nicht erst auf Nachfrage. "Darf ich Ihnen zu Beginn ein Wasser empfehlen?" — nicht: "Möchten Sie etwas trinken?" Die offene Frage impliziert "Leitungswasser reicht", die spezifische Frage wertschätzt den Gast und das Produkt.
-
-**Empfehlung**: Auf Basis des Menüs empfehlen: "Zu Ihrem Sashimi-Vorspeise empfehle ich ein stilles, leichtes Wasser aus den französischen Alpen. Zum Hauptgang, dem gegrillten Rinderfilet, passt ein kräftigeres Mineralwasser mit dezenter Kohlensäure."
-
-**Einschenken**: Rechtshändig, von rechts, Flasche mit Etikett zum Gast. Glas zu zwei Dritteln füllen. Nachschenken, wenn das Glas halb leer ist. Flasche im Kühler am Tisch oder in Griffweite des Gastes platzieren.
-
-**Temperatur**: Stilles Wasser: 12–14 °C (nicht eiskalt). Kohlensäurehaltiges: 8–10 °C. Im Sommer ggf. 1–2 °C kühler. Eis im Wasserglas ist in der gehobenen Gastronomie ein Fauxpas — es verwässert und verändert den Mineralstoffgehalt.
-
-### Leitungswasser in der Gastronomie — die Gretchenfrage
-
-In vielen Ländern ist es üblich, kostenloses Leitungswasser ("Tap Water") zu servieren. In Deutschland besteht keine gesetzliche Pflicht dazu. Die Branche ist gespalten: Einige Gastronomen sehen die kostenlose Bereitstellung als Gastfreundschaft, andere als Umsatzverlust. Der professionelle Ansatz: Kostenloses Leitungswasser als Option anbieten (Gastfreundschaft), aber gleichzeitig eine attraktive Wasserkarte führen, die den Gast durch Qualität und Beratung überzeugt. In Frankreich, Italien und Spanien ist die "carafe d'eau" zum Essen Standard — trotzdem floriert dort der Mineralwasserverkauf.
-
-### Zapfanlagen und offenes Wasser
-
-**Wasserzapfanlagen** (z. B. BRITA Vivreau, Grohe Blue, BWT): Gefiltertes, gekühltes und optional kohlensäureversetztes Leitungswasser in Karaffen. Argument Pro: Nachhaltigkeit, keine Flaschenlogistik, geringere Kosten. Argument Contra: Es handelt sich um Tafelwasser, nicht um natürliches Mineralwasser — rechtlich und qualitativ ein anderes Produkt. Die Auslobung muss transparent sein. Viele Spitzenrestaurants setzen bewusst auf Flaschenwasser als Qualitätsstatement.`,
-      quiz: [
+      "title": "Mineralwasser in der Gastronomie: Konzepte und Kalkulation",
+      "content": "## Ein verständliches Wasserkonzept für die Gastronomie\n\nEin Wasserkonzept beginnt mit dem Gastwunsch: still oder prickelnd, mild oder kräftig, Flasche oder transparent beschriebenes Leitungswasserangebot. Die folgenden Vorschläge sind **Betriebspraxis**, keine allgemeine Servicepflicht.\n\n### Die Karte\n\nEine überschaubare Auswahl nach Kohlensäure und Geschmack gliedern. Herkunft, konkrete Variante, Gebindegröße und Preis nennen; bei Bedarf den Analysenauszug zur Beratung heranziehen. Pairingempfehlungen als Vorschläge darstellen. Eine bestimmte Mindestzahl an internationalen Marken ist nicht erforderlich, um kompetent zu beraten.\n\n### Kalkulation\n\nEinkauf, Personal, Lager, Reinigung, Leergut, Bruch und Steuer unterscheiden. Ein Aufschlag ist nicht gleich Gewinnmarge oder Deckungsbeitrag. Beispiel: Bei 1 € Netto-Wareneinsatz und 4 € Netto-Verkaufspreis beträgt der Aufschlag 300 %; der Umsatz abzüglich Wareneinsatz ist 3 €, bevor andere Kosten abgezogen sind. Dies ist ein Rechenbeispiel, kein Marktpreis oder vorgeschriebener Aufschlag.\n\n### Ausschank\n\nSaubere Gefäße, hygienische Handhabung und die gewünschte Temperatur stehen im Vordergrund. Flascheninhalt und Quellvariante dürfen nicht verwechselt werden. Eis aus anderem Wasser verändert beim Schmelzen das Profil, ist aber nicht grundsätzlich verboten oder unprofessionell; nach dem Gastwunsch fragen.\n\n### Offenes Wasser und Anlagen\n\nGefiltertes oder gesprudeltes Leitungswasser aus einer Anlage ist nicht automatisch natürliches Mineralwasser. Ebenso muss es nicht pauschal jedes Mal als Tafelwasser eingeordnet werden; die konkrete Herstellung und Auslobung entscheiden. Anlage, Filter und Leitungen nach Herstellerhinweisen und betrieblichem Hygienekonzept warten.\n\nHausentscheidungen zu Leitungswasserpreis und Service nicht als für alle Länder gleiche Rechtslage darstellen.",
+      "quiz": [
         {
-          question:
-            "Welchen Aufschlag auf den Einkaufspreis setzt die Gastronomie typischerweise für Mineralwasser an?",
-          options: [
-            "50–100 %",
-            "100–200 %",
-            "300–500 %",
-            "1.000–2.000 %",
+          "question": "Wie hoch ist der Aufschlag im Rechenbeispiel bei 1 € Wareneinsatz und 4 € Netto-Verkaufspreis?",
+          "options": [
+            "75 %",
+            "100 %",
+            "300 %",
+            "400 %"
           ],
-          correct: 2,
-          explanation:
-            "Der branchenübliche Aufschlag liegt bei 300–500 %. Wasser hat damit einen der höchsten Deckungsbeiträge aller Gastronomiegetränke — bei minimalem Verderb, geringer Lagerkosten und einfacher Handhabung.",
+          "correct": 2,
+          "explanation": "(4 € − 1 €) / 1 € ergibt 300 % Aufschlag. Weitere Kosten sind damit nicht abgedeckt oder als Gewinn ausgewiesen."
         },
         {
-          question:
-            "Warum gilt Eis im Wasserglas in der gehobenen Gastronomie als Fauxpas?",
-          options: [
-            "Weil Eis zu teuer ist",
-            "Weil schmelzendes Eis das Wasser verwässert und den Mineralstoffgehalt verändert",
-            "Weil Eis ungesund ist",
-            "Weil es in Deutschland gesetzlich verboten ist",
+          "question": "Was bewirkt Eis aus einem anders zusammengesetzten Wasser beim Schmelzen?",
+          "options": [
+            "Es ist immer gesundheitsschädlich",
+            "Es kann das ausgewählte Mineralstoffprofil verdünnen oder verändern",
+            "Es sterilisiert das Getränk",
+            "Es ist gesetzlich verboten"
           ],
-          correct: 1,
-          explanation:
-            "Eis verwässert das Mineralwasser beim Schmelzen — die sorgfältig ausgewählte Mineralisierung wird verdünnt, der Charakter des Wassers verfälscht. Stattdessen: vorgekühlt servieren und Flasche im Kühler halten.",
+          "correct": 1,
+          "explanation": "Eis verändert die Zusammensetzung und Temperatur. Die Serviceentscheidung kann am Gastwunsch ausgerichtet werden."
         },
         {
-          question:
-            "Was ist der professionelle Ansatz zum Thema Leitungswasser in der gehobenen Gastronomie?",
-          options: [
-            "Leitungswasser kategorisch ablehnen",
-            "Nur Leitungswasser anbieten, um nachhaltig zu sein",
-            "Leitungswasser als Option anbieten, aber durch eine überzeugende Wasserkarte und kompetente Beratung Mehrwert schaffen",
-            "Leitungswasser zum selben Preis wie Mineralwasser verkaufen",
+          "question": "Was ist bei Wasser aus einer Schankanlage wichtig?",
+          "options": [
+            "Es immer als natürliches Mineralwasser verkaufen",
+            "Herstellung und Kategorie transparent beschreiben und Hygiene beachten",
+            "Es nie reinigen",
+            "Nur die Farbe der Karaffe zeigen"
           ],
-          correct: 2,
-          explanation:
-            "Der professionelle Ansatz vereint Gastfreundschaft (Leitungswasser als Option) mit Qualitätsanspruch (attraktive Wasserkarte). Kompetente Beratung durch den Sommelier überzeugt den Gast durch Mehrwert, nicht durch Verweigerung.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "Gefiltertes oder gesprudeltes Leitungswasser erhält nicht allein durch die Anlage eine Mineralwasseranerkennung."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 19 — Lagerung und Haltbarkeit
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Lagerung, Haltbarkeit und Qualitätssicherung",
-      content: `## Mineralwasser richtig lagern — mehr als Selbstverständlichkeit
-
-Obwohl Mineralwasser als eines der haltbarsten Lebensmittel gilt, kann falsche Lagerung die Qualität erheblich beeinträchtigen. Geschmacksveränderungen, Kohlensäureverlust und im schlimmsten Fall mikrobiologische Probleme sind die Folge. Ein Wassersommelier muss die Lagerbedingungen kennen und überwachen.
-
-### Mindesthaltbarkeitsdatum (MHD)
-
-Natürliches Mineralwasser trägt ein MHD, obwohl es — korrekt gelagert — praktisch unbegrenzt haltbar ist. Das MHD ist beim Mineralwasser weniger ein Verfallsdatum als ein **Qualitätsversprechen des Abfüllers**: Bis zu diesem Datum garantiert er die auf dem Etikett deklarierte Zusammensetzung, den Kohlensäuregehalt und die sensorische Qualität. **Typische MHD-Fristen**: Glasflasche: 24 Monate. PET-Flasche: 12–18 Monate (kürzerer CO₂-Verlust durch Permeabilität). Tetra Pak/Dose: 12–24 Monate. Nach Ablauf des MHD ist Mineralwasser in der Regel weiterhin sicher trinkbar — es kann aber sensorisch beeinträchtigt sein (weniger Kohlensäure, Geschmacksveränderung bei PET).
-
-### Optimale Lagerbedingungen
-
-**Temperatur**: 10–15 °C ideal. Kühle, konstante Temperatur verzögert CO₂-Verlust und chemische Veränderungen. Vermeiden: Temperaturen >25 °C (beschleunigt Acetaldehyd-Migration aus PET, CO₂-Verlust) und Frost (<0 °C — Flaschenbeschädigung, Eissprengung bei Glas).
-
-**Licht**: Dunkel lagern. UV-Strahlung fördert Algenbildung (bei klaren PET-Flaschen), kann photochemische Reaktionen auslösen und Geschmack verändern. Glasflaschen in Grün oder Braun bieten natürlichen Lichtschutz. Klare Glasflaschen und PET ebenfalls dunkel lagern.
-
-**Geruch**: Wasser ist geruchsempfindlich — besonders in PET-Flaschen, die nicht zu 100 % gasdicht sind. Nicht neben stark riechenden Produkten lagern (Reinigungsmittel, Lacke, Obst, Gewürze). Im Getränkelager separater Bereich.
-
-**Position**: Flaschen stehend lagern. Liegend gelagerte Flaschen mit Metallkappen können Korrosion am Verschluss zeigen. PET-Flaschen liegend sind unproblematisch, aber stehend platzsparender.
-
-### Qualitätsprobleme erkennen
-
-**Kohlensäureverlust**: Beim Öffnen kein oder nur geringes Zischen. Geschmack flach, Perlage schwach. Ursache: Undichter Verschluss, Permeation durch PET, zu lange oder zu warme Lagerung.
-
-**Geschmacksveränderung**: Plastikartiger Geschmack (Acetaldehyd aus PET), metallisch (Korrosion am Verschluss), muffig/erdig (mikrobielle Kontamination), chlorartig (fehlerhafte Produktion). Jede Geschmacksabweichung ist ein Reklamationsgrund.
-
-**Trübung**: Normales Mineralwasser ist klar und transparent. Leichte Opaleszenz kann bei sehr calciumreichen Wässern vorkommen (Calciumcarbonat-Ausfällung — harmlos). Deutliche Trübung oder Flockenbildung deutet auf mikrobielle Kontamination oder chemische Ausfällungen hin — nicht konsumieren.
-
-**Verfärbung**: Grünliche Verfärbung in klaren Flaschen: Algenbildung durch Lichteinwirkung. Bräunliche Verfärbung: Eisenausfällung (selten bei modernen Brunnen). Beide Fälle: nicht konsumieren.
-
-### Qualitätssicherung im Brunnenbetrieb
-
-Deutsche Mineralwasserbrunnen unterliegen einem strengen Kontrollsystem: **Eigenkontrollen** (tägliche bis wöchentliche Analysen im Betriebslabor), **HACCP-System** (Hazard Analysis and Critical Control Points — Gefahrenanalyse und kritische Kontrollpunkte), **Externe Audits** (durch zugelassene Labore, mind. jährlich), **Amtliche Lebensmittelüberwachung** (unangekündigte Kontrollen durch die Landesbehörden). Zusätzlich zertifizieren sich viele Brunnen nach **IFS Food** (International Featured Standards) oder **DIN EN ISO 22000** (Lebensmittelsicherheits-Managementsystem).
-
-### Lagerung in der Gastronomie
-
-**Empfehlung für Gastronomen**: Lieferrhythmus so wählen, dass Vorräte innerhalb von 4–6 Wochen abverkauft werden (FIFO-Prinzip: First In, First Out). Lager kühl (max. 18 °C), dunkel und fern von Geruchsquellen (Küche!). PET-Gebinde besonders zügig verbrauchen. Glasflaschen-Vorrat kann längerfristig gehalten werden. Rückstellmuster jeder Lieferung für Reklamationsfälle aufbewahren.`,
-      quiz: [
+      "title": "Lagerung, Haltbarkeit und Qualitätssicherung",
+      "content": "## Lagerung und Haltbarkeit: Etikett und Hygiene zuerst\n\nDas Mindesthaltbarkeitsdatum bezieht sich auf ungeöffnete Ware bei den angegebenen Lagerbedingungen. Es ist kein universelles Verfallsdatum; ebenso ist es keine Zusage, Mineralwasser sei praktisch unbegrenzt haltbar.\n\n### Ungeöffnete Flaschen\n\nHerstellerhinweise beachten, vor starker Wärme, direktem Sonnenlicht und Frost schützen. Beschädigte Flaschen oder Verschlüsse nicht verwenden. Pauschale Fristen wie „Glas genau 24 Monate“ sind nicht für jedes Produkt verbindlich. Das BfR erklärt, dass Kohlensäure aus PET leichter entweichen kann als aus Glas; dadurch ist die Mindesthaltbarkeit in PET häufig kürzer.\n\n### Nach dem Öffnen\n\nMöglichst zeitnah verbrauchen, verschlossen und gekühlt lagern. Direktes Trinken aus der Flasche kann Keime eintragen; die Flasche dann nicht mit anderen teilen. Das BfR weist darauf hin, dass hygienisch behandelte, verschlossene und gekühlte Flaschen noch nach mehreren Tagen verwendet werden können. Daraus folgt keine feste, für alle Nutzungen sichere Tageszahl.\n\n### Abweichungen\n\nUnerwartete Trübung, Flocken, Verfärbung, fremder Geruch oder ein beschädigter Verschluss sind Gründe, den Ausschank zu stoppen und den Lieferanten zu kontaktieren. Nicht allein nach dem Aussehen zwischen harmloser Ausfällung und Kontamination entscheiden. Geruchs- oder Geschmackstest sind kein sicherer Keimnachweis.\n\n### Lagerorganisation\n\n**FIFO** bedeutet „First In, First Out“: zuerst eingelagerte Ware zuerst verwenden. Zusätzlich nach dem frühesten MHD ordnen, wenn Lieferungen unterschiedliche Fristen haben. Öffnungszeitpunkte und Lagerbedingungen im betrieblichen Ablauf dokumentieren. Kontroll- und Auditintervalle richten sich nach dem tatsächlichen Betrieb, nicht nach einer hier erfundenen jährlichen Pflicht für jedes externe Labor.",
+      "quiz": [
         {
-          question:
-            "Warum haben PET-Flaschen ein kürzeres MHD als Glasflaschen?",
-          options: [
-            "Weil PET schneller zerbricht",
-            "Weil PET nicht zu 100 % gasdicht ist — CO₂ diffundiert langsam durch die Wand und Acetaldehyd kann migrieren",
-            "Weil PET-Flaschen in der Regel kleiner sind",
-            "Weil PET-Flaschen nicht sterilisiert werden können",
+          "question": "Warum kann die Mindesthaltbarkeit in PET kürzer sein als in Glas?",
+          "options": [
+            "PET ist grundsätzlich unhygienisch",
+            "Kohlensäure kann aus PET leichter entweichen",
+            "PET verändert alle Mineralstoffe",
+            "PET darf nicht gekühlt werden"
           ],
-          correct: 1,
-          explanation:
-            "PET ist gasdurchlässig: CO₂ diffundiert langsam nach außen (Kohlensäureverlust), und Acetaldehyd migriert von der Flaschenwand ins Wasser (Geschmacksveränderung). Glas ist für beides undurchlässig, daher längeres MHD.",
+          "correct": 1,
+          "explanation": "Das BfR nennt den leichteren Kohlensäureverlust aus PET. Die konkrete Frist bleibt produktspezifisch."
         },
         {
-          question:
-            "Welche Lagertemperatur ist für Mineralwasser optimal?",
-          options: [
-            "0–5 °C (kühlschrankKalt)",
-            "10–15 °C (kühl)",
-            "18–22 °C (Raumtemperatur)",
-            "Die Temperatur spielt keine Rolle",
+          "question": "Wie lagert man eine bereits geöffnete Wasserflasche?",
+          "options": [
+            "Offen in der Sonne",
+            "Verschlossen und gekühlt, möglichst zeitnah verbrauchen",
+            "Immer unbegrenzt im Lager",
+            "Neben Reinigungsmitteln ohne Verschluss"
           ],
-          correct: 1,
-          explanation:
-            "10–15 °C ist optimal: kühl genug, um CO₂-Verlust und chemische Veränderungen zu minimieren, aber nicht so kalt, dass die Flaschen bei Frost platzen könnten. Konstante Temperatur ist wichtiger als absolute Kälte.",
+          "correct": 1,
+          "explanation": "Diese Handhabung schützt besser vor erneuter Verunreinigung. Sie ist keine unbegrenzte Haltbarkeitsgarantie."
         },
         {
-          question: "Wofür steht das FIFO-Prinzip in der Lagerhaltung?",
-          options: [
-            "Fast In, Fast Out — schnellstmöglich durchrotieren",
-            "First In, First Out — zuerst eingelagerte Ware wird zuerst verkauft",
-            "Fill In, Fill Out — Lager immer voll halten",
-            "Filter In, Filter Out — Qualitätskontrolle bei Ein- und Ausgang",
+          "question": "Wofür steht FIFO?",
+          "options": [
+            "Fast In, Fast Out",
+            "First In, First Out — zuerst eingelagerte Ware zuerst verwenden",
+            "Fill In, Fill Out",
+            "Filter In, Filter Out"
           ],
-          correct: 1,
-          explanation:
-            "FIFO (First In, First Out) bedeutet, dass die älteste Ware zuerst verkauft wird. In der Gastronomie essenziell, um sicherzustellen, dass kein Mineralwasser unnötig lange lagert und die Qualität optimal bleibt.",
-        },
-      ],
+          "correct": 1,
+          "explanation": "FIFO ist ein Organisationsprinzip. Unterschiedliche MHD-Fristen sind zusätzlich zu berücksichtigen."
+        }
+      ]
     },
-
-    // ═══════════════════════════════════════════════════════════════
-    // Lektion 20 — Trends: Flavoured Water, Premium, Zukunft
-    // ═══════════════════════════════════════════════════════════════
     {
-      title: "Trends und Zukunft: Flavoured Water, Premium und Innovation",
-      content: `## Die Zukunft des Mineralwassers — Zwischen Tradition und Disruption
-
-Der Mineralwassermarkt ist alles andere als statisch. Neue Konsumententrends, technologische Innovationen, gesundheitliche Debatten und die Nachhaltigkeitsbewegung transformieren die Branche rasant. Ein Wassersommelier muss diese Trends kennen und einordnen können — als Berater im Handel, in der Gastronomie und in der Industrie.
-
-### Flavoured Water — Das Wachstumssegment
-
-**Aromatisiertes Mineralwasser** ist das am stärksten wachsende Segment im Wassermarkt. Geschmacksrichtungen wie Zitrone, Gurke-Minze, Ingwer, Grapefruit-Rosmarin, Himbeere oder Apfel-Holunder sprechen Konsumenten an, die mehr Geschmack als reines Wasser, aber weniger Zucker als Limonade wollen. **Ohne Zucker vs. mit Zucker**: Der Trend geht klar zu "zero sugar" — Aromatisierung durch natürliche Essenzen, Fruchtextrakte und Botanicals ohne Kalorien. Marken wie Volvic Touch, Gerolsteiner Naturell + Frucht, Apollinaris Lemon setzen auf diese Strategie. **Rechtliche Einordnung**: Aromatisiertes Mineralwasser darf sich weiterhin "natürliches Mineralwasser mit Fruchtgeschmack" nennen, sofern die Basis ein anerkanntes Mineralwasser ist und die Zusätze den Vorschriften entsprechen. Wird jedoch Zucker zugesetzt, gelten andere Kennzeichnungspflichten.
-
-### Functional Water — Wasser mit Mehrwert
-
-**Vitaminwasser**: Mit Vitaminen (B, C, D) angereichertes Wasser — oft auf Tafelwasserbasis. Rechtlich kein Mineralwasser mehr. Kritik: Vitaminzusatz in Wasser ist ernährungsphysiologisch meist überflüssig bei ausgewogener Ernährung. **Proteinwasser**: Wasser mit zugesetztem Kollagenprotein oder Whey. Nischenprodukt im Fitnessbereich. **Wasserstoffwasser (Hydrogen Water)**: Wasser mit gelöstem molekularem Wasserstoff (H₂). Behauptete antioxidative Wirkung. Wissenschaftliche Evidenz: begrenzt, Studien überwiegend in-vitro oder tierexperimentell. Premiumpreise (3–5 EUR/0,5 l). **CBD-Wasser**: Wasser mit Cannabidiol — rechtlich in Deutschland in einer Grauzone. Trend aus den USA, in Europa noch marginal.
-
-### Premium- und Luxuswasser
-
-Der Premium-Trend verstärkt sich: Konsumenten sind bereit, für Herkunft, Design und Storytelling deutlich mehr zu zahlen. **Design-Flaschen**: Voss (norwegisches Zylinderdesign), Fillico (Japan, 24-Karat-Gold-Krone, >100 EUR), Bling H₂O (Swarovski-Kristalle). Die Flasche wird zum Statussymbol. **Single-Origin-Konzept**: Wie bei Kaffee oder Schokolade — das Wasser wird über seine einzigartige Herkunft definiert. "Terroir"-Marketing. **Vintage Water**: Vereinzelt werden Wässer mit besonders langer Verweilzeit im Aquifer (>10.000 Jahre) als "Vintage" oder "Ancient Water" vermarktet. Beispiel: 10 Thousand BC (kanadisches Gletscherwasser).
-
-### Nachhaltigkeit als Kauftreiber
-
-**Plastikfreie Marken**: Wachsende Zahl von Marken, die ausschließlich in Glas oder Aluminium abfüllen. **CO₂-Neutralität**: Brunnen investieren in Klimaneutralität (Kompensation, Eigenstromerzeugung). **Refill-Stationen**: Öffentliche Trinkwasserspender und Refill-Initiativen ("Refill Deutschland") fördern Leitungswasserkonsum und fordern die Branche heraus. **Kreislaufwirtschaft**: 100 % rPET-Flaschen, Leichtgewicht-Glas, Mehrweg-Optimierung.
-
-### Technologische Trends
-
-**Smarte Trinkflaschen**: IoT-verbundene Flaschen, die den Wasserkonsum tracken und an das Trinken erinnern (HidrateSpark, Larq). **UV-Reinigung**: Tragbare UV-C-Flaschen (Larq, CrazyCap) für die Trinkwasseraufbereitung unterwegs. **Atmosphärisches Wasser**: Geräte, die Trinkwasser aus Luftfeuchtigkeit gewinnen (Watergen, Source Hydropanels). Noch Nische, aber potenziell disruptiv in wasserarmen Regionen.
-
-### Ausblick: Wasser 2030
-
-Die Megatrends Gesundheit, Nachhaltigkeit und Premiumisierung werden den Markt weiter prägen. Mineralwasser bleibt als Naturprodukt mit geschützter Herkunft einzigartig positioniert — kein technologisches Substitut kann diese Authentizität ersetzen. Der Wassersommelier wird an Bedeutung gewinnen: als Berater in der Gastronomie, als Produktentwickler in der Industrie, als Kommunikator in den Medien und als Botschafter für Wasserqualität und -vielfalt. Die Herausforderung: Tradition und Innovation zu verbinden, Premiumqualität mit Nachhaltigkeit zu vereinen und den Konsumenten für die Vielfalt des Wassers zu begeistern.`,
-      quiz: [
+      "title": "Trends und Zukunft: Flavoured Water, Premium und Innovation",
+      "content": "## Trends prüfen: Produktkategorie, Zutaten und Belege\n\nNeue Wassergetränke können geschmacklich interessant sein. Die Basis aus natürlichem Mineralwasser verleiht einem fertigen Mischgetränk aber nicht automatisch dessen rechtlichen Status oder besondere Gesundheitswirkungen.\n\n### Wasser mit Geschmack\n\nNatürlichem Mineralwasser dürfen grundsätzlich außer dem gesetzlich zulässigen CO₂ keine freien Zutaten wie Aromen, Zucker oder Vitamine zugesetzt werden. Ein aromatisiertes Produkt ist daher als **Getränk auf Mineralwasserbasis** beziehungsweise nach seiner tatsächlichen Kategorie zu beschreiben, nicht als unverändertes natürliches Mineralwasser. Zuckerfrei, kalorienarm und ohne zugesetzten Zucker sind unterschiedliche Angaben; Zutatenliste und Nährwerttabelle prüfen.\n\n### Funktionale Zusätze\n\nVitamin-, Protein- oder Wasserstoffgetränke sind kein automatischer Gesundheitsgewinn. Ein Zutatentrend ist kein Beleg für eine konkrete Wirkung. Bei CBD gelten zusätzlich Novel-Food- und gegebenenfalls Arzneimittelanforderungen; „rechtliche Grauzone“ ist keine Freigabe zum Verkauf. Der Status des konkreten Produkts muss geprüft sein.\n\n### Herkunft und Design\n\n„Single Origin“ beschreibt im Marketing die Betonung einer bestimmten Herkunft. „Vintage“, „Ancient“ oder „Luxury“ sind keine amtlichen Qualitätsklassen für Wasser. Lange unterirdische Aufenthaltszeit, Designflasche und hoher Preis beweisen keine Überlegenheit.\n\n### Technik und Nachhaltigkeit\n\nRefill, leichte Gebinde, Recyclingmaterial oder technische Wasseraufbereitung können interessante Konzepte sein. Entscheidend sind nachvollziehbare Systemdaten und sichere Anwendung. Ein UV-Gerät oder Luftwassergewinner ist weder ein Mineralwasserbrunnen noch allein durch sein Werbeversprechen ein Sicherheitsnachweis.\n\nIm Handel Trends als beobachtbare Produktkonzepte erklären; zukünftige Marktführerschaft oder gesundheitliche Vorteile nicht als bereits erwiesene Tatsache darstellen.",
+      "quiz": [
         {
-          question:
-            "Was ist der dominierende Trend bei aromatisiertem Mineralwasser?",
-          options: [
-            "Immer süßer und zuckerhaltiger",
-            "Zero-Sugar-Aromatisierung durch natürliche Essenzen und Botanicals ohne Kalorien",
-            "Nur künstliche Aromen, da natürliche zu teuer sind",
-            "Alkoholhaltige Wasser-Mixgetränke",
+          "question": "Wie ist ein mit Aroma versetztes Produkt auf Mineralwasserbasis einzuordnen?",
+          "options": [
+            "Weiterhin stets unverändertes natürliches Mineralwasser",
+            "Als Getränk auf Mineralwasserbasis mit eigener zutreffender Produktbezeichnung",
+            "Automatisch als Heilwasser",
+            "Als Wasser ohne Zutaten"
           ],
-          correct: 1,
-          explanation:
-            "Der klare Trend geht zu kalorienfreier Aromatisierung durch natürliche Fruchtessenzen, Kräuter und Botanicals. Konsumenten wollen Geschmack ohne Zucker — die 'Zero Sugar'-Varianten wachsen am stärksten.",
+          "correct": 1,
+          "explanation": "Die natürliche Mineralwasserkategorie erlaubt keine freie Aromazugabe. Das fertige Getränk ist entsprechend zu kennzeichnen."
         },
         {
-          question:
-            "Was versteht man unter dem 'Single-Origin'-Konzept bei Premiumwasser?",
-          options: [
-            "Das Wasser wird nur an einem Ort verkauft",
-            "Das Wasser wird über seine einzigartige geologische Herkunft und sein Terroir definiert — analog zu Single-Origin-Kaffee",
-            "Das Wasser stammt aus einer einzigen Flasche",
-            "Das Wasser wird nur von einer Person hergestellt",
+          "question": "Was beschreibt „Single Origin“ im Wassermarketing?",
+          "options": [
+            "Eine gesetzlich garantierte Heilwirkung",
+            "Die Betonung einer bestimmten Quelle oder Herkunft",
+            "Eine für alle Länder einheitliche Reinheitsstufe",
+            "Nur einen Vertriebskanal"
           ],
-          correct: 1,
-          explanation:
-            "Single-Origin-Wasser wird über seine spezifische Quelle, Geologie und Herkunftsgeschichte vermarktet — wie bei Kaffee oder Schokolade. Das 'Terroir' des Wassers wird zum Premiumargument: vulkanisch, glazial, artesisch.",
+          "correct": 1,
+          "explanation": "Der Marketingbegriff ist von gesetzlichen Produktkategorien zu unterscheiden."
         },
         {
-          question:
-            "Welche technologische Innovation könnte den Wassermarkt langfristig disruptiv verändern?",
-          options: [
-            "Goldene Flaschendesigns",
-            "Atmosphärische Wassergewinnung — Trinkwasser aus Luftfeuchtigkeit",
-            "Schnellere Abfüllanlagen",
-            "Farbiges Mineralwasser",
+          "question": "Was ist vor einem Verkauf CBD-haltiger Getränke erforderlich?",
+          "options": [
+            "Die Bezeichnung „Grauzone“ reicht aus",
+            "Prüfung der konkreten Verkehrsfähigkeit und gegebenenfalls erforderlicher Zulassungen",
+            "Nur eine schöne Flasche",
+            "Eine hohe Mineralisierung"
           ],
-          correct: 1,
-          explanation:
-            "Atmosphärische Wassergewinnung (z. B. Watergen, Source Hydropanels) erzeugt Trinkwasser aus Luftfeuchtigkeit — unabhängig von Quellen oder Leitungsnetzen. In wasserarmen Regionen potenziell revolutionär, für den Mineralwassermarkt eine langfristige Herausforderung.",
-        },
-      ],
-    },
+          "correct": 1,
+          "explanation": "CBD und neuartige Lebensmittel unterliegen eigenen Anforderungen. Ein Trend hebt sie nicht auf."
+        }
+      ]
+    }
   ],
-
-  // ═══════════════════════════════════════════════════════════════
-  //  ABSCHLUSSPRÜFUNG — 10 Fragen
-  // ═══════════════════════════════════════════════════════════════
-  finalExam: [
+  "finalExam": [
     {
-      question:
-        "Welche Voraussetzung unterscheidet natürliches Mineralwasser am stärksten von Quellwasser?",
-      options: [
-        "Mineralwasser muss Kohlensäure enthalten",
-        "Mineralwasser benötigt eine amtliche Anerkennung mit Nachweis konstanter Zusammensetzung",
-        "Mineralwasser muss in Glasflaschen abgefüllt werden",
-        "Mineralwasser muss mindestens 500 mg/l Mineralstoffe enthalten",
+      "question": "Welche Voraussetzung unterscheidet natürliches Mineralwasser wesentlich von Quellwasser?",
+      "options": [
+        "Immer Kohlensäure",
+        "Amtliche Anerkennung als natürliches Mineralwasser",
+        "Immer Glasflaschen",
+        "Mindestens 500 mg/l Mineralstoffe"
       ],
-      correct: 1,
-      explanation:
-        "Die amtliche Anerkennung — mit über 200 Einzeluntersuchungen über mindestens 2 Jahre und Nachweis einer konstanten Zusammensetzung — ist das zentrale Unterscheidungsmerkmal. Quellwasser benötigt diese aufwändige Prozedur nicht.",
+      "correct": 1,
+      "explanation": "Natürliches Mineralwasser benötigt eine amtliche Anerkennung. Auch Quellwasser hat konkrete gesetzliche Anforderungen."
     },
     {
-      question:
-        "Ein Wasser aus einer Granitquelle im Schwarzwald hat typischerweise welches Profil?",
-      options: [
-        "Hochmineralisiert (>2.000 mg/l TDS) mit viel Natrium und natürlicher Kohlensäure",
-        "Sehr niedrig mineralisiert (<100 mg/l TDS), neutral im Geschmack, mit relativer Betonung von Silizium",
-        "Calciumreich (>500 mg/l Ca) mit hohem Sulfatgehalt",
-        "Hydrogencarbonatreich (>1.500 mg/l HCO₃⁻) mit alkalischem pH-Wert",
+      "question": "Warum lässt sich das Wasserprofil nicht allein aus „Granitquelle“ bestimmen?",
+      "options": [
+        "Weil alle Wasserprofile gleich sind",
+        "Fließwege, Gesteinsmischungen und weitere Bedingungen beeinflussen die Zusammensetzung",
+        "Weil das Etikett unwichtig ist",
+        "Weil jedes Granitwasser über 2.000 mg/l besitzt"
       ],
-      correct: 1,
-      explanation:
-        "Granit ist extrem schwer löslich. Das Ergebnis: sehr niedrige Mineralisierung (<100 mg/l), geschmacklich neutral bis leicht süßlich, mit relativ erhöhtem Siliziumgehalt. Black Forest (TDS: ~30 mg/l) ist ein typisches Beispiel.",
+      "correct": 1,
+      "explanation": "Gesteinslöslichkeit ist ein Einflussfaktor, aber keine feste mg/l-Garantie. Den konkreten Analysenauszug verwenden."
     },
     {
-      question:
-        "Welches Mineral im Mineralwasser hat eine Bioverfügbarkeit, die mit der aus Milch vergleichbar ist?",
-      options: [
-        "Natrium",
-        "Kalium",
-        "Calcium (25–40 % Absorption)",
-        "Fluorid",
+      "question": "Welche Angabe ist für eine sachliche Calciumberatung entscheidend?",
+      "options": [
+        "Eine universelle Absorptionsquote",
+        "Der Calciumgehalt und die tatsächlich getrunkene Menge",
+        "Nur der Preis",
+        "Nur der pH-Wert"
       ],
-      correct: 2,
-      explanation:
-        "Studien belegen, dass Calcium aus Mineralwasser zu 25–40 % absorbiert wird — vergleichbar mit Milchcalcium. Mineralwasser ist daher eine relevante Calciumquelle, besonders für laktoseintolerante Personen und Veganer.",
+      "correct": 1,
+      "explanation": "Der Zufuhrbeitrag ergibt sich aus mg/l und Literzahl. Daraus folgt keine individuelle Heilwirkung."
     },
     {
-      question:
-        "Warum wird das Prickeln von Kohlensäure als 'schmerzhaft' und nicht als 'Berührung' wahrgenommen?",
-      options: [
-        "Weil die Bläschen die Mundschleimhaut mechanisch verletzen",
-        "Weil Carboanhydrase IV auf der Zunge CO₂ in Protonen umwandelt, die Nozizeptoren (Schmerzrezeptoren) stimulieren",
-        "Weil Kohlensäure die Temperatur im Mund senkt",
-        "Weil CO₂ ein Nervengift ist",
+      "question": "Welche CO₂-Bezeichnung beschreibt einen erhöhten Gehalt aus demselben Quellvorkommen?",
+      "options": [
+        "Mit eigener Quellkohlensäure versetzt",
+        "Grundsätzlich still",
+        "Mit Fruchtaroma versetzt",
+        "Tafelwasser"
       ],
-      correct: 1,
-      explanation:
-        "Die Wahrnehmung von Kohlensäure ist primär chemisch, nicht mechanisch: Das Enzym Carboanhydrase IV auf der Zungenoberfläche wandelt CO₂ in H⁺-Ionen um, die Schmerzrezeptoren (Nozizeptoren) aktivieren.",
+      "correct": 0,
+      "explanation": "Die Min/TafelWV unterscheidet unveränderten Quellgehalt, Zusatz aus gleichem Quellvorkommen und CO₂ anderer Herkunft."
     },
     {
-      question:
-        "Welches Wasser sollte NICHT zu einem feinen Champagner serviert werden?",
-      options: [
-        "Acqua Panna (still, TDS 156 mg/l)",
-        "Evian (still, TDS 309 mg/l)",
-        "Gerolsteiner Classic (kohlensäurereich, TDS 2.527 mg/l)",
-        "Lurisia (still, TDS 36 mg/l)",
+      "question": "Wie ist ein stilles Wasser zu Champagner einzuordnen?",
+      "options": [
+        "Als gesetzlich einzige Möglichkeit",
+        "Als möglicher geschmacklicher Gegenpol, abhängig von Gast und Kombination",
+        "Als Schutz vor Alkoholwirkungen",
+        "Als zwingend calciumfreie Wahl"
       ],
-      correct: 2,
-      explanation:
-        "Gerolsteiner Classic hat sowohl starke Kohlensäure (konkurriert mit der Champagner-Perlage) als auch hohe Mineralisierung (überlagert feine Aromen). Zu Champagner gehört stilles, niedrigmineralisiertes Wasser.",
+      "correct": 1,
+      "explanation": "Pairingempfehlungen sind Verkostungsansätze, keine Gesundheits- oder Sicherheitsregeln."
     },
     {
-      question:
-        "Heilwasser unterscheidet sich von Mineralwasser primär durch:",
-      options: [
-        "Es enthält mehr Kohlensäure",
-        "Es unterliegt dem Arzneimittelgesetz (AMG) und benötigt einen Nachweis therapeutischer Wirksamkeit",
-        "Es wird industriell hergestellt",
-        "Es ist nur auf Rezept erhältlich",
+      "question": "Was unterscheidet Heilwasser rechtlich?",
+      "options": [
+        "Mehr Kohlensäure",
+        "Arzneimittelstatus und konkrete zugelassene Angaben",
+        "Immer ein Rezeptzwang",
+        "Industrielle Herstellung"
       ],
-      correct: 1,
-      explanation:
-        "Heilwasser ist rechtlich ein Arzneimittel (AMG), nicht ein Lebensmittel (MTVO). Die Zulassung durch das BfArM erfordert wissenschaftliche Studien zur therapeutischen Wirksamkeit — eine viel höhere Hürde als die Anerkennung als Mineralwasser.",
+      "correct": 1,
+      "explanation": "Heilwasser ist kein gewöhnliches Mineralwasser-Lebensmittel. Gebrauchsinformation und konkreter Status sind maßgeblich."
     },
     {
-      question:
-        "Was empfiehlt die SCA (Specialty Coffee Association) für optimales Kaffeewasser?",
-      options: [
-        "Extrem weiches Wasser (0–2 °dH), um eine starke Extraktion zu ermöglichen",
-        "50–175 mg/l TDS (ca. 3–10 °dH) — die Balance zwischen Unter- und Überextraktion",
-        "Hartes Wasser (>20 °dH) für einen kräftigen Geschmack",
-        "Destilliertes Wasser für absolute Neutralität",
+      "question": "Welche Aussage über Kaffeewasser ist richtig?",
+      "options": [
+        "TDS lässt sich immer direkt in °dH umrechnen",
+        "Härte, Alkalinität und TDS sind getrennt zu betrachten",
+        "Ein hoher TDS-Wert garantiert gute Extraktion",
+        "Nur die Wasserfarbe zählt"
       ],
-      correct: 1,
-      explanation:
-        "Die SCA empfiehlt einen TDS-Korridor von 50–175 mg/l. Zu weiches Wasser extrahiert zu aggressiv (sauer), zu hartes Wasser unterextrahiert (flach, kalkig). Die Wasserqualität ist nach den Bohnen der wichtigste Faktor.",
+      "correct": 1,
+      "explanation": "Die SCA erklärt Grenzen von TDS-Messgeräten. Gesamtmineralisierung misst nicht die einzelne Ionenverteilung."
     },
     {
-      question:
-        "Welcher Faktor bestimmt die Ökobilanz von Mineralwasser am stärksten?",
-      options: [
-        "Ob Glas oder PET verwendet wird",
-        "Der Mineralstoffgehalt des Wassers",
-        "Die Transportentfernung vom Brunnen zum Verbraucher",
-        "Ob das Wasser Kohlensäure enthält",
+      "question": "Was gehört zu einer belastbaren Verpackungs-Ökobilanz?",
+      "options": [
+        "Nur die Flaschenfarbe",
+        "Nur der Mineralgehalt",
+        "Material, Umlaufzahl und Transport sowie weitere Systemannahmen",
+        "Eine starre 200-km-Grenze"
       ],
-      correct: 2,
-      explanation:
-        "Laut UBA-Studien ist die Transportentfernung der dominierende Faktor. Ein regionales Mehrwegwasser (<200 km) schlägt jedes importierte Premiumwasser ökologisch — unabhängig vom Gebindetyp.",
+      "correct": 2,
+      "explanation": "Eine Rangliste hängt von dem betrachteten System ab. Das UBA empfiehlt regionales Mehrweg, ohne einen universellen 200-km-Sieger festzulegen."
     },
     {
-      question:
-        "Warum haben PET-Flaschen ein kürzeres MHD als Glasflaschen?",
-      options: [
-        "PET-Flaschen sind weniger hygienisch abgefüllt",
-        "PET ist gasdurchlässig (CO₂-Verlust) und gibt Acetaldehyd an das Wasser ab",
-        "PET-Flaschen wiegen weniger und bieten daher weniger Schutz",
-        "PET verändert den Mineralstoffgehalt des Wassers",
+      "question": "Welche Lagerregel gilt für bereits geöffnete Wasserflaschen?",
+      "options": [
+        "Unbegrenzt offen bei Raumtemperatur",
+        "Verschlossen und gekühlt, möglichst zeitnah verbrauchen",
+        "Das MHD garantiert nach Öffnung jede Haltbarkeit",
+        "Nur Glas darf gekühlt werden"
       ],
-      correct: 1,
-      explanation:
-        "PET hat zwei sensorisch relevante Schwächen: (1) CO₂-Permeabilität — Kohlensäure diffundiert langsam durch die Flaschenwand. (2) Acetaldehyd-Migration — PET gibt geringe Mengen Acetaldehyd ab, die einen süßlich-fruchtigen Fremdgeschmack erzeugen können.",
+      "correct": 1,
+      "explanation": "Die BfR-Hygienehinweise unterscheiden geöffnete Flaschen von original verschlossener Ware."
     },
     {
-      question:
-        "Was beschreibt den aktuell stärksten Trend im deutschen Mineralwassermarkt?",
-      options: [
-        "Zunehmende Beliebtheit von Classic/Sprudel-Wasser mit maximaler Kohlensäure",
-        "Der Shift von Classic zu Medium und Still, Zero-Sugar-Flavoured-Water und Premiumisierung",
-        "Rückgang des gesamten Mineralwasserkonsums zugunsten von Softdrinks",
-        "Zunehmender Import von Mineralwasser aus Übersee",
+      "question": "Was muss bei einem aromatisierten Wassergetränk geprüft werden?",
+      "options": [
+        "Nur der Werbename",
+        "Tatsächliche Kategorie, Zutaten, Nährwerte und zulässige Aussagen",
+        "Nur das Design",
+        "Nur der Mineralstoffgehalt der Basis"
       ],
-      correct: 1,
-      explanation:
-        "Die drei dominierenden Trends sind: (1) Weniger Kohlensäure — Classic verliert an Medium und Still. (2) Aromatisiertes Wasser ohne Zucker (Flavoured Water) wächst stark. (3) Premiumisierung — Konsumenten zahlen mehr für Herkunft, Design und Storytelling.",
-    },
-  ],
+      "correct": 1,
+      "explanation": "Mineralwasserbasis oder Trendzutat sind keine pauschalen Rechts- oder Gesundheitsgarantien."
+    }
+  ]
 };

@@ -33,7 +33,7 @@ describe("verified market contract", () => {
     ]);
     expect(links).toEqual(expect.arrayContaining([
       "/angebote", "/produkte", "/cocktails", "/akademie", "/vermietung", "/eigenmarke",
-      "/gewinnspiel", "/galerie", "/bewerbung", "https://grailbid.com", "/kontakt",
+      "/gewinnspiel", "/galerie", "/karriere", "https://grailbid.com", "/kontakt",
     ]));
   });
 

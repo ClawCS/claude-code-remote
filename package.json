@@ -32,6 +32,7 @@
     "assets:user-market": "node scripts/build-user-market-assets.mjs",
     "assets:user-market:check": "node scripts/build-user-market-assets.mjs --check",
     "audit:public": "node scripts/audit-public-site.mjs",
+    "audit:search": "tsx scripts/audit-search-readiness.ts",
     "audit:giveaway-images": "node scripts/audit-giveaway-images.mjs"
   },
   "dependencies": {

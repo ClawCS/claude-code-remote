@@ -9,6 +9,7 @@ import { cocktailCatalog, findCocktail } from "@/lib/cocktail-routes";
 import styles from "@/components/editorial/learning.module.css";
 import JsonLdScript from "@/components/JsonLdScript";
 import { buildRecipeJsonLd, buildBreadcrumbJsonLd } from "@/lib/recipe-structured-data";
+import ContentSources from "@/components/editorial/ContentSources";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -60,6 +61,7 @@ export default async function CocktailRecipePage({ params }: Props) {
           </div>
         </div>
         </div>
+        <ContentSources id={`recipe:${recipe.slug}`} />
       </article>
     </>
   );

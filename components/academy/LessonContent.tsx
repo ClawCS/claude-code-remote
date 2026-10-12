@@ -3,6 +3,7 @@ import JsonLdScript from "@/components/JsonLdScript";
 import { buildBreadcrumbJsonLd } from "@/lib/recipe-structured-data";
 import { lessonHref } from "@/lib/academy-routes";
 import styles from "@/components/editorial/learning.module.css";
+import ContentSources from "@/components/editorial/ContentSources";
 
 export default function LessonContent({ course, index }: { course: Course; index: number }) {
   const lesson = course.lessons[index];
@@ -27,5 +28,6 @@ export default function LessonContent({ course, index }: { course: Course; index
         })}
       </div>
     </section>
+    <ContentSources id={`academy:${course.slug}:${index + 1}`} />
   </>;
 }

@@ -73,7 +73,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Fortgeschritten",
     ingredients: ["3 cl weißer Rum", "3 cl goldener Rum", "3 cl dunkler Rum", "2 cl Aprikosenlikör", "4 cl Ananassaft", "2 cl Limettensaft", "1 cl Grenadine"],
     instructions: "Alle Zutaten außer Grenadine mit Eis shaken. In ein Tiki-Glas über Crushed Ice abseihen. Grenadine langsam einsinken lassen.",
-    tip: "Vorsicht: Drei Rumsorten machen diesen Drink stärker als er schmeckt. Der Name ist Programm!",
+    tip: "Jammers-Variante mit Aprikosenlikör und Ananassaft, nicht das IBA-Original. Der süße Geschmack sagt nichts über die enthaltene Alkoholmenge aus.",
   },
   {
     name: "Rum Punch",
@@ -91,7 +91,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Einfach",
     ingredients: ["6 cl Jamaika-Rum", "4 cl Orangensaft", "2 cl Zitronensaft", "1 cl Grenadine", "1 cl Zuckersirup", "Soda"],
     instructions: "Alle Zutaten außer Soda mit Eis shaken. In ein Longdrinkglas mit Eis abseihen. Mit einem Spritzer Soda toppen.",
-    tip: "Faustregel: 1 Sour, 2 Sweet, 3 Strong, 4 Weak (Saft) — so bleibt der Punch perfekt balanciert.",
+    tip: "Fruchtige Jammers-Variante mit Orange, Zitrone und Grenadine. Das aktuelle IBA-Rezept verwendet Jamaika-Rum, Limette und Zuckerrohrsaft; Punsch-Verhältnisse sind keine verbindliche Geschmacksregel.",
   },
   {
     name: "Caipirinha",
@@ -109,7 +109,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Mittel",
     ingredients: ["4 cl weißer Rum", "4 cl dunkler Rum", "4 cl Passionsfruchtsirup", "2 cl Orangensaft", "2 cl Limettensaft", "1 cl Grenadine"],
     instructions: "Alle Zutaten mit Eis shaken. In ein Hurricaneglas über frisches Eis abseihen. Mit Orange und Kirsche garnieren.",
-    tip: "Klassiker aus New Orleans — der Passionsfruchtsirup ist der Schlüssel zum authentischen Geschmack.",
+    tip: "Jammers-Variante des New-Orleans-Drinks mit Passionsfruchtsirup. Sie ist nicht das Originalrezept von Pat O’Brien’s mit dessen eigenem Hurricane-Mix.",
   },
   {
     name: "Bahama Mama",
@@ -130,8 +130,8 @@ export const cocktails: Cocktail[] = [
     category: "Vodka",
     difficulty: "Einfach",
     ingredients: ["5 cl Vodka", "15 cl Ginger Beer", "2 cl Limettensaft", "Eiswürfel", "Limettenscheibe"],
-    instructions: "Vodka und Limettensaft in einen Kupferbecher oder Glas mit Eis geben. Mit Ginger Beer auffüllen. Mit Limette garnieren.",
-    tip: "Ein Kupferbecher hält den Drink extra kalt. Hochwertiges Ginger Beer macht den Unterschied.",
+    instructions: "Vodka und Limettensaft in ein Glas mit Eis geben. Alternativ einen für saure Getränke geeigneten, innen beschichteten Becher verwenden. Mit Ginger Beer auffüllen und mit Limette garnieren.",
+    tip: "Kein unbeschichtetes Kupfer im direkten Kontakt mit dem sauren Drink verwenden. Ein vorgekühltes Glas und kaltes Ginger Beer funktionieren ebenfalls.",
   },
   {
     name: "Cosmopolitan",
@@ -167,7 +167,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Mittel",
     ingredients: ["4 cl Vodka", "3 cl Kaffeelikör", "3 cl frischer Espresso", "1 cl Zuckersirup"],
     instructions: "Alle Zutaten mit Eis kräftig und lange shaken. Doppelt in eine Martinischale abseihen. Mit 3 Kaffeebohnen garnieren.",
-    tip: "Der Espresso muss frisch sein — nur so entsteht die cremige Schaumkrone. Mindestens 15 Sekunden shaken.",
+    tip: "Frischer, kurz abgekühlter Espresso und kräftiges Shaken helfen bei der Schaumkrone. Wie viel Schaum entsteht, hängt auch vom Kaffee und der Zubereitung ab.",
   },
   {
     name: "Sex on the Beach",
@@ -210,9 +210,9 @@ export const cocktails: Cocktail[] = [
     image: "🍋",
     category: "Vodka",
     difficulty: "Mittel",
-    ingredients: ["5 cl Vodka", "3 cl Zitronensaft", "2 cl Zuckersirup", "1 Eiweiß (optional)", "Angostura Bitters"],
+    ingredients: ["5 cl Vodka", "3 cl Zitronensaft", "2 cl Zuckersirup", "1 pasteurisiertes Eiweiß (optional)", "Angostura Bitters"],
     instructions: "Alle Zutaten zuerst ohne Eis shaken (Dry Shake für Schaum). Dann mit Eis nochmal kräftig shaken. Doppelt abseihen. Bitters auf den Schaum.",
-    tip: "Das Eiweiß ist optional, macht aber den seidigen Schaum der den Sour zum Erlebnis macht.",
+    tip: "Eiweiß ist optional. Für nicht erhitzte Drinks pasteurisiertes Eiweiß verwenden oder darauf verzichten; rohe Eier können Salmonellen übertragen. Gekühlt verarbeiten und sofort servieren.",
   },
   {
     name: "Lemon Drop",
@@ -234,7 +234,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Einfach",
     ingredients: ["5 cl Jack Daniel's", "15 cl Cola", "Eiswürfel", "Limettenscheibe"],
     instructions: "Jack Daniel's in ein Glas mit Eis geben. Mit Cola auffüllen. Mit Limette garnieren.",
-    tip: "Cola Zero funktioniert genauso gut und spart Kalorien ohne Geschmacksverlust.",
+    tip: "Cola ohne Zucker ist eine mögliche Variante; sie verändert Süße und Geschmack. Auch damit bleibt der Drink alkoholhaltig.",
   },
   {
     name: "Old Fashioned",
@@ -243,16 +243,16 @@ export const cocktails: Cocktail[] = [
     difficulty: "Mittel",
     ingredients: ["6 cl Bourbon", "1 Zuckerwürfel", "2–3 Dashes Angostura Bitters", "Orangenzeste", "Eiswürfel"],
     instructions: "Zucker mit Bitters und einem Spritzer Wasser im Glas auflösen. Eis dazu, Bourbon eingießen. Langsam rühren. Mit Orangenzeste garnieren.",
-    tip: "Der älteste Cocktail der Welt. Große Eiswürfel verwenden — sie schmelzen langsamer und verwässern weniger.",
+    tip: "Ein klassischer Whiskey-Cocktail. Große, kalte Eiswürfel und ein vorgekühltes Glas helfen, den Drink kontrolliert zu kühlen.",
   },
   {
     name: "Whiskey Sour",
     image: "🍋",
     category: "Whiskey",
     difficulty: "Mittel",
-    ingredients: ["5 cl Bourbon", "3 cl Zitronensaft", "2 cl Zuckersirup", "1 Eiweiß (optional)", "Angostura Bitters"],
+    ingredients: ["5 cl Bourbon", "3 cl Zitronensaft", "2 cl Zuckersirup", "1 pasteurisiertes Eiweiß (optional)", "Angostura Bitters"],
     instructions: "Alle Zutaten zuerst ohne Eis shaken (Dry Shake). Dann mit Eis kräftig shaken. Doppelt in ein Glas abseihen. Bitters auf den Schaum.",
-    tip: "Der Dry Shake (ohne Eis) emulgiert das Eiweiß für den perfekten Schaum.",
+    tip: "Der Dry Shake erzeugt Schaum. Nur pasteurisiertes Eiweiß verwenden oder darauf verzichten; rohe Eier können Salmonellen übertragen. Gekühlt verarbeiten und sofort servieren.",
   },
   {
     name: "Manhattan",
@@ -355,7 +355,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Mittel",
     ingredients: ["5 cl Gin", "3 cl Zitronensaft", "2 cl Zuckersirup", "Soda"],
     instructions: "Gin, Zitrone und Sirup mit Eis shaken. In ein Longdrinkglas ohne Eis abseihen. Mit Soda toppen.",
-    tip: "Kein Eis im Glas — der Drink wird durchs Shaken kalt genug und bleibt so länger spritzig.",
+    tip: "Die IBA serviert Gin Fizz ohne zusätzliches Eis im Glas. Soda erst nach dem Shaken zugeben und den Drink direkt servieren.",
   },
   {
     name: "Tom Collins",
@@ -409,7 +409,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Mittel",
     ingredients: ["2 cl Gin", "2 cl Green Chartreuse", "2 cl Maraschino-Likör", "2 cl Limettensaft"],
     instructions: "Alle Zutaten zu gleichen Teilen mit Eis shaken. Doppelt in eine Cocktailschale abseihen.",
-    tip: "Equal Parts — einfach zu merken, schwer zu verbessern. Ein vergessener Klassiker der 1920er, wiederentdeckt 2004.",
+    tip: "Equal Parts: Alle vier Zutaten haben in dieser Jammers-Portion dieselbe Menge. Die IBA verwendet dafür jeweils 2,25 cl.",
   },
   {
     name: "French 75",
@@ -457,7 +457,7 @@ export const cocktails: Cocktail[] = [
     category: "Aperitif",
     difficulty: "Einfach",
     ingredients: ["6 cl Prosecco", "4 cl Campari", "Soda", "Eiswürfel", "Orangenscheibe"],
-    instructions: "Wie Aperol Spritz, aber mit Campari. Herber und bitterer — für Erwachsene.",
+    instructions: "Weinglas mit Eis füllen. Prosecco und Campari eingießen, Soda dazugeben und sanft umrühren. Mit Orange garnieren.",
     tip: "Campari ist bitterer als Aperol. Wer den Spritz weniger süß mag, wird diesen lieben.",
   },
   {
@@ -521,7 +521,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Einfach",
     ingredients: ["6 cl Prosecco", "3 cl Limoncello", "Soda", "Eiswürfel", "Zitronenscheibe", "Rosmarinzweig"],
     instructions: "Eis in ein Weinglas. Limoncello und Prosecco eingießen. Soda dazu. Mit Zitrone und Rosmarin garnieren.",
-    tip: "Trend-Drink 2025/2026 — frisch, zitronig und sofort Urlaubsgefühl.",
+    tip: "Zitronige Jammers-Spritz-Variante. Limoncello und Prosecco vor dem Mischen kühlen und das Soda zuletzt zugeben.",
   },
 
   // ═══════════════════════════════════════
@@ -534,7 +534,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Mittel",
     ingredients: ["5 cl Tequila Blanco", "3 cl Limettensaft", "2 cl Cointreau", "Salzrand"],
     instructions: "Glasrand mit Salz einreiben. Alle Zutaten mit Eis shaken. In das vorbereitete Glas abseihen.",
-    tip: "Der meistgetrunkene Cocktail der USA. Frische Limetten sind absolut unverzichtbar.",
+    tip: "Frischer Limettensaft macht die Säure gut dosierbar. Diese Jammers-Variante verwendet mehr Limette als das IBA-Rezept.",
   },
   {
     name: "Paloma",
@@ -543,7 +543,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Einfach",
     ingredients: ["5 cl Tequila Blanco", "10 cl Grapefruit-Soda", "1 cl Limettensaft", "Salzrand", "Grapefruitscheibe"],
     instructions: "Glasrand mit Salz. Tequila und Limette über Eis geben. Mit Grapefruit-Soda auffüllen.",
-    tip: "In Mexiko beliebter als die Margarita! Grapefruit-Soda wie Jarritos oder Thomas Henry verwenden.",
+    tip: "Grapefruit-Soda prägt den Drink. Süße und Bitterkeit unterscheiden sich je nach Produkt; nach Geschmack wählen.",
   },
   {
     name: "Tequila Sunrise",
@@ -605,8 +605,8 @@ export const cocktails: Cocktail[] = [
     category: "Tequila",
     difficulty: "Einfach",
     ingredients: ["5 cl Tequila Blanco", "15 cl Cola", "2 cl Limettensaft", "Salzrand"],
-    instructions: "Glasrand mit Salz. Tequila und Limette über Eis, Cola dazu. Mit einem großen Messer umrühren (traditionell!).",
-    tip: "Der mexikanische Cuba Libre. Erfunden von Don Javier in seiner Bar in Tequila, Mexiko.",
+    instructions: "Glasrand mit Salz versehen. Tequila und Limette über Eis geben, Cola dazu. Mit einem Barlöffel vorsichtig umrühren.",
+    tip: "Tequila, Cola und Limette verbinden sich hier mit einem Salzrand. Zum Umrühren einen Barlöffel verwenden.",
   },
   {
     name: "Ranch Water",
@@ -615,7 +615,7 @@ export const cocktails: Cocktail[] = [
     difficulty: "Einfach",
     ingredients: ["5 cl Tequila Blanco", "3 cl Limettensaft", "Topo Chico oder Sprudelwasser", "Salzrand"],
     instructions: "Tequila und Limette über Eis in ein Longdrinkglas geben. Mit Sprudelwasser auffüllen.",
-    tip: "Der Texanische Sommer-Drink. Minimalistisch, erfrischend, kalorienarm. Trend-Drink 2025.",
+    tip: "Ein einfacher Drink aus Tequila, Limette und Sprudelwasser mit Wurzeln in Texas. Er ist alkoholhaltig; eine pauschale Aussage zu Kalorien oder gesundheitlichem Nutzen ist daraus nicht ableitbar.",
   },
 ];
 

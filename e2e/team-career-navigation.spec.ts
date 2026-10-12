@@ -20,7 +20,7 @@ for (const width of [360, 390, 768, 1024, 1151, 1152, 1280, 1440]) {
     await expect(team).toBeVisible();
     await expect(team).toHaveAttribute("href", "/galerie");
     await expect(jobs).toBeVisible();
-    await expect(jobs).toHaveAttribute("href", "/bewerbung");
+    await expect(jobs).toHaveAttribute("href", "/karriere");
     const bounds = await header.evaluate(element => {
       const logo = element.querySelector('a[aria-label="Trinkgut Jammers – Startseite"]')!.getBoundingClientRect();
       const desktop = element.querySelector('nav[aria-label="Hauptnavigation"]')!;
@@ -36,10 +36,10 @@ for (const width of [360, 390, 768, 1024, 1151, 1152, 1280, 1440]) {
     expect(jobBounds!.x).toBeGreaterThanOrEqual(0);
     expect(jobBounds!.x + jobBounds!.width).toBeLessThanOrEqual(width);
     await jobs.click();
-    await expect(page).toHaveURL(/\/bewerbung$/);
+    await expect(page).toHaveURL(/\/karriere$/);
     await page.waitForLoadState("load");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Lust auf Getränke und Menschen?");
-    await expect(page.locator('main a[aria-label$="vollständige Anzeige öffnen"]')).toHaveCount(3);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Dein nächster Schritt. Bei Jammers.");
+    await expect(page.locator('main a[aria-label$="Stellenbeschreibung ansehen"]')).toHaveCount(3);
     await expect(page.locator('main a[href^="mailto:info@trinkgut-jammers.de"]').first()).toBeVisible();
     await expect(page.locator('main input[type="file"]')).toHaveCount(0);
     if (mobile) {

@@ -2,6 +2,7 @@ import type { CartItem } from "@/context/CartContext";
 import { MARKET } from "@/lib/cinematic/site";
 import { assertRentalStock } from "@/lib/cart-items";
 import { getRentalItem } from "@/data/rentals";
+export { removeLegacyPersonalData } from "@/lib/legacy-storage";
 
 export type InquiryContact = Readonly<{name: string; method: "pickup" | "delivery"; postalCode: string; city: string; notes: string}>;
 export const INQUIRY_SUBJECT = "Unverbindliche Reservierungsanfrage – Trinkgut Jammers";
@@ -23,7 +24,4 @@ export function buildInquiryText(items: readonly CartItem[], contact: InquiryCon
 }
 export function buildInquiryUrls(text: string) {
   return {email: `mailto:${MARKET.email}?subject=${encodeURIComponent(INQUIRY_SUBJECT)}&body=${encodeURIComponent(text)}`, whatsapp: `https://wa.me/${MARKET.whatsappNumber}?text=${encodeURIComponent(text)}`};
-}
-export function removeLegacyPersonalData(storage: Pick<Storage, "removeItem">): void {
-  for (const key of ["trinkgut-bestellungen", "gewinnspiel-teilnahmen", "trinkgut-community-id", "trinkgut-community-name", "trinkgut-community", "trinkgut-last-visit", "cookie-consent"]) storage.removeItem(key);
 }

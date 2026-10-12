@@ -5,6 +5,10 @@ import { validateOfficialCatalogPackages } from "../lib/official-catalog-package
 import { loadWeeklyPublications } from "../lib/weekly-publication";
 import { buildWeeklyOffers } from "./build-weekly-offers";
 import { loadSupplementalPublications } from "../lib/supplemental-publication";
+import { courses } from "../data/akademie";
+import { cocktailCatalog } from "../lib/cocktail-routes";
+import reviews from "../data/editorial/content-reviews.json";
+import { assertContentReviewCoverage } from "../lib/content-review-schema";
 
 export async function validateWeeklyPublicationBuild(root=process.cwd()):Promise<number> {
   const loaded=await loadWeeklyPublications(root);
@@ -16,6 +20,11 @@ export async function validateWeeklyPublicationBuild(root=process.cwd()):Promise
 }
 
 async function main() {
+  const editorial = assertContentReviewCoverage(reviews, [
+    ...courses.flatMap(course => course.lessons.map((_, index) => `academy:${course.slug}:${index + 1}`)),
+    ...cocktailCatalog.recipes.map(recipe => `recipe:${recipe.slug}`),
+  ]);
+  process.stdout.write(`Redaktionelle Quellenabdeckung vor Build geprüft: ${editorial} Inhalte\n`);
   // Validate immutable public derivatives before any content/build output.
   // These validators need no private account metadata on a clean checkout.
   for (const script of ["build-cinematic-assets.mjs", "build-market-assets.mjs", "build-google-market-assets.mjs", "build-user-market-assets.mjs"]) {

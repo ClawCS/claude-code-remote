@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import ContentSources from "@/components/editorial/ContentSources";
 
 // Breaks caught: script-only/hidden content passing as initial HTML; wrong or
 // duplicate canonicals; changed recipe/schema fields or an invented photo.
@@ -11,6 +14,14 @@ async function audit() {
 const head = '<link rel="canonical" href="https://trinkgut-jammers.de/example"><meta name="robots" content="index, follow">';
 
 describe("search acceptance boundary", () => {
+  it("rejects hidden, stale or source-incomplete review evidence", async () => {
+    const { checkContentReview } = await audit();
+    const html = renderToStaticMarkup(createElement(ContentSources, { id: "recipe:negroni" }));
+    expect(checkContentReview(html, "recipe:negroni")).toEqual([]);
+    expect(checkContentReview(`<div hidden>${html}</div>`, "recipe:negroni").join()).toMatch(/review/i);
+    expect(checkContentReview(html.replace("2026-10-12", "2026-10-11"), "recipe:negroni").join()).toMatch(/date/i);
+    expect(checkContentReview(html.replace(/href="[^"]+"/g, 'href="https://example.org"'), "recipe:negroni").join()).toMatch(/source/i);
+  });
   it("rejects wrong, duplicate and noindex canonicals", async () => {
     const { checkPage } = await audit();
     expect(checkPage(head, "/example", null)).toEqual([]);

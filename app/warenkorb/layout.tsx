@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ShoppingLayout from "@/components/ShoppingLayout";
 
 export const metadata: Metadata = {
   title: "Warenkorb für deine Anfrage",
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <ShoppingLayout>{children}</ShoppingLayout>;
 }

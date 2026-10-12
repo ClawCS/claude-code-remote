@@ -22,7 +22,7 @@ for (const preference of ["reduced-motion", "save-data"] as const) {
     await expect(page.getByRole("heading", { level:1 })).toBeVisible();
     expect(videos).toEqual([]);
     await page.getByRole("button", { name: "Film abspielen", exact:true }).click();
-    await expect(film).toHaveAttribute("src", "/videos/jammers-hero-v4-desktop.mp4");
+    await expect(film).toHaveAttribute("src", "/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4");
   });
 }
 
@@ -61,7 +61,7 @@ test("homepage film failure leaves copy, poster and destinations usable", async 
   await page.route("**/videos/*.mp4", route => route.abort());
   await page.goto("/");
   await expect(page.getByRole("heading", { level:1 })).toBeVisible();
-  await expect(page.locator('[data-hero="cinematic"] video')).toHaveAttribute("poster", "/images/home/jammers-film-poster.webp");
+  await expect(page.locator('[data-hero="cinematic"] video')).toHaveAttribute("poster", "/images/home/jammers-film-poster-62abe3860959351d.webp");
   await expect(page.locator('[data-hero="cinematic"] a[href="#aktuell"]')).toBeVisible();
   await expect(page.getByText(/Der Film ist gerade nicht verfügbar/)).toBeVisible();
 });

@@ -50,6 +50,7 @@
 .form label, .application label { line-height: 1.6; }
 .form label input[type="radio"], .form label input[type="checkbox"], .application input[type="radio"], .application input[type="checkbox"] { width: 1.2rem; height: 1.2rem; flex-shrink: 0; accent-color: var(--cinematic-color-red); }
 .jobGrid { margin-bottom: 1.25rem; }
+.jobDetail { align-items: start; }
 .jobCard { min-width: 0; padding-bottom: 1.5rem; border-bottom: 1px solid var(--cinematic-color-line); }
 .jobPoster { display: block; margin-bottom: 1.5rem; }
 .jobPoster img { display: block; width: 100%; height: auto; object-fit: contain; }
@@ -90,4 +91,5 @@
 .drawerFooter a, .drawerFooter button { min-height: 44px; }
 @media (min-width: 40rem) { .dateGrid, .rentalGrid, .jobGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 64rem) { .rentalGrid, .jobGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .formLayout { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); } .contactGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .jobGrid.jobDetail { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(2rem, 5vw, 5rem); } }
 @media (max-width: 30rem) { .actions { align-items: stretch; } .actions > :where(a, button) { flex: 1 1 100%; text-align: center; justify-content: center; } .cartRow > .quantityControl { margin-left: 0; } }

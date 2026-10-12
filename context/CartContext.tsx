@@ -2,8 +2,9 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Product } from "@/lib/utils";
-import { removeLegacyPersonalData } from "@/lib/reservation-inquiry";
+import { removeLegacyPersonalData } from "@/lib/legacy-storage";
 import { addCartItem, assertRentalStock, cartLineKey, parseStoredCart, updateCartQuantity } from "@/lib/cart-items";
+import { useSessionList } from "@/lib/use-session-list";
 
 export type RentalInfo = {
   startDate: string;
@@ -38,28 +39,17 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useSessionList("trinkgut-cart", parseStoredCart);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   const [quantityError, setQuantityError] = useState("");
 
   useEffect(() => {
     try {
       removeLegacyPersonalData(localStorage);
-      const stored = sessionStorage.getItem("trinkgut-cart") ?? localStorage.getItem("trinkgut-cart");
-      const parsed: unknown = stored ? JSON.parse(stored) : [];
-      setItems(parseStoredCart(parsed));
-      localStorage.removeItem("trinkgut-cart");
     } catch {
       // Browser storage may be unavailable.
-    } finally { setHydrated(true); }
-  }, []);
-
-  useEffect(() => {
-    if (hydrated) {
-      try { if (items.length) sessionStorage.setItem("trinkgut-cart", JSON.stringify(items)); else sessionStorage.removeItem("trinkgut-cart"); } catch { /* Private browsing/storage quota. */ }
     }
-  }, [items, hydrated]);
+  }, []);
 
   const addItem = (product: Product, quantity = 1, rental?: RentalInfo) => {
     if (!Number.isInteger(quantity) || quantity < 1) return;

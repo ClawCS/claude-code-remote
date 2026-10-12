@@ -83,7 +83,7 @@ describe("HeroFilm loading and playback", () => {
     expect(await control.evaluate(node => getComputedStyle(node).outlineStyle)).toBe("solid");
     await page.keyboard.press("Enter");
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
-    expect(await media.getAttribute("src")).toBe(`/videos/jammers-hero-v4-${width < 768 ? "mobile" : "desktop"}.mp4`);
+    expect(await media.getAttribute("src")).toBe(width < 768 ? "/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4" : "/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4");
     await page.keyboard.press("Space");
     expect(await label(page)).toBe("Film abspielen");
     await page.close();
@@ -102,7 +102,7 @@ describe("HeroFilm loading and playback", () => {
     expect(await label(page)).toBe("Film abspielen");
     await page.locator("video").scrollIntoViewIfNeeded();
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
-    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-mobile.mp4");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4");
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film abspielen");
     expect((await page.locator("video").boundingBox())!.y).toBeGreaterThanOrEqual(500);
@@ -130,7 +130,7 @@ describe("HeroFilm loading and playback", () => {
 
   it("ships a usable poster and links but no media URL or inert control before hydration", () => {
     const html = renderToStaticMarkup(<HeroFilm><a href="/angebote">Angebote</a></HeroFilm>);
-    expect(html).toContain('poster="/images/home/jammers-film-poster.webp"');
+    expect(html).toContain('poster="/images/home/jammers-film-poster-62abe3860959351d.webp"');
     expect(html).not.toContain(".mp4");
     expect(html).toContain('href="/angebote"');
     expect(html).toContain('disabled=""');
@@ -144,7 +144,7 @@ describe("HeroFilm loading and playback", () => {
     expect(await page.locator("video").getAttribute("src")).toBeNull();
     await page.locator("button").click();
     await page.waitForFunction(() => document.querySelector("button")?.textContent === "Film pausieren");
-    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-desktop.mp4");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4");
     await page.locator("button").click();
     expect(await label(page)).toBe("Film abspielen");
     await page.close();
@@ -153,7 +153,7 @@ describe("HeroFilm loading and playback", () => {
   it.each([[390, "mobile"], [768, "desktop"], [1440, "desktop"]])("chooses the bounded source at %ipx", async (width, variant) => {
     const page = await mount({ width: Number(width) });
     await page.waitForFunction(() => Boolean(document.querySelector("video")?.getAttribute("src")));
-    expect(await page.locator("video").getAttribute("src")).toBe(`/videos/jammers-hero-v4-${variant}.mp4`);
+    expect(await page.locator("video").getAttribute("src")).toBe(variant === "mobile" ? "/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4" : "/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4");
     await page.close();
   });
 
@@ -208,7 +208,7 @@ describe("HeroFilm loading and playback", () => {
     await page.waitForTimeout(30);
     expect(await label(page)).toBe("Film abspielen");
     expect(await page.locator("[role=status]").innerText()).toBe("");
-    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-desktop.mp4");
+    expect(await page.locator("video").getAttribute("src")).toBe("/videos/jammers-hero-v4-desktop-90db5ba2525d1a39.mp4");
     await page.close();
   });
 

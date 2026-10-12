@@ -157,7 +157,7 @@ test("meets visual stability, interaction, transfer, and request budgets", async
   const imageBytes = total("img");
   const approvedFilm = resources.filter(({ name }) => {
     const url = new URL(name);
-    return url.origin === new URL(page.url()).origin && url.pathname === "/videos/jammers-hero-v4-mobile.mp4";
+    return url.origin === new URL(page.url()).origin && url.pathname === "/videos/jammers-hero-v4-mobile-4d55447b17c1b23d.mp4";
   });
   const largestResourceBytes = Math.max(
     0,
@@ -216,7 +216,7 @@ test("meets visual stability, interaction, transfer, and request budgets", async
     .toBeLessThanOrEqual(RESOURCE_BUDGET_BYTES);
   expect.soft(unmeasuredLoadedUrls, "every loaded URL must report a size").toEqual([]);
   expect.soft(forbiddenUrls, "passive load must not request embeds or unapproved video").toEqual([]);
-  for (const film of approvedFilm) expect.soft(film.accountedBytes, "approved mobile film stays within 3 MB").toBeLessThanOrEqual(3_000_000);
+  for (const film of approvedFilm) expect.soft(film.accountedBytes, "approved mobile film stays within 1 MB including transfer overhead").toBeLessThanOrEqual(1_000_000);
 
   await client.detach();
 });

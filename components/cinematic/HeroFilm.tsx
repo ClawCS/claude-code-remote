@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import styles from "./hero-film.module.css";
+import { HERO_MEDIA } from "@/lib/cinematic/hero-media";
 
 type DataConnection = EventTarget & { saveData?: boolean };
 const subscribe = () => () => {};
@@ -44,7 +45,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
     const start = () => {
       if (disposed || document.hidden || !visible || isPlaying || isPending) return;
       if (!media.hasAttribute("src")) {
-        media.src = wide.matches ? "/videos/jammers-hero-v4-desktop.mp4" : "/videos/jammers-hero-v4-mobile.mp4";
+        media.src = wide.matches ? HERO_MEDIA.desktop : HERO_MEDIA.mobile;
         media.load();
       }
       const attempt = ++request;
@@ -120,7 +121,7 @@ export default function HeroFilm({ children, className, copyClassName }: {
       </div>}
       <div className={styles.media}>
         <video ref={video} className={styles.video} width="1920" height="1080" muted playsInline loop preload="none"
-          poster="/images/home/jammers-film-poster.webp" aria-label="Jammers: fünfzehnsekündiger Werbefilm ohne Ton" aria-describedby={descriptionId}>
+          poster={HERO_MEDIA.poster} aria-label="Jammers: fünfzehnsekündiger Werbefilm ohne Ton" aria-describedby={descriptionId}>
           Dein Browser kann diesen Film nicht abspielen. Das Schlussmotiv zeigt sechs Jammers-Liköre mit passenden Gläsern.
         </video>
         <button className={styles.control} type="button" disabled={!hydrated} onClick={() => controls.current?.toggle()} aria-describedby={descriptionId}>

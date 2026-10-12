@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "family": "Plus Jakarta Sans",
+  "source": "Exact existing accepted Next 16.3.8 production WOFF2 files, originally fetched by next/font/google; no new font design, subset conversion or glyph modification.",
+  "reviewedAt": "2026-10-12",
+  "inspection": "@pdf-lib/fontkit confirmed normal style, Weight axis min 200 / default 400 / max 800 in every file, unitsPerEm 1000, ascent 1038, descent -222 and lineGap 0. All used weights 400, 500, 600, 700 and 800 are covered. CSS retains all four original unicode ranges and existing Arial fallback metrics.",
+  "license": "SIL Open Font License 1.1",
+  "licenseSource": "https://raw.githubusercontent.com/google/fonts/main/ofl/plusjakartasans/OFL.txt",
+  "licenseFile": "assets/fonts/jakarta/OFL.txt",
+  "files": [
+    { "path": "public/fonts/plus-jakarta-sans-cyrillic-ext-a16f29d7d2a21a4f.woff2", "subset": "cyrillic-ext", "sha256": "a16f29d7d2a21a4f9b3249a82eb2725ed5bdb91500dfb5c4758977de27477f20", "bytes": 1716 },
+    { "path": "public/fonts/plus-jakarta-sans-vietnamese-5c913fc1b1f86f4b.woff2", "subset": "vietnamese", "sha256": "5c913fc1b1f86f4b475e5df45a796aa480d1f7f0891ed6f1a5991d6d1be887c3", "bytes": 8292 },
+    { "path": "public/fonts/plus-jakarta-sans-latin-ext-0303e02b53b0298f.woff2", "subset": "latin-ext", "sha256": "0303e02b53b0298fb26a0193941a2e8754f0f9a9fce50d90b178d8da3424873f", "bytes": 21688 },
+    { "path": "public/fonts/plus-jakarta-sans-latin-cd8db90cd950e26b.woff2", "subset": "latin", "sha256": "cd8db90cd950e26bc8761f65d323588bd5cd112d326d6d322bc7c8ea86771215", "bytes": 27272 }
+  ]
+}
