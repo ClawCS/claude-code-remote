@@ -21,6 +21,6 @@ Bei der Profilkontrolle stimmten Adresse, Telefon und Öffnungszeiten mit den Be
 
 ## Suchmaschinen und Website
 
-Google Search Console und Bing: Eigentumsnachweise für die Hauptproperty vorbereitet. Verifizierung und Sitemapannahme zählen erst nach erfolgreicher öffentlicher Auslieferung und Bestätigung im jeweiligen Dienst als abgeschlossen. Noch nicht verfügbare Indexierungs-, Klick- oder Impressionenzahlen sind **nicht erhoben**, nicht null.
+Google Search Console und Bing: Eigentum nach öffentlichem bytegleichem Datei-GET tatsächlich bestätigt, Sitemapannahme jeweils sichtbar. Bing verarbeitet die Sitemap. Google meldete zunächst einen Sitemap-Abruffehler; sein eigener Live-Test bestätigte anschließend um 13:36:17 Europe/Berlin den erfolgreichen tatsächlichen Abruf. Endgültige Sitemap-Verarbeitung bleibt unbestätigt; siehe Abschlussbericht. Noch nicht verfügbare Indexierungs-, Klick- oder Impressionenzahlen sind **nicht erhoben**, nicht null.
 
 Für die eigentliche neue Website wurde keine historische Feld-CWV- oder Rankingbasis erfunden. Die reproduzierbaren lokalen Performance-Vergleiche und ihre Grenzen stehen im separaten Performancebericht; die technische öffentliche Abnahme und der reale Releasezeitpunkt folgen im Abschlussbericht. Nachmessung nach 7, 28 und 90 Tagen gemäß SEARCH-MEASUREMENT-RUNBOOK.
